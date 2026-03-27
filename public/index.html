@@ -770,12 +770,15 @@ function preprocessMarkdown(text) {
   // Ensure blank line before any table row so marked.js renders tables
   let out = text.replace(/([^\n])\n(\| *Room)/g, '$1\n\n$2');
   out = out.replace(/([^\n])\n(\|[^\n]+\|[ \t]*\n\|---)/g, '$1\n\n$2');
-  // Convert non-ASCII to HTML entities so emoji render correctly
-  out = [...out].map(ch => {
+  return out;
+}
+
+function fixEmojiInHtml(htmlStr) {
+  // Convert non-ASCII chars to HTML entities AFTER marked.parse (avoids & double-escape)
+  return [...htmlStr].map(ch => {
     const cp = ch.codePointAt(0);
     return cp > 127 ? '&#x' + cp.toString(16) + ';' : ch;
   }).join('');
-  return out;
 }
 
 // ── GOOGLE MAPS INIT ───────────────────────────────────────
@@ -976,9 +979,8 @@ async function processHotels(hotels) {
   if (typeof google.maps.places !== 'undefined') {
     const svc = new google.maps.places.PlacesService(map);
     hotels.forEach((hotel, index) => {
-      svc.findPlaceFromText({
-        query: hotel.name + ' ' + hotel.city,
-        fields: ['photos']
+      svc.textSearch({
+        query: hotel.name + ' ' + hotel.city
       }, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0] && results[0].photos && results[0].photos.length > 0) {
           const photoUrl = results[0].photos[0].getUrl({ maxWidth: 400, maxHeight: 220 });
@@ -1168,7 +1170,7 @@ async function sendMessage(overrideText) {
         fullResponse += token;
         // Render markdown on each token but strip hotel tag
         const displayText = stripHotelTag(fullResponse);
-        contentEl.innerHTML = marked.parse(preprocessMarkdown(displayText));
+        contentEl.innerHTML = fixEmojiInHtml(marked.parse(preprocessMarkdown(displayText)));
         scrollToBottom();
       }
     }
