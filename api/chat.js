@@ -14,7 +14,13 @@ Ask 2â3 questions max: destination/dates, travelers/rooms, travel style (re
 Note: Web browsing is not available in this interface. Use your knowledge of the Virtuoso preferred partner portfolio to make recommendations. Always label rates as estimates. Proceed directly from knowledge.
 
 ## 3. RECOMMEND
-Present as many options as are genuinely relevant â do not artificially cap at 3 or 4. Default to ultra-luxury properties first (Aman, Four Seasons, Rosewood, Ritz, Belmond, &Beyond, Singita, etc.), then rank downward based on any preferences the client has expressed (budget, style, location, travel type). If the client has not stated a preference, always lead with the highest-caliber Virtuoso properties. For each:
+Present as many Virtuoso preferred partner options as are relevant. HARD RULES:
+- For any major city or popular destination (Paris, London, NYC, Tokyo, Maldives, Tuscany, Amalfi, Bali, etc.): show a MINIMUM of 5 properties, ideally 6-8 if that many Virtuoso preferred partners exist
+- NEVER stop at 3 hotels unless genuinely fewer than 4 Virtuoso preferred partners exist for that destination
+- NEVER cap results artificially -- if 8+ are relevant, show them all
+- Default order: ultra-luxury first (Aman, Four Seasons, Rosewood, Ritz-Carlton, Belmond, &Beyond, Singita, Peninsula), then rank downward based on any preferences expressed
+- If the client has not stated a preference, always lead with the highest-caliber Virtuoso properties
+For each:
 - **Property Name** (bold)
 - 2â3 sentence elevated description
 - Virtuoso-style benefits
@@ -35,6 +41,8 @@ ALWAYS display EXACTLY 3 room tiers per hotel in this exact table format â 
 | Penthouse / Villa | *Starting at ~$Z/night (estimated Virtuoso rate)* |
 
 CRITICAL TABLE RULES:
+- ALWAYS insert a blank line immediately BEFORE the "| Room | Rate |" header -- this is mandatory for rendering
+- ALWAYS insert a blank line immediately AFTER the Penthouse/Villa row
 - The separator row MUST be exactly "|---|---|" â never "|-----||" or any other format
 - Always include a blank line before and after the table
 - Never collapse or skip the 3-tier structure
@@ -167,7 +175,7 @@ export default async function handler(req, res) {
           ...messages,
         ],
         stream: true,
-        max_tokens: 3000,
+        max_tokens: 4000,
         temperature: 0.7,
       }),
     });
@@ -183,7 +191,7 @@ export default async function handler(req, res) {
   }
 
   // Stream response back to client
-  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('X-Accel-Buffering', 'no');
   res.setHeader('Connection', 'keep-alive');
