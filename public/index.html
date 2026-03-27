@@ -969,18 +969,22 @@ function focusHotel(index) {
 
 // ── EXTRACT HOTEL JSON FROM AI RESPONSE ──────────────────
 function extractHotelData(text) {
-  const match = text.match(/<!--BEVVIP_HOTELS:(\[.*?\])-->/s);
+  const match = text.match(/<!--BEVVIP_HOTELS[\s\S]*?-->/);
   if (!match) return null;
+  let raw = match[0].replace('<!--BEVVIP_HOTELS', '').replace('-->', '').trim();
+  if (raw.startsWith(':')) raw = raw.slice(1).trim();
+  if (!raw.startsWith('[')) raw = '[' + raw;
+  if (!raw.endsWith(']')) raw = raw + ']';
   try {
-    return JSON.parse(match[1]);
+    return JSON.parse(raw);
   } catch (e) {
-    console.warn('Failed to parse hotel JSON:', e);
+    console.warn('Failed to parse hotel JSON:', e, raw);
     return null;
   }
 }
 
 function stripHotelTag(text) {
-  return text.replace(/<!--BEVVIP_HOTELS:\[.*?\]-->/s, '').trim();
+  return text.replace(/<!--BEVVIP_HOTELS[\s\S]*?-->/g, '').trim();
 }
 
 // ── CHAT LOGIC ────────────────────────────────────────────
