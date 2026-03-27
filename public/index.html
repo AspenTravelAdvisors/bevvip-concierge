@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BeVvip Luxury Travel Concierge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    /* ── RESET & VARIABLES ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #09090b;
+      --panel:       #111113;
+      --card:        #18181b;
+      --card-hover:  #1f1f23;
+      --gold:        #c9a84c;
+      --gold-light:  #e2c87a;
+      --gold-dim:    #7a6228;
+      --text:        #e8e0d0;
+      --text-muted:  #7a7060;
+      --text-sub:    #a09070;
+      --border:      #2a2419;
+      --border-soft: #1e1c16;
+      --user-bg:     #16140d;
+      --input-bg:    #141210;
+      --ff-serif:    'Playfair Display', Georgia, serif;
+      --ff-sans:     'Inter', system-ui, -apple-system, sans-serif;
+      --radius:      10px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.5);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-height: 100dvh;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-dim);
+      object-fit: cover;
+    }
+
+    .header-logo-placeholder {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-dim);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .header-title strong {
+      font-family: var(--ff-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gold-light);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .header-title span {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .header-contact {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-contact a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .header-contact a:hover { color: var(--gold); }
+
+    .header-contact .divider {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+    }
+
+    /* ── MAIN SPLIT PANE ────────────────────────────────── */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      gap: 0;
+    }
+
+    /* ── CHAT PANEL ─────────────────────────────────────── */
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      width: 54%;
+      min-width: 340px;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+      scroll-behavior: smooth;
+    }
+
+    .messages::-webkit-scrollbar { width: 4px; }
+    .messages::-webkit-scrollbar-track { background: transparent; }
+    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── WELCOME SCREEN ─────────────────────────────────── */
+    .welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      gap: 20px;
+      padding: 20px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .welcome-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-dim);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .welcome h2 {
+      font-family: var(--ff-serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold-light);
+      line-height: 1.3;
+    }
+
+    .welcome p {
+      color: var(--text-sub);
+      font-size: 13px;
+      max-width: 340px;
+      line-height: 1.7;
+    }
+
+    .starters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      max-width: 420px;
+      margin-top: 8px;
+    }
+
+    .starter-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      color: var(--text-sub);
+      font-family: var(--ff-sans);
+      font-size: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .starter-btn:hover {
+      background: var(--card-hover);
+      border-color: var(--gold-dim);
+      color: var(--text);
+    }
+
+    .starter-btn .starter-icon {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    /* ── MESSAGES ───────────────────────────────────────── */
+    .message {
+      margin-bottom: 24px;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .message.user {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .message.user .bubble {
+      background: var(--user-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 4px 16px;
+      padding: 10px 16px;
+      max-width: 82%;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message.assistant .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .message.assistant .meta .avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-dim);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .message.assistant .meta .name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .message.assistant .content {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.75;
+      padding-left: 30px;
+    }
+
+    /* ── MARKDOWN STYLES ────────────────────────────────── */
+    .content h1, .content h2, .content h3 {
+      font-family: var(--ff-serif);
+      color: var(--gold-light);
+      margin: 16px 0 8px;
+      line-height: 1.3;
+    }
+
+    .content h2 { font-size: 17px; }
+    .content h3 { font-size: 15px; }
+
+    .content strong { color: var(--text); font-weight: 600; }
+    .content em { color: var(--text-sub); font-style: italic; }
+
+    .content p { margin: 8px 0; }
+
+    .content ul, .content ol {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+
+    .content li { margin: 4px 0; }
+
+    .content a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .content a:hover { border-bottom-color: var(--gold); }
+
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+
+    .content table th {
+      background: var(--card);
+      color: var(--gold);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .content table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-sub);
+    }
+
+    .content table tr:nth-child(even) td { background: var(--card); }
+
+    .content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    .content blockquote {
+      border-left: 2px solid var(--gold-dim);
+      padding-left: 14px;
+      color: var(--text-sub);
+      margin: 12px 0;
+      font-style: italic;
+    }
+
+    /* ── TYPING INDICATOR ───────────────────────────────── */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 30px;
+      margin-bottom: 24px;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold-dim);
+      animation: typingPulse 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingPulse {
+      0%, 60%, 100% { transform: scale(1); opacity: 0.4; }
+      30% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* ── INPUT AREA ─────────────────────────────────────── */
+    .input-area {
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--panel);
+      flex-shrink: 0;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--gold-dim);
+    }
+
+    textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--ff-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      resize: none;
+      max-height: 140px;
+      min-height: 22px;
+      scrollbar-width: none;
+    }
+
+    textarea::placeholder { color: var(--text-muted); }
+    textarea::-webkit-scrollbar { display: none; }
+
+    .send-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: var(--gold);
+      color: #000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      align-self: flex-end;
+    }
+
+    .send-btn:hover:not(:disabled) { background: var(--gold-light); transform: scale(1.05); }
+    .send-btn:disabled { background: var(--gold-dim); cursor: not-allowed; opacity: 0.5; }
+
+    .send-btn svg { width: 16px; height: 16px; }
+
+    .input-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      padding-left: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── MAP PANEL ──────────────────────────────────────── */
+    .map-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .map-header {
+      padding: 0 20px;
+      height: 44px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .map-header-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hotel-count {
+      font-size: 11px;
+      color: var(--gold-dim);
+      font-weight: 500;
+    }
+
+    #map {
+      flex: 1;
+      width: 100%;
+      min-height: 200px;
+    }
+
+    /* Map placeholder when no results */
+    .map-placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .map-placeholder-icon {
+      font-size: 36px;
+      opacity: 0.3;
+    }
+
+    .map-placeholder p {
+      max-width: 200px;
+      line-height: 1.6;
+      opacity: 0.6;
+    }
+
+    /* ── HOTEL SIDEBAR (below map) ──────────────────────── */
+    .hotel-list {
+      border-top: 1px solid var(--border);
+      background: var(--panel);
+      max-height: 160px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .hotel-list:empty { display: none; }
+
+    .hotel-list::-webkit-scrollbar { height: 3px; width: 3px; }
+    .hotel-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .hotel-list-inner {
+      display: flex;
+      flex-direction: row;
+      gap: 0;
+      overflow-x: auto;
+      padding: 10px 14px;
+    }
+
+    .hotel-list-inner::-webkit-scrollbar { height: 3px; }
+    .hotel-list-inner::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .hotel-card {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-width: 160px;
+      max-width: 200px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .hotel-card:last-child { margin-right: 0; }
+
+    .hotel-card:hover {
+      border-color: var(--gold-dim);
+      background: var(--card-hover);
+    }
+
+    .hotel-card.active {
+      border-color: var(--gold);
+    }
+
+    .hotel-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .hotel-card-city {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .hotel-card-pin {
+      font-size: 10px;
+      color: var(--gold);
+      margin-top: 4px;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    footer {
+      display: none; /* handled in chat close */
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { flex-direction: column; }
+
+      .chat-panel {
+        width: 100%;
+        height: 60vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .map-panel { height: 40vh; }
+
+      .starters { grid-template-columns: 1fr; }
+
+      .header-contact { display: none; }
+
+      .hotel-list { max-height: 120px; }
+    }
+
+    @media (max-width: 480px) {
+      .messages { padding: 16px; }
+      .input-area { padding: 12px 16px 16px; }
+      header { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── HEADER ─────────────────────────────────── -->
+  <header>
+    <div class="header-brand">
+      <div class="header-logo-placeholder" title="BeVvip">✦</div>
+      <div class="header-title">
+        <strong>BeVvip Luxury Travel</strong>
+        <span>Virtuoso® Preferred Partner Concierge</span>
+      </div>
+    </div>
+    <div class="header-contact">
+      <a href="https://bevvip.com" target="_blank">BeVvip.com</a>
+      <div class="divider"></div>
+      <a href="mailto:Book@BeVvip.com">Book@BeVvip.com</a>
+      <div class="divider"></div>
+      <a href="tel:9709251002">970.925.1002</a>
+    </div>
+  </header>
+
+  <!-- ── MAIN ───────────────────────────────────── -->
+  <div class="main">
+
+    <!-- CHAT PANEL -->
+    <section class="chat-panel">
+      <div class="messages" id="messages">
+
+        <!-- Welcome screen -->
+        <div class="welcome" id="welcome">
+          <div class="welcome-icon">✦</div>
+          <h2>Your VIP Travel Concierge</h2>
+          <p>Luxury hotels, suites &amp; villas with exclusive Virtuoso perks — upgrades, breakfast, and resort credits at no extra cost.</p>
+          <div class="starters">
+            <button class="starter-btn" onclick="sendStarter(this)">
+              <span class="starter-icon">✈️</span>
+              Best Hotels for My Next Trip
+            </button>
+            <button class="starter-btn" onclick="sendStarter(this)">
+              <span class="starter-icon">💎</span>
+              What's Worth Booking Now?
+            </button>
+            <button class="starter-btn" onclick="sendStarter(this)">
+              <span class="starter-icon">🚢</span>
+              Expedition Cruises &amp; Remote Safaris
+            </button>
+            <button class="starter-btn" onclick="sendStarter(this)">
+              <span class="starter-icon">🛩️</span>
+              Private Jet Journeys
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <div class="input-wrapper">
+          <textarea
+            id="messageInput"
+            placeholder="Where are you dreaming of going?"
+            rows="1"
+            onkeydown="handleKey(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+        <div class="input-hint">Powered by Aspen Travel Advisors · Virtuoso® · GPT-4o</div>
+      </div>
+    </section>
+
+    <!-- MAP PANEL -->
+    <section class="map-panel">
+      <div class="map-header">
+        <span class="map-header-title">🗺 Hotel Map</span>
+        <span class="hotel-count" id="hotelCount"></span>
+      </div>
+
+      <div id="map"></div>
+
+      <div class="map-placeholder" id="mapPlaceholder">
+        <div class="map-placeholder-icon">🌍</div>
+        <p>Ask about a destination and hotels will appear here on the map</p>
+      </div>
+
+      <div class="hotel-list" id="hotelList">
+        <div class="hotel-list-inner" id="hotelListInner"></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────
+// Replace with your deployed Vercel URL when testing locally
+// In production (same domain), /api/chat works automatically
+const API_ENDPOINT = '/api/chat';
+
+// ── STATE ──────────────────────────────────────────────────
+let conversationHistory = [];
+let isLoading = false;
+let map = null;
+let markers = [];
+let activeInfoWindow = null;
+let hotelData = [];
+let activeCardIndex = -1;
+
+// ── MARKED CONFIG ──────────────────────────────────────────
+const renderer = new marked.Renderer();
+const originalLink = renderer.link.bind(renderer);
+renderer.link = (href, title, text) => {
+  const html = originalLink(href, title, text);
+  return html.replace('<a ', '<a target="_blank" rel="noopener noreferrer" ');
+};
+marked.setOptions({ renderer, breaks: true, gfm: true });
+
+// ── GOOGLE MAPS INIT ───────────────────────────────────────
+function initMap() {
+  const darkStyle = [
+    { elementType: 'geometry', stylers: [{ color: '#1a1a1c' }] },
+    { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+    { elementType: 'labels.text.fill', stylers: [{ color: '#8a8070' }] },
+    { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a1c' }] },
+    { featureType: 'administrative', elementType: 'geometry', stylers: [{ color: '#333' }] },
+    { featureType: 'administrative.country', elementType: 'labels.text.fill', stylers: [{ color: '#c9a84c' }] },
+    { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#d4b870' }] },
+    { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#282820' }] },
+    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#1c1c18' }] },
+    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#2e2e24' }] },
+    { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0a0f1a' }] },
+    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#3a4050' }] },
+  ];
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 20, lng: 0 },
+    zoom: 2,
+    styles: darkStyle,
+    disableDefaultUI: true,
+    zoomControl: true,
+    zoomControlOptions: {
+      position: google.maps.ControlPosition.RIGHT_BOTTOM,
+    },
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+  });
+
+  // Hide placeholder once map is ready
+  google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
+    // Map is ready
+  });
+}
+
+// ── HOTEL MARKER ──────────────────────────────────────────
+function createMarkerIcon(label, active = false) {
+  const color = active ? '#e2c87a' : '#c9a84c';
+  const size = active ? 36 : 30;
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size + 8}" viewBox="0 0 30 38">
+      <circle cx="15" cy="15" r="13" fill="${color}" stroke="#000" stroke-width="1.5" opacity="0.95"/>
+      <text x="15" y="20" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#000">${label}</text>
+      <polygon points="10,26 20,26 15,34" fill="${color}" opacity="0.95"/>
+    </svg>`;
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    scaledSize: new google.maps.Size(size, size + 8),
+    anchor: new google.maps.Point(size / 2, size + 8),
+  };
+}
+
+function clearMarkers() {
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+  hotelData = [];
+  activeCardIndex = -1;
+  document.getElementById('hotelListInner').innerHTML = '';
+  document.getElementById('hotelCount').textContent = '';
+  if (activeInfoWindow) {
+    activeInfoWindow.close();
+    activeInfoWindow = null;
+  }
+}
+
+function addHotelMarker(hotel, index, position) {
+  if (!map) return;
+
+  const label = String(index + 1);
+  const marker = new google.maps.Marker({
+    position,
+    map,
+    icon: createMarkerIcon(label),
+    title: hotel.name,
+    animation: google.maps.Animation.DROP,
+    zIndex: index + 1,
+  });
+
+  const virtuosoUrl = `https://www.virtuoso.com/advisor/brianharris/hotels#SearchTerms=${encodeURIComponent(hotel.name)}&SearchType=Property&SortType=SearchRelevance`;
+
+  const infoContent = `
+    <div style="background:#1a1a1c;color:#e8e0d0;padding:14px 16px;border-radius:8px;min-width:190px;max-width:240px;font-family:Inter,sans-serif;border:1px solid #2a2419;">
+      <div style="color:#c9a84c;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">✦ VIRTUOSO PREFERRED</div>
+      <div style="font-weight:600;font-size:14px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
+      <div style="font-size:12px;color:#7a7060;margin-bottom:10px;">${hotel.city}</div>
+      <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#c9a84c;color:#000;font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;text-decoration:none;letter-spacing:.03em;">✦ Book on Virtuoso →</a>
+    </div>`;
+
+  const infoWindow = new google.maps.InfoWindow({
+    content: infoContent,
+    pixelOffset: new google.maps.Size(0, -4),
+  });
+
+  marker.addListener('click', () => {
+    if (activeInfoWindow) activeInfoWindow.close();
+    infoWindow.open(map, marker);
+    activeInfoWindow = infoWindow;
+    setActiveCard(index);
+    // Refresh marker icons
+    markers.forEach((m, i) => m.setIcon(createMarkerIcon(String(i + 1), i === index)));
+  });
+
+  markers.push(marker);
+  hotelData[index].marker = marker;
+  hotelData[index].infoWindow = infoWindow;
+}
+
+function setActiveCard(index) {
+  activeCardIndex = index;
+  document.querySelectorAll('.hotel-card').forEach((card, i) => {
+    card.classList.toggle('active', i === index);
+  });
+}
+
+function fitMapToMarkers() {
+  if (!map || markers.length === 0) return;
+  if (markers.length === 1) {
+    map.setCenter(markers[0].getPosition());
+    map.setZoom(14);
+    return;
+  }
+  const bounds = new google.maps.LatLngBounds();
+  markers.forEach(m => bounds.extend(m.getPosition()));
+  map.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
+}
+
+// ── GEOCODE & PIN HOTELS ──────────────────────────────────
+async function processHotels(hotels) {
+  if (!map || !hotels || hotels.length === 0) return;
+
+  // Hide placeholder, show map
+  document.getElementById('mapPlaceholder').style.display = 'none';
+  document.getElementById('map').style.display = 'block';
+
+  clearMarkers();
+  hotelData = hotels.map(h => ({ ...h, marker: null, infoWindow: null }));
+
+  const geocoder = new google.maps.Geocoder();
+  const listInner = document.getElementById('hotelListInner');
+
+  // Build hotel cards first
+  hotels.forEach((hotel, index) => {
+    const card = document.createElement('div');
+    card.className = 'hotel-card';
+    card.dataset.index = index;
+    card.innerHTML = `
+      <div class="hotel-card-name">${hotel.name}</div>
+      <div class="hotel-card-city">${hotel.city}</div>
+      <div class="hotel-card-pin">📍 ${index + 1}</div>`;
+    card.onclick = () => focusHotel(index);
+    listInner.appendChild(card);
+  });
+
+  document.getElementById('hotelCount').textContent =
+    `${hotels.length} hotel${hotels.length !== 1 ? 's' : ''} found`;
+
+  // Geocode each hotel with a small delay to avoid rate limiting
+  for (let i = 0; i < hotels.length; i++) {
+    const hotel = hotels[i];
+    const query = `${hotel.name}, ${hotel.city}`;
+
+    await new Promise((resolve) => {
+      geocoder.geocode({ address: query }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          const pos = results[0].geometry.location;
+          addHotelMarker(hotel, i, pos);
+        } else {
+          // Fallback: geocode city only
+          geocoder.geocode({ address: hotel.city }, (r2, s2) => {
+            if (s2 === 'OK' && r2[0]) {
+              addHotelMarker(hotel, i, r2[0].geometry.location);
+            }
+          });
+        }
+        resolve();
+      });
+
+      // Small stagger between geocode calls
+      setTimeout(resolve, 200);
+    });
+  }
+
+  // Fit map after all markers placed (short delay)
+  setTimeout(fitMapToMarkers, 400);
+}
+
+function focusHotel(index) {
+  const hotel = hotelData[index];
+  if (!hotel || !hotel.marker) return;
+  map.panTo(hotel.marker.getPosition());
+  if (map.getZoom() < 14) map.setZoom(14);
+  if (activeInfoWindow) activeInfoWindow.close();
+  hotel.infoWindow.open(map, hotel.marker);
+  activeInfoWindow = hotel.infoWindow;
+  setActiveCard(index);
+  markers.forEach((m, i) => m.setIcon(createMarkerIcon(String(i + 1), i === index)));
+}
+
+// ── EXTRACT HOTEL JSON FROM AI RESPONSE ──────────────────
+function extractHotelData(text) {
+  const match = text.match(/<!--BEVVIP_HOTELS:(\[.*?\])-->/s);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch (e) {
+    console.warn('Failed to parse hotel JSON:', e);
+    return null;
+  }
+}
+
+function stripHotelTag(text) {
+  return text.replace(/<!--BEVVIP_HOTELS:\[.*?\]-->/s, '').trim();
+}
+
+// ── CHAT LOGIC ────────────────────────────────────────────
+function showWelcome(show) {
+  document.getElementById('welcome').style.display = show ? 'flex' : 'none';
+}
+
+function addMessage(role, content) {
+  const container = document.getElementById('messages');
+
+  if (role === 'user') {
+    const div = document.createElement('div');
+    div.className = 'message user';
+    div.innerHTML = `<div class="bubble">${escapeHtml(content)}</div>`;
+    container.appendChild(div);
+  } else {
+    const div = document.createElement('div');
+    div.className = 'message assistant';
+    div.innerHTML = `
+      <div class="meta">
+        <div class="avatar">✦</div>
+        <span class="name">BeVvip Concierge</span>
+      </div>
+      <div class="content" id="msg-${Date.now()}"></div>`;
+    container.appendChild(div);
+    return div.querySelector('.content');
+  }
+
+  scrollToBottom();
+}
+
+function addTypingIndicator() {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.id = 'typing';
+  div.className = 'typing-indicator';
+  div.innerHTML = `
+    <div class="avatar" style="width:22px;height:22px;border-radius:50%;border:1px solid var(--gold-dim);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:11px;">✦</div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>`;
+  container.appendChild(div);
+  scrollToBottom();
+  return div;
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typing');
+  if (el) el.remove();
+}
+
+function scrollToBottom() {
+  const container = document.getElementById('messages');
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
+}
+
+function setLoading(loading) {
+  isLoading = loading;
+  document.getElementById('sendBtn').disabled = loading;
+  document.getElementById('messageInput').disabled = loading;
+}
+
+async function sendMessage(overrideText) {
+  const input = document.getElementById('messageInput');
+  const text = (overrideText || input.value).trim();
+  if (!text || isLoading) return;
+
+  // Hide welcome
+  showWelcome(false);
+
+  // Clear input
+  input.value = '';
+  autoResize(input);
+
+  // Add to history & display
+  conversationHistory.push({ role: 'user', content: text });
+  addMessage('user', text);
+
+  setLoading(true);
+  const typingEl = addTypingIndicator();
+  let contentEl = null;
+  let fullResponse = '';
+  let streamStarted = false;
+
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: conversationHistory }),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(err || `HTTP ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+
+        let parsed;
+        try { parsed = JSON.parse(data); } catch { continue; }
+
+        const token = parsed?.choices?.[0]?.delta?.content || '';
+        if (!token) continue;
+
+        if (!streamStarted) {
+          removeTypingIndicator();
+          contentEl = addMessage('assistant', '');
+          streamStarted = true;
+        }
+
+        fullResponse += token;
+        // Render markdown on each token but strip hotel tag
+        const displayText = stripHotelTag(fullResponse);
+        contentEl.innerHTML = marked.parse(displayText);
+        scrollToBottom();
+      }
+    }
+
+  } catch (err) {
+    removeTypingIndicator();
+    if (!streamStarted) {
+      contentEl = addMessage('assistant', '');
+    }
+    contentEl.innerHTML = `<p style="color:#c04040;">⚠ Something went wrong: ${escapeHtml(err.message)}</p><p style="color:var(--text-muted);font-size:13px;">Please try again or contact <a href="mailto:Book@BeVvip.com">Book@BeVvip.com</a></p>`;
+    setLoading(false);
+    scrollToBottom();
+    return;
+  }
+
+  // Save to history (without hotel tag)
+  const cleanResponse = stripHotelTag(fullResponse);
+  conversationHistory.push({ role: 'assistant', content: cleanResponse });
+
+  // Process hotel data for map
+  const hotels = extractHotelData(fullResponse);
+  if (hotels && hotels.length > 0) {
+    processHotels(hotels);
+  }
+
+  setLoading(false);
+  scrollToBottom();
+}
+
+function sendStarter(btn) {
+  const text = btn.querySelector('.starter-icon') ?
+    btn.textContent.replace(btn.querySelector('.starter-icon').textContent, '').trim() :
+    btn.textContent.trim();
+  sendMessage(text);
+}
+
+// ── INPUT UTILS ───────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('messageInput').focus();
+});
+</script>
+
+<!--
+  ══════════════════════════════════════════════════════════
+  GOOGLE MAPS API
+  Replace YOUR_GOOGLE_MAPS_KEY below with your actual key.
+  Restrict this key in Google Cloud Console to:
+    - Maps JavaScript API
+    - Geocoding API
+  And restrict by HTTP referrer to your domains.
+  ══════════════════════════════════════════════════════════
+-->
+<script
+  async
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_KEY&callback=initMap"
+  onerror="document.getElementById('mapPlaceholder').innerHTML='<div class=\'map-placeholder-icon\'>⚠️</div><p>Google Maps failed to load. Check your API key.</p>'"
+></script>
+
+</body>
+</html>
