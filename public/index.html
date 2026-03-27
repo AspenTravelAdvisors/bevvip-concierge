@@ -765,6 +765,19 @@ renderer.link = (href, title, text) => {
 };
 marked.setOptions({ renderer, breaks: true, gfm: true });
 
+// ── MARKDOWN PREPROCESSING ────────────────────────────────
+function preprocessMarkdown(text) {
+  // Ensure blank line before any table row so marked.js renders tables
+  let out = text.replace(/([^\n])\n(\| *Room)/g, '$1\n\n$2');
+  out = out.replace(/([^\n])\n(\|[^\n]+\|[ \t]*\n\|---)/g, '$1\n\n$2');
+  // Convert non-ASCII to HTML entities so emoji render correctly
+  out = [...out].map(ch => {
+    const cp = ch.codePointAt(0);
+    return cp > 127 ? '&#x' + cp.toString(16) + ';' : ch;
+  }).join('');
+  return out;
+}
+
 // ── GOOGLE MAPS INIT ───────────────────────────────────────
 function initMap() {
   const darkStyle = [
@@ -1155,7 +1168,7 @@ async function sendMessage(overrideText) {
         fullResponse += token;
         // Render markdown on each token but strip hotel tag
         const displayText = stripHotelTag(fullResponse);
-        contentEl.innerHTML = marked.parse(displayText);
+        contentEl.innerHTML = marked.parse(preprocessMarkdown(displayText));
         scrollToBottom();
       }
     }
