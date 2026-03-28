@@ -1114,6 +1114,9 @@ async function sendMessage(overrideText) {
   // Hide welcome
   showWelcome(false);
 
+  // Clear map for new search
+  clearMarkers();
+
   // Clear input
   input.value = '';
   autoResize(input);
