@@ -1038,13 +1038,12 @@ marked.setOptions({ renderer, breaks: true, gfm: true });
 
 // ── MARKDOWN PREPROCESSING ────────────────────────────────
 function preprocessMarkdown(text) {
-  // 1. Fix malformed booking links: [text VHOTEL:token] → [text](VHOTEL:token)
-  text = text.replace(/\[([^\]\n]*?)\s*(VHOTEL|VCRUISE|VTOUR):([^\]\n]*?)\]/g,
+  // 1. Fix malformed booking links: [text VHOTEL:token] or [text VHOTEL:token) → [text](VHOTEL:token)
+  text = text.replace(/\[([^\]\n]*?)\s*(VHOTEL|VCRUISE|VTOUR):([^\])\n]*?)[\])/g,
     (_, pre, type, rest) => `[${pre.trim()}](${type}:${rest.trim()})`);
 
-  // 2. Fix single-cell table separators like |------| → |---|---|  (our tables are always 2-col)
-  text = text.replace(/^\|[-:\s]+\|$/gm, (m) =>
-    m.slice(1, -1).includes('|') ? m : '|---|---|');
+  // 2. Normalize any table separator line (only |, -, :, spaces) → |---|---|
+  text = text.replace(/^\|[-|:\s]+\|$/gm, '|---|---|');
 
   // 3. Ensure blank line before --- so it renders as <hr> not literal text
   text = text.replace(/([^\n])\n(---+)$/gm, '$1\n\n$2');
@@ -1061,6 +1060,14 @@ function preprocessMarkdown(text) {
     out.push(line);
   }
   return out.join('\n');
+}
+
+// Fix model typos in Virtuoso Benefits label regardless of what the model outputs
+function fixLabels(html) {
+  return html.replace(
+    /<strong>[+✦*\s]*(?:virt)?uoso\s*benefits\s*:?<\/strong>/gi,
+    '<strong>✦ Virtuoso Benefits:</strong>'
+  );
 }
 
 function fixEmojiInHtml(htmlStr) {
@@ -1362,20 +1369,24 @@ function renderSVPano() {
   );
   buildSVThumbs(hotel.svPanos, hotel.svPanoIdx);
 
-  // Once pano fires its first load, discover connected panos (only once per hotel)
+  // Once pano loads discover connected panos; timeout fallback if event never fires
   if (!hotel.svExpanded) {
     hotel.svExpanded = true;
     google.maps.event.addListenerOnce(svPano, 'pano_changed', () => expandPanoCollection());
+    setTimeout(() => {
+      const h = hotelData[svHotelIdx];
+      if (h && h.svPanos && h.svPanos.length <= 1) expandPanoCollection();
+    }, 2500);
   }
 }
 
 async function expandPanoCollection() {
   const hotel = hotelData[svHotelIdx];
-  if (!hotel) return;
+  if (!hotel || !hotel.svPos) return;
   const svc = new google.maps.StreetViewService();
   const seen = new Set(hotel.svPanos);
 
-  // 1. Get links from the loaded pano
+  // 1. Get links from the currently loaded pano
   const loadedId = svPano ? svPano.getPano() : hotel.svPanos[0];
   await new Promise(resolve => {
     svc.getPanorama({ pano: loadedId }, (data, status) => {
@@ -1384,12 +1395,20 @@ async function expandPanoCollection() {
     });
   });
 
-  // 2. Radius-sample around the hotel position for nearby orphaned panos
-  await Promise.all([5, 20, 40, 70, 120].map(r => new Promise(resolve => {
-    svc.getPanorama({ location: hotel.svPos, radius: r }, (d, s) => {
-      if (s === 'OK') seen.add(d.location.pano);
-      resolve();
-    });
+  // 2. Sample a 3×3 grid of positions around the hotel (~10m spacing)
+  // catches standalone photo spheres that aren't linked to the initial pano
+  const lat = hotel.svPos.lat(), lng = hotel.svPos.lng();
+  const d = 0.00009; // ≈ 10 m
+  const offsets = [
+    [0,0],   [d,0],  [-d,0],  [0,d],   [0,-d],
+    [d,d],  [-d,d], [d,-d], [-d,-d],
+    [2*d,0],[-2*d,0],[0,2*d],[0,-2*d]
+  ];
+  await Promise.all(offsets.map(([dlat, dlng]) => new Promise(resolve => {
+    svc.getPanorama(
+      { location: new google.maps.LatLng(lat + dlat, lng + dlng), radius: 12 },
+      (data, status) => { if (status === 'OK') seen.add(data.location.pano); resolve(); }
+    );
   })));
 
   const all = [...seen];
@@ -1772,7 +1791,7 @@ async function sendMessage(overrideText) {
         fullResponse += token;
         // Render markdown on each token but strip hotel tag
         const displayText = stripHotelTag(fullResponse);
-        contentEl.innerHTML = expandBookingLinks(fixEmojiInHtml(marked.parse(preprocessMarkdown(displayText))));
+        contentEl.innerHTML = expandBookingLinks(fixLabels(fixEmojiInHtml(marked.parse(preprocessMarkdown(displayText)))));
       }
     }
 
