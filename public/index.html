@@ -681,19 +681,21 @@
 
     .hotel-card-sv-btn {
       font-size: 10px;
-      color: var(--text-muted);
-      background: var(--card-hover);
-      border: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--gold);
+      background: rgba(201,168,76,0.12);
+      border: 1px solid var(--gold-dim);
       border-radius: 4px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       cursor: pointer;
       transition: all 0.2s;
       display: none;
       font-family: var(--ff-sans);
+      letter-spacing: 0.04em;
     }
-    .hotel-card:hover .hotel-card-sv-btn {
-      border-color: var(--gold-dim);
-      color: var(--gold);
+    .hotel-card-sv-btn:hover {
+      background: rgba(201,168,76,0.24);
+      border-color: var(--gold);
     }
 
     /* ── STREET VIEW MODAL ──────────────────────────────── */
@@ -735,6 +737,39 @@
     }
     #svClose:hover { border-color: var(--gold-dim); color: var(--gold); }
     #svPanorama { width: 100%; height: 100%; }
+    #svControls {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.68);
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      pointer-events: all;
+    }
+    #svControls button {
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    #svControls button:hover { color: var(--gold-light); }
+    #svCounter {
+      color: var(--text-muted);
+      font-size: 11px;
+      min-width: 38px;
+      text-align: center;
+      font-family: var(--ff-sans);
+    }
 
     /* ── FOOTER ─────────────────────────────────────────── */
     footer {
@@ -1120,7 +1155,13 @@ async function processHotels(hotels) {
           addHotelMarker(hotel, i, pos);
           svService.getPanorama({ location: pos, radius: 50 }, (data, svStatus) => {
             if (svStatus === 'OK') {
-              hotelData[i].svPos = data.location.latLng;
+              // Collect initial pano + any linked panos (connected photo spheres)
+              const panos = [data.location.pano];
+              if (data.links) {
+                data.links.forEach(link => { if (!panos.includes(link.pano)) panos.push(link.pano); });
+              }
+              hotelData[i].svPanos = panos;
+              hotelData[i].svPanoIdx = 0;
               const btn = document.getElementById('sv-btn-' + i);
               if (btn) btn.style.display = 'inline-block';
             }
@@ -1180,20 +1221,45 @@ async function processHotels(hotels) {
   }
 }
 
+let svPano = null;
+let svHotelIdx = -1;
+
 function openSV(index, e) {
   e.stopPropagation();
   const hotel = hotelData[index];
-  if (!hotel || !hotel.svPos) return;
+  if (!hotel || !hotel.svPanos || !hotel.svPanos.length) return;
+  svHotelIdx = index;
+  hotel.svPanoIdx = 0;
   document.getElementById('svModal').classList.add('open');
-  new google.maps.StreetViewPanorama(
+  renderSVPano();
+}
+
+function renderSVPano() {
+  const hotel = hotelData[svHotelIdx];
+  const panoId = hotel.svPanos[hotel.svPanoIdx];
+  document.getElementById('svPanorama').innerHTML = '';
+  svPano = new google.maps.StreetViewPanorama(
     document.getElementById('svPanorama'),
-    { position: hotel.svPos, pov: { heading: 34, pitch: 10 }, zoom: 1 }
+    { pano: panoId, pov: { heading: 34, pitch: 10 }, zoom: 1,
+      addressControl: false, fullscreenControl: false }
   );
+  const total = hotel.svPanos.length;
+  const ctrl = document.getElementById('svControls');
+  ctrl.style.display = total > 1 ? 'flex' : 'none';
+  document.getElementById('svCounter').textContent = `${hotel.svPanoIdx + 1} / ${total}`;
+}
+
+function svStep(dir) {
+  const hotel = hotelData[svHotelIdx];
+  if (!hotel) return;
+  hotel.svPanoIdx = (hotel.svPanoIdx + dir + hotel.svPanos.length) % hotel.svPanos.length;
+  renderSVPano();
 }
 
 function closeSV() {
   document.getElementById('svModal').classList.remove('open');
   document.getElementById('svPanorama').innerHTML = '';
+  svPano = null;
 }
 
 function focusHotel(index) {
@@ -1556,6 +1622,11 @@ document.addEventListener('DOMContentLoaded', () => {
   <div id="svContainer">
     <button id="svClose" onclick="closeSV()">✕</button>
     <div id="svPanorama"></div>
+    <div id="svControls" style="display:none">
+      <button onclick="svStep(-1)">&#8249;</button>
+      <span id="svCounter"></span>
+      <button onclick="svStep(1)">&#8250;</button>
+    </div>
   </div>
 </div>
 
