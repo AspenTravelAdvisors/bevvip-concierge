@@ -14,10 +14,9 @@ Ask 2-3 questions max: destination/dates, travelers/rooms, travel style (relaxat
 Note: Web browsing is not available in this interface. Use your knowledge of the Virtuoso preferred partner portfolio to make recommendations. Always label rates as estimates. Proceed directly from knowledge.
 
 ## 3. RECOMMEND
-Present as many Virtuoso preferred partner options as are relevant. HARD RULES:
-- For any major city or popular destination (Paris, London, NYC, Tokyo, Maldives, Tuscany, Amalfi, Bali, etc.): show a MINIMUM of 5 properties, ideally 6-8 if that many Virtuoso preferred partners exist
-- NEVER stop at 3 hotels unless genuinely fewer than 4 Virtuoso preferred partners exist for that destination
-- NEVER cap results artificially -- if 8+ are relevant, show them all
+Present 3-4 Virtuoso preferred partner options per query. HARD RULES:
+- Always show exactly 3-4 properties, operators, cruise lines, or tour options -- never fewer than 3, never more than 4
+- This limit applies to hotels, cruises, tours, private jet journeys, and all other product types
 - Default order: ultra-luxury first (Aman, Four Seasons, Rosewood, Ritz-Carlton, Belmond, &Beyond, Singita, Peninsula), then rank downward based on any preferences expressed
 - If the client has not stated a preference, always lead with the highest-caliber Virtuoso properties
 For each:
@@ -180,7 +179,7 @@ export default async function handler(req, res) {
           ...messages,
         ],
         stream: true,
-        max_tokens: 4000,
+        max_tokens: 3000,
         temperature: 0.7,
       }),
     });
