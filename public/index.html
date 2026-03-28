@@ -1647,8 +1647,8 @@ function extractHotelData(text) {
   repaired = repaired.replace(/"(checkin|checkout)(20\d{2}-\d{2}-\d{2})"/g, '"$1":"$2"');
   // Fix missing { at start: [name" → [{"name"  (letter directly after [)
   repaired = repaired.replace(/^\[\s*([a-zA-Z])/, '[{"$1');
-  // Fix missing { after comma: },"name" → },{"name"
-  repaired = repaired.replace(/\},\s*"(?=[a-zA-Z])/g, '},{"');
+  // Fix missing { after comma: },"name" → },{"name"  OR  },name" → },{"name"
+  repaired = repaired.replace(/\},\s*"?([a-zA-Z][a-zA-Z]*"\s*:)/g, '},{"$1');
   // Fix empty key before city value: ","":"Dallas" → ","city":"Dallas"
   repaired = repaired.replace(/,\s*"":/g, ',"city":');
   // Fix missing value before closing brace: "children":}
@@ -1660,6 +1660,19 @@ function extractHotelData(text) {
     console.log('[BeVvip] Hotels parsed (repaired):', data);
     return data;
   } catch (e) {}
+
+  // Attempt 2b: truncation recovery — strip any incomplete last object and close the array
+  {
+    const recovered = repaired.replace(/,\s*\{[^}]*$/, ']').replace(/\{[^}]*$/, ']');
+    const cleaned = recovered.endsWith(']') ? recovered : recovered + ']';
+    try {
+      const data = JSON.parse(cleaned);
+      if (data.length > 0) {
+        console.log('[BeVvip] Hotels parsed (truncation recovery):', data);
+        return data;
+      }
+    } catch (e) {}
+  }
 
   // Attempt 3: extract each complete hotel object individually (uses repaired so missing { is fixed)
   const hotels = [];
