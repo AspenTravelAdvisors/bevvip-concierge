@@ -1039,7 +1039,7 @@ marked.setOptions({ renderer, breaks: true, gfm: true });
 // ── MARKDOWN PREPROCESSING ────────────────────────────────
 function preprocessMarkdown(text) {
   // 1. Fix malformed booking links: [text VHOTEL:token] or [text VHOTEL:token) → [text](VHOTEL:token)
-  text = text.replace(/\[([^\]\n]*?)\s*(VHOTEL|VCRUISE|VTOUR):([^\])\n]*?)[\])/g,
+  text = text.replace(/\[([^\]\n]*?)\s*(VHOTEL|VCRUISE|VTOUR):([^\]\n]*?)[\])]/g,
     (_, pre, type, rest) => `[${pre.trim()}](${type}:${rest.trim()})`);
 
   // 2. Normalize any table separator line (only |, -, :, spaces) → |---|---|
