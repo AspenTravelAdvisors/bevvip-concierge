@@ -1183,16 +1183,23 @@ function setMapStatus(msg) {
 }
 
 function extractHotelData(text) {
-  const match = text.match(/<!--BEVVIP_HOTELS[\s\S]*?-->/);
-  if (!match) {
-    console.warn('[BeVvip] No BEVVIP_HOTELS tag found. Tail:', text.slice(-500));
-    setMapStatus('⚠ no map tag');
-    return null;
+  // Match either <!--[space]BEVVIP_HOTELS...-->  OR bare BEVVIP_HOTELS:[...]
+  let raw;
+  const commentMatch = text.match(/<!--\s*BEVVIP_HOTELS([\s\S]*?)-->/);
+  if (commentMatch) {
+    raw = commentMatch[1].trim();
+    if (raw.startsWith(':')) raw = raw.slice(1).trim();
+  } else {
+    const bareMatch = text.match(/BEVVIP_HOTELS\s*:\s*(\[[\s\S]*?\])/);
+    if (!bareMatch) {
+      console.warn('[BeVvip] No BEVVIP_HOTELS tag found. Tail:', text.slice(-500));
+      setMapStatus('⚠ no map tag');
+      return null;
+    }
+    raw = bareMatch[1];
   }
-  let raw = match[0].replace('<!--BEVVIP_HOTELS', '').replace('-->', '').trim();
-  if (raw.startsWith(':')) raw = raw.slice(1).trim();
 
-  // Normalize smart/curly quotes to straight quotes (GPT-4.1 sometimes outputs these)
+  // Normalize smart/curly quotes to straight quotes
   raw = raw.replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
            .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'");
 
@@ -1204,7 +1211,19 @@ function extractHotelData(text) {
 
   // Attempt 2: repair common model JSON errors
   let repaired = raw;
+  // Fix "adults2" / "children0" → "adults":2 / "children":0
   repaired = repaired.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
+  // Fix "checkin2024-04-15" → "checkin":"2024-04-15"
+  repaired = repaired.replace(/"(checkin|checkout)(20\d{2}-\d{2}-\d{2})"/g, '"$1":"$2"');
+  // Fix missing {"  at start of array: ["name" → [{"name"
+  repaired = repaired.replace(/^\[\s*"(?!\s*\{)/, '[{"');
+  // Fix missing {"  after comma: },"name" → },{"name"
+  repaired = repaired.replace(/\},\s*"(?=[a-z])/g, '},{"');
+  // Fix empty key before city value: ","":"Dallas" → ","city":"Dallas"
+  repaired = repaired.replace(/,\s*"":/g, ',"city":');
+  // Fix missing value before closing brace: "children":}
+  repaired = repaired.replace(/"(adults|children)"\s*:\s*}/g, '"$1":0}');
+  // Strip trailing commas
   repaired = repaired.replace(/,(\s*[}\]])/g, '$1');
   try {
     const data = JSON.parse(repaired);
@@ -1219,6 +1238,9 @@ function extractHotelData(text) {
   while ((m = re.exec(raw)) !== null) {
     let obj = m[0];
     obj = obj.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
+    obj = obj.replace(/"(checkin|checkout)(20\d{2}-\d{2}-\d{2})"/g, '"$1":"$2"');
+    obj = obj.replace(/,\s*"":/g, ',"city":');
+    obj = obj.replace(/"(adults|children)"\s*:\s*}/g, '"$1":0}');
     obj = obj.replace(/,(\s*[}\]])/g, '$1');
     try { hotels.push(JSON.parse(obj)); } catch (e) {}
   }
@@ -1233,7 +1255,10 @@ function extractHotelData(text) {
 }
 
 function stripHotelTag(text) {
-  return text.replace(/<!--BEVVIP_HOTELS[\s\S]*?-->/g, '').trim();
+  return text
+    .replace(/<!--\s*BEVVIP_HOTELS[\s\S]*?-->/g, '')
+    .replace(/BEVVIP_HOTELS\s*:\s*\[[\s\S]*?\](?:\s*-->)?/g, '')
+    .trim();
 }
 
 // ── CHAT LOGIC ────────────────────────────────────────────

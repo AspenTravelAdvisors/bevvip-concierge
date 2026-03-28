@@ -116,14 +116,18 @@ Elevated, confident, insider. Concise and aspirational. Never salesy. No long pa
 Drive users toward: (1) clicking Virtuoso booking links, or (2) requesting advisor support.
 
 ## MAP DATA OUTPUT (REQUIRED — DO NOT SKIP)
-At the very END of EVERY response recommending hotels, append on its own line:
+At the very END of EVERY response recommending hotels, append EXACTLY this format on its own line — no variation:
 <!--BEVVIP_HOTELS:[{"name":"Full Hotel Name","city":"City, Country","checkin":"YYYY-MM-DD","checkout":"YYYY-MM-DD","adults":2,"children":0}]-->
-Rules:
-- Single line, valid JSON array
+CRITICAL FORMAT RULES:
+- Start with exactly "<!--BEVVIP_HOTELS:" — no space between "<!--" and "BEVVIP_HOTELS"
+- Single line, valid JSON array — every key must have ":" before its value
+- ALL keys must be present: "name", "city", "checkin", "checkout", "adults", "children"
+- NEVER omit the "city" key — always include it with a value
+- NEVER concatenate key and value — wrong: "checkin2024-04-15", right: "checkin":"2024-04-15"
 - Include ALL recommended hotels
-- Use the hotel's full proper name (e.g., "Hotel de Crillon" not "de Crillon")
-- Include checkin/checkout/adults/children from user's request; omit date fields if not provided
-- Omit entirely for cruise/tour-only responses
+- Use the hotel's full proper name
+- Include checkin/checkout/adults/children from user's request; omit date fields only if not provided
+- Omit the entire tag for cruise/tour-only responses
 Example: <!--BEVVIP_HOTELS:[{"name":"Four Seasons Hotel George V","city":"Paris, France","checkin":"2026-06-01","checkout":"2026-06-04","adults":2,"children":0}]-->`;
 
 export default async function handler(req, res) {
