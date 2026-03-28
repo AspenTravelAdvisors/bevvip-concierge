@@ -862,7 +862,14 @@ function addHotelMarker(hotel, index, position) {
     zIndex: index + 1,
   });
 
-  const virtuosoUrl = `https://www.virtuoso.com/advisor/brianharris/hotels#SearchTerms=${encodeURIComponent(hotel.name)}&SearchType=Property&SortType=SearchRelevance`;
+  const _hi = hotel.checkin  || '';
+  const _ho = hotel.checkout || '';
+  const _ha = hotel.adults   || 2;
+  const _hc = hotel.children || 0;
+  let _hp = `SearchTerms=${encodeURIComponent(hotel.name)}`;
+  if (_hi) _hp += `&HotelBookingCheckinDate=${_hi}&HotelBookingCheckoutDate=${_ho}`;
+  _hp += `&HotelBookingNumberAdults=${_ha}&HotelBookingNumberChildren=${_hc}&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
+  const virtuosoUrl = `https://www.virtuoso.com/advisor/brianharris/hotels#${_hp}`;
 
   const infoContent = `
     <div style="background:#1a1a1c;color:#e8e0d0;padding:14px 16px;border-radius:8px;min-width:190px;max-width:240px;font-family:Inter,sans-serif;border:1px solid #2a2419;">
@@ -989,7 +996,10 @@ async function processHotels(hotels) {
           }
           // Update info window content with photo
           if (hotelData[index] && hotelData[index].infoWindow) {
-            const virtuosoUrl = 'https://www.virtuoso.com/advisor/brianharris/hotels#SearchTerms=' + encodeURIComponent(hotel.name) + '&SearchType=Property&SortType=SearchRelevance';
+            let _pp = `SearchTerms=${encodeURIComponent(hotel.name)}`;
+            if (hotel.checkin) _pp += `&HotelBookingCheckinDate=${hotel.checkin}&HotelBookingCheckoutDate=${hotel.checkout}`;
+            _pp += `&HotelBookingNumberAdults=${hotel.adults||2}&HotelBookingNumberChildren=${hotel.children||0}&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
+            const virtuosoUrl = `https://www.virtuoso.com/advisor/brianharris/hotels#${_pp}`;
             hotelData[index].infoWindow.setContent(`
               <div style="background:#1a1a1c;color:#e8e0d0;border-radius:8px;min-width:200px;max-width:250px;font-family:Inter,sans-serif;border:1px solid #2a2419;overflow:hidden;">
                 <img src="${photoUrl}" style="width:100%;height:130px;object-fit:cover;display:block;" onerror="this.style.display='none'"/>
@@ -1017,6 +1027,52 @@ function focusHotel(index) {
   activeInfoWindow = hotel.infoWindow;
   setActiveCard(index);
   markers.forEach((m, i) => m.setIcon(createMarkerIcon(String(i + 1), i === index)));
+}
+
+// ── EXPAND BOOKING TOKENS INTO FULL VIRTUOSO URLS ────────
+function expandBookingLinks(html) {
+  const BASE = 'https://www.virtuoso.com/advisor/brianharris/';
+
+  // VHOTEL:Hotel+Name+City@checkin@checkout@adults@children
+  html = html.replace(/href="VHOTEL:([^"]+)"/g, (_, token) => {
+    const parts = token.split('@');
+    const name = parts[0].replace(/\+/g, ' ');
+    const checkin  = parts[1] || '';
+    const checkout = parts[2] || '';
+    const adults   = parts[3] || '2';
+    const children = parts[4] || '0';
+    let p = `SearchTerms=${encodeURIComponent(name)}`;
+    if (checkin)  p += `&HotelBookingCheckinDate=${checkin}&HotelBookingCheckoutDate=${checkout}`;
+    p += `&HotelBookingNumberAdults=${adults}&HotelBookingNumberChildren=${children}`;
+    p += `&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
+    return `href="${BASE}hotels#${p}" target="_blank" rel="noopener"`;
+  });
+
+  // VCRUISE:Search+Terms@startDate@endDate
+  html = html.replace(/href="VCRUISE:([^"]+)"/g, (_, token) => {
+    const parts = token.split('@');
+    const terms = parts[0].replace(/\+/g, ' ');
+    const start = parts[1] || '';
+    const end   = parts[2] || '';
+    let p = `SearchTerms=${encodeURIComponent(terms)}`;
+    if (start) p += `&TravelProductStartDate=${start}&TravelProductEndDate=${end}`;
+    p += `&SearchType=Cruise&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
+    return `href="${BASE}cruises#${p}" target="_blank" rel="noopener"`;
+  });
+
+  // VTOUR:Search+Terms@startDate@endDate
+  html = html.replace(/href="VTOUR:([^"]+)"/g, (_, token) => {
+    const parts = token.split('@');
+    const terms = parts[0].replace(/\+/g, ' ');
+    const start = parts[1] || '';
+    const end   = parts[2] || '';
+    let p = `SearchTerms=${encodeURIComponent(terms)}`;
+    if (start) p += `&TravelProductStartDate=${start}&TravelProductEndDate=${end}`;
+    p += `&SearchType=Tour&SortType=TourTravelDateAsc&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
+    return `href="${BASE}tours#${p}" target="_blank" rel="noopener"`;
+  });
+
+  return html;
 }
 
 // ── EXTRACT HOTEL JSON FROM AI RESPONSE ──────────────────
@@ -1178,7 +1234,7 @@ async function sendMessage(overrideText) {
         fullResponse += token;
         // Render markdown on each token but strip hotel tag
         const displayText = stripHotelTag(fullResponse);
-        contentEl.innerHTML = fixEmojiInHtml(marked.parse(preprocessMarkdown(displayText)));
+        contentEl.innerHTML = expandBookingLinks(fixEmojiInHtml(marked.parse(preprocessMarkdown(displayText))));
       }
     }
 

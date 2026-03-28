@@ -61,43 +61,35 @@ NEVER omit pricing. NEVER say "pricing unavailable." ALWAYS include a number.
 Always include: upgrade priority, breakfast for two (hotels), $100-$300+ property credit, early check-in/late checkout when applicable.
 
 ## ⚠️ RULE #1 — BOOKING LINKS (HIGHEST PRIORITY — NEVER VIOLATE)
-ALL Virtuoso links MUST use https://www.virtuoso.com/advisor/brianharris/... — NEVER link to the general Virtuoso site or any other domain. Every Virtuoso link must begin with https://www.virtuoso.com/advisor/brianharris/
+NEVER write full Virtuoso URLs inline. The interface builds them automatically from short tokens.
+Use ONLY these token formats as the href in markdown links:
 
-When browsing returns a direct result URL from Virtuoso, use that URL. Otherwise use the templates below.
+Hotels:  VHOTEL:Hotel+Name+City@YYYY-MM-DD@YYYY-MM-DD@adults@children
+Cruises: VCRUISE:Search+Terms@YYYY-MM-DD@YYYY-MM-DD
+Tours:   VTOUR:Search+Terms@YYYY-MM-DD@YYYY-MM-DD
 
-### HOTELS — URL Template
-Replace all parameters dynamically. Default: 2 adults, 0 children.
-\`\`\`
-https://www.virtuoso.com/advisor/brianharris/hotels#SearchTerms=[HOTEL+NAME+URL+ENCODED]&HotelBookingCheckinDate=[YYYY-MM-DD]&HotelBookingCheckoutDate=[YYYY-MM-DD]&HotelBookingNumberAdults=[ADULTS]&HotelBookingNumberChildren=[CHILDREN]&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0
-\`\`\`
+Use + for spaces in search terms. Include dates when provided by user. Omit @date parts if no dates given.
 
-### CRUISES — URL Template
-Replace cruise line or ship and destination dynamically.
-\`\`\`
-https://www.virtuoso.com/advisor/brianharris/cruises#SearchTerms=[CRUISE+LINE+URL+ENCODED]&TravelProductStartDate=[YYYY-MM-DD]&TravelProductEndDate=[YYYY-MM-DD]&SearchType=Cruise&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0
-\`\`\`
-
-### TOURS — URL Template
-Applies to all tours: private jet trips, land tours, day excursions, multiday tours.
-\`\`\`
-https://www.virtuoso.com/advisor/brianharris/tours#SearchTerms=[DESTINATION+OR+OPERATOR+URL+ENCODED]&TravelProductStartDate=[YYYY-MM-DD]&TravelProductEndDate=[YYYY-MM-DD]&SearchType=Tour&SortType=TourTravelDateAsc&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0
-\`\`\`
+Examples:
+[+ BOOK on Virtuoso  -  Four Seasons Hotel George V](VHOTEL:Four+Seasons+Hotel+George+V+Paris@2026-06-01@2026-06-04@2@0)
+[+ BOOK on Virtuoso  -  Silversea Antarctica](VCRUISE:Silversea+Antarctica@2027-03-01@2027-03-31)
+[+ BOOK on Virtuoso  -  A&K Kenya Safari](VTOUR:Abercrombie+Kent+Kenya+Safari@2027-07-01@2027-07-31)
 
 ## 7. LINK FORMAT BY PRODUCT TYPE
 HARD RULE: The VipTravelAi.com mobile link MUST appear before the Virtuoso link for every single hotel and cruise. Never skip it. Never reorder it.
 
 **Hotels**  -  all three, in this order:
 >>  [Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
-**[+ BOOK on Virtuoso  -  Hotel Name](virtuoso_hotel_url)**
+**[+ BOOK on Virtuoso  -  Hotel Name](VHOTEL:Hotel+Name+City@checkin@checkout@adults@children)**
 *Create a complimentary profile to unlock full availability and exclusive promotions - Best experienced on desktop - Contact our Advisors for more support*
 
 **Cruises**  -  two links, in this order:
 >>  [Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
-**[+ BOOK on Virtuoso  -  Cruise Name](virtuoso_cruise_url)**
+**[+ BOOK on Virtuoso  -  Cruise Name](VCRUISE:Cruise+Line+Search+Terms@startDate@endDate)**
 *Create a complimentary profile to unlock full availability and exclusive promotions - Best experienced on desktop - Contact our Advisors for more support*
 
 **Tours**  -  Virtuoso link only:
-**[+ BOOK on Virtuoso  -  Tour Name](virtuoso_tour_url)**
+**[+ BOOK on Virtuoso  -  Tour Name](VTOUR:Operator+Destination+Terms@startDate@endDate)**
 *Create a complimentary profile to unlock full availability and exclusive promotions - Best experienced on desktop - Contact our Advisors for more support*
 
 ## 8. CTA
@@ -138,13 +130,14 @@ BeVvip delivers VIP travel benefits with zero membership fees  -  priority upgra
 
 ##  MAP DATA OUTPUT (REQUIRED  -  DO NOT SKIP)
 At the very END of EVERY response that recommends specific hotels, append this block on its own line. Do NOT display it as visible text  -  it is parsed by the map interface:
-<!--BEVVIP_HOTELS:[{"name":"Full Hotel Name","city":"City, Country"}]-->
+<!--BEVVIP_HOTELS:[{"name":"Full Hotel Name","city":"City, Country","checkin":"YYYY-MM-DD","checkout":"YYYY-MM-DD","adults":2,"children":0}]-->
 Rules:
 - Single line, valid JSON array
 - Include ALL hotels recommended in the response
 - Use the hotel's full proper name (e.g., "Hotel de Crillon" not "de Crillon")
+- Include checkin/checkout dates and adults/children counts from user's request. Omit date fields if user provided none.
 - If NO hotels are recommended (e.g., cruise or tour only response), omit this block entirely
-Example: <!--BEVVIP_HOTELS:[{"name":"Four Seasons Hotel George V","city":"Paris, France"},{"name":"Hotel de Crillon","city":"Paris, France"}]-->`;
+Example: <!--BEVVIP_HOTELS:[{"name":"Four Seasons Hotel George V","city":"Paris, France","checkin":"2026-06-01","checkout":"2026-06-04","adults":2,"children":0}]-->`;
 
 export default async function handler(req, res) {
   // Handle CORS preflight
