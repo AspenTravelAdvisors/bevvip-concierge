@@ -1104,11 +1104,15 @@ function extractHotelData(text) {
   } catch (e) {}
 
   // Attempt 3: extract each complete hotel object individually (handles truncation)
+  // Apply same repairs to each object before parsing
   const hotels = [];
   const re = /\{"name"\s*:\s*"[^"]+"\s*,[^{}]+\}/g;
   let m;
   while ((m = re.exec(raw)) !== null) {
-    try { hotels.push(JSON.parse(m[0])); } catch (e) {}
+    let obj = m[0];
+    obj = obj.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
+    obj = obj.replace(/,(\s*[}\]])/g, '$1');
+    try { hotels.push(JSON.parse(obj)); } catch (e) {}
   }
   if (hotels.length > 0) {
     console.log('[BeVvip] Hotels extracted individually:', hotels);
