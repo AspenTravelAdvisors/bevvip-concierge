@@ -374,11 +374,16 @@
     }
 
     .content blockquote {
-      border-left: 2px solid var(--gold-dim);
-      padding-left: 14px;
+      padding-left: 0;
       color: var(--text-sub);
-      margin: 12px 0;
-      font-style: italic;
+      margin: 6px 0;
+      font-style: normal;
+      border: none;
+    }
+
+    /* Virtuoso benefits label highlight */
+    .content strong:first-child {
+      color: var(--gold-light);
     }
 
     /* ── TYPING INDICATOR ───────────────────────────────── */
@@ -767,10 +772,19 @@ marked.setOptions({ renderer, breaks: true, gfm: true });
 
 // ── MARKDOWN PREPROCESSING ────────────────────────────────
 function preprocessMarkdown(text) {
-  // Ensure blank line before any table row so marked.js renders tables
-  let out = text.replace(/([^\n])\n(\| *Room)/g, '$1\n\n$2');
-  out = out.replace(/([^\n])\n(\|[^\n]+\|[ \t]*\n\|---)/g, '$1\n\n$2');
-  return out;
+  // Ensure blank line before table headers so marked.js renders tables correctly.
+  // A table header is a | row whose NEXT line is a |---| separator.
+  const lines = text.split('\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const next = lines[i + 1] || '';
+    if (line.startsWith('|') && /^\|[\s\-:]+\|/.test(next)) {
+      if (out.length > 0 && out[out.length - 1] !== '') out.push('');
+    }
+    out.push(line);
+  }
+  return out.join('\n');
 }
 
 function fixEmojiInHtml(htmlStr) {

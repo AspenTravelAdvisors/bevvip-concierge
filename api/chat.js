@@ -22,8 +22,9 @@ Present exactly 3-4 Virtuoso preferred partner options per query — never fewer
 For each:
 - **Property Name** (bold)
 - 2-3 sentence elevated description
-- Virtuoso-style benefits
+- **✦ Virtuoso Benefits:** upgrade on arrival, daily breakfast for two, $100–$300 property credit, early check-in/late check-out (always on its own line with this exact bold label)
 - Price (mandatory — see Rates)
+- End each hotel section with: ---
 
 ## 4.5 TOP 3 PICKS (MANDATORY)
 After all properties, conclude with:
@@ -80,11 +81,11 @@ Examples:
 HARD RULE: VipTravelAi.com mobile link MUST appear before the Virtuoso link for every hotel and cruise. Never skip or reorder.
 
 **Hotels** — per hotel, in this order:
->>  [Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
+[Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
 **[*Book on Virtuoso — Hotel Name](VHOTEL:Hotel+Name+City@checkin@checkout@adults@children)**
 
 **Cruises** — per cruise, in this order:
->>  [Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
+[Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
 **[*Book on Virtuoso — Cruise Name](VCRUISE:CruiseLine@startDate@endDate)**
 
 **Tours** — Virtuoso link only:
