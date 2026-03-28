@@ -657,7 +657,26 @@
     .hotel-card-pin {
       font-size: 11px;
       color: var(--gold);
-      margin-top: 4px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hotel-card-map-btn {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--card-hover);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .hotel-card:hover .hotel-card-map-btn {
+      border-color: var(--gold-dim);
+      color: var(--gold);
     }
 
     /* ── FOOTER ─────────────────────────────────────────── */
@@ -1008,7 +1027,10 @@ async function processHotels(hotels) {
       <div style="padding:8px 10px 10px">
         <div class="hotel-card-name">${hotel.name}</div>
         <div class="hotel-card-city">${hotel.city}</div>
-        <div class="hotel-card-pin">📍 ${index + 1}</div>
+        <div class="hotel-card-pin">
+          <span>📍 ${index + 1}</span>
+          <span class="hotel-card-map-btn">🗺 Map</span>
+        </div>
       </div>`;
     card.onclick = () => focusHotel(index);
     listInner.appendChild(card);
