@@ -719,6 +719,24 @@
       border-color: var(--gold);
     }
 
+    .hotel-card-book-btn {
+      display: block;
+      background: var(--gold);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 8px;
+      border-radius: 4px;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      text-align: center;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      font-family: var(--ff-sans);
+    }
+    .hotel-card-book-btn:hover { opacity: 0.82; }
+
     /* ── MAP TYPE BUTTONS ───────────────────────────────── */
     .map-type-btns { display: flex; gap: 4px; }
     .map-type-btn {
@@ -881,6 +899,8 @@
       }
 
       .hotel-list { max-height: none; }
+      .hotel-card-photo { display: none; }
+      .hotel-card { min-width: 140px; max-width: 176px; padding: 8px 10px; }
 
       .starters { grid-template-columns: 1fr; }
       .header-contact { display: none; }
@@ -1059,7 +1079,13 @@ function preprocessMarkdown(text) {
     }
     out.push(line);
   }
-  return out.join('\n');
+  text = out.join('\n');
+
+  // 5. Normalize spaces → + inside booking tokens so markdown parser doesn't break URLs
+  text = text.replace(/\((VHOTEL|VCRUISE|VTOUR):([^)]+)\)/g,
+    (_, type, token) => `(${type}:${token.replace(/ /g, '+')})`);
+
+  return text;
 }
 
 // Fix model typos in Virtuoso Benefits label regardless of what the model outputs
@@ -1240,6 +1266,10 @@ async function processHotels(hotels) {
     const card = document.createElement('div');
     card.className = 'hotel-card';
     card.dataset.index = index;
+    let _cvp = `SearchTerms=${encodeURIComponent(hotel.name)}`;
+    if (hotel.checkin) _cvp += `&HotelBookingCheckinDate=${hotel.checkin}&HotelBookingCheckoutDate=${hotel.checkout}`;
+    _cvp += `&HotelBookingNumberAdults=${hotel.adults||2}&HotelBookingNumberChildren=${hotel.children||0}&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
+    const _cvurl = `https://www.virtuoso.com/advisor/brianharris/hotels#${_cvp}`;
     card.innerHTML = `
       <div class="hotel-card-photo" id="card-photo-${index}" style="height:110px;background:#1a1a1c;border-radius:6px 6px 0 0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
         <span style="color:#3a3428;font-size:28px;">✦</span>
@@ -1252,6 +1282,7 @@ async function processHotels(hotels) {
           <span class="hotel-card-map-btn">🗺 Map</span>
           <span class="hotel-card-sv-btn" id="sv-btn-${index}" onclick="openSV(${index},event)">360°</span>
         </div>
+        <a href="${_cvurl}" target="_blank" onclick="event.stopPropagation()" class="hotel-card-book-btn">✦ Book on Virtuoso</a>
       </div>`;
     card.onclick = () => focusHotel(index);
     listInner.appendChild(card);

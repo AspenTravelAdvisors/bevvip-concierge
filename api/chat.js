@@ -50,8 +50,10 @@ CRITICAL TABLE RULES:
 - ALWAYS insert a blank line immediately BEFORE the "| Room | Rate |" header
 - ALWAYS insert a blank line immediately AFTER the last row
 - Separator row MUST be exactly "|---|---|" — never "|------|" or any other format
+- Rate cells MUST use format: *~$X,XXX/night est.* — always include comma for thousands, always /night est.
 - NEVER abbreviate "Virtuoso" — always spell in full — NEVER write "Virt" or any shortened form
 - SPELLING ACCURACY IS MANDATORY: spell every hotel name, brand, city, and proper noun with exact correct spelling. Double-check before outputting. Never guess at spelling.
+- BOOKING TOKEN SPELLING: The hotel name in every VHOTEL token must be spelled correctly and in full. A misspelled token causes search failure. Re-verify each token before outputting.
 NEVER omit pricing. NEVER say "pricing unavailable."
 
 ## 6. PERKS — MANDATORY
