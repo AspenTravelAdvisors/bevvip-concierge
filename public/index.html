@@ -1159,6 +1159,11 @@ function extractHotelData(text) {
   }
   let raw = match[0].replace('<!--BEVVIP_HOTELS', '').replace('-->', '').trim();
   if (raw.startsWith(':')) raw = raw.slice(1).trim();
+
+  // Normalize smart/curly quotes to straight quotes (GPT-4.1 sometimes outputs these)
+  raw = raw.replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
+           .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'");
+
   if (!raw.startsWith('[')) raw = '[' + raw;
   if (!raw.endsWith(']')) raw = raw + ']';
 
@@ -1167,9 +1172,7 @@ function extractHotelData(text) {
 
   // Attempt 2: repair common model JSON errors
   let repaired = raw;
-  // Fix missing colon between key and numeric value: "adults2 → "adults":2
   repaired = repaired.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
-  // Remove trailing commas before } or ]
   repaired = repaired.replace(/,(\s*[}\]])/g, '$1');
   try {
     const data = JSON.parse(repaired);
@@ -1178,9 +1181,8 @@ function extractHotelData(text) {
   } catch (e) {}
 
   // Attempt 3: extract each complete hotel object individually (handles truncation)
-  // Apply same repairs to each object before parsing
   const hotels = [];
-  const re = /\{"name"\s*:\s*"[^"]+"\s*,[^{}]+\}/g;
+  const re = /\{[^{}]*"name"\s*:\s*"[^"]+[^{}]*\}/g;
   let m;
   while ((m = re.exec(raw)) !== null) {
     let obj = m[0];
@@ -1194,7 +1196,7 @@ function extractHotelData(text) {
   }
 
   console.warn('[BeVvip] Hotel JSON parse failed entirely. Raw:', raw.slice(0, 400));
-  setMapStatus('⚠ map parse error');
+  setMapStatus('⚠ ' + raw.slice(0, 80));
   return null;
 }
 
