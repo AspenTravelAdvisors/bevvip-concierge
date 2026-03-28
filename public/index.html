@@ -1165,6 +1165,11 @@ async function sendMessage(overrideText) {
           removeTypingIndicator();
           contentEl = addMessage('assistant', '');
           streamStarted = true;
+          // Scroll once to show the top of the new response, then stop
+          setTimeout(() => {
+            const msgEl = contentEl.closest('.message');
+            if (msgEl) msgEl.scrollIntoView({ block: 'start', behavior: 'smooth' });
+          }, 50);
         }
 
         fullResponse += token;
