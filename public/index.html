@@ -679,6 +679,63 @@
       color: var(--gold);
     }
 
+    .hotel-card-sv-btn {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--card-hover);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: none;
+      font-family: var(--ff-sans);
+    }
+    .hotel-card:hover .hotel-card-sv-btn {
+      border-color: var(--gold-dim);
+      color: var(--gold);
+    }
+
+    /* ── STREET VIEW MODAL ──────────────────────────────── */
+    #svModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.88);
+      align-items: center;
+      justify-content: center;
+    }
+    #svModal.open { display: flex; }
+    #svContainer {
+      width: min(92vw, 960px);
+      height: min(80vh, 620px);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+    #svClose {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+      background: rgba(0,0,0,0.72);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    #svClose:hover { border-color: var(--gold-dim); color: var(--gold); }
+    #svPanorama { width: 100%; height: 100%; }
+
     /* ── FOOTER ─────────────────────────────────────────── */
     footer {
       display: none; /* handled in chat close */
@@ -1023,6 +1080,7 @@ async function processHotels(hotels) {
   google.maps.event.trigger(map, 'resize');
 
   const geocoder = new google.maps.Geocoder();
+  const svService = new google.maps.StreetViewService();
   const listInner = document.getElementById('hotelListInner');
 
   // Build hotel cards first
@@ -1040,6 +1098,7 @@ async function processHotels(hotels) {
         <div class="hotel-card-pin">
           <span>📍 ${index + 1}</span>
           <span class="hotel-card-map-btn">🗺 Map</span>
+          <span class="hotel-card-sv-btn" id="sv-btn-${index}" onclick="openSV(${index},event)">360°</span>
         </div>
       </div>`;
     card.onclick = () => focusHotel(index);
@@ -1059,6 +1118,13 @@ async function processHotels(hotels) {
         if (status === 'OK' && results[0]) {
           const pos = results[0].geometry.location;
           addHotelMarker(hotel, i, pos);
+          svService.getPanorama({ location: pos, radius: 50 }, (data, svStatus) => {
+            if (svStatus === 'OK') {
+              hotelData[i].svPos = data.location.latLng;
+              const btn = document.getElementById('sv-btn-' + i);
+              if (btn) btn.style.display = 'inline-block';
+            }
+          });
         } else {
           // Fallback: geocode city only
           geocoder.geocode({ address: hotel.city }, (r2, s2) => {
@@ -1112,6 +1178,22 @@ async function processHotels(hotels) {
       });
     });
   }
+}
+
+function openSV(index, e) {
+  e.stopPropagation();
+  const hotel = hotelData[index];
+  if (!hotel || !hotel.svPos) return;
+  document.getElementById('svModal').classList.add('open');
+  new google.maps.StreetViewPanorama(
+    document.getElementById('svPanorama'),
+    { position: hotel.svPos, pov: { heading: 34, pitch: 10 }, zoom: 1 }
+  );
+}
+
+function closeSV() {
+  document.getElementById('svModal').classList.remove('open');
+  document.getElementById('svPanorama').innerHTML = '';
 }
 
 function focusHotel(index) {
@@ -1469,6 +1551,13 @@ document.addEventListener('DOMContentLoaded', () => {
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg&libraries=places&callback=initMap"
   onerror="document.getElementById('mapPlaceholder').innerHTML='<div class=\'map-placeholder-icon\'>⚠️</div><p>Google Maps failed to load. Check your API key.</p>'"
 ></script>
+
+<div id="svModal" onclick="if(event.target===this)closeSV()">
+  <div id="svContainer">
+    <button id="svClose" onclick="closeSV()">✕</button>
+    <div id="svPanorama"></div>
+  </div>
+</div>
 
 </body>
 </html>
