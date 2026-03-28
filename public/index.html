@@ -515,16 +515,22 @@
       font-weight: 500;
     }
 
-    #map {
+    /* Wrapper keeps map always rendered (Maps API needs visible element to init) */
+    .map-viewport {
       flex: 1;
       min-height: 0;
-      width: 100%;
-      display: none;
+      position: relative;
     }
 
-    /* Map placeholder when no results */
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Placeholder overlays the map until hotels load */
     .map-placeholder {
-      flex: 1;
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -534,6 +540,8 @@
       font-size: 13px;
       text-align: center;
       padding: 40px;
+      background: var(--bg);
+      z-index: 2;
     }
 
     .map-placeholder-icon {
@@ -731,14 +739,15 @@
         <span class="hotel-count" id="hotelCount"></span>
       </div>
 
-      <div id="map"></div>
-
-      <div class="map-placeholder" id="mapPlaceholder">
-        <div class="map-placeholder-icon">🌍</div>
-        <p>Ask about a destination and hotels will appear here on the map</p>
+      <div class="map-viewport">
+        <div id="map"></div>
+        <div class="map-placeholder" id="mapPlaceholder">
+          <div class="map-placeholder-icon">🌍</div>
+          <p>Ask about a destination and hotels will appear here on the map</p>
+        </div>
       </div>
 
-      <div class="hotel-list" id="hotelList">
+      <div class="hotel-list" id="hotelList" style="display:none">
         <div class="hotel-list-inner" id="hotelListInner"></div>
       </div>
     </section>
@@ -858,6 +867,8 @@ function clearMarkers() {
   activeCardIndex = -1;
   document.getElementById('hotelListInner').innerHTML = '';
   document.getElementById('hotelCount').textContent = '';
+  document.getElementById('hotelList').style.display = 'none';
+  document.getElementById('mapPlaceholder').style.display = 'flex';
   if (activeInfoWindow) {
     activeInfoWindow.close();
     activeInfoWindow = null;
@@ -936,9 +947,10 @@ function fitMapToMarkers() {
 async function processHotels(hotels) {
   if (!map || !hotels || hotels.length === 0) return;
 
-  // Hide placeholder, show map
+  // Hide placeholder, show hotel list, trigger map resize
   document.getElementById('mapPlaceholder').style.display = 'none';
-  document.getElementById('map').style.display = 'block';
+  document.getElementById('hotelList').style.display = 'block';
+  google.maps.event.trigger(map, 'resize');
 
   clearMarkers();
   hotelData = hotels.map(h => ({ ...h, marker: null, infoWindow: null }));
