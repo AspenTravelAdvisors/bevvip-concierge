@@ -698,6 +698,23 @@
       border-color: var(--gold);
     }
 
+    /* ── MAP TYPE BUTTONS ───────────────────────────────── */
+    .map-type-btns { display: flex; gap: 4px; }
+    .map-type-btn {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--ff-sans);
+      font-weight: 500;
+    }
+    .map-type-btn:hover { border-color: var(--gold-dim); color: var(--text); }
+    .map-type-btn.active { border-color: var(--gold-dim); color: var(--gold); background: rgba(201,168,76,0.08); }
+
     /* ── STREET VIEW MODAL ──────────────────────────────── */
     #svModal {
       display: none;
@@ -711,16 +728,22 @@
     #svModal.open { display: flex; }
     #svContainer {
       width: min(92vw, 960px);
-      height: min(80vh, 620px);
+      height: min(80vh, 640px);
       border-radius: 10px;
       overflow: hidden;
-      position: relative;
       border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
     }
-    #svClose {
+    #svPanoWrap {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+    #svPanorama { width: 100%; height: 100%; }
+    #svClose, #svFull {
       position: absolute;
       top: 12px;
-      right: 12px;
       z-index: 10;
       background: rgba(0,0,0,0.72);
       border: 1px solid var(--border);
@@ -729,47 +752,44 @@
       height: 32px;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       line-height: 1;
     }
-    #svClose:hover { border-color: var(--gold-dim); color: var(--gold); }
-    #svPanorama { width: 100%; height: 100%; }
-    #svControls {
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
+    #svClose { right: 12px; }
+    #svFull  { right: 52px; }
+    #svClose:hover, #svFull:hover { border-color: var(--gold-dim); color: var(--gold); }
+    #svThumbBar {
+      height: 74px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: none;
       align-items: center;
-      gap: 10px;
-      background: rgba(0,0,0,0.68);
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      pointer-events: all;
+      gap: 6px;
+      padding: 8px 10px;
+      background: rgba(0,0,0,0.94);
+      border-top: 1px solid var(--border);
+      scroll-behavior: smooth;
+      flex-shrink: 0;
     }
-    #svControls button {
-      background: none;
-      border: none;
-      color: var(--gold);
-      font-size: 24px;
+    #svThumbBar::-webkit-scrollbar { height: 3px; }
+    #svThumbBar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .sv-thumb {
+      flex-shrink: 0;
+      width: 90px;
+      height: 54px;
+      border-radius: 4px;
+      border: 2px solid transparent;
       cursor: pointer;
-      padding: 0 2px;
-      line-height: 1;
-      transition: color 0.15s;
+      object-fit: cover;
+      opacity: 0.6;
+      transition: all 0.2s;
+      background: #1a1a1c;
     }
-    #svControls button:hover { color: var(--gold-light); }
-    #svCounter {
-      color: var(--text-muted);
-      font-size: 11px;
-      min-width: 38px;
-      text-align: center;
-      font-family: var(--ff-sans);
-    }
+    .sv-thumb:hover { opacity: 1; }
+    .sv-thumb.active { border-color: var(--gold); opacity: 1; }
 
     /* ── FOOTER ─────────────────────────────────────────── */
     footer {
@@ -883,7 +903,14 @@
     <section class="map-panel">
       <div class="map-header">
         <span class="map-header-title">🗺 Hotel Map</span>
-        <span class="hotel-count" id="hotelCount"></span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="map-type-btns">
+            <button class="map-type-btn active" data-type="map" onclick="setMapType('map')">Map</button>
+            <button class="map-type-btn" data-type="satellite" onclick="setMapType('satellite')">Satellite</button>
+            <button class="map-type-btn" data-type="3d" onclick="setMapType('3d')">3D</button>
+          </div>
+          <span class="hotel-count" id="hotelCount"></span>
+        </div>
       </div>
 
       <div class="map-viewport">
@@ -1155,13 +1182,8 @@ async function processHotels(hotels) {
           addHotelMarker(hotel, i, pos);
           svService.getPanorama({ location: pos, radius: 50 }, (data, svStatus) => {
             if (svStatus === 'OK') {
-              // Collect initial pano + any linked panos (connected photo spheres)
-              const panos = [data.location.pano];
-              if (data.links) {
-                data.links.forEach(link => { if (!panos.includes(link.pano)) panos.push(link.pano); });
-              }
-              hotelData[i].svPanos = panos;
-              hotelData[i].svPanoIdx = 0;
+              hotelData[i].svPos = data.location.latLng;
+              hotelData[i].svInitPano = data.location.pano;
               const btn = document.getElementById('sv-btn-' + i);
               if (btn) btn.style.display = 'inline-block';
             }
@@ -1221,16 +1243,34 @@ async function processHotels(hotels) {
   }
 }
 
+const MAPS_KEY = 'AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg';
 let svPano = null;
 let svHotelIdx = -1;
 
-function openSV(index, e) {
+async function collectNearbyPanos(pos) {
+  const svc = new google.maps.StreetViewService();
+  const seen = new Map();
+  await Promise.all([5, 15, 30, 50, 80, 120, 180].map(r => new Promise(resolve => {
+    svc.getPanorama({ location: pos, radius: r }, (data, status) => {
+      if (status === 'OK') seen.set(data.location.pano, true);
+      resolve();
+    });
+  })));
+  return [...seen.keys()];
+}
+
+async function openSV(index, e) {
   e.stopPropagation();
   const hotel = hotelData[index];
-  if (!hotel || !hotel.svPanos || !hotel.svPanos.length) return;
+  if (!hotel || !hotel.svPos) return;
   svHotelIdx = index;
   hotel.svPanoIdx = 0;
   document.getElementById('svModal').classList.add('open');
+  document.getElementById('svPanorama').innerHTML =
+    '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#7a7060;font-size:13px;">Loading 360° views…</div>';
+  document.getElementById('svThumbBar').style.display = 'none';
+  const panos = await collectNearbyPanos(hotel.svPos);
+  hotel.svPanos = panos.length ? panos : [hotel.svInitPano];
   renderSVPano();
 }
 
@@ -1243,23 +1283,52 @@ function renderSVPano() {
     { pano: panoId, pov: { heading: 34, pitch: 10 }, zoom: 1,
       addressControl: false, fullscreenControl: false }
   );
-  const total = hotel.svPanos.length;
-  const ctrl = document.getElementById('svControls');
-  ctrl.style.display = total > 1 ? 'flex' : 'none';
-  document.getElementById('svCounter').textContent = `${hotel.svPanoIdx + 1} / ${total}`;
+  buildSVThumbs(hotel.svPanos, hotel.svPanoIdx);
 }
 
-function svStep(dir) {
-  const hotel = hotelData[svHotelIdx];
-  if (!hotel) return;
-  hotel.svPanoIdx = (hotel.svPanoIdx + dir + hotel.svPanos.length) % hotel.svPanos.length;
-  renderSVPano();
+function buildSVThumbs(panos, activeIdx) {
+  const bar = document.getElementById('svThumbBar');
+  if (panos.length <= 1) { bar.style.display = 'none'; return; }
+  bar.innerHTML = '';
+  bar.style.display = 'flex';
+  panos.forEach((panoId, i) => {
+    const img = document.createElement('img');
+    img.className = 'sv-thumb' + (i === activeIdx ? ' active' : '');
+    img.src = `https://maps.googleapis.com/maps/api/streetview?size=180x108&pano=${panoId}&key=${MAPS_KEY}`;
+    img.alt = `View ${i + 1}`;
+    img.title = `Photo ${i + 1} of ${panos.length}`;
+    img.onclick = () => {
+      hotelData[svHotelIdx].svPanoIdx = i;
+      renderSVPano();
+      setTimeout(() => img.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
+    };
+    bar.appendChild(img);
+  });
+  const active = bar.querySelector('.sv-thumb.active');
+  if (active) setTimeout(() => active.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 100);
+}
+
+function toggleSVFullscreen() {
+  const el = document.getElementById('svContainer');
+  if (document.fullscreenElement) document.exitFullscreen();
+  else el.requestFullscreen().catch(() => {});
 }
 
 function closeSV() {
+  if (document.fullscreenElement) document.exitFullscreen();
   document.getElementById('svModal').classList.remove('open');
   document.getElementById('svPanorama').innerHTML = '';
+  document.getElementById('svThumbBar').innerHTML = '';
   svPano = null;
+}
+
+function setMapType(type) {
+  if (!map) return;
+  if (type === 'map')       { map.setMapTypeId('roadmap');   map.setTilt(0); }
+  else if (type === 'satellite') { map.setMapTypeId('satellite'); map.setTilt(0); }
+  else if (type === '3d')   { map.setMapTypeId('satellite'); map.setTilt(45); }
+  document.querySelectorAll('.map-type-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.type === type));
 }
 
 function focusHotel(index) {
@@ -1363,10 +1432,10 @@ function extractHotelData(text) {
   repaired = repaired.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
   // Fix "checkin2024-04-15" → "checkin":"2024-04-15"
   repaired = repaired.replace(/"(checkin|checkout)(20\d{2}-\d{2}-\d{2})"/g, '"$1":"$2"');
-  // Fix missing {"  at start of array: ["name" → [{"name"
-  repaired = repaired.replace(/^\[\s*"(?!\s*\{)/, '[{"');
-  // Fix missing {"  after comma: },"name" → },{"name"
-  repaired = repaired.replace(/\},\s*"(?=[a-z])/g, '},{"');
+  // Fix missing { at start: [name" → [{"name"  (letter directly after [)
+  repaired = repaired.replace(/^\[\s*([a-zA-Z])/, '[{"$1');
+  // Fix missing { after comma: },"name" → },{"name"
+  repaired = repaired.replace(/\},\s*"(?=[a-zA-Z])/g, '},{"');
   // Fix empty key before city value: ","":"Dallas" → ","city":"Dallas"
   repaired = repaired.replace(/,\s*"":/g, ',"city":');
   // Fix missing value before closing brace: "children":}
@@ -1379,11 +1448,11 @@ function extractHotelData(text) {
     return data;
   } catch (e) {}
 
-  // Attempt 3: extract each complete hotel object individually (handles truncation)
+  // Attempt 3: extract each complete hotel object individually (uses repaired so missing { is fixed)
   const hotels = [];
   const re = /\{[^{}]*"name"\s*:\s*"[^"]+[^{}]*\}/g;
   let m;
-  while ((m = re.exec(raw)) !== null) {
+  while ((m = re.exec(repaired)) !== null) {
     let obj = m[0];
     obj = obj.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
     obj = obj.replace(/"(checkin|checkout)(20\d{2}-\d{2}-\d{2})"/g, '"$1":"$2"');
@@ -1620,13 +1689,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div id="svModal" onclick="if(event.target===this)closeSV()">
   <div id="svContainer">
-    <button id="svClose" onclick="closeSV()">✕</button>
-    <div id="svPanorama"></div>
-    <div id="svControls" style="display:none">
-      <button onclick="svStep(-1)">&#8249;</button>
-      <span id="svCounter"></span>
-      <button onclick="svStep(1)">&#8250;</button>
+    <div id="svPanoWrap">
+      <div id="svPanorama"></div>
+      <button id="svClose" onclick="closeSV()">✕</button>
+      <button id="svFull" onclick="toggleSVFullscreen()" title="Fullscreen">&#x26F6;</button>
     </div>
+    <div id="svThumbBar"></div>
   </div>
 </div>
 
