@@ -523,8 +523,8 @@
     }
 
     #map {
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      inset: 0;
     }
 
     /* Placeholder overlays the map until hotels load */
@@ -947,13 +947,13 @@ function fitMapToMarkers() {
 async function processHotels(hotels) {
   if (!map || !hotels || hotels.length === 0) return;
 
+  clearMarkers();
+  hotelData = hotels.map(h => ({ ...h, marker: null, infoWindow: null }));
+
   // Hide placeholder, show hotel list, trigger map resize
   document.getElementById('mapPlaceholder').style.display = 'none';
   document.getElementById('hotelList').style.display = 'block';
   google.maps.event.trigger(map, 'resize');
-
-  clearMarkers();
-  hotelData = hotels.map(h => ({ ...h, marker: null, infoWindow: null }));
 
   const geocoder = new google.maps.Geocoder();
   const listInner = document.getElementById('hotelListInner');
