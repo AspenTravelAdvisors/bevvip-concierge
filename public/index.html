@@ -514,6 +514,7 @@
       flex: 1;
       min-height: 0;
       width: 100%;
+      display: none;
     }
 
     /* Map placeholder when no results */
@@ -1078,15 +1079,20 @@ function expandBookingLinks(html) {
 // ── EXTRACT HOTEL JSON FROM AI RESPONSE ──────────────────
 function extractHotelData(text) {
   const match = text.match(/<!--BEVVIP_HOTELS[\s\S]*?-->/);
-  if (!match) return null;
+  if (!match) {
+    console.warn('[BeVvip] No BEVVIP_HOTELS tag found. Response tail:', text.slice(-500));
+    return null;
+  }
   let raw = match[0].replace('<!--BEVVIP_HOTELS', '').replace('-->', '').trim();
   if (raw.startsWith(':')) raw = raw.slice(1).trim();
   if (!raw.startsWith('[')) raw = '[' + raw;
   if (!raw.endsWith(']')) raw = raw + ']';
   try {
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    console.log('[BeVvip] Hotels parsed:', data);
+    return data;
   } catch (e) {
-    console.warn('Failed to parse hotel JSON:', e, raw);
+    console.warn('[BeVvip] Hotel JSON parse failed:', e.message, '| Raw:', raw.slice(0, 300));
     return null;
   }
 }
