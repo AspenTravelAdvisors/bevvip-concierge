@@ -836,8 +836,18 @@ marked.setOptions({ renderer, breaks: true, gfm: true });
 
 // ── MARKDOWN PREPROCESSING ────────────────────────────────
 function preprocessMarkdown(text) {
-  // Ensure blank line before table headers so marked.js renders tables correctly.
-  // A table header is a | row whose NEXT line is a |---| separator.
+  // 1. Fix malformed booking links: [text VHOTEL:token] → [text](VHOTEL:token)
+  text = text.replace(/\[([^\]\n]*?)\s*(VHOTEL|VCRUISE|VTOUR):([^\]\n]*?)\]/g,
+    (_, pre, type, rest) => `[${pre.trim()}](${type}:${rest.trim()})`);
+
+  // 2. Fix single-cell table separators like |------| → |---|---|  (our tables are always 2-col)
+  text = text.replace(/^\|[-:\s]+\|$/gm, (m) =>
+    m.slice(1, -1).includes('|') ? m : '|---|---|');
+
+  // 3. Ensure blank line before --- so it renders as <hr> not literal text
+  text = text.replace(/([^\n])\n(---+)$/gm, '$1\n\n$2');
+
+  // 4. Ensure blank line before table headers (| row followed by |---| row)
   const lines = text.split('\n');
   const out = [];
   for (let i = 0; i < lines.length; i++) {

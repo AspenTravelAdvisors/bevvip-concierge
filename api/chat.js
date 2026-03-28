@@ -49,8 +49,8 @@ ALWAYS display EXACTLY 3 room tiers per hotel — never fewer, never more:
 CRITICAL TABLE RULES:
 - ALWAYS insert a blank line immediately BEFORE the "| Room | Rate |" header
 - ALWAYS insert a blank line immediately AFTER the last row
-- Separator row MUST be exactly "|---|---|"
-- NEVER abbreviate "Virtuoso" — always spell in full
+- Separator row MUST be exactly "|---|---|" — never "|------|" or any other format
+- NEVER abbreviate "Virtuoso" — always spell in full — NEVER write "Virt" or any shortened form
 NEVER omit pricing. NEVER say "pricing unavailable."
 
 ## 6. PERKS — MANDATORY
@@ -166,7 +166,7 @@ export default async function handler(req, res) {
           ...messages,
         ],
         stream: true,
-        max_tokens: 4500,
+        max_tokens: 6000,
         temperature: 0.7,
       }),
     });
