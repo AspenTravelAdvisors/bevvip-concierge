@@ -1407,40 +1407,54 @@ function renderSVPano() {
     setTimeout(() => {
       const h = hotelData[svHotelIdx];
       if (h && h.svPanos && h.svPanos.length <= 1) expandPanoCollection();
-    }, 2500);
+    }, 4000);
   }
 }
 
 async function expandPanoCollection() {
   const hotel = hotelData[svHotelIdx];
-  if (!hotel || !hotel.svPos) return;
+  if (!hotel) return;
   const svc = new google.maps.StreetViewService();
   const seen = new Set(hotel.svPanos);
 
-  // 1. Get links from the currently loaded pano
+  // 1. BFS link traversal — level 1: direct links from loaded pano
   const loadedId = svPano ? svPano.getPano() : hotel.svPanos[0];
+  const level1 = new Set();
   await new Promise(resolve => {
     svc.getPanorama({ pano: loadedId }, (data, status) => {
-      if (status === 'OK' && data.links) data.links.forEach(l => seen.add(l.pano));
+      if (status === 'OK' && data.links) {
+        data.links.forEach(l => { seen.add(l.pano); level1.add(l.pano); });
+      }
       resolve();
     });
   });
 
-  // 2. Sample a 3×3 grid of positions around the hotel (~10m spacing)
-  // catches standalone photo spheres that aren't linked to the initial pano
-  const lat = hotel.svPos.lat(), lng = hotel.svPos.lng();
-  const d = 0.00009; // ≈ 10 m
-  const offsets = [
-    [0,0],   [d,0],  [-d,0],  [0,d],   [0,-d],
-    [d,d],  [-d,d], [d,-d], [-d,-d],
-    [2*d,0],[-2*d,0],[0,2*d],[0,-2*d]
-  ];
-  await Promise.all(offsets.map(([dlat, dlng]) => new Promise(resolve => {
-    svc.getPanorama(
-      { location: new google.maps.LatLng(lat + dlat, lng + dlng), radius: 12 },
-      (data, status) => { if (status === 'OK') seen.add(data.location.pano); resolve(); }
-    );
+  // 2. BFS level 2: follow links of level-1 panos (up to 12 to stay within quota)
+  await Promise.all([...level1].slice(0, 12).map(id => new Promise(resolve => {
+    svc.getPanorama({ pano: id }, (data, status) => {
+      if (status === 'OK' && data.links) data.links.forEach(l => seen.add(l.pano));
+      resolve();
+    });
   })));
+
+  // 3. Wide location grid — catches unlinked photo spheres anywhere on the property
+  if (hotel.svPos) {
+    const lat = hotel.svPos.lat(), lng = hotel.svPos.lng();
+    const d = 0.0002; // ≈ 22 m
+    const offsets = [
+      [0,0],      [d,0],      [-d,0],      [0,d],      [0,-d],
+      [d,d],      [-d,d],     [d,-d],      [-d,-d],
+      [2*d,0],    [-2*d,0],   [0,2*d],     [0,-2*d],
+      [1.5*d,1.5*d], [-1.5*d,1.5*d], [1.5*d,-1.5*d], [-1.5*d,-1.5*d],
+      [3*d,0],    [-3*d,0],   [0,3*d],     [0,-3*d],
+    ];
+    await Promise.all(offsets.map(([dlat, dlng]) => new Promise(resolve => {
+      svc.getPanorama(
+        { location: new google.maps.LatLng(lat + dlat, lng + dlng), radius: 25 },
+        (data, status) => { if (status === 'OK') seen.add(data.location.pano); resolve(); }
+      );
+    })));
+  }
 
   const all = [...seen];
   if (all.length > hotel.svPanos.length) {
