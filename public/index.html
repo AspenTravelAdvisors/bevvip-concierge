@@ -804,11 +804,15 @@
       border-radius: 4px;
       border: 2px solid transparent;
       cursor: pointer;
-      object-fit: cover;
       opacity: 0.6;
       transition: all 0.2s;
       background: #1a1a1c;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .sv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .sv-thumb:hover { opacity: 1; }
     .sv-thumb.active { border-color: var(--gold); opacity: 1; }
 
@@ -1336,30 +1340,14 @@ const MAPS_KEY = 'AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg';
 let svPano = null;
 let svHotelIdx = -1;
 
-async function collectNearbyPanos(pos) {
-  const svc = new google.maps.StreetViewService();
-  const seen = new Map();
-  await Promise.all([5, 15, 30, 50, 80, 120, 180].map(r => new Promise(resolve => {
-    svc.getPanorama({ location: pos, radius: r }, (data, status) => {
-      if (status === 'OK') seen.set(data.location.pano, true);
-      resolve();
-    });
-  })));
-  return [...seen.keys()];
-}
-
-async function openSV(index, e) {
+function openSV(index, e) {
   e.stopPropagation();
   const hotel = hotelData[index];
-  if (!hotel || !hotel.svPos) return;
+  if (!hotel || !hotel.svInitPano) return;
   svHotelIdx = index;
   hotel.svPanoIdx = 0;
+  if (!hotel.svPanos) hotel.svPanos = [hotel.svInitPano];
   document.getElementById('svModal').classList.add('open');
-  document.getElementById('svPanorama').innerHTML =
-    '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#7a7060;font-size:13px;">Loading 360° views…</div>';
-  document.getElementById('svThumbBar').style.display = 'none';
-  const panos = await collectNearbyPanos(hotel.svPos);
-  hotel.svPanos = panos.length ? panos : [hotel.svInitPano];
   renderSVPano();
 }
 
@@ -1373,28 +1361,78 @@ function renderSVPano() {
       addressControl: false, fullscreenControl: false }
   );
   buildSVThumbs(hotel.svPanos, hotel.svPanoIdx);
+
+  // Once pano fires its first load, discover connected panos (only once per hotel)
+  if (!hotel.svExpanded) {
+    hotel.svExpanded = true;
+    google.maps.event.addListenerOnce(svPano, 'pano_changed', () => expandPanoCollection());
+  }
+}
+
+async function expandPanoCollection() {
+  const hotel = hotelData[svHotelIdx];
+  if (!hotel) return;
+  const svc = new google.maps.StreetViewService();
+  const seen = new Set(hotel.svPanos);
+
+  // 1. Get links from the loaded pano
+  const loadedId = svPano ? svPano.getPano() : hotel.svPanos[0];
+  await new Promise(resolve => {
+    svc.getPanorama({ pano: loadedId }, (data, status) => {
+      if (status === 'OK' && data.links) data.links.forEach(l => seen.add(l.pano));
+      resolve();
+    });
+  });
+
+  // 2. Radius-sample around the hotel position for nearby orphaned panos
+  await Promise.all([5, 20, 40, 70, 120].map(r => new Promise(resolve => {
+    svc.getPanorama({ location: hotel.svPos, radius: r }, (d, s) => {
+      if (s === 'OK') seen.add(d.location.pano);
+      resolve();
+    });
+  })));
+
+  const all = [...seen];
+  if (all.length > hotel.svPanos.length) {
+    hotel.svPanos = all;
+    buildSVThumbs(hotel.svPanos, hotel.svPanoIdx);
+  }
 }
 
 function buildSVThumbs(panos, activeIdx) {
   const bar = document.getElementById('svThumbBar');
-  if (panos.length <= 1) { bar.style.display = 'none'; return; }
   bar.innerHTML = '';
+  if (panos.length <= 1) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
+
   panos.forEach((panoId, i) => {
-    const img = document.createElement('img');
-    img.className = 'sv-thumb' + (i === activeIdx ? ' active' : '');
-    img.src = `https://maps.googleapis.com/maps/api/streetview?size=180x108&pano=${panoId}&key=${MAPS_KEY}`;
-    img.alt = `View ${i + 1}`;
-    img.title = `Photo ${i + 1} of ${panos.length}`;
-    img.onclick = () => {
+    const cell = document.createElement('div');
+    cell.className = 'sv-thumb' + (i === activeIdx ? ' active' : '');
+    cell.title = `Photo ${i + 1} of ${panos.length}`;
+    cell.onclick = () => {
       hotelData[svHotelIdx].svPanoIdx = i;
       renderSVPano();
-      setTimeout(() => img.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
+      setTimeout(() => cell.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
     };
-    bar.appendChild(img);
+
+    // Try Street View Static API image; fall back to numbered gold pill
+    const img = document.createElement('img');
+    img.src = `https://maps.googleapis.com/maps/api/streetview?size=180x108&pano=${panoId}&key=${MAPS_KEY}`;
+    img.alt = `View ${i + 1}`;
+    img.onerror = () => {
+      // Static API not enabled — render numbered pill instead
+      img.remove();
+      cell.style.fontSize = '15px';
+      cell.style.fontWeight = '600';
+      cell.style.color = 'var(--gold)';
+      cell.textContent = String(i + 1);
+    };
+    cell.appendChild(img);
+    bar.appendChild(cell);
   });
+
   const active = bar.querySelector('.sv-thumb.active');
-  if (active) setTimeout(() => active.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 100);
+  if (active) setTimeout(() => active.scrollIntoView({ inline: 'center', behavior: 'smooth' }), 50);
 }
 
 function toggleSVFullscreen() {
