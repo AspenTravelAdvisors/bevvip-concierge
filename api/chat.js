@@ -128,7 +128,7 @@ CRITICAL FORMAT RULES:
 - NEVER omit the "city" key — always include it with a value
 - NEVER concatenate key and value — wrong: "checkin2024-04-15", right: "checkin":"2024-04-15"
 - Include ALL recommended hotels
-- Use the hotel's full proper name
+- Use the hotel's full proper name — spelled IDENTICALLY to how it appears in the response text
 - Include checkin/checkout/adults/children from user's request; omit date fields only if not provided
 - Omit the entire tag for cruise/tour-only responses
 Example: <!--BEVVIP_HOTELS:[{"name":"Four Seasons Hotel George V","city":"Paris, France","checkin":"2026-06-01","checkout":"2026-06-04","adults":2,"children":0}]-->`;

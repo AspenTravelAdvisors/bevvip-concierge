@@ -1198,11 +1198,11 @@ function addHotelMarker(hotel, index, position) {
   const virtuosoUrl = `https://www.virtuoso.com/advisor/brianharris/hotels#${_hp}`;
 
   const infoContent = `
-    <div style="background:#1a1a1c;color:#e8e0d0;padding:14px 16px;border-radius:8px;min-width:190px;max-width:240px;font-family:Inter,sans-serif;border:1px solid #2a2419;">
-      <div style="color:#c9a84c;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">✦ VIRTUOSO PREFERRED</div>
-      <div style="font-weight:600;font-size:14px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
-      <div style="font-size:12px;color:#7a7060;margin-bottom:10px;">${hotel.city}</div>
-      <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#c9a84c;color:#000;font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;text-decoration:none;letter-spacing:.03em;">✦ Book on Virtuoso →</a>
+    <div style="background:#1a1a1c;color:#e8e0d0;padding:10px 12px;min-width:180px;max-width:230px;font-family:Inter,sans-serif;">
+      <div style="color:#c9a84c;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">✦ VIRTUOSO PREFERRED</div>
+      <div style="font-weight:600;font-size:13px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
+      <div style="font-size:11px;color:#7a7060;margin-bottom:8px;">${hotel.city}</div>
+      <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:block;background:#c9a84c;color:#000;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.03em;text-align:center;">✦ Book on Virtuoso →</a>
     </div>`;
 
   const infoWindow = new google.maps.InfoWindow({
@@ -1358,14 +1358,11 @@ async function processHotels(hotels) {
             _pp += `&HotelBookingNumberAdults=${hotel.adults||2}&HotelBookingNumberChildren=${hotel.children||0}&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
             const virtuosoUrl = `https://www.virtuoso.com/advisor/brianharris/hotels#${_pp}`;
             hotelData[index].infoWindow.setContent(`
-              <div style="background:#1a1a1c;color:#e8e0d0;border-radius:8px;min-width:200px;max-width:250px;font-family:Inter,sans-serif;border:1px solid #2a2419;overflow:hidden;">
-                <img src="${photoUrl}" style="width:100%;height:130px;object-fit:cover;display:block;" onerror="this.style.display='none'"/>
-                <div style="padding:12px 14px 12px">
-                  <div style="color:#c9a84c;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">✦ VIRTUOSO PREFERRED</div>
-                  <div style="font-weight:600;font-size:13px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
-                  <div style="font-size:12px;color:#7a7060;margin-bottom:10px;">${hotel.city}</div>
-                  <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#c9a84c;color:#000;font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;text-decoration:none;letter-spacing:.03em;">✦ Book on Virtuoso →</a>
-                </div>
+              <div style="background:#1a1a1c;color:#e8e0d0;padding:10px 12px;min-width:180px;max-width:230px;font-family:Inter,sans-serif;">
+                <div style="color:#c9a84c;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">✦ VIRTUOSO PREFERRED</div>
+                <div style="font-weight:600;font-size:13px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
+                <div style="font-size:11px;color:#7a7060;margin-bottom:8px;">${hotel.city}</div>
+                <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:block;background:#c9a84c;color:#000;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.03em;text-align:center;">✦ Book on Virtuoso →</a>
               </div>`);
           }
         }
