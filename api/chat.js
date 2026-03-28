@@ -51,6 +51,7 @@ CRITICAL TABLE RULES:
 - ALWAYS insert a blank line immediately AFTER the last row
 - Separator row MUST be exactly "|---|---|" — never "|------|" or any other format
 - NEVER abbreviate "Virtuoso" — always spell in full — NEVER write "Virt" or any shortened form
+- SPELLING ACCURACY IS MANDATORY: spell every hotel name, brand, city, and proper noun with exact correct spelling. Double-check before outputting. Never guess at spelling.
 NEVER omit pricing. NEVER say "pricing unavailable."
 
 ## 6. PERKS — MANDATORY
@@ -171,7 +172,7 @@ export default async function handler(req, res) {
         ],
         stream: true,
         max_tokens: 6000,
-        temperature: 0.7,
+        temperature: 0.3,
       }),
     });
   } catch (fetchError) {

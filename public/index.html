@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BeVvip Luxury Travel Concierge</title>
+  <title>Be Vvip Luxury Travel Concierge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -597,7 +597,28 @@
       background: var(--panel);
       overflow: hidden;
       flex-shrink: 0;
+      position: relative;
     }
+
+    .card-nav-btn {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 4;
+      width: 36px;
+      border: none;
+      cursor: pointer;
+      color: var(--gold);
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+      padding: 0;
+    }
+    .card-nav-btn.prev { left: 0; background: linear-gradient(to right, var(--panel) 45%, transparent); }
+    .card-nav-btn.next { right: 0; background: linear-gradient(to left, var(--panel) 45%, transparent); }
+    .card-nav-btn[disabled] { opacity: 0; pointer-events: none; }
 
     .hotel-list:empty { display: none; }
 
@@ -831,7 +852,7 @@
     <div class="header-brand">
       <div class="header-logo-placeholder" title="BeVvip">✦</div>
       <div class="header-title">
-        <strong>BeVvip Luxury Travel</strong>
+        <strong>Be Vvip Luxury Travel</strong>
         <span>Virtuoso® Preferred Partner Concierge</span>
       </div>
     </div>
@@ -922,7 +943,9 @@
       </div>
 
       <div class="hotel-list" id="hotelList" style="display:none">
+        <button class="card-nav-btn prev" id="cardPrev" onclick="scrollCards(-1)" disabled>&#8249;</button>
         <div class="hotel-list-inner" id="hotelListInner"></div>
+        <button class="card-nav-btn next" id="cardNext" onclick="scrollCards(1)" disabled>&#8250;</button>
       </div>
     </section>
 
@@ -1170,6 +1193,11 @@ async function processHotels(hotels) {
   document.getElementById('hotelCount').textContent =
     `${hotels.length} hotel${hotels.length !== 1 ? 's' : ''} found`;
 
+  // Wire up card strip scroll arrows (deduped — safe to call each time)
+  const inner = document.getElementById('hotelListInner');
+  inner.addEventListener('scroll', updateCardBtns, { passive: true });
+  setTimeout(updateCardBtns, 150);
+
   // Geocode each hotel with a small delay to avoid rate limiting
   for (let i = 0; i < hotels.length; i++) {
     const hotel = hotels[i];
@@ -1320,6 +1348,20 @@ function closeSV() {
   document.getElementById('svPanorama').innerHTML = '';
   document.getElementById('svThumbBar').innerHTML = '';
   svPano = null;
+}
+
+function scrollCards(dir) {
+  const el = document.getElementById('hotelListInner');
+  el.scrollBy({ left: dir * 210, behavior: 'smooth' });
+}
+
+function updateCardBtns() {
+  const el = document.getElementById('hotelListInner');
+  if (!el) return;
+  const prev = document.getElementById('cardPrev');
+  const next = document.getElementById('cardNext');
+  if (prev) prev.disabled = el.scrollLeft < 2;
+  if (next) next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
 }
 
 function setMapType(type) {
