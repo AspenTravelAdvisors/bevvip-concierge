@@ -398,13 +398,14 @@
     }
 
     .content a.booking-mobile {
-      background: transparent;
-      border: 1px solid var(--border);
+      background: rgba(201, 168, 76, 0.07);
+      border: 1px solid var(--gold-dim);
       color: var(--text-sub) !important;
     }
 
     .content a.booking-mobile:hover {
-      border-color: var(--gold-dim);
+      background: rgba(201, 168, 76, 0.16);
+      border-color: var(--gold);
       color: var(--gold) !important;
     }
 
@@ -980,7 +981,9 @@ function fitMapToMarkers() {
 
 // ── GEOCODE & PIN HOTELS ──────────────────────────────────
 async function processHotels(hotels) {
-  if (!map || !hotels || hotels.length === 0) return;
+  console.log('[BeVvip] processHotels called — map:', !!map, 'hotels:', hotels?.length);
+  if (!map) { setMapStatus('⚠ map not ready'); return; }
+  if (!hotels || hotels.length === 0) return;
 
   clearMarkers();
   hotelData = hotels.map(h => ({ ...h, marker: null, infoWindow: null }));
@@ -1142,10 +1145,16 @@ function expandBookingLinks(html) {
 }
 
 // ── EXTRACT HOTEL JSON FROM AI RESPONSE ──────────────────
+function setMapStatus(msg) {
+  const el = document.getElementById('hotelCount');
+  if (el) el.textContent = msg;
+}
+
 function extractHotelData(text) {
   const match = text.match(/<!--BEVVIP_HOTELS[\s\S]*?-->/);
   if (!match) {
-    console.warn('[BeVvip] No BEVVIP_HOTELS tag found. Response tail:', text.slice(-500));
+    console.warn('[BeVvip] No BEVVIP_HOTELS tag found. Tail:', text.slice(-500));
+    setMapStatus('⚠ no map tag');
     return null;
   }
   let raw = match[0].replace('<!--BEVVIP_HOTELS', '').replace('-->', '').trim();
@@ -1185,6 +1194,7 @@ function extractHotelData(text) {
   }
 
   console.warn('[BeVvip] Hotel JSON parse failed entirely. Raw:', raw.slice(0, 400));
+  setMapStatus('⚠ map parse error');
   return null;
 }
 
