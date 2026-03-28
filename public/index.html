@@ -1087,14 +1087,36 @@ function extractHotelData(text) {
   if (raw.startsWith(':')) raw = raw.slice(1).trim();
   if (!raw.startsWith('[')) raw = '[' + raw;
   if (!raw.endsWith(']')) raw = raw + ']';
+
+  // Attempt 1: direct parse
+  try { return JSON.parse(raw); } catch (e) {}
+
+  // Attempt 2: repair common model JSON errors
+  let repaired = raw;
+  // Fix missing colon between key and numeric value: "adults2 → "adults":2
+  repaired = repaired.replace(/"(adults|children|zoom)(\d)/g, '"$1":$2');
+  // Remove trailing commas before } or ]
+  repaired = repaired.replace(/,(\s*[}\]])/g, '$1');
   try {
-    const data = JSON.parse(raw);
-    console.log('[BeVvip] Hotels parsed:', data);
+    const data = JSON.parse(repaired);
+    console.log('[BeVvip] Hotels parsed (repaired):', data);
     return data;
-  } catch (e) {
-    console.warn('[BeVvip] Hotel JSON parse failed:', e.message, '| Raw:', raw.slice(0, 300));
-    return null;
+  } catch (e) {}
+
+  // Attempt 3: extract each complete hotel object individually (handles truncation)
+  const hotels = [];
+  const re = /\{"name"\s*:\s*"[^"]+"\s*,[^{}]+\}/g;
+  let m;
+  while ((m = re.exec(raw)) !== null) {
+    try { hotels.push(JSON.parse(m[0])); } catch (e) {}
   }
+  if (hotels.length > 0) {
+    console.log('[BeVvip] Hotels extracted individually:', hotels);
+    return hotels;
+  }
+
+  console.warn('[BeVvip] Hotel JSON parse failed entirely. Raw:', raw.slice(0, 400));
+  return null;
 }
 
 function stripHotelTag(text) {
