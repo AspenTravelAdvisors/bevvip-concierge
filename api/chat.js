@@ -78,6 +78,8 @@ https://www.virtuoso.com/advisor/brianharris/tours#SearchTerms=[DESTINATION+OR+O
 \`\`\`
 
 ## 7. LINK FORMAT BY PRODUCT TYPE
+HARD RULE: The VipTravelAi.com mobile link MUST appear before the Virtuoso link for every single hotel and cruise. Never skip it. Never reorder it.
+
 **Hotels**  -  all three, in this order:
 >>  [Book on Mobile ~ VipTravelAi.com (password = VIP)](https://www.VipTravelAi.com)
 **[+ BOOK on Virtuoso  -  Hotel Name](virtuoso_hotel_url)**
@@ -172,7 +174,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4.1-mini',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           ...messages,
