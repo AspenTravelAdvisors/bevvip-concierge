@@ -369,8 +369,43 @@
 
     .content hr {
       border: none;
-      border-top: 1px solid var(--border);
-      margin: 16px 0;
+      border-top: 1px solid var(--gold-dim);
+      margin: 20px 0;
+      opacity: 0.5;
+    }
+
+    /* ── BOOKING LINK BUTTONS ────────────────────────────── */
+    .content a.booking-link {
+      display: inline-block;
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 4px 0;
+      border-bottom: none !important;
+      transition: all 0.2s;
+    }
+
+    .content a.booking-virtuoso {
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold-light) !important;
+    }
+
+    .content a.booking-virtuoso:hover {
+      background: rgba(201, 168, 76, 0.24);
+      border-color: var(--gold);
+    }
+
+    .content a.booking-mobile {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-sub) !important;
+    }
+
+    .content a.booking-mobile:hover {
+      border-color: var(--gold-dim);
+      color: var(--gold) !important;
     }
 
     .content blockquote {
@@ -607,19 +642,19 @@
     }
 
     .hotel-card-name {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text);
       line-height: 1.3;
     }
 
     .hotel-card-city {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
     }
 
     .hotel-card-pin {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--gold);
       margin-top: 4px;
     }
@@ -1072,7 +1107,7 @@ function expandBookingLinks(html) {
     if (checkin)  p += `&HotelBookingCheckinDate=${checkin}&HotelBookingCheckoutDate=${checkout}`;
     p += `&HotelBookingNumberAdults=${adults}&HotelBookingNumberChildren=${children}`;
     p += `&SearchType=Property&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
-    return `href="${BASE}hotels#${p}" target="_blank" rel="noopener"`;
+    return `href="${BASE}hotels#${p}" target="_blank" rel="noopener" class="booking-link booking-virtuoso"`;
   });
 
   // VCRUISE:Search+Terms@startDate@endDate
@@ -1084,7 +1119,7 @@ function expandBookingLinks(html) {
     let p = `SearchTerms=${encodeURIComponent(terms)}`;
     if (start) p += `&TravelProductStartDate=${start}&TravelProductEndDate=${end}`;
     p += `&SearchType=Cruise&SortType=SearchRelevance&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
-    return `href="${BASE}cruises#${p}" target="_blank" rel="noopener"`;
+    return `href="${BASE}cruises#${p}" target="_blank" rel="noopener" class="booking-link booking-virtuoso"`;
   });
 
   // VTOUR:Search+Terms@startDate@endDate
@@ -1096,8 +1131,12 @@ function expandBookingLinks(html) {
     let p = `SearchTerms=${encodeURIComponent(terms)}`;
     if (start) p += `&TravelProductStartDate=${start}&TravelProductEndDate=${end}`;
     p += `&SearchType=Tour&SortType=TourTravelDateAsc&CurrentPage=1&RowsPerPage=25&SearchView=1col&StartRow=0`;
-    return `href="${BASE}tours#${p}" target="_blank" rel="noopener"`;
+    return `href="${BASE}tours#${p}" target="_blank" rel="noopener" class="booking-link booking-virtuoso"`;
   });
+
+  // Style VipTravelAi mobile links
+  html = html.replace(/href="https:\/\/www\.VipTravelAi\.com"/gi,
+    'href="https://www.VipTravelAi.com" class="booking-link booking-mobile"');
 
   return html;
 }
