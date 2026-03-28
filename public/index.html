@@ -817,24 +817,69 @@
       display: none; /* handled in chat close */
     }
 
+    /* ── MOBILE TABS ────────────────────────────────────── */
+    .mobile-tabs {
+      display: none;
+      flex-shrink: 0;
+      height: 52px;
+      border-top: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .mobile-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: none;
+      border-top: 2px solid transparent;
+      background: none;
+      cursor: pointer;
+      font-family: var(--ff-sans);
+      transition: all 0.2s;
+      padding: 0;
+    }
+    .mobile-tab.active { color: var(--gold); border-top-color: var(--gold); }
+    .mobile-tab-badge {
+      background: var(--gold);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 1px 6px;
+      display: none;
+    }
+    .mobile-tab-badge.show { display: inline; }
+
     /* ── RESPONSIVE ─────────────────────────────────────── */
     @media (max-width: 768px) {
-      .main { flex-direction: column; }
+      .mobile-tabs { display: flex; }
+
+      .main { flex-direction: column; overflow: hidden; }
 
       .chat-panel {
         width: 100%;
-        height: 60vh;
+        flex: 1;
+        min-height: 0;
         border-right: none;
-        border-bottom: 1px solid var(--border);
+        border-bottom: none;
       }
 
-      .map-panel { height: 40vh; }
+      .map-panel {
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        height: auto;
+        display: none; /* hidden until Map tab selected */
+      }
+
+      .hotel-list { max-height: none; }
 
       .starters { grid-template-columns: 1fr; }
-
       .header-contact { display: none; }
-
-      .hotel-list { max-height: 120px; }
     }
 
     @media (max-width: 480px) {
@@ -950,6 +995,17 @@
     </section>
 
   </div>
+
+  <!-- Mobile tab bar (hidden on desktop) -->
+  <div class="mobile-tabs">
+    <button class="mobile-tab active" data-tab="chat" onclick="mobileTab('chat')">
+      💬 Chat
+    </button>
+    <button class="mobile-tab" data-tab="map" onclick="mobileTab('map')">
+      🗺 Map <span class="mobile-tab-badge" id="mapTabBadge"></span>
+    </button>
+  </div>
+
 </div>
 
 <script>
@@ -1193,10 +1249,15 @@ async function processHotels(hotels) {
   document.getElementById('hotelCount').textContent =
     `${hotels.length} hotel${hotels.length !== 1 ? 's' : ''} found`;
 
-  // Wire up card strip scroll arrows (deduped — safe to call each time)
+  // Wire up card strip scroll arrows
   const inner = document.getElementById('hotelListInner');
   inner.addEventListener('scroll', updateCardBtns, { passive: true });
   setTimeout(updateCardBtns, 150);
+
+  // Mobile: update badge and auto-switch to Map tab
+  const badge = document.getElementById('mapTabBadge');
+  if (badge) { badge.textContent = hotels.length; badge.classList.add('show'); }
+  mobileTab('map');
 
   // Geocode each hotel with a small delay to avoid rate limiting
   for (let i = 0; i < hotels.length; i++) {
@@ -1348,6 +1409,17 @@ function closeSV() {
   document.getElementById('svPanorama').innerHTML = '';
   document.getElementById('svThumbBar').innerHTML = '';
   svPano = null;
+}
+
+function mobileTab(tab) {
+  if (window.innerWidth > 768) return;
+  const chatPanel = document.querySelector('.chat-panel');
+  const mapPanel  = document.querySelector('.map-panel');
+  chatPanel.style.display = tab === 'chat' ? 'flex' : 'none';
+  mapPanel.style.display  = tab === 'map'  ? 'flex' : 'none';
+  document.querySelectorAll('.mobile-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === tab));
+  if (tab === 'map' && map) google.maps.event.trigger(map, 'resize');
 }
 
 function scrollCards(dir) {
@@ -1591,6 +1663,9 @@ async function sendMessage(overrideText) {
   const input = document.getElementById('messageInput');
   const text = (overrideText || input.value).trim();
   if (!text || isLoading) return;
+
+  // Mobile: switch to chat so user sees the response streaming in
+  mobileTab('chat');
 
   // Hide welcome
   showWelcome(false);
