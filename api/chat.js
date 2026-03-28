@@ -167,13 +167,13 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5.4',
+        model: 'gpt-4.1',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           ...messages,
         ],
         stream: true,
-        max_completion_tokens: 10000,
+        max_tokens: 10000,
         temperature: 0.1,
       }),
     });
