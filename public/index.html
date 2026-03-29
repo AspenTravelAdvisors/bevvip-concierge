@@ -719,6 +719,28 @@
       border-color: var(--gold);
     }
 
+    .ata-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-family: var(--ff-sans);
+      margin-top: 5px;
+    }
+    .ata-badge-top { background: var(--gold); color: #000; }
+    .ata-badge-visited {
+      background: rgba(201,168,76,0.12);
+      color: var(--gold);
+      border: 1px solid var(--gold-dim);
+    }
+    .ata-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+
     .hotel-card-book-btn {
       display: block;
       background: var(--gold);
@@ -1033,6 +1055,84 @@
 </div>
 
 <script>
+// ── ATA CURATED PROPERTIES ─────────────────────────────────
+const ATA_TOP25 = [
+  'Velaa Private Island','North Island','The Brando','Nihi Sumba',
+  'Four Seasons Resort Lanai','Southern Ocean Lodge','Cheval Blanc Randheli',
+  'Cheval Blanc Paris','Cheval Blanc St-Barth','Hotel Eden Roc',
+  'Le Bristol Paris','Bvlgari Hotel Milano','Bvlgari Hotel Paris',
+  'Airelles Courchevel','Airelles Chateau de Versailles',
+  'Singita Grumeti','Singita Sabi Sand','Singita Pamushana',
+  'Soneva Jani','Soneva Fushi','La Reserve Paris Hotel and Spa',
+  'La Reserve Ramatuelle','Necker Island','Kasbah Tamadot','Mahali Mzuri'
+];
+const ATA_VISITED = [
+  // Top 25 (also visited)
+  ...ATA_TOP25,
+  // Additional personally visited properties
+  'Raffles Doha','Raffles Bali','Tierra Patagonia','Noi Indigo Patagonia',
+  'Singular Santiago','Singular Patagonia','Nayara Hangaroa','Explora Rapa Nui',
+  'Malibu Beach Inn','Peter Island','Umana Bali','Conrad Bali','Como Parrot Cay',
+  'W South Beach','Kimpton Hotel Palomar','Kokomo Private Island','Namale Resort',
+  'Royal Davui','Nukutepipi','Motu Nao Nao','The Little Nell',
+  'Four Seasons Mauritius','Four Seasons Johannesburg','Kisawa Sanctuary',
+  'La Sultana','Four Seasons Geneva','Vermejo','Hilton Tahiti',
+  'Phulay Bay Ritz-Carlton Reserve','Rayavadee','Trisara','The Slate Phuket',
+  'Rosewood Phuket','Amanpuri','Como Point Yamu','Four Seasons Seattle',
+  'Tikehau Pearl Beach Resort','InterContinental Tahiti',
+  'Waldorf Astoria Maldives','Conrad Maldives','Gili Lankanfushi',
+  'Four Seasons Bora Bora','St Regis Washington','Le Tahaa',
+  'Ritz-Carlton Marina del Rey','Vomo Island','SLS Beverly Hills','W Aspen',
+  'Otahuna Lodge','Faena Miami Beach','Huka Lodge','Minaret Station','The Lindis',
+  'Rosewood Bali','Eichardt\'s Private Hotel','Blanket Bay','The Silo Hotel',
+  'Royal Malewane','Mount Nelson','Grootbos','One&Only Cape Town',
+  'Singita Sweni','Singita Castleton','Singita Boulders','Singita Ebony',
+  'Kimpton Seafire','The Roxy Hotel','Hotel Barthelemy','Le Sereno',
+  'The Cotton House','Silver Sands Grenada','Spice Island Beach Resort',
+  'BodyHoliday St Lucia','Four Seasons Anguilla','Dorado Beach Ritz-Carlton',
+  'Waldorf Astoria Monarch Beach','Ritz-Carlton Grand Cayman',
+  'Como Uma Canggu','Soori Bali','Como Shambhala Estate','Capella Ubud',
+  'Four Seasons Jimbaran Bay','Oberoi Bali','The Legian Bali','Viceroy Bali',
+  'Revivo Wellness Resort','St Regis Bali','Bvlgari Resort Bali',
+  'Alila Villas Uluwatu','Alila Ubud','Alila Seminyak',
+  'Mandapa Ritz-Carlton','Four Seasons Sayan','Amandari','W Bali',
+  'The Phoenician','The Dolder Grand','Alpina Gstaad','Mont Cervin Palace',
+  'Burgenstock Palace','Clinic La Prairie','The Lodge Virgin Limited Edition',
+  'Il Sereno','Villa d\'Este','Widder Hotel','Grace Bay Club','Terranea',
+  'The Art Hotel Denver','Four Seasons San Francisco','Ritz-Carlton Macau',
+  'Waldorf Astoria Beverly Hills','The Beverly Hills Hotel','Sabi Sabi',
+  'Hilton Seychelles','Anantara Maia Seychelles','St Regis Aspen',
+  'Four Seasons Vail','Arabelle Vail','Sebastian Vail','Ritz-Carlton Bachelor Gulch',
+  'Lodge at Vail','Four Seasons Nevis','Jumby Bay','La Samanna',
+  'Moana Surfrider','Four Seasons Ko Olina'
+];
+
+function _normHotel(s) {
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function getATATier(hotelName) {
+  const n = _normHotel(hotelName);
+  const matches = list => list.some(p => {
+    const pn = _normHotel(p);
+    if (n.includes(pn) || pn.includes(n)) return true;
+    const words = pn.split(' ').filter(w => w.length > 3);
+    return words.length >= 2 && words.every(w => n.includes(w));
+  });
+  if (matches(ATA_TOP25)) return 'top25';
+  if (matches(ATA_VISITED)) return 'visited';
+  return null;
+}
+function ataBadgeHTML(hotelName) {
+  const tier = getATATier(hotelName);
+  if (!tier) return '';
+  const top = tier === 'top25'
+    ? '<span class="ata-badge ata-badge-top">✦ ATA Top Pick</span>' : '';
+  const vis = '<span class="ata-badge ata-badge-visited">🛩️ ATA Visited</span>';
+  return `<div class="ata-badges">${top}${vis}</div>`;
+}
+
 // ── CONFIG ─────────────────────────────────────────────────
 // Replace with your deployed Vercel URL when testing locally
 // In production (same domain), /api/chat works automatically
@@ -1201,8 +1301,9 @@ function addHotelMarker(hotel, index, position) {
     <div style="background:#1a1a1c;color:#e8e0d0;padding:10px 12px;min-width:180px;max-width:230px;font-family:Inter,sans-serif;">
       <div style="color:#c9a84c;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">✦ VIRTUOSO PREFERRED</div>
       <div style="font-weight:600;font-size:13px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
-      <div style="font-size:11px;color:#7a7060;margin-bottom:8px;">${hotel.city}</div>
-      <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:block;background:#c9a84c;color:#000;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.03em;text-align:center;">✦ Book on Virtuoso →</a>
+      <div style="font-size:11px;color:#7a7060;margin-bottom:6px;">${hotel.city}</div>
+      ${ataBadgeHTML(hotel.name)}
+      <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:block;background:#c9a84c;color:#000;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.03em;text-align:center;margin-top:8px;">✦ Book on Virtuoso →</a>
     </div>`;
 
   const infoWindow = new google.maps.InfoWindow({
@@ -1277,6 +1378,7 @@ async function processHotels(hotels) {
       <div style="padding:8px 10px 10px">
         <div class="hotel-card-name">${hotel.name}</div>
         <div class="hotel-card-city">${hotel.city}</div>
+        ${ataBadgeHTML(hotel.name)}
         <div class="hotel-card-pin">
           <span>📍 ${index + 1}</span>
           <span class="hotel-card-map-btn">🗺 Map</span>
@@ -1361,8 +1463,9 @@ async function processHotels(hotels) {
               <div style="background:#1a1a1c;color:#e8e0d0;padding:10px 12px;min-width:180px;max-width:230px;font-family:Inter,sans-serif;">
                 <div style="color:#c9a84c;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">✦ VIRTUOSO PREFERRED</div>
                 <div style="font-weight:600;font-size:13px;color:#e8e0d0;line-height:1.3;margin-bottom:2px;">${hotel.name}</div>
-                <div style="font-size:11px;color:#7a7060;margin-bottom:8px;">${hotel.city}</div>
-                <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:block;background:#c9a84c;color:#000;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.03em;text-align:center;">✦ Book on Virtuoso →</a>
+                <div style="font-size:11px;color:#7a7060;margin-bottom:6px;">${hotel.city}</div>
+                ${ataBadgeHTML(hotel.name)}
+                <a href="${virtuosoUrl}" target="_blank" rel="noopener" style="display:block;background:#c9a84c;color:#000;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.03em;text-align:center;margin-top:8px;">✦ Book on Virtuoso →</a>
               </div>`);
           }
         }
