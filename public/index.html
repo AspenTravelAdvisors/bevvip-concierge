@@ -1007,7 +1007,7 @@
             </svg>
           </button>
         </div>
-        <div class="input-hint">Powered by Aspen Travel Advisors preferred-partner access, Virtuoso, and advanced AI.</div>
+        <div class="input-hint">Powered by Aspen Travel Advisors preferred-partner access, Virtuoso®, and advanced AI.</div>
       </div>
     </section>
 
@@ -1239,7 +1239,11 @@ function initMap() {
 
   // Hide placeholder once map is ready
   google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
-    // Map is ready
+    // Map is ready — flush any hotels that arrived before initMap completed
+    if (window._pendingHotels) {
+      processHotels(window._pendingHotels);
+      window._pendingHotels = null;
+    }
   });
 }
 
@@ -1347,7 +1351,7 @@ function fitMapToMarkers() {
 // ── GEOCODE & PIN HOTELS ──────────────────────────────────
 async function processHotels(hotels) {
   console.log('[BeVvip] processHotels called — map:', !!map, 'hotels:', hotels?.length);
-  if (!map) { setMapStatus('⚠ map not ready'); return; }
+  if (!map) { window._pendingHotels = hotels; return; }
   if (!hotels || hotels.length === 0) return;
 
   clearMarkers();
@@ -1512,13 +1516,14 @@ function renderSVPano() {
 }
 
 async function expandPanoCollection() {
-  const hotel = hotelData[svHotelIdx];
+  const capturedIdx = svHotelIdx;
+  const hotel = hotelData[capturedIdx];
   if (!hotel) return;
   const svc = new google.maps.StreetViewService();
   const seen = new Set(hotel.svPanos);
 
   // 1. BFS link traversal — level 1: direct links from loaded pano
-  const loadedId = svPano ? svPano.getPano() : hotel.svPanos[0];
+  const loadedId = (svPano && svHotelIdx === capturedIdx) ? svPano.getPano() : hotel.svPanos[0];
   const level1 = new Set();
   await new Promise(resolve => {
     svc.getPanorama({ pano: loadedId }, (data, status) => {
@@ -1529,6 +1534,9 @@ async function expandPanoCollection() {
     });
   });
 
+  // Bail if modal was closed or switched to a different hotel
+  if (svHotelIdx !== capturedIdx) return;
+
   // 2. BFS level 2: follow links of level-1 panos (up to 12 to stay within quota)
   await Promise.all([...level1].slice(0, 12).map(id => new Promise(resolve => {
     svc.getPanorama({ pano: id }, (data, status) => {
@@ -1536,6 +1544,8 @@ async function expandPanoCollection() {
       resolve();
     });
   })));
+
+  if (svHotelIdx !== capturedIdx) return;
 
   // 3. Wide location grid — catches unlinked photo spheres anywhere on the property
   if (hotel.svPos) {
@@ -1555,6 +1565,9 @@ async function expandPanoCollection() {
       );
     })));
   }
+
+  // Final stale-check before touching DOM
+  if (svHotelIdx !== capturedIdx) return;
 
   const all = [...seen];
   if (all.length > hotel.svPanos.length) {
@@ -1607,10 +1620,11 @@ function toggleSVFullscreen() {
 
 function closeSV() {
   if (document.fullscreenElement) document.exitFullscreen();
+  svHotelIdx = -1;
+  svPano = null;
   document.getElementById('svModal').classList.remove('open');
   document.getElementById('svPanorama').innerHTML = '';
   document.getElementById('svThumbBar').innerHTML = '';
-  svPano = null;
 }
 
 function mobileTab(tab) {
