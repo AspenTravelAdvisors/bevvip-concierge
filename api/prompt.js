@@ -137,13 +137,62 @@ Aspen Travel Advisors is a specialist in luxury expedition cruising. When client
 
 **What it is:** Small-ship voyages blending luxury comfort with active exploration in remote destinations inaccessible to large ships. Expert naturalist/historian guides, Zodiac excursions, flexible itineraries.
 
-**Preferred Cruise Lines (all bookable with exclusive ATA perks):**
-- Ponant – French luxury, polar-capable ships, hybrid propulsion
-- Silversea Expeditions – Ultra-luxury accommodations, expert-led excursions
-- Seabourn Expeditions – PC6 ice-class ships with submarines and luxury suites
-- HX Expeditions – Pioneers in polar cruising, strong sustainability focus
-- Quark Expeditions – Polar adventure specialists
-- Lindblad Expeditions–National Geographic – Deep scientific expertise
+**Expedition & Polar Specialists (ATA core expertise):**
+- Ponant / PONANT Explorations – French luxury, polar-capable ships, hybrid propulsion (414 sailings)
+- Silversea – Ultra-luxury accommodations, expert-led excursions (672 sailings)
+- Seabourn – PC6 ice-class ships with submarines and luxury suites (700 sailings)
+- HX Expeditions – Pioneers in polar cruising, strong sustainability focus (46 sailings)
+- Quark Expeditions – Polar adventure specialists (57 sailings)
+- National Geographic–Lindblad Expeditions – Deep scientific expertise (159 sailings)
+- Aurora Expeditions – Small-ship polar and expedition voyages (89 sailings)
+- Aqua Expeditions – Luxury expedition in Amazon and Southeast Asia (62 sailings)
+- Swan Hellenic – Cultural expedition cruising (84 sailings)
+- Coral Expeditions – Australia and Pacific expedition specialists (33 sailings)
+- Atlas Ocean Voyages – Expedition-style with inclusive luxury (100 sailings)
+- UnCruise Adventures – Small-ship adventure in Alaska and beyond (20 sailings)
+
+**Ultra-Luxury Ocean & Yacht Lines:**
+- Aman at Sea – Exclusive yacht-style voyages, Aman service (25 sailings)
+- Four Seasons Yachts – Four Seasons service at sea (82 sailings)
+- The Ritz-Carlton Yacht Collection – Intimate ultra-luxury yachts (223 sailings)
+- Orient Express Sailing Yachts – Iconic brand, sailing yacht elegance (119 sailings)
+- Regent Seven Seas Cruises – All-inclusive ultra-luxury (459 sailings)
+- Crystal – Legendary luxury ocean and river cruising (214 sailings)
+- SeaDream Yacht Club – Boutique mega-yacht, casual ultra-luxury (201 sailings)
+- Sea Cloud Cruises – Iconic tall ship sailing (108 sailings)
+- Cunard – Grand ocean liner tradition (503 sailings)
+- Explora Journeys – MSC's ultra-luxury lifestyle brand (393 sailings)
+- Azamara Cruises – Destination-immersive luxury (409 sailings)
+- Oceania Cruises – Culinary-focused upper-premium (556 sailings)
+- Windstar Cruises – Small ship, sail and motor yacht (596 sailings)
+- Star Clippers – Tall ship sailing adventures (150 sailings)
+- Paul Gauguin Cruises – French Polynesia specialists (25 sailings)
+- Viking – Destination-focused, adults-only ocean and river (640 sailings)
+- Virgin Voyages – Modern adults-only, all-inclusive (212 sailings)
+- Belmond Cruises – Iconic luxury river and coastal voyages (15 sailings)
+- Australis Cruises – Patagonia and Cape Horn specialists (4 sailings)
+- Heritage Line – Luxury Mekong and Halong Bay river cruising (11 sailings)
+
+**Premium & Mainstream Lines (bookable with ATA Virtuoso perks):**
+- Celebrity Cruises (683 sailings)
+- Holland America Line (979 sailings)
+- Norwegian Cruise Line (842 sailings)
+- Princess Cruises (2,045 sailings)
+- Royal Caribbean (1,347 sailings)
+
+**River Cruising:**
+- AmaWaterways – Europe, Asia, Africa river specialists (89 sailings)
+- Avalon Waterways – European and Mekong river cruising (291 sailings)
+- Uniworld Boutique River Cruises – Ultra-luxury river (120 sailings)
+- Riverside Luxury Cruises – Boutique European rivers (310 sailings)
+- Tauck River Cruising – Family-friendly luxury rivers (71 sailings)
+- Viking (river fleet included above)
+- French Country Waterways, Ltd. – Intimate barge cruising in France (8 sailings)
+
+**Adventure & Specialty:**
+- Abercrombie & Kent – Luxury expedition and adventure (14 sailings)
+- Hurtigruten – Norwegian coastal and Arctic voyages (39 sailings)
+- Intrepid Travel – Small-group adventure cruising (14 sailings)
 
 **Top Destinations & Best Seasons:**
 - Antarctica: Nov–Mar (penguin chicks, mild weather)
