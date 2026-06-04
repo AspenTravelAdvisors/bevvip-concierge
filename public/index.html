@@ -1059,6 +1059,7 @@
     </div>
     <nav class="header-atlas" aria-label="Atlas maps">
       <span class="atlas-eyebrow">Atlas Maps</span>
+      <a href="https://luxury-hotel-atlas-two.vercel.app/" target="_blank" rel="noopener" class="atlas-link">🏨 Hotels</a>
       <a href="https://expedition-cruise-map.vercel.app/" target="_blank" rel="noopener" class="atlas-link">🚢 Cruise</a>
       <a href="https://private-jet-expeditions.vercel.app/" target="_blank" rel="noopener" class="atlas-link">🛩️ Jet</a>
       <a href="https://luxury-hotel-brand-yacht-atlas.vercel.app/" target="_blank" rel="noopener" class="atlas-link">⚓ Yacht</a>
@@ -1943,6 +1944,12 @@ function stripHotelTag(text) {
 
 // ── INTERACTIVE ATLAS MAPS ────────────────────────────────
 const ATLAS = {
+  hotel: {
+    icon: '🏨',
+    title: 'Luxury Hotel Atlas',
+    sub: '2,500 luxury hotel brand stays in photorealistic 3D — filter by brand, country & category',
+    url: 'https://luxury-hotel-atlas-two.vercel.app/',
+  },
   cruise: {
     icon: '🚢',
     title: 'Expedition Cruise Atlas',
@@ -1979,6 +1986,7 @@ function extractAtlasKeys(text) {
   // 2. Keyword fallback so the right map still surfaces if the tag is missing
   if (keys.size === 0) {
     const t = text.toLowerCase();
+    if (/explore.*hotel|hotel.*brand|all.*properties|hotel.*map|luxury hotel atlas|browse.*hotel|hotel.*destination/.test(t)) keys.add('hotel');
     if (/expedition cruise|antarctic|arctic|gal[aá]pagos|polar voyage|zodiac|inside passage|river cruis|svalbard/.test(t)) keys.add('cruise');
     if (/private jet|jet expedition|around[- ]the[- ]world|world tour by (?:jet|air)|jet journey/.test(t)) keys.add('jet');
     if (/(aman|four seasons|ritz-?carlton|orient express|emerald)[^.]{0,30}yacht|hotel-brand yacht|yacht collection|aman at sea|yachts? at sea/.test(t)) keys.add('yacht');
