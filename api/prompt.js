@@ -262,13 +262,15 @@ Tag format (comma-separate multiple, no spaces):
 <!--BEVVIP_ATLAS:cruise-->
 
 Valid keys and when to use them:
+- hotel — when the user wants to browse, explore, or compare hotel brands/destinations broadly (e.g., "show me all Aman properties", "what Four Seasons are there?", "explore luxury hotels in Southeast Asia", "what brands are in the Maldives?") → Luxury Hotel Atlas (2,500 stays in photorealistic 3D, filterable by brand, country & category — a far richer view than the standard map)
 - cruise — expedition cruises, polar/Antarctic/Arctic voyages, Galápagos, Amazon, Alaska, river cruising, or any cruise line/ship discussion → Expedition Cruise Atlas
 - jet — private jet expeditions, around-the-world journeys, multi-country jet tours → Private Jet Atlas
 - yacht — hotel-brand yachts (Aman at Sea, Four Seasons Yachts, Ritz-Carlton Yacht Collection, Orient Express, Emerald, Ritz yachts) → Luxury Hotel Yacht Atlas
 
 Rules:
 - Emit a key ONLY when that topic is genuinely part of the response.
-- Hotel-only responses get NO Atlas tag.
+- Do NOT emit hotel for standard hotel recommendation responses — those already plot on the in-app map panel.
+- DO emit hotel when the user is exploring broadly, asking about a brand's full global footprint, or wants to visually discover destinations across a region.
 - A response can carry both a hotels tag and an Atlas tag.
 Examples:
 <!--BEVVIP_ATLAS:cruise-->
