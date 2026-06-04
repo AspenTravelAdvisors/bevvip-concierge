@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Be Vvip Luxury Travel Concierge</title>
+  <title>BeVvip Luxury Travel Concierge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -133,6 +133,41 @@
       width: 1px;
       height: 14px;
       background: var(--border);
+    }
+
+    /* ── HEADER ATLAS NAV ───────────────────────────────── */
+    .header-atlas {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      margin-right: 18px;
+      padding-right: 18px;
+      border-right: 1px solid var(--border);
+    }
+    .atlas-eyebrow {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .atlas-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-sub);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .atlas-link:hover {
+      color: var(--gold-light);
+      border-color: var(--gold-dim);
+      background: rgba(201, 168, 76, 0.08);
     }
 
     /* ── MAIN SPLIT PANE ────────────────────────────────── */
@@ -415,6 +450,64 @@
       margin: 6px 0;
       font-style: normal;
       border: none;
+    }
+
+    /* ── IN-CHAT ATLAS CARDS ─────────────────────────────── */
+    .atlas-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0 4px;
+      animation: slideUp 0.3s ease;
+    }
+    .atlas-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .atlas-card:hover {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, rgba(201,168,76,0.16), rgba(201,168,76,0.05));
+      transform: translateY(-1px);
+    }
+    .atlas-card-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+    }
+    .atlas-card-body { flex: 1; min-width: 0; }
+    .atlas-card-title {
+      font-family: var(--ff-serif);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold-light);
+      line-height: 1.2;
+    }
+    .atlas-card-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .atlas-card-cta {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      white-space: nowrap;
     }
 
     /* Virtuoso benefits label highlight */
@@ -926,6 +1019,23 @@
 
       .starters { grid-template-columns: 1fr; }
       .header-contact { display: none; }
+
+      .header-atlas {
+        margin-right: 0;
+        padding-right: 0;
+        border-right: none;
+        gap: 5px;
+      }
+      .atlas-eyebrow { display: none; }
+      .atlas-link {
+        font-size: 11px;
+        padding: 4px 8px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .header-atlas { gap: 3px; }
+      .atlas-link { padding: 3px 6px; font-size: 10px; letter-spacing: 0; }
     }
 
     @media (max-width: 480px) {
@@ -943,12 +1053,18 @@
     <div class="header-brand">
       <div class="header-logo-placeholder" title="BeVvip">✦</div>
       <div class="header-title">
-        <strong>Be Vvip Luxury Travel</strong>
+        <strong>BeVvip Luxury Travel</strong>
         <span>Virtuoso® Preferred Partner Concierge</span>
       </div>
     </div>
+    <nav class="header-atlas" aria-label="Atlas maps">
+      <span class="atlas-eyebrow">Atlas Maps</span>
+      <a href="https://expedition-cruise-map.vercel.app/" target="_blank" rel="noopener" class="atlas-link">🚢 Cruise</a>
+      <a href="https://private-jet-expeditions.vercel.app/" target="_blank" rel="noopener" class="atlas-link">🛩️ Jet</a>
+      <a href="https://luxury-hotel-brand-yacht-atlas.vercel.app/" target="_blank" rel="noopener" class="atlas-link">⚓ Yacht</a>
+    </nav>
     <div class="header-contact">
-      <a href="https://bevvip.com" target="_blank">BeVvip.com</a>
+      <a href="https://bevvip.com" target="_blank" rel="noopener">BeVvip.com</a>
       <div class="divider"></div>
       <a href="mailto:Book@BeVvip.com">Book@BeVvip.com</a>
       <div class="divider"></div>
@@ -1739,8 +1855,8 @@ function extractHotelData(text) {
   } else {
     const bareMatch = text.match(/BEVVIP_HOTELS\s*:\s*(\[[\s\S]*?\])/);
     if (!bareMatch) {
+      // Expected for cruise/jet/tour-only responses — log quietly, never show the client.
       console.warn('[BeVvip] No BEVVIP_HOTELS tag found. Tail:', text.slice(-500));
-      setMapStatus('⚠ no map tag');
       return null;
     }
     raw = bareMatch[1];
@@ -1810,15 +1926,86 @@ function extractHotelData(text) {
   }
 
   console.warn('[BeVvip] Hotel JSON parse failed entirely. Raw:', raw.slice(0, 400));
-  setMapStatus('⚠ ' + raw.slice(0, 80));
   return null;
 }
 
 function stripHotelTag(text) {
   return text
-    .replace(/<!--\s*BEVVIP_HOTELS[\s\S]*?-->/g, '')
+    // Any BEVVIP comment tag through end of string — terminated OR still streaming.
+    // Machine tags are always appended last, so this safely removes the whole block
+    // (and any dangling "<!--BEVVIP_ATLAS:cru" fragment mid-stream) in one pass.
+    .replace(/<!--\s*BEVVIP_[\s\S]*$/g, '')
+    // Bare forms (model omitted the comment wrapper)
     .replace(/BEVVIP_HOTELS\s*:\s*\[[\s\S]*?\](?:\s*-->)?/g, '')
+    .replace(/BEVVIP_ATLAS\s*:\s*[a-z,]+(?:\s*-->)?/gi, '')
     .trim();
+}
+
+// ── INTERACTIVE ATLAS MAPS ────────────────────────────────
+const ATLAS = {
+  cruise: {
+    icon: '🚢',
+    title: 'Expedition Cruise Atlas',
+    sub: 'See which operators sail every region — Antarctica to the Amazon',
+    url: 'https://expedition-cruise-map.vercel.app/',
+  },
+  jet: {
+    icon: '🛩️',
+    title: 'Private Jet Atlas',
+    sub: 'Trace around-the-world journeys and regional jet expeditions',
+    url: 'https://private-jet-expeditions.vercel.app/',
+  },
+  yacht: {
+    icon: '⚓',
+    title: 'Luxury Hotel Yacht Atlas',
+    sub: 'Aman, Four Seasons & Ritz-Carlton yachts — where each ship sails',
+    url: 'https://luxury-hotel-brand-yacht-atlas.vercel.app/',
+  },
+};
+
+// Resolve which Atlas cards to show: explicit model tag first, keyword fallback second.
+function extractAtlasKeys(text) {
+  const keys = new Set();
+
+  // 1. Explicit tag from the model: <!--BEVVIP_ATLAS:cruise,jet-->
+  const tag = text.match(/BEVVIP_ATLAS\s*:\s*([a-z,\s]+)/i);
+  if (tag) {
+    tag[1].split(',').forEach(k => {
+      const key = k.trim().toLowerCase();
+      if (ATLAS[key]) keys.add(key);
+    });
+  }
+
+  // 2. Keyword fallback so the right map still surfaces if the tag is missing
+  if (keys.size === 0) {
+    const t = text.toLowerCase();
+    if (/expedition cruise|antarctic|arctic|gal[aá]pagos|polar voyage|zodiac|inside passage|river cruis|svalbard/.test(t)) keys.add('cruise');
+    if (/private jet|jet expedition|around[- ]the[- ]world|world tour by (?:jet|air)|jet journey/.test(t)) keys.add('jet');
+    if (/(aman|four seasons|ritz-?carlton|orient express|emerald)[^.]{0,30}yacht|hotel-brand yacht|yacht collection|aman at sea|yachts? at sea/.test(t)) keys.add('yacht');
+  }
+
+  return [...keys];
+}
+
+function renderAtlasCards(contentEl, keys) {
+  if (!contentEl || !keys.length) return;
+  if (contentEl.querySelector('.atlas-cards')) return; // guard against double render
+
+  const wrap = document.createElement('div');
+  wrap.className = 'atlas-cards';
+  wrap.innerHTML = keys.map(key => {
+    const a = ATLAS[key];
+    return `
+      <a class="atlas-card" href="${a.url}" target="_blank" rel="noopener">
+        <span class="atlas-card-icon">${a.icon}</span>
+        <span class="atlas-card-body">
+          <span class="atlas-card-title">${a.title}</span>
+          <span class="atlas-card-sub">${a.sub}</span>
+        </span>
+        <span class="atlas-card-cta">Open map →</span>
+      </a>`;
+  }).join('');
+  contentEl.appendChild(wrap);
 }
 
 // ── CHAT LOGIC ────────────────────────────────────────────
@@ -1986,6 +2173,12 @@ async function sendMessage(overrideText) {
   const hotels = extractHotelData(fullResponse);
   if (hotels && hotels.length > 0) {
     processHotels(hotels);
+  }
+
+  // Surface contextual Atlas map cards (expedition cruise / private jet / hotel yacht)
+  if (contentEl) {
+    renderAtlasCards(contentEl, extractAtlasKeys(fullResponse));
+    scrollToBottom();
   }
 
   setLoading(false);
