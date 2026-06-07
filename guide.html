@@ -98,6 +98,7 @@
   .atlas .openext{font-size:11.5px;color:var(--sub)}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
+  #livingAtlas gmp-map-3d{position:absolute;inset:0;width:100%;height:100%;display:block}
   .atlasframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#06080c;
     opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:3}
   .mapwrap.atlas-active .atlasframe{opacity:1;pointer-events:auto}
@@ -185,68 +186,49 @@ const sendBtn = el("send");
 const openExt = el("openExt");
 
 /* ===== Living Atlas (SPEC T7) =====
-   Resting state: dark marquee-region map (region overview, never full inventory).
-   On a qualified subset: bring in the immersive 3D Hotel Atlas, kept warm in a
-   persistent iframe and re-filtered LIVE via postMessage (no reload). */
-let lmap=null, mapsReady=false;
+   Resting state: a photorealistic 3D globe (same Map3DElement tech as the Hotel
+   Atlas) with marquee region pins. On a qualified subset: bring in the full
+   immersive Hotel Atlas, kept warm in a persistent iframe and re-filtered LIVE
+   via postMessage. */
+let globe=null, mapsReady=false, M3D=null, PIN=null, ALT=null;
 let regionMarkers=[];
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
 const ATLAS_ORIGIN = new URL(ATLAS_BASE).origin;
 const atlasFrame = el("atlasFrame");
 const mapwrap = el("mapwrap");
-let atlasPreloaded=false, atlasReady=false, pendingFilter=null, fallbackTimer=null;
+let atlasPreloaded=false, atlasReady=false, pendingFilter=null, fallbackTimer=null, hardNav=false;
 
-const DARK_STYLE=[
-  {elementType:"geometry",stylers:[{color:"#0b0e14"}]},
-  {elementType:"labels.text.fill",stylers:[{color:"#6b6450"}]},
-  {elementType:"labels.text.stroke",stylers:[{color:"#06080c"}]},
-  {featureType:"administrative",elementType:"geometry",stylers:[{color:"#2a2419"}]},
-  {featureType:"administrative.country",elementType:"labels.text.fill",stylers:[{color:"#8a7d5e"}]},
-  {featureType:"poi",stylers:[{visibility:"off"}]},
-  {featureType:"road",stylers:[{visibility:"off"}]},
-  {featureType:"transit",stylers:[{visibility:"off"}]},
-  {featureType:"water",elementType:"geometry",stylers:[{color:"#070a10"}]},
-  {featureType:"landscape",elementType:"geometry",stylers:[{color:"#10131a"}]},
-];
+function showMapFallback(){ el("mapFallback").style.display="flex"; }
 
-function svgIcon(svg,d){
-  const ic={ url:"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg) };
-  ic.scaledSize=new google.maps.Size(d,d); ic.anchor=new google.maps.Point(d/2,d/2); return ic;
-}
-function regionIcon(count){
-  const r = Math.max(14, Math.min(30, 12 + Math.round(Math.sqrt(count))));
-  const d = r*2+8;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${d}" height="${d}"><circle cx="${d/2}" cy="${d/2}" r="${r}" fill="rgba(201,168,76,.22)" stroke="#c9a84c" stroke-width="1.5"/><circle cx="${d/2}" cy="${d/2}" r="3" fill="#e2c87a"/></svg>`;
-  return svgIcon(svg,d);
-}
-
-/* --- dark resting map: marquee regions --- */
-window.initLivingAtlas = function(){
+/* --- resting state: 3D globe with marquee region pins --- */
+async function initLivingAtlas(){
   try{
-    lmap = new google.maps.Map(el("livingAtlas"), {
-      center:{lat:20,lng:10}, zoom:2, minZoom:2, disableDefaultUI:true, zoomControl:true,
-      gestureHandling:"greedy", backgroundColor:"#06080c", styles:DARK_STYLE,
-    });
+    const maps3d = await google.maps.importLibrary("maps3d");
+    const markerLib = await google.maps.importLibrary("marker");
+    const { Map3DElement, MapMode, Marker3DInteractiveElement, AltitudeMode } = maps3d;
+    M3D = Marker3DInteractiveElement; ALT = AltitudeMode; PIN = markerLib.PinElement;
+    globe = new Map3DElement({ center:{lat:12,lng:0,altitude:0}, range:24000000, tilt:0, heading:0, mode: MapMode.HYBRID });
+    globe.style.width="100%"; globe.style.height="100%"; globe.style.display="block";
+    el("livingAtlas").appendChild(globe);
+    try{ globe.gestureHandling="greedy"; }catch(_){}
     mapsReady = true;
     loadRegions();
   }catch(e){ showMapFallback(); }
-};
-function showMapFallback(){ el("mapFallback").style.display="flex"; }
+}
 
 async function loadRegions(){
-  if(!mapsReady) return;
+  if(!mapsReady || !globe) return;
   try{
-    const r = await fetch(ATLAS_BASE+"/api/regions");
-    const j = await r.json();
-    regionMarkers.forEach(m=>m.setMap(null)); regionMarkers=[];
+    const j = await (await fetch(ATLAS_BASE+"/api/regions")).json();
+    regionMarkers.forEach(m=>{ try{ m.remove(); }catch(_){} }); regionMarkers=[];
     for(const reg of (j.regions||[])){
       const [lng,lat] = reg.center;
-      const m = new google.maps.Marker({ position:{lat,lng}, map:lmap, icon:regionIcon(reg.count),
-        title:`${cap(reg.region)} · ${reg.count} stays`, zIndex:5,
-        label:{text:`${cap(reg.region)}  ${reg.count}`,color:"#e2c87a",fontSize:"11px",fontWeight:"600"} });
-      m.addListener("click",()=>showAtlas(ATLAS_BASE+"?region="+reg.region));
-      regionMarkers.push(m);
+      const m = new M3D({ position:{lat,lng,altitude:0}, altitudeMode:ALT.CLAMP_TO_GROUND,
+        label:`${cap(reg.region)} · ${reg.count}` });
+      try{ m.append(new PIN({background:"#c9a84c",borderColor:"#fffaf0",glyphColor:"#1a1407",scale:1.1})); }catch(_){}
+      m.addEventListener("gmp-click",()=>showAtlas(ATLAS_BASE+"?region="+reg.region));
+      globe.append(m); regionMarkers.push(m);
     }
   }catch(e){ /* regions optional */ }
 }
@@ -272,46 +254,43 @@ function showAtlas(deepLink){
   el("regionsBtn").style.display="";
   setOpenExt(deepLink);
 
-  if(atlasReady){
-    mapwrap.classList.remove("atlas-loading");
-    pushFilter(params);
-  } else {
-    // atlas still warming: show loader, queue the filter, post on ATLAS_READY.
-    pendingFilter = { params, deepLink };
-    mapwrap.classList.add("atlas-loading");
-    clearTimeout(fallbackTimer);
-    // hard-navigation fallback if the live-message path never confirms (e.g.
-    // an older atlas build without the message listener deployed yet).
-    fallbackTimer = setTimeout(()=>{ if(!atlasReady){ atlasFrame.src = deepLink; } }, 9000);
+  if(atlasReady){ pushFilter(params); return; }            // instant, in place
+  if(hardNav){                                             // atlas lacks live messaging: navigate
+    mapwrap.classList.add("atlas-loading"); atlasFrame.src = deepLink; return;
   }
+  // first subset, messaging support unknown: queue, wait briefly for ATLAS_READY, else hard-nav
+  pendingFilter = { params, deepLink };
+  mapwrap.classList.add("atlas-loading");
+  clearTimeout(fallbackTimer);
+  fallbackTimer = setTimeout(()=>{ if(!atlasReady){ hardNav=true; atlasFrame.src = deepLink; } }, 5000);
 }
 function showRegions(){
   mapwrap.classList.remove("atlas-active","atlas-loading");
   el("atlasState").textContent="marquee regions";
   el("regionsBtn").style.display="none";
   setOpenExt(null);
-  loadRegions();
 }
 function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
 }
 
-// listen for the embedded atlas signalling readiness, then flush any queued filter
+// clear the loader whenever the iframe finishes loading (preload or hard-nav fallback)
+atlasFrame.addEventListener("load",()=>{ mapwrap.classList.remove("atlas-loading"); });
+
+// embedded atlas signals readiness -> flush queued filter, mark live-messaging available
 window.addEventListener("message",(e)=>{
   if(e.origin!==ATLAS_ORIGIN) return;
-  const d=e.data||{};
-  if(d.type==="ATLAS_READY"){
+  if((e.data||{}).type==="ATLAS_READY"){
     atlasReady=true; clearTimeout(fallbackTimer); mapwrap.classList.remove("atlas-loading");
     if(pendingFilter){ pushFilter(pendingFilter.params); pendingFilter=null; }
   }
 });
 
-// load Google Maps for the dark resting map (key is referrer-restricted)
-(function loadMaps(){
-  const m=document.createElement("script");
-  m.src=`https://maps.googleapis.com/maps/api/js?key=${MAPS_KEY}&callback=initLivingAtlas&loading=async`;
-  m.async=true; m.onerror=showMapFallback; document.head.appendChild(m);
-})();
+// boot Google Maps Photorealistic 3D via the inline loader.
+// NOTE: MAPS_KEY must have the **Map Tiles API** enabled (same as the Hotel Atlas key).
+(g=>{let h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});let d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{a=m.createElement("script");e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({key:MAPS_KEY,v:"beta"});
+initLivingAtlas();
+
 // warm the immersive atlas shortly after first paint, so the first result is fast
 (window.requestIdleCallback || ((f)=>setTimeout(f,1500)))(preloadAtlas);
 
