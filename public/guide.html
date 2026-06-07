@@ -96,7 +96,23 @@
   /* atlas column */
   .atlas{flex:1 1 44%;display:flex;flex-direction:column;min-width:0;background:#06080c}
   .atlas .ah{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+  .atlas .ah{flex-wrap:wrap}
   .atlas .ah .live{margin-left:auto;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim)}
+  .ah .jumps{display:inline-flex;gap:6px;flex-wrap:wrap}
+  .ah .ajump{font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:6px;color:var(--sub);
+    display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .ah .ajump:hover{color:var(--text);border-color:var(--gold-dim);text-decoration:none}
+  .ah .ajump i{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .ah .ajump[data-t="hotel"] i{background:#c9a84c}
+  .ah .ajump[data-t="cruise"] i{background:#5aa9e6}
+  .ah .ajump[data-t="jet"] i{background:#dfe5f2}
+  .ah .ajump[data-t="yacht"] i{background:#e0b84a}
+  .legend{position:absolute;left:12px;top:12px;z-index:5;display:flex;flex-direction:column;gap:5px;
+    background:rgba(12,12,14,.8);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .legend .lgi{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text);cursor:pointer;transition:.15s;user-select:none}
+  .legend .lgi.off{opacity:.32}
+  .legend .lgi i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .atlas .openext{font-size:11.5px;color:var(--sub)}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
@@ -162,11 +178,18 @@
         <span>Living Atlas</span>
         <span class="openext" id="openExt"></span>
         <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Regions</button>
+        <span class="jumps">
+          <a class="ajump" data-t="hotel" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener"><i></i>Hotels</a>
+          <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Cruise</a>
+          <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Jet</a>
+          <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Yacht</a>
+        </span>
         <span class="live" id="atlasState">marquee regions</span>
       </div>
       <div class="mapwrap">
         <div id="livingAtlas"></div>
         <div class="badge" id="atlasBadge" style="display:none"></div>
+        <div class="legend" id="legend"></div>
         <div class="mapfallback" id="mapFallback" style="display:none">Map unavailable. Use <b>Open in Atlas</b> to view the subset.</div>
       </div>
     </aside>
@@ -180,6 +203,14 @@ const GUIDE_ENDPOINT = "/api/guide";
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 const SUBSET_CAP = 60;               // taste rule: never hold more than ~60 live pins
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
+
+// Master atlas overlays: cruise / jet / yacht region pins, each from its own live app data.
+// Colors are distinguishable on the dark globe (jet "black" reads as platinum here so it stays visible).
+const ATLAS_TYPES = {
+  cruise: { label:"Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
+  jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
+  yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
+};
 
 const messages = [];                 // {role, content} sent to /api/guide
 const el = (id)=>document.getElementById(id);
@@ -216,6 +247,7 @@ window.initLivingAtlas = function(){
       mapsReady = true;
       loadHotelField();
       loadRegions();
+      loadTypeOverlays();
       startSpin();
       if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotSubset(p); }
     });
@@ -300,6 +332,69 @@ function setRegionVisible(v){
   ["region-glow","region-dot","region-label"].forEach(id=>{
     if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", v?"visible":"none");
   });
+}
+
+/* master atlas: cruise / jet / yacht region pins, each colored, from live app data */
+async function loadTypeOverlays(){
+  for(const key of Object.keys(ATLAS_TYPES)){
+    try{ await addTypeLayer(key); }catch(e){ /* one atlas down should not break the rest */ }
+  }
+  buildLegend();
+}
+function regionsFromData(json){
+  const R = json.REGIONS || {};
+  const out=[];
+  for(const k of Object.keys(R)){
+    const r=R[k]; if(!r || !Array.isArray(r.coord) || r.coord.length<2) continue;
+    const name=r.name||k; if(/^other$/i.test(name)) continue;   // skip catch-all buckets
+    out.push({ name, lng:Number(r.coord[1]), lat:Number(r.coord[0]), count:r.count||null });
+  }
+  return out.filter(r=>Number.isFinite(r.lng)&&Number.isFinite(r.lat));
+}
+async function addTypeLayer(key){
+  const cfg=ATLAS_TYPES[key];
+  const json=await (await fetch(cfg.data)).json();
+  const regs=regionsFromData(json);
+  const fc={ type:"FeatureCollection", features: regs.map(r=>({
+    type:"Feature", geometry:{type:"Point",coordinates:[r.lng,r.lat]},
+    properties:{ type:key, name:r.name, count:r.count }
+  }))};
+  const src="t_"+key;
+  if(lmap.getSource(src)){ lmap.getSource(src).setData(fc); return; }
+  lmap.addSource(src,{ type:"geojson", data:fc });
+  lmap.addLayer({ id:src+"_glow", type:"circle", source:src,
+    paint:{ "circle-radius":9,"circle-color":cfg.color,"circle-opacity":0.18,"circle-blur":0.8 }});
+  lmap.addLayer({ id:src+"_dot", type:"circle", source:src,
+    paint:{ "circle-radius":5,"circle-color":cfg.color,"circle-stroke-color":"#0b0e14","circle-stroke-width":1.2 }});
+  lmap.on("click",src+"_dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
+    const c=f.properties.count;
+    const html=`<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>`+
+      `<div class="iwm">${escapeHtml(cfg.label)} expeditions${c?` · ${c} sailings`:""}</div>`+
+      `<a href="${cfg.url}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
+    popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap); });
+  lmap.on("mouseenter",src+"_dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
+  lmap.on("mouseleave",src+"_dot",()=>{ lmap.getCanvas().style.cursor=""; });
+}
+/* legend doubles as a per-type show/hide toggle */
+function buildLegend(){
+  const box=el("legend"); if(!box) return;
+  const items=[
+    { label:"Hotels", color:"#c9a84c", layers:["hotel-dots"] },
+    { label:"Cruise", color:ATLAS_TYPES.cruise.color, layers:["t_cruise_glow","t_cruise_dot"] },
+    { label:"Jet",    color:ATLAS_TYPES.jet.color,    layers:["t_jet_glow","t_jet_dot"] },
+    { label:"Yacht",  color:ATLAS_TYPES.yacht.color,  layers:["t_yacht_glow","t_yacht_dot"] },
+  ];
+  box.innerHTML="";
+  for(const it of items){
+    const row=document.createElement("div"); row.className="lgi";
+    const dot=document.createElement("i"); dot.style.background=it.color;
+    row.appendChild(dot); row.appendChild(document.createTextNode(it.label));
+    row.addEventListener("click",()=>{
+      const off=row.classList.toggle("off");
+      it.layers.forEach(id=>{ if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", off?"none":"visible"); });
+    });
+    box.appendChild(row);
+  }
 }
 
 function clearSubset(){
