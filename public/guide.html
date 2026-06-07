@@ -6,6 +6,8 @@
 <title>Base Camp · The Guide — Aspen Travel Advisors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
 <style>
   :root{
     --bg:#09090b; --panel:#111113; --card:#18181b; --card-hover:#1f1f23;
@@ -98,6 +100,8 @@
   .atlas .openext{font-size:11.5px;color:var(--sub)}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
+  #livingAtlas .mapboxgl-canvas{outline:none}
+  #livingAtlas .mapboxgl-ctrl-bottom-right,#livingAtlas .mapboxgl-ctrl-bottom-left{opacity:.5}
   .badge{position:absolute;left:12px;bottom:12px;z-index:5;background:rgba(12,12,14,.86);border:1px solid var(--line);
     border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   .badge a{color:var(--gold-light)}
@@ -106,8 +110,10 @@
   .ghostbtn:hover{color:var(--gold-light);border-color:var(--gold-dim)}
   .mapfallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
     color:var(--muted);font-size:13px;padding:24px}
-  /* gmaps infowindow dark fit */
-  .gm-style .gm-style-iw-c{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);padding:0!important}
+  /* mapbox popup dark fit */
+  .mapboxgl-popup-content{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);padding:0;border-radius:10px}
+  .mapboxgl-popup-close-button{color:var(--sub);font-size:16px;padding:2px 7px;right:2px;top:1px}
+  .mapboxgl-popup-tip{display:none}
   .iw{min-width:170px;max-width:230px;padding:11px 12px;color:var(--text);font-family:var(--sans)}
   .iw .iwn{font-family:var(--serif);font-size:16px;font-weight:600;line-height:1.15}
   .iw .iwm{font-size:11.5px;color:var(--sub);margin:2px 0 7px}
@@ -170,7 +176,8 @@
 <script>
 const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
-const MAPS_KEY = "AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg"; // referrer-restricted Maps JS key (same as the standalone app)
+// Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
+const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 const SUBSET_CAP = 60;               // taste rule: never hold more than ~60 live pins
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 
@@ -181,77 +188,128 @@ const input = el("input");
 const sendBtn = el("send");
 const openExt = el("openExt");
 
-/* ===== Living Atlas (narrow then plot, SPEC T7) ===== */
-let lmap=null, mapsReady=false, pendingPlot=null;
-let regionMarkers=[], subsetMarkers=[], cluster=null, infoWin=null;
+/* ===== Living Atlas — Mapbox GL 3D globe (narrow then plot, SPEC T7) =====
+   Resting state: the full hotel inventory as an ambient gold dot field plus the
+   marquee region pins. On a qualified subset: fade the field, drop the region
+   layer, and plot the matching stays (hard-capped at 60), fit to bounds. */
+let lmap=null, mapsReady=false, pendingPlot=null, popup=null;
+let spinning=false, spinRAF=0, subsetActive=false;
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
-const DARK_STYLE=[
-  {elementType:"geometry",stylers:[{color:"#0b0e14"}]},
-  {elementType:"labels.text.fill",stylers:[{color:"#6b6450"}]},
-  {elementType:"labels.text.stroke",stylers:[{color:"#06080c"}]},
-  {featureType:"administrative",elementType:"geometry",stylers:[{color:"#2a2419"}]},
-  {featureType:"administrative.country",elementType:"labels.text.fill",stylers:[{color:"#8a7d5e"}]},
-  {featureType:"poi",stylers:[{visibility:"off"}]},
-  {featureType:"road",stylers:[{visibility:"off"}]},
-  {featureType:"transit",stylers:[{visibility:"off"}]},
-  {featureType:"water",elementType:"geometry",stylers:[{color:"#070a10"}]},
-  {featureType:"landscape",elementType:"geometry",stylers:[{color:"#10131a"}]},
-];
-
-function svgIcon(svg){ return { url:"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg), scaledSize:null }; }
-function regionIcon(count){
-  const r = Math.max(14, Math.min(30, 12 + Math.round(Math.sqrt(count))));
-  const d = r*2+8;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${d}" height="${d}"><circle cx="${d/2}" cy="${d/2}" r="${r}" fill="rgba(201,168,76,.22)" stroke="#c9a84c" stroke-width="1.5"/><circle cx="${d/2}" cy="${d/2}" r="3" fill="#e2c87a"/></svg>`;
-  const ic = svgIcon(svg); ic.scaledSize = new google.maps.Size(d,d); ic.anchor=new google.maps.Point(d/2,d/2); return ic;
-}
-function pinIcon(){
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="6" fill="#c9a84c" stroke="#fffaf0" stroke-width="1.5"/></svg>`;
-  const ic = svgIcon(svg); ic.scaledSize=new google.maps.Size(16,16); ic.anchor=new google.maps.Point(8,8); return ic;
-}
+function showMapFallback(){ el("mapFallback").style.display="flex"; }
 
 window.initLivingAtlas = function(){
   try{
-    lmap = new google.maps.Map(el("livingAtlas"), {
-      center:{lat:20,lng:10}, zoom:2, minZoom:2, disableDefaultUI:true, zoomControl:true,
-      gestureHandling:"greedy", backgroundColor:"#06080c", styles:DARK_STYLE,
+    if(!window.mapboxgl){ showMapFallback(); return; }
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+    lmap = new mapboxgl.Map({
+      container:"livingAtlas",
+      style:"mapbox://styles/mapbox/dark-v11",
+      projection:"globe",
+      center:[10,20], zoom:1.25, minZoom:0.6,
+      attributionControl:true,
     });
-    infoWin = new google.maps.InfoWindow();
-    mapsReady = true;
-    loadRegions();
-    if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotSubset(p); }
+    popup = new mapboxgl.Popup({ closeButton:true, closeOnClick:true, offset:12, maxWidth:"240px" });
+    lmap.on("style.load",()=>{
+      lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
+        "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
+      mapsReady = true;
+      loadHotelField();
+      loadRegions();
+      startSpin();
+      if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotSubset(p); }
+    });
+    ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>lmap.on(ev, stopSpin));
+    new ResizeObserver(()=>{ try{ lmap && lmap.resize(); }catch(_){} }).observe(el("livingAtlas"));
   }catch(e){ showMapFallback(); }
 };
-function showMapFallback(){ el("mapFallback").style.display="flex"; }
 
-async function loadRegions(){
+/* gentle idle rotation; stops on interaction, pauses while a subset is shown */
+function startSpin(){ if(spinning) return; spinning=true; spinStep(); }
+function stopSpin(){ spinning=false; cancelAnimationFrame(spinRAF); }
+function spinStep(){
+  if(!spinning || !lmap) return;
+  if(!subsetActive && lmap.getZoom()<2.2 && !document.hidden){
+    const c=lmap.getCenter(); c.lng-=0.045; lmap.setCenter(c);
+  }
+  spinRAF=requestAnimationFrame(spinStep);
+}
+
+/* ambient: the full hotel inventory as a faint GPU dot field (all ~2,500) */
+async function loadHotelField(){
+  if(!mapsReady || !lmap) return;
   try{
-    const r = await fetch(ATLAS_BASE+"/api/regions");
-    const j = await r.json();
-    clearSubset();
-    regionMarkers.forEach(m=>m.setMap(null)); regionMarkers=[];
-    for(const reg of (j.regions||[])){
-      const [lng,lat] = reg.center;
-      const m = new google.maps.Marker({ position:{lat,lng}, map:lmap, icon:regionIcon(reg.count),
-        title:`${cap(reg.region)} · ${reg.count} stays`, zIndex:5, label:{text:`${cap(reg.region)}  ${reg.count}`,color:"#e2c87a",fontSize:"11px",fontWeight:"600"} });
-      m.addListener("click",()=>{ fitBbox(reg.bbox); plotSubset(ATLAS_BASE+"?region="+reg.region); });
-      regionMarkers.push(m);
-    }
-    el("atlasState").textContent="marquee regions";
-    el("regionsBtn").style.display="none";
-    el("atlasBadge").style.display="none";
+    const fc = await (await fetch("/api/atlas-points")).json();
+    if(lmap.getSource("hotels")) return;
+    lmap.addSource("hotels",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
+      paint:{
+        "circle-radius":["interpolate",["linear"],["zoom"],1,1.2,4,2.0,8,3.4],
+        "circle-color":"#c9a84c",
+        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.40,5,0.75],
+        "circle-blur":0.25
+      }});
+  }catch(e){ /* dot field optional */ }
+}
+function dimHotelField(dim){
+  if(!lmap || !lmap.getLayer("hotel-dots")) return;
+  lmap.setPaintProperty("hotel-dots","circle-opacity", dim
+    ? 0.12
+    : ["interpolate",["linear"],["zoom"],1,0.40,5,0.75]);
+}
+
+/* resting state: marquee region pins from /api/regions */
+async function loadRegions(){
+  if(!mapsReady || !lmap) return;
+  subsetActive=false; startSpin();
+  clearSubset();
+  dimHotelField(false);
+  setRegionVisible(true);
+  el("atlasState").textContent="marquee regions";
+  el("regionsBtn").style.display="none";
+  el("atlasBadge").style.display="none";
+  try{
+    const j = await (await fetch(ATLAS_BASE+"/api/regions")).json();
+    const feats = (j.regions||[]).filter(r=>Array.isArray(r.center)&&r.center.length===2).map(r=>({
+      type:"Feature",
+      geometry:{ type:"Point", coordinates:[r.center[0],r.center[1]] },
+      properties:{ region:r.region, label:`${cap(r.region)} · ${r.count}`,
+        bbox:JSON.stringify(r.bbox||null), deepLink:r.deepLink||(ATLAS_BASE+"?region="+r.region) }
+    }));
+    const fc={ type:"FeatureCollection", features:feats };
+    if(lmap.getSource("regions")){ lmap.getSource("regions").setData(fc); return; }
+    lmap.addSource("regions",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"region-glow", type:"circle", source:"regions",
+      paint:{ "circle-radius":15,"circle-color":"#c9a84c","circle-opacity":0.16,"circle-blur":0.85 }});
+    lmap.addLayer({ id:"region-dot", type:"circle", source:"regions",
+      paint:{ "circle-radius":6,"circle-color":"#c9a84c","circle-stroke-color":"#fffaf0","circle-stroke-width":1.5 }});
+    lmap.addLayer({ id:"region-label", type:"symbol", source:"regions",
+      layout:{ "text-field":["get","label"],"text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
+        "text-size":12,"text-offset":[0,1.3],"text-anchor":"top" },
+      paint:{ "text-color":"#e8e0d0","text-halo-color":"#06080c","text-halo-width":1.4 }});
+    lmap.on("click","region-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
+      let bbox=null; try{ bbox=JSON.parse(f.properties.bbox); }catch(_){}
+      if(bbox) fitBbox(bbox);
+      plotSubset(f.properties.deepLink);
+    });
+    lmap.on("mouseenter","region-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
+    lmap.on("mouseleave","region-dot",()=>{ lmap.getCanvas().style.cursor=""; });
   }catch(e){ /* regions optional; map still usable */ }
+}
+function setRegionVisible(v){
+  ["region-glow","region-dot","region-label"].forEach(id=>{
+    if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", v?"visible":"none");
+  });
 }
 
 function clearSubset(){
-  if(cluster){ cluster.clearMarkers(); cluster=null; }
-  subsetMarkers.forEach(m=>m.setMap(null)); subsetMarkers=[];
+  if(lmap && lmap.getSource("subset")) lmap.getSource("subset").setData({type:"FeatureCollection",features:[]});
+  if(popup) popup.remove();
 }
 function fitBbox(bbox){
   if(!lmap||!bbox) return;
   const [minLng,minLat,maxLng,maxLat]=bbox;
-  lmap.fitBounds(new google.maps.LatLngBounds({lat:minLat,lng:minLng},{lat:maxLat,lng:maxLng}),48);
+  try{ lmap.fitBounds([[minLng,minLat],[maxLng,maxLat]],{ padding:56, duration:900 }); }catch(_){}
 }
 
 async function plotSubset(deepLink){
@@ -262,26 +320,35 @@ async function plotSubset(deepLink){
   let j;
   try{ const r=await fetch(ATLAS_BASE+"/api/luxury-hotels?"+usp.toString()); j=await r.json(); }
   catch(e){ return; }
-  clearSubset();
-  regionMarkers.forEach(m=>m.setMap(null)); // narrow: drop the resting layer
+  subsetActive=true; stopSpin();
+  setRegionVisible(false);   // narrow: drop the resting region layer
+  dimHotelField(true);       // fade the ambient field so the subset reads
   const recs = (j.results||[]).filter(h=>Number.isFinite(h.lat)&&Number.isFinite(h.lng));
-  const bounds = new google.maps.LatLngBounds();
-  for(const h of recs){
-    const m = new google.maps.Marker({ position:{lat:h.lat,lng:h.lng}, icon:pinIcon(), title:h.name });
-    m.addListener("click",()=>{ infoWin.setContent(iwHtml(h)); infoWin.open(lmap,m); });
-    subsetMarkers.push(m); bounds.extend(m.getPosition());
+  const feats = recs.map(h=>({ type:"Feature", geometry:{type:"Point",coordinates:[h.lng,h.lat]},
+    properties:{ name:h.name, html:iwHtml(h) } }));
+  const fc={ type:"FeatureCollection", features:feats };
+  if(lmap.getSource("subset")){ lmap.getSource("subset").setData(fc); }
+  else{
+    lmap.addSource("subset",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"subset-glow", type:"circle", source:"subset",
+      paint:{ "circle-radius":10,"circle-color":"#e2c87a","circle-opacity":0.2,"circle-blur":0.7 }});
+    lmap.addLayer({ id:"subset-dot", type:"circle", source:"subset",
+      paint:{ "circle-radius":6.5,"circle-color":"#e2c87a","circle-stroke-color":"#fffaf0","circle-stroke-width":1.5 }});
+    lmap.on("click","subset-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
+      popup.setLngLat(e.lngLat).setHTML(f.properties.html).addTo(lmap); });
+    lmap.on("mouseenter","subset-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
+    lmap.on("mouseleave","subset-dot",()=>{ lmap.getCanvas().style.cursor=""; });
   }
-  // cluster beyond the cap-density; fall back to plain markers if lib missing
-  if(window.markerClusterer && recs.length){
-    cluster = new markerClusterer.MarkerClusterer({ map:lmap, markers:subsetMarkers });
-  } else { subsetMarkers.forEach(m=>m.setMap(lmap)); }
-  if(recs.length) lmap.fitBounds(bounds, 56);
-
+  if(recs.length){
+    const b=new mapboxgl.LngLatBounds();
+    recs.forEach(h=>b.extend([h.lng,h.lat]));
+    try{ lmap.fitBounds(b,{ padding:60, maxZoom:6, duration:900 }); }catch(_){}
+  }
   const total = j.total ?? recs.length;
   const badge = el("atlasBadge");
   badge.style.display="";
   badge.innerHTML = total>recs.length
-    ? `Showing ${recs.length} of ${total} · <a href="${deepLink}" target="_blank" rel="noopener">all in Atlas ↗</a>`
+    ? `Showing ${recs.length} of ${total} · <a href="${escapeHtml(deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
     : `${recs.length} ${recs.length===1?"stay":"stays"} plotted`;
   el("atlasState").textContent="qualified subset";
   el("regionsBtn").style.display="";
@@ -298,14 +365,8 @@ function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
 }
 
-// load Google Maps + clusterer (key is client-side + referrer-restricted)
-(function loadMaps(){
-  const m=document.createElement("script");
-  m.src=`https://maps.googleapis.com/maps/api/js?key=${MAPS_KEY}&callback=initLivingAtlas&loading=async`;
-  m.async=true; m.onerror=showMapFallback; document.head.appendChild(m);
-  const c=document.createElement("script");
-  c.src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"; c.async=true; document.head.appendChild(c);
-})();
+// boot the Mapbox globe (mapbox-gl is loaded via the <script> tag in <head>)
+initLivingAtlas();
 
 /* ---- helpers ---- */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
