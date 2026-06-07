@@ -1,8 +1,7 @@
 // api/guide.js — Base Camp "The Guide" endpoint (Claude tool-use)
-// New Base Camp surface. Does NOT replace the standalone app (api/chat.js); both
-// are preserved. The Guide runs a Claude tool-use loop: the model calls
-// search_offerings, we execute it against the live data layer, feed the real
-// results back, and stream the grounded reply plus map metadata to the client.
+// The Guide runs a Claude tool-use loop: the model calls search_offerings, we
+// execute it against the live data layer, feed the real results back, and stream
+// the grounded reply plus map metadata to the client.
 //
 // Env: ANTHROPIC_API_KEY (required), CLAUDE_MODEL (optional),
 //      HOTEL_ATLAS_API_BASE (optional; see lib/search-offerings.js).
