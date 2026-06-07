@@ -56,26 +56,43 @@ await test('searchOfferings type=any defaults to hotels', async () => {
   assert.ok(r.results.length > 0);
 });
 
-await test('searchOfferings cruise returns live inventory + marquee region', async () => {
-  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', limit: 3 });
+// cruise/jet/yacht query their own Atlas APIs (contract identical to hotels).
+// Mock fetch so this asserts the wiring without depending on a deployed endpoint;
+// each Atlas repo has its own local test suite proving the query layer.
+function mockAtlasFetch(payload) {
+  return async (url) => {
+    assert.ok(/\/api\/(expedition-cruises|jet-journeys|yacht-sailings)\?/.test(url),
+      'calls the type-specific atlas endpoint: ' + url);
+    return { ok: true, json: async () => payload };
+  };
+}
+
+await test('searchOfferings cruise queries the cruise atlas + forwards marquee region', async () => {
+  const payload = {
+    total: 375, count: 1,
+    results: [{ id: 'cr_1', type: 'cruise', name: 'The Great White Continent',
+      operator: 'Seabourn', region: 'antarctica', regionLabel: 'Antarctica',
+      bookUrl: 'https://www.virtuoso.com/x' }],
+    deepLink: 'https://expedition-cruise-map.vercel.app?region=antarctica',
+  };
+  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', limit: 3 },
+    { fetchImpl: mockAtlasFetch(payload) });
   assert.equal(r.type, 'cruise');
-  assert.ok(r.total > r.count);                 // honest unpaginated count
-  assert.equal(r.count, r.results.length);
-  assert.ok(r.results.length >= 1);
-  assert.ok(r.results.every((x) => x.region === 'antarctica'));
+  assert.equal(r.total, 375);
+  assert.equal(r.count, 1);
   assert.ok(r.results[0].name && r.results[0].bookUrl);
   assert.equal(r.chartRegion, 'antarctica');
+  assert.ok(r.deepLink.includes('region=antarctica'));
 });
 
-await test('searchOfferings jet + yacht return live inventory', async () => {
-  const j = await searchOfferings({ type: 'jet', region: 'japan', limit: 2 });
-  assert.equal(j.type, 'jet');
-  assert.ok(j.results.length >= 1 && j.results[0].name && j.results[0].bookUrl);
-
-  const y = await searchOfferings({ type: 'yacht', region: 'mediterranean', limit: 2 });
-  assert.equal(y.type, 'yacht');
-  assert.ok(y.results.length >= 1 && y.results[0].name && y.results[0].bookUrl);
-  assert.equal(y.chartRegion, 'mediterranean');
+await test('searchOfferings degrades gracefully when an atlas endpoint is down', async () => {
+  const down = async () => ({ ok: false, status: 404, json: async () => ({}) });
+  const r = await searchOfferings({ type: 'yacht', region: 'mediterranean' }, { fetchImpl: down });
+  assert.equal(r.type, 'yacht');
+  assert.equal(r.count, 0);
+  assert.ok(r.unavailable);
+  assert.equal(r.chartRegion, 'mediterranean'); // still hand the map the region
+  assert.ok(/advisor/i.test(r.note));
 });
 
 // ── orchestration: mocked Claude tool-use loop ───────────────────────────────
