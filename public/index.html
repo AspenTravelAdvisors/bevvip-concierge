@@ -253,14 +253,12 @@ const _gmapsCbs = [];
 window.initGuideMaps = function(){ gmapsReady = true; while(_gmapsCbs.length) _gmapsCbs.shift()(); };
 function whenGmaps(fn){ if(gmapsReady) fn(); else _gmapsCbs.push(fn); }
 
-// Master atlas overlays: cruise / jet / yacht. Each is now an ambient dot field
-// served by the same /api/atlas-points proxy as hotels (server-side normalized,
-// cached, one same-origin request per type). Colors stay distinguishable on the
-// dark globe (jet "black" reads as platinum here so it stays visible).
+// Master atlas overlays: cruise / jet / yacht region pins, each from its own live app data.
+// Colors are distinguishable on the dark globe (jet "black" reads as platinum here so it stays visible).
 const ATLAS_TYPES = {
-  cruise: { label:"Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",         unit:"sailings" },
-  jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",        unit:"journeys" },
-  yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app", unit:"sailings" },
+  cruise: { label:"Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
+  jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
+  yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
 };
 
 const messages = [];                 // {role, content} sent to /api/guide
@@ -335,20 +333,10 @@ async function loadHotelField(){
   }catch(e){ /* dot field optional */ }
 }
 function dimHotelField(dim){
-  if(lmap && lmap.getLayer("hotel-dots")){
-    lmap.setPaintProperty("hotel-dots","circle-opacity", dim
-      ? 0.12
-      : ["interpolate",["linear"],["zoom"],1,0.40,5,0.75]);
-  }
-  // fade the cruise/jet/yacht fields in step with hotels so a subset reads clean
-  for(const key of Object.keys(ATLAS_TYPES)){
-    const id="t_"+key+"_dot";
-    if(lmap && lmap.getLayer(id)){
-      lmap.setPaintProperty(id,"circle-opacity", dim
-        ? 0.10
-        : ["interpolate",["linear"],["zoom"],1,0.5,5,0.85]);
-    }
-  }
+  if(!lmap || !lmap.getLayer("hotel-dots")) return;
+  lmap.setPaintProperty("hotel-dots","circle-opacity", dim
+    ? 0.12
+    : ["interpolate",["linear"],["zoom"],1,0.40,5,0.75]);
 }
 
 /* resting state: marquee region pins from /api/regions */
@@ -395,38 +383,42 @@ function setRegionVisible(v){
   });
 }
 
-/* master atlas: cruise / jet / yacht as ambient dot fields, each colored, from
-   the /api/atlas-points proxy (same pattern as the hotel field) */
+/* master atlas: cruise / jet / yacht region pins, each colored, from live app data */
 async function loadTypeOverlays(){
   for(const key of Object.keys(ATLAS_TYPES)){
     try{ await addTypeLayer(key); }catch(e){ /* one atlas down should not break the rest */ }
   }
   buildLegend();
 }
+function regionsFromData(json){
+  const R = json.REGIONS || {};
+  const out=[];
+  for(const k of Object.keys(R)){
+    const r=R[k]; if(!r || !Array.isArray(r.coord) || r.coord.length<2) continue;
+    const name=r.name||k; if(/^other$/i.test(name)) continue;   // skip catch-all buckets
+    out.push({ name, lng:Number(r.coord[1]), lat:Number(r.coord[0]), count:r.count||null });
+  }
+  return out.filter(r=>Number.isFinite(r.lng)&&Number.isFinite(r.lat));
+}
 async function addTypeLayer(key){
   const cfg=ATLAS_TYPES[key];
-  const fc=await (await fetch("/api/atlas-points?type="+encodeURIComponent(key))).json();
-  if(!fc || !Array.isArray(fc.features) || !fc.features.length) return;  // nothing to plot
+  const json=await (await fetch(cfg.data)).json();
+  const regs=regionsFromData(json);
+  const fc={ type:"FeatureCollection", features: regs.map(r=>({
+    type:"Feature", geometry:{type:"Point",coordinates:[r.lng,r.lat]},
+    properties:{ type:key, name:r.name, count:r.count }
+  }))};
   const src="t_"+key;
   if(lmap.getSource(src)){ lmap.getSource(src).setData(fc); return; }
   lmap.addSource(src,{ type:"geojson", data:fc });
-  // faint ambient field, mirroring hotel-dots but in the type color and a touch
-  // larger so it stays legible against the gold hotel field beneath it
+  lmap.addLayer({ id:src+"_glow", type:"circle", source:src,
+    paint:{ "circle-radius":9,"circle-color":cfg.color,"circle-opacity":0.18,"circle-blur":0.8 }});
   lmap.addLayer({ id:src+"_dot", type:"circle", source:src,
-    paint:{
-      "circle-radius":["interpolate",["linear"],["zoom"],1,1.6,4,2.6,8,3.8],
-      "circle-color":cfg.color,
-      "circle-opacity":["interpolate",["linear"],["zoom"],1,0.5,5,0.85],
-      "circle-blur":0.2
-    }});
+    paint:{ "circle-radius":5,"circle-color":cfg.color,"circle-stroke-color":"#0b0e14","circle-stroke-width":1.2 }});
   lmap.on("click",src+"_dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
-    const p=f.properties||{};
-    const c=p.count;
-    const sub = c!=null
-      ? `${escapeHtml(cfg.label)} · ${c} ${escapeHtml(cfg.unit)}`
-      : `${escapeHtml(cfg.label)} ${escapeHtml(cfg.unit)}`;
-    const html=`<div class="iw"><div class="iwn">${escapeHtml(p.name||cfg.label)}</div>`+
-      `<div class="iwm">${sub}</div>`+
+    const c=f.properties.count;
+    const html=`<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>`+
+      `<div class="iwm">${escapeHtml(cfg.label)} expeditions${c?` · ${c} sailings`:""}</div>`+
       `<a href="${cfg.url}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
     popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap); });
   lmap.on("mouseenter",src+"_dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
@@ -437,9 +429,9 @@ function buildLegend(){
   const box=el("legend"); if(!box) return;
   const items=[
     { label:"Hotels", color:"#c9a84c", layers:["hotel-dots"] },
-    { label:"Cruise", color:ATLAS_TYPES.cruise.color, layers:["t_cruise_dot"] },
-    { label:"Jet",    color:ATLAS_TYPES.jet.color,    layers:["t_jet_dot"] },
-    { label:"Yacht",  color:ATLAS_TYPES.yacht.color,  layers:["t_yacht_dot"] },
+    { label:"Cruise", color:ATLAS_TYPES.cruise.color, layers:["t_cruise_glow","t_cruise_dot"] },
+    { label:"Jet",    color:ATLAS_TYPES.jet.color,    layers:["t_jet_glow","t_jet_dot"] },
+    { label:"Yacht",  color:ATLAS_TYPES.yacht.color,  layers:["t_yacht_glow","t_yacht_dot"] },
   ];
   box.innerHTML="";
   for(const it of items){
@@ -554,37 +546,55 @@ function scrollDown(){ transcript.scrollTop=transcript.scrollHeight; }
 /* ---- cards + moves + atlas handoff ---- */
 function renderResults(body, meta){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
+  const kind = (lead && lead.type) || "hotel";
   // cards
   if(lead && lead.results && lead.results.length){
     const cards=document.createElement("div"); cards.className="cards";
     lead.results.slice(0,3).forEach(h=>{
       const c=document.createElement("div"); c.className="hcard";
-      const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
-      const place=[h.city, h.country].filter(Boolean).join(", ");
-      const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
-      const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
-      c.innerHTML =
-        '<div class="photo"><span class="ph-mark">✦</span>'+
-          '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
-        '<div class="nm">'+escapeHtml(h.name)+'</div>'+
-        '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
-        (ups?'<ul class="ups">'+ups+'</ul>':'')+
-        '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book on mobile · password VIP</a>';
-      cards.appendChild(c);
-      enrichCard(c, h, sv);
+      if(kind==="hotel"){
+        const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
+        const place=[h.city, h.country].filter(Boolean).join(", ");
+        const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
+        const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
+        c.innerHTML =
+          '<div class="photo"><span class="ph-mark">✦</span>'+
+            '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
+          '<div class="nm">'+escapeHtml(h.name)+'</div>'+
+          '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
+          (ups?'<ul class="ups">'+ups+'</ul>':'')+
+          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book on mobile · password VIP</a>';
+        cards.appendChild(c);
+        enrichCard(c, h, sv);
+      } else {
+        // cruise / jet / yacht: no hotel photo or 360; show operator, route, dates
+        const operator=h.brand||h.operator||"";
+        const sub=[operator, h.ship, h.regionLabel].filter(Boolean).join(" · ");
+        const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
+        const nights=h.nights?(" · "+h.nights+" nights"):"";
+        c.innerHTML =
+          '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
+          '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+
+          (when?'<div class="meta">'+escapeHtml(when)+'</div>':'')+
+          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_TYPES[kind]?.url||"#")+'" target="_blank" rel="noopener">View on Virtuoso · advisor-backed ↗</a>';
+        cards.appendChild(c);
+      }
     });
     body.appendChild(cards);
   }
-  // narrow then plot: render the subset in the Living Atlas + Open in Atlas button
-  if(meta.deepLink){
+  // narrow then plot: hotels plot a live subset on the globe; cruise/jet/yacht
+  // rest the globe on the relevant marquee region (their pins are already shown).
+  if(meta.deepLink && kind==="hotel"){
     plotSubset(meta.deepLink);
+    setOpenExt(meta.deepLink);
+  } else if(meta.chartRegion){
+    loadRegions();
+  }
+  if(meta.deepLink){
     setOpenExt(meta.deepLink);
     const b=document.createElement("a"); b.className="atlasbtn"; b.href=meta.deepLink; b.target="_blank"; b.rel="noopener";
     b.innerHTML="&#9683; Open in Atlas";
     body.appendChild(b);
-  } else if(meta.chartRegion){
-    // no inventory subset (e.g. cruise pre-T8) but a region is relevant: rest on it
-    loadRegions();
   }
   // the four moves
   body.appendChild(renderMoves(lead));
