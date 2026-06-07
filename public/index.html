@@ -119,8 +119,11 @@
   .legend{position:absolute;left:12px;top:12px;z-index:5;display:flex;flex-direction:column;gap:5px;
     background:rgba(12,12,14,.8);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .legend .lgcap{font-size:9.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);padding-bottom:2px}
   .legend .lgi{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text);cursor:pointer;transition:.15s;user-select:none}
   .legend .lgi.off{opacity:.32}
+  .legend .lgi.all{color:var(--gold-light);font-weight:600}
+  .legend .lgi.all i{box-shadow:0 0 0 2px rgba(201,168,76,.35)}
   .legend .lgi i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .atlas .openext{font-size:11.5px;color:var(--sub)}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
@@ -390,24 +393,55 @@ async function loadTypeOverlays(){
   }
   buildLegend();
 }
+/* Normalize an atlas-meta / itinerary feed into region pins.
+   Each app keys its regions the same way it tags trips (the `g` array), so we
+   keep that key for deep links. Counts come straight from the meta when present
+   (cruise), otherwise we tally them from TRIPS (jet/yacht). */
 function regionsFromData(json){
   const R = json.REGIONS || {};
+  const trips = Array.isArray(json.TRIPS) ? json.TRIPS : [];
+  const tally = {};
+  for(const t of trips){
+    const gs = Array.isArray(t && t.g) ? t.g : [];
+    for(const g of gs) tally[g] = (tally[g]||0) + 1;
+  }
   const out=[];
   for(const k of Object.keys(R)){
     const r=R[k]; if(!r || !Array.isArray(r.coord) || r.coord.length<2) continue;
-    const name=r.name||k; if(/^other$/i.test(name)) continue;   // skip catch-all buckets
-    out.push({ name, lng:Number(r.coord[1]), lat:Number(r.coord[0]), count:r.count||null });
+    const name=r.name||k;
+    if(/^other\b/i.test(k) || /^other\b/i.test(name)) continue;   // skip catch-all buckets
+    const count = (r.count != null) ? r.count : (tally[k] || 0);
+    out.push({ key:k, name, lng:Number(r.coord[1]), lat:Number(r.coord[0]), count });
   }
   return out.filter(r=>Number.isFinite(r.lng)&&Number.isFinite(r.lat));
 }
+
+/* Per-type region store: { all:[features], top:[features] } and the legend's
+   current "show all" state. Map load plots only the top 10 regions per type. */
+const TYPE_REGIONS = {};
+const TYPE_EXPANDED = {};
+const TYPE_TOP_N = 10;
+
+function typeFeatures(key, regs){
+  return regs.map(r=>({
+    type:"Feature", geometry:{type:"Point",coordinates:[r.lng,r.lat]},
+    properties:{ type:key, key:r.key, name:r.name, count:r.count }
+  }));
+}
+// Deep link into a type's Atlas, preselecting the region so it loads zoomed-in.
+function typeDeepLink(key, regionKey){
+  const cfg=ATLAS_TYPES[key];
+  return regionKey ? `${cfg.url}?region=${encodeURIComponent(regionKey)}` : cfg.url;
+}
+
 async function addTypeLayer(key){
   const cfg=ATLAS_TYPES[key];
   const json=await (await fetch(cfg.data)).json();
-  const regs=regionsFromData(json);
-  const fc={ type:"FeatureCollection", features: regs.map(r=>({
-    type:"Feature", geometry:{type:"Point",coordinates:[r.lng,r.lat]},
-    properties:{ type:key, name:r.name, count:r.count }
-  }))};
+  const regs=regionsFromData(json).sort((a,b)=>(b.count||0)-(a.count||0));
+  const top=regs.slice(0, TYPE_TOP_N);
+  TYPE_REGIONS[key]={ all:typeFeatures(key,regs), top:typeFeatures(key,top) };
+  TYPE_EXPANDED[key]=false;
+  const fc={ type:"FeatureCollection", features: TYPE_REGIONS[key].top };
   const src="t_"+key;
   if(lmap.getSource(src)){ lmap.getSource(src).setData(fc); return; }
   lmap.addSource(src,{ type:"geojson", data:fc });
@@ -417,30 +451,53 @@ async function addTypeLayer(key){
     paint:{ "circle-radius":5,"circle-color":cfg.color,"circle-stroke-color":"#0b0e14","circle-stroke-width":1.2 }});
   lmap.on("click",src+"_dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
     const c=f.properties.count;
+    const href=typeDeepLink(key, f.properties.key);
     const html=`<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>`+
       `<div class="iwm">${escapeHtml(cfg.label)} expeditions${c?` · ${c} sailings`:""}</div>`+
-      `<a href="${cfg.url}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
+      `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
     popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap); });
   lmap.on("mouseenter",src+"_dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
   lmap.on("mouseleave",src+"_dot",()=>{ lmap.getCanvas().style.cursor=""; });
 }
-/* legend doubles as a per-type show/hide toggle */
+
+// Swap a type layer between its top-10 set and its full region set.
+function setTypeExpanded(key, expanded){
+  TYPE_EXPANDED[key]=expanded;
+  const store=TYPE_REGIONS[key]; const src=lmap && lmap.getSource("t_"+key);
+  if(!store || !src) return;
+  src.setData({ type:"FeatureCollection", features: expanded ? store.all : store.top });
+}
+
+/* Legend: a key plus a "show all pins for this type" control.
+   Hotels toggle the ambient dot field; cruise/jet/yacht expand from the top 10
+   marquee regions to every region the Atlas covers. */
 function buildLegend(){
   const box=el("legend"); if(!box) return;
   const items=[
-    { label:"Hotels", color:"#c9a84c", layers:["hotel-dots"] },
-    { label:"Cruise", color:ATLAS_TYPES.cruise.color, layers:["t_cruise_glow","t_cruise_dot"] },
-    { label:"Jet",    color:ATLAS_TYPES.jet.color,    layers:["t_jet_glow","t_jet_dot"] },
-    { label:"Yacht",  color:ATLAS_TYPES.yacht.color,  layers:["t_yacht_glow","t_yacht_dot"] },
+    { key:"hotel",  label:"Hotels", color:"#c9a84c" },
+    { key:"cruise", label:"Cruise", color:ATLAS_TYPES.cruise.color },
+    { key:"jet",    label:"Jet",    color:ATLAS_TYPES.jet.color },
+    { key:"yacht",  label:"Yacht",  color:ATLAS_TYPES.yacht.color },
   ];
   box.innerHTML="";
+  const cap=document.createElement("div"); cap.className="lgcap"; cap.textContent="Top regions · click to show all";
+  box.appendChild(cap);
   for(const it of items){
     const row=document.createElement("div"); row.className="lgi";
+    row.title = it.key==="hotel" ? "Toggle hotel field" : "Show all "+it.label.toLowerCase()+" pins";
     const dot=document.createElement("i"); dot.style.background=it.color;
-    row.appendChild(dot); row.appendChild(document.createTextNode(it.label));
+    const tx=document.createElement("span"); tx.textContent=it.label;
+    row.appendChild(dot); row.appendChild(tx);
     row.addEventListener("click",()=>{
-      const off=row.classList.toggle("off");
-      it.layers.forEach(id=>{ if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", off?"none":"visible"); });
+      if(it.key==="hotel"){
+        const off=row.classList.toggle("off");
+        if(lmap.getLayer("hotel-dots")) lmap.setLayoutProperty("hotel-dots","visibility", off?"none":"visible");
+        return;
+      }
+      const expanded=!TYPE_EXPANDED[it.key];
+      setTypeExpanded(it.key, expanded);
+      row.classList.toggle("all", expanded);
+      tx.textContent = expanded ? it.label+" · all" : it.label;
     });
     box.appendChild(row);
   }
