@@ -56,13 +56,26 @@ await test('searchOfferings type=any defaults to hotels', async () => {
   assert.ok(r.results.length > 0);
 });
 
-await test('searchOfferings cruise degrades gracefully (pre-T8)', async () => {
-  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', month: '2027-01', limit: 3 });
+await test('searchOfferings cruise returns live inventory + marquee region', async () => {
+  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', limit: 3 });
   assert.equal(r.type, 'cruise');
-  assert.equal(r.count, 0);
-  assert.ok(r.unavailable);
-  assert.equal(r.chartRegion, 'antarctica'); // still hand the map the region
-  assert.ok(/advisor/i.test(r.note));
+  assert.ok(r.total > r.count);                 // honest unpaginated count
+  assert.equal(r.count, r.results.length);
+  assert.ok(r.results.length >= 1);
+  assert.ok(r.results.every((x) => x.region === 'antarctica'));
+  assert.ok(r.results[0].name && r.results[0].bookUrl);
+  assert.equal(r.chartRegion, 'antarctica');
+});
+
+await test('searchOfferings jet + yacht return live inventory', async () => {
+  const j = await searchOfferings({ type: 'jet', region: 'japan', limit: 2 });
+  assert.equal(j.type, 'jet');
+  assert.ok(j.results.length >= 1 && j.results[0].name && j.results[0].bookUrl);
+
+  const y = await searchOfferings({ type: 'yacht', region: 'mediterranean', limit: 2 });
+  assert.equal(y.type, 'yacht');
+  assert.ok(y.results.length >= 1 && y.results[0].name && y.results[0].bookUrl);
+  assert.equal(y.chartRegion, 'mediterranean');
 });
 
 // ── orchestration: mocked Claude tool-use loop ───────────────────────────────
