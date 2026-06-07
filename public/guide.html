@@ -56,7 +56,16 @@
 
   /* result cards */
   .cards{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
-  .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px}
+  .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
+  .hcard .photo{margin:-14px -15px 12px;height:150px;background:#1a1a1c;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;position:relative}
+  .hcard .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .hcard .photo .ph-mark{color:var(--gold-dim);font-size:30px}
+  .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
+    font-size:11px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
+    background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.5);font-family:var(--sans)}
+  .hcard .photo .sv360:hover{filter:brightness(1.06)}
   .hcard .nm{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.15}
   .hcard .meta{font-size:12px;color:var(--sub);margin:3px 0 9px;letter-spacing:.2px}
   .hcard .ups{list-style:none;margin:0 0 11px;padding:0}
@@ -135,6 +144,29 @@
   .iw .iwm{font-size:11.5px;color:var(--sub);margin:2px 0 7px}
   .iw a{font-size:12px;font-weight:600;color:var(--gold-light)}
 
+  /* street view (360) modal */
+  #svModal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.88);align-items:center;justify-content:center}
+  #svModal.open{display:flex}
+  #svContainer{width:min(92vw,960px);height:min(80vh,640px);border-radius:10px;overflow:hidden;
+    border:1px solid var(--line);display:flex;flex-direction:column;background:#000}
+  #svPanoWrap{flex:1;min-height:0;position:relative}
+  #svPanorama{width:100%;height:100%}
+  #svClose,#svFull{position:absolute;top:12px;z-index:10;background:rgba(0,0,0,.72);border:1px solid var(--line);
+    color:var(--text);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:15px;
+    display:flex;align-items:center;justify-content:center;line-height:1}
+  #svClose{right:12px}
+  #svFull{right:52px}
+  #svClose:hover,#svFull:hover{border-color:var(--gold-dim);color:var(--gold)}
+  #svThumbBar{height:74px;overflow-x:auto;overflow-y:hidden;display:none;align-items:center;gap:6px;padding:8px 10px;
+    background:rgba(0,0,0,.94);border-top:1px solid var(--line);scroll-behavior:smooth;flex-shrink:0}
+  #svThumbBar::-webkit-scrollbar{height:3px}
+  #svThumbBar::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+  .sv-thumb{flex-shrink:0;width:90px;height:54px;border-radius:4px;border:2px solid transparent;cursor:pointer;
+    opacity:.6;transition:all .2s;background:#1a1a1c;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .sv-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .sv-thumb:hover{opacity:1}
+  .sv-thumb.active{border-color:var(--gold);opacity:1}
+
   @media (max-width:920px){
     main{flex-direction:column}
     .chat{flex:1 1 auto;border-right:0;border-bottom:1px solid var(--line)}
@@ -196,6 +228,17 @@
   </main>
 </div>
 
+<div id="svModal" onclick="if(event.target===this)closeSV()">
+  <div id="svContainer">
+    <div id="svPanoWrap">
+      <div id="svPanorama"></div>
+      <button id="svClose" onclick="closeSV()">&#10005;</button>
+      <button id="svFull" onclick="toggleSVFullscreen()" title="Fullscreen">&#x26F6;</button>
+    </div>
+    <div id="svThumbBar"></div>
+  </div>
+</div>
+
 <script>
 const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
@@ -203,6 +246,12 @@ const GUIDE_ENDPOINT = "/api/guide";
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 const SUBSET_CAP = 60;               // taste rule: never hold more than ~60 live pins
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
+// Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
+const MAPS_KEY = "AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg";
+let gmapsReady = false;
+const _gmapsCbs = [];
+window.initGuideMaps = function(){ gmapsReady = true; while(_gmapsCbs.length) _gmapsCbs.shift()(); };
+function whenGmaps(fn){ if(gmapsReady) fn(); else _gmapsCbs.push(fn); }
 
 // Master atlas overlays: cruise / jet / yacht region pins, each from its own live app data.
 // Colors are distinguishable on the dark globe (jet "black" reads as platinum here so it stays visible).
@@ -505,12 +554,16 @@ function renderResults(body, meta){
       const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
       const place=[h.city, h.country].filter(Boolean).join(", ");
       const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
+      const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
       c.innerHTML =
+        '<div class="photo"><span class="ph-mark">✦</span>'+
+          '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
         '<div class="nm">'+escapeHtml(h.name)+'</div>'+
         '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
         (ups?'<ul class="ups">'+ups+'</ul>':'')+
         '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book on mobile · password VIP</a>';
       cards.appendChild(c);
+      enrichCard(c, h, sv);
     });
     body.appendChild(cards);
   }
@@ -550,6 +603,146 @@ function renderMoves(lead){
     location.href="mailto:"+CONTACT.email+"?subject="+subject;
   }));
   return wrap;
+}
+
+/* ---- card photos + 360 (Google Places + Street View; ported from the Atlas app) ----
+   Each card reserves a slot in svStore. We fetch a Places photo for the card image and,
+   if a Street View panorama exists near the property, reveal the "View in 360°" button. */
+const svStore = [];           // per-card SV state: {svPos, svInitPano, svPanos, svPanoIdx, svExpanded}
+let svActiveIdx = -1, svPano = null;
+
+function enrichCard(cardEl, hotel, sv){
+  whenGmaps(()=>{
+    const query = [hotel.name, hotel.city, hotel.country].filter(Boolean).join(" ");
+    // photo via Places text search
+    try{
+      const svc = new google.maps.places.PlacesService(document.createElement("div"));
+      svc.textSearch({ query }, (results, status)=>{
+        if(status===google.maps.places.PlacesServiceStatus.OK && results && results[0]
+           && results[0].photos && results[0].photos.length){
+          const url = results[0].photos[0].getUrl({ maxWidth:600, maxHeight:300 });
+          const ph = cardEl.querySelector(".photo");
+          if(ph){
+            const mark = ph.querySelector(".ph-mark"); if(mark) mark.remove();
+            const img = document.createElement("img"); img.src=url; img.alt=hotel.name;
+            img.onerror=()=>img.remove();
+            ph.insertBefore(img, ph.firstChild);
+          }
+        }
+      });
+    }catch(_){}
+    // 360: geocode the property, then look for a nearby panorama
+    try{
+      const geocoder = new google.maps.Geocoder();
+      const svService = new google.maps.StreetViewService();
+      geocoder.geocode({ address: query || hotel.city }, (results, status)=>{
+        if(status!=="OK" || !results[0]) return;
+        const pos = results[0].geometry.location;
+        svService.getPanorama({ location: pos, radius: 50 }, (data, sStat)=>{
+          if(sStat!=="OK" || !data || !data.location) return;
+          svStore[sv] = { svPos:data.location.latLng, svInitPano:data.location.pano };
+          const btn = cardEl.querySelector(".sv360");
+          if(btn) btn.style.display="inline-flex";
+        });
+      });
+    }catch(_){}
+  });
+}
+
+function openSV(index, e){
+  if(e) e.stopPropagation();
+  const h = svStore[index];
+  if(!h || !h.svInitPano) return;
+  svActiveIdx = index;
+  h.svPanoIdx = 0;
+  if(!h.svPanos) h.svPanos = [h.svInitPano];
+  el("svModal").classList.add("open");
+  renderSVPano();
+}
+
+function renderSVPano(){
+  const h = svStore[svActiveIdx];
+  const panoId = h.svPanos[h.svPanoIdx];
+  el("svPanorama").innerHTML="";
+  svPano = new google.maps.StreetViewPanorama(el("svPanorama"),
+    { pano:panoId, pov:{ heading:34, pitch:10 }, zoom:1, addressControl:false, fullscreenControl:false });
+  buildSVThumbs(h.svPanos, h.svPanoIdx);
+  if(!h.svExpanded){
+    h.svExpanded = true;
+    google.maps.event.addListenerOnce(svPano, "pano_changed", ()=>expandPanoCollection());
+    setTimeout(()=>{ const x=svStore[svActiveIdx]; if(x && x.svPanos && x.svPanos.length<=1) expandPanoCollection(); }, 4000);
+  }
+}
+
+async function expandPanoCollection(){
+  const capturedIdx = svActiveIdx;
+  const h = svStore[capturedIdx];
+  if(!h) return;
+  const svc = new google.maps.StreetViewService();
+  const seen = new Set(h.svPanos);
+  const loadedId = (svPano && svActiveIdx===capturedIdx) ? svPano.getPano() : h.svPanos[0];
+  const level1 = new Set();
+  await new Promise(resolve=>{
+    svc.getPanorama({ pano:loadedId }, (data,status)=>{
+      if(status==="OK" && data.links) data.links.forEach(l=>{ seen.add(l.pano); level1.add(l.pano); });
+      resolve();
+    });
+  });
+  if(svActiveIdx!==capturedIdx) return;
+  await Promise.all([...level1].slice(0,12).map(id=>new Promise(resolve=>{
+    svc.getPanorama({ pano:id }, (data,status)=>{ if(status==="OK" && data.links) data.links.forEach(l=>seen.add(l.pano)); resolve(); });
+  })));
+  if(svActiveIdx!==capturedIdx) return;
+  if(h.svPos){
+    const lat=h.svPos.lat(), lng=h.svPos.lng(), d=0.0002;
+    const offsets=[[0,0],[d,0],[-d,0],[0,d],[0,-d],[d,d],[-d,d],[d,-d],[-d,-d],
+      [2*d,0],[-2*d,0],[0,2*d],[0,-2*d],[1.5*d,1.5*d],[-1.5*d,1.5*d],[1.5*d,-1.5*d],[-1.5*d,-1.5*d],
+      [3*d,0],[-3*d,0],[0,3*d],[0,-3*d]];
+    await Promise.all(offsets.map(([dlat,dlng])=>new Promise(resolve=>{
+      svc.getPanorama({ location:new google.maps.LatLng(lat+dlat,lng+dlng), radius:25 },
+        (data,status)=>{ if(status==="OK") seen.add(data.location.pano); resolve(); });
+    })));
+  }
+  if(svActiveIdx!==capturedIdx) return;
+  const all=[...seen];
+  if(all.length>h.svPanos.length){ h.svPanos=all; buildSVThumbs(h.svPanos, h.svPanoIdx); }
+}
+
+function buildSVThumbs(panos, activeIdx){
+  const bar = el("svThumbBar");
+  bar.innerHTML="";
+  if(panos.length<=1){ bar.style.display="none"; return; }
+  bar.style.display="flex";
+  panos.forEach((panoId,i)=>{
+    const cell=document.createElement("div");
+    cell.className="sv-thumb"+(i===activeIdx?" active":"");
+    cell.title=`Photo ${i+1} of ${panos.length}`;
+    cell.onclick=()=>{ svStore[svActiveIdx].svPanoIdx=i; renderSVPano();
+      setTimeout(()=>cell.scrollIntoView({ inline:"center", behavior:"smooth" }),50); };
+    const img=document.createElement("img");
+    img.src=`https://maps.googleapis.com/maps/api/streetview?size=180x108&pano=${panoId}&key=${MAPS_KEY}`;
+    img.alt=`View ${i+1}`;
+    img.onerror=()=>{ img.remove(); cell.style.fontSize="15px"; cell.style.fontWeight="600";
+      cell.style.color="var(--gold)"; cell.textContent=String(i+1); };
+    cell.appendChild(img);
+    bar.appendChild(cell);
+  });
+  const active=bar.querySelector(".sv-thumb.active");
+  if(active) setTimeout(()=>active.scrollIntoView({ inline:"center", behavior:"smooth" }),50);
+}
+
+function toggleSVFullscreen(){
+  const elc=el("svContainer");
+  if(document.fullscreenElement) document.exitFullscreen();
+  else elc.requestFullscreen().catch(()=>{});
+}
+
+function closeSV(){
+  if(document.fullscreenElement) document.exitFullscreen();
+  svActiveIdx=-1; svPano=null;
+  el("svModal").classList.remove("open");
+  el("svPanorama").innerHTML="";
+  el("svThumbBar").innerHTML="";
 }
 
 /* ---- send + SSE ---- */
@@ -611,5 +804,9 @@ el("chips").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(
 el("regionsBtn").addEventListener("click",()=>{ setOpenExt(null); loadRegions(); });
 input.focus();
 </script>
+
+<!-- Google Maps: card photos (Places) + 360 (Street View) only. Loaded async; the globe is Mapbox. -->
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg&libraries=places&callback=initGuideMaps"></script>
 </body>
 </html>
