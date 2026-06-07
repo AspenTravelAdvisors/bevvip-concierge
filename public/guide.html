@@ -57,15 +57,16 @@
   /* result cards */
   .cards{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
   .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
-  .hcard .photo{margin:-14px -15px 12px;height:150px;background:#1a1a1c;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;position:relative}
-  .hcard .photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .hcard .photo .ph-mark{color:var(--gold-dim);font-size:30px}
-  .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
-    font-size:11px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
-    background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.5);font-family:var(--sans)}
-  .hcard .photo .sv360:hover{filter:brightness(1.06)}
+  .hcard .thumbs{margin:-14px -15px 12px;height:130px;background:#1a1a1c;overflow:hidden;
+    display:flex;gap:2px;align-items:stretch}
+  .hcard .thumbs .th{flex:1;overflow:hidden;background:#111;position:relative}
+  .hcard .thumbs .th img{width:100%;height:100%;object-fit:cover;display:block}
+  .hcard .thumbs .ph-mark{color:var(--gold-dim);font-size:28px;display:flex;align-items:center;justify-content:center;width:100%}
+  .hcard .sv360btn{display:none;align-items:center;gap:6px;margin:0 0 10px;
+    font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
+    background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.4);font-family:var(--sans)}
+  .hcard .sv360btn:hover{filter:brightness(1.06)}
   .hcard .nm{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.15}
   .hcard .meta{font-size:12px;color:var(--sub);margin:3px 0 9px;letter-spacing:.2px}
   .hcard .ups{list-style:none;margin:0 0 11px;padding:0}
@@ -286,7 +287,7 @@ window.initLivingAtlas = function(){
       container:"livingAtlas",
       style:"mapbox://styles/mapbox/dark-v11",
       projection:"globe",
-      center:[10,20], zoom:1.25, minZoom:0.6,
+      center:[10,20], zoom:1.8, minZoom:0.6,
       attributionControl:true,
     });
     popup = new mapboxgl.Popup({ closeButton:true, closeOnClick:true, offset:12, maxWidth:"240px" });
@@ -556,8 +557,8 @@ function renderResults(body, meta){
       const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
       const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
       c.innerHTML =
-        '<div class="photo"><span class="ph-mark">✦</span>'+
-          '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
+        '<div class="thumbs"><div class="th th0"><span class="ph-mark">✦</span></div></div>'+
+        '<button class="sv360btn" onclick="openSV('+sv+',event)">⧶ View in 360°</button>'+
         '<div class="nm">'+escapeHtml(h.name)+'</div>'+
         '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
         (ups?'<ul class="ups">'+ups+'</ul>':'')+
@@ -614,19 +615,25 @@ let svActiveIdx = -1, svPano = null;
 function enrichCard(cardEl, hotel, sv){
   whenGmaps(()=>{
     const query = [hotel.name, hotel.city, hotel.country].filter(Boolean).join(" ");
-    // photo via Places text search
+    // thumbnails via Places text search (up to 3 photos)
     try{
       const svc = new google.maps.places.PlacesService(document.createElement("div"));
       svc.textSearch({ query }, (results, status)=>{
         if(status===google.maps.places.PlacesServiceStatus.OK && results && results[0]
            && results[0].photos && results[0].photos.length){
-          const url = results[0].photos[0].getUrl({ maxWidth:600, maxHeight:300 });
-          const ph = cardEl.querySelector(".photo");
-          if(ph){
-            const mark = ph.querySelector(".ph-mark"); if(mark) mark.remove();
-            const img = document.createElement("img"); img.src=url; img.alt=hotel.name;
-            img.onerror=()=>img.remove();
-            ph.insertBefore(img, ph.firstChild);
+          const photos = results[0].photos.slice(0,3);
+          const strip = cardEl.querySelector(".thumbs");
+          if(strip){
+            strip.innerHTML = ""; // clear placeholder
+            photos.forEach((p,i)=>{
+              const th = document.createElement("div"); th.className="th";
+              const img = document.createElement("img");
+              img.src = p.getUrl({ maxWidth:400, maxHeight:260 });
+              img.alt = hotel.name + " photo " + (i+1);
+              img.onerror = ()=>th.remove();
+              th.appendChild(img);
+              strip.appendChild(th);
+            });
           }
         }
       });
@@ -641,7 +648,7 @@ function enrichCard(cardEl, hotel, sv){
         svService.getPanorama({ location: pos, radius: 50 }, (data, sStat)=>{
           if(sStat!=="OK" || !data || !data.location) return;
           svStore[sv] = { svPos:data.location.latLng, svInitPano:data.location.pano };
-          const btn = cardEl.querySelector(".sv360");
+          const btn = cardEl.querySelector(".sv360btn");
           if(btn) btn.style.display="inline-flex";
         });
       });
