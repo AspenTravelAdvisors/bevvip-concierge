@@ -6,6 +6,8 @@
 <title>Base Camp · The Guide — Aspen Travel Advisors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
 <style>
   :root{
     --bg:#09090b; --panel:#111113; --card:#18181b; --card-hover:#1f1f23;
@@ -98,7 +100,8 @@
   .atlas .openext{font-size:11.5px;color:var(--sub)}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
-  #livingAtlas gmp-map-3d{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #livingAtlas .mapboxgl-canvas{outline:none}
+  #livingAtlas .mapboxgl-ctrl-bottom-right,#livingAtlas .mapboxgl-ctrl-bottom-left{opacity:.55}
   .atlasframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#06080c;
     opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:3}
   .mapwrap.atlas-active .atlasframe{opacity:1;pointer-events:auto}
@@ -175,7 +178,8 @@
 <script>
 const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
-const MAPS_KEY = "AIzaSyBAwkGREBgYA-zhK0rkRUz3DQTnF2-1JpY"; // referrer-restricted Maps JS key (same as the standalone app)
+// URL-restricted Mapbox public token (Aspen Travel). Public by design; restrict it to the deploy domains in your Mapbox account.
+const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDFyeGJ3MDV0bjJzbzh0MmpiNHBwOCJ9.ho6Hra2bsv0QvaZed9kqng";
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 
 const messages = [];                 // {role, content} sent to /api/guide
@@ -186,12 +190,11 @@ const sendBtn = el("send");
 const openExt = el("openExt");
 
 /* ===== Living Atlas (SPEC T7) =====
-   Resting state: a photorealistic 3D globe (same Map3DElement tech as the Hotel
-   Atlas) with marquee region pins. On a qualified subset: bring in the full
-   immersive Hotel Atlas, kept warm in a persistent iframe and re-filtered LIVE
-   via postMessage. */
-let globe=null, mapsReady=false, M3D=null, PIN=null, ALT=null;
-let regionMarkers=[];
+   Resting state: a Mapbox GL 3D globe carrying the full hotel dot field plus
+   marquee region pins. On a qualified subset: bring in the full immersive Hotel
+   Atlas, kept warm in a persistent iframe and re-filtered LIVE via postMessage. */
+let globe=null, mapsReady=false;
+let spinning=false, spinRAF=0;
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
 const ATLAS_ORIGIN = new URL(ATLAS_BASE).origin;
@@ -201,35 +204,96 @@ let atlasPreloaded=false, atlasReady=false, pendingFilter=null, fallbackTimer=nu
 
 function showMapFallback(){ el("mapFallback").style.display="flex"; }
 
-/* --- resting state: 3D globe with marquee region pins --- */
+/* --- resting state: Mapbox GL 3D globe with the hotel dot field + marquee pins --- */
 async function initLivingAtlas(){
   try{
-    const maps3d = await google.maps.importLibrary("maps3d");
-    const markerLib = await google.maps.importLibrary("marker");
-    const { Map3DElement, MapMode, Marker3DInteractiveElement, AltitudeMode } = maps3d;
-    M3D = Marker3DInteractiveElement; ALT = AltitudeMode; PIN = markerLib.PinElement;
-    globe = new Map3DElement({ center:{lat:12,lng:0,altitude:0}, range:24000000, tilt:0, heading:0, mode: MapMode.HYBRID });
-    globe.style.width="100%"; globe.style.height="100%"; globe.style.display="block";
-    el("livingAtlas").appendChild(globe);
-    try{ globe.gestureHandling="greedy"; }catch(_){}
-    mapsReady = true;
-    loadRegions();
+    if(!window.mapboxgl){ showMapFallback(); return; }
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+    globe = new mapboxgl.Map({
+      container: "livingAtlas",
+      style: "mapbox://styles/mapbox/dark-v11",
+      projection: "globe",
+      center: [12, 25],
+      zoom: 1.15,
+      minZoom: 0.6,
+      attributionControl: true,
+    });
+    globe.on("style.load", ()=>{
+      globe.setFog({
+        "color": "rgb(11,13,18)",
+        "high-color": "rgb(22,27,38)",
+        "horizon-blend": 0.04,
+        "space-color": "rgb(6,8,12)",
+        "star-intensity": 0.45
+      });
+      mapsReady = true;
+      loadHotelField();
+      loadRegions();
+      startSpin();
+    });
+    // a touch on the globe ends the idle spin for good
+    ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>globe.on(ev, stopSpin));
+    new ResizeObserver(()=>{ try{ globe && globe.resize(); }catch(_){} }).observe(el("livingAtlas"));
   }catch(e){ showMapFallback(); }
 }
 
+/* gentle idle rotation; pauses while the immersive atlas is open, stops on interaction */
+function startSpin(){ if(spinning) return; spinning=true; spinStep(); }
+function stopSpin(){ spinning=false; cancelAnimationFrame(spinRAF); }
+function spinStep(){
+  if(!spinning || !globe){ return; }
+  if(globe.getZoom() < 2.4 && !document.hidden && !mapwrap.classList.contains("atlas-active")){
+    const c = globe.getCenter(); c.lng -= 0.045; globe.setCenter(c);
+  }
+  spinRAF = requestAnimationFrame(spinStep);
+}
+
+/* the full hotel inventory as an ambient GPU dot field (one source, all 2,500) */
+async function loadHotelField(){
+  if(!mapsReady || !globe) return;
+  try{
+    const fc = await (await fetch("/api/atlas-points")).json();
+    if(globe.getSource("hotels")) return;
+    globe.addSource("hotels", { type:"geojson", data: fc });
+    globe.addLayer({
+      id:"hotel-dots", type:"circle", source:"hotels",
+      paint:{
+        "circle-radius":["interpolate",["linear"],["zoom"], 1,1.2, 4,2.0, 8,3.4],
+        "circle-color":"#c9a84c",
+        "circle-opacity":["interpolate",["linear"],["zoom"], 1,0.42, 5,0.78],
+        "circle-blur":0.25
+      }
+    });
+  }catch(e){ /* dot field optional */ }
+}
+
+/* marquee region pins from /api/regions: gold, labeled, click opens the Atlas subset */
 async function loadRegions(){
   if(!mapsReady || !globe) return;
   try{
     const j = await (await fetch(ATLAS_BASE+"/api/regions")).json();
-    regionMarkers.forEach(m=>{ try{ m.remove(); }catch(_){} }); regionMarkers=[];
-    for(const reg of (j.regions||[])){
-      const [lng,lat] = reg.center;
-      const m = new M3D({ position:{lat,lng,altitude:0}, altitudeMode:ALT.CLAMP_TO_GROUND,
-        label:`${cap(reg.region)} · ${reg.count}` });
-      try{ m.append(new PIN({background:"#c9a84c",borderColor:"#fffaf0",glyphColor:"#1a1407",scale:1.1})); }catch(_){}
-      m.addEventListener("gmp-click",()=>showAtlas(ATLAS_BASE+"?region="+reg.region));
-      globe.append(m); regionMarkers.push(m);
-    }
+    const feats = (j.regions||[])
+      .filter(r=>Array.isArray(r.center) && r.center.length===2)
+      .map(r=>({
+        type:"Feature",
+        geometry:{ type:"Point", coordinates:[r.center[0], r.center[1]] },
+        properties:{ region:r.region, label:`${cap(r.region)} · ${r.count}`,
+          deepLink: r.deepLink || (ATLAS_BASE+"?region="+r.region) }
+      }));
+    const fc = { type:"FeatureCollection", features:feats };
+    if(globe.getSource("regions")){ globe.getSource("regions").setData(fc); return; }
+    globe.addSource("regions", { type:"geojson", data: fc });
+    globe.addLayer({ id:"region-glow", type:"circle", source:"regions",
+      paint:{ "circle-radius":15, "circle-color":"#c9a84c", "circle-opacity":0.16, "circle-blur":0.85 } });
+    globe.addLayer({ id:"region-dot", type:"circle", source:"regions",
+      paint:{ "circle-radius":6, "circle-color":"#c9a84c", "circle-stroke-color":"#fffaf0", "circle-stroke-width":1.5 } });
+    globe.addLayer({ id:"region-label", type:"symbol", source:"regions",
+      layout:{ "text-field":["get","label"], "text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
+        "text-size":12, "text-offset":[0,1.3], "text-anchor":"top" },
+      paint:{ "text-color":"#e8e0d0", "text-halo-color":"#06080c", "text-halo-width":1.4 } });
+    globe.on("click","region-dot",(e)=>{ const f=e.features&&e.features[0]; if(f) showAtlas(f.properties.deepLink); });
+    globe.on("mouseenter","region-dot",()=>{ globe.getCanvas().style.cursor="pointer"; });
+    globe.on("mouseleave","region-dot",()=>{ globe.getCanvas().style.cursor=""; });
   }catch(e){ /* regions optional */ }
 }
 
@@ -266,6 +330,7 @@ function showAtlas(deepLink){
 }
 function showRegions(){
   mapwrap.classList.remove("atlas-active","atlas-loading");
+  try{ globe && globe.resize(); }catch(_){}
   el("atlasState").textContent="marquee regions";
   el("regionsBtn").style.display="none";
   setOpenExt(null);
@@ -286,9 +351,7 @@ window.addEventListener("message",(e)=>{
   }
 });
 
-// boot Google Maps Photorealistic 3D via the inline loader.
-// NOTE: MAPS_KEY must have the **Map Tiles API** enabled (same as the Hotel Atlas key).
-(g=>{let h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});let d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{a=m.createElement("script");e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({key:MAPS_KEY,v:"beta"});
+// boot the Mapbox globe (mapbox-gl is loaded via the <script> tag in <head>)
 initLivingAtlas();
 
 // warm the immersive atlas shortly after first paint, so the first result is fast
