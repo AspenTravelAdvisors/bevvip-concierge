@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "BeVvip Luxury Travel AI Concierge with Google Maps hotel discovery",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=18.x"
   }
