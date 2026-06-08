@@ -247,8 +247,8 @@ const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
-const SUBSET_CAP = 60;               // taste rule: never hold more than ~60 live pins
 const HOTEL_CLUSTER_MAX_ZOOM = 4.4;  // keep the 2,500-hotel field light at globe zoom
+const RECOMMENDATION_COUNT = 3;
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
 const MAPS_KEY = "AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg";
@@ -308,11 +308,11 @@ window.initLivingAtlas = function(){
       lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
         "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
       mapsReady = true;
+      loadHotelField();
       loadRegions();
       loadTypeOverlays();
       startSpin();
-      scheduleHotelField();
-      if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotSubset(p); }
+      if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotRecommendations(p.lead, p.meta); }
     });
     ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>lmap.on(ev, stopSpin));
     new ResizeObserver(()=>{ try{ lmap && lmap.resize(); }catch(_){} }).observe(el("livingAtlas"));
@@ -330,12 +330,6 @@ function spinStep(){
   spinRAF=requestAnimationFrame(spinStep);
 }
 
-function scheduleHotelField(){
-  const run=()=>loadHotelField();
-  if("requestIdleCallback" in window) requestIdleCallback(run,{timeout:1400});
-  else setTimeout(run,450);
-}
-
 /* ambient: the full hotel inventory, clustered at globe zoom and expanded into
    exact hotel dots as the traveler zooms closer. */
 async function loadHotelField(){
@@ -348,23 +342,23 @@ async function loadHotelField(){
       data:fc,
       cluster:true,
       clusterMaxZoom:HOTEL_CLUSTER_MAX_ZOOM,
-      clusterRadius:42
+      clusterRadius:56
     });
     lmap.addLayer({ id:"hotel-clusters", type:"circle", source:"hotels",
       filter:["has","point_count"],
       paint:{
-        "circle-radius":["interpolate",["linear"],["get","point_count"],2,2.6,25,4.5,120,7.2],
+        "circle-radius":["interpolate",["linear"],["get","point_count"],2,5.5,25,9,120,15],
         "circle-color":"#c9a84c",
-        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.22,4,0.42],
-        "circle-blur":0.45
+        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.40,4,0.58],
+        "circle-blur":0.30
       }});
     lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
       filter:["!",["has","point_count"]],
       minzoom:HOTEL_CLUSTER_MAX_ZOOM - 0.2,
       paint:{
-        "circle-radius":["interpolate",["linear"],["zoom"],4,1.1,7,2.2,10,3.1],
+        "circle-radius":["interpolate",["linear"],["zoom"],4,1.4,7,2.5,10,3.4],
         "circle-color":"#c9a84c",
-        "circle-opacity":["interpolate",["linear"],["zoom"],4,0.28,7,0.68],
+        "circle-opacity":["interpolate",["linear"],["zoom"],4,0.38,7,0.76],
         "circle-blur":0.15
       }});
   }catch(e){ /* dot field optional */ }
@@ -374,12 +368,12 @@ function dimHotelField(dim){
   if(lmap.getLayer("hotel-clusters")){
     lmap.setPaintProperty("hotel-clusters","circle-opacity", dim
       ? 0.08
-      : ["interpolate",["linear"],["zoom"],1,0.22,4,0.42]);
+      : ["interpolate",["linear"],["zoom"],1,0.40,4,0.58]);
   }
   if(lmap.getLayer("hotel-dots")){
     lmap.setPaintProperty("hotel-dots","circle-opacity", dim
       ? 0.10
-      : ["interpolate",["linear"],["zoom"],4,0.28,7,0.68]);
+      : ["interpolate",["linear"],["zoom"],4,0.38,7,0.76]);
   }
 }
 
@@ -505,15 +499,9 @@ function buildLegend(){
 }
 
 function clearSubset(){
-  if(lmap && lmap.getSource("subset")) lmap.getSource("subset").setData({type:"FeatureCollection",features:[]});
+  if(lmap && lmap.getSource("featured")) lmap.getSource("featured").setData({type:"FeatureCollection",features:[]});
   if(popup) popup.remove();
 }
-function fitBbox(bbox){
-  if(!lmap||!bbox) return;
-  const [minLng,minLat,maxLng,maxLat]=bbox;
-  try{ lmap.fitBounds([[minLng,minLat],[maxLng,maxLat]],{ padding:56, duration:900 }); }catch(_){}
-}
-
 // Make sure a type's pins are visible and its legend row reads "on".
 function ensureTypeVisible(kind){
   layerIdsFor(kind).forEach(id=>{ if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility","visible"); });
@@ -521,61 +509,86 @@ function ensureTypeVisible(kind){
   if(row && row.classList.contains("off")){ row.classList.remove("off"); row.title="Tap to hide"; }
 }
 
-/* Cruise / jet / yacht results: zoom the globe into the matching marquee region
-   (mirrors how hotels fit to their plotted subset). Type pins stay shown so the
-   region's offerings read as the highlight. */
-function focusTypeRegion(kind, region){
-  if(!lmap) return;
-  subsetActive=true; stopSpin();
-  clearSubset();
-  dimHotelField(true);       // fade the ambient hotel field
-  ensureTypeVisible(kind);
+function num(v){ const n=Number(v); return Number.isFinite(n) ? n : null; }
+function regionFallback(region){
   const geo = region && REGION_GEO[region];
-  if(geo && Array.isArray(geo.bbox)){ fitBbox(geo.bbox); }
-  else if(geo && Array.isArray(geo.center)){ try{ lmap.flyTo({ center:[geo.center[0],geo.center[1]], zoom:3.4, duration:900 }); }catch(_){} }
-  else if(region && REGION_FALLBACK[region]){ const f=REGION_FALLBACK[region]; try{ lmap.flyTo({ center:[f[0],f[1]], zoom:f[2], duration:900 }); }catch(_){} }
-  el("atlasState").textContent="qualified subset";
-  el("regionsBtn").style.display="";
+  if(geo && Array.isArray(geo.center)) return { center:geo.center, bbox:geo.bbox||null };
+  if(region && REGION_FALLBACK[region]){
+    const f=REGION_FALLBACK[region];
+    return { center:[f[0],f[1]], bbox:null };
+  }
+  return { center:[10,20], bbox:null };
+}
+function spreadPoint(center, bbox, idx, total){
+  if(total<=1) return center;
+  const angles=[-0.85, 0.85, 2.65];
+  const angle=angles[idx%angles.length];
+  let dx=4.5, dy=2.4;
+  if(Array.isArray(bbox) && bbox.length===4){
+    const spanLng=Math.max(2, Math.min(18, Math.abs(bbox[2]-bbox[0])));
+    const spanLat=Math.max(1.5, Math.min(10, Math.abs(bbox[3]-bbox[1])));
+    dx=spanLng*0.16; dy=spanLat*0.18;
+  }
+  return [
+    center[0] + Math.cos(angle)*dx*(idx===1 ? 0.7 : 1),
+    center[1] + Math.sin(angle)*dy*(idx===1 ? 0.7 : 1)
+  ];
+}
+function pointForResult(item, idx, total){
+  const lng=num(item.lng), lat=num(item.lat);
+  if(lng!=null && lat!=null) return [lng, lat];
+  const r = regionFallback(item.region);
+  return spreadPoint(r.center, r.bbox, idx, total);
+}
+function featuredHtml(item, kind){
+  if(kind==="hotel") return iwHtml(item);
+  const cfg=ATLAS_TYPES[kind]||{};
+  const meta=[item.brand||item.operator, item.ship, item.regionLabel].filter(Boolean).join(" · ");
+  const when=[item.route||item.country, item.startDate||item.month].filter(Boolean).join("  ·  ");
+  return `<div class="iw"><div class="iwn">${escapeHtml(item.name||cfg.label||"Recommendation")}</div>`+
+    `<div class="iwm">${escapeHtml([meta,when].filter(Boolean).join("  ·  "))}</div>`+
+    `<a href="${escapeHtml(item.bookUrl||cfg.url||"#")}" target="_blank" rel="noopener">View with advisor ↗</a></div>`;
 }
 
-async function plotSubset(deepLink){
-  if(!mapsReady){ pendingPlot=deepLink; return; }
-  const qs = deepLink.includes("?") ? deepLink.slice(deepLink.indexOf("?")+1) : "";
-  const usp = new URLSearchParams(qs);
-  usp.set("limit", String(SUBSET_CAP));   // hard cap on live pins
-  let j;
-  try{ const r=await fetch(ATLAS_BASE+"/api/luxury-hotels?"+usp.toString()); j=await r.json(); }
-  catch(e){ return; }
+function plotRecommendations(lead, meta){
+  if(!mapsReady){ pendingPlot={lead,meta}; return; }
+  if(!lead || !Array.isArray(lead.results) || !lead.results.length) return;
+  const kind = lead.type || "hotel";
+  const recs = lead.results.slice(0,RECOMMENDATION_COUNT);
   subsetActive=true; stopSpin();
   dimHotelField(true);       // fade the ambient field so the subset reads
-  const recs = (j.results||[]).filter(h=>Number.isFinite(h.lat)&&Number.isFinite(h.lng));
-  const feats = recs.map(h=>({ type:"Feature", geometry:{type:"Point",coordinates:[h.lng,h.lat]},
-    properties:{ name:h.name, html:iwHtml(h) } }));
+  if(kind!=="hotel") ensureTypeVisible(kind);
+  const feats = recs.map((h,i)=>({
+    type:"Feature",
+    geometry:{type:"Point",coordinates:pointForResult(h,i,recs.length)},
+    properties:{ name:h.name||"", html:featuredHtml(h,kind), kind }
+  }));
   const fc={ type:"FeatureCollection", features:feats };
-  if(lmap.getSource("subset")){ lmap.getSource("subset").setData(fc); }
+  if(lmap.getSource("featured")){ lmap.getSource("featured").setData(fc); }
   else{
-    lmap.addSource("subset",{ type:"geojson", data:fc });
-    lmap.addLayer({ id:"subset-glow", type:"circle", source:"subset",
-      paint:{ "circle-radius":7,"circle-color":"#e2c87a","circle-opacity":0.16,"circle-blur":0.65 }});
-    lmap.addLayer({ id:"subset-dot", type:"circle", source:"subset",
-      paint:{ "circle-radius":4.2,"circle-color":"#e2c87a","circle-stroke-color":"#5f4c1d","circle-stroke-width":0.8 }});
-    lmap.on("click","subset-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
+    lmap.addSource("featured",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"featured-glow", type:"circle", source:"featured",
+      paint:{ "circle-radius":12,"circle-color":"#e2c87a","circle-opacity":0.24,"circle-blur":0.70 }});
+    lmap.addLayer({ id:"featured-dot", type:"circle", source:"featured",
+      paint:{ "circle-radius":5.5,"circle-color":"#e2c87a","circle-stroke-color":"#5f4c1d","circle-stroke-width":0.8 }});
+    lmap.on("click","featured-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
       popup.setLngLat(e.lngLat).setHTML(f.properties.html).addTo(lmap); });
-    lmap.on("mouseenter","subset-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
-    lmap.on("mouseleave","subset-dot",()=>{ lmap.getCanvas().style.cursor=""; });
+    lmap.on("mouseenter","featured-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
+    lmap.on("mouseleave","featured-dot",()=>{ lmap.getCanvas().style.cursor=""; });
   }
-  if(recs.length){
+  if(feats.length){
     const b=new mapboxgl.LngLatBounds();
-    recs.forEach(h=>b.extend([h.lng,h.lat]));
-    try{ lmap.fitBounds(b,{ padding:60, maxZoom:6, duration:900 }); }catch(_){}
+    feats.forEach(f=>b.extend(f.geometry.coordinates));
+    try{ lmap.fitBounds(b,{ padding:78, maxZoom:kind==="hotel"?10:4.8, duration:900 }); }catch(_){}
   }
-  const total = j.total ?? recs.length;
   const badge = el("atlasBadge");
   badge.style.display="";
-  badge.innerHTML = total>recs.length
-    ? `Showing ${recs.length} of ${total} · <a href="${escapeHtml(deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
-    : `${recs.length} ${recs.length===1?"stay":"stays"} plotted`;
-  el("atlasState").textContent="qualified subset";
+  const total = lead.total ?? recs.length;
+  const label = kind==="hotel" ? "stays" : "recommendations";
+  badge.innerHTML = total>recs.length && lead.deepLink
+    ? `Showing top ${recs.length} of ${total} · <a href="${escapeHtml(lead.deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
+    : `${recs.length} ${label} plotted`;
+  el("atlasState").textContent="top recommendations";
   el("regionsBtn").style.display="";
 }
 
@@ -628,10 +641,11 @@ function scrollDown(){ transcript.scrollTop=transcript.scrollHeight; }
 function renderResults(body, meta){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
   const kind = (lead && lead.type) || "hotel";
+  const recs = lead && lead.results ? lead.results.slice(0,RECOMMENDATION_COUNT) : [];
   // cards
-  if(lead && lead.results && lead.results.length){
+  if(recs.length){
     const cards=document.createElement("div"); cards.className="cards";
-    lead.results.slice(0,3).forEach(h=>{
+    recs.forEach(h=>{
       const c=document.createElement("div"); c.className="hcard";
       if(kind==="hotel"){
         const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
@@ -663,13 +677,11 @@ function renderResults(body, meta){
     });
     body.appendChild(cards);
   }
-  // narrow then plot: hotels plot a live subset on the globe; cruise/jet/yacht
-  // zoom the globe into the matching region with their pins shown.
-  if(meta.deepLink && kind==="hotel"){
-    plotSubset(meta.deepLink);
+  // Plot the same three records shown in cards, using exact hotel coordinates
+  // and regional fallback points for cruises, jets, and yachts.
+  if(recs.length){
+    plotRecommendations(lead, meta);
     setOpenExt(meta.deepLink);
-  } else if(kind!=="hotel" && meta.chartRegion){
-    focusTypeRegion(kind, meta.chartRegion);
   } else if(meta.chartRegion){
     loadRegions();
   }
@@ -686,7 +698,7 @@ function renderResults(body, meta){
 
 function renderMoves(lead){
   const wrap=document.createElement("div"); wrap.className="moves";
-  const names=(lead&&lead.results||[]).slice(0,3).map(h=>h.name);
+  const names=(lead&&lead.results||[]).slice(0,RECOMMENDATION_COUNT).map(h=>h.name);
   const deepLink=lead&&lead.deepLink;
   const mk=(label,onClick)=>{ const b=document.createElement("button"); b.className="move"; b.textContent=label; b.onclick=onClick; return b; };
 
