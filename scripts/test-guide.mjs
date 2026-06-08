@@ -36,9 +36,10 @@ await test('searchOfferings hotel: Aman in Japan returns real records + deepLink
   const r = await searchOfferings({ type: 'hotel', brand: 'Aman', region: 'japan', limit: 3 });
   assert.equal(r.type, 'hotel');
   assert.ok(r.total >= 3);
-  assert.ok(r.results.length >= 1);
+  assert.equal(r.results.length, 3);
   assert.ok(r.results.every((h) => h.brand === 'Aman' && h.region === 'japan'));
   assert.ok(r.results[0].name && r.results[0].bookUrl);
+  assert.ok(Number.isFinite(r.results[0].lat) && Number.isFinite(r.results[0].lng));
   assert.equal(r.results[0].bookPassword, 'VIP');
   assert.ok(r.deepLink.includes('brand=Aman') && r.deepLink.includes('region=japan'));
   assert.equal(r.chartRegion, 'japan');
@@ -53,7 +54,7 @@ await test('searchOfferings honest count for a broad query (limit < total)', asy
 await test('searchOfferings type=any defaults to hotels', async () => {
   const r = await searchOfferings({ type: 'any', q: 'aman', limit: 2 });
   assert.equal(r.type, 'hotel');
-  assert.ok(r.results.length > 0);
+  assert.equal(r.results.length, 3);
 });
 
 // cruise/jet/yacht query their own Atlas APIs (contract identical to hotels).
@@ -83,6 +84,20 @@ await test('searchOfferings cruise queries the cruise atlas + forwards marquee r
   assert.ok(r.results[0].name && r.results[0].bookUrl);
   assert.equal(r.chartRegion, 'antarctica');
   assert.ok(r.deepLink.includes('region=antarctica'));
+});
+
+await test('searchOfferings always requests three recommendations', async () => {
+  const fetchImpl = async (url) => {
+    assert.match(url, /limit=3\b/);
+    return { ok: true, json: async () => ({ total: 4, count: 3, results: [
+      { id: 'jt_1', type: 'jet', name: 'One', region: 'japan' },
+      { id: 'jt_2', type: 'jet', name: 'Two', region: 'japan' },
+      { id: 'jt_3', type: 'jet', name: 'Three', region: 'japan' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 1 }, { fetchImpl });
+  assert.equal(r.count, 3);
+  assert.equal(r.results.length, 3);
 });
 
 await test('searchOfferings degrades gracefully when an atlas endpoint is down', async () => {
