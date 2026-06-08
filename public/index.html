@@ -189,8 +189,8 @@
     <section class="chat">
       <div class="transcript" id="transcript">
         <div class="empty" id="empty">
-          <h1>Where are you headed?</h1>
-          <p>Name a place, a brand, a season, or a kind of trip. I surface real inventory and frame the move. An advisor closes.</p>
+          <h1>Where are you going next?</h1>
+          <p>Give me a place, a house, a season, or the shape of the journey. I’ll find what’s truly available and sketch the first elegant move. Then an advisor takes it from there.</p>
           <div class="chips" id="chips">
             <div class="chip">Aman in Japan</div>
             <div class="chip">Four Seasons in Italy</div>
@@ -279,6 +279,16 @@ let lmap=null, mapsReady=false, pendingPlot=null, popup=null;
 let spinning=false, spinRAF=0, subsetActive=false;
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
+// Marquee region geo, filled from the Hotel Atlas /api/regions (bbox + center),
+// used to zoom cruise/jet/yacht chat results into the right region.
+const REGION_GEO = {};
+// Fallback centers [lng,lat,zoom] if regions haven't loaded yet.
+const REGION_FALLBACK = {
+  antarctica:[0,-72,2.3], arctic:[8,79,2.3], galapagos:[-91,-0.4,5], amazon:[-60,-3.5,3.8],
+  polynesia:[-149,-17,3.4], patagonia:[-72,-49,3.6], kimberley:[126,-16,4.3],
+  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2]
+};
+
 function showMapFallback(){ el("mapFallback").style.display="flex"; }
 
 window.initLivingAtlas = function(){
@@ -354,6 +364,7 @@ async function loadRegions(){
   el("atlasBadge").style.display="none";
   try{
     const j = await (await fetch(ATLAS_BASE+"/api/regions")).json();
+    (j.regions||[]).forEach(r=>{ if(Array.isArray(r.center)&&r.center.length===2) REGION_GEO[r.region]={ bbox:r.bbox||null, center:r.center }; });
     const feats = (j.regions||[]).filter(r=>Array.isArray(r.center)&&r.center.length===2).map(r=>({
       type:"Feature",
       geometry:{ type:"Point", coordinates:[r.center[0],r.center[1]] },
@@ -416,11 +427,9 @@ function regionsFromData(json){
   return out.filter(r=>Number.isFinite(r.lng)&&Number.isFinite(r.lat));
 }
 
-/* Per-type region store: { all:[features], top:[features] } and the legend's
-   current "show all" state. Map load plots only the top 10 regions per type. */
+/* Per-type region store: { all:[features] }. Every region pin for cruise / jet /
+   yacht is shown by default; the legend simply toggles each layer on and off. */
 const TYPE_REGIONS = {};
-const TYPE_EXPANDED = {};
-const TYPE_TOP_N = 10;
 
 function typeFeatures(key, regs){
   return regs.map(r=>({
@@ -438,10 +447,8 @@ async function addTypeLayer(key){
   const cfg=ATLAS_TYPES[key];
   const json=await (await fetch(cfg.data)).json();
   const regs=regionsFromData(json).sort((a,b)=>(b.count||0)-(a.count||0));
-  const top=regs.slice(0, TYPE_TOP_N);
-  TYPE_REGIONS[key]={ all:typeFeatures(key,regs), top:typeFeatures(key,top) };
-  TYPE_EXPANDED[key]=false;
-  const fc={ type:"FeatureCollection", features: TYPE_REGIONS[key].top };
+  TYPE_REGIONS[key]={ all:typeFeatures(key,regs) };
+  const fc={ type:"FeatureCollection", features: TYPE_REGIONS[key].all };
   const src="t_"+key;
   if(lmap.getSource(src)){ lmap.getSource(src).setData(fc); return; }
   lmap.addSource(src,{ type:"geojson", data:fc });
@@ -460,17 +467,13 @@ async function addTypeLayer(key){
   lmap.on("mouseleave",src+"_dot",()=>{ lmap.getCanvas().style.cursor=""; });
 }
 
-// Swap a type layer between its top-10 set and its full region set.
-function setTypeExpanded(key, expanded){
-  TYPE_EXPANDED[key]=expanded;
-  const store=TYPE_REGIONS[key]; const src=lmap && lmap.getSource("t_"+key);
-  if(!store || !src) return;
-  src.setData({ type:"FeatureCollection", features: expanded ? store.all : store.top });
+// Map a legend key to the Mapbox layers it controls.
+function layerIdsFor(key){
+  return key==="hotel" ? ["hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
 }
 
-/* Legend: a key plus a "show all pins for this type" control.
-   Hotels toggle the ambient dot field; cruise/jet/yacht expand from the top 10
-   marquee regions to every region the Atlas covers. */
+/* Legend: a color key per layer. Tapping a row simply toggles that layer on and
+   off (hotels, cruise, jet, yacht). All pins are shown by default. */
 function buildLegend(){
   const box=el("legend"); if(!box) return;
   const items=[
@@ -480,24 +483,20 @@ function buildLegend(){
     { key:"yacht",  label:"Yacht",  color:ATLAS_TYPES.yacht.color },
   ];
   box.innerHTML="";
-  const cap=document.createElement("div"); cap.className="lgcap"; cap.textContent="Top regions · click to show all";
+  const cap=document.createElement("div"); cap.className="lgcap"; cap.textContent="Tap to hide";
   box.appendChild(cap);
   for(const it of items){
-    const row=document.createElement("div"); row.className="lgi";
-    row.title = it.key==="hotel" ? "Toggle hotel field" : "Show all "+it.label.toLowerCase()+" pins";
+    const row=document.createElement("div"); row.className="lgi"; row.dataset.key=it.key;
+    row.title="Tap to hide";
     const dot=document.createElement("i"); dot.style.background=it.color;
     const tx=document.createElement("span"); tx.textContent=it.label;
     row.appendChild(dot); row.appendChild(tx);
     row.addEventListener("click",()=>{
-      if(it.key==="hotel"){
-        const off=row.classList.toggle("off");
-        if(lmap.getLayer("hotel-dots")) lmap.setLayoutProperty("hotel-dots","visibility", off?"none":"visible");
-        return;
-      }
-      const expanded=!TYPE_EXPANDED[it.key];
-      setTypeExpanded(it.key, expanded);
-      row.classList.toggle("all", expanded);
-      tx.textContent = expanded ? it.label+" · all" : it.label;
+      const off=row.classList.toggle("off");
+      row.title = off ? "Tap to show" : "Tap to hide";
+      layerIdsFor(it.key).forEach(id=>{
+        if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", off?"none":"visible");
+      });
     });
     box.appendChild(row);
   }
@@ -511,6 +510,31 @@ function fitBbox(bbox){
   if(!lmap||!bbox) return;
   const [minLng,minLat,maxLng,maxLat]=bbox;
   try{ lmap.fitBounds([[minLng,minLat],[maxLng,maxLat]],{ padding:56, duration:900 }); }catch(_){}
+}
+
+// Make sure a type's pins are visible and its legend row reads "on".
+function ensureTypeVisible(kind){
+  layerIdsFor(kind).forEach(id=>{ if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility","visible"); });
+  const row=document.querySelector('#legend .lgi[data-key="'+kind+'"]');
+  if(row && row.classList.contains("off")){ row.classList.remove("off"); row.title="Tap to hide"; }
+}
+
+/* Cruise / jet / yacht results: zoom the globe into the matching marquee region
+   (mirrors how hotels fit to their plotted subset). Type pins stay shown so the
+   region's offerings read as the highlight. */
+function focusTypeRegion(kind, region){
+  if(!lmap) return;
+  subsetActive=true; stopSpin();
+  clearSubset();
+  setRegionVisible(false);   // drop the hotel marquee pins so the type field reads
+  dimHotelField(true);       // fade the ambient hotel field
+  ensureTypeVisible(kind);
+  const geo = region && REGION_GEO[region];
+  if(geo && Array.isArray(geo.bbox)){ fitBbox(geo.bbox); }
+  else if(geo && Array.isArray(geo.center)){ try{ lmap.flyTo({ center:[geo.center[0],geo.center[1]], zoom:3.4, duration:900 }); }catch(_){} }
+  else if(region && REGION_FALLBACK[region]){ const f=REGION_FALLBACK[region]; try{ lmap.flyTo({ center:[f[0],f[1]], zoom:f[2], duration:900 }); }catch(_){} }
+  el("atlasState").textContent="qualified subset";
+  el("regionsBtn").style.display="";
 }
 
 async function plotSubset(deepLink){
@@ -640,10 +664,12 @@ function renderResults(body, meta){
     body.appendChild(cards);
   }
   // narrow then plot: hotels plot a live subset on the globe; cruise/jet/yacht
-  // rest the globe on the relevant marquee region (their pins are already shown).
+  // zoom the globe into the matching region with their pins shown.
   if(meta.deepLink && kind==="hotel"){
     plotSubset(meta.deepLink);
     setOpenExt(meta.deepLink);
+  } else if(kind!=="hotel" && meta.chartRegion){
+    focusTypeRegion(kind, meta.chartRegion);
   } else if(meta.chartRegion){
     loadRegions();
   }
