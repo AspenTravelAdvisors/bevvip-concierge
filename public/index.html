@@ -212,14 +212,14 @@
       <div class="ah">
         <span>Living Atlas</span>
         <span class="openext" id="openExt"></span>
-        <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Regions</button>
+        <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Reset</button>
         <span class="jumps">
           <a class="ajump" data-t="hotel" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener"><i></i>Hotels</a>
           <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Cruise</a>
           <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Jet</a>
           <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Yacht</a>
         </span>
-        <span class="live" id="atlasState">marquee regions</span>
+        <span class="live" id="atlasState">all inventory</span>
       </div>
       <div class="mapwrap">
         <div id="livingAtlas"></div>
@@ -248,6 +248,7 @@ const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 const SUBSET_CAP = 60;               // taste rule: never hold more than ~60 live pins
+const HOTEL_CLUSTER_MAX_ZOOM = 4.4;  // keep the 2,500-hotel field light at globe zoom
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
 const MAPS_KEY = "AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg";
@@ -307,10 +308,10 @@ window.initLivingAtlas = function(){
       lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
         "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
       mapsReady = true;
-      loadHotelField();
       loadRegions();
       loadTypeOverlays();
       startSpin();
+      scheduleHotelField();
       if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotSubset(p); }
     });
     ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>lmap.on(ev, stopSpin));
@@ -329,72 +330,73 @@ function spinStep(){
   spinRAF=requestAnimationFrame(spinStep);
 }
 
-/* ambient: the full hotel inventory as a faint GPU dot field (all ~2,500) */
+function scheduleHotelField(){
+  const run=()=>loadHotelField();
+  if("requestIdleCallback" in window) requestIdleCallback(run,{timeout:1400});
+  else setTimeout(run,450);
+}
+
+/* ambient: the full hotel inventory, clustered at globe zoom and expanded into
+   exact hotel dots as the traveler zooms closer. */
 async function loadHotelField(){
   if(!mapsReady || !lmap) return;
   try{
     const fc = await (await fetch("/api/atlas-points")).json();
     if(lmap.getSource("hotels")) return;
-    lmap.addSource("hotels",{ type:"geojson", data:fc });
-    lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
+    lmap.addSource("hotels",{
+      type:"geojson",
+      data:fc,
+      cluster:true,
+      clusterMaxZoom:HOTEL_CLUSTER_MAX_ZOOM,
+      clusterRadius:42
+    });
+    lmap.addLayer({ id:"hotel-clusters", type:"circle", source:"hotels",
+      filter:["has","point_count"],
       paint:{
-        "circle-radius":["interpolate",["linear"],["zoom"],1,1.2,4,2.0,8,3.4],
+        "circle-radius":["interpolate",["linear"],["get","point_count"],2,2.6,25,4.5,120,7.2],
         "circle-color":"#c9a84c",
-        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.40,5,0.75],
-        "circle-blur":0.25
+        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.22,4,0.42],
+        "circle-blur":0.45
+      }});
+    lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
+      filter:["!",["has","point_count"]],
+      minzoom:HOTEL_CLUSTER_MAX_ZOOM - 0.2,
+      paint:{
+        "circle-radius":["interpolate",["linear"],["zoom"],4,1.1,7,2.2,10,3.1],
+        "circle-color":"#c9a84c",
+        "circle-opacity":["interpolate",["linear"],["zoom"],4,0.28,7,0.68],
+        "circle-blur":0.15
       }});
   }catch(e){ /* dot field optional */ }
 }
 function dimHotelField(dim){
-  if(!lmap || !lmap.getLayer("hotel-dots")) return;
-  lmap.setPaintProperty("hotel-dots","circle-opacity", dim
-    ? 0.12
-    : ["interpolate",["linear"],["zoom"],1,0.40,5,0.75]);
+  if(!lmap) return;
+  if(lmap.getLayer("hotel-clusters")){
+    lmap.setPaintProperty("hotel-clusters","circle-opacity", dim
+      ? 0.08
+      : ["interpolate",["linear"],["zoom"],1,0.22,4,0.42]);
+  }
+  if(lmap.getLayer("hotel-dots")){
+    lmap.setPaintProperty("hotel-dots","circle-opacity", dim
+      ? 0.10
+      : ["interpolate",["linear"],["zoom"],4,0.28,7,0.68]);
+  }
 }
 
-/* resting state: marquee region pins from /api/regions */
+/* Region geometry is still loaded for chat-result zooming, but the old visible
+   hotel marquee circles are no longer drawn. */
 async function loadRegions(){
   if(!mapsReady || !lmap) return;
   subsetActive=false; startSpin();
   clearSubset();
   dimHotelField(false);
-  setRegionVisible(true);
-  el("atlasState").textContent="marquee regions";
+  el("atlasState").textContent="all inventory";
   el("regionsBtn").style.display="none";
   el("atlasBadge").style.display="none";
   try{
     const j = await (await fetch(ATLAS_BASE+"/api/regions")).json();
     (j.regions||[]).forEach(r=>{ if(Array.isArray(r.center)&&r.center.length===2) REGION_GEO[r.region]={ bbox:r.bbox||null, center:r.center }; });
-    const feats = (j.regions||[]).filter(r=>Array.isArray(r.center)&&r.center.length===2).map(r=>({
-      type:"Feature",
-      geometry:{ type:"Point", coordinates:[r.center[0],r.center[1]] },
-      properties:{ region:r.region, label:`${cap(r.region)} · ${r.count}`,
-        bbox:JSON.stringify(r.bbox||null), deepLink:r.deepLink||(ATLAS_BASE+"?region="+r.region) }
-    }));
-    const fc={ type:"FeatureCollection", features:feats };
-    if(lmap.getSource("regions")){ lmap.getSource("regions").setData(fc); return; }
-    lmap.addSource("regions",{ type:"geojson", data:fc });
-    lmap.addLayer({ id:"region-glow", type:"circle", source:"regions",
-      paint:{ "circle-radius":15,"circle-color":"#c9a84c","circle-opacity":0.16,"circle-blur":0.85 }});
-    lmap.addLayer({ id:"region-dot", type:"circle", source:"regions",
-      paint:{ "circle-radius":6,"circle-color":"#c9a84c","circle-stroke-color":"#fffaf0","circle-stroke-width":1.5 }});
-    lmap.addLayer({ id:"region-label", type:"symbol", source:"regions",
-      layout:{ "text-field":["get","label"],"text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
-        "text-size":12,"text-offset":[0,1.3],"text-anchor":"top" },
-      paint:{ "text-color":"#e8e0d0","text-halo-color":"#06080c","text-halo-width":1.4 }});
-    lmap.on("click","region-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
-      let bbox=null; try{ bbox=JSON.parse(f.properties.bbox); }catch(_){}
-      if(bbox) fitBbox(bbox);
-      plotSubset(f.properties.deepLink);
-    });
-    lmap.on("mouseenter","region-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
-    lmap.on("mouseleave","region-dot",()=>{ lmap.getCanvas().style.cursor=""; });
   }catch(e){ /* regions optional; map still usable */ }
-}
-function setRegionVisible(v){
-  ["region-glow","region-dot","region-label"].forEach(id=>{
-    if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", v?"visible":"none");
-  });
 }
 
 /* master atlas: cruise / jet / yacht region pins, each colored, from live app data */
@@ -469,7 +471,7 @@ async function addTypeLayer(key){
 
 // Map a legend key to the Mapbox layers it controls.
 function layerIdsFor(key){
-  return key==="hotel" ? ["hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
+  return key==="hotel" ? ["hotel-clusters","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
 }
 
 /* Legend: a color key per layer. Tapping a row simply toggles that layer on and
@@ -526,7 +528,6 @@ function focusTypeRegion(kind, region){
   if(!lmap) return;
   subsetActive=true; stopSpin();
   clearSubset();
-  setRegionVisible(false);   // drop the hotel marquee pins so the type field reads
   dimHotelField(true);       // fade the ambient hotel field
   ensureTypeVisible(kind);
   const geo = region && REGION_GEO[region];
@@ -546,7 +547,6 @@ async function plotSubset(deepLink){
   try{ const r=await fetch(ATLAS_BASE+"/api/luxury-hotels?"+usp.toString()); j=await r.json(); }
   catch(e){ return; }
   subsetActive=true; stopSpin();
-  setRegionVisible(false);   // narrow: drop the resting region layer
   dimHotelField(true);       // fade the ambient field so the subset reads
   const recs = (j.results||[]).filter(h=>Number.isFinite(h.lat)&&Number.isFinite(h.lng));
   const feats = recs.map(h=>({ type:"Feature", geometry:{type:"Point",coordinates:[h.lng,h.lat]},
@@ -556,9 +556,9 @@ async function plotSubset(deepLink){
   else{
     lmap.addSource("subset",{ type:"geojson", data:fc });
     lmap.addLayer({ id:"subset-glow", type:"circle", source:"subset",
-      paint:{ "circle-radius":10,"circle-color":"#e2c87a","circle-opacity":0.2,"circle-blur":0.7 }});
+      paint:{ "circle-radius":7,"circle-color":"#e2c87a","circle-opacity":0.16,"circle-blur":0.65 }});
     lmap.addLayer({ id:"subset-dot", type:"circle", source:"subset",
-      paint:{ "circle-radius":6.5,"circle-color":"#e2c87a","circle-stroke-color":"#fffaf0","circle-stroke-width":1.5 }});
+      paint:{ "circle-radius":4.2,"circle-color":"#e2c87a","circle-stroke-color":"#5f4c1d","circle-stroke-width":0.8 }});
     lmap.on("click","subset-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
       popup.setLngLat(e.lngLat).setHTML(f.properties.html).addTo(lmap); });
     lmap.on("mouseenter","subset-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
