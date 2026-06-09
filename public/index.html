@@ -350,25 +350,43 @@ async function loadHotelField(){
       clusterMaxZoom:HOTEL_CLUSTER_MAX_ZOOM,
       clusterRadius:64
     });
+    lmap.addLayer({ id:"hotel-heat", type:"heatmap", source:"hotels",
+      maxzoom:HOTEL_CLUSTER_MAX_ZOOM + 0.35,
+      paint:{
+        "heatmap-weight":1,
+        "heatmap-intensity":["interpolate",["linear"],["zoom"],0,0.75,3,1.25],
+        "heatmap-radius":["interpolate",["linear"],["zoom"],0,13,3,28],
+        "heatmap-opacity":["interpolate",["linear"],["zoom"],0,0.58,3.4,0.18],
+        "heatmap-color":[
+          "interpolate",["linear"],["heatmap-density"],
+          0,"rgba(201,168,76,0)",
+          0.18,"rgba(201,168,76,0.22)",
+          0.48,"rgba(226,200,122,0.48)",
+          0.82,"rgba(255,238,177,0.70)",
+          1,"rgba(255,247,213,0.86)"
+        ]
+      }});
     lmap.addLayer({ id:"hotel-clusters", type:"circle", source:"hotels",
       filter:["has","point_count"],
       paint:{
-        "circle-radius":["interpolate",["linear"],["get","point_count"],2,8,25,13,120,20],
+        "circle-radius":["interpolate",["linear"],["get","point_count"],2,10,25,16,120,25],
         "circle-color":"#c9a84c",
-        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.58,4,0.72],
-        "circle-blur":0.12
+        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.70,4,0.82],
+        "circle-blur":0.05,
+        "circle-stroke-color":"rgba(26,20,7,.72)",
+        "circle-stroke-width":["interpolate",["linear"],["get","point_count"],2,1,120,2]
       }});
     lmap.addLayer({ id:"hotel-cluster-count", type:"symbol", source:"hotels",
       filter:["has","point_count"],
       layout:{
         "text-field":["to-string",["get","point_count_abbreviated"]],
         "text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
-        "text-size":["interpolate",["linear"],["get","point_count"],2,9,120,11],
+        "text-size":["interpolate",["linear"],["get","point_count"],2,10,120,12],
         "text-allow-overlap":true
       },
       paint:{
         "text-color":"#1a1407",
-        "text-opacity":["interpolate",["linear"],["zoom"],1,0.78,4,0.92]
+        "text-opacity":["interpolate",["linear"],["zoom"],1,0.88,4,0.96]
       }});
     lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
       filter:["!",["has","point_count"]],
@@ -426,15 +444,20 @@ async function fetchHotelPage(offset, limit){
 
 function dimHotelField(dim){
   if(!lmap) return;
+  if(lmap.getLayer("hotel-heat")){
+    lmap.setPaintProperty("hotel-heat","heatmap-opacity", dim
+      ? 0.05
+      : ["interpolate",["linear"],["zoom"],0,0.58,3.4,0.18]);
+  }
   if(lmap.getLayer("hotel-clusters")){
     lmap.setPaintProperty("hotel-clusters","circle-opacity", dim
       ? 0.08
-      : ["interpolate",["linear"],["zoom"],1,0.58,4,0.72]);
+      : ["interpolate",["linear"],["zoom"],1,0.70,4,0.82]);
   }
   if(lmap.getLayer("hotel-cluster-count")){
     lmap.setPaintProperty("hotel-cluster-count","text-opacity", dim
       ? 0.10
-      : ["interpolate",["linear"],["zoom"],1,0.78,4,0.92]);
+      : ["interpolate",["linear"],["zoom"],1,0.88,4,0.96]);
   }
   if(lmap.getLayer("hotel-dots")){
     lmap.setPaintProperty("hotel-dots","circle-opacity", dim
@@ -531,7 +554,7 @@ async function addTypeLayer(key){
 
 // Map a legend key to the Mapbox layers it controls.
 function layerIdsFor(key){
-  return key==="hotel" ? ["hotel-clusters","hotel-cluster-count","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
+  return key==="hotel" ? ["hotel-heat","hotel-clusters","hotel-cluster-count","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
 }
 
 /* Legend: a color key per layer. Tapping a row simply toggles that layer on and
