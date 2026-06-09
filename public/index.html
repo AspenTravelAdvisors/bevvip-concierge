@@ -53,18 +53,29 @@
   .msg .body p{margin:0 0 10px}
   .msg .body p:last-child{margin-bottom:0}
   .msg.user .body{color:var(--text)}
+  .msg .body hr.mdhr{border:0;border-top:1px solid var(--line-soft);margin:14px 0}
+  .msg .body .mdtable-wrap{margin:12px 0 14px;overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025)}
+  .msg .body table.mdtable{width:100%;border-collapse:collapse;min-width:560px;font-size:12.5px;line-height:1.35}
+  .msg .body table.mdtable th,.msg .body table.mdtable td{padding:9px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-soft)}
+  .msg .body table.mdtable th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-light);background:rgba(255,255,255,.035);font-weight:700}
+  .msg .body table.mdtable td{color:var(--text)}
+  .msg .body table.mdtable tr:last-child td{border-bottom:0}
+  .msg .body table.mdtable td:first-child,.msg .body table.mdtable th:first-child{width:42px;text-align:right;color:var(--sub)}
 
   /* result cards */
   .cards{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
   .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
-  .hcard .photo{margin:0 0 12px;background:transparent;overflow:visible;
-    display:grid;grid-template-columns:minmax(86px,112px);align-items:stretch;justify-content:flex-start;gap:8px;
-    position:relative;padding:0;min-height:0}
-  .hcard .photo.has-photos{grid-template-columns:repeat(3,minmax(86px,112px))}
-  .hcard .photo img{width:100%;aspect-ratio:1/1;height:auto;object-fit:cover;display:block;
-    border-radius:8px;border:1px solid var(--line);background:#1a1a1c}
-  .hcard .photo .ph-mark{width:100%;aspect-ratio:1/1;border-radius:8px;border:1px solid var(--line);
-    background:#1a1a1c;color:var(--gold-dim);font-size:30px;display:flex;align-items:center;justify-content:center}
+  .hcard .photo{margin:0 0 12px;background:#141416;overflow:hidden;border:1px solid var(--line);
+    border-radius:10px;display:grid;grid-template-columns:1fr;grid-template-rows:1fr;gap:6px;
+    position:relative;padding:0;height:168px}
+  .hcard .photo.has-photos{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;background:#101011}
+  .hcard .photo[data-photos="1"]{grid-template-columns:1fr;grid-template-rows:1fr}
+  .hcard .photo[data-photos="2"]{grid-template-columns:1fr 1fr;grid-template-rows:1fr}
+  .hcard .photo[data-photos="1"] img:first-of-type,.hcard .photo[data-photos="2"] img:first-of-type{grid-row:auto}
+  .hcard .photo[data-photos="3"] img:first-of-type{grid-row:1 / span 2}
+  .hcard .photo img{width:100%;height:100%;min-width:0;object-fit:cover;display:block;background:#1a1a1c}
+  .hcard .photo .ph-mark{width:100%;height:100%;background:#1a1a1c;color:var(--gold-dim);font-size:34px;
+    display:flex;align-items:center;justify-content:center}
   .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
     font-size:11px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 10px;
@@ -81,11 +92,22 @@
   .hcard .book{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#1a1407;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));padding:8px 13px;border-radius:8px}
   .hcard .book:hover{filter:brightness(1.05);text-decoration:none}
-  @media (max-width:620px){.hcard .photo.has-photos{grid-template-columns:repeat(2,minmax(82px,106px))}}
+  .compare{margin:14px 0 6px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:rgba(255,255,255,.025)}
+  .compare .ctitle{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);
+    padding:10px 12px;border-bottom:1px solid var(--line-soft)}
+  .compare .table{overflow-x:auto}
+  .compare .row{display:grid;grid-template-columns:116px repeat(var(--cols),minmax(170px,1fr));min-width:calc(116px + var(--cols) * 170px)}
+  .compare .row+.row{border-top:1px solid var(--line-soft)}
+  .compare .cell{padding:9px 10px;font-size:12.5px;line-height:1.35;color:var(--text)}
+  .compare .label{color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.018)}
+  .compare .head .cell{font-weight:700;color:var(--gold-light);font-family:var(--serif);font-size:16px;line-height:1.2}
+  @media (max-width:620px){.hcard .photo{height:146px}.compare .row{grid-template-columns:94px repeat(var(--cols),minmax(148px,1fr));min-width:calc(94px + var(--cols) * 148px)}}
 
   .atlasbtn{display:inline-flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:13px;font-weight:600;
     color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:9px;padding:9px 14px;cursor:pointer;background:transparent}
   .atlasbtn:hover{background:rgba(201,168,76,.08);text-decoration:none}
+  .atlaslinks{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 2px}
+  .atlaslinks .atlasbtn{margin:0}
 
   /* four moves */
   .moves{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 2px;padding-top:14px;border-top:1px solid var(--line-soft)}
@@ -698,6 +720,35 @@ function iwHtml(h){
 function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
 }
+function atlasLabelForType(type){
+  if(type==="hotel") return "Open Hotel Atlas";
+  if(type==="cruise") return "Open Cruise Atlas";
+  if(type==="yacht") return "Open Yacht Atlas";
+  if(type==="jet") return "Open Jet Atlas";
+  return "Open in Atlas";
+}
+function atlasLinksForLead(lead, meta){
+  const sourceLinks = (lead&&lead.sources||[])
+    .filter(s=>s && s.count>0 && s.deepLink)
+    .map(s=>({type:s.type, href:s.deepLink}));
+  const links = sourceLinks.length
+    ? sourceLinks
+    : (meta.deepLink ? [{type:(lead&&lead.type)||"atlas", href:meta.deepLink}] : []);
+  const seen = new Set();
+  return links.filter(l=>{
+    const key=l.type+"|"+l.href;
+    if(seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+}
+function wantsComparison(text){
+  return /\b(compare|comparison|versus|vs\.?|side\s*by\s*side|differences?|which\s+(one|is|would))\b/i.test(String(text||""));
+}
+function comparisonLimit(text){
+  const t=String(text||"").toLowerCase();
+  if(/\b(two|2)\b/.test(t)) return 2;
+  return 3;
+}
 
 // boot the Mapbox globe (mapbox-gl is loaded via the <script> tag in <head>)
 initLivingAtlas();
@@ -711,20 +762,67 @@ function formatVipBenefit(raw){
   return text;
 }
 function stripChart(s){ return s.replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"").trim(); }
-// minimal, safe markdown: bold, links (http/mailto/tel only), line breaks, "- " bullets
+// minimal, safe markdown: bold/italic, links, bullets, dividers, and tables.
 function mdToHtml(src){
-  let t = escapeHtml(stripChart(src));
-  t = t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
-  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|tel:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-  // bullets
-  const lines = t.split("\n");
+  const lines = stripChart(src).split("\n");
   let html="", inList=false;
-  for(let ln of lines){
-    if(/^\s*[-•]\s+/.test(ln)){ if(!inList){html+="<ul>";inList=true;} html+="<li>"+ln.replace(/^\s*[-•]\s+/,"")+"</li>"; }
-    else { if(inList){html+="</ul>";inList=false;} if(ln.trim()==="") html+=""; else html+="<p>"+ln+"</p>"; }
+  const closeList=()=>{ if(inList){html+="</ul>";inList=false;} };
+  for(let i=0;i<lines.length;i++){
+    const ln=lines[i];
+    if(isTableStart(lines,i)){
+      closeList();
+      const block=[];
+      while(i<lines.length && isTableRow(lines[i])) block.push(lines[i++]);
+      i--;
+      html+=renderMarkdownTable(block);
+    } else if(/^\s*[-*_]{3,}\s*$/.test(ln)){
+      closeList();
+      html+='<hr class="mdhr">';
+    } else if(/^\s*[-•]\s+/.test(ln)){
+      if(!inList){html+="<ul>";inList=true;}
+      html+="<li>"+inlineMd(ln.replace(/^\s*[-•]\s+/,""))+"</li>";
+    } else {
+      closeList();
+      if(ln.trim()==="") html+="";
+      else html+="<p>"+inlineMd(ln)+"</p>";
+    }
   }
-  if(inList) html+="</ul>";
+  closeList();
   return html || "<p></p>";
+}
+function inlineMd(raw){
+  let t=escapeHtml(raw).trim();
+  t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|tel:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  t=t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+  t=t.replace(/(^|[\s(])\*([^*\n]+)\*(?=$|[\s).,;:!?])/g,'$1<em>$2</em>');
+  return t;
+}
+function isTableRow(line){
+  const t=String(line||"").trim();
+  return t.includes("|") && /^\|?.+\|?.*$/.test(t);
+}
+function isTableDivider(line){
+  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(String(line||""));
+}
+function isTableStart(lines,i){
+  return isTableRow(lines[i]) && isTableDivider(lines[i+1]||"");
+}
+function tableCells(line){
+  return String(line||"").trim().replace(/^\|/,"").replace(/\|$/,"").split("|").map(c=>c.trim());
+}
+function renderMarkdownTable(block){
+  const head=tableCells(block[0]);
+  const rows=block.slice(2).filter(isTableRow).map(tableCells);
+  if(!head.length || !rows.length) return "";
+  let out='<div class="mdtable-wrap"><table class="mdtable"><thead><tr>';
+  out+=head.map(c=>"<th>"+inlineMd(c)+"</th>").join("");
+  out+="</tr></thead><tbody>";
+  rows.forEach(r=>{
+    out+="<tr>";
+    for(let i=0;i<head.length;i++) out+="<td>"+inlineMd(r[i]||"")+"</td>";
+    out+="</tr>";
+  });
+  return out+"</tbody></table></div>";
 }
 
 function addMessage(role){
@@ -740,12 +838,13 @@ function addMessage(role){
 function scrollDown(){ transcript.scrollTop=transcript.scrollHeight; }
 
 /* ---- cards + moves + atlas handoff ---- */
-function renderResults(body, meta){
+function renderResults(body, meta, opts={}){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
   const kind = (lead && lead.type) || "hotel";
   const recs = lead && lead.results ? lead.results : [];
   // cards
   if(recs.length){
+    if(opts.compare && recs.length>=2) body.appendChild(renderComparison(recs, kind, opts.compareLimit||3));
     const cards=document.createElement("div"); cards.className="cards";
     recs.forEach(h=>{
       const c=document.createElement("div"); c.className="hcard";
@@ -793,15 +892,70 @@ function renderResults(body, meta){
   } else if(meta.chartRegion){
     loadRegions();
   }
-  if(meta.deepLink){
-    setOpenExt(meta.deepLink);
-    const b=document.createElement("a"); b.className="atlasbtn"; b.href=meta.deepLink; b.target="_blank"; b.rel="noopener";
-    b.innerHTML="&#9683; Open in Atlas";
-    body.appendChild(b);
+  const atlasLinks = atlasLinksForLead(lead, meta);
+  if(atlasLinks.length){
+    setOpenExt(atlasLinks[0].href);
+    const wrap=document.createElement("div"); wrap.className="atlaslinks";
+    atlasLinks.forEach(link=>{
+      const b=document.createElement("a"); b.className="atlasbtn"; b.href=link.href; b.target="_blank"; b.rel="noopener";
+      b.innerHTML="&#9683; "+escapeHtml(atlasLabelForType(link.type));
+      wrap.appendChild(b);
+    });
+    body.appendChild(wrap);
   }
   // the four moves
   body.appendChild(renderMoves(lead));
   scrollDown();
+}
+
+function renderComparison(recs, kind, limit){
+  const items=recs.slice(0,Math.max(2,Math.min(3,limit||3,recs.length)));
+  const allHotels=items.every(x=>(x.type||kind)==="hotel");
+  const rows=allHotels
+    ? [
+        ["Setting", h=>[h.city,h.country].filter(Boolean).join(", ") || [h.brand,h.program].filter(Boolean).join(" · ")],
+        ["Best for", h=>(h.fit&&h.fit.bestFit)||h.category||""],
+        ["Atmosphere", h=>(h.fit&&h.fit.atmosphere)||""],
+        ["Service", h=>(h.fit&&h.fit.serviceStyle)||""],
+        ["VIP edge", h=>(h.vipUpgrades||[]).slice(0,2).map(formatVipBenefit).join("; ")],
+        ["Advisor read", h=>(h.fit&&h.fit.description)||""]
+      ]
+    : [
+        ["Type", h=>atlasLabelForType(h.type||kind).replace(/^Open /,"").replace(" Atlas","")],
+        ["Operator", h=>h.brand||h.operator||""],
+        ["Vessel", h=>h.ship||""],
+        ["Route", h=>h.route||h.country||""],
+        ["When", h=>h.startDate||h.month||""],
+        ["Length", h=>h.nights?(h.nights+" nights"):""],
+        ["Region", h=>h.regionLabel||h.region||""]
+      ];
+  const wrap=document.createElement("div");
+  wrap.className="compare";
+  wrap.style.setProperty("--cols",String(items.length));
+  const title=document.createElement("div");
+  title.className="ctitle";
+  title.textContent="Side-by-side comparison";
+  const table=document.createElement("div");
+  table.className="table";
+  const head=document.createElement("div");
+  head.className="row head";
+  head.appendChild(compareCell("",true));
+  items.forEach(h=>head.appendChild(compareCell(h.name||"",false)));
+  table.appendChild(head);
+  rows.forEach(([label,get])=>{
+    const row=document.createElement("div"); row.className="row";
+    row.appendChild(compareCell(label,true));
+    items.forEach(h=>row.appendChild(compareCell(get(h)||"Not listed",false)));
+    table.appendChild(row);
+  });
+  wrap.append(title,table);
+  return wrap;
+}
+function compareCell(text,isLabel){
+  const cell=document.createElement("div");
+  cell.className="cell"+(isLabel?" label":"");
+  cell.textContent=String(text||"");
+  return cell;
 }
 
 function renderMoves(lead){
@@ -841,12 +995,13 @@ function enrichCard(cardEl, hotel, sv){
       svc.textSearch({ query }, (results, status)=>{
         if(status===google.maps.places.PlacesServiceStatus.OK && results && results[0]
            && results[0].photos && results[0].photos.length){
-          const urls = results[0].photos.slice(0,3).map(p=>p.getUrl({ maxWidth:320, maxHeight:320 }));
+          const urls = results[0].photos.slice(0,3).map((p,idx)=>p.getUrl({ maxWidth:idx?360:720, maxHeight:480 }));
           const ph = cardEl.querySelector(".photo");
           if(ph){
             const mark = ph.querySelector(".ph-mark"); if(mark) mark.remove();
             ph.querySelectorAll("img").forEach(img=>img.remove());
             ph.classList.toggle("has-photos", urls.length>0);
+            ph.dataset.photos = String(urls.length);
             const anchor = ph.querySelector(".sv360");
             urls.forEach((url,idx)=>{
               const img = document.createElement("img"); img.src=url; img.alt=hotel.name+(idx?` photo ${idx+1}`:"");
@@ -976,6 +1131,8 @@ let busy=false;
 async function sendText(text){
   text=(text||"").trim();
   if(!text || busy) return;
+  const compare=wantsComparison(text);
+  const compareLimit=comparisonLimit(text);
   busy=true; sendBtn.disabled=true;
   input.value=""; autosize();
   // user bubble
@@ -1011,7 +1168,7 @@ async function sendText(text){
     if(typing.parentNode) typing.remove();
     gb.innerHTML = mdToHtml(acc) || "<p></p>";
     if(acc) messages.push({role:"assistant", content:acc});
-    if(meta) renderResults(gb, meta);
+    if(meta) renderResults(gb, meta, {compare, compareLimit});
   }catch(err){
     if(typing.parentNode) typing.remove();
     const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+err.message;
