@@ -59,6 +59,8 @@
   .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
   .hcard .photo{margin:-14px -15px 12px;height:150px;background:#1a1a1c;overflow:hidden;
     display:flex;align-items:center;justify-content:center;position:relative}
+  .hcard .photo.multi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;align-items:stretch}
+  @media (min-width:1180px){.hcard .photo.multi{grid-template-columns:repeat(3,minmax(0,1fr))}}
   .hcard .photo img{width:100%;height:100%;object-fit:cover;display:block}
   .hcard .photo .ph-mark{color:var(--gold-dim);font-size:30px}
   .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
@@ -338,7 +340,8 @@ function spinStep(){
 async function loadHotelField(){
   if(!mapsReady || !lmap) return;
   try{
-    const fc = await (await fetch("/api/atlas-points")).json();
+    const fc = await fetchHotelPointFeed();
+    if(!fc || !Array.isArray(fc.features) || !fc.features.length) return;
     if(lmap.getSource("hotels")) return;
     lmap.addSource("hotels",{
       type:"geojson",
@@ -378,6 +381,49 @@ async function loadHotelField(){
       }});
   }catch(e){ /* dot field optional */ }
 }
+
+async function fetchHotelPointFeed(){
+  try{
+    const localUrl = location.protocol === "file:" ? null : "/api/atlas-points";
+    if(localUrl){
+      const r = await fetch(localUrl, { cache:"no-store" });
+      if(r.ok){
+        const fc = await r.json();
+        if(fc && Array.isArray(fc.features) && fc.features.length) return fc;
+      }
+    }
+  }catch(_){}
+  return fetchHotelPointsFromAtlas();
+}
+
+async function fetchHotelPointsFromAtlas(){
+  const PAGE=200;
+  const first = await fetchHotelPage(0, PAGE);
+  const total = Number(first.total) || (first.results||[]).length;
+  const offsets=[];
+  for(let o=PAGE;o<total;o+=PAGE) offsets.push(o);
+  const rest = await Promise.all(offsets.map(o=>fetchHotelPage(o, PAGE).catch(()=>({results:[]}))));
+  const features=[];
+  [first,...rest].forEach(page=>{
+    (page.results||[]).forEach(h=>{
+      const lng=Number(h.lng), lat=Number(h.lat);
+      if(!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+      features.push({
+        type:"Feature",
+        geometry:{ type:"Point", coordinates:[lng,lat] },
+        properties:{ id:h.id||"", region:h.region||null }
+      });
+    });
+  });
+  return { type:"FeatureCollection", count:features.length, features };
+}
+
+async function fetchHotelPage(offset, limit){
+  const r = await fetch(`${ATLAS_BASE}/api/luxury-hotels?limit=${limit}&offset=${offset}`, { cache:"force-cache" });
+  if(!r.ok) throw new Error("hotel atlas "+r.status);
+  return r.json();
+}
+
 function dimHotelField(dim){
   if(!lmap) return;
   if(lmap.getLayer("hotel-clusters")){
@@ -762,13 +808,18 @@ function enrichCard(cardEl, hotel, sv){
       svc.textSearch({ query }, (results, status)=>{
         if(status===google.maps.places.PlacesServiceStatus.OK && results && results[0]
            && results[0].photos && results[0].photos.length){
-          const url = results[0].photos[0].getUrl({ maxWidth:600, maxHeight:300 });
+          const urls = results[0].photos.slice(0,3).map(p=>p.getUrl({ maxWidth:420, maxHeight:260 }));
           const ph = cardEl.querySelector(".photo");
           if(ph){
             const mark = ph.querySelector(".ph-mark"); if(mark) mark.remove();
-            const img = document.createElement("img"); img.src=url; img.alt=hotel.name;
-            img.onerror=()=>img.remove();
-            ph.insertBefore(img, ph.firstChild);
+            ph.querySelectorAll("img").forEach(img=>img.remove());
+            ph.classList.toggle("multi", urls.length>1);
+            const anchor = ph.querySelector(".sv360");
+            urls.forEach((url,idx)=>{
+              const img = document.createElement("img"); img.src=url; img.alt=hotel.name+(idx?` photo ${idx+1}`:"");
+              img.onerror=()=>img.remove();
+              ph.insertBefore(img, anchor || null);
+            });
           }
         }
       });
