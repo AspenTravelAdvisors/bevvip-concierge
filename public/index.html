@@ -279,9 +279,7 @@ const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
-const HOTEL_CLUSTER_MAX_ZOOM = 4;    // keep the 2,500-hotel field light at globe zoom
 const HOTEL_DOT_MIN_ZOOM = 2.45;     // let hotels emerge before the ambient cloud fades
-const HOTEL_SOURCE = "hotels";
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
@@ -373,7 +371,7 @@ async function loadHotelField(){
     if(!fc || !Array.isArray(fc.features) || !fc.features.length) return;
     upsertHotelSources(fc);
     addHotelLayer("hotel-heat", { id:"hotel-heat", type:"heatmap", source:HOTEL_DENSITY_SOURCE,
-      maxzoom:HOTEL_CLUSTER_MAX_ZOOM + 0.35,
+      maxzoom:4.35,
       paint:{
         "heatmap-weight":1,
         "heatmap-intensity":["interpolate",["linear"],["zoom"],0,0.65,3,1.10],
@@ -388,28 +386,6 @@ async function loadHotelField(){
           1,"rgba(255,247,213,0.68)"
         ]
       }});
-    addHotelLayer("hotel-clusters", { id:"hotel-clusters", type:"circle", source:HOTEL_SOURCE,
-      filter:["has","point_count"],
-      paint:{
-        "circle-radius":["interpolate",["linear"],["get","point_count"],2,10,25,16,120,25],
-        "circle-color":["interpolate",["linear"],["get","point_count"],2,"#d8bc67",120,"#f0d883"],
-        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.78,4,0.90],
-        "circle-blur":0,
-        "circle-stroke-color":"rgba(26,20,7,.82)",
-        "circle-stroke-width":["interpolate",["linear"],["get","point_count"],2,1,120,2]
-      }});
-    addHotelLayer("hotel-cluster-count", { id:"hotel-cluster-count", type:"symbol", source:HOTEL_SOURCE,
-      filter:["has","point_count"],
-      layout:{
-        "text-field":["to-string",["get","point_count_abbreviated"]],
-        "text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
-        "text-size":["interpolate",["linear"],["get","point_count"],2,10,120,12],
-        "text-allow-overlap":true
-      },
-      paint:{
-        "text-color":"#1a1407",
-        "text-opacity":["interpolate",["linear"],["zoom"],1,0.88,4,0.96]
-      }});
     addHotelLayer("hotel-dots", { id:"hotel-dots", type:"circle", source:HOTEL_DENSITY_SOURCE,
       minzoom:HOTEL_DOT_MIN_ZOOM,
       paint:{
@@ -420,20 +396,10 @@ async function loadHotelField(){
         "circle-stroke-width":["interpolate",["linear"],["zoom"],2.45,0.45,7,1.1],
         "circle-blur":0
       }});
-    wireHotelInteractions();
   }catch(e){ /* dot field optional */ }
 }
 
 function upsertHotelSources(fc){
-  const clustered = lmap.getSource(HOTEL_SOURCE);
-  if(clustered) clustered.setData(fc);
-  else lmap.addSource(HOTEL_SOURCE,{
-    type:"geojson",
-    data:fc,
-    cluster:true,
-    clusterMaxZoom:HOTEL_CLUSTER_MAX_ZOOM,
-    clusterRadius:64
-  });
   const density = lmap.getSource(HOTEL_DENSITY_SOURCE);
   if(density) density.setData(fc);
   else lmap.addSource(HOTEL_DENSITY_SOURCE,{ type:"geojson", data:fc });
@@ -443,24 +409,6 @@ function addHotelLayer(id, spec){
   if(lmap.getLayer(id)) return;
   try{ lmap.addLayer(spec); }
   catch(e){ console.warn("Hotel layer skipped:", id, e); }
-}
-
-function wireHotelInteractions(){
-  if(lmap.__bevvipHotelsWired) return;
-  lmap.__bevvipHotelsWired = true;
-  lmap.on("click","hotel-clusters",(e)=>{
-    const f=e.features&&e.features[0];
-    if(!f) return;
-    const source = lmap.getSource(HOTEL_SOURCE);
-    const done = (err,zoom)=>{
-      if(err) return;
-      lmap.easeTo({ center:f.geometry.coordinates, zoom, duration:650 });
-    };
-    const nextZoom = source.getClusterExpansionZoom(f.properties.cluster_id, done);
-    if(nextZoom && typeof nextZoom.then==="function") nextZoom.then(zoom=>done(null,zoom)).catch(done);
-  });
-  lmap.on("mouseenter","hotel-clusters",()=>{ lmap.getCanvas().style.cursor="zoom-in"; });
-  lmap.on("mouseleave","hotel-clusters",()=>{ lmap.getCanvas().style.cursor=""; });
 }
 
 async function fetchHotelPointFeed(){
@@ -511,16 +459,6 @@ function dimHotelField(dim){
     lmap.setPaintProperty("hotel-heat","heatmap-opacity", dim
       ? 0.05
       : ["interpolate",["linear"],["zoom"],0,0.36,3.4,0.18,4.3,0]);
-  }
-  if(lmap.getLayer("hotel-clusters")){
-    lmap.setPaintProperty("hotel-clusters","circle-opacity", dim
-      ? 0.08
-      : ["interpolate",["linear"],["zoom"],1,0.78,4,0.90]);
-  }
-  if(lmap.getLayer("hotel-cluster-count")){
-    lmap.setPaintProperty("hotel-cluster-count","text-opacity", dim
-      ? 0.10
-      : ["interpolate",["linear"],["zoom"],1,0.88,4,0.96]);
   }
   if(lmap.getLayer("hotel-dots")){
     lmap.setPaintProperty("hotel-dots","circle-opacity", dim
@@ -617,7 +555,7 @@ async function addTypeLayer(key){
 
 // Map a legend key to the Mapbox layers it controls.
 function layerIdsFor(key){
-  return key==="hotel" ? ["hotel-heat","hotel-clusters","hotel-cluster-count","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
+  return key==="hotel" ? ["hotel-heat","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
 }
 
 /* Legend: a color key per layer. Tapping a row simply toggles that layer on and
