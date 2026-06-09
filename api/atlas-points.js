@@ -22,6 +22,16 @@ async function page(offset) {
   return r.json();
 }
 
+function pointForHotel(h) {
+  const coords = h && h.geometry && Array.isArray(h.geometry.coordinates)
+    ? h.geometry.coordinates
+    : null;
+  const lng = Number(h.lng ?? h.longitude ?? (coords && coords[0]));
+  const lat = Number(h.lat ?? h.latitude ?? (coords && coords[1]));
+  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
+  return [lng, lat];
+}
+
 async function build() {
   const first = await page(0);
   const total = Number(first.total) || (first.results || []).length;
@@ -33,12 +43,11 @@ async function build() {
   const features = [];
   for (const p of [first, ...rest]) {
     for (const h of p.results || []) {
-      const lng = Number(h.lng);
-      const lat = Number(h.lat);
-      if (!Number.isFinite(lng) || !Number.isFinite(lat)) continue;
+      const point = pointForHotel(h);
+      if (!point) continue;
       features.push({
         type: "Feature",
-        geometry: { type: "Point", coordinates: [lng, lat] },
+        geometry: { type: "Point", coordinates: point },
         properties: { id: h.id, region: h.region || null },
       });
     }
