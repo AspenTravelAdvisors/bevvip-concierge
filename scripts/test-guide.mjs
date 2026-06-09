@@ -4,7 +4,14 @@
 //  2. runGuideTurn tool-loop with a MOCKED Claude caller (no API key needed).
 
 import assert from 'node:assert/strict';
-import { searchOfferings, chartRegionFrom, clampLimit, normalizeMonth, SEARCH_OFFERINGS_TOOL } from '../lib/search-offerings.js';
+import {
+  searchOfferings,
+  chartRegionFrom,
+  clampLimit,
+  normalizeMonth,
+  prioritizeMentionedPlace,
+  SEARCH_OFFERINGS_TOOL,
+} from '../lib/search-offerings.js';
 import { runGuideTurn, summarizeMeta } from '../api/guide.js';
 
 let passed = 0;
@@ -80,6 +87,55 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
   };
   const r = await searchOfferings({ type: 'hotel', country: 'Italy', q: 'hotels in August' }, { fetchImpl });
   assert.equal(r.count, 3);
+});
+
+await test('searchOfferings hotel gives a named place priority over broad country', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    assert.equal(u.searchParams.get('country'), 'United States');
+    assert.equal(u.searchParams.get('q'), 'Aspen');
+    assert.equal(u.searchParams.get('limit'), '3');
+    return { ok: true, json: async () => ({ total: 3, count: 3, results: [
+      { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States' },
+      { id: 'h_2', name: 'Hotel Jerome', city: 'Aspen', country: 'United States' },
+      { id: 'h_3', name: 'MOLLIE Aspen', city: 'Aspen', country: 'United States' },
+    ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?country=United+States&q=Aspen' }) };
+  };
+  const r = await searchOfferings({
+    type: 'hotel',
+    country: 'United States',
+    place: 'Aspen',
+    q: 'whats the nicest hotel',
+  }, { fetchImpl });
+  assert.equal(r.results[0].city, 'Aspen');
+});
+
+await test('searchOfferings hotel retries place-only when descriptors over-filter', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    seen.push(u.searchParams.get('q'));
+    if (seen.length === 1) {
+      assert.equal(u.searchParams.get('q'), 'Aspen ski-in');
+      return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    }
+    assert.equal(u.searchParams.get('q'), 'Aspen');
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', place: 'Aspen', q: 'ski-in' }, { fetchImpl });
+  assert.deepEqual(seen, ['Aspen ski-in', 'Aspen']);
+  assert.equal(r.count, 1);
+});
+
+await test('prioritizeMentionedPlace recovers lowercase place from user text', () => {
+  const input = prioritizeMentionedPlace(
+    { type: 'hotel', country: 'United States', limit: 3 },
+    'whats the nicest hotel in aspen',
+  );
+  assert.equal(input.place, 'Aspen');
+  assert.equal(input.country, 'United States');
 });
 
 // cruise/jet/yacht query their own Atlas APIs (contract identical to hotels).
@@ -187,6 +243,31 @@ await test('runGuideTurn passes correct tool_result back to the model', async ()
   const parsed = JSON.parse(tr.content);
   assert.equal(parsed.type, 'hotel');
   assert.ok(parsed.results.length > 0);
+});
+
+await test('runGuideTurn gives mentioned place to broad hotel tool calls', async () => {
+  let searchInput = null;
+  const callModel = mockClaude([
+    { stop_reason: 'tool_use', content: [
+      { type: 'tool_use', id: 'tu_place', name: 'search_offerings',
+        input: { type: 'hotel', country: 'United States', limit: 3 } },
+    ] },
+    { stop_reason: 'end_turn', content: [{ type: 'text', text: 'Aspen stays only.' }] },
+  ]);
+  const search = async (input) => {
+    searchInput = input;
+    return { type: 'hotel', total: 1, count: 1, results: [
+      { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States' },
+    ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?q=Aspen' };
+  };
+  const out = await runGuideTurn({
+    messages: [{ role: 'user', content: 'whats the nicest hotel in aspen' }],
+    callModel,
+    search,
+  });
+  assert.equal(searchInput.place, 'Aspen');
+  assert.equal(out.toolMeta[0].input.place, 'Aspen');
+  assert.equal(out.toolMeta[0].result.results[0].city, 'Aspen');
 });
 
 await test('runGuideTurn no-tool path returns text directly', async () => {
