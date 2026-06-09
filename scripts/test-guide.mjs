@@ -96,7 +96,8 @@ await test('searchOfferings hotel gives a named place priority over broad countr
     assert.equal(u.searchParams.get('q'), 'Aspen');
     assert.equal(u.searchParams.get('limit'), '3');
     return { ok: true, json: async () => ({ total: 3, count: 3, results: [
-      { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States' },
+      { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States',
+        vipUpgrades: ['Room Upgrade', '$100 hotel credit'] },
       { id: 'h_2', name: 'Hotel Jerome', city: 'Aspen', country: 'United States' },
       { id: 'h_3', name: 'MOLLIE Aspen', city: 'Aspen', country: 'United States' },
     ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?country=United+States&q=Aspen' }) };
@@ -108,6 +109,7 @@ await test('searchOfferings hotel gives a named place priority over broad countr
     q: 'whats the nicest hotel',
   }, { fetchImpl });
   assert.equal(r.results[0].city, 'Aspen');
+  assert.deepEqual(r.results[0].vipUpgrades, ['"First Priority" Room Upgrade', '$100 hotel credit']);
 });
 
 await test('searchOfferings hotel retries place-only when descriptors over-filter', async () => {
