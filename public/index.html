@@ -68,6 +68,9 @@
   .hcard .photo .sv360:hover{filter:brightness(1.06)}
   .hcard .nm{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.15}
   .hcard .meta{font-size:12px;color:var(--sub);margin:3px 0 9px;letter-spacing:.2px}
+  .hcard .fitline{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 9px}
+  .hcard .fitline span{font-size:10.5px;color:var(--gold-light);border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:20px;padding:3px 7px}
+  .hcard .quote{font-family:var(--serif);font-size:15px;line-height:1.32;color:var(--gold-light);border-left:2px solid var(--gold-dim);padding-left:9px;margin:8px 0 9px}
   .hcard .ups{list-style:none;margin:0 0 11px;padding:0}
   .hcard .ups li{font-size:12.5px;color:var(--text);padding:3px 0 3px 17px;position:relative;line-height:1.35}
   .hcard .ups li:before{content:'\2726';position:absolute;left:0;top:3px;color:var(--gold);font-size:11px}
@@ -247,7 +250,7 @@ const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
-const HOTEL_CLUSTER_MAX_ZOOM = 4.4;  // keep the 2,500-hotel field light at globe zoom
+const HOTEL_CLUSTER_MAX_ZOOM = 3.1;  // keep the 2,500-hotel field light at globe zoom
 const RECOMMENDATION_COUNT = 3;
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
@@ -342,24 +345,36 @@ async function loadHotelField(){
       data:fc,
       cluster:true,
       clusterMaxZoom:HOTEL_CLUSTER_MAX_ZOOM,
-      clusterRadius:56
+      clusterRadius:64
     });
     lmap.addLayer({ id:"hotel-clusters", type:"circle", source:"hotels",
       filter:["has","point_count"],
       paint:{
-        "circle-radius":["interpolate",["linear"],["get","point_count"],2,5.5,25,9,120,15],
+        "circle-radius":["interpolate",["linear"],["get","point_count"],2,8,25,13,120,20],
         "circle-color":"#c9a84c",
-        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.40,4,0.58],
-        "circle-blur":0.30
+        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.58,4,0.72],
+        "circle-blur":0.12
+      }});
+    lmap.addLayer({ id:"hotel-cluster-count", type:"symbol", source:"hotels",
+      filter:["has","point_count"],
+      layout:{
+        "text-field":["to-string",["get","point_count_abbreviated"]],
+        "text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
+        "text-size":["interpolate",["linear"],["get","point_count"],2,9,120,11],
+        "text-allow-overlap":true
+      },
+      paint:{
+        "text-color":"#1a1407",
+        "text-opacity":["interpolate",["linear"],["zoom"],1,0.78,4,0.92]
       }});
     lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
       filter:["!",["has","point_count"]],
-      minzoom:HOTEL_CLUSTER_MAX_ZOOM - 0.2,
+      minzoom:HOTEL_CLUSTER_MAX_ZOOM - 0.15,
       paint:{
-        "circle-radius":["interpolate",["linear"],["zoom"],4,1.4,7,2.5,10,3.4],
+        "circle-radius":["interpolate",["linear"],["zoom"],3,1.7,7,2.7,10,3.6],
         "circle-color":"#c9a84c",
-        "circle-opacity":["interpolate",["linear"],["zoom"],4,0.38,7,0.76],
-        "circle-blur":0.15
+        "circle-opacity":["interpolate",["linear"],["zoom"],3,0.48,7,0.80],
+        "circle-blur":0.05
       }});
   }catch(e){ /* dot field optional */ }
 }
@@ -368,12 +383,17 @@ function dimHotelField(dim){
   if(lmap.getLayer("hotel-clusters")){
     lmap.setPaintProperty("hotel-clusters","circle-opacity", dim
       ? 0.08
-      : ["interpolate",["linear"],["zoom"],1,0.40,4,0.58]);
+      : ["interpolate",["linear"],["zoom"],1,0.58,4,0.72]);
+  }
+  if(lmap.getLayer("hotel-cluster-count")){
+    lmap.setPaintProperty("hotel-cluster-count","text-opacity", dim
+      ? 0.10
+      : ["interpolate",["linear"],["zoom"],1,0.78,4,0.92]);
   }
   if(lmap.getLayer("hotel-dots")){
     lmap.setPaintProperty("hotel-dots","circle-opacity", dim
       ? 0.10
-      : ["interpolate",["linear"],["zoom"],4,0.38,7,0.76]);
+      : ["interpolate",["linear"],["zoom"],3,0.48,7,0.80]);
   }
 }
 
@@ -465,7 +485,7 @@ async function addTypeLayer(key){
 
 // Map a legend key to the Mapbox layers it controls.
 function layerIdsFor(key){
-  return key==="hotel" ? ["hotel-clusters","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
+  return key==="hotel" ? ["hotel-clusters","hotel-cluster-count","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
 }
 
 /* Legend: a color key per layer. Tapping a row simply toggles that layer on and
@@ -595,8 +615,12 @@ function plotRecommendations(lead, meta){
 function iwHtml(h){
   const meta=[h.brand,h.program].filter(Boolean).join(" · ");
   const place=[h.city,h.country].filter(Boolean).join(", ");
+  const fit=h.fit||{};
+  const fitBits=[fit.bestFit&&("Best fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean).join("  ·  ");
   return `<div class="iw"><div class="iwn">${escapeHtml(h.name)}</div>`+
     `<div class="iwm">${escapeHtml([meta,place].filter(Boolean).join("  ·  "))}</div>`+
+    (fit.description?`<div class="iwm" style="margin-top:7px;color:#e8e0d0">${escapeHtml(fit.description)}</div>`:"")+
+    (fitBits?`<div class="iwm" style="margin-top:7px">${escapeHtml(fitBits)}</div>`:"")+
     `<a href="${escapeHtml(h.bookUrl||ATLAS_BASE)}" target="_blank" rel="noopener">Book on mobile · VIP</a></div>`;
 }
 function setOpenExt(deepLink){
@@ -650,6 +674,9 @@ function renderResults(body, meta){
       if(kind==="hotel"){
         const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
         const place=[h.city, h.country].filter(Boolean).join(", ");
+        const fit=h.fit||{};
+        const fitBits=[fit.bestFit&&("Best Fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean)
+          .map(t=>"<span>"+escapeHtml(t)+"</span>").join("");
         const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
         const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
         c.innerHTML =
@@ -657,6 +684,8 @@ function renderResults(body, meta){
             '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
           '<div class="nm">'+escapeHtml(h.name)+'</div>'+
           '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
+          (fitBits?'<div class="fitline">'+fitBits+'</div>':'')+
+          (fit.description?'<div class="quote">'+escapeHtml(fit.description)+'</div>':'')+
           (ups?'<ul class="ups">'+ups+'</ul>':'')+
           '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book on mobile · password VIP</a>';
         cards.appendChild(c);
