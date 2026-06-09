@@ -65,17 +65,16 @@
   /* result cards */
   .cards{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
   .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
-  .hcard .photo{margin:0 0 12px;background:#141416;overflow:hidden;border:1px solid var(--line);
-    border-radius:10px;display:grid;grid-template-columns:1fr;grid-template-rows:1fr;gap:6px;
-    position:relative;padding:0;height:168px}
-  .hcard .photo.has-photos{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;background:#101011}
-  .hcard .photo[data-photos="1"]{grid-template-columns:1fr;grid-template-rows:1fr}
-  .hcard .photo[data-photos="2"]{grid-template-columns:1fr 1fr;grid-template-rows:1fr}
-  .hcard .photo[data-photos="1"] img:first-of-type,.hcard .photo[data-photos="2"] img:first-of-type{grid-row:auto}
-  .hcard .photo[data-photos="3"] img:first-of-type{grid-row:1 / span 2}
-  .hcard .photo img{width:100%;height:100%;min-width:0;object-fit:cover;display:block;background:#1a1a1c}
-  .hcard .photo .ph-mark{width:100%;height:100%;background:#1a1a1c;color:var(--gold-dim);font-size:34px;
-    display:flex;align-items:center;justify-content:center}
+  .hcard .photo{margin:0 0 12px;background:transparent;overflow:visible;
+    display:grid;grid-template-columns:minmax(86px,108px);align-items:stretch;justify-content:flex-start;gap:8px;
+    position:relative;padding:0;min-height:0}
+  .hcard .photo.has-photos{grid-template-columns:repeat(3,minmax(82px,108px))}
+  .hcard .photo[data-photos="1"]{grid-template-columns:minmax(86px,108px)}
+  .hcard .photo[data-photos="2"]{grid-template-columns:repeat(2,minmax(82px,108px))}
+  .hcard .photo img{width:100%;aspect-ratio:1/1;height:auto;min-width:0;object-fit:cover;display:block;
+    border-radius:8px;border:1px solid var(--line);background:#1a1a1c}
+  .hcard .photo .ph-mark{width:100%;aspect-ratio:1/1;border-radius:8px;border:1px solid var(--line);
+    background:#1a1a1c;color:var(--gold-dim);font-size:30px;display:flex;align-items:center;justify-content:center}
   .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
     font-size:11px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 10px;
@@ -101,7 +100,7 @@
   .compare .cell{padding:9px 10px;font-size:12.5px;line-height:1.35;color:var(--text)}
   .compare .label{color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.018)}
   .compare .head .cell{font-weight:700;color:var(--gold-light);font-family:var(--serif);font-size:16px;line-height:1.2}
-  @media (max-width:620px){.hcard .photo{height:146px}.compare .row{grid-template-columns:94px repeat(var(--cols),minmax(148px,1fr));min-width:calc(94px + var(--cols) * 148px)}}
+  @media (max-width:620px){.hcard .photo.has-photos{grid-template-columns:repeat(3,minmax(72px,92px))}.compare .row{grid-template-columns:94px repeat(var(--cols),minmax(148px,1fr));min-width:calc(94px + var(--cols) * 148px)}}
 
   .atlasbtn{display:inline-flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:13px;font-weight:600;
     color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:9px;padding:9px 14px;cursor:pointer;background:transparent}
@@ -831,11 +830,15 @@ function addMessage(role){
   const who=document.createElement("div"); who.className="who"; who.textContent=role==="user"?"YOU":"G";
   const body=document.createElement("div"); body.className="body";
   m.append(who,body); transcript.appendChild(m);
-  transcript.scrollTop=transcript.scrollHeight;
+  scrollMessageTop(body);
   return body;
 }
 
-function scrollDown(){ transcript.scrollTop=transcript.scrollHeight; }
+function scrollMessageTop(body){
+  const msg=body&&body.closest&&body.closest(".msg");
+  if(!msg) return;
+  transcript.scrollTop=Math.max(0,msg.offsetTop-18);
+}
 
 /* ---- cards + moves + atlas handoff ---- */
 function renderResults(body, meta, opts={}){
@@ -905,11 +908,10 @@ function renderResults(body, meta, opts={}){
   }
   // the four moves
   body.appendChild(renderMoves(lead));
-  scrollDown();
 }
 
 function renderComparison(recs, kind, limit){
-  const items=recs.slice(0,Math.max(2,Math.min(3,limit||3,recs.length)));
+  const items=selectComparisonItems(recs, kind, Math.max(2,Math.min(3,limit||3,recs.length)));
   const allHotels=items.every(x=>(x.type||kind)==="hotel");
   const rows=allHotels
     ? [
@@ -950,6 +952,28 @@ function renderComparison(recs, kind, limit){
   });
   wrap.append(title,table);
   return wrap;
+}
+function compareBrandKey(item, kind){
+  const itemKind=item.type||kind;
+  const value=itemKind==="hotel"
+    ? (item.brand||item.program||item.name)
+    : (item.brand||item.operator||item.ship||item.name);
+  return String(value||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()||String(item.name||"").toLowerCase();
+}
+function selectComparisonItems(recs, kind, limit){
+  const picked=[], seen=new Set();
+  recs.forEach(item=>{
+    if(picked.length>=limit) return;
+    const key=compareBrandKey(item, kind);
+    if(seen.has(key)) return;
+    seen.add(key);
+    picked.push(item);
+  });
+  recs.forEach(item=>{
+    if(picked.length>=limit) return;
+    if(!picked.includes(item)) picked.push(item);
+  });
+  return picked;
 }
 function compareCell(text,isLabel){
   const cell=document.createElement("div");
@@ -1142,7 +1166,8 @@ async function sendText(text){
   // guide bubble with typing indicator
   const gb=addMessage("guide");
   const typing=document.createElement("div"); typing.className="dots"; typing.innerHTML="<span></span><span></span><span></span>";
-  gb.appendChild(typing); scrollDown();
+  gb.appendChild(typing);
+  scrollMessageTop(gb);
 
   let acc=""; let meta=null;
   try{
@@ -1161,7 +1186,7 @@ async function sendText(text){
         const line=f.split("\n").find(l=>l.startsWith("data:")); if(!line) continue;
         let evt; try{ evt=JSON.parse(line.slice(5).trim()); }catch(_){ continue; }
         if(evt.type==="meta"){ meta=evt; }
-        else if(evt.type==="delta"){ if(typing.parentNode) typing.remove(); acc+=evt.text; gb.innerHTML=mdToHtml(acc); scrollDown(); }
+        else if(evt.type==="delta"){ if(typing.parentNode) typing.remove(); acc+=evt.text; gb.innerHTML=mdToHtml(acc); }
         else if(evt.type==="error"){ throw new Error(evt.error||"stream error"); }
       }
     }
