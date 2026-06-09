@@ -7,7 +7,11 @@
 //      HOTEL_ATLAS_API_BASE (optional; see lib/search-offerings.js).
 
 import { GUIDE_PROMPT } from './guide-prompt.js';
-import { SEARCH_OFFERINGS_TOOL, searchOfferings } from '../lib/search-offerings.js';
+import {
+  SEARCH_OFFERINGS_TOOL,
+  prioritizeMentionedPlace,
+  searchOfferings,
+} from '../lib/search-offerings.js';
 
 const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
 const MAX_TOKENS = 1500;
@@ -20,6 +24,7 @@ const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 export async function runGuideTurn({ messages, callModel, search = searchOfferings }) {
   const convo = (messages || []).map((m) => ({ role: m.role, content: m.content }));
   const toolMeta = [];
+  const latestUserText = latestUserContent(messages);
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
     const data = await callModel({
@@ -36,9 +41,13 @@ export async function runGuideTurn({ messages, callModel, search = searchOfferin
       for (const tu of toolUses) {
         let result;
         try {
+          const input = tu.name === 'search_offerings'
+            ? prioritizeMentionedPlace(tu.input || {}, latestUserText)
+            : (tu.input || {});
           result = tu.name === 'search_offerings'
-            ? await search(tu.input || {})
+            ? await search(input)
             : { error: `unknown tool ${tu.name}` };
+          tu.input = input;
         } catch (e) {
           result = { error: String((e && e.message) || e) };
         }
@@ -62,6 +71,22 @@ export async function runGuideTurn({ messages, callModel, search = searchOfferin
   }
 
   return { text: '', toolMeta, stopReason: 'max_tool_rounds' };
+}
+
+function latestUserContent(messages = []) {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (!m || m.role !== 'user') continue;
+    if (typeof m.content === 'string') return m.content;
+    if (Array.isArray(m.content)) {
+      return m.content
+        .filter((c) => c && c.type === 'text')
+        .map((c) => c.text || '')
+        .join(' ')
+        .trim();
+    }
+  }
+  return '';
 }
 
 // Bubble up the most relevant Atlas handoff for the client (map plot + button).
