@@ -116,6 +116,9 @@
 
   .dots span{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:var(--gold);opacity:.4;animation:b 1.2s infinite}
   .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+  .stream-status{display:flex;align-items:center;gap:9px;color:var(--sub);font-size:13px}
+  .stream-status .dots{display:inline-flex;align-items:center;flex:0 0 auto}
+  .stream-status .status-text{line-height:1.35}
   @keyframes b{0%,100%{opacity:.3}50%{opacity:1}}
   .err{color:#e88;font-size:13px;border:1px solid #5a2a2a;background:#1c1010;border-radius:8px;padding:10px 12px}
 
@@ -1165,7 +1168,9 @@ async function sendText(text){
 
   // guide bubble with typing indicator
   const gb=addMessage("guide");
-  const typing=document.createElement("div"); typing.className="dots"; typing.innerHTML="<span></span><span></span><span></span>";
+  const typing=document.createElement("div");
+  typing.className="stream-status";
+  typing.innerHTML='<span class="dots"><span></span><span></span><span></span></span><span class="status-text">Reading your trip style...</span>';
   gb.appendChild(typing);
   scrollMessageTop(gb);
 
@@ -1186,6 +1191,10 @@ async function sendText(text){
         const line=f.split("\n").find(l=>l.startsWith("data:")); if(!line) continue;
         let evt; try{ evt=JSON.parse(line.slice(5).trim()); }catch(_){ continue; }
         if(evt.type==="meta"){ meta=evt; }
+        else if(evt.type==="status" && !acc && typing.parentNode){
+          const statusText=typing.querySelector(".status-text");
+          if(statusText) statusText.textContent=evt.text||"Working on it...";
+        }
         else if(evt.type==="delta"){ if(typing.parentNode) typing.remove(); acc+=evt.text; gb.innerHTML=mdToHtml(acc); }
         else if(evt.type==="error"){ throw new Error(evt.error||"stream error"); }
       }
