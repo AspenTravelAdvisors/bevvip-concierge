@@ -99,6 +99,7 @@ export function summarizeMeta(toolMeta) {
     deepLink: t.result && t.result.deepLink,
     chartRegion: t.result && t.result.chartRegion,
     unavailable: !!(t.result && t.result.unavailable),
+    sources: (t.result && t.result.sources) || null,
     results: (t.result && t.result.results) || [],
   }));
   // Prefer the last tool call that actually returned inventory.
