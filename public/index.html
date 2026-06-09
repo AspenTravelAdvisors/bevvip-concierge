@@ -57,12 +57,14 @@
   /* result cards */
   .cards{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
   .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
-  .hcard .photo{margin:-14px -15px 12px;height:150px;background:#1a1a1c;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;position:relative}
-  .hcard .photo.multi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;align-items:stretch}
-  @media (min-width:1180px){.hcard .photo.multi{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  .hcard .photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .hcard .photo .ph-mark{color:var(--gold-dim);font-size:30px}
+  .hcard .photo{margin:0 0 12px;background:transparent;overflow:visible;
+    display:grid;grid-template-columns:minmax(86px,112px);align-items:stretch;justify-content:flex-start;gap:8px;
+    position:relative;padding:0;min-height:0}
+  .hcard .photo.has-photos{grid-template-columns:repeat(3,minmax(86px,112px))}
+  .hcard .photo img{width:100%;aspect-ratio:1/1;height:auto;object-fit:cover;display:block;
+    border-radius:8px;border:1px solid var(--line);background:#1a1a1c}
+  .hcard .photo .ph-mark{width:100%;aspect-ratio:1/1;border-radius:8px;border:1px solid var(--line);
+    background:#1a1a1c;color:var(--gold-dim);font-size:30px;display:flex;align-items:center;justify-content:center}
   .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
     font-size:11px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 10px;
@@ -79,6 +81,7 @@
   .hcard .book{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#1a1407;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));padding:8px 13px;border-radius:8px}
   .hcard .book:hover{filter:brightness(1.05);text-decoration:none}
+  @media (max-width:620px){.hcard .photo.has-photos{grid-template-columns:repeat(2,minmax(82px,106px))}}
 
   .atlasbtn{display:inline-flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:13px;font-weight:600;
     color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:9px;padding:9px 14px;cursor:pointer;background:transparent}
@@ -194,8 +197,8 @@
     <section class="chat">
       <div class="transcript" id="transcript">
         <div class="empty" id="empty">
-          <h1>Where are you going next?</h1>
-          <p>Give me a place, a house, a season, or the shape of the journey. I’ll find what’s truly available and sketch the first elegant move. Then an advisor takes it from there.</p>
+          <h1>Where are you headed next?</h1>
+          <p>A region, a season, a hotel, or simply the kind of journey you’re craving. I’ll help frame the trip, surface the right possibilities, and guide the first elegant move.</p>
           <div class="chips" id="chips">
             <div class="chip">Aman in Japan</div>
             <div class="chip">Four Seasons in Italy</div>
@@ -690,7 +693,7 @@ function iwHtml(h){
     `<div class="iwm">${escapeHtml([meta,place].filter(Boolean).join("  ·  "))}</div>`+
     (fit.description?`<div class="iwm" style="margin-top:7px;color:#e8e0d0">${escapeHtml(fit.description)}</div>`:"")+
     (fitBits?`<div class="iwm" style="margin-top:7px">${escapeHtml(fitBits)}</div>`:"")+
-    `<a href="${escapeHtml(h.bookUrl||ATLAS_BASE)}" target="_blank" rel="noopener">Book on mobile · VIP</a></div>`;
+    `<a href="${escapeHtml(h.bookUrl||ATLAS_BASE)}" target="_blank" rel="noopener">Book VIP · password = VIP</a></div>`;
 }
 function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
@@ -701,6 +704,12 @@ initLivingAtlas();
 
 /* ---- helpers ---- */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatVipBenefit(raw){
+  const text = String(raw == null ? "" : raw).trim();
+  if(!text || /^["']?first priority["']?\b/i.test(text)) return text;
+  if(/^room upgrade\b/i.test(text) || /^upgrade\b/i.test(text)) return '"First Priority" '+text;
+  return text;
+}
 function stripChart(s){ return s.replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"").trim(); }
 // minimal, safe markdown: bold, links (http/mailto/tel only), line breaks, "- " bullets
 function mdToHtml(src){
@@ -746,7 +755,7 @@ function renderResults(body, meta){
         const fit=h.fit||{};
         const fitBits=[fit.bestFit&&("Best Fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean)
           .map(t=>"<span>"+escapeHtml(t)+"</span>").join("");
-        const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
+        const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(formatVipBenefit(u))+"</li>").join("");
         const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
         c.innerHTML =
           '<div class="photo"><span class="ph-mark">✦</span>'+
@@ -756,7 +765,7 @@ function renderResults(body, meta){
           (fitBits?'<div class="fitline">'+fitBits+'</div>':'')+
           (fit.description?'<div class="quote">'+escapeHtml(fit.description)+'</div>':'')+
           (ups?'<ul class="ups">'+ups+'</ul>':'')+
-          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book on mobile · password VIP</a>';
+          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book VIP · password = VIP</a>';
         cards.appendChild(c);
         enrichCard(c, h, sv);
       } else {
@@ -831,12 +840,12 @@ function enrichCard(cardEl, hotel, sv){
       svc.textSearch({ query }, (results, status)=>{
         if(status===google.maps.places.PlacesServiceStatus.OK && results && results[0]
            && results[0].photos && results[0].photos.length){
-          const urls = results[0].photos.slice(0,3).map(p=>p.getUrl({ maxWidth:420, maxHeight:260 }));
+          const urls = results[0].photos.slice(0,3).map(p=>p.getUrl({ maxWidth:320, maxHeight:320 }));
           const ph = cardEl.querySelector(".photo");
           if(ph){
             const mark = ph.querySelector(".ph-mark"); if(mark) mark.remove();
             ph.querySelectorAll("img").forEach(img=>img.remove());
-            ph.classList.toggle("multi", urls.length>1);
+            ph.classList.toggle("has-photos", urls.length>0);
             const anchor = ph.querySelector(".sv360");
             urls.forEach((url,idx)=>{
               const img = document.createElement("img"); img.src=url; img.alt=hotel.name+(idx?` photo ${idx+1}`:"");
