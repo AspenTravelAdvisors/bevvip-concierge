@@ -69,7 +69,7 @@ await test('searchOfferings honest count for a broad query (limit < total)', asy
 await test('searchOfferings type=any defaults to hotels', async () => {
   const r = await searchOfferings({ type: 'any', q: 'aman', limit: 2 });
   assert.equal(r.type, 'hotel');
-  assert.equal(r.results.length, 3);
+  assert.equal(r.results.length, 2);
 });
 
 await test('searchOfferings hotel treats bare month text as a date, not q', async () => {
@@ -78,15 +78,18 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
     assert.equal(u.searchParams.get('month'), '2026-08');
     assert.equal(u.searchParams.get('q'), null);
     assert.equal(u.searchParams.get('country'), 'Italy');
-    assert.equal(u.searchParams.get('limit'), '3');
-    return { ok: true, json: async () => ({ total: 3, count: 3, results: [
+    assert.equal(u.searchParams.get('limit'), '6');
+    return { ok: true, json: async () => ({ total: 6, count: 6, results: [
       { id: 'h_1', name: 'One', country: 'Italy' },
       { id: 'h_2', name: 'Two', country: 'Italy' },
       { id: 'h_3', name: 'Three', country: 'Italy' },
+      { id: 'h_4', name: 'Four', country: 'Italy' },
+      { id: 'h_5', name: 'Five', country: 'Italy' },
+      { id: 'h_6', name: 'Six', country: 'Italy' },
     ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?country=Italy&month=2026-08' }) };
   };
   const r = await searchOfferings({ type: 'hotel', country: 'Italy', q: 'hotels in August' }, { fetchImpl });
-  assert.equal(r.count, 3);
+  assert.equal(r.count, 6);
 });
 
 await test('searchOfferings hotel gives a named place priority over broad country', async () => {
@@ -107,6 +110,7 @@ await test('searchOfferings hotel gives a named place priority over broad countr
     country: 'United States',
     place: 'Aspen',
     q: 'whats the nicest hotel',
+    limit: 3,
   }, { fetchImpl });
   assert.equal(r.results[0].city, 'Aspen');
   assert.deepEqual(r.results[0].vipUpgrades, ['"First Priority" Room Upgrade', '$100 hotel credit']);
@@ -140,47 +144,82 @@ await test('prioritizeMentionedPlace recovers lowercase place from user text', (
   assert.equal(input.country, 'United States');
 });
 
-// cruise/jet/yacht query their own Atlas APIs (contract identical to hotels).
-// Mock fetch so this asserts the wiring without depending on a deployed endpoint;
-// each Atlas repo has its own local test suite proving the query layer.
-function mockAtlasFetch(payload) {
-  return async (url) => {
-    assert.ok(/\/api\/(expedition-cruises|jet-journeys|yacht-sailings)\?/.test(url),
-      'calls the type-specific atlas endpoint: ' + url);
-    return { ok: true, json: async () => payload };
-  };
-}
+await test('prioritizeMentionedPlace routes broad cruise text to combined cruise search', () => {
+  const input = prioritizeMentionedPlace(
+    { type: 'any', brand: 'Ritz Carlton', limit: 5 },
+    'show me Ritz Carlton cruises',
+  );
+  assert.equal(input.type, 'cruise');
+  assert.equal(input.brand, 'Ritz Carlton');
+});
 
-await test('searchOfferings cruise queries the cruise atlas + forwards marquee region', async () => {
-  const payload = {
-    total: 375, count: 1,
-    results: [{ id: 'cr_1', type: 'cruise', name: 'The Great White Continent',
-      operator: 'Seabourn', region: 'antarctica', regionLabel: 'Antarctica',
-      bookUrl: 'https://www.virtuoso.com/x' }],
-    deepLink: 'https://expedition-cruise-map.vercel.app?region=antarctica',
+await test('searchOfferings cruise searches expedition cruise and yacht atlases', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    seen.push(url);
+    if (url.includes('/api/expedition-cruises?')) {
+      return { ok: true, json: async () => ({
+        total: 375, count: 1,
+        results: [{ id: 'cr_1', type: 'cruise', name: 'The Great White Continent',
+          operator: 'Seabourn', region: 'antarctica', regionLabel: 'Antarctica',
+          bookUrl: 'https://www.virtuoso.com/x' }],
+        deepLink: 'https://expedition-cruise-map.vercel.app?region=antarctica',
+      }) };
+    }
+    assert.ok(url.includes('/api/yacht-sailings?'), 'calls yacht atlas too: ' + url);
+    return { ok: true, json: async () => ({
+      total: 8, count: 1,
+      results: [{ id: 'yc_1', type: 'yacht', name: 'Monte Carlo to Rome',
+        brand: 'Ritz-Carlton Yacht Collection', region: 'mediterranean',
+        bookUrl: 'https://www.virtuoso.com/y' }],
+      deepLink: 'https://luxury-hotel-brand-yacht-atlas.vercel.app?region=antarctica',
+    }) };
   };
-  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', limit: 3 },
-    { fetchImpl: mockAtlasFetch(payload) });
+  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', limit: 4 }, { fetchImpl });
   assert.equal(r.type, 'cruise');
-  assert.equal(r.total, 375);
-  assert.equal(r.count, 1);
-  assert.ok(r.results[0].name && r.results[0].bookUrl);
+  assert.equal(seen.length, 2);
+  assert.equal(r.total, 383);
+  assert.equal(r.count, 2);
+  assert.deepEqual(r.results.map((x) => x.type), ['cruise', 'yacht']);
+  assert.ok(r.sources.find((s) => s.type === 'cruise'));
+  assert.ok(r.sources.find((s) => s.type === 'yacht'));
   assert.equal(r.chartRegion, 'antarctica');
   assert.ok(r.deepLink.includes('region=antarctica'));
 });
 
-await test('searchOfferings always requests three recommendations', async () => {
+await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async () => {
   const fetchImpl = async (url) => {
-    assert.match(url, /limit=3\b/);
-    return { ok: true, json: async () => ({ total: 4, count: 3, results: [
+    const u = new URL(url);
+    assert.ok(url.includes('/api/yacht-sailings?'));
+    assert.equal(u.searchParams.get('brand'), 'Ritz-Carlton Yacht Collection');
+    assert.equal(u.searchParams.get('limit'), '5');
+    return { ok: true, json: async () => ({ total: 188, count: 5, results: [
+      { id: 'yc_1', type: 'yacht', name: 'Tokyo to Incheon', brand: 'Ritz-Carlton Yacht Collection', region: 'japan' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'yacht', brand: 'Ritz Carlton', limit: 5 }, { fetchImpl });
+  assert.equal(r.type, 'yacht');
+  assert.equal(r.total, 188);
+  assert.equal(r.results[0].brand, 'Ritz-Carlton Yacht Collection');
+});
+
+await test('searchOfferings honors fluid caller limits', async () => {
+  const fetchImpl = async (url) => {
+    assert.match(url, /limit=8\b/);
+    return { ok: true, json: async () => ({ total: 12, count: 8, results: [
       { id: 'jt_1', type: 'jet', name: 'One', region: 'japan' },
       { id: 'jt_2', type: 'jet', name: 'Two', region: 'japan' },
       { id: 'jt_3', type: 'jet', name: 'Three', region: 'japan' },
+      { id: 'jt_4', type: 'jet', name: 'Four', region: 'japan' },
+      { id: 'jt_5', type: 'jet', name: 'Five', region: 'japan' },
+      { id: 'jt_6', type: 'jet', name: 'Six', region: 'japan' },
+      { id: 'jt_7', type: 'jet', name: 'Seven', region: 'japan' },
+      { id: 'jt_8', type: 'jet', name: 'Eight', region: 'japan' },
     ] }) };
   };
-  const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 1 }, { fetchImpl });
-  assert.equal(r.count, 3);
-  assert.equal(r.results.length, 3);
+  const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 8 }, { fetchImpl });
+  assert.equal(r.count, 8);
+  assert.equal(r.results.length, 8);
 });
 
 await test('searchOfferings degrades gracefully when an atlas endpoint is down', async () => {
@@ -270,6 +309,30 @@ await test('runGuideTurn gives mentioned place to broad hotel tool calls', async
   assert.equal(searchInput.place, 'Aspen');
   assert.equal(out.toolMeta[0].input.place, 'Aspen');
   assert.equal(out.toolMeta[0].result.results[0].city, 'Aspen');
+});
+
+await test('runGuideTurn reroutes mistaken any search when user says cruises', async () => {
+  let searchInput = null;
+  const callModel = mockClaude([
+    { stop_reason: 'tool_use', content: [
+      { type: 'tool_use', id: 'tu_cruise', name: 'search_offerings',
+        input: { type: 'any', brand: 'Ritz Carlton', limit: 5 } },
+    ] },
+    { stop_reason: 'end_turn', content: [{ type: 'text', text: 'Ritz-Carlton yacht sailings are in play.' }] },
+  ]);
+  const search = async (input) => {
+    searchInput = input;
+    return { type: 'cruise', total: 188, count: 1, results: [
+      { id: 'yc_1', type: 'yacht', name: 'Tokyo to Incheon', brand: 'Ritz-Carlton Yacht Collection' },
+    ], deepLink: 'https://luxury-hotel-brand-yacht-atlas.vercel.app?brand=Ritz-Carlton+Yacht+Collection' };
+  };
+  await runGuideTurn({
+    messages: [{ role: 'user', content: 'show me Ritz Carlton cruises' }],
+    callModel,
+    search,
+  });
+  assert.equal(searchInput.type, 'cruise');
+  assert.equal(searchInput.brand, 'Ritz Carlton');
 });
 
 await test('runGuideTurn no-tool path returns text directly', async () => {
