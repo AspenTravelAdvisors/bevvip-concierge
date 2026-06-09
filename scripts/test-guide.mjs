@@ -4,7 +4,7 @@
 //  2. runGuideTurn tool-loop with a MOCKED Claude caller (no API key needed).
 
 import assert from 'node:assert/strict';
-import { searchOfferings, chartRegionFrom, clampLimit, SEARCH_OFFERINGS_TOOL } from '../lib/search-offerings.js';
+import { searchOfferings, chartRegionFrom, clampLimit, normalizeMonth, SEARCH_OFFERINGS_TOOL } from '../lib/search-offerings.js';
 import { runGuideTurn, summarizeMeta } from '../api/guide.js';
 
 let passed = 0;
@@ -31,6 +31,14 @@ await test('chartRegionFrom prefers explicit marquee key', () => {
     'mediterranean');
 });
 
+await test('normalizeMonth maps bare months to their next calendar occurrence', () => {
+  const june2026 = new Date('2026-06-09T12:00:00Z');
+  assert.equal(normalizeMonth('August', june2026), '2026-08');
+  assert.equal(normalizeMonth('May', june2026), '2027-05');
+  assert.equal(normalizeMonth('August 2026', june2026), '2026-08');
+  assert.equal(normalizeMonth('2026 August', june2026), '2026-08');
+});
+
 // ── integration: live hotel search ───────────────────────────────────────────
 await test('searchOfferings hotel: Aman in Japan returns real records + deepLink', async () => {
   const r = await searchOfferings({ type: 'hotel', brand: 'Aman', region: 'japan', limit: 3 });
@@ -55,6 +63,23 @@ await test('searchOfferings type=any defaults to hotels', async () => {
   const r = await searchOfferings({ type: 'any', q: 'aman', limit: 2 });
   assert.equal(r.type, 'hotel');
   assert.equal(r.results.length, 3);
+});
+
+await test('searchOfferings hotel treats bare month text as a date, not q', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    assert.equal(u.searchParams.get('month'), '2026-08');
+    assert.equal(u.searchParams.get('q'), null);
+    assert.equal(u.searchParams.get('country'), 'Italy');
+    assert.equal(u.searchParams.get('limit'), '3');
+    return { ok: true, json: async () => ({ total: 3, count: 3, results: [
+      { id: 'h_1', name: 'One', country: 'Italy' },
+      { id: 'h_2', name: 'Two', country: 'Italy' },
+      { id: 'h_3', name: 'Three', country: 'Italy' },
+    ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?country=Italy&month=2026-08' }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', country: 'Italy', q: 'hotels in August' }, { fetchImpl });
+  assert.equal(r.count, 3);
 });
 
 // cruise/jet/yacht query their own Atlas APIs (contract identical to hotels).
