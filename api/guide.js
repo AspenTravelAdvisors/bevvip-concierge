@@ -73,6 +73,80 @@ export async function runGuideTurn({ messages, callModel, search = searchOfferin
   return { text: '', toolMeta, stopReason: 'max_tool_rounds' };
 }
 
+async function runGuideTurnStream({
+  messages,
+  callModelStream,
+  search = searchOfferings,
+  send = () => {},
+}) {
+  const convo = (messages || []).map((m) => ({ role: m.role, content: m.content }));
+  const toolMeta = [];
+  const latestUserText = latestUserContent(messages);
+  let text = '';
+
+  send({ type: 'status', text: 'Reading your trip style...' });
+
+  for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+    const data = await callModelStream({
+      system: GUIDE_PROMPT,
+      messages: convo,
+      tools: [SEARCH_OFFERINGS_TOOL],
+      onText: (delta) => {
+        text += delta;
+        send({ type: 'delta', text: delta });
+      },
+    });
+
+    if (data.stop_reason === 'tool_use') {
+      const toolUses = (data.content || []).filter((c) => c.type === 'tool_use');
+      convo.push({ role: 'assistant', content: data.content });
+
+      if (toolUses.length) {
+        send({ type: 'status', text: statusForToolUses(toolUses) });
+      }
+
+      const toolResults = [];
+      for (const tu of toolUses) {
+        let result;
+        try {
+          const input = tu.name === 'search_offerings'
+            ? prioritizeMentionedPlace(tu.input || {}, latestUserText)
+            : (tu.input || {});
+          result = tu.name === 'search_offerings'
+            ? await search(input)
+            : { error: `unknown tool ${tu.name}` };
+          tu.input = input;
+        } catch (e) {
+          result = { error: String((e && e.message) || e) };
+        }
+        toolMeta.push({ name: tu.name, input: tu.input, result });
+        toolResults.push({
+          type: 'tool_result',
+          tool_use_id: tu.id,
+          content: JSON.stringify(result),
+        });
+      }
+
+      send({ type: 'status', text: 'Narrowing the strongest fit...' });
+      convo.push({ role: 'user', content: toolResults });
+      continue;
+    }
+
+    return { text: text.trim(), toolMeta, stopReason: data.stop_reason || 'end_turn' };
+  }
+
+  return { text: text.trim(), toolMeta, stopReason: 'max_tool_rounds' };
+}
+
+function statusForToolUses(toolUses = []) {
+  const input = toolUses.find((tu) => tu.name === 'search_offerings')?.input || {};
+  const type = String(input.type || 'any').toLowerCase();
+  if (type === 'cruise') return 'Checking approved cruise and yacht inventory...';
+  if (type === 'jet') return 'Checking private jet journey inventory...';
+  if (type === 'yacht') return 'Checking hotel-brand yacht sailings...';
+  return 'Checking approved hotel inventory...';
+}
+
 function latestUserContent(messages = []) {
   for (let i = messages.length - 1; i >= 0; i--) {
     const m = messages[i];
@@ -134,7 +208,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const callModel = makeAnthropicCaller(process.env.ANTHROPIC_API_KEY);
+  const callModelStream = makeAnthropicStreamCaller(process.env.ANTHROPIC_API_KEY);
 
   // SSE stream: one meta frame (deepLink/chartRegion/results), then text deltas.
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
@@ -146,9 +220,12 @@ export default async function handler(req, res) {
   const send = (obj) => res.write(`data: ${JSON.stringify(obj)}\n\n`);
 
   try {
-    const { text, toolMeta, stopReason } = await runGuideTurn({ messages, callModel });
+    const { toolMeta, stopReason } = await runGuideTurnStream({
+      messages,
+      callModelStream,
+      send,
+    });
     send({ type: 'meta', ...summarizeMeta(toolMeta), stopReason });
-    for (const chunk of chunkText(text)) send({ type: 'delta', text: chunk });
     send({ type: 'done' });
   } catch (err) {
     console.error('Guide error:', err);
@@ -179,18 +256,104 @@ function makeAnthropicCaller(apiKey) {
   };
 }
 
-// Stream in small word-groups for a natural typing feel.
-function chunkText(text, words = 6) {
-  if (!text) return [];
-  const parts = text.split(/(\s+)/); // keep whitespace tokens
-  const out = [];
+function makeAnthropicStreamCaller(apiKey) {
+  return async ({ system, messages, tools, onText }) => {
+    const r = await fetch(ANTHROPIC_URL, {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system, messages, tools, stream: true }),
+    });
+    if (!r.ok) {
+      const t = await r.text();
+      const err = new Error(`anthropic ${r.status}: ${t}`);
+      err.status = r.status;
+      throw err;
+    }
+    return readAnthropicStream(r.body, onText);
+  };
+}
+
+async function readAnthropicStream(body, onText = () => {}) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  const content = [];
+  let stopReason = null;
   let buf = '';
-  let count = 0;
-  for (const p of parts) {
-    buf += p;
-    if (/\S/.test(p)) count++;
-    if (count >= words) { out.push(buf); buf = ''; count = 0; }
+
+  const handle = (evt) => {
+    if (!evt || !evt.type) return;
+
+    if (evt.type === 'content_block_start') {
+      const block = evt.content_block || {};
+      content[evt.index] = block.type === 'tool_use'
+        ? { type: 'tool_use', id: block.id, name: block.name, input: block.input || {}, inputJson: '' }
+        : { type: block.type || 'text', text: block.text || '' };
+    }
+
+    if (evt.type === 'content_block_delta') {
+      const block = content[evt.index] || { type: 'text', text: '' };
+      content[evt.index] = block;
+      if (evt.delta?.type === 'text_delta') {
+        block.text = (block.text || '') + (evt.delta.text || '');
+        if (evt.delta.text) onText(evt.delta.text);
+      }
+      if (evt.delta?.type === 'input_json_delta') {
+        block.inputJson = (block.inputJson || '') + (evt.delta.partial_json || '');
+      }
+    }
+
+    if (evt.type === 'content_block_stop') {
+      const block = content[evt.index];
+      if (block?.type === 'tool_use') {
+        try {
+          block.input = block.inputJson ? JSON.parse(block.inputJson) : (block.input || {});
+        } catch {
+          block.input = block.input || {};
+        }
+        delete block.inputJson;
+      }
+    }
+
+    if (evt.type === 'message_delta' && evt.delta?.stop_reason) {
+      stopReason = evt.delta.stop_reason;
+    }
+    if (evt.type === 'error') {
+      throw new Error(evt.error?.message || evt.error?.type || 'anthropic stream error');
+    }
+  };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const frames = buf.split('\n\n');
+    buf = frames.pop() || '';
+    for (const frame of frames) {
+      const evt = parseAnthropicFrame(frame);
+      handle(evt);
+    }
   }
-  if (buf) out.push(buf);
-  return out;
+
+  if (buf.trim()) {
+    handle(parseAnthropicFrame(buf));
+  }
+
+  return {
+    stop_reason: stopReason || 'end_turn',
+    content: content.filter(Boolean),
+  };
+}
+
+function parseAnthropicFrame(frame) {
+  const data = String(frame || '')
+    .split('\n')
+    .filter((line) => line.startsWith('data:'))
+    .map((line) => line.slice(5).trimStart())
+    .join('\n');
+  if (!data) return null;
+  return JSON.parse(data);
 }
