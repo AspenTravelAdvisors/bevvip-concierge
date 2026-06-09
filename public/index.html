@@ -256,7 +256,6 @@ const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 const HOTEL_CLUSTER_MAX_ZOOM = 3.1;  // keep the 2,500-hotel field light at globe zoom
-const RECOMMENDATION_COUNT = 3;
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
 const MAPS_KEY = "AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg";
@@ -646,14 +645,15 @@ function plotRecommendations(lead, meta){
   if(!mapsReady){ pendingPlot={lead,meta}; return; }
   if(!lead || !Array.isArray(lead.results) || !lead.results.length) return;
   const kind = lead.type || "hotel";
-  const recs = lead.results.slice(0,RECOMMENDATION_COUNT);
+  const recs = lead.results;
   subsetActive=true; stopSpin();
   dimHotelField(true);       // fade the ambient field so the subset reads
-  if(kind!=="hotel") ensureTypeVisible(kind);
+  const kinds = [...new Set(recs.map(h=>h.type||kind).filter(t=>t && t!=="hotel"))];
+  kinds.forEach(ensureTypeVisible);
   const feats = recs.map((h,i)=>({
     type:"Feature",
     geometry:{type:"Point",coordinates:pointForResult(h,i,recs.length)},
-    properties:{ name:h.name||"", html:featuredHtml(h,kind), kind }
+    properties:{ name:h.name||"", html:featuredHtml(h,h.type||kind), kind:h.type||kind }
   }));
   const fc={ type:"FeatureCollection", features:feats };
   if(lmap.getSource("featured")){ lmap.getSource("featured").setData(fc); }
@@ -678,9 +678,9 @@ function plotRecommendations(lead, meta){
   const total = lead.total ?? recs.length;
   const label = kind==="hotel" ? "stays" : "recommendations";
   badge.innerHTML = total>recs.length && lead.deepLink
-    ? `Showing top ${recs.length} of ${total} · <a href="${escapeHtml(lead.deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
+    ? `Showing ${recs.length} of ${total} · <a href="${escapeHtml(lead.deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
     : `${recs.length} ${label} plotted`;
-  el("atlasState").textContent="top recommendations";
+  el("atlasState").textContent="recommendations";
   el("regionsBtn").style.display="";
 }
 
@@ -743,13 +743,14 @@ function scrollDown(){ transcript.scrollTop=transcript.scrollHeight; }
 function renderResults(body, meta){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
   const kind = (lead && lead.type) || "hotel";
-  const recs = lead && lead.results ? lead.results.slice(0,RECOMMENDATION_COUNT) : [];
+  const recs = lead && lead.results ? lead.results : [];
   // cards
   if(recs.length){
     const cards=document.createElement("div"); cards.className="cards";
     recs.forEach(h=>{
       const c=document.createElement("div"); c.className="hcard";
-      if(kind==="hotel"){
+      const itemKind = h.type || kind;
+      if(itemKind==="hotel"){
         const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
         const place=[h.city, h.country].filter(Boolean).join(", ");
         const fit=h.fit||{};
@@ -778,13 +779,13 @@ function renderResults(body, meta){
           '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
           '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+
           (when?'<div class="meta">'+escapeHtml(when)+'</div>':'')+
-          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_TYPES[kind]?.url||"#")+'" target="_blank" rel="noopener">View on Virtuoso · advisor-backed ↗</a>';
+          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_TYPES[itemKind]?.url||"#")+'" target="_blank" rel="noopener">View on Virtuoso · advisor-backed ↗</a>';
         cards.appendChild(c);
       }
     });
     body.appendChild(cards);
   }
-  // Plot the same three records shown in cards, using exact hotel coordinates
+  // Plot the same records shown in cards, using exact hotel coordinates
   // and regional fallback points for cruises, jets, and yachts.
   if(recs.length){
     plotRecommendations(lead, meta);
@@ -805,7 +806,7 @@ function renderResults(body, meta){
 
 function renderMoves(lead){
   const wrap=document.createElement("div"); wrap.className="moves";
-  const names=(lead&&lead.results||[]).slice(0,RECOMMENDATION_COUNT).map(h=>h.name);
+  const names=(lead&&lead.results||[]).map(h=>h.name);
   const deepLink=lead&&lead.deepLink;
   const mk=(label,onClick)=>{ const b=document.createElement("button"); b.className="move"; b.textContent=label; b.onclick=onClick; return b; };
 
