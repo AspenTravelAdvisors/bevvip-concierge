@@ -9,6 +9,8 @@ import {
   chartRegionFrom,
   clampLimit,
   normalizeMonth,
+  normalizeCountry,
+  normalizeRegionKey,
   prioritizeMentionedPlace,
   SEARCH_OFFERINGS_TOOL,
 } from '../lib/search-offerings.js';
@@ -418,6 +420,203 @@ await test('searchOfferings degrades gracefully when an atlas endpoint is down',
   assert.ok(r.unavailable);
   assert.equal(r.chartRegion, 'mediterranean'); // still hand the map the region
   assert.ok(/advisor/i.test(r.note));
+});
+
+// ── audit fixes: alias normalization, region folding, honesty notes ─────────
+await test('normalizeCountry maps common aliases to inventory spellings', () => {
+  assert.equal(normalizeCountry('UK'), 'United Kingdom');
+  assert.equal(normalizeCountry('USA'), 'United States');
+  assert.equal(normalizeCountry('UAE'), 'United Arab Emirates');
+  assert.equal(normalizeCountry('St Lucia'), 'saint lucia');   // case-insensitive at the atlas
+  assert.equal(normalizeCountry('St. Lucia'), 'saint lucia');
+  assert.equal(normalizeCountry('Turks & Caicos'), 'Turks and Caicos');
+  assert.equal(normalizeCountry('Curaçao'), 'Curacao');
+  assert.equal(normalizeCountry('Italy'), 'Italy');            // canonical passes through
+  assert.equal(normalizeCountry('U.S. Virgin Islands'), 'U.S. Virgin Islands');
+});
+
+await test('normalizeRegionKey maps near-marquee phrasing onto marquee keys', () => {
+  assert.equal(normalizeRegionKey('the Med'), 'mediterranean');
+  assert.equal(normalizeRegionKey('Antarctic'), 'antarctica');
+  assert.equal(normalizeRegionKey('Galápagos'), 'galapagos');
+  assert.equal(normalizeRegionKey('Norwegian Fjords'), 'norway');
+  assert.equal(normalizeRegionKey('Alaska'), null); // not marquee, must not pass through
+});
+
+await test('searchOfferings hotel normalizes country and brand aliases before the API call', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    assert.equal(u.searchParams.get('country'), 'United Kingdom');
+    assert.equal(u.searchParams.get('brand'), 'Four Seasons');
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'Four Seasons Hotel London at Park Lane', brand: 'Four Seasons', country: 'United Kingdom' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', brand: 'FS', country: 'UK' }, { fetchImpl });
+  assert.equal(r.count, 1);
+});
+
+await test('searchOfferings cruise normalizes operator aliases (Ponant, Nat Geo, HX)', async () => {
+  const operators = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('expedition-cruises')) return emptyOk();
+    operators.push(u.searchParams.get('operator'));
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'cr_1', type: 'cruise', name: 'Antarctica Direct', operator: u.searchParams.get('operator'), region: 'antarctica' },
+    ] }) };
+  };
+  await searchOfferings({ type: 'cruise', brand: 'Ponant', region: 'antarctica' }, { fetchImpl });
+  await searchOfferings({ type: 'cruise', brand: 'Nat Geo', region: 'antarctica' }, { fetchImpl });
+  await searchOfferings({ type: 'cruise', brand: 'HX', region: 'antarctica' }, { fetchImpl });
+  assert.deepEqual(operators, [
+    'PONANT EXPLORATIONS',
+    'National Geographic-Lindblad Expeditions',
+    'HX Expeditions',
+  ]);
+});
+
+await test('searchOfferings jet normalizes brand aliases (TCS, A&K)', async () => {
+  const brands = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    brands.push(u.searchParams.get('brand'));
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'jt_1', type: 'jet', name: 'World Tour', brand: u.searchParams.get('brand') },
+    ] }) };
+  };
+  await searchOfferings({ type: 'jet', brand: 'TCS' }, { fetchImpl });
+  await searchOfferings({ type: 'jet', brand: 'A&K' }, { fetchImpl });
+  assert.deepEqual(brands, ['TCS World Travel', 'Abercrombie & Kent']);
+});
+
+await test('searchOfferings retries an unmatched exact brand as free text with a note', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('expedition-cruises')) return emptyOk();
+    calls.push({ operator: u.searchParams.get('operator'), q: u.searchParams.get('q') });
+    if (u.searchParams.get('operator')) {
+      return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    }
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'cr_9', type: 'cruise', name: 'Fjords by Mystery Expeditions', operator: 'Mystery Expeditions Co', region: 'norway' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'cruise', brand: 'Mystery Expeditions', region: 'norway' }, { fetchImpl });
+  assert.equal(calls[0].operator, 'Mystery Expeditions');
+  assert.equal(calls[1].operator, null);
+  assert.match(calls[1].q, /Mystery Expeditions/);
+  assert.equal(r.count, 1);
+});
+
+await test('searchOfferings folds non-marquee regions into free text instead of dropping them', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    assert.equal(u.searchParams.get('region'), null); // alaska is not marquee
+    assert.match(u.searchParams.get('q'), /alaska/i);
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'jt_1', type: 'jet', name: 'Alaska by Private Jet' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'jet', region: 'alaska' }, { fetchImpl });
+  assert.equal(r.count, 1);
+  assert.equal(r.chartRegion, null); // no marquee chart-jump for Alaska
+});
+
+await test('searchOfferings hotel folds non-marquee regions into the place text', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    assert.equal(u.searchParams.get('region'), null);
+    assert.match(u.searchParams.get('q'), /alaska/i);
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'Sheldon Chalet', adminRegion: 'Alaska', country: 'United States' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', region: 'Alaska' }, { fetchImpl });
+  assert.equal(r.count, 1);
+});
+
+await test('chartRegionFrom requires a majority, so one mistagged result cannot chart-jump', () => {
+  const alaskan = [{ region: 'norway' }, {}, {}, {}, {}, {}];
+  assert.equal(chartRegionFrom('', alaskan), null);
+  const med = [{ region: 'mediterranean' }, { region: 'mediterranean' }, {}];
+  assert.equal(chartRegionFrom('', med), 'mediterranean');
+  assert.equal(chartRegionFrom('the med', []), 'mediterranean'); // alias still wins
+});
+
+await test('searchOfferings hotel maps landmarks to their city with an honest note', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    assert.equal(u.searchParams.get('q'), 'Paris');
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'h_1', name: 'Le Meurice', city: 'Paris', country: 'France' },
+      { id: 'h_2', name: 'Cheval Blanc Paris', city: 'Paris', country: 'France' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', place: 'the Louvre' }, { fetchImpl });
+  assert.equal(r.count, 2);
+  assert.match(r.note, /Louvre/);
+  assert.match(r.note, /Paris/);
+});
+
+await test('searchOfferings hotel flags a dropped place so typos cannot pass as matches', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    if (u.searchParams.get('q')) {
+      return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    }
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'h_1', name: 'Villa d\'Este', city: 'Cernobbio', country: 'Italy' },
+      { id: 'h_2', name: 'Grand Hotel Tremezzo', city: 'Tremezzo', country: 'Italy' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', place: 'Lake Komo', country: 'Italy' }, { fetchImpl });
+  assert.equal(r.count, 2);
+  assert.match(r.note, /Lake Komo/);
+  assert.match(r.note, /advisor/i);
+});
+
+await test('searchOfferings routes a luxury-cruise ask to advisor even when typed as yacht', async () => {
+  let calls = 0;
+  const fetchImpl = async () => { calls++; return emptyOk(); };
+  const r = await searchOfferings({ type: 'yacht', q: 'luxury cruise', region: 'mediterranean' }, { fetchImpl });
+  assert.equal(calls, 0);
+  assert.equal(r.advisorOnly, true);
+  assert.equal(r.chartRegion, 'mediterranean');
+});
+
+await test('searchOfferings does not hijack hotel-brand Regent or descriptive crystal into the cruise guard', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'Regent Hong Kong', brand: 'Regent', country: 'China' },
+    ] }) };
+  };
+  const regent = await searchOfferings({ type: 'any', brand: 'Regent', place: 'Hong Kong' }, { fetchImpl });
+  assert.equal(regent.type, 'hotel');
+  assert.equal(regent.advisorOnly, undefined);
+  const crystal = await searchOfferings({ type: 'any', q: 'crystal lagoon overwater' }, { fetchImpl });
+  assert.equal(crystal.type, 'hotel');
+  assert.equal(crystal.advisorOnly, undefined);
+});
+
+await test('searchOfferings hotel notes advisor-led categories like safari without blocking inventory', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'Singita Sasakwa Lodge', country: 'Tanzania' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', q: 'safari lodge', country: 'Tanzania' }, { fetchImpl });
+  assert.equal(r.count, 1);
+  assert.match(r.note, /advisor-led/i);
 });
 
 // ── orchestration: mocked Claude tool-use loop ───────────────────────────────

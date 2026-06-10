@@ -9,6 +9,7 @@
 import { GUIDE_PROMPT } from './guide-prompt.js';
 import {
   SEARCH_OFFERINGS_TOOL,
+  luxuryCruiseAdvisorIntent,
   prioritizeMentionedPlace,
   searchOfferings,
 } from '../lib/search-offerings.js';
@@ -17,8 +18,6 @@ const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
 const MAX_TOKENS = 1500;
 const MAX_TOOL_ROUNDS = 4;
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
-const LUXURY_CRUISE_ADVISOR_RE =
-  /\b(regent(?:\s+seven\s+seas)?|crystal(?:\s+cruises?)?|oceania(?:\s+cruises?)?|explora(?:\s+journeys?)?|cunard|luxury\s+(?:ocean\s+)?cruis(?:e|es|ing)|ocean\s+cruis(?:e|es|ing))\b/i;
 
 // ── Core loop (exported for tests) ──────────────────────────────────────────
 // callModel({system, messages, tools}) -> resolved Anthropic message object.
@@ -143,10 +142,7 @@ async function runGuideTurnStream({
 function statusForToolUses(toolUses = []) {
   const input = toolUses.find((tu) => tu.name === 'search_offerings')?.input || {};
   const type = String(input.type || 'any').toLowerCase();
-  const hay = [input.q, input.brand, input.operator, input.place, input.country, input.region]
-    .filter(Boolean)
-    .join(' ');
-  if ((type === 'cruise' || type === 'any') && LUXURY_CRUISE_ADVISOR_RE.test(hay)) {
+  if ((type === 'cruise' || type === 'yacht' || type === 'any') && luxuryCruiseAdvisorIntent(input, type)) {
     return 'Routing the Luxury Cruise request to an advisor...';
   }
   if (type === 'cruise') return 'Checking approved Expedition Cruise and yacht inventory...';
