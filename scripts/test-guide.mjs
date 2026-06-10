@@ -218,9 +218,27 @@ await test('searchOfferings caps an over-large caller limit to the tight display
       { id: 'jt_8', type: 'jet', name: 'Eight', region: 'japan' },
     ] }) };
   };
+  // A bare larger limit (no explicit "more" request) stays capped at four.
   const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 8 }, { fetchImpl });
-  assert.equal(r.count, 4);          // never recommend more than four in chat
+  assert.equal(r.count, 4);
   assert.equal(r.results.length, 4);
+});
+
+await test('searchOfferings lifts the cap when the traveler explicitly asks for more', async () => {
+  const jets = Array.from({ length: 8 }, (_, i) => ({ id: 'jt_' + i, type: 'jet', name: 'J' + i, region: 'japan' }));
+  // Explicit more=true with a larger limit returns the requested count, not four.
+  const withLimit = async (url) => {
+    assert.match(url, /limit=8\b/);
+    return { ok: true, json: async () => ({ total: 12, count: 8, results: jets }) };
+  };
+  const r1 = await searchOfferings({ type: 'jet', region: 'japan', more: true, limit: 8 }, { fetchImpl: withLimit });
+  assert.equal(r1.count, 8);
+  assert.equal(r1.results.length, 8);
+
+  // more=true with no limit returns the full matching set (capped at 24).
+  const full = async () => ({ ok: true, json: async () => ({ total: 12, count: 8, results: jets }) });
+  const r2 = await searchOfferings({ type: 'jet', region: 'japan', more: true }, { fetchImpl: full });
+  assert.equal(r2.count, 8);
 });
 
 await test('searchOfferings degrades gracefully when an atlas endpoint is down', async () => {
