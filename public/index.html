@@ -818,6 +818,51 @@ function scrollMessageTop(body){
   transcript.scrollTop=Math.max(0,msg.offsetTop-18);
 }
 
+function relatedLabel(kind){
+  if(kind==="cruise") return "Related expedition option";
+  if(kind==="yacht") return "Related yacht option";
+  if(kind==="jet") return "Related private jet option";
+  if(kind==="hotel") return "Related stay";
+  return "Related option";
+}
+function renderOfferingCard(h, kind, label){
+  const c=document.createElement("div"); c.className="hcard";
+  const itemKind = h.type || kind;
+  const marker = label ? '<div class="fitline"><span>'+escapeHtml(label)+'</span></div>' : "";
+  if(itemKind==="hotel"){
+    const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
+    const place=[h.city, h.country].filter(Boolean).join(", ");
+    const fit=h.fit||{};
+    const fitBits=[fit.bestFit&&("Best Fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean)
+      .map(t=>"<span>"+escapeHtml(t)+"</span>").join("");
+    const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(formatVipBenefit(u))+"</li>").join("");
+    const sv=svStore.length; svStore.push({});
+    c.innerHTML =
+      '<div class="photo"><span class="ph-mark">✦</span>'+
+        '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
+      marker+
+      '<div class="nm">'+escapeHtml(h.name)+'</div>'+
+      '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
+      (fitBits?'<div class="fitline">'+fitBits+'</div>':'')+
+      (fit.description?'<div class="quote">'+escapeHtml(fit.description)+'</div>':'')+
+      (ups?'<ul class="ups">'+ups+'</ul>':'')+
+      '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book VIP · password = VIP</a>';
+    enrichCard(c, h, sv);
+    return c;
+  }
+  const operator=h.brand||h.operator||"";
+  const sub=[operator, h.ship, h.regionLabel].filter(Boolean).join(" · ");
+  const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
+  const nights=h.nights?(" · "+h.nights+" nights"):"";
+  c.innerHTML =
+    marker+
+    '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
+    '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+
+    (when?'<div class="meta">'+escapeHtml(when)+'</div>':'')+
+    '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_TYPES[itemKind]?.url||"#")+'" target="_blank" rel="noopener">View on Virtuoso · advisor-backed ↗</a>';
+  return c;
+}
+
 /* ---- cards + moves + atlas handoff ---- */
 function renderResults(body, meta, opts={}){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
@@ -828,40 +873,13 @@ function renderResults(body, meta, opts={}){
     if(opts.compare && recs.length>=2) body.appendChild(renderComparison(recs, kind, opts.compareLimit||3));
     const cards=document.createElement("div"); cards.className="cards";
     recs.forEach(h=>{
-      const c=document.createElement("div"); c.className="hcard";
-      const itemKind = h.type || kind;
-      if(itemKind==="hotel"){
-        const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
-        const place=[h.city, h.country].filter(Boolean).join(", ");
-        const fit=h.fit||{};
-        const fitBits=[fit.bestFit&&("Best Fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean)
-          .map(t=>"<span>"+escapeHtml(t)+"</span>").join("");
-        const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(formatVipBenefit(u))+"</li>").join("");
-        const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
-        c.innerHTML =
-          '<div class="photo"><span class="ph-mark">✦</span>'+
-            '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
-          '<div class="nm">'+escapeHtml(h.name)+'</div>'+
-          '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
-          (fitBits?'<div class="fitline">'+fitBits+'</div>':'')+
-          (fit.description?'<div class="quote">'+escapeHtml(fit.description)+'</div>':'')+
-          (ups?'<ul class="ups">'+ups+'</ul>':'')+
-          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book VIP · password = VIP</a>';
-        cards.appendChild(c);
-        enrichCard(c, h, sv);
-      } else {
-        // cruise / jet / yacht: no hotel photo or 360; show operator, route, dates
-        const operator=h.brand||h.operator||"";
-        const sub=[operator, h.ship, h.regionLabel].filter(Boolean).join(" · ");
-        const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
-        const nights=h.nights?(" · "+h.nights+" nights"):"";
-        c.innerHTML =
-          '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
-          '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+
-          (when?'<div class="meta">'+escapeHtml(when)+'</div>':'')+
-          '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_TYPES[itemKind]?.url||"#")+'" target="_blank" rel="noopener">View on Virtuoso · advisor-backed ↗</a>';
-        cards.appendChild(c);
-      }
+      cards.appendChild(renderOfferingCard(h, kind));
+    });
+    (lead.related||[]).forEach(rel=>{
+      if(!["cruise","yacht","jet"].includes(rel.kind)) return;
+      (rel.results||[]).slice(0,1).forEach(h=>{
+        cards.appendChild(renderOfferingCard(h, rel.kind, relatedLabel(rel.kind)));
+      });
     });
     body.appendChild(cards);
   }

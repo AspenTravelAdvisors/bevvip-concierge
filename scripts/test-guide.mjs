@@ -206,11 +206,49 @@ await test('searchOfferings hotel attaches related yacht sailings for yacht-capa
   const rel = r.related[0];
   assert.equal(rel.kind, 'yacht');
   assert.equal(rel.total, 27);
+  assert.equal(rel.count, 1);
+  assert.equal(rel.results.length, 1);
   assert.match(rel.reason, /Four Seasons Yachts/);
   assert.match(rel.reason, /Italy/);
   assert.equal(yachtParams[0].get('brand'), 'Four Seasons Yachts');
   assert.equal(yachtParams[0].get('country'), 'Italy');
   assert.ok(rel.results[0].ports.includes('Porto Venere, Italy'));
+});
+
+await test('searchOfferings hotel attaches one expedition and jet cross-reference for the same region', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    seen.push(u.pathname);
+    if (u.pathname.includes('expedition-cruises')) {
+      assert.equal(u.searchParams.get('region'), 'japan');
+      return { ok: true, json: async () => ({ total: 4, count: 2, results: [
+        { id: 'cr_1', type: 'cruise', name: 'Japan Expedition', operator: 'Ponant', region: 'japan' },
+        { id: 'cr_2', type: 'cruise', name: 'Japan Coast', operator: 'Seabourn', region: 'japan' },
+      ], deepLink: 'https://expedition-cruise-map.vercel.app?region=japan' }) };
+    }
+    if (u.pathname.includes('jet-journeys')) {
+      assert.equal(u.searchParams.get('region'), 'japan');
+      return { ok: true, json: async () => ({ total: 3, count: 2, results: [
+        { id: 'jt_1', type: 'jet', name: 'Japan by Private Jet', brand: 'TCS', region: 'japan' },
+        { id: 'jt_2', type: 'jet', name: 'East Asia Icons', brand: 'Four Seasons', region: 'japan' },
+      ], deepLink: 'https://private-jet-expeditions.vercel.app?region=japan' }) };
+    }
+    if (u.pathname.includes('yacht-sailings')) return emptyOk();
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'h_1', name: 'Aman Tokyo', brand: 'Aman', city: 'Tokyo', country: 'Japan', region: 'japan' },
+      { id: 'h_2', name: 'Aman Kyoto', brand: 'Aman', city: 'Kyoto', country: 'Japan', region: 'japan' },
+    ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?region=japan' }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', region: 'japan', limit: 2 }, { fetchImpl });
+  assert.equal(r.count, 2);
+  assert.ok(seen.some((p) => p.includes('expedition-cruises')));
+  assert.ok(seen.some((p) => p.includes('jet-journeys')));
+  const byKind = Object.fromEntries(r.related.map((rel) => [rel.kind, rel]));
+  assert.equal(byKind.cruise.count, 1);
+  assert.deepEqual(byKind.cruise.results.map((x) => x.id), ['cr_1']);
+  assert.equal(byKind.jet.count, 1);
+  assert.deepEqual(byKind.jet.results.map((x) => x.id), ['jt_1']);
 });
 
 await test('searchOfferings hotel skips the yacht sidecar for non-yacht brands', async () => {
