@@ -528,6 +528,11 @@ function typeDeepLink(key, regionKey){
   const cfg=ATLAS_TYPES[key];
   return regionKey ? `${cfg.url}?region=${encodeURIComponent(regionKey)}` : cfg.url;
 }
+function typeOverlayMeta(key, count){
+  if(key==="cruise") return `Expedition Cruises${count?` - ${count} sailings`:""}`;
+  const cfg=ATLAS_TYPES[key]||{};
+  return `${cfg.label||"Atlas"} expeditions${count?` · ${count} sailings`:""}`;
+}
 
 async function addTypeLayer(key){
   const cfg=ATLAS_TYPES[key];
@@ -546,7 +551,7 @@ async function addTypeLayer(key){
     const c=f.properties.count;
     const href=typeDeepLink(key, f.properties.key);
     const html=`<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>`+
-      `<div class="iwm">${escapeHtml(cfg.label)} expeditions${c?` · ${c} sailings`:""}</div>`+
+      `<div class="iwm">${escapeHtml(typeOverlayMeta(key,c))}</div>`+
       `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
     popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap); });
   lmap.on("mouseenter",src+"_dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
