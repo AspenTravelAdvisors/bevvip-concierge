@@ -72,13 +72,17 @@ await test('searchOfferings type=any defaults to hotels', async () => {
   assert.equal(r.results.length, 2);
 });
 
+// Shared helper: respond with empty inventory for non-hotel sidecar lookups.
+const emptyOk = () => ({ ok: true, json: async () => ({ total: 0, count: 0, results: [] }) });
+
 await test('searchOfferings hotel treats bare month text as a date, not q', async () => {
   const fetchImpl = async (url) => {
     const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
     assert.equal(u.searchParams.get('month'), '2026-08');
     assert.equal(u.searchParams.get('q'), null);
     assert.equal(u.searchParams.get('country'), 'Italy');
-    assert.equal(u.searchParams.get('limit'), '6');
+    assert.equal(u.searchParams.get('limit'), '24'); // candidate overfetch for brand diversity
     return { ok: true, json: async () => ({ total: 6, count: 6, results: [
       { id: 'h_1', name: 'One', country: 'Italy' },
       { id: 'h_2', name: 'Two', country: 'Italy' },
@@ -89,15 +93,17 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
     ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?country=Italy&month=2026-08' }) };
   };
   const r = await searchOfferings({ type: 'hotel', country: 'Italy', q: 'hotels in August' }, { fetchImpl });
-  assert.equal(r.count, 6);
+  assert.equal(r.count, 3); // curated to the default display limit
+  assert.equal(r.total, 6); // honest unpaginated count
 });
 
 await test('searchOfferings hotel gives a named place priority over broad country', async () => {
   const fetchImpl = async (url) => {
     const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
     assert.equal(u.searchParams.get('country'), 'United States');
     assert.equal(u.searchParams.get('q'), 'Aspen');
-    assert.equal(u.searchParams.get('limit'), '3');
+    assert.equal(u.searchParams.get('limit'), '24');
     return { ok: true, json: async () => ({ total: 3, count: 3, results: [
       { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States',
         vipUpgrades: ['Room Upgrade', '$100 hotel credit'] },
@@ -120,6 +126,7 @@ await test('searchOfferings hotel retries place-only when descriptors over-filte
   const seen = [];
   const fetchImpl = async (url) => {
     const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
     seen.push(u.searchParams.get('q'));
     if (seen.length === 1) {
       assert.equal(u.searchParams.get('q'), 'Aspen ski-in');
@@ -133,6 +140,122 @@ await test('searchOfferings hotel retries place-only when descriptors over-filte
   const r = await searchOfferings({ type: 'hotel', place: 'Aspen', q: 'ski-in' }, { fetchImpl });
   assert.deepEqual(seen, ['Aspen ski-in', 'Aspen']);
   assert.equal(r.count, 1);
+});
+
+await test('searchOfferings hotel falls back to country/region when a place zeroes out', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    seen.push(u.searchParams.get('q'));
+    if (u.searchParams.get('q')) {
+      return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    }
+    assert.equal(u.searchParams.get('country'), 'Italy');
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'h_1', name: 'Villa d\'Este', city: 'Cernobbio', country: 'Italy' },
+      { id: 'h_2', name: 'Grand Hotel Tremezzo', city: 'Tremezzo', country: 'Italy' },
+    ] }) };
+  };
+  const r = await searchOfferings(
+    { type: 'hotel', place: 'Lake Komo', country: 'Italy' }, { fetchImpl });
+  assert.deepEqual(seen, ['Lake Komo', null]); // place-only, then constraint-only
+  assert.equal(r.count, 2);
+});
+
+await test('searchOfferings keeps independent (unbranded) hotels distinct in shortlists', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    return { ok: true, json: async () => ({ total: 4, count: 4, results: [
+      { id: 'h_1', name: 'Castello di Velona', brand: null, country: 'Italy' },
+      { id: 'h_2', name: 'Villa San Michele', brand: null, country: 'Italy' },
+      { id: 'h_3', name: 'Rosapetra Spa Resort', brand: null, country: 'Italy' },
+      { id: 'h_4', name: 'Four Seasons Firenze', brand: 'Four Seasons', country: 'Italy' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', country: 'Italy', limit: 3 }, { fetchImpl });
+  // The top three independents hold their rank instead of collapsing into one
+  // shared "unbranded" slot behind the chain property.
+  assert.deepEqual(r.results.map((h) => h.id), ['h_1', 'h_2', 'h_3']);
+});
+
+await test('searchOfferings hotel attaches related yacht sailings for yacht-capable brands', async () => {
+  const yachtParams = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.includes('yacht-sailings')) {
+      yachtParams.push(u.searchParams);
+      return { ok: true, json: async () => ({ total: 27, count: 2, results: [
+        { id: 'yc_2', type: 'yacht', name: 'The Rivieras Featuring Porto Venere',
+          brand: 'Four Seasons Yachts', from: 'Monte-Carlo, Monaco',
+          ports: ['Monte-Carlo, Monaco', 'Porto Venere, Italy', 'Porto Cervo, Italy'] },
+        { id: 'yc_9', type: 'yacht', name: 'Amalfi Coast in Depth',
+          brand: 'Four Seasons Yachts', from: 'Rome (Civitavecchia), Italy' },
+      ], deepLink: 'https://luxury-hotel-brand-yacht-atlas.vercel.app?brand=Four+Seasons+Yachts&country=Italy' }) };
+    }
+    return { ok: true, json: async () => ({ total: 3, count: 3, results: [
+      { id: 'h_1', name: 'Four Seasons Hotel Firenze', brand: 'Four Seasons', city: 'Florence', country: 'Italy' },
+      { id: 'h_2', name: 'Four Seasons Hotel Milano', brand: 'Four Seasons', city: 'Milan', country: 'Italy' },
+      { id: 'h_3', name: 'San Domenico Palace', brand: 'Four Seasons', city: 'Taormina', country: 'Italy' },
+    ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?brand=Four+Seasons&country=Italy' }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', brand: 'Four Seasons', country: 'Italy', limit: 3 }, { fetchImpl });
+  assert.equal(r.count, 3);
+  assert.ok(Array.isArray(r.related) && r.related.length === 1);
+  const rel = r.related[0];
+  assert.equal(rel.kind, 'yacht');
+  assert.equal(rel.total, 27);
+  assert.match(rel.reason, /Four Seasons Yachts/);
+  assert.match(rel.reason, /Italy/);
+  assert.equal(yachtParams[0].get('brand'), 'Four Seasons Yachts');
+  assert.equal(yachtParams[0].get('country'), 'Italy');
+  assert.ok(rel.results[0].ports.includes('Porto Venere, Italy'));
+});
+
+await test('searchOfferings hotel skips the yacht sidecar for non-yacht brands', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(new URL(url).pathname);
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'Rosewood Miramar Beach', brand: 'Rosewood', country: 'United States' },
+    ] }) };
+  };
+  await searchOfferings({ type: 'hotel', brand: 'Rosewood', country: 'United States' }, { fetchImpl });
+  assert.ok(calls.every((p) => p.includes('luxury-hotels')));
+});
+
+await test('searchOfferings yacht attaches pre/post hotel stays near embarkation', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.includes('yacht-sailings')) {
+      return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+        { id: 'yc_5', type: 'yacht', name: 'Monte Carlo to Rome',
+          brand: 'Ritz-Carlton Yacht Collection', from: 'Monte-Carlo, Monaco', to: 'Rome, Italy' },
+      ] }) };
+    }
+    assert.equal(u.searchParams.get('q'), 'Monte-Carlo');
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'h_7', name: 'Hotel de Paris', city: 'Monte Carlo', country: 'Monaco' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'yacht', brand: 'Ritz Carlton' }, { fetchImpl });
+  assert.equal(r.count, 1);
+  assert.equal(r.related[0].kind, 'hotel');
+  assert.match(r.related[0].reason, /Monte-Carlo/);
+  assert.equal(r.related[0].results[0].name, 'Hotel de Paris');
+});
+
+await test('prioritizeMentionedPlace infers hotel intent from trip-reason words', () => {
+  const honeymoon = prioritizeMentionedPlace(
+    { type: 'hotel', country: 'Italy' }, 'honeymoon hotels in positano');
+  assert.equal(honeymoon.intent, 'honeymoon');
+  const family = prioritizeMentionedPlace(
+    { type: 'hotel', country: 'Greece' }, 'somewhere the kids will love staying');
+  assert.equal(family.intent, 'family');
+  const explicit = prioritizeMentionedPlace(
+    { type: 'hotel', country: 'Italy', intent: 'uhnw' }, 'honeymoon hotels in positano');
+  assert.equal(explicit.intent, 'uhnw'); // model-set intent wins
 });
 
 await test('prioritizeMentionedPlace recovers lowercase place from user text', () => {

@@ -175,6 +175,7 @@ export function summarizeMeta(toolMeta) {
     unavailable: !!(t.result && t.result.unavailable),
     sources: (t.result && t.result.sources) || null,
     results: (t.result && t.result.results) || [],
+    related: (t.result && t.result.related) || null,
   }));
   // Prefer the last tool call that actually returned inventory.
   const lead = [...tools].reverse().find((t) => t.count > 0) || tools[tools.length - 1] || null;
