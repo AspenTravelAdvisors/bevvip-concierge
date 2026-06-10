@@ -120,6 +120,15 @@
   .stream-status .dots{display:inline-flex;align-items:center;flex:0 0 auto}
   .stream-status .status-text{line-height:1.35}
   @keyframes b{0%,100%{opacity:.3}50%{opacity:1}}
+
+  /* quick replies — clickable answers when The Guide asks for leading info */
+  .quick-replies{margin:14px 0 2px;padding-top:14px;border-top:1px solid var(--line-soft)}
+  .qr-cap{color:var(--muted);font-size:11px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:9px}
+  .qr-row{display:flex;flex-wrap:wrap;gap:8px}
+  .qr-chip{cursor:pointer;border:1px solid var(--gold-dim);background:var(--card);color:var(--gold-light);
+    border-radius:999px;padding:8px 15px;font-size:13px;font-family:var(--sans);transition:.15s;line-height:1.3}
+  .qr-chip:hover{background:var(--card-hover);border-color:var(--gold)}
+  .qr-chip:disabled{opacity:.45;cursor:default}
   .err{color:#e88;font-size:13px;border:1px solid #5a2a2a;background:#1c1010;border-radius:8px;padding:10px 12px}
 
   /* composer */
@@ -743,7 +752,15 @@ function formatVipBenefit(raw){
   if(/^room upgrade\b/i.test(text) || /^upgrade\b/i.test(text)) return '"First Priority" '+text;
   return text;
 }
-function stripChart(s){ return s.replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"").trim(); }
+// Strip control tags ([[CHART:..]], [[OPTIONS:..]]) and any trailing tag still
+// mid-stream, so partial tags never flash in the revealed text.
+function stripChart(s){
+  return String(s||"")
+    .replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"")
+    .replace(/\[\[OPTIONS:[^\]]*\]\]/gi,"")
+    .replace(/\n*\s*\[\[[^\]]*$/,"")
+    .trim();
+}
 // minimal, safe markdown: bold/italic, links, bullets, dividers, and tables.
 function mdToHtml(src){
   const lines = stripChart(src).split("\n");
@@ -805,6 +822,29 @@ function renderMarkdownTable(block){
     out+="</tr>";
   });
   return out+"</tbody></table></div>";
+}
+
+// Pull the [[OPTIONS: a | b | c]] tag (if any) into an array of quick replies.
+function extractOptions(text){
+  const m = String(text||"").match(/\[\[OPTIONS:\s*([^\]]+)\]\]/i);
+  if(!m) return [];
+  return m[1].split("|").map(s=>s.trim()).filter(Boolean).slice(0,4);
+}
+// Render quick-reply buttons under a guide message. Clicking sends that answer;
+// the traveler can still type freely in the Ask box.
+function renderQuickReplies(body, opts){
+  if(!opts || !opts.length) return;
+  const wrap=document.createElement("div"); wrap.className="quick-replies";
+  const cap=document.createElement("div"); cap.className="qr-cap"; cap.textContent="Tap a reply, or type your own";
+  wrap.appendChild(cap);
+  const row=document.createElement("div"); row.className="qr-row";
+  opts.forEach(o=>{
+    const b=document.createElement("button"); b.type="button"; b.className="qr-chip"; b.textContent=o;
+    b.onclick=()=>{ if(busy) return; row.querySelectorAll(".qr-chip").forEach(x=>x.disabled=true); sendText(o); };
+    row.appendChild(b);
+  });
+  wrap.appendChild(row);
+  body.appendChild(wrap);
 }
 
 function addMessage(role){
@@ -1172,7 +1212,71 @@ async function sendText(text){
   gb.appendChild(typing);
   scrollMessageTop(gb);
 
-  let acc=""; let meta=null;
+  // ── Paced reveal ──────────────────────────────────────────────────────────
+  // Deltas land token-by-token (and in network bursts). Rather than re-render on
+  // every token — which reads as nervous start/stop — we buffer into `target`
+  // and let a calm timer surface whole sentences and paragraphs, one settled
+  // chunk per beat. The result is blocks of copy arriving like a poured drink,
+  // not a stutter.
+  let target=""; let shown=0; let meta=null;
+  let streamDone=false; let aborted=false; let revealedAny=false; let revealTimer=null;
+  let resolveFinished; const finished=new Promise(r=>{ resolveFinished=r; });
+  const REVEAL_MS=80;       // beat between chunks
+  const REVEAL_BUDGET=240;  // max chars surfaced per beat
+
+  function setStatus(t){
+    const s=typing.querySelector(".status-text");
+    if(s) s.textContent=t||"Working on it...";
+  }
+  function paint(){
+    if(!revealedAny){ if(typing.parentNode) typing.remove(); revealedAny=true; }
+    gb.innerHTML = mdToHtml(target.slice(0,shown)) || "<p></p>";
+    scrollMessageTop(gb);
+  }
+  // Advance the cursor by one natural unit: paragraph break, else sentence end,
+  // else a single newline (list/table rows). Until a unit is complete we hold,
+  // unless the stream is done (then surface whatever remains).
+  function nextStop(buf, from, flushAll){
+    if(from>=buf.length) return from;
+    const rest=buf.slice(from);
+    const para=rest.indexOf("\n\n");
+    if(para!==-1) return from+para+2;
+    const sm=rest.match(/[.!?]["')’”]?(?=\s)|\n/);
+    if(sm){
+      let i=sm.index+sm[0].length;
+      while(i<rest.length && /\s/.test(rest[i])) i++;
+      return from+i;
+    }
+    return flushAll ? buf.length : from;
+  }
+  function tick(){
+    revealTimer=null;
+    if(shown<target.length){
+      const start=shown; let next=shown;
+      while(next<target.length && next-start<REVEAL_BUDGET){
+        const step=nextStop(target,next,streamDone);
+        if(step===next) break;                 // unit not complete yet — hold
+        const seg=target.slice(next,step); next=step;
+        if(seg.indexOf("\n\n")!==-1) break;     // let one paragraph settle per beat
+      }
+      if(next>shown){ shown=next; paint(); }
+    }
+    if(streamDone && shown>=target.length){ finalize(); return; }
+    revealTimer=setTimeout(tick, REVEAL_MS);
+  }
+  function finalize(){
+    if(aborted) return;
+    if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
+    if(typing.parentNode) typing.remove();
+    shown=target.length;
+    gb.innerHTML = mdToHtml(target) || "<p></p>";
+    if(target) messages.push({role:"assistant", content:target});
+    renderQuickReplies(gb, extractOptions(target));
+    if(meta) renderResults(gb, meta, {compare, compareLimit});
+    scrollMessageTop(gb);
+    resolveFinished();
+  }
+
   try{
     const res=await fetch(GUIDE_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages})});
     const ct=res.headers.get("content-type")||"";
@@ -1180,6 +1284,7 @@ async function sendText(text){
       const j=await res.json().catch(()=>({error:"Request failed ("+res.status+")"}));
       throw new Error(j.error||("Request failed ("+res.status+")"));
     }
+    revealTimer=setTimeout(tick, REVEAL_MS);
     const reader=res.body.getReader(); const dec=new TextDecoder(); let buf="";
     while(true){
       const {done,value}=await reader.read(); if(done) break;
@@ -1189,20 +1294,18 @@ async function sendText(text){
         const line=f.split("\n").find(l=>l.startsWith("data:")); if(!line) continue;
         let evt; try{ evt=JSON.parse(line.slice(5).trim()); }catch(_){ continue; }
         if(evt.type==="meta"){ meta=evt; }
-        else if(evt.type==="status" && !acc && typing.parentNode){
-          const statusText=typing.querySelector(".status-text");
-          if(statusText) statusText.textContent=evt.text||"Working on it...";
-        }
-        else if(evt.type==="delta"){ if(typing.parentNode) typing.remove(); acc+=evt.text; gb.innerHTML=mdToHtml(acc); }
+        else if(evt.type==="status" && !revealedAny){ setStatus(evt.text); }
+        else if(evt.type==="delta"){ target+=evt.text; }
         else if(evt.type==="error"){ throw new Error(evt.error||"stream error"); }
       }
     }
-    if(typing.parentNode) typing.remove();
-    gb.innerHTML = mdToHtml(acc) || "<p></p>";
-    if(acc) messages.push({role:"assistant", content:acc});
-    if(meta) renderResults(gb, meta, {compare, compareLimit});
+    streamDone=true;
+    await finished;   // let the paced reveal drain and finalize before releasing
   }catch(err){
+    aborted=true;
+    if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
     if(typing.parentNode) typing.remove();
+    if(target){ gb.innerHTML = mdToHtml(target) || "<p></p>"; }
     const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+err.message;
     gb.appendChild(e);
   }finally{
