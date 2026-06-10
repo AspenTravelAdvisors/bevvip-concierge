@@ -225,7 +225,7 @@
           <p>A region, a season, a hotel, or simply the kind of journey you’re craving. I’ll help frame the trip, surface the right possibilities, and guide the first elegant move.</p>
           <div class="chips" id="chips">
             <div class="chip">Four Seasons in Caribbean</div>
-            <div class="chip">Galápagos Expedition Cruises in January</div>
+            <div class="chip">Galápagos Expedition Cruise journeys in January</div>
             <div class="chip">Aman vs. Orient Express Luxury Yachts</div>
             <div class="chip">Around the world by private jet trips in 2026</div>
           </div>
@@ -247,7 +247,7 @@
         <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Reset</button>
         <span class="jumps">
           <a class="ajump" data-t="hotel" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener"><i></i>Hotels</a>
-          <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Cruise</a>
+          <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Expedition Cruise</a>
           <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Jet</a>
           <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Yacht</a>
         </span>
@@ -292,7 +292,7 @@ function whenGmaps(fn){ if(gmapsReady) fn(); else _gmapsCbs.push(fn); }
 // Master atlas overlays: cruise / jet / yacht region pins, each from its own live app data.
 // Colors are distinguishable on the dark globe (jet "black" reads as platinum here so it stays visible).
 const ATLAS_TYPES = {
-  cruise: { label:"Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
+  cruise: { label:"Expedition Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
   jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
   yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
 };
@@ -564,7 +564,7 @@ function buildLegend(){
   const box=el("legend"); if(!box) return;
   const items=[
     { key:"hotel",  label:"Hotels", color:"#c9a84c" },
-    { key:"cruise", label:"Cruise", color:ATLAS_TYPES.cruise.color },
+    { key:"cruise", label:"Expedition Cruise", color:ATLAS_TYPES.cruise.color },
     { key:"jet",    label:"Jet",    color:ATLAS_TYPES.jet.color },
     { key:"yacht",  label:"Yacht",  color:ATLAS_TYPES.yacht.color },
   ];
@@ -699,7 +699,7 @@ function setOpenExt(deepLink){
 }
 function atlasLabelForType(type){
   if(type==="hotel") return "Open Hotel Atlas";
-  if(type==="cruise") return "Open Cruise Atlas";
+  if(type==="cruise") return "Open Expedition Cruise Atlas";
   if(type==="yacht") return "Open Yacht Atlas";
   if(type==="jet") return "Open Jet Atlas";
   return "Open in Atlas";
@@ -819,7 +819,7 @@ function scrollMessageTop(body){
 }
 
 function relatedLabel(kind){
-  if(kind==="cruise") return "Related expedition option";
+  if(kind==="cruise") return "Related Expedition Cruise option";
   if(kind==="yacht") return "Related yacht option";
   if(kind==="jet") return "Related private jet option";
   if(kind==="hotel") return "Related stay";

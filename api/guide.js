@@ -141,7 +141,7 @@ async function runGuideTurnStream({
 function statusForToolUses(toolUses = []) {
   const input = toolUses.find((tu) => tu.name === 'search_offerings')?.input || {};
   const type = String(input.type || 'any').toLowerCase();
-  if (type === 'cruise') return 'Checking approved cruise and yacht inventory...';
+  if (type === 'cruise') return 'Checking approved Expedition Cruise and yacht inventory...';
   if (type === 'jet') return 'Checking private jet journey inventory...';
   if (type === 'yacht') return 'Checking hotel-brand yacht sailings...';
   return 'Checking approved hotel inventory...';
