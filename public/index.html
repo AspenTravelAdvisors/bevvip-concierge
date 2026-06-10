@@ -328,7 +328,9 @@ const REGION_GEO = {};
 const REGION_FALLBACK = {
   antarctica:[0,-72,2.3], arctic:[8,79,2.3], galapagos:[-91,-0.4,5], amazon:[-60,-3.5,3.8],
   polynesia:[-149,-17,3.4], patagonia:[-72,-49,3.6], kimberley:[126,-16,4.3],
-  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2]
+  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2],
+  alaska:[-149,60.5,4], caribbean:[-66,16,4], baja:[-111.5,24,4.4],
+  britishisles:[-3,58,4], seychelles:[55.5,-4.6,5]
 };
 
 function showMapFallback(){ el("mapFallback").style.display="flex"; }
@@ -614,11 +616,22 @@ function ensureTypeVisible(kind){
 }
 
 function num(v){ const n=Number(v); return Number.isFinite(n) ? n : null; }
+function regionLookupKey(raw){
+  const v=String(raw||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  if(!v) return "";
+  if(v.includes("alaska")) return "alaska";
+  if(v.includes("caribbean") || v.includes("bermuda")) return "caribbean";
+  if(v.includes("baja")) return "baja";
+  if(v.includes("british isles") || v.includes("northern europe")) return "britishisles";
+  if(v.includes("seychelles") || v.includes("indian ocean")) return "seychelles";
+  return v.replace(/\s+/g,"");
+}
 function regionFallback(region){
   const geo = region && REGION_GEO[region];
   if(geo && Array.isArray(geo.center)) return { center:geo.center, bbox:geo.bbox||null };
-  if(region && REGION_FALLBACK[region]){
-    const f=REGION_FALLBACK[region];
+  const key = REGION_FALLBACK[region] ? region : regionLookupKey(region);
+  if(key && REGION_FALLBACK[key]){
+    const f=REGION_FALLBACK[key];
     return { center:[f[0],f[1]], bbox:null };
   }
   return { center:[10,20], bbox:null };
@@ -641,7 +654,7 @@ function spreadPoint(center, bbox, idx, total){
 function pointForResult(item, idx, total){
   const lng=num(item.lng), lat=num(item.lat);
   if(lng!=null && lat!=null) return [lng, lat];
-  const r = regionFallback(item.region);
+  const r = regionFallback(item.region || item.regionLabel);
   return spreadPoint(r.center, r.bbox, idx, total);
 }
 function featuredHtml(item, kind){
@@ -870,6 +883,24 @@ function relatedLabel(kind){
   if(kind==="hotel") return "Related stay";
   return "Related option";
 }
+function itemPhotos(item){
+  const src = item && (item.photos || item.images || item.gallery || []);
+  const arr = Array.isArray(src) ? src : [src];
+  if(item && item.thumb) arr.unshift(item.thumb);
+  return arr.map(x=>typeof x==="string"?x:(x&&x.url)||"").filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).slice(0,3);
+}
+function renderPhotoStrip(item, sv){
+  const urls = itemPhotos(item);
+  const hasSv = Number.isInteger(sv);
+  const cls = urls.length ? 'photo has-photos' : 'photo';
+  const imgs = urls.map((url,idx)=>
+    '<img src="'+escapeHtml(url)+'" alt="'+escapeHtml((item.name||"Result")+(idx?` photo ${idx+1}`:""))+'" loading="lazy">'
+  ).join("");
+  return '<div class="'+cls+'" data-photos="'+urls.length+'">'+
+    (imgs || '<span class="ph-mark">✦</span>')+
+    (hasSv ? '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button>' : '')+
+  '</div>';
+}
 function renderOfferingCard(h, kind, label){
   const c=document.createElement("div"); c.className="hcard";
   const itemKind = h.type || kind;
@@ -883,8 +914,7 @@ function renderOfferingCard(h, kind, label){
     const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(formatVipBenefit(u))+"</li>").join("");
     const sv=svStore.length; svStore.push({});
     c.innerHTML =
-      '<div class="photo"><span class="ph-mark">✦</span>'+
-        '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
+      renderPhotoStrip(h, sv)+
       marker+
       '<div class="nm">'+escapeHtml(h.name)+'</div>'+
       '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
@@ -900,6 +930,7 @@ function renderOfferingCard(h, kind, label){
   const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
   const nights=h.nights?(" · "+h.nights+" nights"):"";
   c.innerHTML =
+    (itemPhotos(h).length ? renderPhotoStrip(h) : "")+
     marker+
     '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
     '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+

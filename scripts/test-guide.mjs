@@ -559,6 +559,38 @@ await test('searchOfferings hotel folds non-marquee regions into the place text'
   assert.equal(r.count, 1);
 });
 
+await test('searchOfferings hotel treats island aliases in place as country filters', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    seen.push(Object.fromEntries(u.searchParams.entries()));
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'h_1', name: 'Sugar Beach', country: u.searchParams.get('country') },
+      { id: 'h_2', name: 'Jade Mountain', country: u.searchParams.get('country') },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'hotel', place: 'St Lucia', q: 'Beach resorts' }, { fetchImpl });
+  assert.equal(seen[0].country, 'saint lucia');
+  assert.equal(seen[0].q, 'Beach');
+  assert.equal(r.count, 2);
+});
+
+await test('searchOfferings hotel finds Turks and St Barts when the model sends place', async () => {
+  const countries = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    countries.push(u.searchParams.get('country'));
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'h_1', name: 'COMO Parrot Cay', country: u.searchParams.get('country') },
+    ] }) };
+  };
+  await searchOfferings({ type: 'hotel', place: 'Turks & Caicos' }, { fetchImpl });
+  await searchOfferings({ type: 'hotel', place: 'St Barts' }, { fetchImpl });
+  assert.deepEqual(countries, ['Turks and Caicos', 'Saint Barthélemy']);
+});
+
 await test('chartRegionFrom requires a majority, so one mistagged result cannot chart-jump', () => {
   const alaskan = [{ region: 'norway' }, {}, {}, {}, {}, {}];
   assert.equal(chartRegionFrom('', alaskan), null);
