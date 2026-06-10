@@ -314,6 +314,33 @@ await test('prioritizeMentionedPlace routes broad cruise text to combined cruise
   assert.equal(input.brand, 'Ritz Carlton');
 });
 
+await test('searchOfferings routes advisor-led Luxury Cruise brands outside current live inventory', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls++;
+    return emptyOk();
+  };
+  const r = await searchOfferings({ type: 'cruise', brand: 'Regent Seven Seas', limit: 3 }, { fetchImpl });
+  assert.equal(calls, 0);
+  assert.equal(r.type, 'cruise');
+  assert.equal(r.count, 0);
+  assert.equal(r.advisorOnly, true);
+  assert.match(r.note, /advisor-led Luxury Cruise/i);
+  assert.match(r.note, /Regent Seven Seas/i);
+});
+
+await test('searchOfferings routes generic Luxury Cruises to advisor unless current inventory is named', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls++;
+    return emptyOk();
+  };
+  const r = await searchOfferings({ type: 'any', q: 'luxury cruises in Alaska' }, { fetchImpl });
+  assert.equal(calls, 0);
+  assert.equal(r.advisorOnly, true);
+  assert.match(r.note, /source sailings/i);
+});
+
 await test('searchOfferings cruise searches expedition cruise and yacht atlases', async () => {
   const seen = [];
   const fetchImpl = async (url) => {
