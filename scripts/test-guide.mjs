@@ -24,11 +24,12 @@ await test('tool schema shape (Anthropic input_schema)', () => {
     ['hotel', 'cruise', 'jet', 'yacht', 'any']);
 });
 
-await test('clampLimit default 6, capped', () => {
-  assert.equal(clampLimit(undefined, 6), 6);
-  assert.equal(clampLimit(0, 6), 6);
-  assert.equal(clampLimit(100, 6), 24);
-  assert.equal(clampLimit(3, 6), 3);
+await test('clampLimit falls back to the request and caps at the tight display limit', () => {
+  assert.equal(clampLimit(undefined, 3), 3);
+  assert.equal(clampLimit(0, 3), 3);
+  assert.equal(clampLimit(100, 3), 4);        // capped at MAX_DISPLAY_LIMIT
+  assert.equal(clampLimit(3, 3), 3);
+  assert.equal(clampLimit(100, 3, 24), 24);   // explicit higher ceiling (around-the-world jets)
 });
 
 await test('chartRegionFrom prefers explicit marquee key', () => {
@@ -78,7 +79,7 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
     assert.equal(u.searchParams.get('month'), '2026-08');
     assert.equal(u.searchParams.get('q'), null);
     assert.equal(u.searchParams.get('country'), 'Italy');
-    assert.equal(u.searchParams.get('limit'), '6');
+    assert.equal(u.searchParams.get('limit'), '24'); // broad ranking pool; the shown list is capped separately
     return { ok: true, json: async () => ({ total: 6, count: 6, results: [
       { id: 'h_1', name: 'One', country: 'Italy' },
       { id: 'h_2', name: 'Two', country: 'Italy' },
@@ -89,7 +90,7 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
     ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?country=Italy&month=2026-08' }) };
   };
   const r = await searchOfferings({ type: 'hotel', country: 'Italy', q: 'hotels in August' }, { fetchImpl });
-  assert.equal(r.count, 6);
+  assert.equal(r.count, 3); // curated down from the broad pool to the tight display cap
 });
 
 await test('searchOfferings hotel gives a named place priority over broad country', async () => {
@@ -97,7 +98,7 @@ await test('searchOfferings hotel gives a named place priority over broad countr
     const u = new URL(url);
     assert.equal(u.searchParams.get('country'), 'United States');
     assert.equal(u.searchParams.get('q'), 'Aspen');
-    assert.equal(u.searchParams.get('limit'), '3');
+    assert.equal(u.searchParams.get('limit'), '24'); // broad ranking pool
     return { ok: true, json: async () => ({ total: 3, count: 3, results: [
       { id: 'h_1', name: 'The Little Nell', city: 'Aspen', country: 'United States',
         vipUpgrades: ['Room Upgrade', '$100 hotel credit'] },
@@ -192,7 +193,7 @@ await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async 
     const u = new URL(url);
     assert.ok(url.includes('/api/yacht-sailings?'));
     assert.equal(u.searchParams.get('brand'), 'Ritz-Carlton Yacht Collection');
-    assert.equal(u.searchParams.get('limit'), '5');
+    assert.equal(u.searchParams.get('limit'), '4'); // brand-constrained pool, capped at the display max
     return { ok: true, json: async () => ({ total: 188, count: 5, results: [
       { id: 'yc_1', type: 'yacht', name: 'Tokyo to Incheon', brand: 'Ritz-Carlton Yacht Collection', region: 'japan' },
     ] }) };
@@ -203,9 +204,9 @@ await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async 
   assert.equal(r.results[0].brand, 'Ritz-Carlton Yacht Collection');
 });
 
-await test('searchOfferings honors fluid caller limits', async () => {
+await test('searchOfferings caps an over-large caller limit to the tight display max', async () => {
   const fetchImpl = async (url) => {
-    assert.match(url, /limit=8\b/);
+    assert.match(url, /limit=24\b/); // pulls a broad pool to rank from
     return { ok: true, json: async () => ({ total: 12, count: 8, results: [
       { id: 'jt_1', type: 'jet', name: 'One', region: 'japan' },
       { id: 'jt_2', type: 'jet', name: 'Two', region: 'japan' },
@@ -217,9 +218,27 @@ await test('searchOfferings honors fluid caller limits', async () => {
       { id: 'jt_8', type: 'jet', name: 'Eight', region: 'japan' },
     ] }) };
   };
+  // A bare larger limit (no explicit "more" request) stays capped at four.
   const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 8 }, { fetchImpl });
-  assert.equal(r.count, 8);
-  assert.equal(r.results.length, 8);
+  assert.equal(r.count, 4);
+  assert.equal(r.results.length, 4);
+});
+
+await test('searchOfferings lifts the cap when the traveler explicitly asks for more', async () => {
+  const jets = Array.from({ length: 8 }, (_, i) => ({ id: 'jt_' + i, type: 'jet', name: 'J' + i, region: 'japan' }));
+  // Explicit more=true with a larger limit returns the requested count, not four.
+  const withLimit = async (url) => {
+    assert.match(url, /limit=8\b/);
+    return { ok: true, json: async () => ({ total: 12, count: 8, results: jets }) };
+  };
+  const r1 = await searchOfferings({ type: 'jet', region: 'japan', more: true, limit: 8 }, { fetchImpl: withLimit });
+  assert.equal(r1.count, 8);
+  assert.equal(r1.results.length, 8);
+
+  // more=true with no limit returns the full matching set (capped at 24).
+  const full = async () => ({ ok: true, json: async () => ({ total: 12, count: 8, results: jets }) });
+  const r2 = await searchOfferings({ type: 'jet', region: 'japan', more: true }, { fetchImpl: full });
+  assert.equal(r2.count, 8);
 });
 
 await test('searchOfferings degrades gracefully when an atlas endpoint is down', async () => {

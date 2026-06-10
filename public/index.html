@@ -257,7 +257,7 @@
         <div id="livingAtlas"></div>
         <div class="badge" id="atlasBadge" style="display:none"></div>
         <div class="legend" id="legend"></div>
-        <div class="mapfallback" id="mapFallback" style="display:none">Map unavailable. Use <b>Open in Atlas</b> to view the subset.</div>
+        <div class="mapfallback" id="mapFallback" style="display:none">Map unavailable. Use <b>See all results in Atlas</b> to view the full set.</div>
       </div>
     </aside>
   </main>
@@ -698,11 +698,11 @@ function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
 }
 function atlasLabelForType(type){
-  if(type==="hotel") return "Open Hotel Atlas";
-  if(type==="cruise") return "Open Cruise Atlas";
-  if(type==="yacht") return "Open Yacht Atlas";
-  if(type==="jet") return "Open Jet Atlas";
-  return "Open in Atlas";
+  if(type==="hotel") return "See all hotels in Atlas";
+  if(type==="cruise") return "See all cruises in Atlas";
+  if(type==="yacht") return "See all yachts in Atlas";
+  if(type==="jet") return "See all jet journeys in Atlas";
+  return "See all results in Atlas";
 }
 function atlasLinksForLead(lead, meta){
   const sourceLinks = (lead&&lead.sources||[])
@@ -901,7 +901,7 @@ function renderComparison(recs, kind, limit){
         ["Advisor read", h=>(h.fit&&h.fit.description)||""]
       ]
     : [
-        ["Type", h=>atlasLabelForType(h.type||kind).replace(/^Open /,"").replace(" Atlas","")],
+        ["Type", h=>({hotel:"Hotel",cruise:"Cruise",yacht:"Yacht",jet:"Jet"}[h.type||kind]||"")],
         ["Operator", h=>h.brand||h.operator||""],
         ["Vessel", h=>h.ship||""],
         ["Route", h=>h.route||h.country||""],
