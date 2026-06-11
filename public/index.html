@@ -157,6 +157,7 @@
   .ah .ajump[data-t="cruise"] i{background:#5aa9e6}
   .ah .ajump[data-t="jet"] i{background:#dfe5f2}
   .ah .ajump[data-t="yacht"] i{background:#e0b84a}
+  .ah .ajump[data-t="worldcruise"] i{background:#45d6c2}
   .legend{position:absolute;left:12px;top:12px;z-index:5;display:flex;flex-direction:column;gap:5px;
     background:rgba(12,12,14,.8);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
@@ -249,6 +250,7 @@
             <div class="chip">Galápagos Expedition Cruise journeys in January</div>
             <div class="chip">Aman vs. Orient Express Luxury Yachts</div>
             <div class="chip">Around the world by private jet trips in 2026</div>
+            <div class="chip">World cruises departing January 2027</div>
           </div>
         </div>
       </div>
@@ -271,6 +273,7 @@
           <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Expedition Cruise</a>
           <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Jet</a>
           <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Yacht</a>
+          <a class="ajump" data-t="worldcruise" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener"><i></i>World Cruise</a>
         </span>
         <span class="live" id="atlasState">all inventory</span>
       </div>
@@ -317,6 +320,7 @@ const ATLAS_TYPES = {
   cruise: { label:"Expedition Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
   jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
   yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
+  worldcruise: { label:"World Cruise", color:"#45d6c2", url:"https://world-cruise-atlas.vercel.app",   data:"https://world-cruise-atlas.vercel.app/itinerary.json" },
 };
 
 const messages = [];                 // {role, content} sent to /api/guide
@@ -577,6 +581,7 @@ function typeDeepLink(key, regionKey){
 }
 function typeOverlayMeta(key, count){
   if(key==="cruise") return `Expedition Cruises${count?` - ${count} sailings`:""}`;
+  if(key==="worldcruise") return `World Cruises${count?` - ${count} voyages calling here`:""}`;
   const cfg=ATLAS_TYPES[key]||{};
   return `${cfg.label||"Atlas"} expeditions${count?` · ${count} sailings`:""}`;
 }
@@ -619,6 +624,7 @@ function buildLegend(){
     { key:"cruise", label:"Expedition Cruise", color:ATLAS_TYPES.cruise.color },
     { key:"jet",    label:"Jet",    color:ATLAS_TYPES.jet.color },
     { key:"yacht",  label:"Yacht",  color:ATLAS_TYPES.yacht.color },
+    { key:"worldcruise", label:"World Cruise", color:ATLAS_TYPES.worldcruise.color },
   ];
   box.innerHTML="";
   const cap=document.createElement("div"); cap.className="lgcap"; cap.textContent="Tap to hide";
@@ -765,6 +771,7 @@ function atlasLabelForType(type){
   if(type==="cruise") return "Open Expedition Cruise Atlas";
   if(type==="yacht") return "Open Yacht Atlas";
   if(type==="jet") return "Open Jet Atlas";
+  if(type==="worldcruise") return "Open World Cruise Atlas";
   return "Open in Atlas";
 }
 function atlasLinksForLead(lead, meta){
@@ -916,6 +923,7 @@ function relatedLabel(kind){
   if(kind==="cruise") return "Related Expedition Cruise option";
   if(kind==="yacht") return "Related yacht option";
   if(kind==="jet") return "Related private jet option";
+  if(kind==="worldcruise") return "Related world cruise option";
   if(kind==="hotel") return "Related stay";
   return "Related option";
 }
@@ -964,7 +972,7 @@ function renderOfferingCard(h, kind, label){
   const operator=h.brand||h.operator||"";
   const sub=[operator, h.ship, h.regionLabel].filter(Boolean).join(" · ");
   const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
-  const nights=h.nights?(" · "+h.nights+" nights"):"";
+  const nights=h.nights?(" · "+h.nights+" nights"):(h.days?(" · "+h.days+" days"):"");
   c.innerHTML =
     (itemPhotos(h).length ? renderPhotoStrip(h) : "")+
     marker+
@@ -988,7 +996,7 @@ function renderResults(body, meta, opts={}){
       cards.appendChild(renderOfferingCard(h, kind));
     });
     (lead.related||[]).forEach(rel=>{
-      if(!["cruise","yacht","jet"].includes(rel.kind)) return;
+      if(!["cruise","yacht","jet","worldcruise"].includes(rel.kind)) return;
       (rel.results||[]).slice(0,1).forEach(h=>{
         cards.appendChild(renderOfferingCard(h, rel.kind, relatedLabel(rel.kind)));
       });
@@ -1036,7 +1044,7 @@ function renderComparison(recs, kind, limit){
         ["Vessel", h=>h.ship||""],
         ["Route", h=>h.route||h.country||""],
         ["When", h=>h.startDate||h.month||""],
-        ["Length", h=>h.nights?(h.nights+" nights"):""],
+        ["Length", h=>h.nights?(h.nights+" nights"):(h.days?(h.days+" days"):"")],
         ["Region", h=>h.regionLabel||h.region||""]
       ];
   const wrap=document.createElement("div");

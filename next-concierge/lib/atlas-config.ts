@@ -49,6 +49,15 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
       "https://luxury-hotel-brand-yacht-atlas.vercel.app",
     sampleRegions: ["MED", "CARIB", "ASIA"],
   },
+  worldcruise: {
+    type: "worldcruise",
+    label: "World Cruise Atlas",
+    tagline: "World cruises and grand voyages, every port day by day",
+    base:
+      process.env.NEXT_PUBLIC_WORLD_CRUISE_ATLAS_BASE ||
+      "https://world-cruise-atlas.vercel.app",
+    sampleRegions: ["MED", "CARIB", "AUNZ", "EASTASIA"],
+  },
 };
 
 export const ATLAS_TYPES = Object.keys(ATLASES) as OfferingType[];

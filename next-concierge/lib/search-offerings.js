@@ -28,6 +28,10 @@ const OFFERINGS_ENDPOINTS = {
     base: process.env.YACHT_ATLAS_API_BASE || "https://luxury-hotel-brand-yacht-atlas.vercel.app",
     path: "/api/yacht-sailings",
   },
+  worldcruise: {
+    base: process.env.WORLD_CRUISE_ATLAS_API_BASE || "https://world-cruise-atlas.vercel.app",
+    path: "/api/world-cruises",
+  },
 };
 
 // Marquee region keys the Living Atlas can plot (CLAUDE.md / SPEC §3).
@@ -48,6 +52,15 @@ const GENERIC_LUXURY_CRUISE_RE =
   /\b(luxury\s+(?:ocean\s+)?cruis(?:e|es|ing)|ocean\s+cruis(?:e|es|ing))\b/i;
 const CURRENT_CRUISE_INVENTORY_RE =
   /\b(expedition|expeditions|ritz[\s-]*carlton|four\s+seasons|aman|orient[\s-]*express|yacht|yachts)\b/i;
+
+// World cruises and grand voyages ARE live inventory (the World Cruise Atlas),
+// even for lines that are otherwise advisor-led Luxury Cruise brands. Strong
+// phrases route on sight; bare around-the-world language needs cruise context
+// so it never hijacks the private-jet ATW category.
+const STRONG_WORLD_CRUISE_RE =
+  /\b(world\s+cruises?|world\s+voyages?|grand\s+voyages?|grand\s+world\s+voyages?|full\s+world|world\s+by\s+sea|around\s+the\s+world\s+(?:by\s+(?:sea|ship)|cruises?|sailings?|voyages?)|round\s+the\s+world\s+(?:cruises?|sailings?|voyages?)|circumnavigations?\s+(?:cruises?|by\s+sea|voyages?)|world\s+cruise\s+segments?)\b/i;
+const GENERIC_GLOBAL_VOYAGE_RE =
+  /\b(around\s+the\s+world|round\s+the\s+world|atw|circumnavigat\w+|seven\s+continents)\b/i;
 
 const foldDiacritics = (s) =>
   String(s == null ? "" : s).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -263,6 +276,29 @@ function normalizedCruiseOperator(raw) {
   return "";
 }
 
+// World Cruise Atlas line names are short display names ("Regent Seven Seas",
+// "Holland America"); travelers write the long or colloquial forms.
+function normalizedWorldCruiseOperator(raw) {
+  const v = normalizeBrandKey(raw);
+  if (!v) return "";
+  if (/\bregent\b/.test(v) || /seven seas/.test(v)) return "Regent Seven Seas";
+  if (/\bcrystal\b/.test(v)) return "Crystal";
+  if (/\boceania\b/.test(v)) return "Oceania Cruises";
+  if (/\bcunard\b/.test(v) || /queen (mary|anne|victoria|elizabeth)/.test(v)) return "Cunard";
+  if (v === "hal" || /holland/.test(v)) return "Holland America";
+  if (/princess/.test(v)) return "Princess Cruises";
+  if (/\bviking\b/.test(v)) return "Viking";
+  if (/silver ?seas?/.test(v)) return "Silversea";
+  if (/seabourn/.test(v)) return "Seabourn";
+  if (/azamara/.test(v)) return "Azamara";
+  if (/explora/.test(v)) return "Explora Journeys";
+  if (/windstar/.test(v)) return "Windstar Cruises";
+  if (/lindblad/.test(v) || /national geographic/.test(v) || /\bnat geo\b/.test(v)) {
+    return "Nat Geo-Lindblad";
+  }
+  return "";
+}
+
 function normalizedJetBrand(raw) {
   const v = normalizeBrandKey(raw);
   if (!v) return "";
@@ -284,18 +320,20 @@ export const SEARCH_OFFERINGS_TOOL = {
   name: "search_offerings",
   description:
     "Search Aspen Travel Advisors inventory: luxury hotels, Expedition Cruise journeys, " +
-    "private jet journeys, and brand-yacht sailings. Use whenever a traveler " +
+    "private jet journeys, brand-yacht sailings, and world cruises. Use whenever a traveler " +
     "names a place, brand, season, or trip type. Type cruise intentionally " +
-    "searches both Expedition Cruise journeys and hotel-brand yachts. Luxury Cruises " +
-    "such as Regent Seven Seas and Crystal are advisor-led outside the current live inventory.",
+    "searches both Expedition Cruise journeys and hotel-brand yachts. Type worldcruise " +
+    "searches live world cruises and grand voyages (50-250 day sailings with day-by-day " +
+    "itineraries), including lines like Regent Seven Seas, Crystal, Oceania, and Cunard. " +
+    "Ordinary (non-world) Luxury Cruises by those lines remain advisor-led outside the live inventory.",
   input_schema: {
     type: "object",
     properties: {
       type: {
         type: "string",
-        enum: ["hotel", "cruise", "jet", "yacht", "any"],
+        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "any"],
         description:
-          "Use cruise for Expedition Cruise or hotel-brand yacht language. Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
+          "Use cruise for Expedition Cruise or hotel-brand yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
       },
       q: {
         type: "string",
@@ -325,7 +363,7 @@ export const SEARCH_OFFERINGS_TOOL = {
       brand: {
         type: "string",
         description:
-          "Hotel brand, Expedition Cruise operator, or yacht brand, e.g. Aman, Four Seasons, Rosewood, Seabourn, Ritz-Carlton. Regent Seven Seas, Crystal, Oceania, Explora Journeys, and Cunard are advisor-led Luxury Cruise brands.",
+          "Hotel brand, Expedition Cruise operator, yacht brand, or world cruise line, e.g. Aman, Four Seasons, Rosewood, Seabourn, Ritz-Carlton. For type worldcruise, lines like Regent Seven Seas, Crystal, Oceania, Cunard, Viking, and Seabourn are live searchable inventory; for ordinary cruises those Luxury Cruise brands are advisor-led.",
       },
       country: { type: "string", description: "Country name, e.g. Japan, Italy, France." },
       month: {
@@ -471,6 +509,36 @@ function aroundTheWorldJetIntent(input = {}) {
     input.operator,
   ].filter(Boolean).join(" ");
   return AROUND_THE_WORLD_JET_RE.test(hay);
+}
+
+// World cruise / grand voyage asks are live World Cruise Atlas inventory and
+// must win over the Luxury Cruise advisor guard ("Regent world cruise" is a
+// real searchable sailing, not an advisor-only brand mention).
+function worldCruiseIntent(input = {}, type = String(input.type || "any").toLowerCase()) {
+  if (type === "worldcruise") return true;
+  const hay = [
+    input.q,
+    input.place,
+    input.region,
+    input.country,
+    input.brand,
+    input.operator,
+  ].filter(Boolean).join(" ");
+  if (!hay) return false;
+  if (STRONG_WORLD_CRUISE_RE.test(hay)) return true;
+  // "Around the world" alone belongs to the private-jet ATW category unless
+  // the ask is already about cruising.
+  const cruiseContext = type === "cruise" || type === "yacht" || CRUISE_CONTEXT_RE.test(hay);
+  return cruiseContext && GENERIC_GLOBAL_VOYAGE_RE.test(hay);
+}
+
+function stripWorldCruiseTerms(raw) {
+  return String(raw || "")
+    .replace(STRONG_WORLD_CRUISE_RE, " ")
+    .replace(GENERIC_GLOBAL_VOYAGE_RE, " ")
+    .replace(/\b(world|grand|full|luxury|cruise|cruises|cruising|voyage|voyages|sailing|sailings|segment|segments|by\s+sea|ship|ships)\b/ig, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function luxuryCruiseAdvisorIntent(input = {}, type = String(input.type || "any").toLowerCase()) {
@@ -928,18 +996,27 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   const candidateLimit = candidateLimitForInput(input, limit);
   const cfg = OFFERINGS_ENDPOINTS[type];
   const month = normalizeMonth(input.month) || monthFromText(input.q);
-  const baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q)) : stripDateFromQuery(input.q);
+  const baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
+    : type === "worldcruise" ? stripWorldCruiseTerms(stripDateFromQuery(input.q))
+    : stripDateFromQuery(input.q);
   const placeText = !atwJet && type !== "jet" && input.place ? normalizeLoosePlace(input.place) : "";
   const rawBrand = String(input.brand || input.operator || "").trim();
   let brand = rawBrand;
   if (type === "cruise") brand = normalizedCruiseOperator(rawBrand) || rawBrand;
   else if (type === "jet") brand = normalizedJetBrand(rawBrand) || rawBrand;
+  else if (type === "worldcruise") brand = normalizedWorldCruiseOperator(rawBrand) || rawBrand;
   const yachtBrand = type === "yacht" ? normalizedYachtBrand(rawBrand) : "";
   const regionKey = normalizeRegionKey(input.region);
-  // The atlases silently drop region values outside the marquee set (Alaska,
-  // Caribbean), which would broaden the search instead of constraining it.
-  // Matching those as free text against name/region labels keeps them binding.
-  const regionText = !atwJet && !regionKey && input.region ? String(input.region).trim() : "";
+  // The World Cruise Atlas resolves its own region aliases (caribbean, alaska,
+  // hawaii, the marquee keys), so the raw region passes through as a region.
+  const worldCruiseRegion = type === "worldcruise"
+    ? (regionKey || String(input.region || "").trim()) : "";
+  // The other atlases silently drop region values outside the marquee set
+  // (Alaska, Caribbean), which would broaden the search instead of
+  // constraining it. Matching those as free text against name/region labels
+  // keeps them binding.
+  const regionText = !atwJet && type !== "worldcruise" && !regionKey && input.region
+    ? String(input.region).trim() : "";
   const country = normalizeCountry(input.country);
 
   const buildUrl = ({ brandAsText = false } = {}) => {
@@ -947,6 +1024,9 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     let queryText = [regionText, placeText, baseQ].filter(Boolean).join(" ").trim();
     if (atwJet) {
       p.set("world", "true");
+    } else if (type === "worldcruise") {
+      if (worldCruiseRegion) p.set("region", worldCruiseRegion);
+      if (country) p.set("country", country);
     } else {
       if (regionKey) p.set("region", regionKey);
       if (country) p.set("country", country);
@@ -1001,6 +1081,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     };
   } catch (err) {
     // Endpoint unreachable: tell the Guide so it can route to an advisor.
+    const typeLabel = type === "worldcruise" ? "World Cruise" : type;
     return {
       type,
       total: 0,
@@ -1010,8 +1091,8 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
       chartRegion: normalizeRegionKey(input.region),
       unavailable: true,
       note:
-        `${type} inventory is momentarily unreachable. An advisor can ` +
-        `source live ${type} options directly.`,
+        `${typeLabel} inventory is momentarily unreachable. An advisor can ` +
+        `source live ${typeLabel} options directly.`,
     };
   }
 }
@@ -1082,10 +1163,25 @@ async function sailingRelatedHotels(results = [], fetchImpl) {
   return entry ? [entry] : [];
 }
 
+// World cruise channel: the search plus a pre/post hotel sidecar for the
+// embarkation city, same shape as the yacht channel.
+async function searchWorldCruises(input, fetchImpl) {
+  const r = await searchOfferingsByType("worldcruise", input, fetchImpl);
+  const related = await sailingRelatedHotels(r.results, fetchImpl);
+  return related.length ? { ...r, related } : r;
+}
+
 // Main entry. `input` is the validated tool input from the model.
 export async function searchOfferings(input = {}, opts = {}) {
   const fetchImpl = opts.fetchImpl || fetch;
   const type = String(input.type || "any").toLowerCase();
+
+  // World cruises outrank the Luxury Cruise advisor guard: "Regent world
+  // cruise" is live World Cruise Atlas inventory, not an advisor-only brand.
+  if (type === "worldcruise" ||
+      ((type === "cruise" || type === "yacht" || type === "any") && worldCruiseIntent(input, type))) {
+    return searchWorldCruises(input, fetchImpl);
+  }
 
   // Yacht included: "luxury cruise in the Med" routed to type yacht must still
   // reach an advisor, not be silently answered with yacht inventory.
@@ -1157,6 +1253,13 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
   const hasCruiseIntent = /\b(cruise|cruises)\b/i.test(text);
   const hasYachtIntent = /\b(yacht|yachts)\b/i.test(text);
 
+  // The traveler's own words said "world cruise"/"grand voyage": route to the
+  // World Cruise Atlas even if the model only typed cruise or left type unset.
+  if (type !== "jet" && type !== "hotel" && type !== "worldcruise" &&
+      STRONG_WORLD_CRUISE_RE.test(text)) {
+    return { ...input, type: "worldcruise" };
+  }
+
   if (!hasHotelIntent && (type === "hotel" || type === "any")) {
     if (hasCruiseIntent) return { ...input, type: "cruise" };
     if (hasYachtIntent) return { ...input, type: "yacht" };
@@ -1182,6 +1285,7 @@ export {
   normalizeCountry,
   normalizeRegionKey,
   luxuryCruiseAdvisorIntent,
+  worldCruiseIntent,
   MARQUEE_KEYS,
   HOTEL_API_BASE,
   prioritizeMentionedPlace,

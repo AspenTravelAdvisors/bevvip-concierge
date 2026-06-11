@@ -23,7 +23,7 @@ async function test(name, fn) { await fn(); passed++; console.log('  ok  ' + nam
 await test('tool schema shape (Anthropic input_schema)', () => {
   assert.equal(SEARCH_OFFERINGS_TOOL.name, 'search_offerings');
   assert.deepEqual(SEARCH_OFFERINGS_TOOL.input_schema.properties.type.enum,
-    ['hotel', 'cruise', 'jet', 'yacht', 'any']);
+    ['hotel', 'cruise', 'jet', 'yacht', 'worldcruise', 'any']);
 });
 
 await test('clampLimit default 6, capped', () => {
