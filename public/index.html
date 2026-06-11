@@ -167,7 +167,12 @@
   .legend .lgi.all i{box-shadow:0 0 0 2px rgba(201,168,76,.35)}
   .legend .lgi i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .atlas .openext{font-size:11.5px;color:var(--sub)}
+  .atlas.fs{position:fixed;inset:0;z-index:900;flex:1 1 auto;width:auto;height:auto}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
+  .mapwrap .atlasfull{position:absolute;right:12px;top:12px;z-index:40;line-height:1;padding:6px 11px;
+    background:rgba(12,12,14,.92);border:1px solid var(--gold-dim);color:var(--gold-light);
+    font-size:11.5px;font-weight:600;border-radius:7px;cursor:pointer}
+  .mapwrap .atlasfull:hover{border-color:var(--gold);color:var(--gold)}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
   #livingAtlas .mapboxgl-canvas{outline:none}
   #livingAtlas .mapboxgl-ctrl-bottom-right,#livingAtlas .mapboxgl-ctrl-bottom-left{opacity:.5}
@@ -180,6 +185,7 @@
   .mapfallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
     color:var(--muted);font-size:13px;padding:24px}
   /* mapbox popup dark fit */
+  .mapboxgl-popup{z-index:30}
   .mapboxgl-popup-content{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);padding:0;border-radius:10px}
   .mapboxgl-popup-close-button{color:var(--sub);font-size:16px;padding:2px 7px;right:2px;top:1px}
   .mapboxgl-popup-tip{display:none}
@@ -264,6 +270,7 @@
       </div>
       <div class="mapwrap">
         <div id="livingAtlas"></div>
+        <button class="ghostbtn atlasfull" id="atlasFull" onclick="toggleAtlasFullscreen()" title="Toggle map fullscreen" aria-pressed="false">&#x26F6; Fullscreen</button>
         <div class="badge" id="atlasBadge" style="display:none"></div>
         <div class="legend" id="legend"></div>
         <div class="mapfallback" id="mapFallback" style="display:none">Map unavailable. Use <b>Open in Atlas</b> to view the subset.</div>
@@ -351,6 +358,7 @@ window.initLivingAtlas = function(){
       lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
         "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
       mapsReady = true;
+      try{ lmap.resize(); }catch(_){}
       loadHotelField();
       loadRegions();
       loadTypeOverlays();
@@ -1213,6 +1221,27 @@ function toggleSVFullscreen(){
   if(document.fullscreenElement) document.exitFullscreen();
   else elc.requestFullscreen().catch(()=>{});
 }
+
+function toggleAtlasFullscreen(){
+  const atlas=document.querySelector(".atlas");
+  if(!atlas) return;
+  const on=atlas.classList.toggle("fs");
+  const btn=el("atlasFull");
+  if(btn){
+    btn.innerHTML = on ? "&#x2715; Exit fullscreen" : "&#x26F6; Fullscreen";
+    btn.title = on ? "Exit map fullscreen" : "Toggle map fullscreen";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  // let the layout settle, then resize the globe to the new bounds
+  setTimeout(()=>{ try{ lmap && lmap.resize(); }catch(_){} }, 60);
+}
+// Esc exits atlas fullscreen (mirrors native fullscreen affordance)
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){
+    const atlas=document.querySelector(".atlas");
+    if(atlas && atlas.classList.contains("fs")) toggleAtlasFullscreen();
+  }
+});
 
 function closeSV(){
   if(document.fullscreenElement) document.exitFullscreen();
