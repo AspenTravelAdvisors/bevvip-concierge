@@ -170,7 +170,7 @@
   .atlas.fs{position:fixed;inset:0;z-index:900;flex:1 1 auto;width:auto;height:auto}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
   .atlasfull{position:absolute;right:12px;top:12px;z-index:40;line-height:1;padding:5px 10px;
-    background:rgba(12,12,14,.86);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    background:rgba(12,12,14,.92)}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
   #livingAtlas .mapboxgl-canvas{outline:none}
   #livingAtlas .mapboxgl-ctrl-bottom-right,#livingAtlas .mapboxgl-ctrl-bottom-left{opacity:.5}
@@ -356,6 +356,7 @@ window.initLivingAtlas = function(){
       lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
         "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
       mapsReady = true;
+      try{ lmap.resize(); }catch(_){}
       loadHotelField();
       loadRegions();
       loadTypeOverlays();
