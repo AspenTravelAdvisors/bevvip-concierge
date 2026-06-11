@@ -27,7 +27,7 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
 
   useEffect(() => {
     if (!token || !mapEl.current) return;
-    let map: { remove(): void } | undefined;
+    let map: MapboxMap | undefined;
     let cancelled = false;
 
     loadMapbox()
@@ -41,7 +41,14 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
           zoom: 1.4,
           center: [10, 25],
         });
-        setMapReady(true);
+        // Flip ready only once tiles are actually painting, and resize so the
+        // canvas matches the (now laid-out) container instead of 0×0.
+        map.on("load", () => {
+          if (cancelled) return;
+          map?.resize();
+          setMapReady(true);
+        });
+        map.on("error", () => setMapFailed(true));
       })
       .catch(() => setMapFailed(true));
 
@@ -55,7 +62,17 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
 
   return (
     <div className="atlas-map">
-      <div ref={mapEl} style={{ position: "absolute", inset: 0, display: mapReady ? "block" : "none" }} />
+      {/* Container stays mounted and sized; Mapbox must measure real
+          dimensions at construction or the globe renders without tiles. */}
+      {token && !mapFailed && (
+        <div ref={mapEl} style={{ position: "absolute", inset: 0 }} />
+      )}
+      {token && !mapFailed && !mapReady && (
+        <div className="fallback">
+          <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
+          <p>Charting the Atlas…</p>
+        </div>
+      )}
       {showFallback && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
@@ -81,9 +98,15 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
   );
 }
 
+interface MapboxMap {
+  on(event: string, cb: () => void): void;
+  resize(): void;
+  remove(): void;
+}
+
 interface MapboxModule {
   accessToken: string;
-  Map: new (opts: Record<string, unknown>) => { remove(): void };
+  Map: new (opts: Record<string, unknown>) => MapboxMap;
 }
 
 declare global {
