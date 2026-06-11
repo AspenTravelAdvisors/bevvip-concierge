@@ -32,7 +32,7 @@
 
   main{flex:1;display:flex;min-height:0}
   /* chat column */
-  .chat{flex:1 1 56%;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line)}
+  .chat{flex:1 1 40%;display:flex;flex-direction:column;min-width:300px;border-right:1px solid var(--line)}
   .transcript{flex:1;overflow-y:auto;padding:26px 22px 8px}
   .wrap{max-width:720px;margin:0 auto}
 
@@ -144,7 +144,7 @@
   .foot{max-width:720px;margin:8px auto 0;font-size:11px;color:var(--muted);text-align:center}
 
   /* atlas column */
-  .atlas{flex:1 1 44%;display:flex;flex-direction:column;min-width:0;background:#06080c}
+  .atlas{flex:1 1 60%;display:flex;flex-direction:column;min-width:0;background:#06080c}
   .atlas .ah{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
   .atlas .ah{flex-wrap:wrap}
   .atlas .ah .live{margin-left:auto;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim)}
@@ -219,8 +219,11 @@
 
   @media (max-width:920px){
     main{flex-direction:column}
-    .chat{flex:1 1 auto;border-right:0;border-bottom:1px solid var(--line)}
-    .atlas{flex:0 0 42vh}
+    .chat{flex:1 1 auto;min-height:0;min-width:0;border-right:0;border-bottom:1px solid var(--line)}
+    .atlas{flex:0 0 48vh}
+    .empty{margin-top:3vh}
+    .empty h1{font-size:27px}
+    .empty p{font-size:14px;margin-bottom:16px}
   }
 </style>
 </head>
@@ -325,7 +328,7 @@ const openExt = el("openExt");
    marquee region pins. On a qualified subset: fade the field, drop the region
    layer, and plot the matching stays (hard-capped at 60), fit to bounds. */
 let lmap=null, mapsReady=false, pendingPlot=null, popup=null;
-let spinning=false, spinRAF=0, subsetActive=false;
+let spinning=false, spinRAF=0, subsetActive=false, homeZoom=1.25;
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
 // Marquee region geo, filled from the Hotel Atlas /api/regions (bbox + center),
@@ -359,6 +362,7 @@ window.initLivingAtlas = function(){
         "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
       mapsReady = true;
       try{ lmap.resize(); }catch(_){}
+      fitGlobe();
       loadHotelField();
       loadRegions();
       loadTypeOverlays();
@@ -366,16 +370,37 @@ window.initLivingAtlas = function(){
       if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotRecommendations(p.lead, p.meta); }
     });
     ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>lmap.on(ev, stopSpin));
-    new ResizeObserver(()=>{ try{ lmap && lmap.resize(); }catch(_){} }).observe(el("livingAtlas"));
+    new ResizeObserver(()=>{
+      try{
+        if(!lmap) return;
+        lmap.resize();
+        // While idle at home (no result subset, user hasn't zoomed in),
+        // keep the whole globe fitted as the panel resizes.
+        if(!subsetActive && lmap.getZoom() <= homeZoom + 0.4) fitGlobe();
+      }catch(_){}
+    }).observe(el("livingAtlas"));
   }catch(e){ showMapFallback(); }
 };
+
+/* Zoom the globe so the full sphere fills the panel with a little margin.
+   Mapbox globe diameter ≈ 162.97 * 2^zoom px; solve for the smaller side. */
+function fitGlobe(){
+  if(!lmap) return;
+  const node = el("livingAtlas");
+  const w = node.clientWidth, h = node.clientHeight;
+  if(!w || !h) return;
+  const target = Math.min(w, h) * 0.92;
+  const z = Math.log2(target / 162.97);
+  homeZoom = Math.max(lmap.getMinZoom(), Math.min(z, 5));
+  lmap.setZoom(homeZoom);
+}
 
 /* gentle idle rotation; stops on interaction, pauses while a subset is shown */
 function startSpin(){ if(spinning) return; spinning=true; spinStep(); }
 function stopSpin(){ spinning=false; cancelAnimationFrame(spinRAF); }
 function spinStep(){
   if(!spinning || !lmap) return;
-  if(!subsetActive && lmap.getZoom()<2.2 && !document.hidden){
+  if(!subsetActive && lmap.getZoom() <= homeZoom + 0.4 && !document.hidden){
     const c=lmap.getCenter(); c.lng-=0.045; lmap.setCenter(c);
   }
   spinRAF=requestAnimationFrame(spinStep);
@@ -1379,7 +1404,7 @@ input.addEventListener("input",autosize);
 input.addEventListener("keydown",e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendText(input.value); } });
 sendBtn.addEventListener("click",()=>sendText(input.value));
 el("chips").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(c) sendText(c.textContent); });
-el("regionsBtn").addEventListener("click",()=>{ setOpenExt(null); loadRegions(); });
+el("regionsBtn").addEventListener("click",()=>{ setOpenExt(null); loadRegions(); if(lmap){ fitGlobe(); lmap.easeTo({ center:[10,20], zoom:homeZoom, duration:700 }); } });
 input.focus();
 </script>
 
