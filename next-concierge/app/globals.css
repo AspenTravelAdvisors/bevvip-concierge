@@ -402,3 +402,93 @@ main.page {
   justify-content: center;
   margin-top: 14px;
 }
+
+/* Living Atlas legend — toggles the inventory layers on the globe. */
+.legend {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: rgba(12, 12, 14, 0.8);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.legend .lgcap {
+  font-size: 9.5px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 2px;
+}
+.legend .lgi {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  color: var(--text);
+  cursor: pointer;
+  transition: 0.15s;
+  user-select: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+}
+.legend .lgi.off {
+  opacity: 0.32;
+}
+.legend .lgi i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+/* Globe popups (region pins). */
+.mapboxgl-popup-content {
+  background: var(--card, var(--panel));
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow, 0 12px 40px rgba(0, 0, 0, 0.5));
+  padding: 0;
+  border-radius: 10px;
+}
+.mapboxgl-popup-close-button {
+  color: var(--sub);
+  font-size: 16px;
+  padding: 2px 7px;
+  right: 2px;
+  top: 1px;
+}
+.mapboxgl-popup-tip {
+  display: none;
+}
+.iw {
+  min-width: 170px;
+  max-width: 230px;
+  padding: 11px 12px;
+  color: var(--text);
+  font-family: var(--sans);
+}
+.iw .iwn {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.iw .iwm {
+  font-size: 11.5px;
+  color: var(--sub);
+  margin: 2px 0 7px;
+}
+.iw a {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold-light);
+}

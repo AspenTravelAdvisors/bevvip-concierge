@@ -1,14 +1,28 @@
 "use client";
 
-// Map shell for the unified Living Atlas. When NEXT_PUBLIC_MAPBOX_TOKEN is
-// set, it loads Mapbox GL (same v3.7.0 the legacy page uses) and renders the
-// dark globe; otherwise it degrades to an elegant fallback panel with the
-// external-atlas handoff, so the test app works with zero configuration.
+// Map shell for the unified Living Atlas. Renders the Mapbox dark globe and
+// plots the live inventory the legacy app showed: the full hotel set as an
+// ambient gold heatmap + dot field, plus colored region pins for cruise / jet
+// / yacht. A legend toggles each layer. With no token configured it falls back
+// to the public Aspen token so the globe still renders; if Mapbox truly fails
+// to load it degrades to the external-atlas handoff panel.
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { OfferingType } from "@/lib/types";
 import { ATLASES } from "@/lib/atlas-config";
+import {
+  DEFAULT_MAPBOX_TOKEN,
+  LEGEND_ITEMS,
+  applyFog,
+  flyToRegion,
+  loadHotelField,
+  loadTypeOverlays,
+  setLayerVisibility,
+  type MapboxMap,
+  type MapboxModule,
+  type MapboxPopup,
+} from "@/lib/globe";
 
 const MAPBOX_JS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js";
 const MAPBOX_CSS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css";
@@ -20,14 +34,17 @@ interface Props {
 }
 
 export default function AtlasShell({ type, region, externalLink }: Props) {
-  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || DEFAULT_MAPBOX_TOKEN;
   const mapEl = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<MapboxMap | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
+  const [hidden, setHidden] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    if (!token || !mapEl.current) return;
+    if (!mapEl.current) return;
     let map: MapboxMap | undefined;
+    let popup: MapboxPopup | undefined;
     let cancelled = false;
 
     loadMapbox()
@@ -38,15 +55,23 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
           container: mapEl.current,
           style: "mapbox://styles/mapbox/dark-v11",
           projection: "globe",
-          zoom: 1.4,
-          center: [10, 25],
+          center: [10, 20],
+          zoom: 1.3,
+          minZoom: 0.6,
         });
-        // Flip ready only once tiles are actually painting, and resize so the
-        // canvas matches the (now laid-out) container instead of 0×0.
-        map.on("load", () => {
-          if (cancelled) return;
-          map?.resize();
+        mapRef.current = map;
+        popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, offset: 12, maxWidth: "240px" });
+
+        // style.load (not load) is when fog + custom layers can be added.
+        map.on("style.load", () => {
+          if (cancelled || !map) return;
+          applyFog(map);
+          map.resize();
           setMapReady(true);
+          // Best-effort, independent: one feed failing never blocks the rest.
+          void loadHotelField(map);
+          void loadTypeOverlays(map, mapboxgl, popup!, ATLASES);
+          flyToRegion(map, region);
         });
         map.on("error", () => setMapFailed(true));
       })
@@ -54,33 +79,55 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
 
     return () => {
       cancelled = true;
+      popup?.remove();
       map?.remove();
+      mapRef.current = null;
     };
-  }, [token]);
+  }, [token, region]);
 
-  const showFallback = !token || mapFailed;
+  function toggleLayer(key: string) {
+    const next = !hidden[key];
+    setHidden((h) => ({ ...h, [key]: next }));
+    if (mapRef.current) setLayerVisibility(mapRef.current, key, !next);
+  }
 
   return (
     <div className="atlas-map">
       {/* Container stays mounted and sized; Mapbox must measure real
           dimensions at construction or the globe renders without tiles. */}
-      {token && !mapFailed && (
-        <div ref={mapEl} style={{ position: "absolute", inset: 0 }} />
+      {!mapFailed && <div ref={mapEl} style={{ position: "absolute", inset: 0 }} />}
+
+      {!mapFailed && mapReady && (
+        <div className="legend">
+          <div className="lgcap">Tap to hide</div>
+          {LEGEND_ITEMS.map((it) => (
+            <button
+              key={it.key}
+              type="button"
+              className={`lgi${hidden[it.key] ? " off" : ""}`}
+              onClick={() => toggleLayer(it.key)}
+              title={hidden[it.key] ? "Tap to show" : "Tap to hide"}
+            >
+              <i style={{ background: it.color }} />
+              <span>{it.label}</span>
+            </button>
+          ))}
+        </div>
       )}
-      {token && !mapFailed && !mapReady && (
+
+      {!mapFailed && !mapReady && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
           <p>Charting the Atlas…</p>
         </div>
       )}
-      {showFallback && (
+
+      {mapFailed && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
           <p>
-            {token
-              ? "Map unavailable right now."
-              : "Set NEXT_PUBLIC_MAPBOX_TOKEN to render the Living Atlas globe here."}{" "}
-            The full {ATLASES[type].label} is one click away — your selection carries over.
+            Map unavailable right now. The full {ATLASES[type].label} is one click
+            away — your selection carries over.
           </p>
           <a className="atlas-cta" href={externalLink} target="_blank" rel="noreferrer">
             Open {ATLASES[type].label} ↗
@@ -96,17 +143,6 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
       )}
     </div>
   );
-}
-
-interface MapboxMap {
-  on(event: string, cb: () => void): void;
-  resize(): void;
-  remove(): void;
-}
-
-interface MapboxModule {
-  accessToken: string;
-  Map: new (opts: Record<string, unknown>) => MapboxMap;
 }
 
 declare global {

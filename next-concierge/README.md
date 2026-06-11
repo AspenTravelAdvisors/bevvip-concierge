@@ -21,8 +21,14 @@ The original app in the repo root is untouched — this lives entirely in
   `hotel | cruise | jet | yacht`, honoring the `?region=` deep-link contract
   from `DEEPLINK-HANDOFF.md`. Server-rendered with per-region metadata for
   SEO; tabs switch atlas type without losing the selected region. Renders
-  the Mapbox dark globe when a token is present, otherwise an elegant
-  fallback with the external-atlas handoff.
+  the Mapbox dark globe and plots the live inventory the way the legacy app
+  did: the full hotel set as an ambient gold heatmap + dot field (via
+  `app/api/atlas-points`), plus colored region pins for cruise / jet / yacht
+  (via `app/api/atlas-data`, which proxies each standalone atlas's data feed
+  server-side to avoid CORS). A legend toggles each layer and `?region=`
+  flies the globe to that region. Ships with the public Aspen Mapbox token so
+  it renders with zero config, and degrades to the external-atlas handoff if
+  Mapbox fails to load.
 
 ## Intentionally not ported
 
@@ -43,6 +49,6 @@ ANTHROPIC_API_KEY=sk-ant-... npm run dev
 | --- | --- | --- |
 | `ANTHROPIC_API_KEY` | yes | The Guide (Claude) |
 | `CLAUDE_MODEL` | no | Override model (default `claude-sonnet-4-6`, matching the legacy deployment) |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | no | Render the Living Atlas globe |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | no | Override the Living Atlas globe token (a public Aspen token is built in) |
 | `HOTEL_ATLAS_API_BASE` etc. | no | Override Atlas data APIs (see `lib/search-offerings.js`) |
 | `NEXT_PUBLIC_*_ATLAS_BASE` | no | Override external atlas app URLs (see `lib/atlas-config.ts`) |
