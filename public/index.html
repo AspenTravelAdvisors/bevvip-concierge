@@ -167,6 +167,8 @@
   .legend .lgi.all i{box-shadow:0 0 0 2px rgba(201,168,76,.35)}
   .legend .lgi i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .atlas .openext{font-size:11.5px;color:var(--sub)}
+  .atlas .atlasfull{flex:0 0 auto;padding:3px 9px;line-height:1}
+  .atlas.fs{position:fixed;inset:0;z-index:900;flex:1 1 auto;width:auto;height:auto}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
   #livingAtlas .mapboxgl-canvas{outline:none}
@@ -261,6 +263,7 @@
           <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Yacht</a>
         </span>
         <span class="live" id="atlasState">all inventory</span>
+        <button class="ghostbtn atlasfull" id="atlasFull" onclick="toggleAtlasFullscreen()" title="Toggle map fullscreen" aria-pressed="false">&#x26F6; Fullscreen</button>
       </div>
       <div class="mapwrap">
         <div id="livingAtlas"></div>
@@ -1213,6 +1216,27 @@ function toggleSVFullscreen(){
   if(document.fullscreenElement) document.exitFullscreen();
   else elc.requestFullscreen().catch(()=>{});
 }
+
+function toggleAtlasFullscreen(){
+  const atlas=document.querySelector(".atlas");
+  if(!atlas) return;
+  const on=atlas.classList.toggle("fs");
+  const btn=el("atlasFull");
+  if(btn){
+    btn.innerHTML = on ? "&#x2715; Exit fullscreen" : "&#x26F6; Fullscreen";
+    btn.title = on ? "Exit map fullscreen" : "Toggle map fullscreen";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  // let the layout settle, then resize the globe to the new bounds
+  setTimeout(()=>{ try{ lmap && lmap.resize(); }catch(_){} }, 60);
+}
+// Esc exits atlas fullscreen (mirrors native fullscreen affordance)
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){
+    const atlas=document.querySelector(".atlas");
+    if(atlas && atlas.classList.contains("fs")) toggleAtlasFullscreen();
+  }
+});
 
 function closeSV(){
   if(document.fullscreenElement) document.exitFullscreen();
