@@ -1,0 +1,404 @@
+:root {
+  --bg: #09090b;
+  --panel: #111113;
+  --card: #18181b;
+  --card-hover: #1f1f23;
+  --gold: #c9a84c;
+  --gold-light: #e2c87a;
+  --gold-dim: #7a6228;
+  --text: #e8e0d0;
+  --muted: #7a7060;
+  --sub: #a09070;
+  --line: #2a2419;
+  --line-soft: #1e1c16;
+  --user: #16140d;
+  --serif: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-sans), "Inter", system-ui, -apple-system, sans-serif;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--gold-light);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+header.site {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #0c0c0e, #09090b);
+}
+header.site .mark {
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  line-height: 1;
+  white-space: nowrap;
+}
+header.site .mark b {
+  color: var(--gold);
+  font-weight: 600;
+}
+header.site .tag {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-left: 1px solid var(--line);
+  padding-left: 14px;
+}
+header.site nav {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+}
+header.site nav a {
+  color: var(--sub);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+header.site nav a:hover,
+header.site nav a[data-active="true"] {
+  color: var(--gold-light);
+  text-decoration: none;
+}
+
+main.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ── Chat ─────────────────────────────────────────── */
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.transcript {
+  flex: 1;
+  overflow-y: auto;
+  padding: 26px 22px 8px;
+}
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.empty {
+  max-width: 720px;
+  margin: 6vh auto 0;
+  text-align: center;
+  padding: 0 16px;
+}
+.empty h1 {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.empty p {
+  color: var(--sub);
+  margin: 0 auto 24px;
+  max-width: 520px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  justify-content: center;
+}
+.chip {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 30px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-family: var(--sans);
+  transition: 0.15s;
+}
+.chip:hover {
+  background: var(--card-hover);
+  border-color: var(--gold-dim);
+}
+
+.msg {
+  margin: 0 0 22px;
+  display: flex;
+  gap: 12px;
+}
+.msg .who {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.msg.user .who {
+  background: var(--user);
+  color: var(--gold-light);
+  border: 1px solid var(--line);
+}
+.msg.guide .who {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: #1a1407;
+}
+.msg .body {
+  flex: 1;
+  min-width: 0;
+}
+.msg .body p {
+  margin: 0 0 10px;
+}
+.msg .body p:last-child {
+  margin-bottom: 0;
+}
+.msg .body ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+
+.status {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-style: italic;
+  margin: 0 0 18px 42px;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ── Result cards ─────────────────────────────────── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+  margin: 12px 0 4px;
+}
+.card {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: 0.15s;
+}
+.card:hover {
+  background: var(--card-hover);
+  border-color: var(--gold-dim);
+}
+.card .kicker {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-light);
+}
+.card .name {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.card .where {
+  font-size: 12px;
+  color: var(--sub);
+}
+.card a.open {
+  margin-top: 6px;
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
+}
+.atlas-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 4px;
+  border: 1px solid var(--gold-dim);
+  background: var(--user);
+  color: var(--gold-light);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+}
+.atlas-cta:hover {
+  text-decoration: none;
+  background: var(--card-hover);
+}
+
+/* ── Composer ─────────────────────────────────────── */
+.composer {
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  padding: 14px 22px 18px;
+}
+.composer .row {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.composer textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+}
+.composer textarea:focus {
+  border-color: var(--gold-dim);
+}
+.composer .send {
+  cursor: pointer;
+  border: 0;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: #1a1407;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.4px;
+  border-radius: 12px;
+  padding: 11px 20px;
+  transition: 0.15s;
+}
+.composer .send:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ── Atlas pages ──────────────────────────────────── */
+.atlas-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 22px;
+  gap: 16px;
+}
+.atlas-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.atlas-tabs a {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--sub);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+}
+.atlas-tabs a:hover {
+  text-decoration: none;
+  border-color: var(--gold-dim);
+  color: var(--text);
+}
+.atlas-tabs a[data-active="true"] {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  background: var(--user);
+}
+.atlas-head h1 {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.atlas-head p {
+  color: var(--sub);
+  margin: 0;
+}
+.atlas-map {
+  flex: 1;
+  min-height: 380px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: radial-gradient(ellipse at 30% 20%, #14130e, var(--panel));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.atlas-map .fallback {
+  text-align: center;
+  max-width: 420px;
+  padding: 24px;
+}
+.atlas-map .fallback .badge {
+  display: inline-block;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-light);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin-bottom: 14px;
+}
+.atlas-map .fallback p {
+  color: var(--sub);
+  font-size: 13.5px;
+}
+.region-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 14px;
+}
