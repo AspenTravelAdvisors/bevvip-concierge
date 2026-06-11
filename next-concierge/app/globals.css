@@ -402,3 +402,41 @@ main.page {
   justify-content: center;
   margin-top: 14px;
 }
+
+@media (max-width: 640px) {
+  .app {
+    min-height: 110dvh;
+  }
+
+  header.site {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 9px 12px;
+    padding: 12px 16px;
+  }
+
+  header.site .tag {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  header.site nav {
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .transcript {
+    padding: 22px 18px 8px;
+  }
+
+  .composer {
+    padding: 12px 18px 14px;
+  }
+
+  .msg {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+}
