@@ -349,12 +349,14 @@ const ATLAS_TYPES = {
 // Base Camp globe-only pin nudges. Each atlas centers a region on its own
 // itineraries, so the same place can land ~9 apart (yacht MED = Western Med /
 // Rivieras vs world-cruise MED = whole basin) or nearly on top of another
-// (yacht vs jet SE Asia). We shift only these live-globe pins so a paired
-// region reads as one cluster yet stays ~1.4 apart — close enough to scan
-// together, far enough to click each Atlas link. Anchors (world-cruise MED,
-// jet SEASIA) stay put; standalone atlases are untouched. Keyed [lng,lat].
+// (yacht vs jet SE Asia). We shift only these live-globe pins so paired
+// regions read clearly and each Atlas link stays clickable. Keyed [lng,lat].
 const PIN_NUDGE = {
-  yacht: { MED:[13.6,37.0], SEASIA:[104.7,6.6] },
+  // world-cruise MED [15,36.5] nudged east 5 (whole-basin pin clears land)
+  worldcruise: { MED:[20,36.5] },
+  // yacht MED was [13.6,37.0]; nudged NW 6 (-4.24 lng / +4.24 lat).
+  // yacht CENTRALAM [-80.6,9.1] nudged WNW 1.5 (-1.39 lng / +0.57 lat).
+  yacht: { MED:[9.36,41.24], SEASIA:[104.7,6.6], CENTRALAM:[-81.99,9.67] },
 };
 
 const messages = [];                 // {role, content} sent to /api/guide
