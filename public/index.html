@@ -261,10 +261,10 @@
           <h1>Where are you headed next?</h1>
           <p>A region, a season, a hotel, or simply the kind of journey you’re craving. I’ll help frame the trip, surface the right possibilities, and guide the first elegant move.</p>
           <div class="chips" id="chips">
-            <div class="chip">Four Seasons in Caribbean</div>
-            <div class="chip">Galápagos Expedition Cruise journeys in January</div>
-            <div class="chip">Aman vs. Orient Express Luxury Yachts</div>
-            <div class="chip">Around the world by private jet trips in 2026</div>
+            <div class="chip">Four Seasons in the Caribbean</div>
+            <div class="chip">Galápagos expedition cruises in February</div>
+            <div class="chip">Aman vs. Orient Express hotel yachts</div>
+            <div class="chip">Around the world by private jet in 2026</div>
             <div class="chip">World cruises departing January 2027</div>
           </div>
         </div>
@@ -284,11 +284,11 @@
         <span class="openext" id="openExt"></span>
         <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Reset</button>
         <span class="jumps">
-          <a class="ajump" data-t="hotel" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener"><i></i>Hotels</a>
-          <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Expedition Cruise</a>
-          <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Jet</a>
-          <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Yacht</a>
-          <a class="ajump" data-t="worldcruise" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener"><i></i>World Cruise</a>
+          <a class="ajump" data-t="hotel" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener"><i></i>VIP Hotels</a>
+          <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Expedition Cruises</a>
+          <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Private Jet Journeys</a>
+          <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Luxury Hotel Yachts</a>
+          <a class="ajump" data-t="worldcruise" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener"><i></i>World Cruises</a>
         </span>
         <span class="live" id="atlasState">all inventory</span>
       </div>
@@ -340,10 +340,10 @@ function whenGmaps(fn){ if(gmapsReady) fn(); else _gmapsCbs.push(fn); }
 // Master atlas overlays: cruise / jet / yacht region pins, each from its own live app data.
 // Colors are distinguishable on the dark globe (jet "black" reads as platinum here so it stays visible).
 const ATLAS_TYPES = {
-  cruise: { label:"Expedition Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
-  jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
-  yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
-  worldcruise: { label:"World Cruise", color:"#45d6c2", url:"https://world-cruise-atlas.vercel.app",   data:"https://world-cruise-atlas.vercel.app/itinerary.json" },
+  cruise: { label:"Expedition Cruises", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
+  jet:    { label:"Private Jet Journeys",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
+  yacht:  { label:"Luxury Hotel Yachts",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
+  worldcruise: { label:"World Cruises", color:"#45d6c2", url:"https://world-cruise-atlas.vercel.app",   data:"https://world-cruise-atlas.vercel.app/itinerary.json" },
 };
 
 // Base Camp globe-only pin nudges. Each atlas centers a region on its own
@@ -380,8 +380,7 @@ const GLOBE_FOG = { "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
 const ATLAS_STYLES = {
   dark:      { label:"Globe (dark)", url:"mapbox://styles/mapbox/dark-v11",              projection:"globe",    fog:GLOBE_FOG, sw:"#11151c" },
   satellite: { label:"Satellite",    url:"mapbox://styles/mapbox/satellite-streets-v12", projection:"globe",    fog:{ "color":"rgb(18,22,30)","high-color":"rgb(40,52,72)","horizon-blend":0.06,"space-color":"rgb(6,8,12)","star-intensity":0.30 }, sw:"#3b5a3a" },
-  warm:      { label:"Warm",         url:"mapbox://styles/mapbox/outdoors-v12",           projection:"globe",    fog:{ "color":"rgb(34,28,22)","high-color":"rgb(60,48,36)","horizon-blend":0.05,"space-color":"rgb(10,8,6)","star-intensity":0.25 }, sw:"#c8a04c" },
-  dark2d:    { label:"Dark 2D",      url:"mapbox://styles/mapbox/dark-v11",               projection:"mercator", fog:null, sw:"#0b0d12" }
+  warm:      { label:"Warm",         url:"mapbox://styles/mapbox/outdoors-v12",           projection:"globe",    fog:{ "color":"rgb(34,28,22)","high-color":"rgb(60,48,36)","horizon-blend":0.05,"space-color":"rgb(10,8,6)","star-intensity":0.25 }, sw:"#c8a04c" }
 };
 let atlasStyleKey="dark";
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
@@ -638,8 +637,10 @@ function typeDeepLink(key, regionKey){
 function typeOverlayMeta(key, count){
   if(key==="cruise") return `Expedition Cruises${count?` - ${count} sailings`:""}`;
   if(key==="worldcruise") return `World Cruises${count?` - ${count} voyages calling here`:""}`;
+  if(key==="jet") return `Private Jet Journeys${count?` · ${count} journeys`:""}`;
+  if(key==="yacht") return `Luxury Hotel Yachts${count?` · ${count} charters`:""}`;
   const cfg=ATLAS_TYPES[key]||{};
-  return `${cfg.label||"Atlas"} expeditions${count?` · ${count} sailings`:""}`;
+  return `${cfg.label||"Atlas"}${count?` · ${count} sailings`:""}`;
 }
 
 async function addTypeLayer(key){
@@ -678,11 +679,11 @@ function layerIdsFor(key){
 function buildLegend(){
   const box=el("legend"); if(!box) return;
   const items=[
-    { key:"hotel",  label:"Hotels", color:"#c9a84c" },
-    { key:"cruise", label:"Expedition Cruise", color:ATLAS_TYPES.cruise.color },
-    { key:"jet",    label:"Jet",    color:ATLAS_TYPES.jet.color },
-    { key:"yacht",  label:"Yacht",  color:ATLAS_TYPES.yacht.color },
-    { key:"worldcruise", label:"World Cruise", color:ATLAS_TYPES.worldcruise.color },
+    { key:"hotel",  label:"VIP Hotels", color:"#c9a84c" },
+    { key:"cruise", label:"Expedition Cruises", color:ATLAS_TYPES.cruise.color },
+    { key:"jet",    label:"Private Jet Journeys",    color:ATLAS_TYPES.jet.color },
+    { key:"yacht",  label:"Luxury Hotel Yachts",  color:ATLAS_TYPES.yacht.color },
+    { key:"worldcruise", label:"World Cruises", color:ATLAS_TYPES.worldcruise.color },
   ];
   box.innerHTML="";
   const cap=document.createElement("div"); cap.className="lgcap"; cap.textContent="Tap to hide";
@@ -825,11 +826,11 @@ function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
 }
 function atlasLabelForType(type){
-  if(type==="hotel") return "Open Hotel Atlas";
-  if(type==="cruise") return "Open Expedition Cruise Atlas";
-  if(type==="yacht") return "Open Yacht Atlas";
-  if(type==="jet") return "Open Jet Atlas";
-  if(type==="worldcruise") return "Open World Cruise Atlas";
+  if(type==="hotel") return "Open VIP Hotels Atlas";
+  if(type==="cruise") return "Open Expedition Cruises Atlas";
+  if(type==="yacht") return "Open Luxury Hotel Yachts Atlas";
+  if(type==="jet") return "Open Private Jet Journeys Atlas";
+  if(type==="worldcruise") return "Open World Cruises Atlas";
   return "Open in Atlas";
 }
 function atlasLinksForLead(lead, meta){
