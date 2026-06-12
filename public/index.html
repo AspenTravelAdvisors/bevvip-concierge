@@ -174,6 +174,21 @@
     background:rgba(12,12,14,.92);border:1px solid var(--gold-dim);color:var(--gold-light);
     font-size:11.5px;font-weight:600;border-radius:7px;cursor:pointer}
   .mapwrap .atlasfull:hover{border-color:var(--gold);color:var(--gold)}
+  .mapwrap .atlasstyle{position:absolute;right:12px;top:48px;z-index:40;width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;padding:0;
+    background:rgba(12,12,14,.92);border:1px solid var(--gold-dim);color:var(--gold-light);
+    border-radius:7px;cursor:pointer}
+  .mapwrap .atlasstyle:hover{border-color:var(--gold);color:var(--gold)}
+  .mapwrap .atlasstyle svg{width:16px;height:16px;display:block}
+  .stylemenu{position:absolute;right:12px;top:86px;z-index:41;display:none;flex-direction:column;
+    min-width:128px;background:rgba(12,12,14,.96);border:1px solid var(--gold-dim);border-radius:8px;
+    overflow:hidden;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .stylemenu.open{display:flex}
+  .stylemenu button{appearance:none;background:transparent;border:0;text-align:left;color:var(--text);
+    font-size:12px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .stylemenu button:hover{background:rgba(201,168,76,.12)}
+  .stylemenu button.active{color:var(--gold-light);font-weight:600}
+  .stylemenu button .sw{width:11px;height:11px;border-radius:3px;border:1px solid rgba(255,255,255,.22);flex:0 0 auto}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
   #livingAtlas .mapboxgl-canvas{outline:none}
   #livingAtlas .mapboxgl-ctrl-bottom-right,#livingAtlas .mapboxgl-ctrl-bottom-left{opacity:.5}
@@ -280,6 +295,14 @@
       <div class="mapwrap">
         <div id="livingAtlas"></div>
         <button class="ghostbtn atlasfull" id="atlasFull" onclick="toggleAtlasFullscreen()" title="Toggle map fullscreen" aria-pressed="false">&#x26F6; Fullscreen</button>
+        <button class="atlasstyle" id="atlasStyleBtn" onclick="toggleStyleMenu(event)" title="Map style" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+            <circle cx="8.5" cy="9.5" r="1.6"></circle>
+            <path d="M21 16l-5-5-7 7"></path>
+          </svg>
+        </button>
+        <div class="stylemenu" id="styleMenu" role="menu"></div>
         <div class="badge" id="atlasBadge" style="display:none"></div>
         <div class="legend" id="legend"></div>
         <div class="mapfallback" id="mapFallback" style="display:none">Map unavailable. Use <b>Open in Atlas</b> to view the subset.</div>
@@ -347,6 +370,18 @@ const openExt = el("openExt");
    layer, and plot the matching stays (hard-capped at 60), fit to bounds. */
 let lmap=null, mapsReady=false, pendingPlot=null, popup=null;
 let spinning=false, spinRAF=0, subsetActive=false, homeZoom=1.25;
+let restyling=false, lastLead=null, lastMeta=null;
+
+// Selectable Mapbox basemaps surfaced via the photo icon under Fullscreen.
+const GLOBE_FOG = { "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
+  "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 };
+const ATLAS_STYLES = {
+  dark:      { label:"Globe (dark)", url:"mapbox://styles/mapbox/dark-v11",              projection:"globe",    fog:GLOBE_FOG, sw:"#11151c" },
+  satellite: { label:"Satellite",    url:"mapbox://styles/mapbox/satellite-streets-v12", projection:"globe",    fog:{ "color":"rgb(18,22,30)","high-color":"rgb(40,52,72)","horizon-blend":0.06,"space-color":"rgb(6,8,12)","star-intensity":0.30 }, sw:"#3b5a3a" },
+  warm:      { label:"Warm",         url:"mapbox://styles/mapbox/outdoors-v12",           projection:"globe",    fog:{ "color":"rgb(34,28,22)","high-color":"rgb(60,48,36)","horizon-blend":0.05,"space-color":"rgb(10,8,6)","star-intensity":0.25 }, sw:"#c8a04c" },
+  dark2d:    { label:"Dark 2D",      url:"mapbox://styles/mapbox/dark-v11",               projection:"mercator", fog:null, sw:"#0b0d12" }
+};
+let atlasStyleKey="dark";
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
 // Marquee region geo, filled from the Hotel Atlas /api/regions (bbox + center),
@@ -376,15 +411,22 @@ window.initLivingAtlas = function(){
     });
     popup = new mapboxgl.Popup({ closeButton:true, closeOnClick:true, offset:12, maxWidth:"240px" });
     lmap.on("style.load",()=>{
-      lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
-        "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
+      const s = ATLAS_STYLES[atlasStyleKey] || ATLAS_STYLES.dark;
+      try{ lmap.setProjection(s.projection); }catch(_){}
+      lmap.setFog(s.fog || null);
       mapsReady = true;
       try{ lmap.resize(); }catch(_){}
-      fitGlobe();
       loadHotelField();
       loadRegions();
       loadTypeOverlays();
-      startSpin();
+      if(restyling){
+        // basemap switch: keep the traveler's current camera and re-plot any subset
+        restyling=false;
+        if(subsetActive && lastLead){ subsetActive=false; plotRecommendations(lastLead, lastMeta); }
+      }else{
+        fitGlobe();
+        startSpin();
+      }
       if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotRecommendations(p.lead, p.meta); }
     });
     ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>lmap.on(ev, stopSpin));
@@ -418,7 +460,8 @@ function startSpin(){ if(spinning) return; spinning=true; spinStep(); }
 function stopSpin(){ spinning=false; cancelAnimationFrame(spinRAF); }
 function spinStep(){
   if(!spinning || !lmap) return;
-  if(!subsetActive && lmap.getZoom() <= homeZoom + 0.4 && !document.hidden){
+  const isGlobe = (()=>{ try{ return lmap.getProjection().name==="globe"; }catch(_){ return true; } })();
+  if(isGlobe && !subsetActive && lmap.getZoom() <= homeZoom + 0.4 && !document.hidden){
     const c=lmap.getCenter(); c.lng-=0.045; lmap.setCenter(c);
   }
   spinRAF=requestAnimationFrame(spinStep);
@@ -533,7 +576,7 @@ function dimHotelField(dim){
    hotel marquee circles are no longer drawn. */
 async function loadRegions(){
   if(!mapsReady || !lmap) return;
-  subsetActive=false; startSpin();
+  subsetActive=false; lastLead=null; lastMeta=null; startSpin();
   clearSubset();
   dimHotelField(false);
   el("atlasState").textContent="all inventory";
@@ -727,7 +770,7 @@ function plotRecommendations(lead, meta){
   if(!lead || !Array.isArray(lead.results) || !lead.results.length) return;
   const kind = lead.type || "hotel";
   const recs = lead.results;
-  subsetActive=true; stopSpin();
+  subsetActive=true; lastLead=lead; lastMeta=meta; stopSpin();
   dimHotelField(true);       // fade the ambient field so the subset reads
   const kinds = [...new Set(recs.map(h=>h.type||kind).filter(t=>t && t!=="hotel"))];
   kinds.forEach(ensureTypeVisible);
@@ -1284,6 +1327,44 @@ function toggleAtlasFullscreen(){
   // let the layout settle, then resize the globe to the new bounds
   setTimeout(()=>{ try{ lmap && lmap.resize(); }catch(_){} }, 60);
 }
+
+/* ---- Basemap switcher (photo icon under Fullscreen) ---- */
+function buildStyleMenu(){
+  const menu=el("styleMenu"); if(!menu) return;
+  menu.innerHTML = Object.entries(ATLAS_STYLES).map(([k,s])=>
+    `<button role="menuitem" data-k="${k}" onclick="setAtlasStyle('${k}')">`
+    + `<span class="sw" style="background:${s.sw}"></span>${s.label}</button>`).join("");
+  markActiveStyle();
+}
+function markActiveStyle(){
+  document.querySelectorAll("#styleMenu button").forEach(b=>
+    b.classList.toggle("active", b.dataset.k===atlasStyleKey));
+  const btn=el("atlasStyleBtn"), menu=el("styleMenu");
+  if(btn && menu) btn.setAttribute("aria-expanded", menu.classList.contains("open")?"true":"false");
+}
+function toggleStyleMenu(e){
+  if(e) e.stopPropagation();
+  const menu=el("styleMenu"); if(!menu) return;
+  if(!menu.children.length) buildStyleMenu();
+  menu.classList.toggle("open");
+  markActiveStyle();
+}
+function setAtlasStyle(key){
+  const s=ATLAS_STYLES[key];
+  const menu=el("styleMenu"); if(menu) menu.classList.remove("open");
+  if(!s || !lmap){ markActiveStyle(); return; }
+  if(key===atlasStyleKey){ markActiveStyle(); return; }
+  atlasStyleKey=key; markActiveStyle();
+  restyling=true;
+  try{ lmap.setStyle(s.url); }catch(_){ restyling=false; }
+}
+// close the menu when clicking elsewhere
+document.addEventListener("click",(e)=>{
+  const menu=el("styleMenu"), btn=el("atlasStyleBtn");
+  if(menu && menu.classList.contains("open") && !menu.contains(e.target) && btn && !btn.contains(e.target)){
+    menu.classList.remove("open"); markActiveStyle();
+  }
+});
 // Esc exits atlas fullscreen (mirrors native fullscreen affordance)
 document.addEventListener("keydown",function(e){
   if(e.key==="Escape"){
