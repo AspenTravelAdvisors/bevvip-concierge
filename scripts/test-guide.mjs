@@ -50,10 +50,10 @@ await test('tool schema shape (Anthropic input_schema)', () => {
   assert.ok(SEARCH_OFFERINGS_TOOL.input_schema.properties.intent.enum.includes('wellness'));
 });
 
-await test('clampLimit default 6, capped', () => {
-  assert.equal(clampLimit(undefined, 6), 6);
-  assert.equal(clampLimit(0, 6), 6);
-  assert.equal(clampLimit(100, 6), 24);
+await test('clampLimit default 6, capped at four per category', () => {
+  assert.equal(clampLimit(undefined, 6), 4);
+  assert.equal(clampLimit(0, 6), 4);
+  assert.equal(clampLimit(100, 6), 4);
   assert.equal(clampLimit(3, 6), 3);
 });
 
@@ -257,8 +257,8 @@ await test('searchOfferings hotel attaches related yacht sailings for yacht-capa
   const rel = r.related[0];
   assert.equal(rel.kind, 'yacht');
   assert.equal(rel.total, 27);
-  assert.equal(rel.count, 1);
-  assert.equal(rel.results.length, 1);
+  assert.equal(rel.count, 2);
+  assert.equal(rel.results.length, 2);
   assert.match(rel.reason, /Four Seasons Yachts/);
   assert.match(rel.reason, /Italy/);
   assert.equal(yachtParams[0].get('brand'), 'Four Seasons Yachts');
@@ -266,7 +266,7 @@ await test('searchOfferings hotel attaches related yacht sailings for yacht-capa
   assert.ok(rel.results[0].ports.includes('Porto Venere, Italy'));
 });
 
-await test('searchOfferings hotel attaches one expedition and jet cross-reference for the same region', async () => {
+await test('searchOfferings hotel attaches curated expedition and jet cross-references for the same region', async () => {
   const seen = [];
   const fetchImpl = async (url) => {
     const u = new URL(url);
@@ -296,10 +296,10 @@ await test('searchOfferings hotel attaches one expedition and jet cross-referenc
   assert.ok(seen.some((p) => p.includes('expedition-cruises')));
   assert.ok(seen.some((p) => p.includes('jet-journeys')));
   const byKind = Object.fromEntries(r.related.map((rel) => [rel.kind, rel]));
-  assert.equal(byKind.cruise.count, 1);
-  assert.deepEqual(byKind.cruise.results.map((x) => x.id), ['cr_1']);
-  assert.equal(byKind.jet.count, 1);
-  assert.deepEqual(byKind.jet.results.map((x) => x.id), ['jt_1']);
+  assert.equal(byKind.cruise.count, 2);
+  assert.deepEqual(byKind.cruise.results.map((x) => x.id), ['cr_1', 'cr_2']);
+  assert.equal(byKind.jet.count, 2);
+  assert.deepEqual(byKind.jet.results.map((x) => x.id), ['jt_1', 'jt_2']);
 });
 
 await test('searchOfferings hotel skips the yacht sidecar for non-yacht brands', async () => {
@@ -426,13 +426,38 @@ await test('searchOfferings cruise searches expedition cruise and yacht atlases'
   assert.ok(r.deepLink.includes('region=antarctica'));
 });
 
+await test('searchOfferings cruise caps each searched atlas at four while keeping cross-category results', async () => {
+  const fetchImpl = async (url) => {
+    if (url.includes('/api/expedition-cruises?')) {
+      return { ok: true, json: async () => ({
+        total: 10, count: 6,
+        results: Array.from({ length: 6 }, (_, i) => ({
+          id: `cr_${i + 1}`, type: 'cruise', name: `Cruise ${i + 1}`, operator: `Operator ${i + 1}`,
+        })),
+        deepLink: 'https://expedition-cruise-map.vercel.app',
+      }) };
+    }
+    return { ok: true, json: async () => ({
+      total: 9, count: 6,
+      results: Array.from({ length: 6 }, (_, i) => ({
+        id: `yc_${i + 1}`, type: 'yacht', name: `Yacht ${i + 1}`, brand: `Brand ${i + 1}`,
+      })),
+      deepLink: 'https://luxury-hotel-brand-yacht-atlas.vercel.app',
+    }) };
+  };
+  const r = await searchOfferings({ type: 'cruise', limit: 24 }, { fetchImpl });
+  assert.equal(r.count, 8);
+  assert.equal(r.results.filter((x) => x.type === 'cruise').length, 4);
+  assert.equal(r.results.filter((x) => x.type === 'yacht').length, 4);
+});
+
 await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async () => {
   const fetchImpl = async (url) => {
     const u = new URL(url);
     assert.ok(url.includes('/api/yacht-sailings?'));
     assert.equal(u.searchParams.get('brand'), 'Ritz-Carlton Yacht Collection');
-    assert.equal(u.searchParams.get('limit'), '5');
-    return { ok: true, json: async () => ({ total: 188, count: 5, results: [
+    assert.equal(u.searchParams.get('limit'), '4');
+    return { ok: true, json: async () => ({ total: 188, count: 4, results: [
       { id: 'yc_1', type: 'yacht', name: 'Tokyo to Incheon', brand: 'Ritz-Carlton Yacht Collection', region: 'japan' },
     ] }) };
   };
@@ -442,23 +467,19 @@ await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async 
   assert.equal(r.results[0].brand, 'Ritz-Carlton Yacht Collection');
 });
 
-await test('searchOfferings honors fluid caller limits', async () => {
+await test('searchOfferings caps caller limits at four per category', async () => {
   const fetchImpl = async (url) => {
-    assert.match(url, /limit=8\b/);
-    return { ok: true, json: async () => ({ total: 12, count: 8, results: [
+    assert.match(url, /limit=4\b/);
+    return { ok: true, json: async () => ({ total: 12, count: 4, results: [
       { id: 'jt_1', type: 'jet', name: 'One', region: 'japan' },
       { id: 'jt_2', type: 'jet', name: 'Two', region: 'japan' },
       { id: 'jt_3', type: 'jet', name: 'Three', region: 'japan' },
       { id: 'jt_4', type: 'jet', name: 'Four', region: 'japan' },
-      { id: 'jt_5', type: 'jet', name: 'Five', region: 'japan' },
-      { id: 'jt_6', type: 'jet', name: 'Six', region: 'japan' },
-      { id: 'jt_7', type: 'jet', name: 'Seven', region: 'japan' },
-      { id: 'jt_8', type: 'jet', name: 'Eight', region: 'japan' },
     ] }) };
   };
   const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 8 }, { fetchImpl });
-  assert.equal(r.count, 8);
-  assert.equal(r.results.length, 8);
+  assert.equal(r.count, 4);
+  assert.equal(r.results.length, 4);
 });
 
 await test('searchOfferings degrades gracefully when an atlas endpoint is down', async () => {

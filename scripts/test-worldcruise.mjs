@@ -71,8 +71,11 @@ await test("region + month narrow the world cruise shortlist", async () => {
   const all = await searchOfferings({ type: "worldcruise", limit: 24 }, { fetchImpl });
   const med = await searchOfferings({ type: "worldcruise", region: "mediterranean", limit: 24 }, { fetchImpl });
   assert.ok(med.total > 0 && med.total < all.total);
+  assert.ok(all.count <= 4);
+  assert.ok(med.count <= 4);
   const jan = await searchOfferings({ type: "worldcruise", month: "2027-01", limit: 24 }, { fetchImpl });
   assert.ok(jan.total > 0);
+  assert.ok(jan.count <= 4);
   assert.ok(jan.results.every((x) => x.month === "2027-01"));
 });
 

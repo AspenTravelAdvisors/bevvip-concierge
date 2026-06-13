@@ -856,6 +856,7 @@ function comparisonLimit(text){
   if(/\b(two|2)\b/.test(t)) return 2;
   return 3;
 }
+const GUIDE_CARD_LIMIT_PER_CATEGORY = 4;
 
 // boot the Mapbox globe (mapbox-gl is loaded via the <script> tag in <head>)
 initLivingAtlas();
@@ -1044,22 +1045,43 @@ function renderOfferingCard(h, kind, label){
 }
 
 /* ---- cards + moves + atlas handoff ---- */
+function resultCardKey(h, kind){
+  return [kind||h.type||"", h.id||"", h.name||"", h.startDate||"", h.month||""].join("|");
+}
+function addResultCard(out, seen, counts, item, kind, label){
+  if(!item) return;
+  const cardKind = item.type || kind || "hotel";
+  if((counts[cardKind]||0) >= GUIDE_CARD_LIMIT_PER_CATEGORY) return;
+  const key = resultCardKey(item, cardKind);
+  if(seen.has(key)) return;
+  seen.add(key);
+  counts[cardKind] = (counts[cardKind]||0) + 1;
+  out.push({ item, kind:cardKind, label });
+}
+function collectResultCards(meta){
+  const out=[], seen=new Set(), counts={};
+  const tools=(meta.tools||[]).filter(t=>t && ((t.results||[]).length || (t.related||[]).length));
+  for(const tool of tools.slice().reverse()){
+    const kind = tool.type || (tool.input && tool.input.type) || "hotel";
+    (tool.results||[]).forEach(item=>addResultCard(out, seen, counts, item, kind));
+    (tool.related||[]).forEach(rel=>{
+      const relKind = rel.kind || "hotel";
+      (rel.results||[]).forEach(item=>addResultCard(out, seen, counts, item, relKind, relatedLabel(relKind)));
+    });
+  }
+  return out;
+}
 function renderResults(body, meta, opts={}){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
   const kind = (lead && lead.type) || "hotel";
   const recs = lead && lead.results ? lead.results : [];
+  const resultCards = collectResultCards(meta);
   // cards
-  if(recs.length){
+  if(resultCards.length){
     if(opts.compare && recs.length>=2) body.appendChild(renderComparison(recs, kind, opts.compareLimit||3));
     const cards=document.createElement("div"); cards.className="cards";
-    recs.forEach(h=>{
-      cards.appendChild(renderOfferingCard(h, kind));
-    });
-    (lead.related||[]).forEach(rel=>{
-      if(!["cruise","yacht","jet","worldcruise"].includes(rel.kind)) return;
-      (rel.results||[]).slice(0,1).forEach(h=>{
-        cards.appendChild(renderOfferingCard(h, rel.kind, relatedLabel(rel.kind)));
-      });
+    resultCards.forEach(({item,kind,label})=>{
+      cards.appendChild(renderOfferingCard(item, kind, label));
     });
     body.appendChild(cards);
   }

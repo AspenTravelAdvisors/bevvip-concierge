@@ -12,7 +12,8 @@
 const HOTEL_API_BASE =
   process.env.HOTEL_ATLAS_API_BASE || "https://luxury-hotel-atlas-two.vercel.app";
 const DEFAULT_RECOMMENDATION_LIMIT = 3;
-const MAX_RECOMMENDATION_LIMIT = 24;
+const MAX_RESULTS_PER_CATEGORY = 4;
+const MAX_CANDIDATE_LIMIT = 24;
 
 // type -> { base URL, endpoint path } for the cruise/jet/yacht Atlas APIs.
 const OFFERINGS_ENDPOINTS = {
@@ -380,7 +381,7 @@ export const SEARCH_OFFERINGS_TOOL = {
       limit: {
         type: "integer",
         default: DEFAULT_RECOMMENDATION_LIMIT,
-        description: "Number of records to return. Curate around 3 by default; use more when the request calls for it. Max 24.",
+        description: "Number of records to return per atlas/category. Curate around 3 by default. Max 4.",
       },
       world: {
         type: "boolean",
@@ -394,7 +395,7 @@ export const SEARCH_OFFERINGS_TOOL = {
 function clampLimit(raw, fallback = DEFAULT_RECOMMENDATION_LIMIT) {
   let n = parseInt(raw, 10);
   if (!Number.isFinite(n) || n <= 0) n = fallback;
-  if (n > MAX_RECOMMENDATION_LIMIT) n = MAX_RECOMMENDATION_LIMIT; // flexible, but still prevent accidental list dumps
+  if (n > MAX_RESULTS_PER_CATEGORY) n = MAX_RESULTS_PER_CATEGORY;
   return n;
 }
 
@@ -405,7 +406,7 @@ function requestedLimit(input = {}) {
 function candidateLimitForInput(input = {}, displayLimit = requestedLimit(input)) {
   const hasBrandConstraint = !!String(input.brand || input.operator || "").trim();
   if (hasBrandConstraint) return displayLimit;
-  return displayLimit <= DEFAULT_RECOMMENDATION_LIMIT ? MAX_RECOMMENDATION_LIMIT : displayLimit;
+  return displayLimit <= DEFAULT_RECOMMENDATION_LIMIT ? MAX_CANDIDATE_LIMIT : displayLimit;
 }
 
 // Month names -> 1..12 (full + common 3-letter abbreviations).
@@ -776,7 +777,7 @@ function deepLinkWithResultIds(deepLink, results = []) {
 const YACHT_CAPABLE_HOTEL_BRAND_RE = /\b(four\s*seasons|ritz[\s-]*carlton|aman|orient[\s-]*express|belmond)\b/i;
 
 function relatedEntry(kind, reason, payload) {
-  const results = ((payload && payload.results) || []).slice(0, 1);
+  const results = ((payload && payload.results) || []).slice(0, MAX_RESULTS_PER_CATEGORY);
   if (!results.length) return null;
   return {
     kind,
@@ -813,7 +814,7 @@ async function relatedYachtsForHotels(input, fetchImpl, month) {
     month: month || input.month,
     intent: input.intent,
   };
-  const r = await searchOfferingsByType("yacht", sub, fetchImpl, 1);
+  const r = await searchOfferingsByType("yacht", sub, fetchImpl, DEFAULT_RECOMMENDATION_LIMIT);
   if (!r || r.unavailable || !r.count) return null;
   const who = yachtBrand || "Hotel-brand yacht";
   const where = geo || input.region;
@@ -836,7 +837,7 @@ async function relatedCruisesForHotels(input, fetchImpl, month) {
     "cruise",
     { region, month: month || input.month, intent: input.intent },
     fetchImpl,
-    1
+    DEFAULT_RECOMMENDATION_LIMIT
   );
   if (!r || r.unavailable || !r.count) return null;
   return relatedEntry(
@@ -855,7 +856,7 @@ async function relatedJetsForHotels(input, fetchImpl, month) {
     "jet",
     { region, month: month || input.month, intent: input.intent },
     fetchImpl,
-    1
+    DEFAULT_RECOMMENDATION_LIMIT
   );
   if (!r || r.unavailable || !r.count) return null;
   return relatedEntry(
@@ -996,7 +997,7 @@ async function searchHotels(input, fetchImpl) {
 async function searchOfferingsByType(type, input, fetchImpl, limitOverride = null) {
   const atwJet = type === "jet" && aroundTheWorldJetIntent(input);
   const limit = limitOverride == null
-    ? (atwJet ? clampLimit(input.limit, 18) : requestedLimit(input))
+    ? requestedLimit(input)
     : clampLimit(limitOverride);
   const candidateLimit = candidateLimitForInput(input, limit);
   const cfg = OFFERINGS_ENDPOINTS[type];
@@ -1103,13 +1104,15 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   }
 }
 
-function interleaveResults(groups, limit) {
+function interleaveResults(groups, perCategoryLimit) {
+  const cappedGroups = groups.map((group) =>
+    brandDiverseResults(group || [], perCategoryLimit, "cruise"));
   const candidates = [];
   const seen = new Set();
   let idx = 0;
   while (true) {
     let added = false;
-    for (const group of groups) {
+    for (const group of cappedGroups) {
       const item = group[idx];
       if (!item) continue;
       const key = resultIdentity(item);
@@ -1122,7 +1125,7 @@ function interleaveResults(groups, limit) {
     if (!added) break;
     idx++;
   }
-  return brandDiverseResults(candidates, limit, "cruise");
+  return candidates;
 }
 
 async function searchCruisesAndYachts(input, fetchImpl) {
