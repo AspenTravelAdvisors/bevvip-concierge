@@ -773,6 +773,7 @@ function plotRecommendations(lead, meta){
   if(!lead || !Array.isArray(lead.results) || !lead.results.length) return;
   const kind = lead.type || "hotel";
   const recs = lead.results;
+  if(switchToSatelliteForResults(lead, meta)) return;
   subsetActive=true; lastLead=lead; lastMeta=meta; stopSpin();
   dimHotelField(true);       // fade the ambient field so the subset reads
   const kinds = [...new Set(recs.map(h=>h.type||kind).filter(t=>t && t!=="hotel"))];
@@ -1360,6 +1361,16 @@ function setAtlasStyle(key){
   atlasStyleKey=key; markActiveStyle();
   restyling=true;
   try{ lmap.setStyle(s.url); }catch(_){ restyling=false; }
+}
+function switchToSatelliteForResults(lead, meta){
+  if(!lmap || atlasStyleKey==="satellite") return false;
+  const s=ATLAS_STYLES.satellite;
+  atlasStyleKey="satellite";
+  markActiveStyle();
+  restyling=true;
+  pendingPlot={lead,meta};
+  try{ lmap.setStyle(s.url); return true; }
+  catch(_){ restyling=false; pendingPlot=null; return false; }
 }
 // close the menu when clicking elsewhere
 document.addEventListener("click",(e)=>{
