@@ -343,9 +343,13 @@ export const SEARCH_OFFERINGS_TOOL = {
       },
       intent: {
         type: "string",
-        enum: ["honeymoon", "family", "celebration", "business", "active", "uhnw", "simpleVip"],
+        enum: [
+          "honeymoon", "couples", "family", "multigen", "celebration", "business",
+          "active", "expedition", "culture", "wildlife", "photography",
+          "first-timer", "uhnw", "wellness", "foodie", "value", "simpleVip",
+        ],
         description:
-          "Hotel fit intent when clear: honeymoon, family, celebration, business, active, uhnw, or simpleVip.",
+          "Guest-fit intent when clear. Applies across all five Atlases: honeymoon, couples, family, multigen, celebration, business, active, expedition, culture, wildlife, photography, first-timer, uhnw, wellness, foodie, value, or simpleVip.",
       },
       region: {
         type: "string",
@@ -807,6 +811,7 @@ async function relatedYachtsForHotels(input, fetchImpl, month) {
     country: input.country || (geo || undefined),
     brand: yachtBrand || brand,
     month: month || input.month,
+    intent: input.intent,
   };
   const r = await searchOfferingsByType("yacht", sub, fetchImpl, 1);
   if (!r || r.unavailable || !r.count) return null;
@@ -829,7 +834,7 @@ async function relatedCruisesForHotels(input, fetchImpl, month) {
   if (!region) return null;
   const r = await searchOfferingsByType(
     "cruise",
-    { region, month: month || input.month },
+    { region, month: month || input.month, intent: input.intent },
     fetchImpl,
     1
   );
@@ -848,7 +853,7 @@ async function relatedJetsForHotels(input, fetchImpl, month) {
   if (!region) return null;
   const r = await searchOfferingsByType(
     "jet",
-    { region, month: month || input.month },
+    { region, month: month || input.month, intent: input.intent },
     fetchImpl,
     1
   );
@@ -1046,6 +1051,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     if (queryText) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
+    if (input.intent) p.set("intent", String(input.intent).trim());
     p.set("limit", String(candidateLimit));
     return `${cfg.base}${cfg.path}?${p.toString()}`;
   };
@@ -1226,15 +1232,26 @@ function extractMentionedPlace(text) {
     .join(" ");
 }
 
-// Trip-reason words -> hotel fit intent, used when the model leaves intent
+// Trip-reason words -> guest-fit intent, used when the model leaves intent
 // unset. The fit data ranks on these, so recovering an obvious one from the
 // traveler's own words materially reorders the shortlist.
 const INTENT_HINTS = [
   [/\b(honeymoon|honeymooners|newlywed|newlyweds|just\s+married|minimoon)\b/i, "honeymoon"],
+  [/\b(couple|couples|romantic|romance|partners)\b/i, "couples"],
   [/\b(anniversary|birthday|babymoon|proposal|propose|engagement|graduation|retirement|milestone|celebrate|celebrating|celebration)\b/i, "celebration"],
-  [/\b(family|families|kids?|children|toddlers?|teens?|teenagers?|multigen(?:erational)?|grandparents|grandkids)\b/i, "family"],
+  [/\b(multigen(?:erational)?|grandparents|grandkids|extended\s+family)\b/i, "multigen"],
+  [/\b(family|families|kids?|children|toddlers?|teens?|teenagers?)\b/i, "family"],
   [/\b(business|work\s+trip|conference|offsite|meetings)\b/i, "business"],
-  [/\b(ski(?:ing)?|hik(?:e|es|ing)|trek(?:king)?|safari|div(?:e|ing)|surf(?:ing)?|golf(?:ing)?|expedition|adventure|active)\b/i, "active"],
+  [/\b(safari|wildlife|animals?|gorillas?|penguins?|polar\s+bears?|whales?|bears?)\b/i, "wildlife"],
+  [/\b(photo|photos|photography|photographer|camera)\b/i, "photography"],
+  [/\b(expedition|remote|antarctica|arctic|galapagos|amazon|patagonia|kimberley|svalbard)\b/i, "expedition"],
+  [/\b(ski(?:ing)?|hik(?:e|es|ing)|trek(?:king)?|div(?:e|ing)|surf(?:ing)?|golf(?:ing)?|adventure|active)\b/i, "active"],
+  [/\b(culture|cultural|history|historic|museums?|art|architecture|temples?|unesco|food|culinary|wine)\b/i, "culture"],
+  [/\b(wellness|spa|reset|recovery|detox|yoga|sleep)\b/i, "wellness"],
+  [/\b(foodie|restaurant|restaurants|dining|culinary|wine)\b/i, "foodie"],
+  [/\b(first[\s-]?timer|first\s+time|easy|introductory|introduction)\b/i, "first-timer"],
+  [/\b(uhnw|ultra[\s-]?luxury|private|privacy|exclusive|top\s+tier|best\s+of\s+the\s+best)\b/i, "uhnw"],
+  [/\b(value|deal|reasonable|not\s+too\s+expensive|lower\s+budget)\b/i, "value"],
 ];
 
 function inferIntentFromText(text) {
@@ -1252,28 +1269,28 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
   const hasHotelIntent = /\b(hotel|hotels|resort|resorts|property|properties|stay|stays)\b/i.test(text);
   const hasCruiseIntent = /\b(cruise|cruises)\b/i.test(text);
   const hasYachtIntent = /\b(yacht|yachts)\b/i.test(text);
+  let out = input;
+  if (!out.intent) {
+    const intent = inferIntentFromText(`${text} ${input.q || ""}`);
+    if (intent) out = { ...out, intent };
+  }
 
   // The traveler's own words said "world cruise"/"grand voyage": route to the
   // World Cruise Atlas even if the model only typed cruise or left type unset.
   if (type !== "jet" && type !== "hotel" && type !== "worldcruise" &&
       STRONG_WORLD_CRUISE_RE.test(text)) {
-    return { ...input, type: "worldcruise" };
+    return { ...out, type: "worldcruise" };
   }
 
   if (!hasHotelIntent && (type === "hotel" || type === "any")) {
-    if (hasCruiseIntent) return { ...input, type: "cruise" };
-    if (hasYachtIntent) return { ...input, type: "yacht" };
+    if (hasCruiseIntent) return { ...out, type: "cruise" };
+    if (hasYachtIntent) return { ...out, type: "yacht" };
   }
 
-  if (type !== "hotel" && type !== "any") return input;
-  let out = input;
+  if (type !== "hotel" && type !== "any") return out;
   if (!out.place) {
     const place = extractMentionedPlace(latestUserText);
     if (place) out = { ...out, place };
-  }
-  if (!out.intent) {
-    const intent = inferIntentFromText(`${text} ${input.q || ""}`);
-    if (intent) out = { ...out, intent };
   }
   return out;
 }

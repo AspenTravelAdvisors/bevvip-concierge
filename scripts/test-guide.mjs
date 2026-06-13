@@ -4,6 +4,7 @@
 //  2. runGuideTurn tool-loop with a MOCKED Claude caller (no API key needed).
 
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import {
   searchOfferings,
   chartRegionFrom,
@@ -16,6 +17,27 @@ import {
 } from '../lib/search-offerings.js';
 import { runGuideTurn, summarizeMeta } from '../api/guide.js';
 
+const require = createRequire(import.meta.url);
+const hotelAtlas = require('../../Luxury-Hotel-Atlas/lib/hotels.js');
+const cruiseAtlas = require('../../Expedition-Cruise-Map/lib/cruises.js');
+const yachtAtlas = require('../../Luxury-Hotel-Brand-Yacht-Atlas/lib/sailings.js');
+const jetAtlas = require('../../Private-Jet-Expeditions/lib/journeys.js');
+const worldCruiseAtlas = require('../../World-Cruise-Atlas/lib/cruises.js');
+
+const localAtlasFetch = async (url) => {
+  const u = new URL(url);
+  const params = Object.fromEntries(u.searchParams);
+  let body;
+  if (u.pathname === '/api/luxury-hotels') body = hotelAtlas.query(params);
+  else if (u.pathname === '/api/expedition-cruises') body = cruiseAtlas.query(params);
+  else if (u.pathname === '/api/yacht-sailings') body = yachtAtlas.query(params);
+  else if (u.pathname === '/api/jet-journeys') body = jetAtlas.query(params);
+  else if (u.pathname === '/api/world-cruises') body = worldCruiseAtlas.query(params);
+  else body = { total: 0, count: 0, results: [], deepLink: null };
+  return { ok: true, json: async () => body };
+};
+const localSearch = (input) => searchOfferings(input, { fetchImpl: localAtlasFetch });
+
 let passed = 0;
 async function test(name, fn) { await fn(); passed++; console.log('  ok  ' + name); }
 
@@ -24,6 +46,8 @@ await test('tool schema shape (Anthropic input_schema)', () => {
   assert.equal(SEARCH_OFFERINGS_TOOL.name, 'search_offerings');
   assert.deepEqual(SEARCH_OFFERINGS_TOOL.input_schema.properties.type.enum,
     ['hotel', 'cruise', 'jet', 'yacht', 'worldcruise', 'any']);
+  assert.ok(SEARCH_OFFERINGS_TOOL.input_schema.properties.intent.enum.includes('wildlife'));
+  assert.ok(SEARCH_OFFERINGS_TOOL.input_schema.properties.intent.enum.includes('wellness'));
 });
 
 await test('clampLimit default 6, capped', () => {
@@ -48,9 +72,12 @@ await test('normalizeMonth maps bare months to their next calendar occurrence', 
   assert.equal(normalizeMonth('2026 August', june2026), '2026-08');
 });
 
-// ── integration: live hotel search ───────────────────────────────────────────
+// ── integration: local atlas search ──────────────────────────────────────────
 await test('searchOfferings hotel: Aman in Japan returns real records + deepLink', async () => {
-  const r = await searchOfferings({ type: 'hotel', brand: 'Aman', region: 'japan', limit: 3 });
+  const r = await searchOfferings(
+    { type: 'hotel', brand: 'Aman', region: 'japan', limit: 3 },
+    { fetchImpl: localAtlasFetch }
+  );
   assert.equal(r.type, 'hotel');
   assert.ok(r.total >= 3);
   assert.equal(r.results.length, 3);
@@ -63,13 +90,19 @@ await test('searchOfferings hotel: Aman in Japan returns real records + deepLink
 });
 
 await test('searchOfferings honest count for a broad query (limit < total)', async () => {
-  const r = await searchOfferings({ type: 'hotel', country: 'Italy', limit: 3 });
+  const r = await searchOfferings(
+    { type: 'hotel', country: 'Italy', limit: 3 },
+    { fetchImpl: localAtlasFetch }
+  );
   assert.ok(r.total > r.count);   // total is unpaginated
   assert.equal(r.count, r.results.length);
 });
 
 await test('searchOfferings type=any defaults to hotels', async () => {
-  const r = await searchOfferings({ type: 'any', q: 'aman', limit: 2 });
+  const r = await searchOfferings(
+    { type: 'any', q: 'aman', limit: 2 },
+    { fetchImpl: localAtlasFetch }
+  );
   assert.equal(r.type, 'hotel');
   assert.equal(r.results.length, 2);
 });
@@ -97,6 +130,22 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
   const r = await searchOfferings({ type: 'hotel', country: 'Italy', q: 'hotels in August' }, { fetchImpl });
   assert.equal(r.count, 3); // curated to the default display limit
   assert.equal(r.total, 6); // honest unpaginated count
+});
+
+await test('searchOfferings forwards guest-fit intent to cruise and yacht atlases', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    seen.push({ path: u.pathname, intent: u.searchParams.get('intent') });
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: u.pathname.includes('yacht') ? 'yc_1' : 'cr_1', type: u.pathname.includes('yacht') ? 'yacht' : 'cruise',
+        name: 'Antarctica fit check', brand: 'Seabourn', region: 'antarctica' },
+    ], deepLink: 'https://example.test' }) };
+  };
+  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', limit: 2 }, { fetchImpl });
+  assert.equal(r.count, 2);
+  assert.ok(seen.some((x) => x.path.includes('expedition-cruises') && x.intent === 'wildlife'));
+  assert.ok(seen.some((x) => x.path.includes('yacht-sailings') && x.intent === 'wildlife'));
 });
 
 await test('searchOfferings hotel gives a named place priority over broad country', async () => {
@@ -692,7 +741,11 @@ await test('runGuideTurn executes the tool then returns grounded text', async ()
       content: [{ type: 'text', text: 'Three Aman stays anchor Japan. [[CHART: japan]]' }],
     },
   ];
-  const out = await runGuideTurn({ messages: [{ role: 'user', content: 'Aman in Japan' }], callModel: mockClaude(script) });
+  const out = await runGuideTurn({
+    messages: [{ role: 'user', content: 'Aman in Japan' }],
+    callModel: mockClaude(script),
+    search: localSearch,
+  });
   assert.equal(out.stopReason, 'end_turn');
   assert.match(out.text, /Aman/);
   assert.equal(out.toolMeta.length, 1);
@@ -713,7 +766,11 @@ await test('runGuideTurn passes correct tool_result back to the model', async ()
     secondCallMessages = messages;
     return { stop_reason: 'end_turn', content: [{ type: 'text', text: 'Done.' }] };
   };
-  await runGuideTurn({ messages: [{ role: 'user', content: 'japan hotels' }], callModel });
+  await runGuideTurn({
+    messages: [{ role: 'user', content: 'japan hotels' }],
+    callModel,
+    search: localSearch,
+  });
   // conversation should now be: user, assistant(tool_use), user(tool_result)
   assert.equal(secondCallMessages.length, 3);
   assert.equal(secondCallMessages[1].role, 'assistant');
