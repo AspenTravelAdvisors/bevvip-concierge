@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ATLASES, ATLAS_TYPES, externalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 import AtlasShell from "@/components/AtlasShell";
 
-// Unified Living Atlas: /atlas/hotel | cruise | jet | yacht, honoring the
+// Unified Living Atlas: /atlas/hotel | cruise | jet | yacht | worldcruise, honoring the
 // same ?region= deep-link contract the standalone atlas apps use
 // (DEEPLINK-HANDOFF.md). Server-rendered for SEO; the map hydrates on top.
 
@@ -17,7 +17,7 @@ export function generateStaticParams() {
   return ATLAS_TYPES.map((type) => ({ type }));
 }
 
-// The four atlas types are the complete set — anything else is a hard 404.
+// The five atlas types are the complete set — anything else is a hard 404.
 export const dynamicParams = false;
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {

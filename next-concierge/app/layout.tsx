@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -25,6 +25,12 @@ export const metadata: Metadata = {
     "BeVvip's AI travel concierge. Approved luxury hotels, expedition cruises, private jet journeys and hotel-brand yachts — framed, mapped and booked by The Guide.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
@@ -41,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/atlas/cruise">Cruises</Link>
               <Link href="/atlas/jet">Jets</Link>
               <Link href="/atlas/yacht">Yachts</Link>
+              <Link href="/atlas/worldcruise">World</Link>
             </nav>
           </header>
           <main className="page">{children}</main>

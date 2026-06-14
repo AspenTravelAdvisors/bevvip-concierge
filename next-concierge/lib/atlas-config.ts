@@ -1,6 +1,6 @@
 import type { OfferingType } from "./types";
 
-// One registry for the four atlas surfaces. The unified /atlas/[type] route
+// One registry for the five atlas surfaces. The unified /atlas/[type] route
 // renders them under a single shell; `base` points at each standalone atlas
 // app for the "Open full Atlas" handoff (same ?region= deep-link contract
 // documented in DEEPLINK-HANDOFF.md).
