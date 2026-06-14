@@ -7,7 +7,7 @@
 // Inventory is the shared source of truth behind /api (SPEC architecture rule).
 // Each type is served by its own Atlas repo's query API, identical in contract
 // to the Hotel Atlas /api/luxury-hotels: { total, count, results, deepLink }.
-// The Guide queries all four the same way over HTTP.
+// The Guide queries each atlas the same way over HTTP.
 
 const HOTEL_API_BASE =
   process.env.HOTEL_ATLAS_API_BASE || "https://luxury-hotel-atlas-two.vercel.app";
