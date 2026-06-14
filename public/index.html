@@ -94,6 +94,8 @@
   .compare{margin:14px 0 6px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:rgba(255,255,255,.025)}
   .compare .ctitle{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);
     padding:10px 12px;border-bottom:1px solid var(--line-soft)}
+  .compare .ctitle .of{color:var(--sub);font-weight:600;text-transform:none;letter-spacing:.02em;font-size:11px;margin-left:8px}
+  .shownof{font-size:11.5px;color:var(--sub);letter-spacing:.02em;margin:12px 0 -2px}
   .compare .table{overflow-x:auto}
   .compare .row{display:grid;grid-template-columns:116px repeat(var(--cols),minmax(170px,1fr));min-width:calc(116px + var(--cols) * 170px)}
   .compare .row+.row{border-top:1px solid var(--line-soft)}
@@ -1078,7 +1080,18 @@ function renderResults(body, meta, opts={}){
   const resultCards = collectResultCards(meta);
   // cards
   if(resultCards.length){
-    if(opts.compare && recs.length>=2) body.appendChild(renderComparison(recs, kind, opts.compareLimit||3));
+    // The drawer trims to a brand-diverse shortlist (3-4), but the lead's
+    // `total` is the honest unpaginated inventory count. Surface it so a capped
+    // shortlist doesn't read as "this is all that exists" (e.g. comparing two
+    // yacht brands showed 3 while the brand actually has 27 sailings).
+    const leadShown = recs.length;
+    const leadTotal = (lead && Number.isFinite(lead.total)) ? lead.total : leadShown;
+    if(leadTotal > leadShown){
+      const note=document.createElement("div"); note.className="shownof";
+      note.textContent=`Showing ${leadShown} of ${leadTotal} ${inventoryNoun(kind)} — ask to see more or narrow by date, region, or ship.`;
+      body.appendChild(note);
+    }
+    if(opts.compare && recs.length>=2) body.appendChild(renderComparison(recs, kind, opts.compareLimit||3, leadTotal));
     const cards=document.createElement("div"); cards.className="cards";
     resultCards.forEach(({item,kind,label})=>{
       cards.appendChild(renderOfferingCard(item, kind, label));
@@ -1108,7 +1121,10 @@ function renderResults(body, meta, opts={}){
   body.appendChild(renderMoves(lead));
 }
 
-function renderComparison(recs, kind, limit){
+function inventoryNoun(kind){
+  return ({hotel:"stays",yacht:"sailings",cruise:"departures",worldcruise:"voyages",jet:"journeys"})[kind] || "options";
+}
+function renderComparison(recs, kind, limit, total){
   const items=selectComparisonItems(recs, kind, Math.max(2,Math.min(3,limit||3,recs.length)));
   const allHotels=items.every(x=>(x.type||kind)==="hotel");
   const rows=allHotels
@@ -1135,6 +1151,11 @@ function renderComparison(recs, kind, limit){
   const title=document.createElement("div");
   title.className="ctitle";
   title.textContent="Side-by-side comparison";
+  if(Number.isFinite(total) && total>items.length){
+    const of=document.createElement("span"); of.className="of";
+    of.textContent=`${items.length} of ${total} ${inventoryNoun(kind)}`;
+    title.appendChild(of);
+  }
   const table=document.createElement("div");
   table.className="table";
   const head=document.createElement("div");
