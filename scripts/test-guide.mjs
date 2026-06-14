@@ -148,6 +148,47 @@ await test('searchOfferings forwards guest-fit intent to cruise and yacht atlase
   assert.ok(seen.some((x) => x.path.includes('yacht-sailings') && x.intent === 'wildlife'));
 });
 
+await test('offering search loosens an exact month when it zeroes out, with a note', async () => {
+  // The yacht atlas holds Ritz-Carlton Med sailings, just not in the exact
+  // month asked for. The search should drop the month and surface them rather
+  // than returning nothing, and say so in a note.
+  const months = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('yacht-sailings')) return emptyOk();
+    const month = u.searchParams.get('month');
+    months.push(month);
+    if (month) return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'rc_1', type: 'yacht', name: 'Evrima Western Med', brand: 'Ritz-Carlton Yacht Collection', region: 'mediterranean', month: '2026-06' },
+      { id: 'rc_2', type: 'yacht', name: 'Luminara Adriatic', brand: 'Ritz-Carlton Yacht Collection', region: 'mediterranean', month: '2026-10' },
+    ], deepLink: 'https://luxury-hotel-brand-yacht-atlas.vercel.app' }) };
+  };
+  const r = await searchOfferings(
+    { type: 'yacht', brand: 'Ritz-Carlton', region: 'mediterranean', month: '2026-09', limit: 3 },
+    { fetchImpl }
+  );
+  assert.ok(months.includes('2026-09')); // tried the exact month first
+  assert.equal(r.count, 2);              // then recovered the real Med sailings
+  assert.ok(/month|September|2026-09/i.test(r.note || ''), 'note should flag the loosened month');
+});
+
+await test('offering results are ranked by fit and intent alignment', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('expedition-cruises')) return emptyOk();
+    // Feed order puts the weaker wildlife fit first; ranking must reorder it.
+    return { ok: true, json: async () => ({ total: 2, count: 2, results: [
+      { id: 'c_low', type: 'cruise', name: 'Broad Antarctica', operator: 'Lindblad', region: 'antarctica',
+        fit: { overallFitScore: 80, matchScores: { wildlife: 70 } } },
+      { id: 'c_high', type: 'cruise', name: 'Wildlife Antarctica', operator: 'Quark Expeditions', region: 'antarctica',
+        fit: { overallFitScore: 78, matchScores: { wildlife: 99 } } },
+    ], deepLink: 'https://expedition-cruise-map.vercel.app' }) };
+  };
+  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', limit: 2 }, { fetchImpl });
+  assert.equal(r.results[0].id, 'c_high', 'strongest wildlife match should lead');
+});
+
 await test('searchOfferings hotel gives a named place priority over broad country', async () => {
   const fetchImpl = async (url) => {
     const u = new URL(url);

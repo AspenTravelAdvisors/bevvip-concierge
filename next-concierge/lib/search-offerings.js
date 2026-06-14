@@ -688,6 +688,72 @@ function brandDiverseResults(candidates = [], displayLimit = DEFAULT_RECOMMENDAT
   return firstByBrand.concat(duplicates).slice(0, target);
 }
 
+// ── Fit-aware weighting ─────────────────────────────────────────────────────
+// The atlases return records already filtered to the request, but in their own
+// order. This layer re-ranks the candidate pool by how well each record fits
+// THIS traveler before brand-diversity selection picks the shortlist, so the
+// strongest fit leads instead of whatever order the feed happened to use.
+//
+// Weight blends three honest signals carried in the data:
+//   • overall fit score (0..100): the supplier's own fit spine
+//   • intent alignment: the per-intent match score, or an intent-tag match,
+//     so a wellness ask surfaces the most wellness-forward option even when its
+//     overall score is a touch lower
+//   • timing proximity: when a month was requested (and especially when it had
+//     to be loosened), records closest to that month rank first
+// The sort is STABLE: records with no fit data keep the feed's original order,
+// so this never reshuffles inventory that carries no signal to rank on.
+const MONTH_LABELS = [
+  "", "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+function monthOrdinal(ym) {
+  const m = /^(\d{4})-(\d{1,2})$/.exec(String(ym || ""));
+  return m ? parseInt(m[1], 10) * 12 + parseInt(m[2], 10) : null;
+}
+
+function monthLabel(ym) {
+  const m = /^(\d{4})-(\d{1,2})$/.exec(String(ym || ""));
+  if (!m) return "";
+  return `${MONTH_LABELS[parseInt(m[2], 10)] || ""} ${m[1]}`.trim();
+}
+
+function titleizeKey(key) {
+  const v = String(key || "").trim();
+  return v ? v.charAt(0).toUpperCase() + v.slice(1) : "";
+}
+
+function fitWeight(item = {}, input = {}, requestedMonth = null) {
+  const fit = item.fit || null;
+  let w = 0;
+  if (fit) {
+    if (Number.isFinite(fit.overallFitScore)) w += fit.overallFitScore;        // 0..100
+    const intent = input.intent && String(input.intent).trim();
+    if (intent) {
+      const ms = fit.matchScores && Number(fit.matchScores[intent]);
+      if (Number.isFinite(ms)) w += ms * 0.75;                                 // direct intent alignment
+      else if (Array.isArray(fit.intentTags) && fit.intentTags.includes(intent)) w += 40;
+    }
+    if (Number.isFinite(fit.confidence)) w += fit.confidence * 0.1;            // gentle tiebreaker
+  }
+  // Timing proximity: most relevant once month has been loosened and the pool
+  // spans several months. Closest-to-requested ranks highest; no effect when
+  // every record already shares the requested month.
+  if (requestedMonth && item.month) {
+    const d = Math.abs((monthOrdinal(item.month) ?? 0) - (monthOrdinal(requestedMonth) ?? 0));
+    if (Number.isFinite(d)) w += Math.max(0, 12 - d) * 2;
+  }
+  return w;
+}
+
+function rankByFit(candidates = [], input = {}, requestedMonth = null) {
+  return candidates
+    .map((item, i) => ({ item, i, w: fitWeight(item, input, requestedMonth) }))
+    .sort((a, b) => (b.w - a.w) || (a.i - b.i))   // stable: ties keep feed order
+    .map((x) => x.item);
+}
+
 // Trim a normalized hotel record to what the Guide renders on a card. Drops
 // coordinates/thumb/tags and anything pricing-related (there is none here).
 function hotelCard(h) {
@@ -976,7 +1042,8 @@ async function searchHotels(input, fetchImpl) {
     );
   }
   const candidates = (j.results || []).map(hotelCard);
-  const results = brandDiverseResults(candidates, limit, "hotel");
+  const ranked = rankByFit(candidates, input, month);
+  const results = brandDiverseResults(ranked, limit, "hotel");
   const related = (await Promise.all(relatedPromises)).filter(Boolean);
 
   return {
@@ -1025,17 +1092,24 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     ? String(input.region).trim() : "";
   const country = normalizeCountry(input.country);
 
-  const buildUrl = ({ brandAsText = false } = {}) => {
+  const buildUrl = ({
+    brandAsText = false,
+    includeIntent = true,
+    includeMonth = true,
+    includeGeo = true,
+  } = {}) => {
     const p = new URLSearchParams();
-    let queryText = [regionText, placeText, baseQ].filter(Boolean).join(" ").trim();
+    const useRegionText = includeGeo ? regionText : "";
+    const usePlaceText = includeGeo ? placeText : "";
+    let queryText = [useRegionText, usePlaceText, baseQ].filter(Boolean).join(" ").trim();
     if (atwJet) {
       p.set("world", "true");
     } else if (type === "worldcruise") {
-      if (worldCruiseRegion) p.set("region", worldCruiseRegion);
-      if (country) p.set("country", country);
+      if (includeGeo && worldCruiseRegion) p.set("region", worldCruiseRegion);
+      if (includeGeo && country) p.set("country", country);
     } else {
-      if (regionKey) p.set("region", regionKey);
-      if (country) p.set("country", country);
+      if (includeGeo && regionKey) p.set("region", regionKey);
+      if (includeGeo && country) p.set("country", country);
     }
     if (brand) {
       if (type === "yacht") {
@@ -1051,8 +1125,8 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     }
     if (queryText) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
-    if (month) p.set("month", month);
-    if (input.intent) p.set("intent", String(input.intent).trim());
+    if (includeMonth && month) p.set("month", month);
+    if (includeIntent && input.intent) p.set("intent", String(input.intent).trim());
     p.set("limit", String(candidateLimit));
     return `${cfg.base}${cfg.path}?${p.toString()}`;
   };
@@ -1063,19 +1137,67 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
       if (!r.ok) throw new Error(`${type} api ${r.status}`);
       return r.json();
     };
+    const hasResults = (res) => !!((res && res.results) || []).length;
+
     let j = await run({});
     let note = null;
     const brandParamSet = !!brand && (type !== "yacht" || !!yachtBrand);
-    if (brandParamSet && !(j.results || []).length) {
+    if (brandParamSet && !hasResults(j)) {
       // Exact operator/brand names are strict ("Ponant" vs "PONANT
       // EXPLORATIONS"); a near-miss still matches as free text.
       const retry = await run({ brandAsText: true });
-      if ((retry.results || []).length) {
+      if (hasResults(retry)) {
         j = retry;
         note = `"${rawBrand}" did not match an exact ${type} operator name; results matched it as text.`;
       }
     }
-    const candidates = j.results || [];
+
+    // Progressive relaxation. The offering atlases hard-filter on intent, month,
+    // region, and brand, so a reasonable but over-constrained ask ("Ritz cruises
+    // in the Med in September") can zero out even when strong adjacent inventory
+    // exists. Loosen the least-essential constraints in turn, keeping the brand
+    // the traveler named, and leave an honest note so the Guide never presents a
+    // looser match as an exact one. This mirrors the hotel fallback chain.
+    if (!hasResults(j)) {
+      const keepBrandAsText = brandParamSet && !!note;
+      const baseOpts = keepBrandAsText ? { brandAsText: true } : {};
+      const typeLabel = type === "worldcruise" ? "world cruise" : type;
+      const whereLabel = country || placeText || regionText
+        || titleizeKey(regionKey || worldCruiseRegion) || "";
+      const monthText = monthLabel(month);
+      const hasGeo = !!(regionKey || regionText || placeText || worldCruiseRegion || country);
+
+      const steps = [];
+      if (input.intent) {
+        // The fit ranking still honors intent; dropping it as a hard filter only.
+        steps.push({ opts: { includeIntent: false }, note: null });
+      }
+      if (month) {
+        steps.push({
+          opts: { includeIntent: false, includeMonth: false },
+          note: `No ${typeLabel} departures matched ${monthText || "that month"} exactly` +
+            `${whereLabel ? ` in ${whereLabel}` : ""}; showing the strongest options across other dates.`,
+        });
+      }
+      if (brand && hasGeo) {
+        steps.push({
+          opts: { includeIntent: false, includeMonth: false, includeGeo: false },
+          note: `No ${rawBrand} ${typeLabel} inventory matched ${whereLabel || "that area"}` +
+            `${monthText ? ` in ${monthText}` : ""}; showing ${rawBrand} ${typeLabel} options elsewhere.`,
+        });
+      }
+
+      for (const step of steps) {
+        const relaxed = await run({ ...baseOpts, ...step.opts });
+        if (hasResults(relaxed)) {
+          j = relaxed;
+          if (step.note) note = step.note;
+          break;
+        }
+      }
+    }
+
+    const candidates = rankByFit(j.results || [], input, month);
     const results = brandDiverseResults(candidates, limit, type);
     return {
       type,
@@ -1146,6 +1268,13 @@ async function searchCruisesAndYachts(input, fetchImpl) {
   const unavailable = sources.every((s) => s.unavailable);
   const related = await sailingRelatedHotels(results, fetchImpl);
 
+  // Surface relaxation notes from whichever channel actually contributed
+  // inventory, so the Guide can be honest about a loosened month or brand
+  // instead of presenting a fallback as an exact match.
+  const sourceNotes = [cruise, yacht]
+    .filter((r) => r.count > 0 && r.note)
+    .map((r) => r.note);
+
   return {
     type: "cruise",
     total: sources.reduce((n, s) => n + (s.total || 0), 0),
@@ -1157,7 +1286,7 @@ async function searchCruisesAndYachts(input, fetchImpl) {
     unavailable,
     note: unavailable
       ? "Expedition Cruise and yacht inventory is momentarily unreachable. An advisor can source live options directly."
-      : null,
+      : (sourceNotes.length ? sourceNotes.join(" ") : null),
     ...(related.length ? { related } : {}),
   };
 }
