@@ -330,6 +330,7 @@ const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 const HOTEL_DOT_MIN_ZOOM = 2.45;     // let hotels emerge before the ambient cloud fades
+const HOTEL_CLICK_MIN_ZOOM = 4;      // below this dots overlap — taps stay ambient, not clickable
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
@@ -504,7 +505,36 @@ async function loadHotelField(){
         "circle-stroke-width":["interpolate",["linear"],["zoom"],2.45,0.45,7,1.1],
         "circle-blur":0
       }});
+    wireHotelDotClicks();
   }catch(e){ /* dot field optional */ }
+}
+
+/* Make individual hotel dots clickable — but only once they've zoomed apart
+   enough to target one unambiguously. Below HOTEL_CLICK_MIN_ZOOM the field is
+   ambient (heatmap), so a tap there is ignored rather than picking a random
+   neighbor. One layer-scoped handler covers all ~2500 dots: Mapbox hit-tests
+   only the geometry under the cursor, so point count costs nothing. */
+let hotelClickWired=false;
+function wireHotelDotClicks(){
+  if(hotelClickWired || !lmap || !lmap.getLayer("hotel-dots")) return;
+  hotelClickWired=true;
+  lmap.on("click","hotel-dots",(e)=>{
+    if(lmap.getZoom() < HOTEL_CLICK_MIN_ZOOM) return;   // ambient zoom: not tappable
+    const f=e.features&&e.features[0]; if(!f) return;
+    const id=f.properties.id||"";
+    const name=f.properties.name||"VIP Hotel";
+    const region=f.properties.region;
+    // ?ids=<id> filters the Hotel Atlas to this hotel, frames it, and opens its
+    // detail panel (single-id shortlist) — selects the hotel, not just a region.
+    const href=id ? `${ATLAS_BASE}/?ids=${encodeURIComponent(id)}` : ATLAS_BASE;
+    const html=`<div class="iw"><div class="iwn">${escapeHtml(name)}</div>`+
+      (region?`<div class="iwm">${escapeHtml(region)}</div>`:"")+
+      `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open VIP Hotels Atlas ↗</a></div>`;
+    popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap);
+  });
+  // Pointer cursor only above the threshold, so clickability is signalled honestly.
+  lmap.on("mouseenter","hotel-dots",()=>{ if(lmap.getZoom()>=HOTEL_CLICK_MIN_ZOOM) lmap.getCanvas().style.cursor="pointer"; });
+  lmap.on("mouseleave","hotel-dots",()=>{ lmap.getCanvas().style.cursor=""; });
 }
 
 function upsertHotelSources(fc){
@@ -548,7 +578,7 @@ async function fetchHotelPointsFromAtlas(){
       features.push({
         type:"Feature",
         geometry:{ type:"Point", coordinates:[lng,lat] },
-        properties:{ id:h.id||"", region:h.region||null }
+        properties:{ id:h.id||"", region:h.region||null, name:h.name||"" }
       });
     });
   });

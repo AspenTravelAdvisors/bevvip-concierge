@@ -48,7 +48,7 @@ async function build() {
       features.push({
         type: "Feature",
         geometry: { type: "Point", coordinates: point },
-        properties: { id: h.id, region: h.region || null },
+        properties: { id: h.id, region: h.region || null, name: h.name || "" },
       });
     }
   }
