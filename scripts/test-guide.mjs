@@ -148,6 +148,74 @@ await test('searchOfferings forwards guest-fit intent to cruise and yacht atlase
   assert.ok(seen.some((x) => x.path.includes('yacht-sailings') && x.intent === 'wildlife'));
 });
 
+await test('searchOfferings cruise promotes a destination left in q to the region filter', async () => {
+  // Regression: the cruise atlas AND-filters `q` over fields that do NOT index
+  // the destination name, so "Galapagos" left in q zeroed an otherwise-valid
+  // region+month search (44 real departures returned as 0 supplier, no cards).
+  const cruiseUrls = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.includes('yacht-sailings')) return emptyOk();
+    cruiseUrls.push(u);
+    // Mimic the live atlas: a destination name in q matches nothing.
+    if ((u.searchParams.get('q') || '').toLowerCase().includes('galapagos')) {
+      return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    }
+    if (u.searchParams.get('region') !== 'galapagos') return emptyOk();
+    return { ok: true, json: async () => ({ total: 44, count: 2, results: [
+      { id: 'cr_1', type: 'cruise', name: 'Galapagos 7nt', operator: 'Silversea', region: 'galapagos' },
+      { id: 'cr_2', type: 'cruise', name: 'Galapagos West', operator: 'National Geographic-Lindblad Expeditions', region: 'galapagos' },
+    ], deepLink: 'https://expedition-cruise-map.vercel.app?region=galapagos' }) };
+  };
+  const r = await searchOfferings(
+    { type: 'cruise', q: 'Galapagos expedition cruises', month: 'February' },
+    { fetchImpl });
+  assert.ok(r.count >= 2, 'recovers the region inventory instead of zeroing out');
+  const cruise = cruiseUrls.find((u) => u.searchParams.get('region') === 'galapagos');
+  assert.ok(cruise, 'destination is promoted to the region filter');
+  assert.ok(!(cruise.searchParams.get('q') || '').toLowerCase().includes('galapagos'),
+    'destination name is stripped from the q text');
+});
+
+await test('searchOfferings cruise drops a non-indexed descriptor when a geo anchor holds', async () => {
+  // "wildlife" is not in the atlas q-index; with a region anchor it must broaden
+  // past the descriptor rather than return nothing.
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.includes('yacht-sailings')) return emptyOk();
+    seen.push(u.searchParams.get('q'));
+    if (u.searchParams.get('q')) {
+      return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+    }
+    return { ok: true, json: async () => ({ total: 44, count: 1, results: [
+      { id: 'cr_1', type: 'cruise', name: 'Galapagos 7nt', operator: 'Silversea', region: 'galapagos' },
+    ], deepLink: 'https://expedition-cruise-map.vercel.app?region=galapagos' }) };
+  };
+  const r = await searchOfferings(
+    { type: 'cruise', region: 'galapagos', q: 'wildlife', month: 'February' },
+    { fetchImpl });
+  assert.equal(r.count, 1);
+  assert.ok(seen.includes('wildlife') && seen.includes(null),
+    'retries once without q after the descriptor over-filters');
+});
+
+await test('searchOfferings cruise does not broaden a q-only search with no geo anchor', async () => {
+  // Without a region/country anchor, dropping q would balloon to the whole
+  // month; the search must stay scoped to whatever q honestly matched.
+  let calls = 0;
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.includes('yacht-sailings')) return emptyOk();
+    calls++;
+    return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+  };
+  const r = await searchOfferings(
+    { type: 'cruise', q: 'penguins', month: 'February' }, { fetchImpl });
+  assert.equal(r.count, 0);
+  assert.equal(calls, 1, 'no q-drop retry fires without a geographic anchor');
+});
+
 await test('searchOfferings hotel gives a named place priority over broad country', async () => {
   const fetchImpl = async (url) => {
     const u = new URL(url);

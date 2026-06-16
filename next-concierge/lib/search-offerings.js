@@ -181,6 +181,34 @@ function normalizeRegionKey(raw) {
   return REGION_ALIASES[v] || null;
 }
 
+// Length-ordered [regex, marquee key] list so a destination name a traveler (or
+// the model) dropped into free text can be recovered as the region filter. The
+// cruise/yacht atlases AND-filter `q` over fields that do NOT index the
+// destination name, so a name left in `q` zeroes an otherwise-valid search
+// (e.g. region=galapagos+month returns 44 departures; adding q=Galapagos -> 0).
+const REGION_PHRASES = [
+  ...[...MARQUEE_KEYS].map((k) => [k, k]),
+  ...Object.entries(REGION_ALIASES),
+]
+  .sort((a, b) => b[0].length - a[0].length)
+  .map(([phrase, key]) => [
+    new RegExp(`\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i"),
+    key,
+  ]);
+
+// If `text` names a marquee region, return that region key plus the text with
+// the phrase removed, so the search binds on the region filter instead of an
+// unmatchable `q` token. Returns { key:null, cleaned:<text> } when none found.
+function promoteRegionFromText(raw) {
+  const text = foldDiacritics(String(raw || ""));
+  for (const [re, key] of REGION_PHRASES) {
+    if (re.test(text)) {
+      return { key, cleaned: text.replace(re, " ").replace(/\s+/g, " ").trim() };
+    }
+  }
+  return { key: null, cleaned: String(raw || "") };
+}
+
 // Hotel atlas additionally accepts "caribbean" as a country-set alias.
 function hotelRegionFor(raw) {
   const key = normalizeRegionKey(raw);
@@ -1014,17 +1042,27 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   const candidateLimit = candidateLimitForInput(input, limit);
   const cfg = OFFERINGS_ENDPOINTS[type];
   const month = normalizeMonth(input.month) || monthFromText(input.q);
-  const baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
+  let baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
     : type === "worldcruise" ? stripWorldCruiseTerms(stripDateFromQuery(input.q))
     : stripDateFromQuery(input.q);
-  const placeText = !atwJet && type !== "jet" && input.place ? normalizeLoosePlace(input.place) : "";
+  let placeText = !atwJet && type !== "jet" && input.place ? normalizeLoosePlace(input.place) : "";
   const rawBrand = String(input.brand || input.operator || "").trim();
   let brand = rawBrand;
   if (type === "cruise") brand = normalizedCruiseOperator(rawBrand) || rawBrand;
   else if (type === "jet") brand = normalizedJetBrand(rawBrand) || rawBrand;
   else if (type === "worldcruise") brand = normalizedWorldCruiseOperator(rawBrand) || rawBrand;
   const yachtBrand = type === "yacht" ? normalizedYachtBrand(rawBrand) : "";
-  const regionKey = normalizeRegionKey(input.region);
+  let regionKey = normalizeRegionKey(input.region);
+  // Recover or de-dupe a marquee region the model left in free text: the
+  // cruise/yacht atlases don't index the destination name in `q`, so leaving it
+  // there AND-filters the search to zero even when region+month alone is valid.
+  // Promote it to the region filter and strip the name from the q text.
+  if (!atwJet && type !== "jet") {
+    const fromQ = promoteRegionFromText(baseQ);
+    if (fromQ.key) { regionKey = regionKey || fromQ.key; baseQ = fromQ.cleaned; }
+    const fromPlace = promoteRegionFromText(placeText);
+    if (fromPlace.key) { regionKey = regionKey || fromPlace.key; placeText = fromPlace.cleaned; }
+  }
   // The World Cruise Atlas resolves its own region aliases (caribbean, alaska,
   // hawaii, the marquee keys), so the raw region passes through as a region.
   const worldCruiseRegion = type === "worldcruise"
@@ -1036,8 +1074,9 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   const regionText = !atwJet && type !== "worldcruise" && !regionKey && input.region
     ? String(input.region).trim() : "";
   const country = normalizeCountry(input.country);
+  const hadQText = !!String([regionText, placeText, baseQ].filter(Boolean).join(" ")).trim();
 
-  const buildUrl = ({ brandAsText = false } = {}) => {
+  const buildUrl = ({ brandAsText = false, dropQ = false } = {}) => {
     const p = new URLSearchParams();
     let queryText = [regionText, placeText, baseQ].filter(Boolean).join(" ").trim();
     if (atwJet) {
@@ -1061,7 +1100,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
         p.set("brand", brand);
       }
     }
-    if (queryText) p.set("q", queryText);
+    if (queryText && !dropQ) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
     if (input.intent) p.set("intent", String(input.intent).trim());
@@ -1085,6 +1124,20 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
       if ((retry.results || []).length) {
         j = retry;
         note = `"${rawBrand}" did not match an exact ${type} operator name; results matched it as text.`;
+      }
+    }
+    // Descriptor words a traveler uses ("wildlife", "luxury") are not always
+    // indexed in the atlas `q` fields; combined with a real geographic anchor
+    // they AND-filter the search to zero. With a region or country to keep the
+    // search bounded, retry once without `q` rather than returning nothing.
+    const geoAnchor = !!(regionKey || country || worldCruiseRegion);
+    if (geoAnchor && hadQText && !(j.results || []).length) {
+      const retry = await run({ dropQ: true });
+      if ((retry.results || []).length) {
+        j = retry;
+        if (!note) {
+          note = "Some descriptive words did not match indexed fields; broadened to the region to surface live inventory.";
+        }
       }
     }
     const candidates = j.results || [];
