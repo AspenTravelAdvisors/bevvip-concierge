@@ -245,6 +245,8 @@
     .empty{margin-top:3vh}
     .empty h1{font-size:27px}
     .empty p{font-size:14px;margin-bottom:16px}
+    /* iOS Safari zooms inputs whose text is < 16px on focus — keep the composer at 16px on mobile to prevent the surprise zoom that loses the frame/branding. */
+    textarea{font-size:16px}
   }
 </style>
 </head>
@@ -1586,18 +1588,22 @@ async function sendText(text){
     const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+err.message;
     gb.appendChild(e);
   }finally{
-    busy=false; sendBtn.disabled=false; input.focus();
+    busy=false; sendBtn.disabled=false; focusInput();
   }
 }
 
 /* ---- input wiring ---- */
+// On mobile we don't auto-open the keyboard: let the user tap the prompt intentionally.
+// Auto-focusing there triggers Safari's focus-zoom and pushes the frame/branding off-screen.
+const isMobile = window.matchMedia("(max-width:920px)").matches;
+function focusInput(){ if(!isMobile) input.focus(); }
 function autosize(){ input.style.height="auto"; input.style.height=Math.min(input.scrollHeight,160)+"px"; }
 input.addEventListener("input",autosize);
 input.addEventListener("keydown",e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendText(input.value); } });
 sendBtn.addEventListener("click",()=>sendText(input.value));
 el("chips").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(c) sendText(c.textContent); });
 el("regionsBtn").addEventListener("click",()=>{ setOpenExt(null); loadRegions(); if(lmap){ fitGlobe(); lmap.easeTo({ center:[10,20], zoom:homeZoom, duration:700 }); } });
-input.focus();
+focusInput();
 </script>
 
 <!-- Google Maps: card photos (Places) + 360 (Street View) only. Loaded async; the globe is Mapbox. -->
