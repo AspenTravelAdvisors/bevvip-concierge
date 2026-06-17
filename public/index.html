@@ -1596,7 +1596,12 @@ async function sendText(text){
 // On mobile we don't auto-open the keyboard: let the user tap the prompt intentionally.
 // Auto-focusing there triggers Safari's focus-zoom and pushes the frame/branding off-screen.
 const isMobile = window.matchMedia("(max-width:920px)").matches;
-function focusInput(){ if(!isMobile) input.focus(); }
+// Embedded in an iframe (the BeVvip landing hero / Base Camp panel): never steal
+// focus. Auto-focusing inside a frame scrolls the parent page down to us on load
+// (the "jump to Base Camp"), and pops the on-screen keyboard on wide touch
+// browsers like the Tesla one that the max-width:920px check can't catch.
+const inIframe = (()=>{ try { return window.self !== window.top; } catch(_){ return true; } })();
+function focusInput(){ if(!isMobile && !inIframe) input.focus(); }
 function autosize(){ input.style.height="auto"; input.style.height=Math.min(input.scrollHeight,160)+"px"; }
 input.addEventListener("input",autosize);
 input.addEventListener("keydown",e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendText(input.value); } });
