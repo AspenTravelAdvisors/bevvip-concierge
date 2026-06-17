@@ -578,7 +578,8 @@ await test('normalizeRegionKey maps near-marquee phrasing onto marquee keys', ()
   assert.equal(normalizeRegionKey('Antarctic'), 'antarctica');
   assert.equal(normalizeRegionKey('Galápagos'), 'galapagos');
   assert.equal(normalizeRegionKey('Norwegian Fjords'), 'norway');
-  assert.equal(normalizeRegionKey('Alaska'), null); // not marquee, must not pass through
+  assert.equal(normalizeRegionKey('Alaska'), 'alaska');       // marquee now
+  assert.equal(normalizeRegionKey('the Caribbean'), 'caribbean');
 });
 
 await test('searchOfferings hotel normalizes country and brand aliases before the API call', async () => {
@@ -649,10 +650,10 @@ await test('searchOfferings retries an unmatched exact brand as free text with a
   assert.equal(r.count, 1);
 });
 
-await test('searchOfferings folds non-marquee regions into free text instead of dropping them', async () => {
+await test('searchOfferings binds alaska/caribbean as free text on atlases that do not filter them yet', async () => {
   const fetchImpl = async (url) => {
     const u = new URL(url);
-    assert.equal(u.searchParams.get('region'), null); // alaska is not marquee
+    assert.equal(u.searchParams.get('region'), null); // Jet backend doesn't filter alaska yet
     assert.match(u.searchParams.get('q'), /alaska/i);
     return { ok: true, json: async () => ({ total: 1, count: 1, results: [
       { id: 'jt_1', type: 'jet', name: 'Alaska by Private Jet' },
@@ -660,7 +661,7 @@ await test('searchOfferings folds non-marquee regions into free text instead of 
   };
   const r = await searchOfferings({ type: 'jet', region: 'alaska' }, { fetchImpl });
   assert.equal(r.count, 1);
-  assert.equal(r.chartRegion, null); // no marquee chart-jump for Alaska
+  assert.equal(r.chartRegion, 'alaska'); // marquee region still charts the map
 });
 
 await test('searchOfferings cruise binds non-marquee places and suppresses chart drift', async () => {
@@ -679,7 +680,7 @@ await test('searchOfferings cruise binds non-marquee places and suppresses chart
   const r = await searchOfferings({ type: 'cruise', place: 'Alaska', month: 'July' }, { fetchImpl });
   assert.equal(seen[0].month, '2026-07');
   assert.equal(r.count, 3);
-  assert.equal(r.chartRegion, null);
+  assert.equal(r.chartRegion, 'alaska'); // Alaska is a marquee region now and charts the map
   assert.match(r.deepLink, /ids=/);
 });
 
@@ -695,6 +696,49 @@ await test('searchOfferings hotel folds non-marquee regions into the place text'
   };
   const r = await searchOfferings({ type: 'hotel', region: 'Alaska' }, { fetchImpl });
   assert.equal(r.count, 1);
+});
+
+await test('searchOfferings hotel filters Caribbean on the region param (the Four Seasons in Caribbean fix)', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('luxury-hotels')) return emptyOk();
+    seen.push(Object.fromEntries(u.searchParams.entries()));
+    assert.equal(u.searchParams.get('region'), 'caribbean'); // Hotel atlas filters caribbean natively
+    return { ok: true, json: async () => ({ total: 5, count: 2, results: [
+      { id: 'h_1', name: 'Four Seasons Resort Nevis', brand: 'Four Seasons', country: 'Saint Kitts and Nevis', region: 'caribbean' },
+      { id: 'h_2', name: 'Four Seasons Resort Anguilla', brand: 'Four Seasons', country: 'Anguilla', region: 'caribbean' },
+    ], deepLink: 'https://luxury-hotel-atlas-two.vercel.app?region=caribbean' }) };
+  };
+  // Whether the model puts Caribbean in region, place, or country, it must reach
+  // the region filter (not a free-text token that matches no single property).
+  for (const input of [
+    { type: 'hotel', brand: 'Four Seasons', region: 'Caribbean' },
+    { type: 'hotel', brand: 'Four Seasons', place: 'Caribbean' },
+    { type: 'hotel', brand: 'Four Seasons', country: 'Caribbean' },
+  ]) {
+    seen.length = 0;
+    const r = await searchOfferings(input, { fetchImpl });
+    assert.equal(r.count, 2, `cards served for ${JSON.stringify(input)}`);
+    assert.equal(r.chartRegion, 'caribbean'); // map refocuses on the Caribbean
+    assert.ok(!('q' in seen[0]) || !/caribbean/i.test(seen[0].q || ''),
+      'Caribbean is not left as a free-text token');
+  }
+});
+
+await test('searchOfferings cruise charts Caribbean while binding it as text until the backend filters it', async () => {
+  const fetchImpl = async (url) => {
+    const u = new URL(url);
+    if (!u.pathname.includes('expedition-cruises')) return emptyOk();
+    assert.equal(u.searchParams.get('region'), null); // Cruise backend doesn't filter caribbean yet
+    assert.match(u.searchParams.get('q'), /caribbean/i);
+    return { ok: true, json: async () => ({ total: 1, count: 1, results: [
+      { id: 'cr_1', type: 'cruise', name: 'Caribbean Crossing', operator: 'Seabourn' },
+    ] }) };
+  };
+  const r = await searchOfferings({ type: 'cruise', region: 'caribbean' }, { fetchImpl });
+  assert.equal(r.count, 1);
+  assert.equal(r.chartRegion, 'caribbean');
 });
 
 await test('searchOfferings hotel treats island aliases in place as country filters', async () => {
