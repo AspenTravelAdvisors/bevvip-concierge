@@ -8,10 +8,13 @@
 // VR layer: BeVvip's own LuxuryTravelVR 360° videos plotted as a cross-cutting
 // "see the real place" overlay (feed: /api/vr-points). Thumbnails are HTML
 // markers — not GL images — so cross-origin YouTube stills never taint the WebGL
-// canvas. They scale with zoom (small dots far out, full thumbnails up close)
-// and open an in-app 360° player on click, no YouTube round-trip. The owned
-// 360° photo stills (kind:"photo") will ride the same toggle once their pipeline
-// lands.
+// canvas. They scale with zoom (small dots far out, full thumbnails up close).
+//
+// Videos are grouped by location: 77 videos sit on 51 spots (Raivavae alone has
+// 7, Kokomo/North Island have 4 each), so one pin per place carries a count
+// badge and opens a gallery; single-video pins play straight away. The 360°
+// plays in-app via the embed iframe — no YouTube round-trip. A future "Photos"
+// toggle slots beside this one once the owned 360° photospheres are importable.
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -59,12 +62,20 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
   const [mapFailed, setMapFailed] = useState(false);
   const [vrOn, setVrOn] = useState(true);
   const [vrCount, setVrCount] = useState(0);
-  const [selected, setSelected] = useState<VrProps | null>(null);
+  // The place the user clicked (one or more co-located videos), and which one
+  // of that group is currently playing.
+  const [openGroup, setOpenGroup] = useState<VrProps[] | null>(null);
+  const [playing, setPlaying] = useState<VrProps | null>(null);
 
   useEffect(() => {
     if (!token || !mapEl.current) return;
     let map: MapboxMap | undefined;
     let cancelled = false;
+
+    const openPlace = (group: VrProps[]) => {
+      setOpenGroup(group);
+      setPlaying(group.length === 1 ? group[0] : null);
+    };
 
     loadMapbox()
       .then((mapboxgl) => {
@@ -91,7 +102,7 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
           };
           applyScale();
           map.on("zoom", applyScale);
-          void loadVrLayer(map, mapboxgl, markersRef, setVrCount, setSelected);
+          void loadVrLayer(map, mapboxgl, markersRef, setVrCount, openPlace);
         });
         map.on("error", () => setMapFailed(true));
       })
@@ -112,6 +123,11 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
     const c = mapRef.current?.getContainer();
     if (c) c.classList.toggle("vr-hidden", !vrOn);
   }, [vrOn, mapReady]);
+
+  const closeModal = () => {
+    setOpenGroup(null);
+    setPlaying(null);
+  };
 
   const showFallback = !token || mapFailed;
 
@@ -164,28 +180,63 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
         </div>
       )}
 
-      {/* In-app 360° player — magic-window pan, no leaving the globe. */}
-      {selected && (
-        <div className="vr-player" role="dialog" aria-label={selected.name}>
+      {/* Place modal: a gallery when several videos share a spot, else the
+          in-app 360° player (magic-window pan, no leaving the globe). */}
+      {openGroup && (
+        <div className="vr-player" role="dialog" aria-label={openGroup[0].place || "360° VR"}>
           <div className="vr-player-card">
-            <button type="button" className="vr-close" onClick={() => setSelected(null)} aria-label="Close">
+            <button type="button" className="vr-close" onClick={closeModal} aria-label="Close">
               ✕
             </button>
-            <div className="vr-frame">
-              <iframe
-                src={`${selected.embed}?autoplay=1&rel=0&playsinline=1`}
-                title={selected.name}
-                allow="accelerometer; autoplay; gyroscope; encrypted-media; fullscreen"
-                allowFullScreen
-              />
-            </div>
-            <div className="vr-meta">
-              <strong>{selected.name}</strong>
-              <span>
-                {selected.place || selected.region}
-                {selected.duration ? ` · ${selected.duration}` : ""}
-              </span>
-            </div>
+
+            {playing ? (
+              <>
+                {openGroup.length > 1 && (
+                  <button type="button" className="vr-back" onClick={() => setPlaying(null)}>
+                    ‹ All {openGroup.length} here
+                  </button>
+                )}
+                <div className="vr-frame">
+                  <iframe
+                    src={`${playing.embed}?autoplay=1&rel=0&playsinline=1`}
+                    title={playing.name}
+                    allow="accelerometer; autoplay; gyroscope; encrypted-media; fullscreen"
+                    allowFullScreen
+                  />
+                </div>
+                <div className="vr-meta">
+                  <strong>{playing.name}</strong>
+                  <span>
+                    {playing.place || playing.region}
+                    {playing.duration ? ` · ${playing.duration}` : ""}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="vr-gallery">
+                <div className="vr-gallery-head">
+                  <strong>{openGroup[0].place || openGroup[0].region}</strong>
+                  <span>{openGroup.length} 360° videos here</span>
+                </div>
+                <div className="vr-gallery-grid">
+                  {openGroup.map((v) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      className="vr-gallery-item"
+                      onClick={() => setPlaying(v)}
+                    >
+                      <img src={v.thumbGrid || v.thumb} alt="" loading="lazy" />
+                      <span className="vr-gallery-play">
+                        <span className="vr-play-icon">▶</span>
+                        {v.duration && <em>{v.duration}</em>}
+                      </span>
+                      <span className="vr-gallery-title">{v.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -200,7 +251,7 @@ async function loadVrLayer(
   mapboxgl: MapboxModule,
   markersRef: React.MutableRefObject<MapboxMarker[]>,
   setVrCount: (n: number) => void,
-  setSelected: (p: VrProps | null) => void
+  onOpen: (group: VrProps[]) => void
 ) {
   try {
     const res = await fetch("/api/vr-points");
@@ -208,24 +259,38 @@ async function loadVrLayer(
     const fc = (await res.json()) as { features?: VrFeature[] };
     const features = fc.features ?? [];
 
+    // Group co-located videos so stacked pins don't hide each other.
+    const groups = new Map<string, { coords: [number, number]; items: VrProps[] }>();
     for (const f of features) {
-      const p = f.properties;
+      const [lng, lat] = f.geometry.coordinates;
+      const key = `${lng.toFixed(4)},${lat.toFixed(4)}`;
+      const g = groups.get(key);
+      if (g) g.items.push(f.properties);
+      else groups.set(key, { coords: f.geometry.coordinates, items: [f.properties] });
+    }
+
+    for (const { coords, items } of groups.values()) {
+      const head = items[0];
       const el = document.createElement("button");
       el.type = "button";
-      el.className = `vr-marker vr-marker-${p.kind}`;
-      el.title = p.name;
+      el.className = `vr-marker vr-marker-${head.kind}`;
+      el.title = items.length > 1 ? `${items.length} videos · ${head.place ?? ""}` : head.name;
       const img = document.createElement("img");
-      img.src = p.thumbGrid || p.thumb;
+      img.src = head.thumbGrid || head.thumb;
       img.alt = "";
       img.loading = "lazy";
       el.appendChild(img);
+      if (items.length > 1) {
+        const badge = document.createElement("span");
+        badge.className = "vr-badge";
+        badge.textContent = String(items.length);
+        el.appendChild(badge);
+      }
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-        setSelected(p);
+        onOpen(items);
       });
-      const marker = new mapboxgl.Marker({ element: el })
-        .setLngLat(f.geometry.coordinates)
-        .addTo(map);
+      const marker = new mapboxgl.Marker({ element: el }).setLngLat(coords).addTo(map);
       markersRef.current.push(marker);
     }
     setVrCount(features.length);
@@ -238,17 +303,22 @@ async function loadVrLayer(
 
 const VR_CSS = `
 .atlas-map .vr-marker {
-  padding: 0; border: 0; background: none; cursor: pointer; line-height: 0;
+  position: relative; padding: 0; border: 0; background: none; cursor: pointer; line-height: 0;
   transform: scale(var(--vr-scale, 0.6)); transform-origin: center bottom;
   transition: transform 120ms ease-out;
 }
 .atlas-map .vr-marker img {
   width: 46px; height: 46px; object-fit: cover; border-radius: 8px;
-  border: 2px solid #f4c95d; box-shadow: 0 2px 10px rgba(0,0,0,0.55);
-  display: block;
+  border: 2px solid #f4c95d; box-shadow: 0 2px 10px rgba(0,0,0,0.55); display: block;
 }
 .atlas-map .vr-marker:hover { z-index: 5; }
 .atlas-map .vr-marker:hover img { border-color: #ffe39a; }
+.atlas-map .vr-badge {
+  position: absolute; top: -7px; right: -7px; min-width: 19px; height: 19px;
+  padding: 0 5px; border-radius: 999px; background: #f4c95d; color: #1a1206;
+  font: 700 11px/19px system-ui, sans-serif; text-align: center;
+  border: 1.5px solid #0d0d0f;
+}
 .atlas-map.vr-hidden .vr-marker, .vr-hidden .vr-marker { display: none; }
 
 .atlas-map .vr-toggle {
@@ -260,13 +330,9 @@ const VR_CSS = `
   border: 1px solid rgba(244,201,93,0.35);
 }
 .atlas-map .vr-toggle.on { border-color: #f4c95d; color: #fff; }
-.atlas-map .vr-toggle .vr-dot {
-  width: 9px; height: 9px; border-radius: 50%; background: #555;
-}
+.atlas-map .vr-toggle .vr-dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
 .atlas-map .vr-toggle.on .vr-dot { background: #f4c95d; box-shadow: 0 0 8px #f4c95d; }
-.atlas-map .vr-toggle .vr-count {
-  font-size: 11px; opacity: 0.75; padding-left: 2px;
-}
+.atlas-map .vr-toggle .vr-count { font-size: 11px; opacity: 0.75; padding-left: 2px; }
 
 .atlas-map .vr-player {
   position: absolute; inset: 0; z-index: 20;
@@ -274,9 +340,9 @@ const VR_CSS = `
   background: rgba(0,0,0,0.66); backdrop-filter: blur(3px); padding: 18px;
 }
 .atlas-map .vr-player-card {
-  position: relative; width: min(880px, 100%);
+  position: relative; width: min(880px, 100%); max-height: 100%; overflow: auto;
   background: #0d0d0f; border: 1px solid rgba(244,201,93,0.35);
-  border-radius: 14px; overflow: hidden; box-shadow: 0 18px 60px rgba(0,0,0,0.6);
+  border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,0.6);
 }
 .atlas-map .vr-frame { position: relative; aspect-ratio: 16 / 9; background: #000; }
 .atlas-map .vr-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -289,8 +355,47 @@ const VR_CSS = `
 .atlas-map .vr-close {
   position: absolute; top: 8px; right: 8px; z-index: 2;
   width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-  color: #fff; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.25);
-  font-size: 14px;
+  color: #fff; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.25); font-size: 14px;
+}
+.atlas-map .vr-back {
+  position: absolute; top: 8px; left: 8px; z-index: 2; cursor: pointer;
+  padding: 5px 11px; border-radius: 999px; color: #fff;
+  background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.25);
+  font: 600 12px/1 system-ui, sans-serif;
+}
+.atlas-map .vr-gallery { padding: 16px; }
+.atlas-map .vr-gallery-head {
+  display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; color: #e9e3d5;
+  font: 13px/1.35 system-ui, sans-serif;
+}
+.atlas-map .vr-gallery-head strong { font-size: 16px; color: #fff; }
+.atlas-map .vr-gallery-head span { opacity: 0.7; }
+.atlas-map .vr-gallery-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;
+}
+.atlas-map .vr-gallery-item {
+  position: relative; padding: 0; border: 0; background: none; cursor: pointer; text-align: left;
+}
+.atlas-map .vr-gallery-item img {
+  width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px;
+  border: 1px solid rgba(244,201,93,0.4); display: block;
+}
+.atlas-map .vr-gallery-item:hover img { border-color: #f4c95d; }
+.atlas-map .vr-gallery-play {
+  position: absolute; top: 6px; left: 8px; display: inline-flex; align-items: center; gap: 6px;
+}
+.atlas-map .vr-play-icon {
+  width: 22px; height: 22px; border-radius: 50%; background: rgba(244,201,93,0.92);
+  color: #0d0d0f; font-size: 10px; line-height: 22px; text-align: center;
+}
+.atlas-map .vr-gallery-play em {
+  font-style: normal; font: 600 11px/1 system-ui, sans-serif; color: #fff;
+  background: rgba(0,0,0,0.55); padding: 4px 6px; border-radius: 6px;
+}
+.atlas-map .vr-gallery-title {
+  display: block; margin-top: 5px; color: #d9d4c8;
+  font: 12px/1.3 system-ui, sans-serif;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 `;
 
