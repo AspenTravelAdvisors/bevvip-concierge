@@ -903,7 +903,7 @@ initLivingAtlas();
    location so co-located videos (Raivavae has 7) share one pin + gallery. They
    scale with zoom and play the 360° in-app via the embed iframe. Mapbox owns the
    marker root's transform, so the scale lives on an inner wrapper. */
-let vrWired=false, vrOn=true, vrMarkers=[], vrGroup=null;
+let vrWired=false, vrOn=false, vrMarkers=[], vrGroup=null;   // layer hidden until toggled on
 const VR_ZMIN=1.25, VR_ZMAX=6, VR_SMIN=0.42, VR_SMAX=1.5;
 function vrApplyScale(){
   if(!lmap) return;
@@ -948,9 +948,10 @@ async function loadVrLayer(){
 function vrBuildToggle(){
   const host=el("livingAtlas"); if(!host || el("vrToggle")) return;
   const b=document.createElement("button");
-  b.id="vrToggle"; b.type="button"; b.className="vr-toggle on";
+  b.id="vrToggle"; b.type="button"; b.className="vr-toggle";   // starts off
   b.innerHTML='<span class="vr-dot"></span> 360° VR <span id="vrCount" class="vr-toggle-count"></span>';
   b.addEventListener("click",()=>{ vrOn=!vrOn; b.classList.toggle("on",vrOn); host.classList.toggle("vr-hidden",!vrOn); });
+  host.classList.add("vr-hidden");   // hidden by default; toggle reveals
   host.appendChild(b);
 }
 function vrBuildModal(){
@@ -961,33 +962,28 @@ function vrBuildModal(){
   d.addEventListener("click",e=>{ if(e.target===d) vrClose(); });
   document.body.appendChild(d);
 }
-function vrOpen(items){ vrGroup=items; if(items.length===1) vrPlay(items[0]); else vrGallery(items); el("vrModal").style.display="flex"; }
-function vrClose(){ const m=el("vrModal"); if(m){ m.style.display="none"; el("vrCard").innerHTML=""; } vrGroup=null; }
-function vrPlay(v){
-  const multi=vrGroup&&vrGroup.length>1, card=el("vrCard");
-  card.innerHTML='<button type="button" class="vr-close" aria-label="Close">&#10005;</button>'+
-    (multi?'<button type="button" class="vr-back">&#8249; All '+vrGroup.length+' here</button>':'')+
-    '<div class="vr-frame"><iframe src="'+escapeHtml(v.embed)+'?autoplay=1&rel=0&playsinline=1" title="'+escapeHtml(v.name)+'" allow="accelerometer; autoplay; gyroscope; encrypted-media; fullscreen" allowfullscreen></iframe></div>'+
-    '<div class="vr-meta"><strong>'+escapeHtml(v.name)+'</strong><span>'+escapeHtml(v.place||v.region||"")+(v.duration?' · '+escapeHtml(v.duration):'')+'</span></div>';
-  card.querySelector(".vr-close").addEventListener("click",vrClose);
-  const bk=card.querySelector(".vr-back"); if(bk) bk.addEventListener("click",()=>vrGallery(vrGroup));
+/* Playback goes to YouTube, not an in-app iframe: the embed caps at 480p /
+   magic-window, while YouTube gives full-res 360° with gyro. A single-video pin
+   opens its video directly; a cluster opens a small chooser of YouTube links. */
+function vrOpen(items){
+  if(items.length===1){ vrGoto(items[0]); return; }
+  vrGroup=items; vrGallery(items); el("vrModal").style.display="flex";
 }
+function vrGoto(v){ window.open(v.watch, "_blank", "noopener"); }
+function vrClose(){ const m=el("vrModal"); if(m){ m.style.display="none"; el("vrCard").innerHTML=""; } vrGroup=null; }
 function vrGallery(items){
   vrGroup=items; const head=items[0], card=el("vrCard");
   let grid="";
   for(const v of items){
-    grid+='<button type="button" class="vr-gallery-item" data-id="'+escapeHtml(v.id)+'">'+
+    grid+='<a class="vr-gallery-item" href="'+escapeHtml(v.watch)+'" target="_blank" rel="noopener">'+
       '<img src="'+escapeHtml(v.thumbGrid||v.thumb)+'" alt="" loading="lazy">'+
       '<span class="vr-gallery-play"><span class="vr-play-icon">&#9654;</span>'+(v.duration?'<em>'+escapeHtml(v.duration)+'</em>':'')+'</span>'+
-      '<span class="vr-gallery-title">'+escapeHtml(v.name)+'</span></button>';
+      '<span class="vr-gallery-title">'+escapeHtml(v.name)+'</span></a>';
   }
   card.innerHTML='<button type="button" class="vr-close" aria-label="Close">&#10005;</button>'+
-    '<div class="vr-gallery"><div class="vr-gallery-head"><strong>'+escapeHtml(head.place||head.region||"")+'</strong><span>'+items.length+' 360° videos here</span></div>'+
+    '<div class="vr-gallery"><div class="vr-gallery-head"><strong>'+escapeHtml(head.place||head.region||"")+'</strong><span>'+items.length+' 360° videos · opens on YouTube &#8599;</span></div>'+
     '<div class="vr-gallery-grid">'+grid+'</div></div>';
   card.querySelector(".vr-close").addEventListener("click",vrClose);
-  card.querySelectorAll(".vr-gallery-item").forEach(btn=>{
-    btn.addEventListener("click",()=>{ const v=items.find(x=>x.id===btn.getAttribute("data-id")); if(v) vrPlay(v); });
-  });
 }
 function vrInjectStyles(){
   if(el("vrCss")) return;
@@ -1014,7 +1010,7 @@ function vrInjectStyles(){
     '.vr-gallery{padding:16px}.vr-gallery-head{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;color:#e9e3d5;font:13px/1.35 system-ui,sans-serif}'+
     '.vr-gallery-head strong{font-size:16px;color:#fff}.vr-gallery-head span{opacity:.7}'+
     '.vr-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}'+
-    '.vr-gallery-item{position:relative;padding:0;border:0;background:none;cursor:pointer;text-align:left}'+
+    '.vr-gallery-item{position:relative;display:block;padding:0;border:0;background:none;cursor:pointer;text-align:left;text-decoration:none;color:inherit}'+
     '.vr-gallery-item img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid rgba(244,201,93,.4);display:block}'+
     '.vr-gallery-item:hover img{border-color:#f4c95d}'+
     '.vr-gallery-play{position:absolute;top:6px;left:8px;display:inline-flex;align-items:center;gap:6px}'+
