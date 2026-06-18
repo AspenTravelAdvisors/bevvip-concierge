@@ -275,17 +275,22 @@ async function loadVrLayer(
       el.type = "button";
       el.className = `vr-marker vr-marker-${head.kind}`;
       el.title = items.length > 1 ? `${items.length} videos · ${head.place ?? ""}` : head.name;
+      // Mapbox owns the marker root's transform (positioning), so the zoom scale
+      // lives on this inner wrapper or it gets clobbered.
+      const wrap = document.createElement("span");
+      wrap.className = "vr-thumb";
       const img = document.createElement("img");
       img.src = head.thumbGrid || head.thumb;
       img.alt = "";
       img.loading = "lazy";
-      el.appendChild(img);
+      wrap.appendChild(img);
       if (items.length > 1) {
         const badge = document.createElement("span");
         badge.className = "vr-badge";
         badge.textContent = String(items.length);
-        el.appendChild(badge);
+        wrap.appendChild(badge);
       }
+      el.appendChild(wrap);
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onOpen(items);
@@ -303,16 +308,19 @@ async function loadVrLayer(
 
 const VR_CSS = `
 .atlas-map .vr-marker {
-  position: relative; padding: 0; border: 0; background: none; cursor: pointer; line-height: 0;
+  padding: 0; border: 0; background: none; cursor: pointer; line-height: 0;
+}
+.atlas-map .vr-thumb {
+  display: block; position: relative;
   transform: scale(var(--vr-scale, 0.6)); transform-origin: center bottom;
   transition: transform 120ms ease-out;
 }
-.atlas-map .vr-marker img {
+.atlas-map .vr-thumb img {
   width: 46px; height: 46px; object-fit: cover; border-radius: 8px;
   border: 2px solid #f4c95d; box-shadow: 0 2px 10px rgba(0,0,0,0.55); display: block;
 }
 .atlas-map .vr-marker:hover { z-index: 5; }
-.atlas-map .vr-marker:hover img { border-color: #ffe39a; }
+.atlas-map .vr-marker:hover .vr-thumb img { border-color: #ffe39a; }
 .atlas-map .vr-badge {
   position: absolute; top: -7px; right: -7px; min-width: 19px; height: 19px;
   padding: 0 5px; border-radius: 999px; background: #f4c95d; color: #1a1206;

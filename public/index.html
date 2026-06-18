@@ -425,6 +425,7 @@ window.initLivingAtlas = function(){
       loadHotelField();
       loadRegions();
       loadTypeOverlays();
+      loadVrLayer();
       if(restyling){
         // basemap switch: keep the traveler's current camera and re-plot any subset
         restyling=false;
@@ -894,6 +895,134 @@ const GUIDE_CARD_LIMIT_PER_CATEGORY = 4;
 
 // boot the Mapbox globe (mapbox-gl is loaded via the <script> tag in <head>)
 initLivingAtlas();
+
+/* ---- 360° VR layer: BeVvip's own LuxuryTravelVR videos as globe pins ----
+   Feed: /api/vr-points (77 videos, hand-geocoded from titles — YouTube exposes
+   no geolocation for the channel). Thumbnails are HTML markers (not GL images,
+   so cross-origin YouTube stills never taint the WebGL canvas), grouped by
+   location so co-located videos (Raivavae has 7) share one pin + gallery. They
+   scale with zoom and play the 360° in-app via the embed iframe. Mapbox owns the
+   marker root's transform, so the scale lives on an inner wrapper. */
+let vrWired=false, vrOn=true, vrMarkers=[], vrGroup=null;
+const VR_ZMIN=1.25, VR_ZMAX=6, VR_SMIN=0.42, VR_SMAX=1.5;
+function vrApplyScale(){
+  if(!lmap) return;
+  const z=lmap.getZoom();
+  const t=Math.min(1,Math.max(0,(z-VR_ZMIN)/(VR_ZMAX-VR_ZMIN)));
+  const c=el("livingAtlas");
+  if(c) c.style.setProperty("--vr-scale",(VR_SMIN+t*(VR_SMAX-VR_SMIN)).toFixed(3));
+}
+async function loadVrLayer(){
+  if(vrWired || location.protocol==="file:" || !lmap) return;
+  vrWired=true;
+  vrInjectStyles(); vrBuildToggle(); vrBuildModal();
+  let fc;
+  try{ const r=await fetch("/api/vr-points",{cache:"no-store"}); if(!r.ok) return; fc=await r.json(); }
+  catch(_){ return; }
+  const feats=(fc&&fc.features)||[];
+  const groups=new Map();
+  for(const f of feats){
+    const [lng,lat]=f.geometry.coordinates;
+    const key=lng.toFixed(4)+","+lat.toFixed(4);
+    let g=groups.get(key);
+    if(!g){ g={coords:f.geometry.coordinates,items:[]}; groups.set(key,g); }
+    g.items.push(f.properties);
+  }
+  for(const g of groups.values()){
+    const head=g.items[0], multi=g.items.length>1;
+    const root=document.createElement("button");
+    root.type="button"; root.className="vr-marker";
+    root.title=multi?(g.items.length+" videos · "+(head.place||"")):head.name;
+    const wrap=document.createElement("span"); wrap.className="vr-thumb";
+    const img=document.createElement("img"); img.src=head.thumbGrid||head.thumb; img.alt=""; img.loading="lazy";
+    wrap.appendChild(img);
+    if(multi){ const b=document.createElement("span"); b.className="vr-badge"; b.textContent=String(g.items.length); wrap.appendChild(b); }
+    root.appendChild(wrap);
+    root.addEventListener("click",ev=>{ ev.stopPropagation(); vrOpen(g.items); });
+    vrMarkers.push(new mapboxgl.Marker({element:root}).setLngLat(g.coords).addTo(lmap));
+  }
+  vrApplyScale();
+  lmap.on("zoom",vrApplyScale);
+  const tc=el("vrCount"); if(tc) tc.textContent=String(feats.length);
+}
+function vrBuildToggle(){
+  const host=el("livingAtlas"); if(!host || el("vrToggle")) return;
+  const b=document.createElement("button");
+  b.id="vrToggle"; b.type="button"; b.className="vr-toggle on";
+  b.innerHTML='<span class="vr-dot"></span> 360° VR <span id="vrCount" class="vr-toggle-count"></span>';
+  b.addEventListener("click",()=>{ vrOn=!vrOn; b.classList.toggle("on",vrOn); host.classList.toggle("vr-hidden",!vrOn); });
+  host.appendChild(b);
+}
+function vrBuildModal(){
+  if(el("vrModal")) return;
+  const d=document.createElement("div");
+  d.id="vrModal"; d.className="vr-player"; d.style.display="none";
+  d.innerHTML='<div class="vr-player-card" id="vrCard"></div>';
+  d.addEventListener("click",e=>{ if(e.target===d) vrClose(); });
+  document.body.appendChild(d);
+}
+function vrOpen(items){ vrGroup=items; if(items.length===1) vrPlay(items[0]); else vrGallery(items); el("vrModal").style.display="flex"; }
+function vrClose(){ const m=el("vrModal"); if(m){ m.style.display="none"; el("vrCard").innerHTML=""; } vrGroup=null; }
+function vrPlay(v){
+  const multi=vrGroup&&vrGroup.length>1, card=el("vrCard");
+  card.innerHTML='<button type="button" class="vr-close" aria-label="Close">&#10005;</button>'+
+    (multi?'<button type="button" class="vr-back">&#8249; All '+vrGroup.length+' here</button>':'')+
+    '<div class="vr-frame"><iframe src="'+escapeHtml(v.embed)+'?autoplay=1&rel=0&playsinline=1" title="'+escapeHtml(v.name)+'" allow="accelerometer; autoplay; gyroscope; encrypted-media; fullscreen" allowfullscreen></iframe></div>'+
+    '<div class="vr-meta"><strong>'+escapeHtml(v.name)+'</strong><span>'+escapeHtml(v.place||v.region||"")+(v.duration?' · '+escapeHtml(v.duration):'')+'</span></div>';
+  card.querySelector(".vr-close").addEventListener("click",vrClose);
+  const bk=card.querySelector(".vr-back"); if(bk) bk.addEventListener("click",()=>vrGallery(vrGroup));
+}
+function vrGallery(items){
+  vrGroup=items; const head=items[0], card=el("vrCard");
+  let grid="";
+  for(const v of items){
+    grid+='<button type="button" class="vr-gallery-item" data-id="'+escapeHtml(v.id)+'">'+
+      '<img src="'+escapeHtml(v.thumbGrid||v.thumb)+'" alt="" loading="lazy">'+
+      '<span class="vr-gallery-play"><span class="vr-play-icon">&#9654;</span>'+(v.duration?'<em>'+escapeHtml(v.duration)+'</em>':'')+'</span>'+
+      '<span class="vr-gallery-title">'+escapeHtml(v.name)+'</span></button>';
+  }
+  card.innerHTML='<button type="button" class="vr-close" aria-label="Close">&#10005;</button>'+
+    '<div class="vr-gallery"><div class="vr-gallery-head"><strong>'+escapeHtml(head.place||head.region||"")+'</strong><span>'+items.length+' 360° videos here</span></div>'+
+    '<div class="vr-gallery-grid">'+grid+'</div></div>';
+  card.querySelector(".vr-close").addEventListener("click",vrClose);
+  card.querySelectorAll(".vr-gallery-item").forEach(btn=>{
+    btn.addEventListener("click",()=>{ const v=items.find(x=>x.id===btn.getAttribute("data-id")); if(v) vrPlay(v); });
+  });
+}
+function vrInjectStyles(){
+  if(el("vrCss")) return;
+  const s=document.createElement("style"); s.id="vrCss";
+  s.textContent=
+    '#livingAtlas .vr-marker{padding:0;border:0;background:none;cursor:pointer;line-height:0}'+
+    '#livingAtlas .vr-thumb{display:block;position:relative;transform:scale(var(--vr-scale,0.55));transform-origin:center bottom;transition:transform 120ms ease-out}'+
+    '#livingAtlas .vr-thumb img{width:46px;height:46px;object-fit:cover;border-radius:8px;border:2px solid #f4c95d;box-shadow:0 2px 10px rgba(0,0,0,.55);display:block}'+
+    '#livingAtlas .vr-marker:hover{z-index:5}#livingAtlas .vr-marker:hover .vr-thumb img{border-color:#ffe39a}'+
+    '#livingAtlas .vr-badge{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#f4c95d;color:#1a1206;font:700 11px/19px system-ui,sans-serif;text-align:center;border:1.5px solid #0d0d0f}'+
+    '#livingAtlas.vr-hidden .vr-marker{display:none}'+
+    '#livingAtlas .vr-toggle{position:absolute;left:12px;bottom:12px;z-index:6;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;font:600 13px/1 system-ui,sans-serif;color:#e9e3d5;background:rgba(18,18,20,.78);border:1px solid rgba(244,201,93,.35)}'+
+    '#livingAtlas .vr-toggle.on{border-color:#f4c95d;color:#fff}'+
+    '#livingAtlas .vr-toggle .vr-dot{width:9px;height:9px;border-radius:50%;background:#555}'+
+    '#livingAtlas .vr-toggle.on .vr-dot{background:#f4c95d;box-shadow:0 0 8px #f4c95d}'+
+    '#livingAtlas .vr-toggle-count{font-size:11px;opacity:.75;padding-left:2px}'+
+    '.vr-player{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.66);padding:18px}'+
+    '.vr-player-card{position:relative;width:min(880px,100%);max-height:100%;overflow:auto;background:#0d0d0f;border:1px solid rgba(244,201,93,.35);border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.6)}'+
+    '.vr-frame{position:relative;aspect-ratio:16/9;background:#000}.vr-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}'+
+    '.vr-meta{display:flex;flex-direction:column;gap:3px;padding:12px 16px;color:#e9e3d5;font:13px/1.35 system-ui,sans-serif}'+
+    '.vr-meta strong{font-size:15px;color:#fff}.vr-meta span{opacity:.7}'+
+    '.vr-close{position:absolute;top:8px;right:8px;z-index:2;width:32px;height:32px;border-radius:50%;cursor:pointer;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);font-size:14px}'+
+    '.vr-back{position:absolute;top:8px;left:8px;z-index:2;cursor:pointer;padding:5px 11px;border-radius:999px;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);font:600 12px/1 system-ui,sans-serif}'+
+    '.vr-gallery{padding:16px}.vr-gallery-head{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;color:#e9e3d5;font:13px/1.35 system-ui,sans-serif}'+
+    '.vr-gallery-head strong{font-size:16px;color:#fff}.vr-gallery-head span{opacity:.7}'+
+    '.vr-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}'+
+    '.vr-gallery-item{position:relative;padding:0;border:0;background:none;cursor:pointer;text-align:left}'+
+    '.vr-gallery-item img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid rgba(244,201,93,.4);display:block}'+
+    '.vr-gallery-item:hover img{border-color:#f4c95d}'+
+    '.vr-gallery-play{position:absolute;top:6px;left:8px;display:inline-flex;align-items:center;gap:6px}'+
+    '.vr-play-icon{width:22px;height:22px;border-radius:50%;background:rgba(244,201,93,.92);color:#0d0d0f;font-size:10px;line-height:22px;text-align:center}'+
+    '.vr-gallery-play em{font-style:normal;font:600 11px/1 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.55);padding:4px 6px;border-radius:6px}'+
+    '.vr-gallery-title{display:-webkit-box;margin-top:5px;color:#d9d4c8;font:12px/1.3 system-ui,sans-serif;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}';
+  document.head.appendChild(s);
+}
 
 /* ---- helpers ---- */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
