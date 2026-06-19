@@ -18,6 +18,13 @@ const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
 const MAX_TOKENS = 1500;
 const MAX_TOOL_ROUNDS = 4;
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+// Abort the model call if it produces nothing for this long. Without it a stalled
+// upstream blocks until Vercel's maxDuration terminates the function, dropping the
+// SSE stream so the browser only sees an opaque "Load failed".
+const ANTHROPIC_IDLE_TIMEOUT_MS = Number(process.env.ANTHROPIC_IDLE_TIMEOUT_MS) || 30000;
+// Heartbeat comment cadence: keeps the SSE connection alive through proxies during
+// the gaps between rounds (model latency, atlas tool calls) so it is not dropped.
+const SSE_HEARTBEAT_MS = Number(process.env.SSE_HEARTBEAT_MS) || 10000;
 
 // ── Core loop (exported for tests) ──────────────────────────────────────────
 // callModel({system, messages, tools}) -> resolved Anthropic message object.
@@ -223,6 +230,12 @@ export default async function handler(req, res) {
   res.flushHeaders?.();
 
   const send = (obj) => res.write(`data: ${JSON.stringify(obj)}\n\n`);
+  // Comment-only frames (": ...") are ignored by the client's SSE parser but keep
+  // the connection warm across the gaps between rounds, where intermediaries would
+  // otherwise time out an idle stream.
+  const heartbeat = setInterval(() => {
+    try { res.write(': keepalive\n\n'); } catch { /* connection already closed */ }
+  }, SSE_HEARTBEAT_MS);
 
   try {
     const { toolMeta, stopReason } = await runGuideTurnStream({
@@ -236,6 +249,7 @@ export default async function handler(req, res) {
     console.error('Guide error:', err);
     send({ type: 'error', error: String((err && err.message) || err) });
   } finally {
+    clearInterval(heartbeat);
     res.end();
   }
 }
@@ -263,26 +277,43 @@ function makeAnthropicCaller(apiKey) {
 
 function makeAnthropicStreamCaller(apiKey) {
   return async ({ system, messages, tools, onText }) => {
-    const r = await fetch(ANTHROPIC_URL, {
-      method: 'POST',
-      headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system, messages, tools, stream: true }),
-    });
-    if (!r.ok) {
-      const t = await r.text();
-      const err = new Error(`anthropic ${r.status}: ${t}`);
-      err.status = r.status;
+    const controller = new AbortController();
+    let idleTimer;
+    const resetIdle = () => {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => controller.abort(), ANTHROPIC_IDLE_TIMEOUT_MS);
+    };
+    resetIdle();
+    try {
+      const r = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system, messages, tools, stream: true }),
+        signal: controller.signal,
+      });
+      if (!r.ok) {
+        const t = await r.text();
+        const err = new Error(`anthropic ${r.status}: ${t}`);
+        err.status = r.status;
+        throw err;
+      }
+      return await readAnthropicStream(r.body, onText, resetIdle);
+    } catch (err) {
+      if (controller.signal.aborted) {
+        throw new Error('The model stalled and the request timed out. Please try again.');
+      }
       throw err;
+    } finally {
+      clearTimeout(idleTimer);
     }
-    return readAnthropicStream(r.body, onText);
   };
 }
 
-async function readAnthropicStream(body, onText = () => {}) {
+async function readAnthropicStream(body, onText = () => {}, onActivity = () => {}) {
   const reader = body.getReader();
   const decoder = new TextDecoder();
   const content = [];
@@ -334,6 +365,7 @@ async function readAnthropicStream(body, onText = () => {}) {
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
+    onActivity();
     buf += decoder.decode(value, { stream: true });
     const frames = buf.split('\n\n');
     buf = frames.pop() || '';

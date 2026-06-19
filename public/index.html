@@ -1585,7 +1585,15 @@ async function sendText(text){
     if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
     if(typing.parentNode) typing.remove();
     if(target){ gb.innerHTML = mdToHtml(target) || "<p></p>"; }
-    const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+err.message;
+    // A bare fetch/stream failure surfaces in WebKit as "Load failed" and in other
+    // engines as "Failed to fetch" — opaque transport drops, not a Guide error.
+    // Rephrase those as a retry hint; pass through real backend messages verbatim.
+    const raw=String((err&&err.message)||err||"");
+    const transportDrop = (err&&err.name==="TypeError") || /load failed|failed to fetch|networkerror/i.test(raw);
+    const msg = transportDrop
+      ? "the connection dropped before the reply finished. Tap send to try again."
+      : raw;
+    const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+msg;
     gb.appendChild(e);
   }finally{
     busy=false; sendBtn.disabled=false; focusInput();
