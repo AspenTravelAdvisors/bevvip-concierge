@@ -418,6 +418,140 @@ main.page {
   position: relative;
   overflow: hidden;
 }
+/* Win over Mapbox's own `.mapboxgl-map { position: relative }` (same specificity,
+   loaded later) so the container actually fills .atlas-map instead of collapsing
+   to a 0-height flex item. */
+.atlas-map .atlas-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.atlas-canvas .mapboxgl-canvas {
+  outline: none;
+}
+
+/* Layer legend — color key, tap a row to toggle that layer. */
+.atlas-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  background: rgba(10, 10, 12, 0.78);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.atlas-legend .lgcap {
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 4px 3px;
+}
+.atlas-legend .lgi {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+  padding: 3px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+.atlas-legend .lgi:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.atlas-legend .lgi i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+.atlas-legend .lgi.off {
+  opacity: 0.4;
+}
+.atlas-legend .lgi.off span {
+  text-decoration: line-through;
+}
+
+/* Mapbox popup → house style. */
+.mapboxgl-popup-content {
+  background: #14130e !important;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: var(--sans);
+  padding: 11px 13px !important;
+}
+.mapboxgl-popup-tip {
+  border-top-color: #14130e !important;
+  border-bottom-color: #14130e !important;
+}
+.mapboxgl-popup-close-button {
+  color: var(--sub);
+  font-size: 16px;
+}
+.iw .iwn {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold-light);
+}
+.iw .iwm {
+  font-size: 11.5px;
+  color: var(--sub);
+  margin: 2px 0 7px;
+}
+.iw a {
+  font-size: 12px;
+}
+
+/* ── Landing: chat + Living Atlas, side by side ───── */
+.home {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.home-chat {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+}
+.home-chat .chat {
+  flex: 1;
+}
+.home-atlas {
+  flex: 0 0 44%;
+  max-width: 560px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  gap: 12px;
+}
+.home-atlas-head h2 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+.home-atlas-head p {
+  color: var(--sub);
+  font-size: 12.5px;
+  margin: 0;
+}
 .atlas-map .fallback {
   text-align: center;
   max-width: 420px;
@@ -444,6 +578,25 @@ main.page {
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 14px;
+}
+
+/* Stack chat over the atlas once the two panes get cramped. */
+@media (max-width: 900px) {
+  .home {
+    flex-direction: column;
+  }
+  .home-chat {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    min-height: 52vh;
+  }
+  .home-atlas {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+  .home-atlas .atlas-map {
+    min-height: 46vh;
+  }
 }
 
 @media (max-width: 640px) {
