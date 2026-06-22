@@ -158,6 +158,45 @@ main.page {
   border-color: var(--gold-dim);
 }
 
+/* quick replies — clickable answers when The Guide asks for leading info */
+.quick-replies {
+  margin: 14px 0 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.qr-cap {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+.qr-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.qr-chip {
+  cursor: pointer;
+  border: 1px solid var(--gold-dim);
+  background: var(--card);
+  color: var(--gold-light);
+  border-radius: 999px;
+  padding: 8px 15px;
+  font-size: 13px;
+  font-family: var(--sans);
+  transition: 0.15s;
+  line-height: 1.3;
+}
+.qr-chip:hover {
+  background: var(--card-hover);
+  border-color: var(--gold);
+}
+.qr-chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .msg {
   margin: 0 0 22px;
   display: flex;

@@ -126,7 +126,7 @@ export default function GuideChat() {
         ) : (
           <div className="wrap">
             {turns.map((turn, i) => (
-              <Message key={i} turn={turn} />
+              <Message key={i} turn={turn} onPick={send} busy={busy} />
             ))}
             {status && <div className="status">{status}</div>}
           </div>
@@ -156,22 +156,70 @@ export default function GuideChat() {
   );
 }
 
-function Message({ turn }: { turn: Turn }) {
+function Message({
+  turn,
+  onPick,
+  busy,
+}: {
+  turn: Turn;
+  onPick: (text: string) => void;
+  busy: boolean;
+}) {
   const isUser = turn.role === "user";
+  const options = isUser ? [] : extractOptions(turn.content);
   return (
     <div className={`msg ${isUser ? "user" : "guide"}`}>
       <div className="who">{isUser ? "You" : "G"}</div>
       <div className="body">
         {renderText(turn.content)}
         {turn.meta && <ResultCards meta={turn.meta} />}
+        {options.length > 0 && (
+          <div className="quick-replies">
+            <div className="qr-cap">Tap a reply, or type your own</div>
+            <div className="qr-row">
+              {options.map((opt, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="qr-chip"
+                  disabled={busy}
+                  onClick={() => onPick(opt)}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
+// Strip control tags ([[CHART:..]], [[OPTIONS:..]]) and any trailing partial
+// tag still mid-stream, so they never flash as raw text in the revealed reply.
+function stripControlTags(s: string): string {
+  return s
+    .replace(/\[\[CHART:\s*[a-z]+\]\]/gi, "")
+    .replace(/\[\[OPTIONS:[^\]]*\]\]/gi, "")
+    .replace(/\n*\s*\[\[[^\]]*$/, "")
+    .trim();
+}
+
+// Pull the [[OPTIONS: a | b | c]] tag (if any) into up to 4 quick-reply strings.
+function extractOptions(text: string): string[] {
+  const m = text.match(/\[\[OPTIONS:\s*([^\]]+)\]\]/i);
+  if (!m) return [];
+  return m[1]
+    .split("|")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 4);
+}
+
 // Minimal markdown: paragraphs, **bold**, *italic*, and "- " bullet lists.
 function renderText(text: string) {
-  const blocks = text.split(/\n{2,}/).filter(Boolean);
+  const blocks = stripControlTags(text).split(/\n{2,}/).filter(Boolean);
   return blocks.map((block, i) => {
     const lines = block.split("\n");
     const isList = lines.every((l) => /^\s*[-•]\s+/.test(l));

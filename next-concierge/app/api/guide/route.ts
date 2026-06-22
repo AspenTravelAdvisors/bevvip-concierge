@@ -20,6 +20,8 @@ import {
   searchOfferings,
 } from "@/lib/search-offerings.js";
 import type { ChatMessage, GuideFrame, GuideMeta, GuideToolMeta } from "@/lib/types";
+import { corsHeaders } from "@/lib/guide-cors";
+import { isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -30,20 +32,34 @@ const MAX_TOOL_ROUNDS = 4;
 
 type Send = (frame: GuideFrame) => void;
 
+// CORS preflight. Allowed origins get a 204 carrying the headers; disallowed
+// cross-origin preflights get 403 with none, so the browser refuses the real
+// request. (Legitimate callers are same-origin; see lib/guide-cors.ts.)
+export async function OPTIONS(req: Request) {
+  const cors = corsHeaders(req);
+  const allowed = Object.keys(cors).length > 0;
+  return new Response(null, { status: allowed ? 204 : 403, headers: cors });
+}
+
 export async function POST(req: Request) {
+  const cors = corsHeaders(req);
+
+  const limited = isRateLimited(req, cors);
+  if (limited) return limited;
+
   let messages: ChatMessage[];
   try {
     ({ messages } = await req.json());
   } catch {
-    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+    return Response.json({ error: "Invalid JSON body" }, { status: 400, headers: cors });
   }
   if (!messages || !Array.isArray(messages)) {
-    return Response.json({ error: "Invalid messages format" }, { status: 400 });
+    return Response.json({ error: "Invalid messages format" }, { status: 400, headers: cors });
   }
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json(
       { error: "Claude API key not configured. Set ANTHROPIC_API_KEY." },
-      { status: 500 },
+      { status: 500, headers: cors },
     );
   }
 
@@ -67,6 +83,7 @@ export async function POST(req: Request) {
 
   return new Response(stream, {
     headers: {
+      ...cors,
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
       "X-Accel-Buffering": "no",
