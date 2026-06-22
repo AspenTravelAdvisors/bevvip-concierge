@@ -13,6 +13,8 @@ import {
   prioritizeMentionedPlace,
   searchOfferings,
 } from '../lib/search-offerings.js';
+import { handleCors } from '../lib/guide-cors.js';
+import { isRateLimited } from '../lib/guide-rate-limit.js';
 
 const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
 const MAX_TOKENS = 1500;
@@ -199,16 +201,14 @@ export function summarizeMeta(toolMeta) {
 
 // ── HTTP handler (SSE) ───────────────────────────────────────────────────────
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    return res.status(200).end();
-  }
+  // CORS: reflect only allowlisted origins and answer the OPTIONS preflight.
+  // Every legitimate caller is same-origin; see lib/guide-cors.js.
+  if (handleCors(req, res)) return;
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Best-effort per-IP throttle so a single client can't drain the quota.
+  if (isRateLimited(req, res)) return;
 
   const { messages } = req.body || {};
   if (!messages || !Array.isArray(messages)) {
