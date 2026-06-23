@@ -5,8 +5,8 @@ import { ATLASES, isOfferingType } from "@/lib/atlas-config";
 // not per category — a two-brand comparison ("Aman vs Orient Express") and an
 // open search that surfaced several operators must show every brand, not just
 // whichever the last tool happened to fill the category bucket with.
-const GUIDE_CARD_LIMIT_PER_BRAND = 4;
-const GUIDE_CARD_LIMIT_TOTAL = 12;
+const GUIDE_CARD_LIMIT_PER_BRAND = 5;
+const GUIDE_CARD_LIMIT_TOTAL = 5;
 
 // Rich inventory cards built from the Guide's meta frame. Every card and the
 // shortlist handoff open the full standalone Atlas (in a new tab, so the
@@ -89,7 +89,13 @@ function Card({
 }) {
   const kicker =
     result.brand || result.operator || result.category || fallbackType || "Offering";
-  const where = [result.city, result.country, result.region, result.duration, result.dates]
+  const where = [
+    result.city,
+    result.country,
+    result.region,
+    cardDuration(result),
+    cardDate(result),
+  ]
     .filter(Boolean)
     .join(" · ");
 
@@ -122,6 +128,49 @@ function externalCardLink(result: OfferingResult, type: OfferingType | null): st
   if (!type) return null;
   const base = ATLASES[type].base;
   return result.region ? `${base}/?region=${encodeURIComponent(result.region)}` : base;
+}
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+// The cruise/yacht/world-cruise atlases carry departure timing as `startDate`
+// (an ISO day for expedition cruises, an already-friendly range for yachts and
+// world cruises) plus a `month` ("YYYY-MM") fallback — never the `dates` field
+// hotels would use. Surface whichever real value the record has so cruise cards
+// always show a date.
+function cardDate(result: OfferingResult): string | null {
+  const raw = result.dates ?? (result.startDate as unknown);
+  if (typeof raw === "string" && raw.trim()) {
+    const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) {
+      const [, y, m, d] = iso;
+      const month = MONTHS[Number(m) - 1];
+      return month ? `${Number(d)} ${month} ${y}` : raw;
+    }
+    return raw;
+  }
+  const month = result.month as unknown;
+  if (typeof month === "string") {
+    const m = month.match(/^(\d{4})-(\d{2})$/);
+    if (m) {
+      const label = MONTHS[Number(m[2]) - 1];
+      return label ? `${label} ${m[1]}` : month;
+    }
+  }
+  return null;
+}
+
+// Trip length: hotels carry `duration`; cruises carry `nights`, world cruises
+// carry `days`.
+function cardDuration(result: OfferingResult): string | null {
+  if (result.duration) return String(result.duration);
+  const nights = result.nights as unknown;
+  if (typeof nights === "number") return `${nights} nights`;
+  const days = result.days as unknown;
+  if (typeof days === "number") return `${days} days`;
+  return null;
 }
 
 function normalizeType(raw: string): OfferingType | null {
