@@ -24,10 +24,10 @@ The original app in the repo root is untouched — this lives entirely in
   the Mapbox dark globe when a token is present, otherwise an elegant
   fallback with the external-atlas handoff.
 
-## Intentionally not ported
+## Claude-only
 
-The legacy OpenAI proxy (`api/chat.js`) is **not** included — this version
-is Claude-only. The Guide supersedes it.
+This version is **Claude-only**. The Guide superseded the legacy OpenAI proxy
+(`api/chat.js`), which has since been removed from the repo entirely.
 
 ## Run
 
