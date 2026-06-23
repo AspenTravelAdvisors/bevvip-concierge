@@ -32,7 +32,7 @@
 
   main{flex:1;display:flex;min-height:0}
   /* chat column */
-  .chat{flex:1 1 40%;display:flex;flex-direction:column;min-width:300px;border-right:1px solid var(--line)}
+  .chat{flex:1 1 56%;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line)}
   .transcript{flex:1;overflow-y:auto;padding:26px 22px 8px}
   .wrap{max-width:720px;margin:0 auto}
 
@@ -53,28 +53,22 @@
   .msg .body p{margin:0 0 10px}
   .msg .body p:last-child{margin-bottom:0}
   .msg.user .body{color:var(--text)}
-  .msg .body hr.mdhr{border:0;border-top:1px solid var(--line-soft);margin:14px 0}
-  .msg .body .mdtable-wrap{margin:12px 0 14px;overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025)}
-  .msg .body table.mdtable{width:100%;border-collapse:collapse;min-width:560px;font-size:12.5px;line-height:1.35}
-  .msg .body table.mdtable th,.msg .body table.mdtable td{padding:9px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-soft)}
-  .msg .body table.mdtable th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-light);background:rgba(255,255,255,.035);font-weight:700}
-  .msg .body table.mdtable td{color:var(--text)}
-  .msg .body table.mdtable tr:last-child td{border-bottom:0}
-  .msg .body table.mdtable td:first-child,.msg .body table.mdtable th:first-child{width:42px;text-align:right;color:var(--sub)}
 
   /* result cards */
   .cards{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
-  .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden}
-  .hcard .photo{margin:0 0 12px;background:transparent;overflow:visible;
-    display:grid;grid-template-columns:minmax(86px,108px);align-items:stretch;justify-content:flex-start;gap:8px;
-    position:relative;padding:0;min-height:0}
-  .hcard .photo.has-photos{grid-template-columns:repeat(3,minmax(82px,108px))}
-  .hcard .photo[data-photos="1"]{grid-template-columns:minmax(86px,108px)}
-  .hcard .photo[data-photos="2"]{grid-template-columns:repeat(2,minmax(82px,108px))}
-  .hcard .photo img{width:100%;aspect-ratio:1/1;height:auto;min-width:0;object-fit:cover;display:block;
-    border-radius:8px;border:1px solid var(--line);background:#1a1a1c}
-  .hcard .photo .ph-mark{width:100%;aspect-ratio:1/1;border-radius:8px;border:1px solid var(--line);
-    background:#1a1a1c;color:var(--gold-dim);font-size:30px;display:flex;align-items:center;justify-content:center}
+  .hcard{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 15px;overflow:hidden;cursor:pointer;transition:border-color .15s,background .15s}
+  .hcard:hover{border-color:var(--gold-dim);background:var(--card-hover)}
+
+  /* session restore banner */
+  .session-banner{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:9px;padding:9px 14px;margin:0 0 14px;font-size:12.5px;color:var(--sub)}
+  .session-banner button{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:12px;
+    padding:0;margin-left:auto;font-family:var(--sans)}
+  .session-banner button:hover{color:var(--gold-light)}
+  .hcard .photo{margin:-14px -15px 12px;height:150px;background:#1a1a1c;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;position:relative}
+  .hcard .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .hcard .photo .ph-mark{color:var(--gold-dim);font-size:30px}
   .hcard .photo .sv360{position:absolute;right:9px;bottom:9px;display:none;align-items:center;gap:5px;
     font-size:11px;font-weight:600;letter-spacing:.04em;color:#1a1407;cursor:pointer;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none;border-radius:7px;padding:5px 10px;
@@ -82,33 +76,16 @@
   .hcard .photo .sv360:hover{filter:brightness(1.06)}
   .hcard .nm{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.15}
   .hcard .meta{font-size:12px;color:var(--sub);margin:3px 0 9px;letter-spacing:.2px}
-  .hcard .fitline{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 9px}
-  .hcard .fitline span{font-size:10.5px;color:var(--gold-light);border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:20px;padding:3px 7px}
-  .hcard .quote{font-family:var(--serif);font-size:15px;line-height:1.32;color:var(--gold-light);border-left:2px solid var(--gold-dim);padding-left:9px;margin:8px 0 9px}
   .hcard .ups{list-style:none;margin:0 0 11px;padding:0}
   .hcard .ups li{font-size:12.5px;color:var(--text);padding:3px 0 3px 17px;position:relative;line-height:1.35}
   .hcard .ups li:before{content:'\2726';position:absolute;left:0;top:3px;color:var(--gold);font-size:11px}
   .hcard .book{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#1a1407;
     background:linear-gradient(135deg,var(--gold),var(--gold-light));padding:8px 13px;border-radius:8px}
   .hcard .book:hover{filter:brightness(1.05);text-decoration:none}
-  .compare{margin:14px 0 6px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:rgba(255,255,255,.025)}
-  .compare .ctitle{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);
-    padding:10px 12px;border-bottom:1px solid var(--line-soft)}
-  .compare .ctitle .of{color:var(--sub);font-weight:600;text-transform:none;letter-spacing:.02em;font-size:11px;margin-left:8px}
-  .shownof{font-size:11.5px;color:var(--sub);letter-spacing:.02em;margin:12px 0 -2px}
-  .compare .table{overflow-x:auto}
-  .compare .row{display:grid;grid-template-columns:116px repeat(var(--cols),minmax(170px,1fr));min-width:calc(116px + var(--cols) * 170px)}
-  .compare .row+.row{border-top:1px solid var(--line-soft)}
-  .compare .cell{padding:9px 10px;font-size:12.5px;line-height:1.35;color:var(--text)}
-  .compare .label{color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.018)}
-  .compare .head .cell{font-weight:700;color:var(--gold-light);font-family:var(--serif);font-size:16px;line-height:1.2}
-  @media (max-width:620px){.hcard .photo.has-photos{grid-template-columns:repeat(3,minmax(72px,92px))}.compare .row{grid-template-columns:94px repeat(var(--cols),minmax(148px,1fr));min-width:calc(94px + var(--cols) * 148px)}}
 
   .atlasbtn{display:inline-flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:13px;font-weight:600;
     color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:9px;padding:9px 14px;cursor:pointer;background:transparent}
   .atlasbtn:hover{background:rgba(201,168,76,.08);text-decoration:none}
-  .atlaslinks{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 2px}
-  .atlaslinks .atlasbtn{margin:0}
 
   /* four moves */
   .moves{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 2px;padding-top:14px;border-top:1px solid var(--line-soft)}
@@ -118,19 +95,7 @@
 
   .dots span{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:var(--gold);opacity:.4;animation:b 1.2s infinite}
   .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
-  .stream-status{display:flex;align-items:center;gap:9px;color:var(--sub);font-size:13px}
-  .stream-status .dots{display:inline-flex;align-items:center;flex:0 0 auto}
-  .stream-status .status-text{line-height:1.35}
   @keyframes b{0%,100%{opacity:.3}50%{opacity:1}}
-
-  /* quick replies — clickable answers when The Guide asks for leading info */
-  .quick-replies{margin:14px 0 2px;padding-top:14px;border-top:1px solid var(--line-soft)}
-  .qr-cap{color:var(--muted);font-size:11px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:9px}
-  .qr-row{display:flex;flex-wrap:wrap;gap:8px}
-  .qr-chip{cursor:pointer;border:1px solid var(--gold-dim);background:var(--card);color:var(--gold-light);
-    border-radius:999px;padding:8px 15px;font-size:13px;font-family:var(--sans);transition:.15s;line-height:1.3}
-  .qr-chip:hover{background:var(--card-hover);border-color:var(--gold)}
-  .qr-chip:disabled{opacity:.45;cursor:default}
   .err{color:#e88;font-size:13px;border:1px solid #5a2a2a;background:#1c1010;border-radius:8px;padding:10px 12px}
 
   /* composer */
@@ -146,20 +111,10 @@
   .foot{max-width:720px;margin:8px auto 0;font-size:11px;color:var(--muted);text-align:center}
 
   /* atlas column */
-  .atlas{flex:1 1 60%;display:flex;flex-direction:column;min-width:0;background:#06080c}
+  .atlas{flex:1 1 44%;display:flex;flex-direction:column;min-width:0;background:#06080c}
   .atlas .ah{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
   .atlas .ah{flex-wrap:wrap}
   .atlas .ah .live{margin-left:auto;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim)}
-  .ah .jumps{display:inline-flex;gap:6px;flex-wrap:wrap}
-  .ah .ajump{font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:6px;color:var(--sub);
-    display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-  .ah .ajump:hover{color:var(--text);border-color:var(--gold-dim);text-decoration:none}
-  .ah .ajump i{width:7px;height:7px;border-radius:50%;display:inline-block}
-  .ah .ajump[data-t="hotel"] i{background:#c9a84c}
-  .ah .ajump[data-t="cruise"] i{background:#5aa9e6}
-  .ah .ajump[data-t="jet"] i{background:#dfe5f2}
-  .ah .ajump[data-t="yacht"] i{background:#e0b84a}
-  .ah .ajump[data-t="worldcruise"] i{background:#45d6c2}
   .legend{position:absolute;left:12px;top:12px;z-index:5;display:flex;flex-direction:column;gap:5px;
     background:rgba(12,12,14,.8);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
@@ -170,27 +125,7 @@
   .legend .lgi.all i{box-shadow:0 0 0 2px rgba(201,168,76,.35)}
   .legend .lgi i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .atlas .openext{font-size:11.5px;color:var(--sub)}
-  .atlas.fs{position:fixed;inset:0;z-index:900;flex:1 1 auto;width:auto;height:auto}
   .atlas .mapwrap{position:relative;flex:1;min-height:0}
-  .mapwrap .atlasfull{position:absolute;right:12px;top:12px;z-index:40;line-height:1;padding:6px 11px;
-    background:rgba(12,12,14,.92);border:1px solid var(--gold-dim);color:var(--gold-light);
-    font-size:11.5px;font-weight:600;border-radius:7px;cursor:pointer}
-  .mapwrap .atlasfull:hover{border-color:var(--gold);color:var(--gold)}
-  .mapwrap .atlasstyle{position:absolute;right:12px;top:48px;z-index:40;width:32px;height:32px;
-    display:flex;align-items:center;justify-content:center;padding:0;
-    background:rgba(12,12,14,.92);border:1px solid var(--gold-dim);color:var(--gold-light);
-    border-radius:7px;cursor:pointer}
-  .mapwrap .atlasstyle:hover{border-color:var(--gold);color:var(--gold)}
-  .mapwrap .atlasstyle svg{width:16px;height:16px;display:block}
-  .stylemenu{position:absolute;right:12px;top:86px;z-index:41;display:none;flex-direction:column;
-    min-width:128px;background:rgba(12,12,14,.96);border:1px solid var(--gold-dim);border-radius:8px;
-    overflow:hidden;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-  .stylemenu.open{display:flex}
-  .stylemenu button{appearance:none;background:transparent;border:0;text-align:left;color:var(--text);
-    font-size:12px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px}
-  .stylemenu button:hover{background:rgba(201,168,76,.12)}
-  .stylemenu button.active{color:var(--gold-light);font-weight:600}
-  .stylemenu button .sw{width:11px;height:11px;border-radius:3px;border:1px solid rgba(255,255,255,.22);flex:0 0 auto}
   #livingAtlas{position:absolute;inset:0;background:#06080c}
   #livingAtlas .mapboxgl-canvas{outline:none}
   #livingAtlas .mapboxgl-ctrl-bottom-right,#livingAtlas .mapboxgl-ctrl-bottom-left{opacity:.5}
@@ -203,7 +138,6 @@
   .mapfallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
     color:var(--muted);font-size:13px;padding:24px}
   /* mapbox popup dark fit */
-  .mapboxgl-popup{z-index:30}
   .mapboxgl-popup-content{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);padding:0;border-radius:10px}
   .mapboxgl-popup-close-button{color:var(--sub);font-size:16px;padding:2px 7px;right:2px;top:1px}
   .mapboxgl-popup-tip{display:none}
@@ -237,16 +171,8 @@
 
   @media (max-width:920px){
     main{flex-direction:column}
-    .chat{flex:1 1 auto;min-height:0;min-width:0;border-right:0;border-bottom:1px solid var(--line)}
-    .atlas{flex:0 0 43.2vh}
-    .transcript{padding:22px 18px 8px}
-    .composer{padding:12px 18px 14px}
-    .msg{gap:10px;margin-bottom:20px}
-    .empty{margin-top:3vh}
-    .empty h1{font-size:27px}
-    .empty p{font-size:14px;margin-bottom:16px}
-    /* iOS Safari zooms inputs whose text is < 16px on focus — keep the composer at 16px on mobile to prevent the surprise zoom that loses the frame/branding. */
-    textarea{font-size:16px}
+    .chat{flex:1 1 auto;border-right:0;border-bottom:1px solid var(--line)}
+    .atlas{flex:0 0 42vh}
   }
 </style>
 </head>
@@ -262,14 +188,15 @@
     <section class="chat">
       <div class="transcript" id="transcript">
         <div class="empty" id="empty">
-          <h1>Where are you headed next?</h1>
-          <p>A region, a season, a hotel, or simply the kind of journey you’re craving. I’ll help frame the trip, surface the right possibilities, and guide the first elegant move.</p>
+          <h1>Where are you going next?</h1>
+          <p>Give me a place, a house, a season, or the shape of the journey. I’ll find what’s truly available and sketch the first elegant move. Then an advisor takes it from there.</p>
           <div class="chips" id="chips">
-            <div class="chip">Four Seasons in the Caribbean</div>
-            <div class="chip">Galápagos expedition cruises in February</div>
-            <div class="chip">Aman vs. Orient Express hotel yachts</div>
-            <div class="chip">Around the world by private jet in 2026</div>
-            <div class="chip">World cruises departing January 2027</div>
+            <div class="chip">Aman properties</div>
+            <div class="chip">Orient Express trains</div>
+            <div class="chip">Four Seasons in Italy</div>
+            <div class="chip">Mediterranean beach resorts</div>
+            <div class="chip">Antarctica in January</div>
+            <div class="chip">Galapagos expedition cruises</div>
           </div>
         </div>
       </div>
@@ -286,27 +213,11 @@
       <div class="ah">
         <span>Living Atlas</span>
         <span class="openext" id="openExt"></span>
-        <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Reset</button>
-        <span class="jumps">
-          <a class="ajump" data-t="hotel" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener"><i></i>VIP Hotels</a>
-          <a class="ajump" data-t="cruise" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener"><i></i>Expedition Cruises</a>
-          <a class="ajump" data-t="jet" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener"><i></i>Private Jet Journeys</a>
-          <a class="ajump" data-t="yacht" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener"><i></i>Luxury Hotel Yachts</a>
-          <a class="ajump" data-t="worldcruise" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener"><i></i>World Cruises</a>
-        </span>
-        <span class="live" id="atlasState">all inventory</span>
+        <button class="ghostbtn" id="regionsBtn" style="display:none">&#8634; Regions</button>
+        <span class="live" id="atlasState">marquee regions</span>
       </div>
       <div class="mapwrap">
         <div id="livingAtlas"></div>
-        <button class="ghostbtn atlasfull" id="atlasFull" onclick="toggleAtlasFullscreen()" title="Toggle map fullscreen" aria-pressed="false">&#x26F6; Fullscreen</button>
-        <button class="atlasstyle" id="atlasStyleBtn" onclick="toggleStyleMenu(event)" title="Map style" aria-haspopup="true" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-            <circle cx="8.5" cy="9.5" r="1.6"></circle>
-            <path d="M21 16l-5-5-7 7"></path>
-          </svg>
-        </button>
-        <div class="stylemenu" id="styleMenu" role="menu"></div>
         <div class="badge" id="atlasBadge" style="display:none"></div>
         <div class="legend" id="legend"></div>
         <div class="mapfallback" id="mapFallback" style="display:none">Map unavailable. Use <b>Open in Atlas</b> to view the subset.</div>
@@ -331,9 +242,7 @@ const ATLAS_BASE = "https://luxury-hotel-atlas-two.vercel.app";
 const GUIDE_ENDPOINT = "/api/guide";
 // Mapbox public token (Aspen Travel). Public by design — URL-restrict it to your deploy domains in the Mapbox account.
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
-const HOTEL_DOT_MIN_ZOOM = 2.45;     // let hotels emerge before the ambient cloud fades
-const HOTEL_CLICK_MIN_ZOOM = 4;      // below this dots overlap — taps stay ambient, not clickable
-const HOTEL_DENSITY_SOURCE = "hotel-density";
+const SUBSET_CAP = 60;               // taste rule: never hold more than ~60 live pins
 const CONTACT = { email:"Book@BeVvip.com", tel:"970.925.1002", telHref:"tel:+19709251002" };
 // Google Maps key — used only for card photos (Places) + 360 (Street View), not the globe.
 const MAPS_KEY = "AIzaSyCNfdeSm1utRW9DFZP-TL2eBwKP2kiF0Bg";
@@ -345,26 +254,18 @@ function whenGmaps(fn){ if(gmapsReady) fn(); else _gmapsCbs.push(fn); }
 // Master atlas overlays: cruise / jet / yacht region pins, each from its own live app data.
 // Colors are distinguishable on the dark globe (jet "black" reads as platinum here so it stays visible).
 const ATLAS_TYPES = {
-  cruise: { label:"Expedition Cruises", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
-  jet:    { label:"Private Jet Journeys",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
-  yacht:  { label:"Luxury Hotel Yachts",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
-  worldcruise: { label:"World Cruises", color:"#45d6c2", url:"https://world-cruise-atlas.vercel.app",   data:"https://world-cruise-atlas.vercel.app/itinerary.json" },
+  cruise: { label:"Cruise", color:"#5aa9e6", url:"https://expedition-cruise-map.vercel.app",          data:"https://expedition-cruise-map.vercel.app/atlas-meta.json" },
+  jet:    { label:"Jet",    color:"#dfe5f2", url:"https://private-jet-expeditions.vercel.app",         data:"https://private-jet-expeditions.vercel.app/itinerary.json" },
+  yacht:  { label:"Yacht",  color:"#e0b84a", url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",  data:"https://luxury-hotel-brand-yacht-atlas.vercel.app/itinerary.json" },
 };
 
-// Base Camp globe-only pin nudges. Each atlas centers a region on its own
-// itineraries, so the same place can land ~9 apart (yacht MED = Western Med /
-// Rivieras vs world-cruise MED = whole basin) or nearly on top of another
-// (yacht vs jet SE Asia). We shift only these live-globe pins so paired
-// regions read clearly and each Atlas link stays clickable. Keyed [lng,lat].
-const PIN_NUDGE = {
-  // world-cruise MED [15,36.5] nudged east 5 (whole-basin pin clears land)
-  worldcruise: { MED:[20,36.5] },
-  // yacht MED was [13.6,37.0]; nudged NW 6 (-4.24 lng / +4.24 lat).
-  // yacht CENTRALAM [-80.6,9.1] nudged WNW 1.5 (-1.39 lng / +0.57 lat).
-  yacht: { MED:[9.36,41.24], SEASIA:[104.7,6.6], CENTRALAM:[-81.99,9.67] },
-};
-
-const messages = [];                 // {role, content} sent to /api/guide
+// {role, content} sent to /api/guide — persisted to sessionStorage so navigating
+// to an Atlas (new tab) and back doesn't lose context.
+const SESSION_KEY = "guide_messages_v1";
+function loadSession(){ try{ return JSON.parse(sessionStorage.getItem(SESSION_KEY)||"[]"); }catch(_){ return []; } }
+function saveSession(msgs){ try{ sessionStorage.setItem(SESSION_KEY, JSON.stringify(msgs)); }catch(_){} }
+function clearSession(){ try{ sessionStorage.removeItem(SESSION_KEY); }catch(_){} }
+const messages = loadSession();
 const el = (id)=>document.getElementById(id);
 const transcript = el("transcript");
 const input = el("input");
@@ -376,18 +277,7 @@ const openExt = el("openExt");
    marquee region pins. On a qualified subset: fade the field, drop the region
    layer, and plot the matching stays (hard-capped at 60), fit to bounds. */
 let lmap=null, mapsReady=false, pendingPlot=null, popup=null;
-let spinning=false, spinRAF=0, subsetActive=false, homeZoom=1.25;
-let restyling=false, lastLead=null, lastMeta=null;
-
-// Selectable Mapbox basemaps surfaced via the photo icon under Fullscreen.
-const GLOBE_FOG = { "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
-  "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 };
-const ATLAS_STYLES = {
-  dark:      { label:"Globe (dark)", url:"mapbox://styles/mapbox/dark-v11",              projection:"globe",    fog:GLOBE_FOG, sw:"#11151c" },
-  satellite: { label:"Satellite",    url:"mapbox://styles/mapbox/satellite-streets-v12", projection:"globe",    fog:{ "color":"rgb(18,22,30)","high-color":"rgb(40,52,72)","horizon-blend":0.06,"space-color":"rgb(6,8,12)","star-intensity":0.30 }, sw:"#3b5a3a" },
-  warm:      { label:"Warm",         url:"mapbox://styles/mapbox/outdoors-v12",           projection:"globe",    fog:{ "color":"rgb(34,28,22)","high-color":"rgb(60,48,36)","horizon-blend":0.05,"space-color":"rgb(10,8,6)","star-intensity":0.25 }, sw:"#c8a04c" }
-};
-let atlasStyleKey="dark";
+let spinning=false, spinRAF=0, subsetActive=false;
 const cap = (s)=>String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1);
 
 // Marquee region geo, filled from the Hotel Atlas /api/regions (bbox + center),
@@ -397,9 +287,7 @@ const REGION_GEO = {};
 const REGION_FALLBACK = {
   antarctica:[0,-72,2.3], arctic:[8,79,2.3], galapagos:[-91,-0.4,5], amazon:[-60,-3.5,3.8],
   polynesia:[-149,-17,3.4], patagonia:[-72,-49,3.6], kimberley:[126,-16,4.3],
-  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2],
-  alaska:[-149,60.5,4], caribbean:[-66,16,4], baja:[-111.5,24,4.4],
-  britishisles:[-3,58,4], seychelles:[55.5,-4.6,5]
+  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2]
 };
 
 function showMapFallback(){ el("mapFallback").style.display="flex"; }
@@ -417,210 +305,97 @@ window.initLivingAtlas = function(){
     });
     popup = new mapboxgl.Popup({ closeButton:true, closeOnClick:true, offset:12, maxWidth:"240px" });
     lmap.on("style.load",()=>{
-      const s = ATLAS_STYLES[atlasStyleKey] || ATLAS_STYLES.dark;
-      try{ lmap.setProjection(s.projection); }catch(_){}
-      lmap.setFog(s.fog || null);
+      lmap.setFog({ "color":"rgb(11,13,18)","high-color":"rgb(22,27,38)",
+        "horizon-blend":0.04,"space-color":"rgb(6,8,12)","star-intensity":0.45 });
       mapsReady = true;
-      try{ lmap.resize(); }catch(_){}
       loadHotelField();
       loadRegions();
       loadTypeOverlays();
-      if(restyling){
-        // basemap switch: keep the traveler's current camera and re-plot any subset
-        restyling=false;
-        if(subsetActive && lastLead){ subsetActive=false; plotRecommendations(lastLead, lastMeta); }
-      }else{
-        fitGlobe();
-        startSpin();
-      }
-      if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotRecommendations(p.lead, p.meta); }
+      startSpin();
+      if(pendingPlot){ const p=pendingPlot; pendingPlot=null; plotSubset(p); }
     });
     ["mousedown","touchstart","wheel","dragstart"].forEach(ev=>lmap.on(ev, stopSpin));
-    new ResizeObserver(()=>{
-      try{
-        if(!lmap) return;
-        lmap.resize();
-        // While idle at home (no result subset, user hasn't zoomed in),
-        // keep the whole globe fitted as the panel resizes.
-        if(!subsetActive && lmap.getZoom() <= homeZoom + 0.4) fitGlobe();
-      }catch(_){}
-    }).observe(el("livingAtlas"));
+    new ResizeObserver(()=>{ try{ lmap && lmap.resize(); }catch(_){} }).observe(el("livingAtlas"));
   }catch(e){ showMapFallback(); }
 };
-
-/* Zoom the globe so the full sphere fills the panel with a little margin.
-   Mapbox globe diameter ≈ 162.97 * 2^zoom px; solve for the smaller side. */
-function fitGlobe(){
-  if(!lmap) return;
-  const node = el("livingAtlas");
-  const w = node.clientWidth, h = node.clientHeight;
-  if(!w || !h) return;
-  const target = Math.min(w, h) * 0.92;
-  const z = Math.log2(target / 162.97);
-  homeZoom = Math.max(lmap.getMinZoom(), Math.min(z, 5));
-  lmap.setZoom(homeZoom);
-}
 
 /* gentle idle rotation; stops on interaction, pauses while a subset is shown */
 function startSpin(){ if(spinning) return; spinning=true; spinStep(); }
 function stopSpin(){ spinning=false; cancelAnimationFrame(spinRAF); }
 function spinStep(){
   if(!spinning || !lmap) return;
-  const isGlobe = (()=>{ try{ return lmap.getProjection().name==="globe"; }catch(_){ return true; } })();
-  if(isGlobe && !subsetActive && lmap.getZoom() <= homeZoom + 0.4 && !document.hidden){
+  if(!subsetActive && lmap.getZoom()<2.2 && !document.hidden){
     const c=lmap.getCenter(); c.lng-=0.045; lmap.setCenter(c);
   }
   spinRAF=requestAnimationFrame(spinStep);
 }
 
-/* ambient: the full hotel inventory, clustered at globe zoom and expanded into
-   exact hotel dots as the traveler zooms closer. */
+/* ambient: the full hotel inventory as a faint GPU dot field (all ~2,500) */
 async function loadHotelField(){
   if(!mapsReady || !lmap) return;
   try{
-    const fc = await fetchHotelPointFeed();
-    if(!fc || !Array.isArray(fc.features) || !fc.features.length) return;
-    upsertHotelSources(fc);
-    addHotelLayer("hotel-heat", { id:"hotel-heat", type:"heatmap", source:HOTEL_DENSITY_SOURCE,
-      maxzoom:4.35,
+    const fc = await (await fetch("/api/atlas-points")).json();
+    if(lmap.getSource("hotels")) return;
+    lmap.addSource("hotels",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"hotel-dots", type:"circle", source:"hotels",
       paint:{
-        "heatmap-weight":1,
-        "heatmap-intensity":["interpolate",["linear"],["zoom"],0,0.65,3,1.10],
-        "heatmap-radius":["interpolate",["linear"],["zoom"],0,12,3,24],
-        "heatmap-opacity":["interpolate",["linear"],["zoom"],0,0.36,3.4,0.18,4.3,0],
-        "heatmap-color":[
-          "interpolate",["linear"],["heatmap-density"],
-          0,"rgba(201,168,76,0)",
-          0.22,"rgba(201,168,76,0.15)",
-          0.55,"rgba(226,200,122,0.34)",
-          0.86,"rgba(255,238,177,0.55)",
-          1,"rgba(255,247,213,0.68)"
-        ]
+        "circle-radius":["interpolate",["linear"],["zoom"],1,1.2,4,2.0,8,3.4],
+        "circle-color":"#c9a84c",
+        "circle-opacity":["interpolate",["linear"],["zoom"],1,0.40,5,0.75],
+        "circle-blur":0.25
       }});
-    addHotelLayer("hotel-dots", { id:"hotel-dots", type:"circle", source:HOTEL_DENSITY_SOURCE,
-      minzoom:HOTEL_DOT_MIN_ZOOM,
-      paint:{
-        "circle-radius":["interpolate",["linear"],["zoom"],2.45,1.5,4,2.7,7,3.6,10,4.8],
-        "circle-color":"#f1d879",
-        "circle-opacity":["interpolate",["linear"],["zoom"],2.45,0.18,3.2,0.62,7,0.92],
-        "circle-stroke-color":"rgba(26,20,7,.88)",
-        "circle-stroke-width":["interpolate",["linear"],["zoom"],2.45,0.45,7,1.1],
-        "circle-blur":0
-      }});
-    wireHotelDotClicks();
   }catch(e){ /* dot field optional */ }
 }
-
-/* Make individual hotel dots clickable — but only once they've zoomed apart
-   enough to target one unambiguously. Below HOTEL_CLICK_MIN_ZOOM the field is
-   ambient (heatmap), so a tap there is ignored rather than picking a random
-   neighbor. One layer-scoped handler covers all ~2500 dots: Mapbox hit-tests
-   only the geometry under the cursor, so point count costs nothing. */
-let hotelClickWired=false;
-function wireHotelDotClicks(){
-  if(hotelClickWired || !lmap || !lmap.getLayer("hotel-dots")) return;
-  hotelClickWired=true;
-  lmap.on("click","hotel-dots",(e)=>{
-    if(lmap.getZoom() < HOTEL_CLICK_MIN_ZOOM) return;   // ambient zoom: not tappable
-    const f=e.features&&e.features[0]; if(!f) return;
-    const id=f.properties.id||"";
-    const name=f.properties.name||"VIP Hotel";
-    const region=f.properties.region;
-    // ?ids=<id> filters the Hotel Atlas to this hotel, frames it, and opens its
-    // detail panel (single-id shortlist) — selects the hotel, not just a region.
-    const href=id ? `${ATLAS_BASE}/?ids=${encodeURIComponent(id)}` : ATLAS_BASE;
-    const html=`<div class="iw"><div class="iwn">${escapeHtml(name)}</div>`+
-      (region?`<div class="iwm">${escapeHtml(region)}</div>`:"")+
-      `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open VIP Hotels Atlas ↗</a></div>`;
-    popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap);
-  });
-  // Pointer cursor only above the threshold, so clickability is signalled honestly.
-  lmap.on("mouseenter","hotel-dots",()=>{ if(lmap.getZoom()>=HOTEL_CLICK_MIN_ZOOM) lmap.getCanvas().style.cursor="pointer"; });
-  lmap.on("mouseleave","hotel-dots",()=>{ lmap.getCanvas().style.cursor=""; });
-}
-
-function upsertHotelSources(fc){
-  const density = lmap.getSource(HOTEL_DENSITY_SOURCE);
-  if(density) density.setData(fc);
-  else lmap.addSource(HOTEL_DENSITY_SOURCE,{ type:"geojson", data:fc });
-}
-
-function addHotelLayer(id, spec){
-  if(lmap.getLayer(id)) return;
-  try{ lmap.addLayer(spec); }
-  catch(e){ console.warn("Hotel layer skipped:", id, e); }
-}
-
-async function fetchHotelPointFeed(){
-  try{
-    const localUrl = location.protocol === "file:" ? null : "/api/atlas-points";
-    if(localUrl){
-      const r = await fetch(localUrl, { cache:"no-store" });
-      if(r.ok){
-        const fc = await r.json();
-        if(fc && Array.isArray(fc.features) && fc.features.length) return fc;
-      }
-    }
-  }catch(_){}
-  return fetchHotelPointsFromAtlas();
-}
-
-async function fetchHotelPointsFromAtlas(){
-  const PAGE=200;
-  const first = await fetchHotelPage(0, PAGE);
-  const total = Number(first.total) || (first.results||[]).length;
-  const offsets=[];
-  for(let o=PAGE;o<total;o+=PAGE) offsets.push(o);
-  const rest = await Promise.all(offsets.map(o=>fetchHotelPage(o, PAGE).catch(()=>({results:[]}))));
-  const features=[];
-  [first,...rest].forEach(page=>{
-    (page.results||[]).forEach(h=>{
-      const lng=Number(h.lng), lat=Number(h.lat);
-      if(!Number.isFinite(lng) || !Number.isFinite(lat)) return;
-      features.push({
-        type:"Feature",
-        geometry:{ type:"Point", coordinates:[lng,lat] },
-        properties:{ id:h.id||"", region:h.region||null, name:h.name||"" }
-      });
-    });
-  });
-  return { type:"FeatureCollection", count:features.length, features };
-}
-
-async function fetchHotelPage(offset, limit){
-  const r = await fetch(`${ATLAS_BASE}/api/luxury-hotels?limit=${limit}&offset=${offset}`, { cache:"force-cache" });
-  if(!r.ok) throw new Error("hotel atlas "+r.status);
-  return r.json();
-}
-
 function dimHotelField(dim){
-  if(!lmap) return;
-  if(lmap.getLayer("hotel-heat")){
-    lmap.setPaintProperty("hotel-heat","heatmap-opacity", dim
-      ? 0.05
-      : ["interpolate",["linear"],["zoom"],0,0.36,3.4,0.18,4.3,0]);
-  }
-  if(lmap.getLayer("hotel-dots")){
-    lmap.setPaintProperty("hotel-dots","circle-opacity", dim
-      ? 0.10
-      : ["interpolate",["linear"],["zoom"],2.45,0.18,3.2,0.62,7,0.92]);
-  }
+  if(!lmap || !lmap.getLayer("hotel-dots")) return;
+  lmap.setPaintProperty("hotel-dots","circle-opacity", dim
+    ? 0.12
+    : ["interpolate",["linear"],["zoom"],1,0.40,5,0.75]);
 }
 
-/* Region geometry is still loaded for chat-result zooming, but the old visible
-   hotel marquee circles are no longer drawn. */
+/* resting state: marquee region pins from /api/regions */
 async function loadRegions(){
   if(!mapsReady || !lmap) return;
-  subsetActive=false; lastLead=null; lastMeta=null; startSpin();
+  subsetActive=false; startSpin();
   clearSubset();
   dimHotelField(false);
-  el("atlasState").textContent="all inventory";
+  setRegionVisible(true);
+  el("atlasState").textContent="marquee regions";
   el("regionsBtn").style.display="none";
   el("atlasBadge").style.display="none";
   try{
     const j = await (await fetch(ATLAS_BASE+"/api/regions")).json();
     (j.regions||[]).forEach(r=>{ if(Array.isArray(r.center)&&r.center.length===2) REGION_GEO[r.region]={ bbox:r.bbox||null, center:r.center }; });
+    const feats = (j.regions||[]).filter(r=>Array.isArray(r.center)&&r.center.length===2).map(r=>({
+      type:"Feature",
+      geometry:{ type:"Point", coordinates:[r.center[0],r.center[1]] },
+      properties:{ region:r.region, label:`${cap(r.region)} · ${r.count}`,
+        bbox:JSON.stringify(r.bbox||null), deepLink:r.deepLink||(ATLAS_BASE+"?region="+r.region) }
+    }));
+    const fc={ type:"FeatureCollection", features:feats };
+    if(lmap.getSource("regions")){ lmap.getSource("regions").setData(fc); return; }
+    lmap.addSource("regions",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"region-glow", type:"circle", source:"regions",
+      paint:{ "circle-radius":15,"circle-color":"#c9a84c","circle-opacity":0.16,"circle-blur":0.85 }});
+    lmap.addLayer({ id:"region-dot", type:"circle", source:"regions",
+      paint:{ "circle-radius":6,"circle-color":"#c9a84c","circle-stroke-color":"#fffaf0","circle-stroke-width":1.5 }});
+    lmap.addLayer({ id:"region-label", type:"symbol", source:"regions",
+      layout:{ "text-field":["get","label"],"text-font":["DIN Pro Medium","Arial Unicode MS Regular"],
+        "text-size":12,"text-offset":[0,1.3],"text-anchor":"top" },
+      paint:{ "text-color":"#e8e0d0","text-halo-color":"#06080c","text-halo-width":1.4 }});
+    lmap.on("click","region-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
+      let bbox=null; try{ bbox=JSON.parse(f.properties.bbox); }catch(_){}
+      if(bbox) fitBbox(bbox);
+      plotSubset(f.properties.deepLink);
+    });
+    lmap.on("mouseenter","region-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
+    lmap.on("mouseleave","region-dot",()=>{ lmap.getCanvas().style.cursor=""; });
   }catch(e){ /* regions optional; map still usable */ }
+}
+function setRegionVisible(v){
+  ["region-glow","region-dot","region-label"].forEach(id=>{
+    if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility", v?"visible":"none");
+  });
 }
 
 /* master atlas: cruise / jet / yacht region pins, each colored, from live app data */
@@ -668,21 +443,11 @@ function typeDeepLink(key, regionKey){
   const cfg=ATLAS_TYPES[key];
   return regionKey ? `${cfg.url}?region=${encodeURIComponent(regionKey)}` : cfg.url;
 }
-function typeOverlayMeta(key, count){
-  if(key==="cruise") return `Expedition Cruises${count?` - ${count} sailings`:""}`;
-  if(key==="worldcruise") return `World Cruises${count?` - ${count} voyages calling here`:""}`;
-  if(key==="jet") return `Private Jet Journeys${count?` · ${count} journeys`:""}`;
-  if(key==="yacht") return `Luxury Hotel Yachts${count?` · ${count} charters`:""}`;
-  const cfg=ATLAS_TYPES[key]||{};
-  return `${cfg.label||"Atlas"}${count?` · ${count} sailings`:""}`;
-}
 
 async function addTypeLayer(key){
   const cfg=ATLAS_TYPES[key];
   const json=await (await fetch(cfg.data)).json();
   const regs=regionsFromData(json).sort((a,b)=>(b.count||0)-(a.count||0));
-  const nudge=PIN_NUDGE[key];
-  if(nudge) for(const r of regs){ const o=nudge[r.key]; if(o){ r.lng=o[0]; r.lat=o[1]; } }
   TYPE_REGIONS[key]={ all:typeFeatures(key,regs) };
   const fc={ type:"FeatureCollection", features: TYPE_REGIONS[key].all };
   const src="t_"+key;
@@ -696,7 +461,7 @@ async function addTypeLayer(key){
     const c=f.properties.count;
     const href=typeDeepLink(key, f.properties.key);
     const html=`<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>`+
-      `<div class="iwm">${escapeHtml(typeOverlayMeta(key,c))}</div>`+
+      `<div class="iwm">${escapeHtml(cfg.label)} expeditions${c?` · ${c} sailings`:""}</div>`+
       `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
     popup.setLngLat(e.lngLat).setHTML(html).addTo(lmap); });
   lmap.on("mouseenter",src+"_dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
@@ -705,7 +470,7 @@ async function addTypeLayer(key){
 
 // Map a legend key to the Mapbox layers it controls.
 function layerIdsFor(key){
-  return key==="hotel" ? ["hotel-heat","hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
+  return key==="hotel" ? ["hotel-dots"] : ["t_"+key+"_glow","t_"+key+"_dot"];
 }
 
 /* Legend: a color key per layer. Tapping a row simply toggles that layer on and
@@ -713,11 +478,10 @@ function layerIdsFor(key){
 function buildLegend(){
   const box=el("legend"); if(!box) return;
   const items=[
-    { key:"hotel",  label:"VIP Hotels", color:"#c9a84c" },
-    { key:"cruise", label:"Expedition Cruises", color:ATLAS_TYPES.cruise.color },
-    { key:"jet",    label:"Private Jet Journeys",    color:ATLAS_TYPES.jet.color },
-    { key:"yacht",  label:"Luxury Hotel Yachts",  color:ATLAS_TYPES.yacht.color },
-    { key:"worldcruise", label:"World Cruises", color:ATLAS_TYPES.worldcruise.color },
+    { key:"hotel",  label:"Hotels", color:"#c9a84c" },
+    { key:"cruise", label:"Cruise", color:ATLAS_TYPES.cruise.color },
+    { key:"jet",    label:"Jet",    color:ATLAS_TYPES.jet.color },
+    { key:"yacht",  label:"Yacht",  color:ATLAS_TYPES.yacht.color },
   ];
   box.innerHTML="";
   const cap=document.createElement("div"); cap.className="lgcap"; cap.textContent="Tap to hide";
@@ -740,9 +504,15 @@ function buildLegend(){
 }
 
 function clearSubset(){
-  if(lmap && lmap.getSource("featured")) lmap.getSource("featured").setData({type:"FeatureCollection",features:[]});
+  if(lmap && lmap.getSource("subset")) lmap.getSource("subset").setData({type:"FeatureCollection",features:[]});
   if(popup) popup.remove();
 }
+function fitBbox(bbox){
+  if(!lmap||!bbox) return;
+  const [minLng,minLat,maxLng,maxLat]=bbox;
+  try{ lmap.fitBounds([[minLng,minLat],[maxLng,maxLat]],{ padding:56, duration:900 }); }catch(_){}
+}
+
 // Make sure a type's pins are visible and its legend row reads "on".
 function ensureTypeVisible(kind){
   layerIdsFor(kind).forEach(id=>{ if(lmap.getLayer(id)) lmap.setLayoutProperty(id,"visibility","visible"); });
@@ -750,252 +520,123 @@ function ensureTypeVisible(kind){
   if(row && row.classList.contains("off")){ row.classList.remove("off"); row.title="Tap to hide"; }
 }
 
-function num(v){ const n=Number(v); return Number.isFinite(n) ? n : null; }
-function regionLookupKey(raw){
-  const v=String(raw||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
-  if(!v) return "";
-  if(v.includes("alaska")) return "alaska";
-  if(v.includes("caribbean") || v.includes("bermuda")) return "caribbean";
-  if(v.includes("baja")) return "baja";
-  if(v.includes("british isles") || v.includes("northern europe")) return "britishisles";
-  if(v.includes("seychelles") || v.includes("indian ocean")) return "seychelles";
-  return v.replace(/\s+/g,"");
-}
-function regionFallback(region){
+/* Cruise / jet / yacht results: zoom the globe into the matching marquee region
+   (mirrors how hotels fit to their plotted subset). Type pins stay shown so the
+   region's offerings read as the highlight. */
+function focusTypeRegion(kind, region){
+  if(!lmap) return;
+  subsetActive=true; stopSpin();
+  clearSubset();
+  setRegionVisible(false);   // drop the hotel marquee pins so the type field reads
+  dimHotelField(true);       // fade the ambient hotel field
+  ensureTypeVisible(kind);
   const geo = region && REGION_GEO[region];
-  if(geo && Array.isArray(geo.center)) return { center:geo.center, bbox:geo.bbox||null };
-  const key = REGION_FALLBACK[region] ? region : regionLookupKey(region);
-  if(key && REGION_FALLBACK[key]){
-    const f=REGION_FALLBACK[key];
-    return { center:[f[0],f[1]], bbox:null };
-  }
-  return { center:[10,20], bbox:null };
-}
-function spreadPoint(center, bbox, idx, total){
-  if(total<=1) return center;
-  const angles=[-0.85, 0.85, 2.65];
-  const angle=angles[idx%angles.length];
-  let dx=4.5, dy=2.4;
-  if(Array.isArray(bbox) && bbox.length===4){
-    const spanLng=Math.max(2, Math.min(18, Math.abs(bbox[2]-bbox[0])));
-    const spanLat=Math.max(1.5, Math.min(10, Math.abs(bbox[3]-bbox[1])));
-    dx=spanLng*0.16; dy=spanLat*0.18;
-  }
-  return [
-    center[0] + Math.cos(angle)*dx*(idx===1 ? 0.7 : 1),
-    center[1] + Math.sin(angle)*dy*(idx===1 ? 0.7 : 1)
-  ];
-}
-function pointForResult(item, idx, total){
-  const lng=num(item.lng), lat=num(item.lat);
-  if(lng!=null && lat!=null) return [lng, lat];
-  const r = regionFallback(item.region || item.regionLabel);
-  return spreadPoint(r.center, r.bbox, idx, total);
-}
-function featuredHtml(item, kind){
-  if(kind==="hotel") return iwHtml(item);
-  const cfg=ATLAS_TYPES[kind]||{};
-  const meta=[item.brand||item.operator, item.ship, item.regionLabel].filter(Boolean).join(" · ");
-  const when=[item.route||item.country, item.startDate||item.month].filter(Boolean).join("  ·  ");
-  return `<div class="iw"><div class="iwn">${escapeHtml(item.name||cfg.label||"Recommendation")}</div>`+
-    `<div class="iwm">${escapeHtml([meta,when].filter(Boolean).join("  ·  "))}</div>`+
-    `<a href="${escapeHtml(item.bookUrl||cfg.url||"#")}" target="_blank" rel="noopener">View with advisor ↗</a></div>`;
+  if(geo && Array.isArray(geo.bbox)){ fitBbox(geo.bbox); }
+  else if(geo && Array.isArray(geo.center)){ try{ lmap.flyTo({ center:[geo.center[0],geo.center[1]], zoom:3.4, duration:900 }); }catch(_){} }
+  else if(region && REGION_FALLBACK[region]){ const f=REGION_FALLBACK[region]; try{ lmap.flyTo({ center:[f[0],f[1]], zoom:f[2], duration:900 }); }catch(_){} }
+  el("atlasState").textContent="qualified subset";
+  el("regionsBtn").style.display="";
 }
 
-function plotRecommendations(lead, meta){
-  if(!mapsReady){ pendingPlot={lead,meta}; return; }
-  if(!lead || !Array.isArray(lead.results) || !lead.results.length) return;
-  const kind = lead.type || "hotel";
-  const recs = lead.results;
-  if(switchToSatelliteForResults(lead, meta)) return;
-  subsetActive=true; lastLead=lead; lastMeta=meta; stopSpin();
+async function plotSubset(deepLink){
+  if(!mapsReady){ pendingPlot=deepLink; return; }
+  const qs = deepLink.includes("?") ? deepLink.slice(deepLink.indexOf("?")+1) : "";
+  const usp = new URLSearchParams(qs);
+  usp.set("limit", String(SUBSET_CAP));   // hard cap on live pins
+  let j;
+  try{ const r=await fetch(ATLAS_BASE+"/api/luxury-hotels?"+usp.toString()); j=await r.json(); }
+  catch(e){ return; }
+  subsetActive=true; stopSpin();
+  setRegionVisible(false);   // narrow: drop the resting region layer
   dimHotelField(true);       // fade the ambient field so the subset reads
-  const kinds = [...new Set(recs.map(h=>h.type||kind).filter(t=>t && t!=="hotel"))];
-  kinds.forEach(ensureTypeVisible);
-  const feats = recs.map((h,i)=>({
-    type:"Feature",
-    geometry:{type:"Point",coordinates:pointForResult(h,i,recs.length)},
-    properties:{ name:h.name||"", html:featuredHtml(h,h.type||kind), kind:h.type||kind }
-  }));
+  const recs = (j.results||[]).filter(h=>Number.isFinite(h.lat)&&Number.isFinite(h.lng));
+  const feats = recs.map(h=>({ type:"Feature", geometry:{type:"Point",coordinates:[h.lng,h.lat]},
+    properties:{ name:h.name, html:iwHtml(h) } }));
   const fc={ type:"FeatureCollection", features:feats };
-  if(lmap.getSource("featured")){ lmap.getSource("featured").setData(fc); }
+  if(lmap.getSource("subset")){ lmap.getSource("subset").setData(fc); }
   else{
-    lmap.addSource("featured",{ type:"geojson", data:fc });
-    lmap.addLayer({ id:"featured-glow", type:"circle", source:"featured",
-      paint:{ "circle-radius":12,"circle-color":"#e2c87a","circle-opacity":0.24,"circle-blur":0.70 }});
-    lmap.addLayer({ id:"featured-dot", type:"circle", source:"featured",
-      paint:{ "circle-radius":5.5,"circle-color":"#e2c87a","circle-stroke-color":"#5f4c1d","circle-stroke-width":0.8 }});
-    lmap.on("click","featured-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
+    lmap.addSource("subset",{ type:"geojson", data:fc });
+    lmap.addLayer({ id:"subset-glow", type:"circle", source:"subset",
+      paint:{ "circle-radius":10,"circle-color":"#e2c87a","circle-opacity":0.2,"circle-blur":0.7 }});
+    lmap.addLayer({ id:"subset-dot", type:"circle", source:"subset",
+      paint:{ "circle-radius":6.5,"circle-color":"#e2c87a","circle-stroke-color":"#fffaf0","circle-stroke-width":1.5 }});
+    lmap.on("click","subset-dot",(e)=>{ const f=e.features&&e.features[0]; if(!f) return;
       popup.setLngLat(e.lngLat).setHTML(f.properties.html).addTo(lmap); });
-    lmap.on("mouseenter","featured-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
-    lmap.on("mouseleave","featured-dot",()=>{ lmap.getCanvas().style.cursor=""; });
+    lmap.on("mouseenter","subset-dot",()=>{ lmap.getCanvas().style.cursor="pointer"; });
+    lmap.on("mouseleave","subset-dot",()=>{ lmap.getCanvas().style.cursor=""; });
   }
-  if(feats.length){
+  if(recs.length){
     const b=new mapboxgl.LngLatBounds();
-    feats.forEach(f=>b.extend(f.geometry.coordinates));
-    try{ lmap.fitBounds(b,{ padding:78, maxZoom:kind==="hotel"?10:4.8, duration:900 }); }catch(_){}
+    recs.forEach(h=>b.extend([h.lng,h.lat]));
+    try{ lmap.fitBounds(b,{ padding:60, maxZoom:6, duration:900 }); }catch(_){}
   }
+  const total = j.total ?? recs.length;
   const badge = el("atlasBadge");
   badge.style.display="";
-  const total = lead.total ?? recs.length;
-  const label = kind==="hotel" ? "stays" : "recommendations";
-  badge.innerHTML = total>recs.length && lead.deepLink
-    ? `Showing ${recs.length} of ${total} · <a href="${escapeHtml(lead.deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
-    : `${recs.length} ${label} plotted`;
-  el("atlasState").textContent="recommendations";
+  badge.innerHTML = total>recs.length
+    ? `Showing ${recs.length} of ${total} · <a href="${escapeHtml(deepLink)}" target="_blank" rel="noopener">all in Atlas ↗</a>`
+    : `${recs.length} ${recs.length===1?"stay":"stays"} plotted`;
+  el("atlasState").textContent="qualified subset";
   el("regionsBtn").style.display="";
 }
 
 function iwHtml(h){
   const meta=[h.brand,h.program].filter(Boolean).join(" · ");
   const place=[h.city,h.country].filter(Boolean).join(", ");
-  const fit=h.fit||{};
-  const fitBits=[fit.bestFit&&("Best fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean).join("  ·  ");
   return `<div class="iw"><div class="iwn">${escapeHtml(h.name)}</div>`+
     `<div class="iwm">${escapeHtml([meta,place].filter(Boolean).join("  ·  "))}</div>`+
-    (fit.description?`<div class="iwm" style="margin-top:7px;color:#e8e0d0">${escapeHtml(fit.description)}</div>`:"")+
-    (fitBits?`<div class="iwm" style="margin-top:7px">${escapeHtml(fitBits)}</div>`:"")+
-    `<a href="${escapeHtml(h.bookUrl||ATLAS_BASE)}" target="_blank" rel="noopener">Book VIP · password = VIP</a></div>`;
+    `<a href="${escapeHtml(h.bookUrl||ATLAS_BASE)}" target="_blank" rel="noopener">Book on mobile · VIP</a></div>`;
 }
 function setOpenExt(deepLink){
   openExt.innerHTML = deepLink ? '· <a href="'+escapeHtml(deepLink)+'" target="_blank" rel="noopener">full screen ↗</a>' : "";
 }
-function atlasLabelForType(type){
-  if(type==="hotel") return "Open VIP Hotels Atlas";
-  if(type==="cruise") return "Open Expedition Cruises Atlas";
-  if(type==="yacht") return "Open Luxury Hotel Yachts Atlas";
-  if(type==="jet") return "Open Private Jet Journeys Atlas";
-  if(type==="worldcruise") return "Open World Cruises Atlas";
-  return "Open in Atlas";
-}
-function atlasLinksForLead(lead, meta){
-  const sourceLinks = (lead&&lead.sources||[])
-    .filter(s=>s && s.count>0 && s.deepLink)
-    .map(s=>({type:s.type, href:s.deepLink}));
-  const links = sourceLinks.length
-    ? sourceLinks
-    : (meta.deepLink ? [{type:(lead&&lead.type)||"atlas", href:meta.deepLink}] : []);
-  const seen = new Set();
-  return links.filter(l=>{
-    const key=l.type+"|"+l.href;
-    if(seen.has(key)) return false;
-    seen.add(key); return true;
-  });
-}
-function wantsComparison(text){
-  return /\b(compare|comparison|versus|vs\.?|side\s*by\s*side|differences?|which\s+(one|is|would))\b/i.test(String(text||""));
-}
-function comparisonLimit(text){
-  const t=String(text||"").toLowerCase();
-  if(/\b(two|2)\b/.test(t)) return 2;
-  return 3;
-}
-const GUIDE_CARD_LIMIT_PER_CATEGORY = 4;
 
 // boot the Mapbox globe (mapbox-gl is loaded via the <script> tag in <head>)
 initLivingAtlas();
 
 /* ---- helpers ---- */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function formatVipBenefit(raw){
-  const text = String(raw == null ? "" : raw).trim();
-  if(!text || /^["']?first priority["']?\b/i.test(text)) return text;
-  if(/^room upgrade\b/i.test(text) || /^upgrade\b/i.test(text)) return '"First Priority" '+text;
-  return text;
-}
-// Strip control tags ([[CHART:..]], [[OPTIONS:..]]) and any trailing tag still
-// mid-stream, so partial tags never flash in the revealed text.
-function stripChart(s){
-  return String(s||"")
-    .replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"")
-    .replace(/\[\[OPTIONS:[^\]]*\]\]/gi,"")
-    .replace(/\n*\s*\[\[[^\]]*$/,"")
-    .trim();
-}
-// minimal, safe markdown: bold/italic, links, bullets, dividers, and tables.
-function mdToHtml(src){
-  const lines = stripChart(src).split("\n");
-  let html="", inList=false;
-  const closeList=()=>{ if(inList){html+="</ul>";inList=false;} };
-  for(let i=0;i<lines.length;i++){
-    const ln=lines[i];
-    if(isTableStart(lines,i)){
-      closeList();
-      const block=[];
-      while(i<lines.length && isTableRow(lines[i])) block.push(lines[i++]);
-      i--;
-      html+=renderMarkdownTable(block);
-    } else if(/^\s*[-*_]{3,}\s*$/.test(ln)){
-      closeList();
-      html+='<hr class="mdhr">';
-    } else if(/^\s*[-•]\s+/.test(ln)){
-      if(!inList){html+="<ul>";inList=true;}
-      html+="<li>"+inlineMd(ln.replace(/^\s*[-•]\s+/,""))+"</li>";
-    } else {
-      closeList();
-      if(ln.trim()==="") html+="";
-      else html+="<p>"+inlineMd(ln)+"</p>";
-    }
-  }
-  closeList();
-  return html || "<p></p>";
-}
-function inlineMd(raw){
-  let t=escapeHtml(raw).trim();
-  t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|tel:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-  t=t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
-  t=t.replace(/(^|[\s(])\*([^*\n]+)\*(?=$|[\s).,;:!?])/g,'$1<em>$2</em>');
-  return t;
-}
-function isTableRow(line){
-  const t=String(line||"").trim();
-  return t.includes("|") && /^\|?.+\|?.*$/.test(t);
-}
-function isTableDivider(line){
-  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(String(line||""));
-}
-function isTableStart(lines,i){
-  return isTableRow(lines[i]) && isTableDivider(lines[i+1]||"");
-}
-function tableCells(line){
-  return String(line||"").trim().replace(/^\|/,"").replace(/\|$/,"").split("|").map(c=>c.trim());
-}
-function renderMarkdownTable(block){
-  const head=tableCells(block[0]);
-  const rows=block.slice(2).filter(isTableRow).map(tableCells);
-  if(!head.length || !rows.length) return "";
-  let out='<div class="mdtable-wrap"><table class="mdtable"><thead><tr>';
-  out+=head.map(c=>"<th>"+inlineMd(c)+"</th>").join("");
-  out+="</tr></thead><tbody>";
-  rows.forEach(r=>{
-    out+="<tr>";
-    for(let i=0;i<head.length;i++) out+="<td>"+inlineMd(r[i]||"")+"</td>";
-    out+="</tr>";
-  });
-  return out+"</tbody></table></div>";
+function stripChart(s){ return s.replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"").trim(); }
+
+// Extract a plain URL from a value that may be a markdown link [text](url) or a bare URL.
+function extractUrl(raw){
+  if(!raw) return null;
+  const m = String(raw).match(/\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/);
+  if(m) return m[2];
+  if(/^https?:\/\//.test(String(raw).trim())) return String(raw).trim();
+  return null;
 }
 
-// Pull the [[OPTIONS: a | b | c]] tag (if any) into an array of quick replies.
-function extractOptions(text){
-  const m = String(text||"").match(/\[\[OPTIONS:\s*([^\]]+)\]\]/i);
-  if(!m) return [];
-  return m[1].split("|").map(s=>s.trim()).filter(Boolean).slice(0,4);
+// For non-hotel results: pick one card per operator/brand up to `limit`.
+function diversifyResults(results, limit){
+  const seen=new Set(), out=[];
+  for(const r of results){
+    const key=(r.brand||r.operator||"").toLowerCase().trim()||"__any";
+    if(!seen.has(key)){ seen.add(key); out.push(r); if(out.length>=limit) break; }
+  }
+  // fill remaining slots from any brand
+  if(out.length<limit){
+    for(const r of results){
+      if(!out.includes(r)){ out.push(r); if(out.length>=limit) break; }
+    }
+  }
+  return out;
 }
-// Render quick-reply buttons under a guide message. Clicking sends that answer;
-// the traveler can still type freely in the Ask box.
-function renderQuickReplies(body, opts){
-  if(!opts || !opts.length) return;
-  const wrap=document.createElement("div"); wrap.className="quick-replies";
-  const cap=document.createElement("div"); cap.className="qr-cap"; cap.textContent="Tap a reply, or type your own";
-  wrap.appendChild(cap);
-  const row=document.createElement("div"); row.className="qr-row";
-  opts.forEach(o=>{
-    const b=document.createElement("button"); b.type="button"; b.className="qr-chip"; b.textContent=o;
-    b.onclick=()=>{ if(busy) return; row.querySelectorAll(".qr-chip").forEach(x=>x.disabled=true); sendText(o); };
-    row.appendChild(b);
-  });
-  wrap.appendChild(row);
-  body.appendChild(wrap);
+
+// minimal, safe markdown: bold, links (http/mailto/tel only), line breaks, "- " bullets
+function mdToHtml(src){
+  let t = escapeHtml(stripChart(src));
+  t = t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|tel:[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  // bullets
+  const lines = t.split("\n");
+  let html="", inList=false;
+  for(let ln of lines){
+    if(/^\s*[-•]\s+/.test(ln)){ if(!inList){html+="<ul>";inList=true;} html+="<li>"+ln.replace(/^\s*[-•]\s+/,"")+"</li>"; }
+    else { if(inList){html+="</ul>";inList=false;} if(ln.trim()==="") html+=""; else html+="<p>"+ln+"</p>"; }
+  }
+  if(inList) html+="</ul>";
+  return html || "<p></p>";
 }
 
 function addMessage(role){
@@ -1004,253 +645,104 @@ function addMessage(role){
   const who=document.createElement("div"); who.className="who"; who.textContent=role==="user"?"YOU":"G";
   const body=document.createElement("div"); body.className="body";
   m.append(who,body); transcript.appendChild(m);
-  scrollMessageTop(body);
+  transcript.scrollTop=transcript.scrollHeight;
   return body;
 }
 
-function scrollMessageTop(body){
-  const msg=body&&body.closest&&body.closest(".msg");
-  if(!msg) return;
-  transcript.scrollTop=Math.max(0,msg.offsetTop-18);
-}
-
-function relatedLabel(kind){
-  if(kind==="cruise") return "Related Expedition Cruise option";
-  if(kind==="yacht") return "Related yacht option";
-  if(kind==="jet") return "Related private jet option";
-  if(kind==="worldcruise") return "Related world cruise option";
-  if(kind==="hotel") return "Related stay";
-  return "Related option";
-}
-function itemPhotos(item){
-  const src = item && (item.photos || item.images || item.gallery || []);
-  const arr = Array.isArray(src) ? src : [src];
-  if(item && item.thumb) arr.unshift(item.thumb);
-  return arr.map(x=>typeof x==="string"?x:(x&&x.url)||"").filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).slice(0,3);
-}
-function renderPhotoStrip(item, sv){
-  const urls = itemPhotos(item);
-  const hasSv = Number.isInteger(sv);
-  const cls = urls.length ? 'photo has-photos' : 'photo';
-  const imgs = urls.map((url,idx)=>
-    '<img src="'+escapeHtml(url)+'" alt="'+escapeHtml((item.name||"Result")+(idx?` photo ${idx+1}`:""))+'" loading="lazy">'
-  ).join("");
-  return '<div class="'+cls+'" data-photos="'+urls.length+'">'+
-    (imgs || '<span class="ph-mark">✦</span>')+
-    (hasSv ? '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button>' : '')+
-  '</div>';
-}
-function renderOfferingCard(h, kind, label){
-  const c=document.createElement("div"); c.className="hcard";
-  const itemKind = h.type || kind;
-  const marker = label ? '<div class="fitline"><span>'+escapeHtml(label)+'</span></div>' : "";
-  if(itemKind==="hotel"){
-    const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
-    const place=[h.city, h.country].filter(Boolean).join(", ");
-    const fit=h.fit||{};
-    const fitBits=[fit.bestFit&&("Best Fit: "+fit.bestFit), fit.atmosphere, fit.serviceStyle].filter(Boolean)
-      .map(t=>"<span>"+escapeHtml(t)+"</span>").join("");
-    const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(formatVipBenefit(u))+"</li>").join("");
-    const sv=svStore.length; svStore.push({});
-    c.innerHTML =
-      renderPhotoStrip(h, sv)+
-      marker+
-      '<div class="nm">'+escapeHtml(h.name)+'</div>'+
-      '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
-      (fitBits?'<div class="fitline">'+fitBits+'</div>':'')+
-      (fit.description?'<div class="quote">'+escapeHtml(fit.description)+'</div>':'')+
-      (ups?'<ul class="ups">'+ups+'</ul>':'')+
-      '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_BASE)+'" target="_blank" rel="noopener">Book VIP · password = VIP</a>';
-    enrichCard(c, h, sv);
-    return c;
-  }
-  const operator=h.brand||h.operator||"";
-  const sub=[operator, h.ship, h.regionLabel].filter(Boolean).join(" · ");
-  const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
-  const nights=h.nights?(" · "+h.nights+" nights"):(h.days?(" · "+h.days+" days"):"");
-  c.innerHTML =
-    (itemPhotos(h).length ? renderPhotoStrip(h) : "")+
-    marker+
-    '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
-    '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+
-    (when?'<div class="meta">'+escapeHtml(when)+'</div>':'')+
-    '<a class="book" href="'+escapeHtml(h.bookUrl||ATLAS_TYPES[itemKind]?.url||"#")+'" target="_blank" rel="noopener">View on Virtuoso · advisor-backed ↗</a>';
-  return c;
-}
+function scrollDown(){ transcript.scrollTop=transcript.scrollHeight; }
 
 /* ---- cards + moves + atlas handoff ---- */
-function resultCardKey(h, kind){
-  return [kind||h.type||"", h.id||"", h.name||"", h.startDate||"", h.month||""].join("|");
-}
-function addResultCard(out, seen, counts, item, kind, label){
-  if(!item) return;
-  const cardKind = item.type || kind || "hotel";
-  if((counts[cardKind]||0) >= GUIDE_CARD_LIMIT_PER_CATEGORY) return;
-  const key = resultCardKey(item, cardKind);
-  if(seen.has(key)) return;
-  seen.add(key);
-  counts[cardKind] = (counts[cardKind]||0) + 1;
-  out.push({ item, kind:cardKind, label });
-}
-function collectResultCards(meta){
-  const out=[], seen=new Set(), counts={};
-  const tools=(meta.tools||[]).filter(t=>t && ((t.results||[]).length || (t.related||[]).length));
-  for(const tool of tools.slice().reverse()){
-    const kind = tool.type || (tool.input && tool.input.type) || "hotel";
-    (tool.results||[]).forEach(item=>addResultCard(out, seen, counts, item, kind));
-    (tool.related||[]).forEach(rel=>{
-      const relKind = rel.kind || "hotel";
-      (rel.results||[]).forEach(item=>addResultCard(out, seen, counts, item, relKind, relatedLabel(relKind)));
-    });
-  }
-  return out;
-}
-function renderResults(body, meta, opts={}){
+function renderResults(body, meta){
   const lead = (meta.tools||[]).slice().reverse().find(t=>t.count>0);
   const kind = (lead && lead.type) || "hotel";
-  const recs = lead && lead.results ? lead.results : [];
-  const resultCards = collectResultCards(meta);
   // cards
-  if(resultCards.length){
-    // The drawer trims to a brand-diverse shortlist (3-4), but the lead's
-    // `total` is the honest unpaginated inventory count. Surface it so a capped
-    // shortlist doesn't read as "this is all that exists" (e.g. comparing two
-    // yacht brands showed 3 while the brand actually has 27 sailings).
-    const leadShown = recs.length;
-    const leadTotal = (lead && Number.isFinite(lead.total)) ? lead.total : leadShown;
-    if(leadTotal > leadShown){
-      const note=document.createElement("div"); note.className="shownof";
-      note.textContent=`Showing ${leadShown} of ${leadTotal} ${inventoryNoun(kind)} — ask to see more or narrow by date, region, or ship.`;
-      body.appendChild(note);
-    }
-    if(opts.compare && recs.length>=2) body.appendChild(renderComparison(recs, kind, opts.compareLimit||3, leadTotal));
+  if(lead && lead.results && lead.results.length){
     const cards=document.createElement("div"); cards.className="cards";
-    resultCards.forEach(({item,kind,label})=>{
-      cards.appendChild(renderOfferingCard(item, kind, label));
+    const displayResults = kind==="hotel"
+      ? lead.results.slice(0,3)
+      : diversifyResults(lead.results, 3);
+    displayResults.forEach(h=>{
+      const c=document.createElement("div"); c.className="hcard";
+      if(kind==="hotel"){
+        // Clicking the card opens the Hotel Atlas with that property's detail card.
+        const atlasDetail = ATLAS_BASE+"?id="+encodeURIComponent(h.id||h.name||"");
+        c.addEventListener("click", (e)=>{ if(!e.target.closest("a,button")) window.open(atlasDetail,"_blank","noopener"); });
+        const metaLine=[h.brand, h.program].filter(Boolean).join(" · ");
+        const place=[h.city, h.country].filter(Boolean).join(", ");
+        const ups=(h.vipUpgrades||[]).slice(0,3).map(u=>"<li>"+escapeHtml(u)+"</li>").join("");
+        const sv=svStore.length; svStore.push({});   // reserve a 360 slot for this card
+        c.innerHTML =
+          '<div class="photo"><span class="ph-mark">✦</span>'+
+            '<button class="sv360" onclick="openSV('+sv+',event)">⧶ View in 360°</button></div>'+
+          '<div class="nm">'+escapeHtml(h.name)+'</div>'+
+          '<div class="meta">'+escapeHtml([metaLine,place].filter(Boolean).join("  ·  "))+'</div>'+
+          (ups?'<ul class="ups">'+ups+'</ul>':'')+
+          '<a class="book" href="'+escapeHtml(atlasDetail)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open in Atlas · VIP</a>';
+        cards.appendChild(c);
+        enrichCard(c, h, sv);
+      } else {
+        // cruise / jet / yacht: no hotel photo or 360; show operator, route, dates.
+        // bookUrl may arrive as raw markdown [text](url) — extract the bare URL.
+        const rawUrl = extractUrl(h.bookUrl) || ATLAS_TYPES[kind]?.url || "#";
+        const typeAtlasUrl = (ATLAS_TYPES[kind]?.url||"")+"?id="+encodeURIComponent(h.id||h.name||"");
+        c.addEventListener("click", (e)=>{ if(!e.target.closest("a,button")) window.open(typeAtlasUrl,"_blank","noopener"); });
+        const operator=h.brand||h.operator||"";
+        const sub=[operator, h.ship, h.regionLabel].filter(Boolean).join(" · ");
+        const when=[h.route||h.country, h.startDate||h.month].filter(Boolean).join("  ·  ");
+        const nights=h.nights?(" · "+h.nights+" nights"):"";
+        c.innerHTML =
+          '<div class="nm">'+escapeHtml(h.name||"")+'</div>'+
+          '<div class="meta">'+escapeHtml(sub+nights)+'</div>'+
+          (when?'<div class="meta">'+escapeHtml(when)+'</div>':'')+
+          '<a class="book" href="'+escapeHtml(typeAtlasUrl)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open in Atlas ↗</a>'+
+          (rawUrl&&rawUrl!==ATLAS_TYPES[kind]?.url ? '&ensp;<a style="font-size:12px;color:var(--sub)" href="'+escapeHtml(rawUrl)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Book / Inquire ↗</a>' : "");
+        cards.appendChild(c);
+      }
     });
     body.appendChild(cards);
   }
-  // Plot the same records shown in cards, using exact hotel coordinates
-  // and regional fallback points for cruises, jets, and yachts.
-  if(recs.length){
-    plotRecommendations(lead, meta);
+  // narrow then plot: hotels plot a live subset on the globe; cruise/jet/yacht
+  // zoom the globe into the matching region with their pins shown.
+  if(meta.deepLink && kind==="hotel"){
+    plotSubset(meta.deepLink);
     setOpenExt(meta.deepLink);
+  } else if(kind!=="hotel" && meta.chartRegion){
+    focusTypeRegion(kind, meta.chartRegion);
   } else if(meta.chartRegion){
     loadRegions();
   }
-  const atlasLinks = atlasLinksForLead(lead, meta);
-  if(atlasLinks.length){
-    setOpenExt(atlasLinks[0].href);
-    const wrap=document.createElement("div"); wrap.className="atlaslinks";
-    atlasLinks.forEach(link=>{
-      const b=document.createElement("a"); b.className="atlasbtn"; b.href=link.href; b.target="_blank"; b.rel="noopener";
-      b.innerHTML="&#9683; "+escapeHtml(atlasLabelForType(link.type));
-      wrap.appendChild(b);
-    });
-    body.appendChild(wrap);
+  if(meta.deepLink){
+    setOpenExt(meta.deepLink);
+    const b=document.createElement("a"); b.className="atlasbtn"; b.href=meta.deepLink; b.target="_blank"; b.rel="noopener";
+    b.innerHTML="&#9683; Open in Atlas";
+    body.appendChild(b);
   }
   // the four moves
   body.appendChild(renderMoves(lead));
-}
-
-function inventoryNoun(kind){
-  return ({hotel:"stays",yacht:"sailings",cruise:"departures",worldcruise:"voyages",jet:"journeys"})[kind] || "options";
-}
-function renderComparison(recs, kind, limit, total){
-  const items=selectComparisonItems(recs, kind, Math.max(2,Math.min(3,limit||3,recs.length)));
-  const allHotels=items.every(x=>(x.type||kind)==="hotel");
-  const rows=allHotels
-    ? [
-        ["Setting", h=>[h.city,h.country].filter(Boolean).join(", ") || [h.brand,h.program].filter(Boolean).join(" · ")],
-        ["Best for", h=>(h.fit&&h.fit.bestFit)||h.category||""],
-        ["Atmosphere", h=>(h.fit&&h.fit.atmosphere)||""],
-        ["Service", h=>(h.fit&&h.fit.serviceStyle)||""],
-        ["VIP edge", h=>(h.vipUpgrades||[]).slice(0,2).map(formatVipBenefit).join("; ")],
-        ["Advisor read", h=>(h.fit&&h.fit.description)||""]
-      ]
-    : [
-        ["Type", h=>atlasLabelForType(h.type||kind).replace(/^Open /,"").replace(" Atlas","")],
-        ["Operator", h=>h.brand||h.operator||""],
-        ["Vessel", h=>h.ship||""],
-        ["Route", h=>h.route||h.country||""],
-        ["When", h=>h.startDate||h.month||""],
-        ["Length", h=>h.nights?(h.nights+" nights"):(h.days?(h.days+" days"):"")],
-        ["Region", h=>h.regionLabel||h.region||""]
-      ];
-  const wrap=document.createElement("div");
-  wrap.className="compare";
-  wrap.style.setProperty("--cols",String(items.length));
-  const title=document.createElement("div");
-  title.className="ctitle";
-  title.textContent="Side-by-side comparison";
-  if(Number.isFinite(total) && total>items.length){
-    const of=document.createElement("span"); of.className="of";
-    of.textContent=`${items.length} of ${total} ${inventoryNoun(kind)}`;
-    title.appendChild(of);
-  }
-  const table=document.createElement("div");
-  table.className="table";
-  const head=document.createElement("div");
-  head.className="row head";
-  head.appendChild(compareCell("",true));
-  items.forEach(h=>head.appendChild(compareCell(h.name||"",false)));
-  table.appendChild(head);
-  rows.forEach(([label,get])=>{
-    const row=document.createElement("div"); row.className="row";
-    row.appendChild(compareCell(label,true));
-    items.forEach(h=>row.appendChild(compareCell(get(h)||"Not listed",false)));
-    table.appendChild(row);
-  });
-  wrap.append(title,table);
-  return wrap;
-}
-function compareBrandKey(item, kind){
-  const itemKind=item.type||kind;
-  const value=itemKind==="hotel"
-    ? (item.brand||item.program||item.name)
-    : (item.brand||item.operator||item.ship||item.name);
-  return String(value||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()||String(item.name||"").toLowerCase();
-}
-function selectComparisonItems(recs, kind, limit){
-  const picked=[], seen=new Set();
-  recs.forEach(item=>{
-    if(picked.length>=limit) return;
-    const key=compareBrandKey(item, kind);
-    if(seen.has(key)) return;
-    seen.add(key);
-    picked.push(item);
-  });
-  recs.forEach(item=>{
-    if(picked.length>=limit) return;
-    if(!picked.includes(item)) picked.push(item);
-  });
-  return picked;
-}
-function compareCell(text,isLabel){
-  const cell=document.createElement("div");
-  cell.className="cell"+(isLabel?" label":"");
-  cell.textContent=String(text||"");
-  return cell;
+  scrollDown();
 }
 
 function renderMoves(lead){
   const wrap=document.createElement("div"); wrap.className="moves";
-  const names=(lead&&lead.results||[]).map(h=>h.name);
+  const names=(lead&&lead.results||[]).slice(0,3).map(h=>h.name);
   const deepLink=lead&&lead.deepLink;
   const mk=(label,onClick)=>{ const b=document.createElement("button"); b.className="move"; b.textContent=label; b.onclick=onClick; return b; };
 
+  // Use a hidden anchor + click to launch mailto/tel — avoids page navigation on mobile
+  // that location.href = "mailto:..." can trigger in some browsers.
+  function safeLaunch(href){ const a=document.createElement("a"); a.href=href; a.rel="noopener"; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
   wrap.appendChild(mk("Email my shortlist",()=>{
     const subject=encodeURIComponent("My BeVvip shortlist");
     const lines=["Please send details and hold availability for:",...names.map(n=>" • "+n)];
     if(deepLink) lines.push("","See them on the Atlas: "+deepLink);
     lines.push("","Name:","Travel dates:","Party:");
-    location.href="mailto:"+CONTACT.email+"?subject="+subject+"&body="+encodeURIComponent(lines.join("\n"));
+    safeLaunch("mailto:"+CONTACT.email+"?subject="+subject+"&body="+encodeURIComponent(lines.join("\n")));
   }));
   wrap.appendChild(mk("Request VIP planning",()=>sendText("I'd like to request VIP planning for this trip.")));
-  wrap.appendChild(mk("Talk to an advisor",()=>{ location.href=CONTACT.telHref; }));
+  wrap.appendChild(mk("Talk to an advisor",()=>{ safeLaunch(CONTACT.telHref); }));
   wrap.appendChild(mk("Inquire",()=>{
     const subject=encodeURIComponent("Inquiry — Aspen Travel Advisors");
-    location.href="mailto:"+CONTACT.email+"?subject="+subject;
+    safeLaunch("mailto:"+CONTACT.email+"?subject="+subject);
   }));
   return wrap;
 }
@@ -1270,19 +762,13 @@ function enrichCard(cardEl, hotel, sv){
       svc.textSearch({ query }, (results, status)=>{
         if(status===google.maps.places.PlacesServiceStatus.OK && results && results[0]
            && results[0].photos && results[0].photos.length){
-          const urls = results[0].photos.slice(0,3).map((p,idx)=>p.getUrl({ maxWidth:idx?360:720, maxHeight:480 }));
+          const url = results[0].photos[0].getUrl({ maxWidth:600, maxHeight:300 });
           const ph = cardEl.querySelector(".photo");
           if(ph){
             const mark = ph.querySelector(".ph-mark"); if(mark) mark.remove();
-            ph.querySelectorAll("img").forEach(img=>img.remove());
-            ph.classList.toggle("has-photos", urls.length>0);
-            ph.dataset.photos = String(urls.length);
-            const anchor = ph.querySelector(".sv360");
-            urls.forEach((url,idx)=>{
-              const img = document.createElement("img"); img.src=url; img.alt=hotel.name+(idx?` photo ${idx+1}`:"");
-              img.onerror=()=>img.remove();
-              ph.insertBefore(img, anchor || null);
-            });
+            const img = document.createElement("img"); img.src=url; img.alt=hotel.name;
+            img.onerror=()=>img.remove();
+            ph.insertBefore(img, ph.firstChild);
           }
         }
       });
@@ -1393,75 +879,6 @@ function toggleSVFullscreen(){
   else elc.requestFullscreen().catch(()=>{});
 }
 
-function toggleAtlasFullscreen(){
-  const atlas=document.querySelector(".atlas");
-  if(!atlas) return;
-  const on=atlas.classList.toggle("fs");
-  const btn=el("atlasFull");
-  if(btn){
-    btn.innerHTML = on ? "&#x2715; Exit fullscreen" : "&#x26F6; Fullscreen";
-    btn.title = on ? "Exit map fullscreen" : "Toggle map fullscreen";
-    btn.setAttribute("aria-pressed", on ? "true" : "false");
-  }
-  // let the layout settle, then resize the globe to the new bounds
-  setTimeout(()=>{ try{ lmap && lmap.resize(); }catch(_){} }, 60);
-}
-
-/* ---- Basemap switcher (photo icon under Fullscreen) ---- */
-function buildStyleMenu(){
-  const menu=el("styleMenu"); if(!menu) return;
-  menu.innerHTML = Object.entries(ATLAS_STYLES).map(([k,s])=>
-    `<button role="menuitem" data-k="${k}" onclick="setAtlasStyle('${k}')">`
-    + `<span class="sw" style="background:${s.sw}"></span>${s.label}</button>`).join("");
-  markActiveStyle();
-}
-function markActiveStyle(){
-  document.querySelectorAll("#styleMenu button").forEach(b=>
-    b.classList.toggle("active", b.dataset.k===atlasStyleKey));
-  const btn=el("atlasStyleBtn"), menu=el("styleMenu");
-  if(btn && menu) btn.setAttribute("aria-expanded", menu.classList.contains("open")?"true":"false");
-}
-function toggleStyleMenu(e){
-  if(e) e.stopPropagation();
-  const menu=el("styleMenu"); if(!menu) return;
-  if(!menu.children.length) buildStyleMenu();
-  menu.classList.toggle("open");
-  markActiveStyle();
-}
-function setAtlasStyle(key){
-  const s=ATLAS_STYLES[key];
-  const menu=el("styleMenu"); if(menu) menu.classList.remove("open");
-  if(!s || !lmap){ markActiveStyle(); return; }
-  if(key===atlasStyleKey){ markActiveStyle(); return; }
-  atlasStyleKey=key; markActiveStyle();
-  restyling=true;
-  try{ lmap.setStyle(s.url); }catch(_){ restyling=false; }
-}
-function switchToSatelliteForResults(lead, meta){
-  if(!lmap || atlasStyleKey==="satellite") return false;
-  const s=ATLAS_STYLES.satellite;
-  atlasStyleKey="satellite";
-  markActiveStyle();
-  restyling=true;
-  pendingPlot={lead,meta};
-  try{ lmap.setStyle(s.url); return true; }
-  catch(_){ restyling=false; pendingPlot=null; return false; }
-}
-// close the menu when clicking elsewhere
-document.addEventListener("click",(e)=>{
-  const menu=el("styleMenu"), btn=el("atlasStyleBtn");
-  if(menu && menu.classList.contains("open") && !menu.contains(e.target) && btn && !btn.contains(e.target)){
-    menu.classList.remove("open"); markActiveStyle();
-  }
-});
-// Esc exits atlas fullscreen (mirrors native fullscreen affordance)
-document.addEventListener("keydown",function(e){
-  if(e.key==="Escape"){
-    const atlas=document.querySelector(".atlas");
-    if(atlas && atlas.classList.contains("fs")) toggleAtlasFullscreen();
-  }
-});
-
 function closeSV(){
   if(document.fullscreenElement) document.exitFullscreen();
   svActiveIdx=-1; svPano=null;
@@ -1475,8 +892,6 @@ let busy=false;
 async function sendText(text){
   text=(text||"").trim();
   if(!text || busy) return;
-  const compare=wantsComparison(text);
-  const compareLimit=comparisonLimit(text);
   busy=true; sendBtn.disabled=true;
   input.value=""; autosize();
   // user bubble
@@ -1485,77 +900,10 @@ async function sendText(text){
 
   // guide bubble with typing indicator
   const gb=addMessage("guide");
-  const typing=document.createElement("div");
-  typing.className="stream-status";
-  typing.innerHTML='<span class="dots"><span></span><span></span><span></span></span><span class="status-text">Reading your trip style...</span>';
-  gb.appendChild(typing);
-  scrollMessageTop(gb);
+  const typing=document.createElement("div"); typing.className="dots"; typing.innerHTML="<span></span><span></span><span></span>";
+  gb.appendChild(typing); scrollDown();
 
-  // ── Paced reveal ──────────────────────────────────────────────────────────
-  // Deltas land token-by-token (and in network bursts). Rather than re-render on
-  // every token — which reads as nervous start/stop — we buffer into `target`
-  // and let a calm timer surface whole sentences and paragraphs, one settled
-  // chunk per beat. The result is blocks of copy arriving like a poured drink,
-  // not a stutter.
-  let target=""; let shown=0; let meta=null;
-  let streamDone=false; let aborted=false; let revealedAny=false; let revealTimer=null;
-  let resolveFinished; const finished=new Promise(r=>{ resolveFinished=r; });
-  const REVEAL_MS=80;       // beat between chunks
-  const REVEAL_BUDGET=240;  // max chars surfaced per beat
-
-  function setStatus(t){
-    const s=typing.querySelector(".status-text");
-    if(s) s.textContent=t||"Working on it...";
-  }
-  function paint(){
-    if(!revealedAny){ if(typing.parentNode) typing.remove(); revealedAny=true; }
-    gb.innerHTML = mdToHtml(target.slice(0,shown)) || "<p></p>";
-    scrollMessageTop(gb);
-  }
-  // Advance the cursor by one natural unit: paragraph break, else sentence end,
-  // else a single newline (list/table rows). Until a unit is complete we hold,
-  // unless the stream is done (then surface whatever remains).
-  function nextStop(buf, from, flushAll){
-    if(from>=buf.length) return from;
-    const rest=buf.slice(from);
-    const para=rest.indexOf("\n\n");
-    if(para!==-1) return from+para+2;
-    const sm=rest.match(/[.!?]["')’”]?(?=\s)|\n/);
-    if(sm){
-      let i=sm.index+sm[0].length;
-      while(i<rest.length && /\s/.test(rest[i])) i++;
-      return from+i;
-    }
-    return flushAll ? buf.length : from;
-  }
-  function tick(){
-    revealTimer=null;
-    if(shown<target.length){
-      const start=shown; let next=shown;
-      while(next<target.length && next-start<REVEAL_BUDGET){
-        const step=nextStop(target,next,streamDone);
-        if(step===next) break;                 // unit not complete yet — hold
-        const seg=target.slice(next,step); next=step;
-        if(seg.indexOf("\n\n")!==-1) break;     // let one paragraph settle per beat
-      }
-      if(next>shown){ shown=next; paint(); }
-    }
-    if(streamDone && shown>=target.length){ finalize(); return; }
-    revealTimer=setTimeout(tick, REVEAL_MS);
-  }
-  function finalize(){
-    if(aborted) return;
-    if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
-    if(typing.parentNode) typing.remove();
-    shown=target.length;
-    gb.innerHTML = mdToHtml(target) || "<p></p>";
-    if(target) messages.push({role:"assistant", content:target});
-    renderQuickReplies(gb, extractOptions(target));
-    if(meta) renderResults(gb, meta, {compare, compareLimit});
-    scrollMessageTop(gb);
-    resolveFinished();
-  }
-
+  let acc=""; let meta=null;
   try{
     const res=await fetch(GUIDE_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages})});
     const ct=res.headers.get("content-type")||"";
@@ -1563,7 +911,6 @@ async function sendText(text){
       const j=await res.json().catch(()=>({error:"Request failed ("+res.status+")"}));
       throw new Error(j.error||("Request failed ("+res.status+")"));
     }
-    revealTimer=setTimeout(tick, REVEAL_MS);
     const reader=res.body.getReader(); const dec=new TextDecoder(); let buf="";
     while(true){
       const {done,value}=await reader.read(); if(done) break;
@@ -1573,50 +920,46 @@ async function sendText(text){
         const line=f.split("\n").find(l=>l.startsWith("data:")); if(!line) continue;
         let evt; try{ evt=JSON.parse(line.slice(5).trim()); }catch(_){ continue; }
         if(evt.type==="meta"){ meta=evt; }
-        else if(evt.type==="status" && !revealedAny){ setStatus(evt.text); }
-        else if(evt.type==="delta"){ target+=evt.text; }
+        else if(evt.type==="delta"){ if(typing.parentNode) typing.remove(); acc+=evt.text; gb.innerHTML=mdToHtml(acc); scrollDown(); }
         else if(evt.type==="error"){ throw new Error(evt.error||"stream error"); }
       }
     }
-    streamDone=true;
-    await finished;   // let the paced reveal drain and finalize before releasing
-  }catch(err){
-    aborted=true;
-    if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
     if(typing.parentNode) typing.remove();
-    if(target){ gb.innerHTML = mdToHtml(target) || "<p></p>"; }
-    // A bare fetch/stream failure surfaces in WebKit as "Load failed" and in other
-    // engines as "Failed to fetch" — opaque transport drops, not a Guide error.
-    // Rephrase those as a retry hint; pass through real backend messages verbatim.
-    const raw=String((err&&err.message)||err||"");
-    const transportDrop = (err&&err.name==="TypeError") || /load failed|failed to fetch|networkerror/i.test(raw);
-    const msg = transportDrop
-      ? "the connection dropped before the reply finished. Tap send to try again."
-      : raw;
-    const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+msg;
+    gb.innerHTML = mdToHtml(acc) || "<p></p>";
+    if(acc) messages.push({role:"assistant", content:acc});
+    saveSession(messages);
+    if(meta) renderResults(gb, meta);
+  }catch(err){
+    if(typing.parentNode) typing.remove();
+    const e=document.createElement("div"); e.className="err"; e.textContent="The Guide could not respond: "+err.message;
     gb.appendChild(e);
   }finally{
-    busy=false; sendBtn.disabled=false; focusInput();
+    busy=false; sendBtn.disabled=false; input.focus();
   }
 }
 
 /* ---- input wiring ---- */
-// On mobile we don't auto-open the keyboard: let the user tap the prompt intentionally.
-// Auto-focusing there triggers Safari's focus-zoom and pushes the frame/branding off-screen.
-const isMobile = window.matchMedia("(max-width:920px)").matches;
-// Embedded in an iframe (the BeVvip landing hero / Base Camp panel): never steal
-// focus. Auto-focusing inside a frame scrolls the parent page down to us on load
-// (the "jump to Base Camp"), and pops the on-screen keyboard on wide touch
-// browsers like the Tesla one that the max-width:920px check can't catch.
-const inIframe = (()=>{ try { return window.self !== window.top; } catch(_){ return true; } })();
-function focusInput(){ if(!isMobile && !inIframe) input.focus(); }
 function autosize(){ input.style.height="auto"; input.style.height=Math.min(input.scrollHeight,160)+"px"; }
 input.addEventListener("input",autosize);
 input.addEventListener("keydown",e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendText(input.value); } });
 sendBtn.addEventListener("click",()=>sendText(input.value));
 el("chips").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(c) sendText(c.textContent); });
-el("regionsBtn").addEventListener("click",()=>{ setOpenExt(null); loadRegions(); if(lmap){ fitGlobe(); lmap.easeTo({ center:[10,20], zoom:homeZoom, duration:700 }); } });
-focusInput();
+el("regionsBtn").addEventListener("click",()=>{ setOpenExt(null); loadRegions(); });
+
+// If a previous session exists, show a restore banner so the user knows the
+// Guide still has their conversation context even after switching tabs.
+if(messages.length){
+  el("empty")?.remove();
+  const banner=document.createElement("div"); banner.className="session-banner";
+  const turns=messages.filter(m=>m.role==="user").length;
+  banner.innerHTML='<span>&#9679; Your previous session is still active ('+turns+' '+(turns===1?"question":"questions")+' — the Guide remembers your context).</span>';
+  const clr=document.createElement("button"); clr.textContent="Clear session";
+  clr.onclick=()=>{ clearSession(); messages.length=0; banner.remove(); el("transcript").innerHTML='<div class="empty" id="empty"><h1>Where are you going next?</h1><p>Give me a place, a house, a season, or the shape of the journey. I\'ll find what\'s truly available and sketch the first elegant move. Then an advisor takes it from there.</p><div class="chips" id="chips"><div class="chip">Aman in Japan</div><div class="chip">Four Seasons in Italy</div><div class="chip">Mediterranean beach resorts</div><div class="chip">Antarctica in January</div><div class="chip">Aman properties</div><div class="chip">Orient Express trains</div></div></div>'; el("chips").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(c) sendText(c.textContent); }); };
+  banner.appendChild(clr);
+  transcript.insertBefore(banner, transcript.firstChild);
+}
+
+input.focus();
 </script>
 
 <!-- Google Maps: card photos (Places) + 360 (Street View) only. Loaded async; the globe is Mapbox. -->
