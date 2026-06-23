@@ -16,7 +16,30 @@ The Hotel Atlas already consumes its query params (`region`, `brand`, `country`,
 `program`, `category`, `q`) via its `applyDeepLink()`, so hotel links already
 preselect and zoom. No change needed there.
 
-## What still needs doing (the three other repos)
+## Status (2026-06): all five atlases consume the deep link
+This is now **done** in every atlas repo — the "still needs doing" plan below is
+kept only as historical context. Each of the cruise, jet, yacht, and world-cruise
+apps already has an `applyDeepLink()` at the end of its inline `<script>` that
+reads `region`, `ids`, `operator`/`brand`, `month`, `regions`, and `q` from
+`location.search` and reproduces that view. Verified across all four:
+
+- **`?region=`** resolves through each app's `findRegionKey()`, which maps the
+  Guide's marquee keys to the app's native keys (e.g. yacht/world-cruise alias
+  `mediterranean → MED`, `caribbean → CARIB`, `polynesia → POLY`). An unmatched
+  region is harmless: `ids` alone still opens the record via `openSearchResults`.
+- **`?ids=`** filters to the exact record(s). The apps store bare ids
+  (`18492135`) while the `/api/*` feeds (and Base Camp) prefix them
+  (`cr_`/`jt_`/`yc_`/`wc_`), so each app's filter checks **both** forms
+  (`activeIds.has(String(s.id)) || activeIds.has('cr_'+s.id)`). A single-result
+  card therefore opens that sailing's own card in the panel — the detail view.
+
+So Base Camp's per-result `deepLink` of `<base>/?region=<region>&ids=<id>`
+(hotel uses `<base>/?ids=<id>`) already lands on the specific record with its
+card open. No further atlas change is required for the hand-off.
+
+---
+
+### Historical: the original "what still needs doing" plan
 The **cruise, jet, and yacht apps do not read URL params at all** today — that is
 why "Open Atlas" currently just lands on the main view. Each app already has the
 right entry point: a function `openRegion(key)` (the same call fired when a user
@@ -42,19 +65,3 @@ Paste this at the **very end of the existing inline `<script>` block** in each a
   else window.addEventListener('load', function () { setTimeout(applyRegionParam, 350); });
 })();
 ```
-
-Notes:
-- The 350 ms delay lets the Leaflet map and trip data finish initializing before
-  `openRegion` runs. If an app finishes later, raise it or call `applyRegionParam`
-  from that app's own init-complete hook instead.
-- If `openRegion` selects the panel but does not move the map in some app, add a
-  `map.flyTo` / `map.fitBounds` for that region inside `openRegion` (or right after
-  the call) so the view zooms to fit.
-
-## Chat-result links (cruise / jet / yacht)
-In-chat result cards for these three types still open the app's main view, because
-the Guide passes a marquee region key (e.g. `antarctica`) that does not 1:1 map to
-each app's own region keys. To make chat results preselect too, add a marquee→app
-key mapping in `lib/search-offerings.js` (build it per type from each app's
-`REGIONS`) and set `deepLink` to `<base>/?region=<mappedKey>`. The Living-Atlas
-pin path needs none of this, since those pins already carry the app's native key.
