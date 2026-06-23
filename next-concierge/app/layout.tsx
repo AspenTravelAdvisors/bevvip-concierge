@@ -38,10 +38,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="app">
           <header className="site">
-            <span className="mark">
-              Be<b>Vvip</b>
+            <a
+              className="mark"
+              href="https://expeditionbucketlist.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Expedition <b>Bucket List</b>
+            </a>
+            <span className="tag">
+              Base Camp · The Guide · By{" "}
+              <a
+                className="byline"
+                href="https://aspentraveladvisors.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Aspen Travel Advisors
+              </a>
             </span>
-            <span className="tag">Base Camp · The Guide</span>
             <nav>
               <Link href="/">The Guide</Link>
               <a href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">Hotels</a>

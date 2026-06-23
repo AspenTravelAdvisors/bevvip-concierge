@@ -628,14 +628,6 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           >
             {isFull ? "✕ Exit" : "⛶ Fullscreen"}
           </button>
-          <button
-            type="button"
-            className="actrl"
-            onClick={() => apiRef.current?.setProjection(!is3D)}
-            title={is3D ? "Switch to flat 2D map" : "Switch to 3D globe"}
-          >
-            {is3D ? "2D" : "3D"}
-          </button>
           <div className="actrl-style">
             <button
               type="button"
@@ -664,6 +656,14 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
               </div>
             )}
           </div>
+          <button
+            type="button"
+            className="actrl"
+            onClick={() => apiRef.current?.setProjection(!is3D)}
+            title={is3D ? "Switch to flat 2D map" : "Switch to 3D globe"}
+          >
+            {is3D ? "2D" : "3D"}
+          </button>
         </div>
       )}
 

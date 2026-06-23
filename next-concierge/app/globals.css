@@ -67,10 +67,19 @@ header.site .mark {
   letter-spacing: 0.4px;
   line-height: 1;
   white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+header.site a.mark:hover {
+  text-decoration: none;
+}
+header.site a.mark:hover b {
+  color: var(--gold-light);
 }
 header.site .mark b {
   color: var(--gold);
   font-weight: 600;
+  transition: color 0.15s ease;
 }
 header.site .tag {
   font-size: 11px;
@@ -79,6 +88,14 @@ header.site .tag {
   color: var(--muted);
   border-left: 1px solid var(--line);
   padding-left: 14px;
+}
+header.site .tag .byline {
+  color: var(--sub);
+  text-decoration: none;
+}
+header.site .tag .byline:hover {
+  color: var(--gold-light);
+  text-decoration: none;
 }
 header.site nav {
   margin-left: auto;
@@ -742,19 +759,56 @@ main.page {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--line);
 }
 .home-chat .chat {
   flex: 1;
 }
 .home-atlas {
-  flex: 0 0 44%;
-  max-width: 560px;
+  flex: 0 0 44%; /* flex-basis overridden inline by the drag ratio */
   min-width: 0;
   display: flex;
   flex-direction: column;
   padding: 18px;
   gap: 12px;
+}
+
+/* Draggable gutter between chat and atlas. The 1px line lives here now
+   (moved off .home-chat's right border) so the grab target straddles it. */
+.home-gutter {
+  flex: 0 0 9px;
+  align-self: stretch;
+  position: relative;
+  cursor: col-resize;
+  background: var(--line);
+  background-clip: content-box;
+  padding: 0 4px;
+  touch-action: none;
+}
+.home-gutter:hover,
+.home-gutter:focus-visible,
+.home.dragging .home-gutter {
+  background-color: var(--gold-dim);
+  outline: none;
+}
+.home-gutter-grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 34px;
+  border-radius: 4px;
+  background: var(--gold-dim);
+}
+.home-gutter:hover .home-gutter-grip,
+.home-gutter:focus-visible .home-gutter-grip,
+.home.dragging .home-gutter-grip {
+  background: var(--gold);
+}
+/* While dragging, don't let the map canvas swallow the pointer stream. */
+.home.dragging .home-chat,
+.home.dragging .home-atlas {
+  pointer-events: none;
 }
 .home-atlas-head h2 {
   font-family: var(--serif);
@@ -807,12 +861,16 @@ main.page {
     flex-direction: column;
   }
   .home-chat {
-    border-right: 0;
     border-bottom: 1px solid var(--line);
     min-height: 52vh;
   }
+  /* Stacked vertically, there's nothing to drag — hide the gutter and let the
+     atlas take whatever height it needs (drag ratio doesn't apply here). */
+  .home-gutter {
+    display: none;
+  }
   .home-atlas {
-    flex: 1 1 auto;
+    flex: 1 1 auto !important;
     max-width: none;
   }
   .home-atlas .atlas-map {
