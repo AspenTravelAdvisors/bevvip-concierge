@@ -375,6 +375,36 @@ main.page {
   background: var(--card-hover);
 }
 
+/* moves — advisor handoff buttons that close out a results block */
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.move {
+  cursor: pointer;
+  border: 1px solid var(--gold-dim);
+  background: var(--user);
+  color: var(--gold-light);
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+  font-family: var(--sans);
+  transition: 0.15s;
+}
+.move:hover {
+  background: var(--card-hover);
+  border-color: var(--gold);
+}
+.move:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 /* ── Composer ─────────────────────────────────────── */
 .composer {
   border-top: 1px solid var(--line);

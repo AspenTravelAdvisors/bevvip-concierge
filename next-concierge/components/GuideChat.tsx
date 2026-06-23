@@ -15,6 +15,10 @@ const CHIPS = [
   "Around the world by private jet trips in 2026",
 ];
 
+// Advisor handoff target — the human advisor closes and books. Kept in sync
+// with the standalone Atlas client (CONTACT in public/index.html).
+const CONTACT = { email: "Book@BeVvip.com", tel: "970.925.1002", telHref: "tel:+19709251002" };
+
 interface Turn extends ChatMessage {
   meta?: GuideMeta;
 }
@@ -157,7 +161,7 @@ export default function GuideChat() {
         ) : (
           <div className="wrap">
             {turns.map((turn, i) => (
-              <Message key={i} turn={turn} onPick={send} busy={busy} />
+              <Message key={i} turn={turn} turns={turns} onPick={send} busy={busy} />
             ))}
             {status && <div className="status">{status}</div>}
           </div>
@@ -189,15 +193,21 @@ export default function GuideChat() {
 
 function Message({
   turn,
+  turns,
   onPick,
   busy,
 }: {
   turn: Turn;
+  turns: Turn[];
   onPick: (text: string) => void;
   busy: boolean;
 }) {
   const isUser = turn.role === "user";
   const options = isUser ? [] : extractOptions(turn.content);
+  // Show the advisor handoff once a turn has surfaced inventory (cards or an
+  // Atlas deep link) — this is where the traveler hands the shortlist off.
+  const hasResults =
+    !isUser && !!turn.meta && (!!turn.meta.deepLink || shortlistNames(turn.meta).length > 0);
   return (
     <div className={`msg ${isUser ? "user" : "guide"}`}>
       <div className="who">{isUser ? "You" : "G"}</div>
@@ -222,9 +232,116 @@ function Message({
             </div>
           </div>
         )}
+        {hasResults && turn.meta && (
+          <ChatMoves meta={turn.meta} turns={turns} onPick={onPick} busy={busy} />
+        )}
       </div>
     </div>
   );
+}
+
+// The four "moves" that close out a results block: email the shortlist (with a
+// transcript of the conversation so the advisor has full context), call, or
+// inquire. Ported from renderMoves() in the standalone Atlas client.
+function ChatMoves({
+  meta,
+  turns,
+  onPick,
+  busy,
+}: {
+  meta: GuideMeta;
+  turns: Turn[];
+  onPick: (text: string) => void;
+  busy: boolean;
+}) {
+  const emailResults = () => {
+    const subject = "My BeVvip shortlist";
+    const names = shortlistNames(meta);
+    const lines: string[] = ["Please send details and hold availability for:"];
+    if (names.length) {
+      for (const n of names) lines.push(" • " + n);
+    } else {
+      lines.push(" • (see the conversation below)");
+    }
+    if (meta.deepLink) lines.push("", "See them on the Atlas: " + meta.deepLink);
+    lines.push("", "— Our conversation —", transcript(turns));
+    lines.push("", "Name:", "Travel dates:", "Party:");
+    launch(mailto(subject, lines.join("\n")));
+  };
+
+  return (
+    <div className="moves">
+      <button type="button" className="move" disabled={busy} onClick={emailResults}>
+        Email my results
+      </button>
+      <button
+        type="button"
+        className="move"
+        disabled={busy}
+        onClick={() => onPick("I'd like to request VIP planning for this trip.")}
+      >
+        Request VIP planning
+      </button>
+      <button type="button" className="move" onClick={() => launch(CONTACT.telHref)}>
+        Talk to an advisor
+      </button>
+      <button
+        type="button"
+        className="move"
+        onClick={() => launch(mailto("Inquiry — BeVvip", ""))}
+      >
+        Inquire
+      </button>
+    </div>
+  );
+}
+
+// Use a transient anchor + click to launch mailto/tel — assigning
+// location.href can trigger a full page navigation on some mobile browsers.
+function launch(href: string) {
+  const a = document.createElement("a");
+  a.href = href;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function mailto(subject: string, body: string): string {
+  const q = body
+    ? `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    : `?subject=${encodeURIComponent(subject)}`;
+  return `mailto:${CONTACT.email}${q}`;
+}
+
+// The top result names from a meta frame, for the email shortlist. Mirrors the
+// card collection order (latest tool first) without the per-brand card caps.
+function shortlistNames(meta: GuideMeta): string[] {
+  const names: string[] = [];
+  const seen = new Set<string>();
+  for (const tool of [...(meta.tools ?? [])].reverse()) {
+    for (const r of tool.results ?? []) {
+      const name = typeof r?.name === "string" ? r.name.trim() : "";
+      if (name && !seen.has(name)) {
+        seen.add(name);
+        names.push(name);
+      }
+    }
+  }
+  return names.slice(0, 5);
+}
+
+// A compact, plain-text rendering of the conversation for the email handoff:
+// control tags stripped, each turn labelled, capped so the mailto body stays
+// within what mail clients accept.
+function transcript(turns: Turn[]): string {
+  const lines = turns
+    .filter((t) => t.content && t.content.trim())
+    .map((t) => `${t.role === "user" ? "You" : "The Guide"}: ${stripControlTags(t.content)}`);
+  let out = lines.join("\n\n");
+  const CAP = 4000;
+  if (out.length > CAP) out = "…(earlier messages trimmed)…\n\n" + out.slice(out.length - CAP);
+  return out;
 }
 
 // Strip control tags ([[CHART:..]], [[OPTIONS:..]]) and any trailing partial
