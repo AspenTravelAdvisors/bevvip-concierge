@@ -1,7 +1,12 @@
 import type { GuideMeta, OfferingResult, OfferingType } from "@/lib/types";
 import { ATLASES, isOfferingType } from "@/lib/atlas-config";
 
-const GUIDE_CARD_LIMIT_PER_CATEGORY = 4;
+// Cap cards per brand within a category (so one operator can't flood the row),
+// not per category — a two-brand comparison ("Aman vs Orient Express") and an
+// open search that surfaced several operators must show every brand, not just
+// whichever the last tool happened to fill the category bucket with.
+const GUIDE_CARD_LIMIT_PER_BRAND = 4;
+const GUIDE_CARD_LIMIT_TOTAL = 12;
 
 // Rich inventory cards built from the Guide's meta frame. Every card and the
 // shortlist handoff open the full standalone Atlas (in a new tab, so the
@@ -38,9 +43,11 @@ function collectResultCards(meta: GuideMeta): Array<{ result: OfferingResult; ty
   const counts = new Map<string, number>();
   const add = (result: OfferingResult | undefined, rawType: unknown) => {
     if (!result) return;
+    if (cards.length >= GUIDE_CARD_LIMIT_TOTAL) return;
     const type = normalizeType(String(result.type ?? rawType ?? ""));
-    const bucket = type ?? "other";
-    if ((counts.get(bucket) ?? 0) >= GUIDE_CARD_LIMIT_PER_CATEGORY) return;
+    const brandKey = String(result.brand ?? result.operator ?? "").toLowerCase().trim();
+    const bucket = `${type ?? "other"}|${brandKey}`;
+    if ((counts.get(bucket) ?? 0) >= GUIDE_CARD_LIMIT_PER_BRAND) return;
     const key = [
       bucket,
       result.id ?? "",

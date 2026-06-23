@@ -148,13 +148,16 @@ await test('searchOfferings drops intent on an open cruise/yacht search, keeps i
     ], deepLink: 'https://example.test' }) };
   };
   await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', limit: 2 }, { fetchImpl });
-  assert.ok(seen.some((x) => x.path.includes('expedition-cruises')) && seen.every((x) => x.intent === null));
+  // Scope the assertion to the cruise/yacht atlas calls; the companion-hotel
+  // sidecar legitimately carries its own intent.
+  const sailingCalls = (arr) => arr.filter((x) => x.path.includes('expedition-cruises') || x.path.includes('yacht-sailings'));
+  assert.ok(sailingCalls(seen).length > 0 && sailingCalls(seen).every((x) => x.intent === null));
 
   // Branded ask: the traveler wants that one operator, so intent is forwarded to
   // rank within it.
   seen = [];
   await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', brand: 'Seabourn', limit: 2 }, { fetchImpl });
-  assert.ok(seen.some((x) => x.intent === 'wildlife'));
+  assert.ok(sailingCalls(seen).some((x) => x.intent === 'wildlife'));
 });
 
 await test('searchOfferings cruise promotes a destination left in q to the region filter', async () => {
@@ -482,6 +485,8 @@ await test('searchOfferings cruise searches expedition cruise and yacht atlases'
         deepLink: 'https://expedition-cruise-map.vercel.app?region=antarctica',
       }) };
     }
+    // The companion-hotel sidecar may probe the hotel atlas; not under test here.
+    if (url.includes('/api/luxury-hotels?')) return emptyOk();
     assert.ok(url.includes('/api/yacht-sailings?'), 'calls yacht atlas too: ' + url);
     return { ok: true, json: async () => ({
       total: 8, count: 1,
@@ -493,7 +498,7 @@ await test('searchOfferings cruise searches expedition cruise and yacht atlases'
   };
   const r = await searchOfferings({ type: 'cruise', region: 'antarctica', limit: 4 }, { fetchImpl });
   assert.equal(r.type, 'cruise');
-  assert.equal(seen.length, 2);
+  assert.equal(seen.filter((u) => u.includes('/api/expedition-cruises?') || u.includes('/api/yacht-sailings?')).length, 2);
   assert.equal(r.total, 383);
   assert.equal(r.count, 2);
   assert.deepEqual(r.results.map((x) => x.type), ['cruise', 'yacht']);
@@ -574,6 +579,7 @@ await test('searchOfferings overfetches the candidate pool for an open search, t
   // rest (the Galápagos limit:4 bug). The displayed set is still one-per-operator.
   let seenLimit = null;
   const fetchImpl = async (url) => {
+    if (url.includes('/api/luxury-hotels?')) return emptyOk(); // companion sidecar, not under test
     seenLimit = new URL(url).searchParams.get('limit');
     return { ok: true, json: async () => ({ total: 12, count: 4, results: [
       { id: 'jt_1', type: 'jet', name: 'One', operator: 'Op A', region: 'japan' },

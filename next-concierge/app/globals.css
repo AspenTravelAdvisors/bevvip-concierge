@@ -243,6 +243,51 @@ main.page {
   margin: 0 0 10px;
   padding-left: 20px;
 }
+.msg .body .reply-h {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--gold-light);
+  margin: 14px 0 8px;
+  letter-spacing: 0.01em;
+}
+.msg .body .reply-h:first-child {
+  margin-top: 0;
+}
+
+/* Structured comparison table */
+.cmp-wrap {
+  margin: 12px 0;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.cmp {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+.cmp th,
+.cmp td {
+  text-align: left;
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.cmp tr:last-child td {
+  border-bottom: none;
+}
+.cmp thead th {
+  font-family: var(--serif);
+  font-size: 13.5px;
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+.cmp tbody td:first-child {
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
 
 .status {
   color: var(--muted);

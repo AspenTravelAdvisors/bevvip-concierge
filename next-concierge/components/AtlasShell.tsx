@@ -377,34 +377,45 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
 
         // ── Result plotting (fit + satellite), triggered by the Guide ─────────
         function plotResults(meta: GuideMeta) {
-          const lead = [...(meta.tools || [])].reverse().find((t) => (t.results?.length ?? 0) > 0);
-          if (!lead || !lead.results?.length) return;
-          const kind = (lead.type as OfferingType) || "hotel";
-          const recs = lead.results.slice(0, 60);
-          // Center for results that arrive without coordinates: the chart region
-          // the Guide chose (e.g. caribbean), never an arbitrary [10,20] point,
-          // which sits in the Sahara and made Caribbean results pin over Niger.
-          const chart = lead.chartRegion || meta.chartRegion || "";
-          const cc = chart ? regionCenter(chart, regionsGeo, regionLookupKey) : null;
-          const fallbackCenter: [number, number] | null = cc ? [cc[0], cc[1]] : null;
-          featuredFC = {
-            type: "FeatureCollection",
-            features: recs
-              .map((r, i) => {
-                const coords = pointForResult(r, i, recs.length, regionsGeo, fallbackCenter);
-                if (!coords) return null; // unplaceable: skip rather than mis-pin
-                return {
-                  type: "Feature" as const,
-                  geometry: { type: "Point" as const, coordinates: coords },
-                  properties: { name: r.name || "", html: featuredHtml(r, kind, escapeHtml) },
-                };
-              })
-              .filter((f): f is NonNullable<typeof f> => f !== null),
+          // Plot EVERY tool's results, not just the lead. A hotel ask often also
+          // fires a yacht sidecar tool that carries no coordinates; picking only
+          // the last tool with results meant hotels (which DO have coords) never
+          // plotted. Aggregate across tools, each anchored on its own chartRegion.
+          const tools = (meta.tools || []).filter((t) => (t.results?.length ?? 0) > 0);
+          if (!tools.length) return;
+          type Feat = {
+            type: "Feature";
+            geometry: { type: "Point"; coordinates: [number, number] };
+            properties: { name: string; html: string };
           };
+          const features: Feat[] = [];
+          let total = 0;
+          for (const tool of tools) {
+            const kind = (tool.type as OfferingType) || "hotel";
+            // Center for results that arrive without coordinates: the chart region
+            // the Guide chose (e.g. caribbean), never an arbitrary [10,20] point,
+            // which sits in the Sahara and made Caribbean results pin over Niger.
+            const chart = tool.chartRegion || meta.chartRegion || "";
+            const cc = chart ? regionCenter(chart, regionsGeo, regionLookupKey) : null;
+            const fallbackCenter: [number, number] | null = cc ? [cc[0], cc[1]] : null;
+            const recs = (tool.results ?? []).slice(0, 60);
+            total += tool.total ?? recs.length;
+            recs.forEach((r, i) => {
+              const coords = pointForResult(r, i, recs.length, regionsGeo, fallbackCenter);
+              if (!coords) return; // unplaceable: skip rather than mis-pin
+              features.push({
+                type: "Feature",
+                geometry: { type: "Point", coordinates: coords },
+                properties: { name: r.name || "", html: featuredHtml(r, kind, escapeHtml) },
+              });
+            });
+          }
+          featuredFC = { type: "FeatureCollection", features };
           if (!featuredFC.features.length) return; // nothing locatable to plot
           subsetActive = true;
           stopSpin();
-          setBadge({ n: recs.length, total: lead.total ?? recs.length, deepLink: lead.deepLink });
+          const leadDeep = tools.find((t) => t.deepLink)?.deepLink || meta.deepLink || undefined;
+          setBadge({ n: features.length, total, deepLink: leadDeep });
           // Switch to satellite for the result reveal (mirrors the original).
           if (styleKeyLocal !== "satellite") {
             pendingFit = true;

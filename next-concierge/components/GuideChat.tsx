@@ -248,23 +248,86 @@ function extractOptions(text: string): string[] {
     .slice(0, 4);
 }
 
-// Minimal markdown: paragraphs, **bold**, *italic*, and "- " bullet lists.
+// Minimal markdown: headings (#), paragraphs, **bold**, *italic*, "- " bullet
+// lists, and GitHub-style pipe tables (used by the structured comparison view).
+// Lines are grouped so a table or heading mixed into a block still renders right
+// instead of leaking raw "| a | b |" pipes into the reply.
+const isTableRow = (l: string) => /^\s*\|.*\|\s*$/.test(l.trim());
+const isListItem = (l: string) => /^\s*[-•]\s+/.test(l);
+const isHeading = (l: string) => /^\s*#{1,6}\s+\S/.test(l);
+const isTableDivider = (l: string) =>
+  splitTableCells(l).every((c) => /^:?-{2,}:?$/.test(c.replace(/\s+/g, "")));
+
+function splitTableCells(row: string): string[] {
+  return row.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+}
+
 function renderText(text: string) {
-  const blocks = stripControlTags(text).split(/\n{2,}/).filter(Boolean);
-  return blocks.map((block, i) => {
-    const lines = block.split("\n");
-    const isList = lines.every((l) => /^\s*[-•]\s+/.test(l));
-    if (isList) {
-      return (
-        <ul key={i}>
-          {lines.map((l, j) => (
-            <li key={j}>{inline(l.replace(/^\s*[-•]\s+/, ""))}</li>
-          ))}
-        </ul>
-      );
+  const lines = stripControlTags(text).split("\n");
+  const out: React.ReactNode[] = [];
+  let key = 0;
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim()) { i++; continue; }
+
+    if (isTableRow(line)) {
+      const rows: string[] = [];
+      while (i < lines.length && isTableRow(lines[i])) { rows.push(lines[i]); i++; }
+      out.push(renderTable(rows, key++));
+      continue;
     }
-    return <p key={i}>{inline(block)}</p>;
-  });
+    if (isHeading(line)) {
+      out.push(
+        <p key={key++} className="reply-h">
+          {inline(line.replace(/^\s*#{1,6}\s+/, ""))}
+        </p>,
+      );
+      i++;
+      continue;
+    }
+    if (isListItem(line)) {
+      const items: string[] = [];
+      while (i < lines.length && isListItem(lines[i])) { items.push(lines[i].replace(/^\s*[-•]\s+/, "")); i++; }
+      out.push(
+        <ul key={key++}>
+          {items.map((it, j) => <li key={j}>{inline(it)}</li>)}
+        </ul>,
+      );
+      continue;
+    }
+    // Paragraph: gather consecutive plain lines.
+    const para: string[] = [];
+    while (
+      i < lines.length && lines[i].trim() &&
+      !isTableRow(lines[i]) && !isListItem(lines[i]) && !isHeading(lines[i])
+    ) { para.push(lines[i]); i++; }
+    out.push(<p key={key++}>{inline(para.join(" "))}</p>);
+  }
+  return out;
+}
+
+function renderTable(rows: string[], key: number) {
+  const parsed = rows.map(splitTableCells);
+  const hasHeader = parsed.length > 1 && isTableDivider(rows[1]);
+  const header = hasHeader ? parsed[0] : null;
+  const body = parsed.filter((_, idx) => !(idx === 0 && hasHeader) && !(idx === 1 && hasHeader));
+  return (
+    <div className="cmp-wrap" key={key}>
+      <table className="cmp">
+        {header && (
+          <thead>
+            <tr>{header.map((c, j) => <th key={j}>{inline(c)}</th>)}</tr>
+          </thead>
+        )}
+        <tbody>
+          {body.map((cells, r) => (
+            <tr key={r}>{cells.map((c, j) => <td key={j}>{inline(c)}</td>)}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 // **bold** / *italic* within a run of plain (non-link) text.
