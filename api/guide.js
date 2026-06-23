@@ -27,6 +27,8 @@ const ANTHROPIC_IDLE_TIMEOUT_MS = Number(process.env.ANTHROPIC_IDLE_TIMEOUT_MS) 
 // Heartbeat comment cadence: keeps the SSE connection alive through proxies during
 // the gaps between rounds (model latency, atlas tool calls) so it is not dropped.
 const SSE_HEARTBEAT_MS = Number(process.env.SSE_HEARTBEAT_MS) || 10000;
+// How many times to retry a transient Anthropic overload/rate-limit before giving up.
+const GUIDE_MODEL_ATTEMPTS = Number(process.env.GUIDE_MODEL_ATTEMPTS) || 4;
 
 // ── Core loop (exported for tests) ──────────────────────────────────────────
 // callModel({system, messages, tools}) -> resolved Anthropic message object.
@@ -101,6 +103,7 @@ async function runGuideTurnStream({
       system: GUIDE_PROMPT,
       messages: convo,
       tools: [SEARCH_OFFERINGS_TOOL],
+      send,
       onText: (delta) => {
         text += delta;
         send({ type: 'delta', text: delta });
@@ -275,41 +278,83 @@ function makeAnthropicCaller(apiKey) {
   };
 }
 
+// Returns true for Anthropic errors that are transient and safe to retry.
+function isRetryable(err) {
+  const s = err && err.status;
+  const msg = String((err && err.message) || '');
+  return s === 529 || s === 429 || (s >= 500 && s !== 501)
+    || /overloaded_error|rate_limit_error/i.test(msg);
+}
+
+// Converts a raw Anthropic error into a traveler-friendly message.
+// Never leaks provider JSON or HTTP status codes.
+function friendlyModelError(err) {
+  if (isRetryable(err)) {
+    return new Error('The Guide is in high demand right now — please try again in a moment.');
+  }
+  if (err && err.status === 401) {
+    return new Error('API key issue — please contact Book@BeVvip.com.');
+  }
+  const plain = String((err && err.message) || err || 'Unknown error')
+    .replace(/\{[\s\S]*\}/, '')   // strip raw JSON blobs
+    .replace(/^anthropic \d+:\s*/i, '')
+    .trim();
+  return new Error(plain || 'The Guide could not complete that reply. Please try again.');
+}
+
 function makeAnthropicStreamCaller(apiKey) {
-  return async ({ system, messages, tools, onText }) => {
-    const controller = new AbortController();
-    let idleTimer;
-    const resetIdle = () => {
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => controller.abort(), ANTHROPIC_IDLE_TIMEOUT_MS);
-    };
-    resetIdle();
-    try {
-      const r = await fetch(ANTHROPIC_URL, {
-        method: 'POST',
-        headers: {
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system, messages, tools, stream: true }),
-        signal: controller.signal,
-      });
-      if (!r.ok) {
-        const t = await r.text();
-        const err = new Error(`anthropic ${r.status}: ${t}`);
-        err.status = r.status;
-        throw err;
+  return async ({ system, messages, tools, onText, send = () => {} }) => {
+    let lastErr;
+    for (let attempt = 0; attempt < GUIDE_MODEL_ATTEMPTS; attempt++) {
+      if (attempt > 0) {
+        // Exponential backoff with jitter: 1s, 2s, 4s …
+        const delay = (Math.pow(2, attempt - 1) * 1000) + Math.random() * 400;
+        send({ type: 'status', text: 'The Guide is in high demand — retrying…' });
+        await new Promise((r) => setTimeout(r, delay));
       }
-      return await readAnthropicStream(r.body, onText, resetIdle);
-    } catch (err) {
-      if (controller.signal.aborted) {
-        throw new Error('The model stalled and the request timed out. Please try again.');
+      const controller = new AbortController();
+      let idleTimer;
+      const resetIdle = () => {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => controller.abort(), ANTHROPIC_IDLE_TIMEOUT_MS);
+      };
+      resetIdle();
+      try {
+        const r = await fetch(ANTHROPIC_URL, {
+          method: 'POST',
+          headers: {
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system, messages, tools, stream: true }),
+          signal: controller.signal,
+        });
+        if (!r.ok) {
+          const t = await r.text();
+          const err = new Error(`anthropic ${r.status}: ${t}`);
+          err.status = r.status;
+          if (isRetryable(err) && attempt < GUIDE_MODEL_ATTEMPTS - 1) {
+            lastErr = err;
+            continue;
+          }
+          throw friendlyModelError(err);
+        }
+        return await readAnthropicStream(r.body, onText, resetIdle);
+      } catch (err) {
+        if (controller.signal.aborted) {
+          throw new Error('The model stalled and the request timed out. Please try again.');
+        }
+        if (isRetryable(err) && attempt < GUIDE_MODEL_ATTEMPTS - 1) {
+          lastErr = err;
+          continue;
+        }
+        throw friendlyModelError(err);
+      } finally {
+        clearTimeout(idleTimer);
       }
-      throw err;
-    } finally {
-      clearTimeout(idleTimer);
     }
+    throw friendlyModelError(lastErr);
   };
 }
 
