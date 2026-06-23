@@ -1134,7 +1134,14 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   const limit = limitOverride == null
     ? requestedLimit(input)
     : clampLimit(limitOverride);
-  const candidateLimit = candidateLimitForInput(input, limit);
+  // Supplier diversity needs a wide candidate pool. candidateLimitForInput only
+  // overfetches when the display limit is small (<=3); when the model asks for
+  // limit:4 it would fetch just 4 records — often two sailings each from only two
+  // operators, hiding the rest. Whenever we are diversifying (supplierCap set),
+  // pull the full page so every operator is in the pool to pick one each from.
+  const candidateLimit = supplierCap > 0
+    ? MAX_CANDIDATE_LIMIT
+    : candidateLimitForInput(input, limit);
   const cfg = OFFERINGS_ENDPOINTS[type];
   const month = normalizeMonth(input.month) || monthFromText(input.q);
   let baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))

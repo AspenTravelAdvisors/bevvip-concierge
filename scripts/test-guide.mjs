@@ -567,17 +567,23 @@ await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async 
   assert.equal(r.results[0].brand, 'Ritz-Carlton Yacht Collection');
 });
 
-await test('searchOfferings caps caller limits at four per category', async () => {
+await test('searchOfferings overfetches the candidate pool for an open search, then returns one per operator', async () => {
+  // An open (no-brand) search must pull the full candidate page so every operator
+  // is in the pool, regardless of the small display limit the model asks for —
+  // otherwise limit:4 fetches only 4 records and a couple of operators hide the
+  // rest (the Galápagos limit:4 bug). The displayed set is still one-per-operator.
+  let seenLimit = null;
   const fetchImpl = async (url) => {
-    assert.match(url, /limit=4\b/);
+    seenLimit = new URL(url).searchParams.get('limit');
     return { ok: true, json: async () => ({ total: 12, count: 4, results: [
-      { id: 'jt_1', type: 'jet', name: 'One', region: 'japan' },
-      { id: 'jt_2', type: 'jet', name: 'Two', region: 'japan' },
-      { id: 'jt_3', type: 'jet', name: 'Three', region: 'japan' },
-      { id: 'jt_4', type: 'jet', name: 'Four', region: 'japan' },
+      { id: 'jt_1', type: 'jet', name: 'One', operator: 'Op A', region: 'japan' },
+      { id: 'jt_2', type: 'jet', name: 'Two', operator: 'Op B', region: 'japan' },
+      { id: 'jt_3', type: 'jet', name: 'Three', operator: 'Op C', region: 'japan' },
+      { id: 'jt_4', type: 'jet', name: 'Four', operator: 'Op D', region: 'japan' },
     ] }) };
   };
   const r = await searchOfferings({ type: 'jet', region: 'japan', limit: 8 }, { fetchImpl });
+  assert.equal(seenLimit, '24'); // full candidate pool, not the display limit
   assert.equal(r.count, 4);
   assert.equal(r.results.length, 4);
 });
