@@ -132,8 +132,13 @@ await test('searchOfferings hotel treats bare month text as a date, not q', asyn
   assert.equal(r.total, 6); // honest unpaginated count
 });
 
-await test('searchOfferings forwards guest-fit intent to cruise and yacht atlases', async () => {
-  const seen = [];
+await test('searchOfferings drops intent on an open cruise/yacht search, keeps it when a brand is named', async () => {
+  // Regression: intent only re-sorts the cruise/yacht atlas page (it does not
+  // filter — the total is unchanged), so on an open search a strong intent sorts
+  // the top page down to one or two operators and hides the rest (a Galápagos
+  // "expedition" search came back all Silversea + Lindblad). An open search now
+  // drops intent to recover supplier breadth; a branded ask keeps it.
+  let seen = [];
   const fetchImpl = async (url) => {
     const u = new URL(url);
     seen.push({ path: u.pathname, intent: u.searchParams.get('intent') });
@@ -142,10 +147,14 @@ await test('searchOfferings forwards guest-fit intent to cruise and yacht atlase
         name: 'Antarctica fit check', brand: 'Seabourn', region: 'antarctica' },
     ], deepLink: 'https://example.test' }) };
   };
-  const r = await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', limit: 2 }, { fetchImpl });
-  assert.equal(r.count, 2);
-  assert.ok(seen.some((x) => x.path.includes('expedition-cruises') && x.intent === 'wildlife'));
-  assert.ok(seen.some((x) => x.path.includes('yacht-sailings') && x.intent === 'wildlife'));
+  await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', limit: 2 }, { fetchImpl });
+  assert.ok(seen.some((x) => x.path.includes('expedition-cruises')) && seen.every((x) => x.intent === null));
+
+  // Branded ask: the traveler wants that one operator, so intent is forwarded to
+  // rank within it.
+  seen = [];
+  await searchOfferings({ type: 'cruise', region: 'antarctica', intent: 'wildlife', brand: 'Seabourn', limit: 2 }, { fetchImpl });
+  assert.ok(seen.some((x) => x.intent === 'wildlife'));
 });
 
 await test('searchOfferings cruise promotes a destination left in q to the region filter', async () => {
@@ -494,29 +503,52 @@ await test('searchOfferings cruise searches expedition cruise and yacht atlases'
   assert.ok(r.deepLink.includes('region=antarctica'));
 });
 
-await test('searchOfferings cruise caps each searched atlas at four while keeping cross-category results', async () => {
+await test('searchOfferings open cruise surfaces every operator in the region, one card each', async () => {
+  // Regression: a Galápagos search returned only two operators because intent
+  // collapsed the page. An open search must show one sailing per operator and
+  // cover them all (here four cruise lines), not crop to the small shortlist.
   const fetchImpl = async (url) => {
     if (url.includes('/api/expedition-cruises?')) {
       return { ok: true, json: async () => ({
-        total: 10, count: 6,
-        results: Array.from({ length: 6 }, (_, i) => ({
+        total: 52, count: 4,
+        results: ['Aqua Expeditions', 'National Geographic-Lindblad Expeditions', 'Silversea', 'HX Expeditions']
+          .map((op, i) => ({ id: `cr_${i + 1}`, type: 'cruise', name: `Cruise ${i + 1}`, operator: op })),
+        deepLink: 'https://expedition-cruise-map.vercel.app',
+      }) };
+    }
+    return { ok: true, json: async () => ({ total: 0, count: 0, results: [] }) };
+  };
+  const r = await searchOfferings({ type: 'cruise', region: 'galapagos', intent: 'expedition', limit: 3 }, { fetchImpl });
+  const operators = r.results.filter((x) => x.type === 'cruise').map((x) => x.operator);
+  assert.equal(operators.length, 4);
+  assert.equal(new Set(operators).size, 4);
+});
+
+await test('searchOfferings cruise caps each atlas at the supplier ceiling while keeping cross-category results', async () => {
+  // The one-per-operator sweep is bounded by MAX_SUPPLIERS_PER_CATEGORY (8) so a
+  // busy category cannot run away; both atlases still contribute.
+  const fetchImpl = async (url) => {
+    if (url.includes('/api/expedition-cruises?')) {
+      return { ok: true, json: async () => ({
+        total: 20, count: 10,
+        results: Array.from({ length: 10 }, (_, i) => ({
           id: `cr_${i + 1}`, type: 'cruise', name: `Cruise ${i + 1}`, operator: `Operator ${i + 1}`,
         })),
         deepLink: 'https://expedition-cruise-map.vercel.app',
       }) };
     }
     return { ok: true, json: async () => ({
-      total: 9, count: 6,
-      results: Array.from({ length: 6 }, (_, i) => ({
+      total: 20, count: 10,
+      results: Array.from({ length: 10 }, (_, i) => ({
         id: `yc_${i + 1}`, type: 'yacht', name: `Yacht ${i + 1}`, brand: `Brand ${i + 1}`,
       })),
       deepLink: 'https://luxury-hotel-brand-yacht-atlas.vercel.app',
     }) };
   };
   const r = await searchOfferings({ type: 'cruise', limit: 24 }, { fetchImpl });
-  assert.equal(r.count, 8);
-  assert.equal(r.results.filter((x) => x.type === 'cruise').length, 4);
-  assert.equal(r.results.filter((x) => x.type === 'yacht').length, 4);
+  assert.equal(r.results.filter((x) => x.type === 'cruise').length, 8);
+  assert.equal(r.results.filter((x) => x.type === 'yacht').length, 8);
+  assert.equal(r.count, 16);
 });
 
 await test('searchOfferings yacht normalizes Ritz-Carlton brand aliases', async () => {

@@ -14,6 +14,11 @@ const HOTEL_API_BASE =
 const DEFAULT_RECOMMENDATION_LIMIT = 3;
 const MAX_RESULTS_PER_CATEGORY = 4;
 const MAX_CANDIDATE_LIMIT = 24;
+// Open (no-brand) cruise/yacht/jet searches surface ONE sailing per operator and
+// must cover every operator in the region/month, not crop to the small hotel-style
+// shortlist — a region with 4-5 expedition lines should return all of them. This
+// caps that supplier sweep so a busy category can't run away.
+const MAX_SUPPLIERS_PER_CATEGORY = 8;
 
 // type -> { base URL, endpoint path } for the cruise/jet/yacht Atlas APIs.
 const OFFERINGS_ENDPOINTS = {
@@ -731,7 +736,7 @@ function brandDiverseResults(
   candidates = [],
   displayLimit = DEFAULT_RECOMMENDATION_LIMIT,
   fallbackType = "",
-  { allowDuplicateBrands = false } = {},
+  { allowDuplicateBrands = false, supplierCap = 0 } = {},
 ) {
   const firstByBrand = [];
   const duplicates = [];
@@ -749,16 +754,21 @@ function brandDiverseResults(
       duplicates.push(item);
     }
   }
-  // Honor the display limit: candidates are overfetched for diversity, not so
-  // a "curate three" request can balloon into a two-dozen-row dump.
-  const target = Math.min(candidates.length, displayLimit);
   // One card per supplier by default: when no specific brand was requested, a
-  // shortlist of "Silversea, Lindblad, Silversea" is wrong — the third slot
+  // shortlist of "Silversea, Lindblad, Silversea" is wrong — the next slot
   // should go to the next supplier, not a second sailing from one already
   // shown. Only an explicit brand ask (where the traveler wants several
   // properties from that one brand) backfills with same-brand duplicates.
-  const ordered = allowDuplicateBrands ? firstByBrand.concat(duplicates) : firstByBrand;
-  return ordered.slice(0, target);
+  if (allowDuplicateBrands) {
+    const target = Math.min(candidates.length, displayLimit);
+    return firstByBrand.concat(duplicates).slice(0, target);
+  }
+  // Open search: when a supplierCap is given (cruise/yacht/jet), surface EVERY
+  // operator up to that cap so a 4-5 operator region returns them all; otherwise
+  // (hotels, with thousands of independent "brands") fall back to the small
+  // display limit.
+  const cap = supplierCap > 0 ? supplierCap : Math.min(candidates.length, displayLimit);
+  return firstByBrand.slice(0, cap);
 }
 
 // Per-result deep link into the full standalone Atlas, focused on that one
@@ -1119,7 +1129,7 @@ async function searchHotels(input, fetchImpl) {
 // cruise | jet | yacht -> each type's own Atlas query API, same shape as hotels.
 // Degrades gracefully if an endpoint is unreachable so the Guide routes to an
 // advisor instead of inventing inventory.
-async function searchOfferingsByType(type, input, fetchImpl, limitOverride = null) {
+async function searchOfferingsByType(type, input, fetchImpl, limitOverride = null, { supplierCap = 0 } = {}) {
   const atwJet = type === "jet" && aroundTheWorldJetIntent(input);
   const limit = limitOverride == null
     ? requestedLimit(input)
@@ -1248,6 +1258,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     const candidates = j.results || [];
     const results = brandDiverseResults(candidates, limit, type, {
       allowDuplicateBrands: !!rawBrand,
+      supplierCap: rawBrand ? 0 : supplierCap,
     }).map((r) => ({ ...r, deepLink: r.deepLink || resultDeepLink(type, cfg.base, r) }));
     return {
       type,
@@ -1276,9 +1287,12 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   }
 }
 
-function interleaveResults(groups, perCategoryLimit, allowDuplicateBrands = false) {
+function interleaveResults(groups, perCategoryLimit, { allowDuplicateBrands = false, supplierCap = 0 } = {}) {
   const cappedGroups = groups.map((group) =>
-    brandDiverseResults(group || [], perCategoryLimit, "cruise", { allowDuplicateBrands }));
+    brandDiverseResults(group || [], perCategoryLimit, "cruise", {
+      allowDuplicateBrands,
+      supplierCap: allowDuplicateBrands ? 0 : supplierCap,
+    }));
   const candidates = [];
   const seen = new Set();
   let idx = 0;
@@ -1302,15 +1316,18 @@ function interleaveResults(groups, perCategoryLimit, allowDuplicateBrands = fals
 
 async function searchCruisesAndYachts(input, fetchImpl) {
   const limit = requestedLimit(input);
-  const [cruise, yacht] = await Promise.all([
-    searchOfferingsByType("cruise", input, fetchImpl, limit),
-    searchOfferingsByType("yacht", input, fetchImpl, limit),
-  ]);
+  // No brand named → sweep one sailing per operator across both atlases so every
+  // expedition line in the region/month appears; a brand ask stays a short list.
   const allowDuplicateBrands = !!String(input.brand || input.operator || "").trim();
+  const supplierCap = allowDuplicateBrands ? 0 : MAX_SUPPLIERS_PER_CATEGORY;
+  const [cruise, yacht] = await Promise.all([
+    searchOfferingsByType("cruise", input, fetchImpl, limit, { supplierCap }),
+    searchOfferingsByType("yacht", input, fetchImpl, limit, { supplierCap }),
+  ]);
   const results = interleaveResults(
     [cruise.results || [], yacht.results || []],
     limit,
-    allowDuplicateBrands,
+    { allowDuplicateBrands, supplierCap },
   );
   const sources = [cruise, yacht].map((r) => ({
     type: r.type,
@@ -1380,13 +1397,16 @@ export async function searchOfferings(input = {}, opts = {}) {
   if (type === "cruise") {
     return searchCruisesAndYachts(input, fetchImpl);
   }
+  const openSupplierCap = String(input.brand || input.operator || "").trim()
+    ? 0
+    : MAX_SUPPLIERS_PER_CATEGORY;
   if (type === "yacht") {
-    const r = await searchOfferingsByType(type, input, fetchImpl);
+    const r = await searchOfferingsByType(type, input, fetchImpl, null, { supplierCap: openSupplierCap });
     const related = await sailingRelatedHotels(r.results, fetchImpl);
     return related.length ? { ...r, related } : r;
   }
   if (type === "jet") {
-    return searchOfferingsByType(type, input, fetchImpl);
+    return searchOfferingsByType(type, input, fetchImpl, null, { supplierCap: openSupplierCap });
   }
   // Unknown type -> treat as hotel search rather than erroring.
   return searchHotels(input, fetchImpl);
