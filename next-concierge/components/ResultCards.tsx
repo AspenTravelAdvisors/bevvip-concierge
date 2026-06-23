@@ -1,17 +1,14 @@
-import Link from "next/link";
 import type { GuideMeta, OfferingResult, OfferingType } from "@/lib/types";
-import { isOfferingType } from "@/lib/atlas-config";
+import { ATLASES, isOfferingType } from "@/lib/atlas-config";
 
 const GUIDE_CARD_LIMIT_PER_CATEGORY = 4;
 
-// Rich inventory cards built from the Guide's meta frame, plus the Atlas
-// handoff: external deep link to the standalone atlas app and an internal
-// link into the unified /atlas/[type] shell when a chart region is known.
+// Rich inventory cards built from the Guide's meta frame. Every card and the
+// shortlist handoff open the full standalone Atlas (in a new tab, so the
+// conversation is never lost). The home-page Living Atlas plots the same
+// results live alongside the chat, so there is no separate in-app atlas route.
 export default function ResultCards({ meta }: { meta: GuideMeta }) {
-  const lead =
-    [...meta.tools].reverse().find((t) => (t.results?.length ?? 0) > 0) || null;
   const cards = collectResultCards(meta);
-  const leadType = normalizeType(lead?.type ?? String(lead?.input?.type ?? ""));
 
   if (!cards.length && !meta.deepLink) return null;
 
@@ -24,21 +21,13 @@ export default function ResultCards({ meta }: { meta: GuideMeta }) {
           ))}
         </div>
       )}
-      <div>
-        {leadType && meta.chartRegion && (
-          <Link
-            className="atlas-cta"
-            href={`/atlas/${leadType}?region=${encodeURIComponent(meta.chartRegion)}`}
-          >
-            View on the Living Atlas →
-          </Link>
-        )}{" "}
-        {meta.deepLink && (
+      {meta.deepLink && (
+        <div>
           <a className="atlas-cta" href={meta.deepLink} target="_blank" rel="noreferrer">
             Open full Atlas ↗
           </a>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -106,24 +95,26 @@ function Card({
     </>
   );
 
-  // Whole card is the link: prefer the offering's own deep link, otherwise drop
-  // into the unified atlas focused on its region.
-  if (result.deepLink) {
+  // The whole card opens that result in its full standalone Atlas, in a new tab.
+  // Prefer the offering's own deep link (focuses the record with its detail
+  // open); otherwise fall back to the atlas, focused on the result's region.
+  const href = result.deepLink || externalCardLink(result, fallbackType);
+  if (href) {
     return (
-      <a className="card" href={result.deepLink} target="_blank" rel="noreferrer">
+      <a className="card" href={href} target="_blank" rel="noreferrer">
         {body}
       </a>
     );
   }
-  if (fallbackType) {
-    const region = result.region ? `?region=${encodeURIComponent(result.region)}` : "";
-    return (
-      <Link className="card" href={`/atlas/${fallbackType}${region}`}>
-        {body}
-      </Link>
-    );
-  }
   return <div className="card">{body}</div>;
+}
+
+// Fallback when a result carries no deep link: the result's full Atlas, focused
+// on its region when known.
+function externalCardLink(result: OfferingResult, type: OfferingType | null): string | null {
+  if (!type) return null;
+  const base = ATLASES[type].base;
+  return result.region ? `${base}/?region=${encodeURIComponent(result.region)}` : base;
 }
 
 function normalizeType(raw: string): OfferingType | null {

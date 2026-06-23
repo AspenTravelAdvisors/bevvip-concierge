@@ -17,7 +17,6 @@
 // external-atlas handoff, so the app still works with zero configuration.
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
 import { ATLASES } from "@/lib/atlas-config";
 
@@ -382,14 +381,27 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (!lead || !lead.results?.length) return;
           const kind = (lead.type as OfferingType) || "hotel";
           const recs = lead.results.slice(0, 60);
+          // Center for results that arrive without coordinates: the chart region
+          // the Guide chose (e.g. caribbean), never an arbitrary [10,20] point,
+          // which sits in the Sahara and made Caribbean results pin over Niger.
+          const chart = lead.chartRegion || meta.chartRegion || "";
+          const cc = chart ? regionCenter(chart, regionsGeo, regionLookupKey) : null;
+          const fallbackCenter: [number, number] | null = cc ? [cc[0], cc[1]] : null;
           featuredFC = {
             type: "FeatureCollection",
-            features: recs.map((r, i) => ({
-              type: "Feature" as const,
-              geometry: { type: "Point" as const, coordinates: pointForResult(r, i, recs.length, regionsGeo) },
-              properties: { name: r.name || "", html: featuredHtml(r, kind, escapeHtml) },
-            })),
+            features: recs
+              .map((r, i) => {
+                const coords = pointForResult(r, i, recs.length, regionsGeo, fallbackCenter);
+                if (!coords) return null; // unplaceable: skip rather than mis-pin
+                return {
+                  type: "Feature" as const,
+                  geometry: { type: "Point" as const, coordinates: coords },
+                  properties: { name: r.name || "", html: featuredHtml(r, kind, escapeHtml) },
+                };
+              })
+              .filter((f): f is NonNullable<typeof f> => f !== null),
           };
+          if (!featuredFC.features.length) return; // nothing locatable to plot
           subsetActive = true;
           stopSpin();
           setBadge({ n: recs.length, total: lead.total ?? recs.length, deepLink: lead.deepLink });
@@ -690,9 +702,15 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           </a>
           <div className="region-chips">
             {ATLASES[type].sampleRegions.map((r) => (
-              <Link key={r} className="chip" href={`/atlas/${type}?region=${encodeURIComponent(r)}`}>
+              <a
+                key={r}
+                className="chip"
+                href={`${ATLASES[type].base}/?region=${encodeURIComponent(r)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
                 {r}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -787,15 +805,18 @@ function pointForResult(
   i: number,
   total: number,
   geo: Record<string, [number, number]>,
-): [number, number] {
+  fallbackCenter: [number, number] | null,
+): [number, number] | null {
   const lng = Number((r as { lng?: number }).lng);
   const lat = Number((r as { lat?: number }).lat);
   if (Number.isFinite(lng) && Number.isFinite(lat)) return [lng, lat];
   const key = String(r.region || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
   const fb = REGION_FALLBACK[key];
-  const c: [number, number] | undefined =
-    geo[r.region || ""] || (fb ? [fb[0], fb[1]] : undefined);
-  const base: [number, number] = c || [10, 20];
+  const base: [number, number] | undefined =
+    geo[r.region || ""] || (fb ? [fb[0], fb[1]] : undefined) || fallbackCenter || undefined;
+  // No coordinates and no region we can place it in: skip the pin rather than
+  // dropping it at a meaningless default location.
+  if (!base) return null;
   if (total <= 1) return base;
   const ang = (i / total) * Math.PI * 2;
   return [base[0] + Math.cos(ang) * 1.4, base[1] + Math.sin(ang) * 1.4];

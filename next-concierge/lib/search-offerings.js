@@ -727,7 +727,12 @@ function resultIdentity(item = {}) {
   return item.id || `${item.type || ""}:${item.name || ""}:${item.startDate || ""}:${item.month || ""}`;
 }
 
-function brandDiverseResults(candidates = [], displayLimit = DEFAULT_RECOMMENDATION_LIMIT, fallbackType = "") {
+function brandDiverseResults(
+  candidates = [],
+  displayLimit = DEFAULT_RECOMMENDATION_LIMIT,
+  fallbackType = "",
+  { allowDuplicateBrands = false } = {},
+) {
   const firstByBrand = [];
   const duplicates = [];
   const seenBrand = new Set();
@@ -747,7 +752,26 @@ function brandDiverseResults(candidates = [], displayLimit = DEFAULT_RECOMMENDAT
   // Honor the display limit: candidates are overfetched for diversity, not so
   // a "curate three" request can balloon into a two-dozen-row dump.
   const target = Math.min(candidates.length, displayLimit);
-  return firstByBrand.concat(duplicates).slice(0, target);
+  // One card per supplier by default: when no specific brand was requested, a
+  // shortlist of "Silversea, Lindblad, Silversea" is wrong — the third slot
+  // should go to the next supplier, not a second sailing from one already
+  // shown. Only an explicit brand ask (where the traveler wants several
+  // properties from that one brand) backfills with same-brand duplicates.
+  const ordered = allowDuplicateBrands ? firstByBrand.concat(duplicates) : firstByBrand;
+  return ordered.slice(0, target);
+}
+
+// Per-result deep link into the full standalone Atlas, focused on that one
+// record with its detail open. The Hotel Atlas consumes ?ids= today
+// (applyDeepLink preselects + zooms); the cruise/jet/yacht/world-cruise apps
+// consume ?region= now and ?ids= once their deep-link consumer ships
+// (DEEPLINK-HANDOFF.md), so we send both and they ignore what they don't read.
+function resultDeepLink(type, base, item) {
+  const id = item && item.id;
+  if (!base || !id) return null;
+  if (type === "hotel") return `${base}/?ids=${encodeURIComponent(id)}`;
+  const region = item.region ? `region=${encodeURIComponent(item.region)}&` : "";
+  return `${base}/?${region}ids=${encodeURIComponent(id)}`;
 }
 
 // Trim a normalized hotel record to what the Guide renders on a card. Drops
@@ -757,6 +781,8 @@ function hotelCard(h) {
     id: h.id,
     name: h.name,
     brand: h.brand,
+    // Card + map popup open this property's detail in the full Hotel Atlas.
+    deepLink: h.id ? `${HOTEL_API_BASE}/?ids=${encodeURIComponent(h.id)}` : null,
     program: h.program,
     category: h.category,
     city: h.city,
@@ -1071,7 +1097,11 @@ async function searchHotels(input, fetchImpl) {
     );
   }
   const candidates = (j.results || []).map(hotelCard);
-  const results = brandDiverseResults(candidates, limit, "hotel");
+  // A brand ask (Four Seasons in the Caribbean) wants several of that brand's
+  // properties; an open search wants one per brand for variety.
+  const results = brandDiverseResults(candidates, limit, "hotel", {
+    allowDuplicateBrands: !!brand,
+  });
   const related = (await Promise.all(relatedPromises)).filter(Boolean);
 
   return {
@@ -1102,6 +1132,14 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     : stripDateFromQuery(input.q);
   let placeText = !atwJet && type !== "jet" && input.place ? normalizeLoosePlace(input.place) : "";
   const rawBrand = String(input.brand || input.operator || "").trim();
+  // No specific brand asked → diversify suppliers. The cruise/yacht/jet atlases
+  // cap a page at 24 records and, when an intent is passed, sort so heavily by
+  // fit that the top page collapses to one or two operators (a Galápagos
+  // "expedition" page came back all Silversea + Lindblad, hiding Aqua and HX).
+  // intent only re-sorts, it does not filter (the total is unchanged), so for
+  // an open search we drop it from the query to recover supplier breadth and
+  // pick one sailing per operator below. An explicit brand ask keeps intent.
+  const diversifySuppliers = !rawBrand;
   let brand = rawBrand;
   if (type === "cruise") brand = normalizedCruiseOperator(rawBrand) || rawBrand;
   else if (type === "jet") brand = normalizedJetBrand(rawBrand) || rawBrand;
@@ -1168,7 +1206,9 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     if (queryText && !dropQ) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
-    if (input.intent) p.set("intent", String(input.intent).trim());
+    // Send intent only on a branded ask; an open search drops it so the page
+    // is not sorted down to a single operator (see diversifySuppliers above).
+    if (input.intent && !diversifySuppliers) p.set("intent", String(input.intent).trim());
     p.set("limit", String(candidateLimit));
     return `${cfg.base}${cfg.path}?${p.toString()}`;
   };
@@ -1206,7 +1246,9 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
       }
     }
     const candidates = j.results || [];
-    const results = brandDiverseResults(candidates, limit, type);
+    const results = brandDiverseResults(candidates, limit, type, {
+      allowDuplicateBrands: !!rawBrand,
+    }).map((r) => ({ ...r, deepLink: r.deepLink || resultDeepLink(type, cfg.base, r) }));
     return {
       type,
       total: j.total ?? results.length,
@@ -1234,9 +1276,9 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   }
 }
 
-function interleaveResults(groups, perCategoryLimit) {
+function interleaveResults(groups, perCategoryLimit, allowDuplicateBrands = false) {
   const cappedGroups = groups.map((group) =>
-    brandDiverseResults(group || [], perCategoryLimit, "cruise"));
+    brandDiverseResults(group || [], perCategoryLimit, "cruise", { allowDuplicateBrands }));
   const candidates = [];
   const seen = new Set();
   let idx = 0;
@@ -1264,7 +1306,12 @@ async function searchCruisesAndYachts(input, fetchImpl) {
     searchOfferingsByType("cruise", input, fetchImpl, limit),
     searchOfferingsByType("yacht", input, fetchImpl, limit),
   ]);
-  const results = interleaveResults([cruise.results || [], yacht.results || []], limit);
+  const allowDuplicateBrands = !!String(input.brand || input.operator || "").trim();
+  const results = interleaveResults(
+    [cruise.results || [], yacht.results || []],
+    limit,
+    allowDuplicateBrands,
+  );
   const sources = [cruise, yacht].map((r) => ({
     type: r.type,
     total: r.total || 0,

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import Link from "next/link";
+import { externalAtlasLink } from "@/lib/atlas-config";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -43,11 +44,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span className="tag">Base Camp · The Guide</span>
             <nav>
               <Link href="/">The Guide</Link>
-              <Link href="/atlas/hotel">Hotels</Link>
-              <Link href="/atlas/cruise">Cruises</Link>
-              <Link href="/atlas/jet">Jets</Link>
-              <Link href="/atlas/yacht">Yachts</Link>
-              <Link href="/atlas/worldcruise">World</Link>
+              <a href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">Hotels</a>
+              <a href={externalAtlasLink("cruise")} target="_blank" rel="noreferrer">Cruises</a>
+              <a href={externalAtlasLink("jet")} target="_blank" rel="noreferrer">Jets</a>
+              <a href={externalAtlasLink("yacht")} target="_blank" rel="noreferrer">Yachts</a>
+              <a href={externalAtlasLink("worldcruise")} target="_blank" rel="noreferrer">World</a>
             </nav>
           </header>
           <main className="page">{children}</main>

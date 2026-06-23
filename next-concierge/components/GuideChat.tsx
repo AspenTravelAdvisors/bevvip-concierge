@@ -19,12 +19,39 @@ interface Turn extends ChatMessage {
   meta?: GuideMeta;
 }
 
+// The conversation survives leaving and returning to Base Camp (opening a full
+// Atlas, a card, or the header links). It is persisted per browser session so
+// the traveler is never dropped back to a blank slate mid-trip-planning.
+const STORAGE_KEY = "bevvip.guide.turns";
+
 export default function GuideChat() {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
+
+  // Restore after mount (not during render) so server and first client paint
+  // agree and React does not flag a hydration mismatch.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (raw) setTurns(JSON.parse(raw));
+    } catch {
+      /* storage unavailable: start fresh */
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return; // don't clobber saved turns before the restore runs
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(turns));
+    } catch {
+      /* over quota or unavailable: best effort */
+    }
+  }, [turns, hydrated]);
 
   useEffect(() => {
     const el = transcriptRef.current;
@@ -240,10 +267,36 @@ function renderText(text: string) {
   });
 }
 
-function inline(text: string): React.ReactNode[] {
+// **bold** / *italic* within a run of plain (non-link) text.
+function emphasis(text: string, keyPrefix: string): React.ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) return <b key={i}>{part.slice(2, -2)}</b>;
-    if (part.startsWith("*") && part.endsWith("*")) return <i key={i}>{part.slice(1, -1)}</i>;
+    if (part.startsWith("**") && part.endsWith("**")) return <b key={`${keyPrefix}b${i}`}>{part.slice(2, -2)}</b>;
+    if (part.startsWith("*") && part.endsWith("*")) return <i key={`${keyPrefix}i${i}`}>{part.slice(1, -1)}</i>;
     return part;
   });
+}
+
+// Markdown links [label](https://…) the Guide emits (e.g. a result's Book /
+// Inquire URL) render as real clickable anchors instead of leaking the raw
+// "[label](url)" text into the reply. Emphasis is applied around them.
+const MD_LINK_RE = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+function inline(text: string): React.ReactNode[] {
+  const out: React.ReactNode[] = [];
+  let last = 0;
+  let idx = 0;
+  let m: RegExpExecArray | null;
+  MD_LINK_RE.lastIndex = 0;
+  while ((m = MD_LINK_RE.exec(text)) !== null) {
+    if (m.index > last) out.push(...emphasis(text.slice(last, m.index), `e${idx}-`));
+    out.push(
+      <a key={`lnk${idx}`} className="reply-link" href={m[2]} target="_blank" rel="noreferrer">
+        {m[1]}
+      </a>,
+    );
+    last = m.index + m[0].length;
+    idx++;
+  }
+  if (last < text.length) out.push(...emphasis(text.slice(last), `e${idx}-`));
+  return out;
 }
