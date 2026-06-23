@@ -1,18 +1,24 @@
 "use client";
 
-// Living Atlas — the populated Mapbox globe. On load it paints the full hotel
-// inventory as an ambient gold field, drops colored cruise / jet / yacht /
-// world-cruise region pins from each atlas's live feed, fits the globe and
-// idle-spins — the same resting state as the standalone deployed atlas
-// (public/index.html). A legend toggles each layer; clicking a pin or hotel
-// opens the matching Atlas with the selection carried over.
+// Living Atlas — the populated Mapbox globe. On the home page (scope="all") it
+// paints the full hotel inventory as an ambient gold field, drops colored
+// cruise / jet / yacht / world-cruise region pins from each atlas's live feed,
+// fits the globe and idle-spins — the same resting state as the standalone
+// deployed atlas (public/index.html). On a single-category /atlas/[type] route
+// it shows ONLY that category's layer, with a legend + region chips scoped to
+// that atlas.
+//
+// Map controls (top-right) mirror the original app: fullscreen, a basemap
+// switcher (Dark / Satellite / Warm), and a 2D⇄3D (mercator⇄globe) toggle.
+// When The Guide returns recommendations it broadcasts a "bevvip:atlas-plot"
+// event; the globe then fits the results and switches to satellite.
 //
 // Without a Mapbox token it degrades to an elegant fallback panel with the
 // external-atlas handoff, so the app still works with zero configuration.
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import type { OfferingType } from "@/lib/types";
+import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
 import { ATLASES } from "@/lib/atlas-config";
 
 const MAPBOX_JS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js";
@@ -69,7 +75,8 @@ const PIN_NUDGE: Partial<Record<OverlayKey, Record<string, [number, number]>>> =
 };
 
 // Fallback region centers [lng,lat,zoom] used to focus a ?region= deep link
-// before /api/regions geometry resolves.
+// before /api/regions geometry resolves, and to place result pins that arrive
+// without coordinates.
 const REGION_FALLBACK: Record<string, [number, number, number]> = {
   antarctica: [0, -72, 2.3], arctic: [8, 79, 2.3], galapagos: [-91, -0.4, 5],
   amazon: [-60, -3.5, 3.8], polynesia: [-149, -17, 3.4], patagonia: [-72, -49, 3.6],
@@ -87,20 +94,65 @@ const LEGEND: { key: string; label: string; color: string }[] = [
   { key: "worldcruise", label: OVERLAYS.worldcruise.label, color: OVERLAYS.worldcruise.color },
 ];
 
+// Selectable Mapbox basemaps surfaced via the style menu. Each carries its own
+// fog so the globe atmosphere stays in key with the basemap.
+const GLOBE_FOG = {
+  color: "rgb(11,13,18)", "high-color": "rgb(22,27,38)",
+  "horizon-blend": 0.04, "space-color": "rgb(6,8,12)", "star-intensity": 0.45,
+};
+type StyleKey = "dark" | "satellite" | "warm";
+const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string }> = {
+  dark: { label: "Globe (dark)", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
+  satellite: {
+    label: "Satellite", url: "mapbox://styles/mapbox/satellite-streets-v12",
+    fog: { color: "rgb(18,22,30)", "high-color": "rgb(40,52,72)", "horizon-blend": 0.06, "space-color": "rgb(6,8,12)", "star-intensity": 0.3 },
+    sw: "#3b5a3a",
+  },
+  warm: {
+    label: "Warm", url: "mapbox://styles/mapbox/outdoors-v12",
+    fog: { color: "rgb(34,28,22)", "high-color": "rgb(60,48,36)", "horizon-blend": 0.05, "space-color": "rgb(10,8,6)", "star-intensity": 0.25 },
+    sw: "#c8a04c",
+  },
+};
+
+// Imperative handle the control buttons call into; the map lifecycle effect
+// fills it so React state (style key, projection, fullscreen) drives Mapbox.
+interface AtlasApi {
+  setStyle(key: StyleKey): void;
+  setProjection(globe: boolean): void;
+  resize(): void;
+  plot(meta: GuideMeta): void;
+  resetView(): void;
+}
+
 interface Props {
   type: OfferingType;
   region: string | null;
   externalLink: string;
+  /** "all" → the full Living Atlas (home). Omitted → only this `type`'s layer. */
+  scope?: "all";
 }
 
-export default function AtlasShell({ type, region, externalLink }: Props) {
+export default function AtlasShell({ type, region, externalLink, scope }: Props) {
+  const allInventory = scope === "all";
+  const showsHotel = allInventory || type === "hotel";
+  const overlayKeys = (Object.keys(OVERLAYS) as OverlayKey[]).filter((k) => allInventory || type === k);
+
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || FALLBACK_TOKEN;
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
+  const apiRef = useRef<AtlasApi | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const [styleKey, setStyleKey] = useState<StyleKey>("dark");
+  const [is3D, setIs3D] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isFull, setIsFull] = useState(false);
+  const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
+  const hiddenRef = useRef(hidden);
+  hiddenRef.current = hidden;
 
   useEffect(() => {
     if (!token || !mapEl.current) return;
@@ -109,10 +161,21 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
     let spinning = false;
     let ready = false;
     let focused = false;
+    let restyling = false;
+    let subsetActive = false;
+    let pendingFit = false;
     let homeZoom = 1.25;
+    let projGlobe = true;
+    let styleKeyLocal: StyleKey = "dark";
     let ro: ResizeObserver | undefined;
     let loadTimeout = 0;
     const node = mapEl.current;
+
+    // Cached feeds so a basemap switch re-paints from memory, not the network.
+    let hotelFC: HotelFC | null = null;
+    const overlayFeats: Partial<Record<OverlayKey, OverlayFeature[]>> = {};
+    let featuredFC: FeaturedFC | null = null;
+    let regionsGeo: Record<string, [number, number]> = {};
 
     function escapeHtml(s: string) {
       return String(s).replace(
@@ -139,7 +202,7 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
         mapboxgl.accessToken = token;
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: "mapbox://styles/mapbox/dark-v11",
+          style: ATLAS_STYLES.dark.url,
           projection: "globe",
           center: [10, 20],
           zoom: 1.25,
@@ -166,77 +229,297 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
         }
         function spinStep() {
           if (!spinning) return;
-          let isGlobe = true;
-          try { isGlobe = map.getProjection().name === "globe"; } catch { /* default */ }
-          if (isGlobe && map.getZoom() <= homeZoom + 0.4 && !document.hidden) {
+          if (projGlobe && !subsetActive && map.getZoom() <= homeZoom + 0.4 && !document.hidden) {
             const c = map.getCenter();
             map.setCenter({ lng: c.lng - 0.045, lat: c.lat });
           }
           spinRAF = requestAnimationFrame(spinStep);
         }
         function startSpin() {
-          if (spinning) return;
+          if (spinning || !projGlobe) return;
           spinning = true;
           spinStep();
         }
 
-        // Mapbox emits benign "error" events (a dropped tile, an optional
-        // source) all through a session — those must not tear down the globe,
-        // so the handler only logs. Total failures surface via the construction
-        // catch and the load-timeout fallback below.
+        // ── Layer painting (re-run on every style.load so basemap switches keep
+        //    their layers) ───────────────────────────────────────────────────
+        function paintHotel() {
+          if (!showsHotel || !hotelFC || !hotelFC.features.length) return;
+          if (!map.getSource(HOTEL_DENSITY_SOURCE)) {
+            map.addSource(HOTEL_DENSITY_SOURCE, { type: "geojson", data: hotelFC });
+          }
+          addLayer(map, {
+            id: "hotel-heat", type: "heatmap", source: HOTEL_DENSITY_SOURCE, maxzoom: 4.35,
+            paint: {
+              "heatmap-weight": 1,
+              "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 0.65, 3, 1.1],
+              "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 12, 3, 24],
+              "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.36, 3.4, 0.18, 4.3, 0],
+              "heatmap-color": [
+                "interpolate", ["linear"], ["heatmap-density"],
+                0, "rgba(201,168,76,0)", 0.22, "rgba(201,168,76,0.15)",
+                0.55, "rgba(226,200,122,0.34)", 0.86, "rgba(255,238,177,0.55)",
+                1, "rgba(255,247,213,0.68)",
+              ],
+            },
+          });
+          addLayer(map, {
+            id: "hotel-dots", type: "circle", source: HOTEL_DENSITY_SOURCE, minzoom: HOTEL_DOT_MIN_ZOOM,
+            paint: {
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2.45, 1.5, 4, 2.7, 7, 3.6, 10, 4.8],
+              "circle-color": "#f1d879",
+              "circle-opacity": subsetActive
+                ? 0.12
+                : ["interpolate", ["linear"], ["zoom"], 2.45, 0.18, 3.2, 0.62, 7, 0.92],
+              "circle-stroke-color": "rgba(26,20,7,.88)",
+              "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 2.45, 0.45, 7, 1.1],
+              "circle-blur": 0,
+            },
+          });
+          applyHidden("hotel");
+        }
+
+        function paintOverlay(key: OverlayKey) {
+          const feats = overlayFeats[key];
+          if (!feats || !feats.length) return;
+          const cfg = OVERLAYS[key];
+          const src = "t_" + key;
+          if (!map.getSource(src)) {
+            map.addSource(src, { type: "geojson", data: { type: "FeatureCollection", features: feats } });
+          }
+          addLayer(map, {
+            id: src + "_glow", type: "circle", source: src,
+            paint: { "circle-radius": 9, "circle-color": cfg.color, "circle-opacity": 0.18, "circle-blur": 0.8 },
+          });
+          addLayer(map, {
+            id: src + "_dot", type: "circle", source: src,
+            paint: { "circle-radius": 5, "circle-color": cfg.color, "circle-stroke-color": "#0b0e14", "circle-stroke-width": 1.2 },
+          });
+          applyHidden(key);
+        }
+
+        function paintFeatured() {
+          if (!featuredFC || !featuredFC.features.length) return;
+          if (!map.getSource("featured")) {
+            map.addSource("featured", { type: "geojson", data: featuredFC });
+          } else {
+            map.getSource("featured")?.setData(featuredFC);
+          }
+          addLayer(map, {
+            id: "featured-glow", type: "circle", source: "featured",
+            paint: { "circle-radius": 12, "circle-color": "#e2c87a", "circle-opacity": 0.24, "circle-blur": 0.7 },
+          });
+          addLayer(map, {
+            id: "featured-dot", type: "circle", source: "featured",
+            paint: { "circle-radius": 5.5, "circle-color": "#e2c87a", "circle-stroke-color": "#5f4c1d", "circle-stroke-width": 0.8 },
+          });
+        }
+
+        function paintAll() {
+          paintHotel();
+          overlayKeys.forEach(paintOverlay);
+          paintFeatured();
+        }
+
+        function applyHidden(key: string) {
+          const off = hiddenRef.current.has(key);
+          layerIdsFor(key).forEach((id) => {
+            if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", off ? "none" : "visible");
+          });
+        }
+
+        // ── Click wiring (once; tolerant of layers re-created on restyle) ─────
+        function wireHandlers() {
+          map.on("click", "hotel-dots", (e: MBEvent) => {
+            if (map.getZoom() < HOTEL_CLICK_MIN_ZOOM) return; // ambient zoom: not tappable
+            const f = e.features?.[0];
+            if (!f) return;
+            const id = f.properties.id || "";
+            const name = f.properties.name || "VIP Hotel";
+            const reg = f.properties.region;
+            const href = id ? `${HOTEL_BASE}/?ids=${encodeURIComponent(id)}` : HOTEL_BASE;
+            const html =
+              `<div class="iw"><div class="iwn">${escapeHtml(name)}</div>` +
+              (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "") +
+              `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open VIP Hotels Atlas ↗</a></div>`;
+            popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+          });
+          map.on("mouseenter", "hotel-dots", () => {
+            if (map.getZoom() >= HOTEL_CLICK_MIN_ZOOM) map.getCanvas().style.cursor = "pointer";
+          });
+          map.on("mouseleave", "hotel-dots", () => { map.getCanvas().style.cursor = ""; });
+
+          for (const key of overlayKeys) {
+            const cfg = OVERLAYS[key];
+            const src = "t_" + key;
+            map.on("click", src + "_dot", (e: MBEvent) => {
+              const f = e.features?.[0];
+              if (!f) return;
+              const count = Number(f.properties.count) || undefined;
+              const href = f.properties.key ? `${cfg.url}?region=${encodeURIComponent(f.properties.key)}` : cfg.url;
+              const html =
+                `<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>` +
+                `<div class="iwm">${escapeHtml(overlayMeta(key, count))}</div>` +
+                `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
+              popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+            });
+            map.on("mouseenter", src + "_dot", () => { map.getCanvas().style.cursor = "pointer"; });
+            map.on("mouseleave", src + "_dot", () => { map.getCanvas().style.cursor = ""; });
+          }
+
+          map.on("click", "featured-dot", (e: MBEvent) => {
+            const f = e.features?.[0];
+            if (!f) return;
+            popup.setLngLat(e.lngLat).setHTML(f.properties.html || "").addTo(map);
+          });
+          map.on("mouseenter", "featured-dot", () => { map.getCanvas().style.cursor = "pointer"; });
+          map.on("mouseleave", "featured-dot", () => { map.getCanvas().style.cursor = ""; });
+        }
+
+        // ── Result plotting (fit + satellite), triggered by the Guide ─────────
+        function plotResults(meta: GuideMeta) {
+          const lead = [...(meta.tools || [])].reverse().find((t) => (t.results?.length ?? 0) > 0);
+          if (!lead || !lead.results?.length) return;
+          const kind = (lead.type as OfferingType) || "hotel";
+          const recs = lead.results.slice(0, 60);
+          featuredFC = {
+            type: "FeatureCollection",
+            features: recs.map((r, i) => ({
+              type: "Feature" as const,
+              geometry: { type: "Point" as const, coordinates: pointForResult(r, i, recs.length, regionsGeo) },
+              properties: { name: r.name || "", html: featuredHtml(r, kind, escapeHtml) },
+            })),
+          };
+          subsetActive = true;
+          stopSpin();
+          setBadge({ n: recs.length, total: lead.total ?? recs.length, deepLink: lead.deepLink });
+          // Switch to satellite for the result reveal (mirrors the original).
+          if (styleKeyLocal !== "satellite") {
+            pendingFit = true;
+            api.setStyle("satellite");
+          } else {
+            paintHotel(); // re-tint ambient field dimmer
+            paintFeatured();
+            fitFeatured();
+          }
+        }
+        function fitFeatured() {
+          if (!featuredFC || !featuredFC.features.length) return;
+          try {
+            const b = new (mapboxgl as MapboxModule).LngLatBounds();
+            featuredFC.features.forEach((f) => b.extend(f.geometry.coordinates));
+            map.fitBounds(b, { padding: 78, maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
+          } catch { /* fit optional */ }
+        }
+
+        // Mapbox emits benign "error" events all session — log, never tear down.
         map.on("error", (e: MBEvent) => {
           const msg = (e as { error?: { message?: string } })?.error?.message;
           if (msg) console.warn("[atlas] map error", msg);
         });
 
-        // If the globe never finishes loading (broken token, no WebGL, a
-        // sandbox that can't run Mapbox), fall back to the elegant handoff panel
-        // instead of leaving "Charting…" up forever.
+        // Fallback to the elegant handoff panel if the globe never loads.
         loadTimeout = window.setTimeout(() => {
           if (!ready && !cancelled) setMapFailed(true);
         }, 12000);
-        ["mousedown", "touchstart", "wheel", "dragstart"].forEach((ev) =>
-          map.on(ev, stopSpin),
-        );
+        ["mousedown", "touchstart", "wheel", "dragstart"].forEach((ev) => map.on(ev, stopSpin));
 
-        // The map can be constructed before the panel has laid out (0×0), which
-        // leaves the canvas at Mapbox's 400×300 default. Resize to the real
-        // container as it settles, and keep the whole globe fitted while idle.
         ro = new ResizeObserver(() => {
           try {
             map.resize();
-            if (ready && !focused && map.getZoom() <= homeZoom + 0.4) fitGlobe();
-          } catch {
-            /* observer noise */
-          }
+            if (ready && !focused && !subsetActive && projGlobe && map.getZoom() <= homeZoom + 0.4) fitGlobe();
+          } catch { /* observer noise */ }
         });
         ro.observe(node);
 
-        map.on("load", () => {
+        // style.load fires on the first load AND after every setStyle — the one
+        // place we (re)apply fog, projection and all data layers.
+        map.on("style.load", () => {
           if (cancelled) return;
-          ready = true;
-          clearTimeout(loadTimeout);
-          setFog(map);
-          map.resize();
-          setMapReady(true);
-          loadHotelField(map, popup, escapeHtml);
-          loadRegions(map).then((geo) => {
-            if (cancelled) return;
-            // Honor a ?region= deep link: focus that region instead of spinning.
-            const focus = region ? regionCenter(region, geo, regionLookupKey) : null;
-            if (focus) {
-              focused = true;
-              map.flyTo({ center: [focus[0], focus[1]], zoom: focus[2], speed: 0.8 });
-            } else {
-              fitGlobe();
-              startSpin();
-            }
-          });
-          loadOverlays(map, popup, escapeHtml, (key) =>
-            setLoaded((s) => new Set(s).add(key)),
-          );
-          setLoaded((s) => new Set(s).add("hotel"));
+          const s = ATLAS_STYLES[styleKeyLocal] || ATLAS_STYLES.dark;
+          setFog(map, s.fog);
+          try { map.setProjection(projGlobe ? "globe" : "mercator"); } catch { /* projection optional */ }
+          paintAll();
+
+          if (!ready) {
+            ready = true;
+            clearTimeout(loadTimeout);
+            wireHandlers();
+            setMapReady(true);
+            bootData();
+          } else if (restyling) {
+            restyling = false;
+            if (pendingFit) { pendingFit = false; fitFeatured(); }
+          }
         });
+
+        // First-load data fetch → cache → paint → fit/spin or focus region.
+        async function bootData() {
+          if (showsHotel) {
+            try {
+              hotelFC = await fetchHotelPoints();
+              if (cancelled) return;
+              paintHotel();
+              setLoaded((l) => new Set(l).add("hotel"));
+            } catch { /* dot field optional */ }
+          }
+          regionsGeo = await loadRegions();
+          if (cancelled) return;
+          // Honor a ?region= deep link: focus that region instead of spinning.
+          const focus = region ? regionCenter(region, regionsGeo, regionLookupKey) : null;
+          if (focus) {
+            focused = true;
+            map.flyTo({ center: [focus[0], focus[1]], zoom: focus[2], speed: 0.8 });
+          } else {
+            fitGlobe();
+            startSpin();
+          }
+          for (const key of overlayKeys) {
+            try {
+              overlayFeats[key] = await fetchOverlay(key);
+              if (cancelled) return;
+              paintOverlay(key);
+              setLoaded((l) => new Set(l).add(key));
+            } catch { /* one atlas down should not break the rest */ }
+          }
+        }
+
+        // Imperative API the control buttons drive.
+        const api: AtlasApi = {
+          setStyle(key) {
+            if (key === styleKeyLocal) return;
+            styleKeyLocal = key;
+            setStyleKey(key);
+            restyling = true;
+            try { map.setStyle(ATLAS_STYLES[key].url); } catch { restyling = false; }
+          },
+          setProjection(globe) {
+            projGlobe = globe;
+            setIs3D(globe);
+            try { map.setProjection(globe ? "globe" : "mercator"); } catch { /* optional */ }
+            if (globe) {
+              if (!subsetActive && !focused) { fitGlobe(); startSpin(); }
+            } else {
+              stopSpin();
+            }
+          },
+          resize() {
+            setTimeout(() => { try { map.resize(); } catch { /* noop */ } }, 60);
+          },
+          plot(meta) { plotResults(meta); },
+          resetView() {
+            subsetActive = false;
+            featuredFC = null;
+            setBadge(null);
+            if (map.getSource("featured")) {
+              ["featured-glow", "featured-dot"].forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
+              try { (map as MBMap).removeSource("featured"); } catch { /* noop */ }
+            }
+            paintHotel(); // restore full ambient opacity
+            if (projGlobe) { focused = false; fitGlobe(); startSpin(); }
+          },
+        };
+        apiRef.current = api;
       })
       .catch(() => setMapFailed(true));
 
@@ -245,12 +528,43 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
       cancelAnimationFrame(spinRAF);
       clearTimeout(loadTimeout);
       ro?.disconnect();
+      apiRef.current = null;
       mapRef.current?.remove();
       mapRef.current = null;
     };
-    // region is captured for the initial focus only; deep-link changes re-mount via route.
+    // region/scope/type captured on mount; route changes re-mount the component.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  // The Guide broadcasts recommendations; fit + satellite to reveal them.
+  useEffect(() => {
+    if (!allInventory) return;
+    function onPlot(e: Event) {
+      const meta = (e as CustomEvent<GuideMeta>).detail;
+      if (meta) apiRef.current?.plot(meta);
+    }
+    window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
+    return () => window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
+  }, [allInventory]);
+
+  // Close the style menu on an outside click.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onDoc() { setMenuOpen(false); }
+    window.addEventListener("click", onDoc);
+    return () => window.removeEventListener("click", onDoc);
+  }, [menuOpen]);
+
+  // Esc exits fullscreen.
+  useEffect(() => {
+    if (!isFull) return;
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") setIsFull(false); }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isFull]);
+
+  // Resize the globe after the panel grows/shrinks for fullscreen.
+  useEffect(() => { apiRef.current?.resize(); }, [isFull]);
 
   function toggleLayer(key: string) {
     const map = mapRef.current;
@@ -271,14 +585,65 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
   const legendRows = LEGEND.filter((it) => loaded.has(it.key));
 
   return (
-    <div className="atlas-map">
+    <div className={`atlas-map${isFull ? " fs" : ""}`}>
       {token && !mapFailed && <div ref={mapEl} className="atlas-canvas" />}
       {token && !mapFailed && !mapReady && (
         <div className="fallback">
-          <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
+          <span className="badge">{region ? `Region · ${region}` : ATLASES[type].label}</span>
           <p>Charting the Atlas…</p>
         </div>
       )}
+
+      {!showFallback && (
+        <div className="atlas-ctrls" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className="actrl"
+            onClick={() => setIsFull((v) => !v)}
+            aria-pressed={isFull}
+            title={isFull ? "Exit fullscreen" : "Fullscreen map"}
+          >
+            {isFull ? "✕ Exit" : "⛶ Fullscreen"}
+          </button>
+          <button
+            type="button"
+            className="actrl"
+            onClick={() => apiRef.current?.setProjection(!is3D)}
+            title={is3D ? "Switch to flat 2D map" : "Switch to 3D globe"}
+          >
+            {is3D ? "2D" : "3D"}
+          </button>
+          <div className="actrl-style">
+            <button
+              type="button"
+              className="actrl"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-haspopup="true"
+              aria-expanded={menuOpen}
+              title="Map style"
+            >
+              <i className="sw" style={{ background: ATLAS_STYLES[styleKey].sw }} /> Style
+            </button>
+            {menuOpen && (
+              <div className="actrl-menu" role="menu">
+                {(Object.keys(ATLAS_STYLES) as StyleKey[]).map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    role="menuitem"
+                    className={k === styleKey ? "active" : ""}
+                    onClick={() => { apiRef.current?.setStyle(k); setMenuOpen(false); }}
+                  >
+                    <i className="sw" style={{ background: ATLAS_STYLES[k].sw }} />
+                    {ATLAS_STYLES[k].label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {!showFallback && legendRows.length > 0 && (
         <div className="atlas-legend">
           <div className="lgcap">Tap to hide</div>
@@ -296,6 +661,23 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
           ))}
         </div>
       )}
+
+      {!showFallback && badge && (
+        <div className="atlas-badge">
+          {badge.total > badge.n && badge.deepLink ? (
+            <>
+              Showing {badge.n} of {badge.total} ·{" "}
+              <a href={badge.deepLink} target="_blank" rel="noreferrer">all in Atlas ↗</a>
+            </>
+          ) : (
+            <>{badge.n} plotted</>
+          )}
+          <button type="button" className="bx" onClick={() => apiRef.current?.resetView()} title="Show all">
+            Reset
+          </button>
+        </div>
+      )}
+
       {showFallback && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
@@ -319,133 +701,38 @@ export default function AtlasShell({ type, region, externalLink }: Props) {
   );
 }
 
-// ── Layer loaders ──────────────────────────────────────────────────────────
+// ── Data helpers ─────────────────────────────────────────────────────────────
 
-/* Ambient: the full hotel inventory as a heatmap that resolves into clickable
-   gold dots as the traveler zooms in. */
-async function loadHotelField(map: MBMap, popup: MBPopup, escapeHtml: (s: string) => string) {
-  try {
-    const fc = await fetchHotelPoints();
-    if (!fc.features.length) return;
-    map.addSource(HOTEL_DENSITY_SOURCE, { type: "geojson", data: fc });
-    addLayer(map, {
-      id: "hotel-heat", type: "heatmap", source: HOTEL_DENSITY_SOURCE, maxzoom: 4.35,
-      paint: {
-        "heatmap-weight": 1,
-        "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 0.65, 3, 1.1],
-        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 12, 3, 24],
-        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.36, 3.4, 0.18, 4.3, 0],
-        "heatmap-color": [
-          "interpolate", ["linear"], ["heatmap-density"],
-          0, "rgba(201,168,76,0)", 0.22, "rgba(201,168,76,0.15)",
-          0.55, "rgba(226,200,122,0.34)", 0.86, "rgba(255,238,177,0.55)",
-          1, "rgba(255,247,213,0.68)",
-        ],
-      },
-    });
-    addLayer(map, {
-      id: "hotel-dots", type: "circle", source: HOTEL_DENSITY_SOURCE, minzoom: HOTEL_DOT_MIN_ZOOM,
-      paint: {
-        "circle-radius": ["interpolate", ["linear"], ["zoom"], 2.45, 1.5, 4, 2.7, 7, 3.6, 10, 4.8],
-        "circle-color": "#f1d879",
-        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 2.45, 0.18, 3.2, 0.62, 7, 0.92],
-        "circle-stroke-color": "rgba(26,20,7,.88)",
-        "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 2.45, 0.45, 7, 1.1],
-        "circle-blur": 0,
-      },
-    });
-    map.on("click", "hotel-dots", (e: MBEvent) => {
-      if (map.getZoom() < HOTEL_CLICK_MIN_ZOOM) return; // ambient zoom: not tappable
-      const f = e.features?.[0];
-      if (!f) return;
-      const id = f.properties.id || "";
-      const name = f.properties.name || "VIP Hotel";
-      const region = f.properties.region;
-      const href = id ? `${HOTEL_BASE}/?ids=${encodeURIComponent(id)}` : HOTEL_BASE;
-      const html =
-        `<div class="iw"><div class="iwn">${escapeHtml(name)}</div>` +
-        (region ? `<div class="iwm">${escapeHtml(region)}</div>` : "") +
-        `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open VIP Hotels Atlas ↗</a></div>`;
-      popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
-    });
-    map.on("mouseenter", "hotel-dots", () => {
-      if (map.getZoom() >= HOTEL_CLICK_MIN_ZOOM) map.getCanvas().style.cursor = "pointer";
-    });
-    map.on("mouseleave", "hotel-dots", () => {
-      map.getCanvas().style.cursor = "";
-    });
-  } catch {
-    /* dot field is optional */
-  }
-}
-
-/* Region geometry (bbox + center), used to focus a ?region= deep link. */
-async function loadRegions(map: MBMap): Promise<Record<string, [number, number]>> {
+/* Region geometry (bbox + center), used to focus a ?region= deep link and to
+   place result pins that arrive without coordinates. */
+async function loadRegions(): Promise<Record<string, [number, number]>> {
   const geo: Record<string, [number, number]> = {};
   try {
     const j = await (await fetch(`${HOTEL_BASE}/api/regions`)).json();
     (j.regions || []).forEach((r: { region: string; center?: [number, number] }) => {
       if (Array.isArray(r.center) && r.center.length === 2) geo[r.region] = r.center;
     });
-  } catch {
-    /* regions optional; map still usable */
-  }
+  } catch { /* regions optional; map still usable */ }
   return geo;
 }
 
-/* Master atlas: cruise / jet / yacht / world-cruise region pins, colored, from
-   each live app's data feed. */
-async function loadOverlays(
-  map: MBMap,
-  popup: MBPopup,
-  escapeHtml: (s: string) => string,
-  onLoaded: (key: string) => void,
-) {
-  for (const key of Object.keys(OVERLAYS) as OverlayKey[]) {
-    try {
-      await addOverlay(map, key, popup, escapeHtml);
-      onLoaded(key);
-    } catch {
-      /* one atlas down should not break the rest */
-    }
-  }
+interface OverlayFeature {
+  type: "Feature";
+  geometry: { type: "Point"; coordinates: [number, number] };
+  properties: { type: string; key: string; name: string; count: number };
 }
 
-async function addOverlay(map: MBMap, key: OverlayKey, popup: MBPopup, escapeHtml: (s: string) => string) {
+async function fetchOverlay(key: OverlayKey): Promise<OverlayFeature[]> {
   const cfg = OVERLAYS[key];
   const json = await (await fetch(cfg.data)).json();
   const regs = regionsFromData(json).sort((a, b) => (b.count || 0) - (a.count || 0));
   const nudge = PIN_NUDGE[key];
   if (nudge) for (const r of regs) { const o = nudge[r.key]; if (o) { r.lng = o[0]; r.lat = o[1]; } }
-  const features = regs.map((r) => ({
+  return regs.map((r) => ({
     type: "Feature" as const,
-    geometry: { type: "Point" as const, coordinates: [r.lng, r.lat] },
+    geometry: { type: "Point" as const, coordinates: [r.lng, r.lat] as [number, number] },
     properties: { type: key, key: r.key, name: r.name, count: r.count },
   }));
-  const src = "t_" + key;
-  map.addSource(src, { type: "geojson", data: { type: "FeatureCollection", features } });
-  map.addLayer({
-    id: src + "_glow", type: "circle", source: src,
-    paint: { "circle-radius": 9, "circle-color": cfg.color, "circle-opacity": 0.18, "circle-blur": 0.8 },
-  });
-  map.addLayer({
-    id: src + "_dot", type: "circle", source: src,
-    paint: { "circle-radius": 5, "circle-color": cfg.color, "circle-stroke-color": "#0b0e14", "circle-stroke-width": 1.2 },
-  });
-  map.on("click", src + "_dot", (e: MBEvent) => {
-    const f = e.features?.[0];
-    if (!f) return;
-    const count = Number(f.properties.count) || undefined;
-    const href = f.properties.key ? `${cfg.url}?region=${encodeURIComponent(f.properties.key)}` : cfg.url;
-    const meta = overlayMeta(key, count);
-    const html =
-      `<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>` +
-      `<div class="iwm">${escapeHtml(meta)}</div>` +
-      `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
-    popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
-  });
-  map.on("mouseenter", src + "_dot", () => { map.getCanvas().style.cursor = "pointer"; });
-  map.on("mouseleave", src + "_dot", () => { map.getCanvas().style.cursor = ""; });
 }
 
 interface Reg { key: string; name: string; lng: number; lat: number; count: number }
@@ -493,6 +780,38 @@ function regionCenter(
   return null;
 }
 
+/* Coordinates for a result pin: prefer its own lng/lat, else fall back to its
+   region center with a tiny per-index spiral so co-located pins don't stack. */
+function pointForResult(
+  r: OfferingResult,
+  i: number,
+  total: number,
+  geo: Record<string, [number, number]>,
+): [number, number] {
+  const lng = Number((r as { lng?: number }).lng);
+  const lat = Number((r as { lat?: number }).lat);
+  if (Number.isFinite(lng) && Number.isFinite(lat)) return [lng, lat];
+  const key = String(r.region || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const fb = REGION_FALLBACK[key];
+  const c: [number, number] | undefined =
+    geo[r.region || ""] || (fb ? [fb[0], fb[1]] : undefined);
+  const base: [number, number] = c || [10, 20];
+  if (total <= 1) return base;
+  const ang = (i / total) * Math.PI * 2;
+  return [base[0] + Math.cos(ang) * 1.4, base[1] + Math.sin(ang) * 1.4];
+}
+
+function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) => string): string {
+  const meta = [r.brand || r.operator, (r as { ship?: string }).ship, r.region].filter(Boolean).join(" · ");
+  const when = [r.duration || r.country, r.dates || (r as { month?: string }).month].filter(Boolean).join("  ·  ");
+  const href = r.deepLink || OVERLAYS[kind as OverlayKey]?.url || HOTEL_BASE;
+  return (
+    `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
+    `<div class="iwm">${esc([meta, when].filter(Boolean).join("  ·  "))}</div>` +
+    `<a href="${esc(href)}" target="_blank" rel="noopener">Open in Atlas ↗</a></div>`
+  );
+}
+
 function layerIdsFor(key: string): string[] {
   return key === "hotel" ? ["hotel-heat", "hotel-dots"] : ["t_" + key + "_glow", "t_" + key + "_dot"];
 }
@@ -502,6 +821,10 @@ function layerIdsFor(key: string): string[] {
 interface HotelFC {
   type: "FeatureCollection";
   features: { type: "Feature"; geometry: { type: "Point"; coordinates: [number, number] }; properties: { id: string; region: string | null; name: string } }[];
+}
+interface FeaturedFC {
+  type: "FeatureCollection";
+  features: { type: "Feature"; geometry: { type: "Point"; coordinates: [number, number] }; properties: { name: string; html: string } }[];
 }
 
 async function fetchHotelPoints(): Promise<HotelFC> {
@@ -540,13 +863,8 @@ function addLayer(map: MBMap, spec: Record<string, unknown>) {
   try { map.addLayer(spec); } catch { /* layer skipped */ }
 }
 
-function setFog(map: MBMap) {
-  try {
-    map.setFog({
-      color: "rgb(11,13,18)", "high-color": "rgb(22,27,38)",
-      "horizon-blend": 0.04, "space-color": "rgb(6,8,12)", "star-intensity": 0.45,
-    });
-  } catch { /* fog optional */ }
+function setFog(map: MBMap, fog: Record<string, unknown>) {
+  try { map.setFog(fog); } catch { /* fog optional */ }
 }
 
 interface MBEvent {
@@ -559,23 +877,31 @@ interface MBPopup {
   addTo(map: MBMap): MBPopup;
   remove(): void;
 }
+interface MBBounds {
+  extend(c: [number, number]): MBBounds;
+}
 interface MBMap {
-  on(type: string, layerOrCb: string | (() => void) | ((e: MBEvent) => void), cb?: (e: MBEvent) => void): void;
+  on(type: string, layerOrCb: string | ((e: MBEvent) => void), cb?: (e: MBEvent) => void): void;
   getZoom(): number;
   getMinZoom(): number;
   getCenter(): { lng: number; lat: number };
   setCenter(c: { lng: number; lat: number }): void;
   setZoom(z: number): void;
   flyTo(opts: { center: [number, number]; zoom: number; speed?: number }): void;
+  fitBounds(b: MBBounds, opts: Record<string, unknown>): void;
   resize(): void;
   remove(): void;
   addSource(id: string, src: unknown): void;
   getSource(id: string): { setData(d: unknown): void } | undefined;
+  removeSource(id: string): void;
   addLayer(spec: Record<string, unknown>): void;
   getLayer(id: string): unknown;
+  removeLayer(id: string): void;
   setPaintProperty(id: string, prop: string, val: unknown): void;
   setLayoutProperty(id: string, prop: string, val: unknown): void;
   setFog(f: unknown): void;
+  setStyle(url: string): void;
+  setProjection(name: string): void;
   getCanvas(): HTMLCanvasElement;
   getProjection(): { name: string };
 }
@@ -583,6 +909,7 @@ interface MapboxModule {
   accessToken: string;
   Map: new (opts: Record<string, unknown>) => MBMap;
   Popup: new (opts: Record<string, unknown>) => MBPopup;
+  LngLatBounds: new () => MBBounds;
 }
 
 declare global {

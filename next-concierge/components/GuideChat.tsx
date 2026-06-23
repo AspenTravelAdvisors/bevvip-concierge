@@ -87,6 +87,10 @@ export default function GuideChat() {
           if (frame.type === "meta") {
             const { type: _t, ...meta } = frame;
             patchReply((turn) => ({ ...turn, meta }));
+            // Broadcast to the Living Atlas so it fits + satellites the results.
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new CustomEvent("bevvip:atlas-plot", { detail: meta }));
+            }
           }
           if (frame.type === "error") throw new Error(frame.error);
         }

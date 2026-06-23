@@ -272,10 +272,17 @@ main.page {
   flex-direction: column;
   gap: 4px;
   transition: 0.15s;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
 }
 .card:hover {
   background: var(--card-hover);
   border-color: var(--gold-dim);
+  text-decoration: none;
+}
+.card:hover .open {
+  color: var(--gold);
 }
 .card .kicker {
   font-size: 10px;
@@ -293,10 +300,12 @@ main.page {
   font-size: 12px;
   color: var(--sub);
 }
-.card a.open {
+.card .open {
   margin-top: 6px;
   font-size: 11.5px;
   letter-spacing: 0.4px;
+  color: var(--gold-light);
+  transition: 0.15s;
 }
 .atlas-cta {
   display: inline-flex;
@@ -431,11 +440,136 @@ main.page {
   outline: none;
 }
 
+/* Map controls (top-right): fullscreen, 2D/3D, basemap switcher. */
+.atlas-ctrls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+.atlas-ctrls .actrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(12, 12, 14, 0.92);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-light);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: 7px;
+  padding: 6px 11px;
+  cursor: pointer;
+  line-height: 1;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.atlas-ctrls .actrl:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.atlas-ctrls .actrl .sw {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  flex: none;
+}
+.atlas-ctrls .actrl-style {
+  position: relative;
+  display: flex;
+}
+.atlas-ctrls .actrl-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 138px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(12, 12, 14, 0.96);
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.atlas-ctrls .actrl-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  text-align: left;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.atlas-ctrls .actrl-menu button:hover {
+  background: rgba(201, 168, 76, 0.12);
+}
+.atlas-ctrls .actrl-menu button.active {
+  color: var(--gold-light);
+  font-weight: 600;
+}
+
+/* Result-subset badge (bottom-right): "Showing N of M · all in Atlas". */
+.atlas-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(12, 12, 14, 0.86);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 11px;
+  font-size: 12px;
+  color: var(--text);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.atlas-badge a {
+  color: var(--gold-light);
+}
+.atlas-badge .bx {
+  background: none;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-light);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+.atlas-badge .bx:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Fullscreen map — lift the canvas out of the page flow to fill the viewport. */
+.atlas-map.fs {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  min-height: 0;
+  border-radius: 0;
+  border: 0;
+}
+
 /* Layer legend — color key, tap a row to toggle that layer. */
 .atlas-legend {
   position: absolute;
   left: 12px;
-  bottom: 12px;
+  top: 12px;
   z-index: 3;
   background: rgba(10, 10, 12, 0.78);
   backdrop-filter: blur(8px);

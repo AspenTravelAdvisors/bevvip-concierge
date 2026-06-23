@@ -96,18 +96,34 @@ function Card({
   const where = [result.city, result.country, result.region, result.duration, result.dates]
     .filter(Boolean)
     .join(" · ");
-  return (
-    <div className="card">
+
+  const body = (
+    <>
       <span className="kicker">{String(kicker)}</span>
       <span className="name">{result.name || "Untitled"}</span>
       {where && <span className="where">{where}</span>}
-      {result.deepLink && (
-        <a className="open" href={result.deepLink} target="_blank" rel="noreferrer">
-          Open in Atlas ↗
-        </a>
-      )}
-    </div>
+      <span className="open">Open in Atlas ↗</span>
+    </>
   );
+
+  // Whole card is the link: prefer the offering's own deep link, otherwise drop
+  // into the unified atlas focused on its region.
+  if (result.deepLink) {
+    return (
+      <a className="card" href={result.deepLink} target="_blank" rel="noreferrer">
+        {body}
+      </a>
+    );
+  }
+  if (fallbackType) {
+    const region = result.region ? `?region=${encodeURIComponent(result.region)}` : "";
+    return (
+      <Link className="card" href={`/atlas/${fallbackType}${region}`}>
+        {body}
+      </Link>
+    );
+  }
+  return <div className="card">{body}</div>;
 }
 
 function normalizeType(raw: string): OfferingType | null {
