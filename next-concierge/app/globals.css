@@ -44,7 +44,12 @@ a:hover {
 .app {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  /* Pin the shell to the viewport so the chat transcript scrolls inside its
+     own pane. With min-height the column could grow to fit a long conversation,
+     which pushed the page taller and stretched the side-by-side Living Atlas
+     into a distorted, oversized globe. The stacked mobile layout below restores
+     normal page scrolling. */
+  height: 100dvh;
 }
 
 header.site {
@@ -659,6 +664,7 @@ main.page {
 .home-chat {
   flex: 1 1 0;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--line);
@@ -716,6 +722,12 @@ main.page {
 
 /* Stack chat over the atlas once the two panes get cramped. */
 @media (max-width: 900px) {
+  /* Stacked, the two panes are taller than the viewport, so let the page scroll
+     again instead of pinning the shell (which would clip the lower pane). */
+  .app {
+    height: auto;
+    min-height: 100dvh;
+  }
   .home {
     flex-direction: column;
   }
