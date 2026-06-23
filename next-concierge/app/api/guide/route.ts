@@ -29,8 +29,37 @@ export const maxDuration = 60;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-4-6";
 const MAX_TOKENS = 1500;
 const MAX_TOOL_ROUNDS = 4;
+// Claude occasionally returns a transient overloaded_error (HTTP 529) or a
+// 429 / 5xx, especially at peak. Those are not real failures — Anthropic asks
+// callers to back off and retry — so we do, rather than dumping the raw error
+// JSON into the chat (which is what travelers were seeing).
+const MAX_MODEL_ATTEMPTS = Number(process.env.GUIDE_MODEL_ATTEMPTS) || 4;
+const RETRYABLE_STATUS = new Set([408, 409, 429, 500, 502, 503, 504, 529]);
 
 type Send = (frame: GuideFrame) => void;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// True for the transient upstream conditions worth retrying: an overloaded or
+// rate-limited model, or a gateway/5xx blip. Recognizes both the SDK's typed
+// APIError (status / error.type) and a raw mid-stream error event surfaced as a
+// message string (e.g. {"type":"error","error":{"type":"overloaded_error"...}}).
+function isRetryableModelError(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { status?: number; error?: { type?: string }; message?: string };
+  if (typeof e.status === "number" && RETRYABLE_STATUS.has(e.status)) return true;
+  if (/overloaded_error|rate_limit_error|api_error|overloaded/i.test(e.error?.type || "")) return true;
+  return /overloaded|rate[\s_-]?limit|\b(429|500|502|503|504|529)\b/i.test(String(e.message || ""));
+}
+
+// Never surface raw provider JSON to the traveler. Transient capacity issues get
+// a calm "try again" line; anything else passes through its plain message.
+function friendlyModelError(err: unknown): string {
+  if (isRetryableModelError(err)) {
+    return "The Guide is in unusually high demand right now and could not complete that reply. Please try again in a moment.";
+  }
+  return err instanceof Error ? err.message : String(err);
+}
 
 // CORS preflight. Allowed origins get a 204 carrying the headers; disallowed
 // cross-origin preflights get 403 with none, so the browser refuses the real
@@ -74,7 +103,7 @@ export async function POST(req: Request) {
         send({ type: "done" });
       } catch (err) {
         console.error("Guide error:", err);
-        send({ type: "error", error: err instanceof Error ? err.message : String(err) });
+        send({ type: "error", error: friendlyModelError(err) });
       } finally {
         controller.close();
       }
@@ -110,18 +139,21 @@ async function runGuideTurnStream({
   send({ type: "status", text: "Reading your trip style..." });
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-    const stream = client.messages.stream({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: GUIDE_PROMPT,
-      messages: convo,
-      tools: [SEARCH_OFFERINGS_TOOL as Anthropic.Tool],
-    });
-    stream.on("text", (delta) => {
-      text += delta;
-      send({ type: "delta", text: delta });
-    });
-    const data = await stream.finalMessage();
+    const data = await streamRoundWithRetry(
+      client,
+      {
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        system: GUIDE_PROMPT,
+        messages: convo,
+        tools: [SEARCH_OFFERINGS_TOOL as Anthropic.Tool],
+      },
+      (delta) => {
+        text += delta;
+        send({ type: "delta", text: delta });
+      },
+      () => send({ type: "status", text: "The Guide is in high demand — retrying..." }),
+    );
 
     if (data.stop_reason === "tool_use") {
       const toolUses = data.content.filter(
@@ -170,6 +202,36 @@ async function runGuideTurnStream({
   }
 
   return { text: text.trim(), toolMeta, stopReason: "max_tool_rounds" };
+}
+
+// One model round, with backoff on transient overload. We only retry when the
+// failure landed before any text was streamed for this attempt — once deltas
+// have reached the client, restarting would duplicate the reply, so we surface
+// the error instead. Overloaded errors arrive at request time (no text yet), so
+// in practice they retry cleanly.
+async function streamRoundWithRetry(
+  client: Anthropic,
+  params: Anthropic.MessageStreamParams,
+  onText: (delta: string) => void,
+  onRetry: () => void,
+): Promise<Anthropic.Message> {
+  for (let attempt = 1; ; attempt++) {
+    let emitted = false;
+    try {
+      const stream = client.messages.stream(params);
+      stream.on("text", (delta) => {
+        emitted = true;
+        onText(delta);
+      });
+      return await stream.finalMessage();
+    } catch (err) {
+      if (attempt >= MAX_MODEL_ATTEMPTS || emitted || !isRetryableModelError(err)) throw err;
+      onRetry();
+      // Exponential backoff with jitter: ~0.6s, 1.2s, 2.4s (capped at 8s).
+      const backoff = Math.min(8000, 600 * 2 ** (attempt - 1)) + Math.random() * 300;
+      await sleep(backoff);
+    }
+  }
 }
 
 function statusForToolUses(toolUses: Anthropic.ToolUseBlock[]): string {
