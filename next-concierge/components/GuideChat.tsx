@@ -165,8 +165,39 @@ export default function GuideChat() {
     }
   }
 
+  // The first thing the traveler asked, as a one-line session summary for the
+  // mobile session bar (e.g. "Four Seasons in the Caribbean").
+  const firstAsk = turns.find((t) => t.role === "user")?.content.trim() ?? "";
+
+  // Broadcast idle↔session transitions so the mobile shell can collapse the home
+  // into the conversation view and demote the Living Atlas to a swipe-up peek.
+  // Desktop/tablet ignore this — their side-by-side split is unchanged.
+  useEffect(() => {
+    if (!hydrated) return;
+    window.dispatchEvent(
+      new CustomEvent("bevvip:guide-session", {
+        detail: { active: turns.length > 0, summary: firstAsk },
+      }),
+    );
+  }, [hydrated, turns.length, firstAsk]);
+
   return (
     <section className="chat">
+      {turns.length > 0 && (
+        <button
+          type="button"
+          className="guide-sessionbar"
+          title="Back to the top of the conversation"
+          onClick={() => transcriptRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <span className="gsb-av">G</span>
+          <span className="gsb-meta">
+            <span className="gsb-who">The Guide</span>
+            {firstAsk && <span className="gsb-ctx">{firstAsk}</span>}
+          </span>
+          <span className="gsb-top">Top</span>
+        </button>
+      )}
       <div className="transcript" ref={transcriptRef}>
         {turns.length === 0 ? (
           <div className="empty">

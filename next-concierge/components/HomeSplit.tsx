@@ -21,6 +21,31 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   const [dragging, setDragging] = useState(false);
   const rafRef = useRef<number | null>(null);
 
+  // Mobile-only state. `sessionActive` (broadcast by The Guide once a
+  // conversation starts) collapses the home into the chat view and demotes the
+  // Living Atlas to a swipe-up peek; `peekOpen` expands that peek back to the
+  // live globe. Both classes are inert on desktop/tablet — the CSS only acts on
+  // them below the phone breakpoint, so the side-by-side split is unchanged.
+  const [sessionActive, setSessionActive] = useState(false);
+  const [peekOpen, setPeekOpen] = useState(false);
+
+  useEffect(() => {
+    function onSession(e: Event) {
+      const active = !!(e as CustomEvent<{ active?: boolean }>).detail?.active;
+      setSessionActive(active);
+      if (!active) setPeekOpen(false); // returning to the idle home closes the peek
+    }
+    window.addEventListener("bevvip:guide-session", onSession as EventListener);
+    return () => window.removeEventListener("bevvip:guide-session", onSession as EventListener);
+  }, []);
+
+  // Mapbox only refits off a window resize, so nudge it after the sheet's height
+  // transition settles when the peek opens/closes.
+  const togglePeek = useCallback(() => {
+    setPeekOpen((v) => !v);
+    window.setTimeout(() => window.dispatchEvent(new Event("resize")), 460);
+  }, []);
+
   // Restore a saved ratio on mount (client-only so SSR stays at the default).
   useEffect(() => {
     const saved = Number(window.localStorage.getItem(STORAGE_KEY));
@@ -80,7 +105,12 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   };
 
   return (
-    <div ref={rowRef} className={`home${dragging ? " dragging" : ""}`}>
+    <div
+      ref={rowRef}
+      className={`home${dragging ? " dragging" : ""}${sessionActive ? " home--session" : ""}${
+        peekOpen ? " home--peek-open" : ""
+      }`}
+    >
       <div className="home-chat">{chat}</div>
       <div
         className="home-gutter"
@@ -100,6 +130,19 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
         <span className="home-gutter-grip" aria-hidden="true" />
       </div>
       <aside className="home-atlas" style={{ flexBasis: `${atlasPct}%` }}>
+        <button
+          type="button"
+          className="home-atlas-handle"
+          aria-expanded={peekOpen}
+          aria-label={peekOpen ? "Collapse the Living Atlas" : "Open the Living Atlas"}
+          onClick={togglePeek}
+        >
+          <span className="hah-grip" aria-hidden="true" />
+          <span className="hah-label">
+            Living <b>Atlas</b>
+            {peekOpen ? " — swipe down" : " — swipe up"}
+          </span>
+        </button>
         {atlas}
       </aside>
     </div>

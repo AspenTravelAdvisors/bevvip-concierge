@@ -849,6 +849,15 @@ main.page {
   margin-top: 14px;
 }
 
+/* Mobile-only chrome: a swipe-up handle on the Living Atlas sheet and a pinned
+   Guide session bar. Hidden everywhere by default — only the phone breakpoint
+   below reveals them, so the desktop/tablet side-by-side split (and its
+   draggable gutter) is completely unchanged. */
+.home-atlas-handle,
+.guide-sessionbar {
+  display: none;
+}
+
 /* Stack chat over the atlas once the two panes get cramped. */
 @media (max-width: 900px) {
   /* Stacked, the two panes are taller than the viewport, so let the page scroll
@@ -1030,5 +1039,199 @@ main.page {
   .atlas-cta {
     justify-content: center;
     max-width: 100%;
+  }
+}
+
+/* ── Mobile redesign: chat-first spine + swipe-up Living Atlas ──────────────
+   Phones only. The home becomes a single fixed-height stage: The Guide fills it
+   (transcript scrolls, composer pinned under the thumb), and the Living Atlas
+   sits as a bottom sheet — browsable on the idle home, collapsed to a swipe-up
+   peek once a conversation starts. State is driven by two classes on .home
+   (home--session, home--peek-open) set by HomeSplit. Desktop and tablet keep
+   the side-by-side split defined above; nothing here touches them. */
+@media (max-width: 640px) {
+  /* Pin the stage to the viewport so the chat scrolls inside its own pane and
+     the atlas sheet / composer can anchor to the bottom edge. */
+  .app {
+    height: 100dvh;
+    min-height: 0;
+  }
+  .home {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* The Guide fills the whole stage. */
+  .home-chat {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    border-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+  }
+  .home-chat .chat {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Reserve room at the foot of the transcript so content clears the atlas
+     sheet: a deep reserve on the idle home (tall, browsable sheet), a slim one
+     once collapsed to the peek. */
+  .home .transcript {
+    padding-bottom: 76px;
+  }
+  .home:not(.home--session) .transcript {
+    padding-bottom: calc(44dvh + 14px);
+  }
+
+  /* Pinned Guide session bar (rendered by GuideChat once a conversation starts;
+     hidden by the base rule until here). */
+  .guide-sessionbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    flex: 0 0 auto;
+    text-align: left;
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--text);
+    font-family: var(--sans);
+  }
+  .gsb-av {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1a1407;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  }
+  .gsb-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .gsb-who {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.1;
+  }
+  .gsb-ctx {
+    font-size: 11px;
+    color: var(--sub);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gsb-top {
+    flex: 0 0 auto;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 6px 9px;
+  }
+
+  /* The composer stays in flow at the foot of the chat column — naturally
+     pinned to the bottom edge, where the thumb and keyboard live. */
+
+  /* Living Atlas as a bottom sheet, floating just above the composer. */
+  .home-atlas {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(70px + env(safe-area-inset-bottom));
+    z-index: 5;
+    flex: none !important;
+    max-width: none;
+    padding: 0;
+    gap: 0;
+    height: 44dvh;
+    background: var(--panel);
+    border-top: 1px solid var(--gold-dim);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transition: height 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .home-atlas .home-atlas-head {
+    padding: 11px 14px 0;
+  }
+  .home-atlas-head h2 {
+    font-size: 18px;
+  }
+  .home-atlas .atlas-map {
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  /* Swipe-up handle — only shown on the collapsed peek (session state). */
+  .home-atlas-handle {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 60px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--sans);
+  }
+  .hah-grip {
+    width: 38px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--gold-dim);
+  }
+  .hah-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sub);
+  }
+  .hah-label b {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* Conversation underway: collapse the sheet to a peek; hide the head + globe
+     until the traveler swipes it open. */
+  .home--session .home-atlas {
+    height: 60px;
+  }
+  .home--session .home-atlas-handle {
+    display: flex;
+  }
+  .home--session .home-atlas-head {
+    display: none;
+  }
+  .home--session .home-atlas .atlas-map {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Peek opened: expand the sheet and bring the live globe back. */
+  .home--session.home--peek-open .home-atlas {
+    height: 66dvh;
+  }
+  .home--session.home--peek-open .home-atlas .atlas-map {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
