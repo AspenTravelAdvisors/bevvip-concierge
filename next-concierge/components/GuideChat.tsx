@@ -11,18 +11,14 @@ import ResultCards from "./ResultCards";
 // The five seed prompts on the empty state. Each leads into a pillar AND
 // quietly demonstrates a capability: cross-pillar + region search (a hotel ask
 // that also surfaces yachts), month-only search, two-brand comparison, an
-// around-the-world theme, and day-by-day route tracing on a grand voyage.
+// around-the-world theme, and port-of-call search on a grand voyage.
 const CHIPS = [
   "Four Seasons in Caribbean",
   "Galápagos Expedition Cruise journeys in January",
   "Aman vs. Orient Express Luxury Yachts",
   "Around the world by private jet trips in 2026",
-  "Trace a 2027 world cruise, port by port",
+  "World Cruises that call on Sydney in 2027",
 ];
-
-// Advisor handoff target — the human advisor closes and books. Kept in sync
-// with the standalone Atlas client (CONTACT in public/index.html).
-const CONTACT = { email: "Book@BeVvip.com" };
 
 interface Turn extends ChatMessage {
   meta?: GuideMeta;
@@ -329,26 +325,51 @@ function ChatMoves({
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
 
-  // Email the traveler their own shortlist, with the advisor CC'd. The traveler
-  // addresses it to themselves and sends; the CC means BeVvip captures their
-  // real email and the conversation, without a cold call. (To is left empty so
-  // the traveler fills in their own address.)
-  const emailResults = () => {
-    const subject = "Your BeVvip shortlist";
-    const names = shortlistNames(meta);
-    const lines: string[] = ["Here is the shortlist we put together:"];
-    if (names.length) {
-      for (const n of names) lines.push(" • " + n);
-    } else {
-      lines.push(" • (see the conversation below)");
+  // The "Email me my shortlist" path runs its own light, single-field capture so
+  // the traveler never has to open a mail client. It POSTs to /api/shortlist-email,
+  // which sends the curated list to the traveler via Resend the moment they submit
+  // and BCCs BeVvip — so they get their shortlist instantly and we're copied in the
+  // background. Kept separate from the primary CTA's name/email/phone form because
+  // all this move needs is an address.
+  const [mailPhase, setMailPhase] = useState<"idle" | "form" | "sending" | "done" | "error">("idle");
+  const [mailEmail, setMailEmail] = useState("");
+  const [mailError, setMailError] = useState("");
+
+  const sendShortlist = async () => {
+    const cleanEmail = mailEmail.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
+      setMailError("Please enter a valid email so we can send your shortlist.");
+      setMailPhase("form");
+      return;
     }
-    if (meta.deepLink) lines.push("", "See them on the Atlas: " + meta.deepLink);
-    lines.push("", "— Our conversation —", transcript(turns));
-    const href =
-      `mailto:?cc=${encodeURIComponent(CONTACT.email)}` +
-      `&subject=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(lines.join("\n"))}`;
-    launch(href);
+    setMailPhase("sending");
+    setMailError("");
+    try {
+      const res = await fetch("/api/shortlist-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: cleanEmail,
+          shortlist: shortlistNames(meta),
+          deepLink: meta.deepLink ?? null,
+          pageUrl: typeof window !== "undefined" ? window.location.href : "",
+        }),
+      });
+      if (!res.ok) {
+        let msg = `Could not send (${res.status}).`;
+        try {
+          const j = await res.json();
+          if (j?.error) msg = j.error;
+        } catch {
+          /* non-JSON error body */
+        }
+        throw new Error(msg);
+      }
+      setMailPhase("done");
+    } catch (err) {
+      setMailError(err instanceof Error ? err.message : "Could not send. Please try again.");
+      setMailPhase("error");
+    }
   };
 
   const submit = async () => {
@@ -455,6 +476,56 @@ function ChatMoves({
     );
   }
 
+  if (mailPhase === "done") {
+    return (
+      <div className="moves-done">
+        <p>
+          Sent — your shortlist is on its way to {mailEmail.trim()}. Keep exploring here
+          in the meantime.
+        </p>
+      </div>
+    );
+  }
+
+  if (mailPhase === "form" || mailPhase === "sending" || mailPhase === "error") {
+    const sending = mailPhase === "sending";
+    return (
+      <div className="moves-capture">
+        <div className="mc-lead">Where should we send your shortlist?</div>
+        <input
+          className="mc-field"
+          type="email"
+          inputMode="email"
+          placeholder="Email"
+          value={mailEmail}
+          disabled={sending}
+          autoFocus
+          onChange={(e) => setMailEmail(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !sending) sendShortlist();
+          }}
+        />
+        {mailError && <div className="mc-error">{mailError}</div>}
+        <div className="mc-actions">
+          <button type="button" className="move move-primary" disabled={sending} onClick={sendShortlist}>
+            {sending ? "Sending…" : "Send my shortlist"}
+          </button>
+          <button
+            type="button"
+            className="move"
+            disabled={sending}
+            onClick={() => {
+              setMailPhase("idle");
+              setMailError("");
+            }}
+          >
+            Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="moves">
       <button
@@ -465,22 +536,11 @@ function ChatMoves({
       >
         {ctaLabel}
       </button>
-      <button type="button" className="move" disabled={busy} onClick={emailResults}>
+      <button type="button" className="move" disabled={busy} onClick={() => setMailPhase("form")}>
         Email me my shortlist
       </button>
     </div>
   );
-}
-
-// Use a transient anchor + click to launch mailto/tel — assigning
-// location.href can trigger a full page navigation on some mobile browsers.
-function launch(href: string) {
-  const a = document.createElement("a");
-  a.href = href;
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
 }
 
 // The top result names from a meta frame, for the email shortlist. Mirrors the
