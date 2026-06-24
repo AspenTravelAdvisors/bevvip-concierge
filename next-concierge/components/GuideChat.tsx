@@ -323,54 +323,8 @@ function ChatMoves({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
-
-  // The "Email me my shortlist" path runs its own light, single-field capture so
-  // the traveler never has to open a mail client. It POSTs to /api/shortlist-email,
-  // which sends the curated list to the traveler via Resend the moment they submit
-  // and BCCs BeVvip — so they get their shortlist instantly and we're copied in the
-  // background. Kept separate from the primary CTA's name/email/phone form because
-  // all this move needs is an address.
-  const [mailPhase, setMailPhase] = useState<"idle" | "form" | "sending" | "done" | "error">("idle");
-  const [mailEmail, setMailEmail] = useState("");
-  const [mailError, setMailError] = useState("");
-
-  const sendShortlist = async () => {
-    const cleanEmail = mailEmail.trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
-      setMailError("Please enter a valid email so we can send your shortlist.");
-      setMailPhase("form");
-      return;
-    }
-    setMailPhase("sending");
-    setMailError("");
-    try {
-      const res = await fetch("/api/shortlist-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: cleanEmail,
-          shortlist: shortlistNames(meta),
-          deepLink: meta.deepLink ?? null,
-          pageUrl: typeof window !== "undefined" ? window.location.href : "",
-        }),
-      });
-      if (!res.ok) {
-        let msg = `Could not send (${res.status}).`;
-        try {
-          const j = await res.json();
-          if (j?.error) msg = j.error;
-        } catch {
-          /* non-JSON error body */
-        }
-        throw new Error(msg);
-      }
-      setMailPhase("done");
-    } catch (err) {
-      setMailError(err instanceof Error ? err.message : "Could not send. Please try again.");
-      setMailPhase("error");
-    }
-  };
 
   const submit = async () => {
     const cleanEmail = email.trim();
@@ -392,6 +346,7 @@ function ChatMoves({
           shortlist: shortlistNames(meta),
           deepLink: meta.deepLink ?? null,
           contact: { name: name.trim(), email: cleanEmail, phone: phone.trim() },
+          notes: notes.trim(),
           transcript: transcript(turns),
           pageUrl: typeof window !== "undefined" ? window.location.href : "",
         }),
@@ -417,8 +372,9 @@ function ChatMoves({
     return (
       <div className="moves-done">
         <p>
-          Done. A specialist has your shortlist and the details of what we discussed, and
-          will be in touch at {email.trim()}. You can keep exploring here in the meantime.
+          Done — an Aspen Travel Advisors specialist is joining the conversation. They have your shortlist and
+          the details of what we discussed, and will be in touch at {email.trim()}. You can
+          keep exploring here in the meantime.
         </p>
       </div>
     );
@@ -428,7 +384,11 @@ function ChatMoves({
     const sending = phase === "sending";
     return (
       <div className="moves-capture">
-        <div className="mc-lead">Where should we send your recommendations?</div>
+        <div className="mc-lead">Bring in an advisor</div>
+        <div className="mc-note">
+          An Aspen Travel Advisors specialist will pick up this conversation with your
+          shortlist in hand and reach out to take it from here.
+        </div>
         <input
           className="mc-field"
           type="text"
@@ -455,10 +415,18 @@ function ChatMoves({
           disabled={sending}
           onChange={(e) => setPhone(e.target.value)}
         />
+        <textarea
+          className="mc-field mc-notes"
+          rows={2}
+          placeholder="Anything you'd like the advisor to know? (optional)"
+          value={notes}
+          disabled={sending}
+          onChange={(e) => setNotes(e.target.value)}
+        />
         {error && <div className="mc-error">{error}</div>}
         <div className="mc-actions">
           <button type="button" className="move move-primary" disabled={sending} onClick={submit}>
-            {sending ? "Sending…" : "Send to a specialist"}
+            {sending ? "Sending…" : "Connect me with an advisor"}
           </button>
           <button
             type="button"
@@ -467,56 +435,6 @@ function ChatMoves({
             onClick={() => {
               setPhase("idle");
               setError("");
-            }}
-          >
-            Back
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (mailPhase === "done") {
-    return (
-      <div className="moves-done">
-        <p>
-          Sent — your shortlist is on its way to {mailEmail.trim()}. Keep exploring here
-          in the meantime.
-        </p>
-      </div>
-    );
-  }
-
-  if (mailPhase === "form" || mailPhase === "sending" || mailPhase === "error") {
-    const sending = mailPhase === "sending";
-    return (
-      <div className="moves-capture">
-        <div className="mc-lead">Where should we send your shortlist?</div>
-        <input
-          className="mc-field"
-          type="email"
-          inputMode="email"
-          placeholder="Email"
-          value={mailEmail}
-          disabled={sending}
-          autoFocus
-          onChange={(e) => setMailEmail(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !sending) sendShortlist();
-          }}
-        />
-        {mailError && <div className="mc-error">{mailError}</div>}
-        <div className="mc-actions">
-          <button type="button" className="move move-primary" disabled={sending} onClick={sendShortlist}>
-            {sending ? "Sending…" : "Send my shortlist"}
-          </button>
-          <button
-            type="button"
-            className="move"
-            disabled={sending}
-            onClick={() => {
-              setMailPhase("idle");
-              setMailError("");
             }}
           >
             Back
@@ -536,14 +454,12 @@ function ChatMoves({
       >
         {ctaLabel}
       </button>
-      <button type="button" className="move" disabled={busy} onClick={() => setMailPhase("form")}>
-        Email me my shortlist
-      </button>
+      <span className="moves-hint">Brings an Aspen Travel Advisors specialist into the conversation</span>
     </div>
   );
 }
 
-// The top result names from a meta frame, for the email shortlist. Mirrors the
+// The top result names from a meta frame, carried to the advisor. Mirrors the
 // card collection order (latest tool first) without the per-brand card caps.
 function shortlistNames(meta: GuideMeta): string[] {
   const names: string[] = [];

@@ -45,6 +45,8 @@ interface HandoffBody {
   deepLink?: string | null;
   // Lightly captured so the advisor can actually reach them.
   contact?: { name?: string; email?: string; phone?: string };
+  // Optional free-text the traveler added for the advisor before handing off.
+  notes?: string;
   // Full plain-text conversation, as a backstop behind the structured brief.
   transcript?: string;
   // Where the traveler was when they handed off.
@@ -85,6 +87,12 @@ function composeMessage(body: HandoffBody): string {
   lines.push(`Style: ${b.style || "(not yet stated)"}`);
   lines.push(`Already considering: ${b.considering || "(none mentioned)"}`);
   lines.push("");
+
+  if (body.notes && body.notes.trim()) {
+    lines.push("— Traveler's note —");
+    lines.push(clip(body.notes, 1000));
+    lines.push("");
+  }
 
   if (body.shortlist?.length) {
     lines.push("— Shortlist on screen —");
@@ -144,6 +152,7 @@ export async function POST(req: Request) {
     name: clip(contact.name, 80) || "(not given)",
     email,
     phone: clip(contact.phone, 40),
+    notes: clip(body.notes, 1000),
     category: body.category ?? "generic",
     action: clip(body.action, 80),
     destination: clip(body.brief?.destination, 200),

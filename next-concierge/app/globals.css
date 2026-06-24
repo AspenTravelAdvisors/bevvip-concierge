@@ -457,6 +457,14 @@ main.page {
   background: var(--gold-light);
   border-color: var(--gold-light);
 }
+/* sits beside the primary CTA so the traveler knows the button pulls a real
+   advisor into the chat, not just sends an email */
+.moves-hint {
+  align-self: center;
+  font-size: 12px;
+  color: var(--sub);
+  letter-spacing: 0.2px;
+}
 
 /* contact capture — the light "where should we send these" step */
 .moves-capture {
@@ -473,6 +481,22 @@ main.page {
   color: var(--gold-light);
   letter-spacing: 0.3px;
   margin-bottom: 2px;
+}
+/* sub-line under the capture lead — spells out that this hands the
+   conversation to a real advisor, so the move never reads as just a form */
+.mc-note {
+  flex: 1 0 100%;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--sub);
+  margin: -2px 0 4px;
+}
+/* the optional free-text the traveler can add for the advisor */
+.mc-notes {
+  flex: 1 0 100%;
+  resize: vertical;
+  min-height: 38px;
+  line-height: 1.4;
 }
 .mc-field {
   flex: 1 1 160px;
@@ -1026,11 +1050,11 @@ main.page {
   }
 
   .transcript {
-    padding: 18px 14px 8px;
+    padding: 6px 14px 8px;
   }
 
   .empty {
-    margin-top: 3vh;
+    margin-top: 0;
     padding: 0 4px;
     text-align: left;
   }
