@@ -99,18 +99,22 @@ const GLOBE_FOG = {
   color: "rgb(11,13,18)", "high-color": "rgb(22,27,38)",
   "horizon-blend": 0.04, "space-color": "rgb(6,8,12)", "star-intensity": 0.45,
 };
-// The globe opens on Mapbox Standard Satellite (photoreal), with Standard
-// (clean vector) and Dark as alternates. Because we now start on satellite,
-// there is no longer a forced switch-to-satellite when results plot.
-type StyleKey = "satellite" | "standard" | "dark";
-const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string }> = {
+// The globe opens on Dark (the house default), with Satellite (photoreal) and
+// Warm (Standard vector under a dusk light preset) as alternates. Nothing forces
+// a style switch when results plot — the chosen basemap stays put.
+type StyleKey = "dark" | "satellite" | "warm";
+const WARM_FOG = {
+  color: "rgb(30,22,16)", "high-color": "rgb(70,52,34)",
+  "horizon-blend": 0.05, "space-color": "rgb(10,8,6)", "star-intensity": 0.25,
+};
+const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string }> = {
+  dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
   satellite: {
     label: "Satellite", url: "mapbox://styles/mapbox/standard-satellite",
     fog: { color: "rgb(18,22,30)", "high-color": "rgb(40,52,72)", "horizon-blend": 0.06, "space-color": "rgb(6,8,12)", "star-intensity": 0.3 },
     sw: "#3b5a3a",
   },
-  standard: { label: "Standard", url: "mapbox://styles/mapbox/standard", fog: GLOBE_FOG, sw: "#5b7fa6" },
-  dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
+  warm: { label: "Warm", url: "mapbox://styles/mapbox/standard", fog: WARM_FOG, sw: "#c9a36a", light: "dusk" },
 };
 
 // Imperative handle the control buttons call into; the map lifecycle effect
@@ -144,7 +148,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   const [mapFailed, setMapFailed] = useState(false);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [styleKey, setStyleKey] = useState<StyleKey>("satellite");
+  const [styleKey, setStyleKey] = useState<StyleKey>("dark");
   const [is3D, setIs3D] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
@@ -163,7 +167,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let subsetActive = false;
     let homeZoom = 1.25;
     let projGlobe = true;
-    let styleKeyLocal: StyleKey = "satellite";
+    let styleKeyLocal: StyleKey = "dark";
     let ro: ResizeObserver | undefined;
     let loadTimeout = 0;
     const node = mapEl.current;
@@ -199,7 +203,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         mapboxgl.accessToken = token;
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: ATLAS_STYLES.satellite.url,
+          style: ATLAS_STYLES.dark.url,
           projection: "globe",
           center: [10, 20],
           zoom: 1.25,
@@ -456,6 +460,11 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (cancelled) return;
           const s = ATLAS_STYLES[styleKeyLocal] || ATLAS_STYLES.dark;
           setFog(map, s.fog);
+          // Warm uses Mapbox Standard under a dusk light preset; other Standard-
+          // family styles fall back to day. Classic styles (Dark) ignore this.
+          if (s.light) {
+            try { (map as unknown as { setConfigProperty(s: string, k: string, v: string): void }).setConfigProperty("basemap", "lightPreset", s.light); } catch { /* not a Standard style */ }
+          }
           try { map.setProjection(projGlobe ? "globe" : "mercator"); } catch { /* projection optional */ }
           paintAll();
 
