@@ -86,7 +86,7 @@ const REGION_FALLBACK: Record<string, [number, number, number]> = {
 };
 
 const LEGEND: { key: string; label: string; color: string }[] = [
-  { key: "hotel", label: "VIP Hotels", color: "#c9a84c" },
+  { key: "hotel", label: "VIP Hotels", color: "#e6d488" },
   { key: "cruise", label: OVERLAYS.cruise.label, color: OVERLAYS.cruise.color },
   { key: "jet", label: OVERLAYS.jet.label, color: OVERLAYS.jet.color },
   { key: "yacht", label: OVERLAYS.yacht.label, color: OVERLAYS.yacht.color },
@@ -268,7 +268,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             id: "hotel-dots", type: "circle", source: HOTEL_DENSITY_SOURCE, minzoom: HOTEL_DOT_MIN_ZOOM,
             paint: {
               "circle-radius": ["interpolate", ["linear"], ["zoom"], 2.45, 1.5, 4, 2.7, 7, 3.6, 10, 4.8],
-              "circle-color": "#f1d879",
+              "circle-color": "#f7e6a0",
               "circle-opacity": subsetActive
                 ? 0.12
                 : ["interpolate", ["linear"], ["zoom"], 2.45, 0.18, 3.2, 0.62, 7, 0.92],
