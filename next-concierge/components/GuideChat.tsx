@@ -64,7 +64,10 @@ export default function GuideChat() {
 
   useEffect(() => {
     const el = transcriptRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (!el) return;
+    // Empty state: keep the opening question pinned at the top. Once a
+    // conversation exists, follow it to the newest reply.
+    el.scrollTop = turns.length === 0 ? 0 : el.scrollHeight;
   }, [turns, status]);
 
   // Deep-link from an atlas card: ?ask=… opens The Guide already asking about

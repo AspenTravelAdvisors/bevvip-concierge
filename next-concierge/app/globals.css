@@ -939,8 +939,9 @@ main.page {
     width: 100%;
     margin-left: 0;
     overflow-x: auto;
-    gap: 6px;
-    padding: 2px 2px 6px;
+    justify-content: space-between;
+    gap: 2px;
+    padding: 2px 0 6px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -950,9 +951,12 @@ main.page {
     display: none;
   }
 
+  /* Tight enough that all six tabs spread across one phone row, no scroll. */
   header.site nav a {
     flex: 0 0 auto;
-    font-size: 11px;
+    font-size: 10px;
+    letter-spacing: 0.2px;
+    padding: 6px 6px 5px;
   }
 
   .transcript {
@@ -974,19 +978,30 @@ main.page {
     margin-bottom: 18px;
   }
 
+  /* A horizontal swipe row of cards (rectangles across) instead of a tall
+     stack, so the seed prompts don't push the opening question off-screen.
+     Each card keeps its full phrase; the partial next card hints "swipe". */
   .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
     justify-content: flex-start;
-    gap: 8px;
+    gap: 9px;
+    padding-bottom: 4px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
-
-  /* Full-width conversational cards — deliberately distinct from the colored
-     Atlas tabs up top. Each reads as a phrase you'd actually ask The Guide. */
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
   .chip {
-    flex: 1 1 100%;
+    flex: 0 0 72%;
+    scroll-snap-align: start;
     border-radius: 12px;
-    padding: 11px 14px;
+    padding: 13px 15px;
     font-size: 13px;
     text-align: left;
+    white-space: normal;
   }
 
   .cards {
