@@ -100,27 +100,45 @@ header.site .tag .byline:hover {
 header.site nav {
   margin-left: auto;
   display: flex;
-  gap: 16px;
+  align-items: flex-end;
+  gap: 5px;
   font-size: 12px;
   min-width: 0;
 }
+/* Top navigation rendered as a row of tabs: rounded-top, a 2px accent underline,
+   and a faint fill on hover / for the active tab. */
 header.site nav a {
   color: var(--sub);
   letter-spacing: 0.6px;
   text-transform: uppercase;
   white-space: nowrap;
+  padding: 7px 11px 6px;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 9px 9px 0 0;
+  transition: 0.15s;
 }
 header.site nav a:hover,
 header.site nav a[data-active="true"] {
   color: var(--gold-light);
   text-decoration: none;
+  background: var(--card);
 }
-/* The five Atlas tabs carry their map-legend color; hover still lifts to gold. */
+/* The Guide — the active "home" tab. */
+header.site nav a.tab-guide {
+  color: var(--gold-light);
+  background: var(--card);
+  border-color: var(--line);
+  border-bottom-color: var(--gold);
+}
+/* The five Atlas tabs carry their map-legend color as text + accent underline. */
 header.site nav a.tab-color {
   color: var(--tab);
+  border-bottom-color: var(--tab);
 }
 header.site nav a.tab-color:hover {
   color: var(--gold-light);
+  background: var(--card);
 }
 
 main.page {
@@ -921,7 +939,7 @@ main.page {
     width: 100%;
     margin-left: 0;
     overflow-x: auto;
-    gap: 14px;
+    gap: 6px;
     padding: 2px 2px 6px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -961,14 +979,14 @@ main.page {
     gap: 8px;
   }
 
-  /* Compact pills (not full-width bars) so all five seed prompts wrap into
-     roughly the space the old four stacked cards used. */
+  /* Full-width conversational cards — deliberately distinct from the colored
+     Atlas tabs up top. Each reads as a phrase you'd actually ask The Guide. */
   .chip {
-    flex: 0 1 auto;
-    border-radius: 999px;
-    padding: 9px 14px;
-    font-size: 12.5px;
-    text-align: center;
+    flex: 1 1 100%;
+    border-radius: 12px;
+    padding: 11px 14px;
+    font-size: 13px;
+    text-align: left;
   }
 
   .cards {

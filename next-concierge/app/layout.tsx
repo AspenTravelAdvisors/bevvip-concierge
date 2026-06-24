@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </a>
             </span>
             <nav>
-              <Link href="/">The Guide</Link>
+              <Link className="tab-guide" href="/">The Guide</Link>
               <a className="tab-color" style={{ "--tab": "#c9a84c" } as React.CSSProperties} href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">🏨 Hotels</a>
               <a className="tab-color" style={{ "--tab": "#5aa9e6" } as React.CSSProperties} href={externalAtlasLink("cruise")} target="_blank" rel="noreferrer">🧭 Expeditions</a>
               <a className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href={externalAtlasLink("jet")} target="_blank" rel="noreferrer">✈️ Jets</a>
