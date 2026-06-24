@@ -62,6 +62,32 @@ export default function GuideChat() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [turns, status]);
 
+  // Deep-link from an atlas card: ?ask=… opens The Guide already asking about
+  // that specific sailing / expedition / jet / yacht. Fires once, after the
+  // session restore, then strips ask/src from the URL so a refresh won't repeat.
+  const askConsumed = useRef(false);
+  useEffect(() => {
+    if (!hydrated || askConsumed.current) return;
+    let ask = "";
+    try {
+      ask = new URLSearchParams(window.location.search).get("ask") || "";
+    } catch {
+      /* no query / unavailable */
+    }
+    if (!ask.trim()) return;
+    askConsumed.current = true;
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("ask");
+      url.searchParams.delete("src");
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    } catch {
+      /* leave the URL as-is */
+    }
+    send(ask);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
