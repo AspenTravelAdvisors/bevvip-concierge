@@ -421,6 +421,72 @@ main.page {
   opacity: 0.45;
   cursor: default;
 }
+/* the category-aware primary handoff CTA reads as the lead action */
+.move-primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--bg);
+  font-weight: 600;
+}
+.move-primary:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+/* contact capture — the light "where should we send these" step */
+.moves-capture {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.mc-lead {
+  flex: 1 0 100%;
+  font-size: 13px;
+  color: var(--gold-light);
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+.mc-field {
+  flex: 1 1 160px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--user);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: var(--sans);
+}
+.mc-field:focus {
+  outline: none;
+  border-color: var(--gold-dim);
+}
+.mc-error {
+  flex: 1 0 100%;
+  font-size: 12px;
+  color: #e0a05a;
+}
+.mc-actions {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.moves-done {
+  margin: 14px 0 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 13px;
+  color: var(--gold-light);
+  line-height: 1.5;
+}
+.moves-done p {
+  margin: 0;
+}
 
 /* ── Composer ─────────────────────────────────────── */
 .composer {

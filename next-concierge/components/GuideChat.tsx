@@ -290,27 +290,37 @@ function Message({
           </div>
         )}
         {hasResults && turn.meta && (
-          <ChatMoves meta={turn.meta} turns={turns} onPick={onPick} busy={busy} />
+          <ChatMoves meta={turn.meta} turns={turns} busy={busy} />
         )}
       </div>
     </div>
   );
 }
 
-// The four "moves" that close out a results block: email the shortlist (with a
-// transcript of the conversation so the advisor has full context), call, or
-// inquire. Ported from renderMoves() in the standalone Atlas client.
+// The close-out of a results block. The primary move is a category-aware
+// hand-off: tapping it opens a light contact capture, then POSTs the qualified
+// brief + shortlist + transcript to /api/handoff so the advisor reaches the
+// traveler already knowing how to follow up. Email and phone stay as secondary
+// conveniences. Replaces the old four-button renderMoves().
 function ChatMoves({
   meta,
   turns,
-  onPick,
   busy,
 }: {
   meta: GuideMeta;
   turns: Turn[];
-  onPick: (text: string) => void;
   busy: boolean;
 }) {
+  const category = handoffCategory(meta);
+  const ctaLabel = HANDOFF_CTA[category] ?? HANDOFF_CTA.generic;
+
+  // "idle" → the CTA; "form" → contact capture; "sending"/"done"/"error".
+  const [phase, setPhase] = useState<"idle" | "form" | "sending" | "done" | "error">("idle");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
+
   const emailResults = () => {
     const subject = "My BeVvip shortlist";
     const names = shortlistNames(meta);
@@ -326,28 +336,125 @@ function ChatMoves({
     launch(mailto(subject, lines.join("\n")));
   };
 
+  const submit = async () => {
+    const cleanEmail = email.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
+      setError("Please enter a valid email so the specialist can reach you.");
+      setPhase("form");
+      return;
+    }
+    setPhase("sending");
+    setError("");
+    try {
+      const res = await fetch("/api/handoff", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category,
+          action: ctaLabel,
+          brief: latestBrief(turns),
+          shortlist: shortlistNames(meta),
+          deepLink: meta.deepLink ?? null,
+          contact: { name: name.trim(), email: cleanEmail, phone: phone.trim() },
+          transcript: transcript(turns),
+          pageUrl: typeof window !== "undefined" ? window.location.href : "",
+        }),
+      });
+      if (!res.ok) {
+        let msg = `Could not send (${res.status}).`;
+        try {
+          const j = await res.json();
+          if (j?.error) msg = j.error;
+        } catch {
+          /* non-JSON error body */
+        }
+        throw new Error(msg);
+      }
+      setPhase("done");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send. Please try again.");
+      setPhase("error");
+    }
+  };
+
+  if (phase === "done") {
+    return (
+      <div className="moves-done">
+        <p>
+          Done. A specialist has your shortlist and the details of what we discussed, and
+          will be in touch at {email.trim()}. You can keep exploring here in the meantime.
+        </p>
+      </div>
+    );
+  }
+
+  if (phase === "form" || phase === "sending" || phase === "error") {
+    const sending = phase === "sending";
+    return (
+      <div className="moves-capture">
+        <div className="mc-lead">Where should we send your recommendations?</div>
+        <input
+          className="mc-field"
+          type="text"
+          placeholder="Name"
+          value={name}
+          disabled={sending}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          className="mc-field"
+          type="email"
+          inputMode="email"
+          placeholder="Email"
+          value={email}
+          disabled={sending}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="mc-field"
+          type="tel"
+          inputMode="tel"
+          placeholder="Phone (optional)"
+          value={phone}
+          disabled={sending}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        {error && <div className="mc-error">{error}</div>}
+        <div className="mc-actions">
+          <button type="button" className="move move-primary" disabled={sending} onClick={submit}>
+            {sending ? "Sending…" : "Send to a specialist"}
+          </button>
+          <button
+            type="button"
+            className="move"
+            disabled={sending}
+            onClick={() => {
+              setPhase("idle");
+              setError("");
+            }}
+          >
+            Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="moves">
+      <button
+        type="button"
+        className="move move-primary"
+        disabled={busy}
+        onClick={() => setPhase("form")}
+      >
+        {ctaLabel}
+      </button>
       <button type="button" className="move" disabled={busy} onClick={emailResults}>
         Email my results
       </button>
-      <button
-        type="button"
-        className="move"
-        disabled={busy}
-        onClick={() => onPick("I'd like to request VIP planning for this trip.")}
-      >
-        Request VIP planning
-      </button>
       <button type="button" className="move" onClick={() => launch(CONTACT.telHref)}>
         Talk to an advisor
-      </button>
-      <button
-        type="button"
-        className="move"
-        onClick={() => launch(mailto("Inquiry — BeVvip", ""))}
-      >
-        Inquire
       </button>
     </div>
   );
@@ -407,9 +514,84 @@ function stripControlTags(s: string): string {
   return s
     .replace(/\[\[CHART:\s*[a-z]+\]\]/gi, "")
     .replace(/\[\[OPTIONS:[^\]]*\]\]/gi, "")
+    .replace(/\[\[BRIEF:[^\]]*\]\]/gi, "")
     .replace(/\n*\s*\[\[[^\]]*$/, "")
     .trim();
 }
+
+// The qualified advisor brief, carried silently in a [[BRIEF: ...]] tag the
+// Guide emits once it has enough signal. It is the structured "how to follow
+// up" the human advisor receives, instead of re-reading the whole transcript.
+interface Brief {
+  destination?: string;
+  when?: string;
+  party?: string;
+  budget?: string;
+  style?: string;
+  considering?: string;
+}
+
+// Parse the latest [[BRIEF: dest=.. | when=.. | ...]] tag out of one message.
+function extractBrief(text: string): Brief | null {
+  const m = text.match(/\[\[BRIEF:\s*([^\]]+)\]\]/i);
+  if (!m) return null;
+  const kv: Record<string, string> = {};
+  for (const pair of m[1].split("|")) {
+    const i = pair.indexOf("=");
+    if (i < 0) continue;
+    const k = pair.slice(0, i).trim().toLowerCase();
+    const v = pair.slice(i + 1).trim();
+    if (v) kv[k] = v;
+  }
+  const brief: Brief = {
+    destination: kv.dest || kv.destination,
+    when: kv.when,
+    party: kv.party,
+    budget: kv.budget,
+    style: kv.style,
+    considering: kv.considering,
+  };
+  return Object.values(brief).some(Boolean) ? brief : null;
+}
+
+// The most recent brief across the whole conversation (the Guide re-emits an
+// updated tag as it learns more; the latest one wins).
+function latestBrief(turns: Turn[]): Brief {
+  for (let i = turns.length - 1; i >= 0; i--) {
+    if (turns[i].role !== "assistant") continue;
+    const b = extractBrief(turns[i].content);
+    if (b) return b;
+  }
+  return {};
+}
+
+// Which pillar the hand-off should speak to, derived from the inventory that
+// surfaced. Antarctica is split out from generic expedition cruising because
+// the ship-vs-destination decision there warrants its own framing.
+function handoffCategory(meta: GuideMeta): string {
+  const region = (meta.chartRegion || "").toLowerCase();
+  const tools = [...(meta.tools ?? [])].reverse();
+  const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
+  const type = (tool?.type || "").toLowerCase();
+  if (type === "hotel") return "hotel";
+  if (type === "jet") return "jet";
+  if (type === "yacht") return "yacht";
+  if (type === "worldcruise") return "worldcruise";
+  if (type === "cruise") return region === "antarctica" ? "antarctica" : "expedition";
+  return "generic";
+}
+
+// The category-aware primary call to action. The searching is done; this is the
+// "a specialist does the next layer" move, not "contact an advisor."
+const HANDOFF_CTA: Record<string, string> = {
+  hotel: "Prepare My Hotel Shortlist",
+  expedition: "Find My Best Expeditions",
+  antarctica: "Compare Antarctica Options",
+  jet: "Compare Private Jet Journeys",
+  yacht: "Show My Best Yacht Options",
+  worldcruise: "Compare World Cruises",
+  generic: "Continue With A Specialist",
+};
 
 // Pull the [[OPTIONS: a | b | c]] tag (if any) into up to 4 quick-reply strings.
 function extractOptions(text: string): string[] {
