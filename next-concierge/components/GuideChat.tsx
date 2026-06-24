@@ -22,7 +22,7 @@ const CHIPS = [
 
 // Advisor handoff target — the human advisor closes and books. Kept in sync
 // with the standalone Atlas client (CONTACT in public/index.html).
-const CONTACT = { email: "Book@BeVvip.com", tel: "970.925.1002", telHref: "tel:+19709251002" };
+const CONTACT = { email: "Book@BeVvip.com" };
 
 interface Turn extends ChatMessage {
   meta?: GuideMeta;
@@ -329,10 +329,14 @@ function ChatMoves({
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
 
+  // Email the traveler their own shortlist, with the advisor CC'd. The traveler
+  // addresses it to themselves and sends; the CC means BeVvip captures their
+  // real email and the conversation, without a cold call. (To is left empty so
+  // the traveler fills in their own address.)
   const emailResults = () => {
-    const subject = "My BeVvip shortlist";
+    const subject = "Your BeVvip shortlist";
     const names = shortlistNames(meta);
-    const lines: string[] = ["Please send details and hold availability for:"];
+    const lines: string[] = ["Here is the shortlist we put together:"];
     if (names.length) {
       for (const n of names) lines.push(" • " + n);
     } else {
@@ -340,8 +344,11 @@ function ChatMoves({
     }
     if (meta.deepLink) lines.push("", "See them on the Atlas: " + meta.deepLink);
     lines.push("", "— Our conversation —", transcript(turns));
-    lines.push("", "Name:", "Travel dates:", "Party:");
-    launch(mailto(subject, lines.join("\n")));
+    const href =
+      `mailto:?cc=${encodeURIComponent(CONTACT.email)}` +
+      `&subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(lines.join("\n"))}`;
+    launch(href);
   };
 
   const submit = async () => {
@@ -459,10 +466,7 @@ function ChatMoves({
         {ctaLabel}
       </button>
       <button type="button" className="move" disabled={busy} onClick={emailResults}>
-        Email my results
-      </button>
-      <button type="button" className="move" onClick={() => launch(CONTACT.telHref)}>
-        Talk to an advisor
+        Email me my shortlist
       </button>
     </div>
   );
@@ -477,13 +481,6 @@ function launch(href: string) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-}
-
-function mailto(subject: string, body: string): string {
-  const q = body
-    ? `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    : `?subject=${encodeURIComponent(subject)}`;
-  return `mailto:${CONTACT.email}${q}`;
 }
 
 // The top result names from a meta frame, for the email shortlist. Mirrors the
