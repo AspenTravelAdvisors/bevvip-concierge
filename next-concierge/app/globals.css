@@ -100,20 +100,45 @@ header.site .tag .byline:hover {
 header.site nav {
   margin-left: auto;
   display: flex;
-  gap: 16px;
+  align-items: flex-end;
+  gap: 5px;
   font-size: 12px;
   min-width: 0;
 }
+/* Top navigation rendered as a row of tabs: rounded-top, a 2px accent underline,
+   and a faint fill on hover / for the active tab. */
 header.site nav a {
   color: var(--sub);
   letter-spacing: 0.6px;
   text-transform: uppercase;
   white-space: nowrap;
+  padding: 7px 11px 6px;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 9px 9px 0 0;
+  transition: 0.15s;
 }
 header.site nav a:hover,
 header.site nav a[data-active="true"] {
   color: var(--gold-light);
   text-decoration: none;
+  background: var(--card);
+}
+/* The Guide — the active "home" tab. */
+header.site nav a.tab-guide {
+  color: var(--gold-light);
+  background: var(--card);
+  border-color: var(--line);
+  border-bottom-color: var(--gold);
+}
+/* The five Atlas tabs carry their map-legend color as text + accent underline. */
+header.site nav a.tab-color {
+  color: var(--tab);
+  border-bottom-color: var(--tab);
+}
+header.site nav a.tab-color:hover {
+  color: var(--gold-light);
+  background: var(--card);
 }
 
 main.page {
@@ -980,8 +1005,9 @@ main.page {
     width: 100%;
     margin-left: 0;
     overflow-x: auto;
-    gap: 14px;
-    padding: 2px 2px 6px;
+    justify-content: space-between;
+    gap: 2px;
+    padding: 2px 0 6px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -991,9 +1017,12 @@ main.page {
     display: none;
   }
 
+  /* Tight enough that all six tabs spread across one phone row, no scroll. */
   header.site nav a {
     flex: 0 0 auto;
-    font-size: 11px;
+    font-size: 10px;
+    letter-spacing: 0.2px;
+    padding: 6px 6px 5px;
   }
 
   .transcript {
@@ -1015,15 +1044,29 @@ main.page {
     margin-bottom: 18px;
   }
 
+  /* All five seed cards visible at once — a row of tall (portrait) rectangles,
+     no scrolling. Narrow equal columns, so each phrase wraps down its card. */
   .chips {
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
   }
-
   .chip {
-    flex: 1 1 100%;
-    border-radius: 12px;
-    padding: 11px 13px;
-    text-align: left;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    padding: 10px 6px;
+    /* As large as the column allows; centered so it fills the card's height. */
+    font-size: clamp(11px, 3.2vw, 14px);
+    line-height: 1.28;
+    letter-spacing: 0;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
   }
 
   .cards {

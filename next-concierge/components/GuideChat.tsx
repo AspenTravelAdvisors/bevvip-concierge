@@ -8,11 +8,16 @@ import { useEffect, useRef, useState } from "react";
 import type { ChatMessage, GuideFrame, GuideMeta } from "@/lib/types";
 import ResultCards from "./ResultCards";
 
+// The five seed prompts on the empty state. Each leads into a pillar AND
+// quietly demonstrates a capability: cross-pillar + region search (a hotel ask
+// that also surfaces yachts), month-only search, two-brand comparison, an
+// around-the-world theme, and day-by-day route tracing on a grand voyage.
 const CHIPS = [
   "Four Seasons in Caribbean",
   "Galápagos Expedition Cruise journeys in January",
   "Aman vs. Orient Express Luxury Yachts",
   "Around the world by private jet trips in 2026",
+  "Trace a 2027 world cruise, port by port",
 ];
 
 // Advisor handoff target — the human advisor closes and books. Kept in sync
@@ -59,7 +64,10 @@ export default function GuideChat() {
 
   useEffect(() => {
     const el = transcriptRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (!el) return;
+    // Empty state: keep the opening question pinned at the top. Once a
+    // conversation exists, follow it to the newest reply.
+    el.scrollTop = turns.length === 0 ? 0 : el.scrollHeight;
   }, [turns, status]);
 
   // Deep-link from an atlas card: ?ask=… opens The Guide already asking about
