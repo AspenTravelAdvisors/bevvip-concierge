@@ -987,15 +987,20 @@ main.page {
   }
   .chip {
     min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 11px;
-    padding: 11px 8px;
-    font-size: 10px;
-    line-height: 1.3;
+    padding: 10px 6px;
+    /* As large as the column allows; centered so it fills the card's height. */
+    font-size: clamp(11px, 3.2vw, 14px);
+    line-height: 1.28;
     letter-spacing: 0;
-    text-align: left;
+    text-align: center;
     white-space: normal;
-    overflow-wrap: break-word;
-    hyphens: auto;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
   }
 
   .cards {
