@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>BeVvip · Mobile Redesign — Clickable Mock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#09090b; --panel:#111113; --card:#18181b; --card-hover:#1f1f23;
+    --gold:#c9a84c; --gold-light:#e2c87a; --gold-dim:#7a6228;
+    --text:#e8e0d0; --muted:#7a7060; --sub:#a09070;
+    --line:#2a2419; --line-soft:#1e1c16; --user:#16140d;
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --sans:"Inter",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:radial-gradient(ellipse at 50% -10%, #15140f 0%, #0a0a0c 55%, #060607 100%);
+    color:var(--text); font-family:var(--sans);
+    display:flex; flex-direction:column; align-items:center; gap:26px;
+    padding:40px 16px 60px; min-height:100%;
+  }
+
+  /* ── page intro ─────────────────────────────── */
+  .lead{ max-width:760px; text-align:center; }
+  .lead h1{ font-family:var(--serif); font-weight:600; font-size:34px; margin:0 0 8px; }
+  .lead h1 b{ color:var(--gold); font-weight:600; }
+  .lead p{ color:var(--sub); margin:0 auto; max-width:600px; font-size:14.5px; line-height:1.6; }
+  .lead .note{ color:var(--muted); font-size:12.5px; margin-top:12px; }
+  .lead .note b{ color:var(--gold-light); font-weight:600; }
+
+  /* ── phone frame ────────────────────────────── */
+  .phone{
+    width:390px; height:800px; position:relative;
+    border-radius:46px; padding:13px;
+    background:linear-gradient(160deg,#26241d,#0c0c0d 60%);
+    box-shadow:0 40px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(201,168,76,.12), inset 0 0 0 2px #000;
+  }
+  .screen{
+    position:absolute; inset:13px; border-radius:34px; overflow:hidden;
+    background:var(--bg); display:flex; flex-direction:column;
+  }
+  .notch{
+    position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:118px; height:27px; background:#000; border-radius:16px; z-index:60;
+  }
+
+  /* ── app header ─────────────────────────────── */
+  header.site{
+    flex:0 0 auto; display:flex; align-items:center; gap:11px;
+    padding:46px 18px 11px; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#0c0c0e,#09090b); z-index:30;
+  }
+  header.site .mark{ font-family:var(--serif); font-size:21px; font-weight:600; letter-spacing:.4px; }
+  header.site .mark b{ color:var(--gold); }
+  header.site .tag{
+    font-size:9.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--muted);
+    border-left:1px solid var(--line); padding-left:11px; line-height:1.3;
+  }
+
+  /* the whole app body is a stack we cross-fade between two states */
+  .stage{ position:relative; flex:1; min-height:0; }
+
+  /* ════════════ STATE A · IDLE / HOME ════════════ */
+  .home{ position:absolute; inset:0; display:flex; flex-direction:column;
+    transition:opacity .45s ease, transform .45s ease; }
+  .home .scroll{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .hero{ position:relative; padding:24px 18px 14px; overflow:hidden; }
+  .hero .globe{
+    position:absolute; right:-70px; top:-50px; width:230px; height:230px; border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 30%, rgba(201,168,76,.22), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(201,168,76,.10) 0 1px, transparent 1px 18px),
+      repeating-linear-gradient(90deg, rgba(201,168,76,.10) 0 1px, transparent 1px 18px),
+      radial-gradient(circle at 50% 50%, #14130e, #0b0b0c);
+    box-shadow:inset 0 0 50px rgba(0,0,0,.7); opacity:.55;
+  }
+  .hero h1{ position:relative; font-family:var(--serif); font-weight:600; font-size:30px;
+    line-height:1.12; margin:0 0 6px; max-width:240px; }
+  .hero p{ position:relative; color:var(--sub); font-size:13px; margin:0; max-width:250px; }
+
+  .section-cap{ font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+    padding:16px 18px 8px; }
+
+  /* atlas map (idle = generous) */
+  .atlas-map{
+    position:relative; margin:0 18px; height:236px; border:1px solid var(--line);
+    border-radius:14px; overflow:hidden;
+    background:
+      radial-gradient(ellipse at 28% 18%, #16150f, #0d0d0e 70%),
+      linear-gradient(180deg,#0f0f10,#0a0a0b);
+  }
+  .atlas-map .grid{ position:absolute; inset:0; opacity:.5;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(122,98,40,.16) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, rgba(122,98,40,.16) 0 1px, transparent 1px 26px);
+    -webkit-mask-image:radial-gradient(ellipse at 50% 45%, #000 55%, transparent 88%);
+            mask-image:radial-gradient(ellipse at 50% 45%, #000 55%, transparent 88%); }
+  .atlas-map .lbl{ position:absolute; left:12px; top:11px; font-family:var(--serif);
+    font-size:15px; color:var(--gold-light); }
+  .atlas-map .lblsub{ position:absolute; left:12px; top:33px; font-size:11px; color:var(--sub); }
+
+  /* pins */
+  .pin{ position:absolute; transform:translate(-50%,-100%); cursor:pointer; z-index:4; }
+  .pin .dot{ width:14px; height:14px; border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+    background:linear-gradient(135deg,var(--gold-light),var(--gold-dim));
+    box-shadow:0 0 0 4px rgba(201,168,76,.16), 0 3px 8px rgba(0,0,0,.6);
+    margin:0 auto; }
+  .pin .ring{ position:absolute; left:50%; top:7px; width:14px; height:14px; transform:translate(-50%,-50%);
+    border-radius:50%; border:1px solid var(--gold); opacity:.7; animation:ping 2.4s ease-out infinite; }
+  @keyframes ping{ 0%{transform:translate(-50%,-50%) scale(.6);opacity:.7} 100%{transform:translate(-50%,-50%) scale(3);opacity:0} }
+  .pin .cap{ position:absolute; left:50%; top:18px; transform:translateX(-50%); white-space:nowrap;
+    font-size:9.5px; letter-spacing:.04em; color:var(--text); background:rgba(10,10,12,.82);
+    border:1px solid var(--line); border-radius:6px; padding:2px 6px; -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+  .pin:hover .cap{ border-color:var(--gold-dim); color:var(--gold-light); }
+
+  /* chat cards (intent seeds) */
+  .cards{ display:flex; flex-direction:column; gap:9px; padding:8px 18px 18px; }
+  .ccard{ display:flex; align-items:center; gap:11px; cursor:pointer;
+    border:1px solid var(--line); background:var(--card); border-radius:13px; padding:12px 14px;
+    transition:.15s; text-align:left; }
+  .ccard:hover{ background:var(--card-hover); border-color:var(--gold-dim); transform:translateY(-1px); }
+  .ccard .ic{ flex:0 0 auto; width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    background:var(--user); border:1px solid var(--line); font-size:15px; }
+  .ccard .t{ font-size:13.5px; color:var(--text); line-height:1.35; }
+  .ccard .t b{ color:var(--gold-light); font-weight:600; }
+
+  /* ════════════ STATE B · ACTIVE SESSION ════════════ */
+  .session{ position:absolute; inset:0; display:flex; flex-direction:column;
+    opacity:0; pointer-events:none; transform:translateY(8px);
+    transition:opacity .45s ease, transform .45s ease; }
+
+  /* pinned session bar (top) */
+  .sessbar{ flex:0 0 auto; display:flex; align-items:center; gap:10px;
+    padding:11px 16px; border-bottom:1px solid var(--line); background:var(--panel); z-index:20; }
+  .sessbar .av{ flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dim)); color:#1a1407;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; }
+  .sessbar .meta{ flex:1; min-width:0; }
+  .sessbar .meta .who{ font-family:var(--serif); font-size:15px; color:var(--text); line-height:1.1; }
+  .sessbar .meta .ctx{ font-size:11px; color:var(--sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sessbar .hist{ flex:0 0 auto; font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--muted); border:1px solid var(--line); border-radius:7px; padding:6px 9px; cursor:pointer; }
+  .sessbar .hist:hover{ color:var(--gold-light); border-color:var(--gold-dim); }
+
+  /* results stream */
+  .stream{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:18px 16px 14px; }
+  .msg{ display:flex; gap:10px; margin:0 0 18px; }
+  .msg .who{ flex:0 0 auto; width:28px; height:28px; border-radius:50%; font-size:10px; font-weight:600;
+    display:flex; align-items:center; justify-content:center; margin-top:2px; }
+  .msg.user{ flex-direction:row-reverse; }
+  .msg.user .who{ background:var(--user); color:var(--gold-light); border:1px solid var(--line); }
+  .msg.guide .who{ background:linear-gradient(135deg,var(--gold),var(--gold-dim)); color:#1a1407; }
+  .msg .body{ flex:1; min-width:0; font-size:13.5px; line-height:1.55; }
+  .msg.user .body{ text-align:right; }
+  .msg.user .body .bub{ display:inline-block; background:var(--user); border:1px solid var(--line);
+    border-radius:13px 13px 4px 13px; padding:9px 13px; text-align:left; color:var(--text); }
+  .msg .body p{ margin:0 0 8px; } .msg .body p:last-child{ margin:0; }
+  .reply-h{ font-family:var(--serif); font-size:15px; color:var(--gold-light); margin:0 0 8px; }
+  .typing{ color:var(--muted); font-style:italic; font-size:12.5px; margin:2px 0 18px 38px;
+    animation:pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+
+  .rcards{ display:flex; flex-direction:column; gap:9px; margin:10px 0 4px; }
+  .rcard{ border:1px solid var(--line); background:var(--card); border-radius:12px; padding:11px 13px; cursor:pointer; transition:.15s; }
+  .rcard:hover{ background:var(--card-hover); border-color:var(--gold-dim); }
+  .rcard .kick{ font-size:9.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--gold-light); }
+  .rcard .nm{ font-family:var(--serif); font-size:16px; font-weight:600; line-height:1.2; margin:1px 0; }
+  .rcard .wh{ font-size:11.5px; color:var(--sub); }
+  .moves{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; padding-top:13px; border-top:1px solid var(--line-soft); }
+  .move{ cursor:pointer; border:1px solid var(--gold-dim); background:var(--user); color:var(--gold-light);
+    border-radius:8px; padding:8px 13px; font-size:12px; letter-spacing:.3px; font-family:var(--sans); }
+  .move:hover{ background:var(--card-hover); border-color:var(--gold); }
+
+  /* map peek (bottom sheet over session) */
+  .peek{ position:absolute; left:0; right:0; bottom:74px; z-index:25;
+    background:var(--panel); border-top:1px solid var(--gold-dim);
+    border-radius:16px 16px 0 0; box-shadow:0 -14px 40px rgba(0,0,0,.5);
+    height:62px; overflow:hidden; transition:height .42s cubic-bezier(.4,.0,.2,1); }
+  .peek.open{ height:560px; }
+  .peek .handle-row{ height:62px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; cursor:pointer; position:relative; z-index:3; }
+  .peek .grip{ width:38px; height:4px; border-radius:4px; background:var(--gold-dim); }
+  .peek .htxt{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--sub); }
+  .peek .htxt b{ color:var(--gold-light); font-weight:600; }
+  .peek .full{ position:absolute; inset:62px 0 0; padding:0 14px 16px; opacity:0; transition:opacity .3s ease .12s; }
+  .peek.open .full{ opacity:1; }
+  .peek .full .map2{ position:relative; height:430px; border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    background:radial-gradient(ellipse at 28% 18%, #16150f, #0d0d0e 70%); }
+  .peek .full .legend{ display:flex; flex-wrap:wrap; gap:7px; margin-top:11px; }
+  .peek .full .lg{ font-size:10.5px; color:var(--sub); display:flex; align-items:center; gap:6px;
+    border:1px solid var(--line); border-radius:999px; padding:5px 10px; }
+  .peek .full .lg i{ width:8px; height:8px; border-radius:50%; background:linear-gradient(135deg,var(--gold-light),var(--gold-dim)); }
+
+  /* shared composer (always bottom) */
+  .composer{ position:absolute; left:0; right:0; bottom:0; z-index:40;
+    border-top:1px solid var(--line); background:var(--panel); padding:12px 16px 18px; }
+  .composer .row{ display:flex; gap:9px; align-items:flex-end; }
+  .composer .ta{ flex:1; border:1px solid var(--line); background:var(--card); color:var(--text);
+    border-radius:13px; padding:11px 14px; font-family:var(--sans); font-size:14px; min-height:46px;
+    display:flex; align-items:center; cursor:text; }
+  .composer .ta.placeholder{ color:var(--muted); }
+  .composer .send{ flex:0 0 auto; border:0; min-height:46px; padding:0 18px; border-radius:13px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dim)); color:#1a1407; font-weight:600;
+    font-size:13px; letter-spacing:.3px; cursor:pointer; }
+
+  /* idle composer sits in normal flow at bottom of .home; reuse .composer look */
+  .home .composer{ position:relative; bottom:auto; }
+
+  /* state toggling */
+  .stage[data-state="session"] .home{ opacity:0; pointer-events:none; transform:translateY(-8px); }
+  .stage[data-state="session"] .session{ opacity:1; pointer-events:auto; transform:none; }
+
+  /* replay / state controls under phone */
+  .controls{ display:flex; gap:10px; align-items:center; }
+  .controls button{ cursor:pointer; font-family:var(--sans); font-size:12.5px; letter-spacing:.3px;
+    color:var(--gold-light); background:var(--card); border:1px solid var(--gold-dim); border-radius:9px; padding:9px 16px; }
+  .controls button:hover{ border-color:var(--gold); background:var(--card-hover); }
+  .controls .seg{ display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; }
+  .controls .seg button{ border:0; border-radius:0; background:transparent; color:var(--sub); }
+  .controls .seg button.active{ background:var(--user); color:var(--gold-light); }
+  .hintline{ color:var(--muted); font-size:12px; text-align:center; max-width:390px; line-height:1.5; }
+  .hintline b{ color:var(--gold-light); font-weight:600; }
+</style>
+</head>
+<body>
+
+  <div class="lead">
+    <h1>BeVvip — <b>Mobile Redesign</b></h1>
+    <p>Chat-first spine, browse on-ramp. Tap a pin or a chat card (or the input) to start a session and watch the home collapse: the conversation takes over, the Living Atlas drops to a swipe-up peek, the composer stays under your thumb.</p>
+    <div class="note">Two states · 5 Atlas pins · swipe-up map · sticky bottom composer — <b>visual only, no flow changes</b></div>
+  </div>
+
+  <div class="controls">
+    <div class="seg">
+      <button id="segIdle" class="active" onclick="toIdle()">① Idle / Home</button>
+      <button id="segSess" onclick="toSession('A jet around the world','Private jets · 2026')">② Active session</button>
+    </div>
+    <button onclick="toIdle()">↻ Replay</button>
+  </div>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <header class="site">
+        <span class="mark">Be<b>V</b>vip</span>
+        <span class="tag">The Guide · Private Travel</span>
+      </header>
+
+      <div class="stage" id="stage" data-state="idle">
+
+        <!-- ───────── STATE A · IDLE / HOME ───────── -->
+        <section class="home">
+          <div class="scroll">
+            <div class="hero">
+              <div class="globe"></div>
+              <h1>Where are you headed next?</h1>
+              <p>Tell The Guide, or explore the Living Atlas below.</p>
+            </div>
+
+            <div class="section-cap">Living Atlas · tap a pin</div>
+            <div class="atlas-map" id="idleMap">
+              <div class="grid"></div>
+              <div class="lbl">Living Atlas</div>
+              <div class="lblsub">Approved inventory, mapped worldwide</div>
+              <!-- 5 PINS -->
+              <div class="pin" style="left:30%;top:42%" onclick="toSession('Five-star hotels in the Mediterranean','5 Star Hotels · Mediterranean')">
+                <span class="ring"></span><span class="dot"></span><span class="cap">5 Star Hotels</span></div>
+              <div class="pin" style="left:54%;top:30%" onclick="toSession('A private jet journey around the world','Private Jet Journeys · 2026')">
+                <span class="ring"></span><span class="dot"></span><span class="cap">Private Jet Journeys</span></div>
+              <div class="pin" style="left:72%;top:55%" onclick="toSession('A luxury hotel-brand yacht voyage','Luxury Hotel Yachts · Asia')">
+                <span class="ring"></span><span class="dot"></span><span class="cap">Luxury Hotel Yachts</span></div>
+              <div class="pin" style="left:44%;top:72%" onclick="toSession('An expedition cruise to Antarctica','Expedition Cruises · Antarctica')">
+                <span class="ring"></span><span class="dot"></span><span class="cap">Expedition Cruises</span></div>
+              <div class="pin" style="left:84%;top:38%" onclick="toSession('A grand world cruise for 2026','World Cruises · Grand Voyage')">
+                <span class="ring"></span><span class="dot"></span><span class="cap">World Cruises</span></div>
+            </div>
+
+            <div class="section-cap">Ask The Guide</div>
+            <div class="cards">
+              <button class="ccard" onclick="toSession('Four Seasons in the Caribbean','5 Star Hotels · Caribbean')">
+                <span class="ic">🏝️</span><span class="t"><b>Four Seasons</b> in the Caribbean</span></button>
+              <button class="ccard" onclick="toSession('Galápagos expedition cruise journeys in January','Expedition Cruises · Galápagos')">
+                <span class="ic">🧭</span><span class="t"><b>Galápagos</b> expedition cruises in January</span></button>
+              <button class="ccard" onclick="toSession('Aman vs. Orient Express luxury yachts','Luxury Hotel Yachts · Compare')">
+                <span class="ic">🛥️</span><span class="t"><b>Aman vs. Orient Express</b> luxury yachts</span></button>
+              <button class="ccard" onclick="toSession('Around the world by private jet in 2026','Private Jet Journeys · 2026')">
+                <span class="ic">✈️</span><span class="t"><b>Around the world</b> by private jet, 2026</span></button>
+            </div>
+          </div>
+
+          <div class="composer">
+            <div class="row">
+              <div class="ta placeholder" onclick="toSession('Plan me something extraordinary','New enquiry')">Ask The Guide anything…</div>
+              <button class="send" onclick="toSession('Plan me something extraordinary','New enquiry')">Ask</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ───────── STATE B · ACTIVE SESSION ───────── -->
+        <section class="session">
+          <div class="sessbar">
+            <div class="av">G</div>
+            <div class="meta">
+              <div class="who">The Guide</div>
+              <div class="ctx" id="ctxLine">Private jets · 2026</div>
+            </div>
+            <div class="hist">History</div>
+          </div>
+
+          <div class="stream" id="stream">
+            <div class="msg user"><div class="who">You</div><div class="body"><span class="bub" id="userEcho">A jet around the world</span></div></div>
+            <div class="typing" id="typing">The Guide is composing…</div>
+            <div id="reply" style="display:none">
+              <div class="msg guide"><div class="who">G</div><div class="body">
+                <p class="reply-h">A world that comes to you.</p>
+                <p>A wonderful instinct. Here are three around-the-world routings I'd put forward — each privately chartered, each pitched to a different rhythm of travel.</p>
+                <div class="rcards">
+                  <div class="rcard"><div class="kick">Private Jet Journey</div><div class="nm">The Grand Circumnavigation</div><div class="wh">24 days · 9 countries · A350 private</div></div>
+                  <div class="rcard"><div class="kick">Private Jet Journey</div><div class="nm">Ancient Wonders</div><div class="wh">19 days · Petra · Angkor · Machu Picchu</div></div>
+                  <div class="rcard"><div class="kick">Private Jet Journey</div><div class="nm">Polar to Tropics</div><div class="wh">21 days · Antarctica · South Pacific</div></div>
+                </div>
+                <div class="moves">
+                  <button class="move">Have an advisor call me</button>
+                  <button class="move">Email Book@BeVvip.com</button>
+                  <button class="move" onclick="openPeek(true)">See on the Atlas</button>
+                </div>
+              </div></div>
+            </div>
+          </div>
+
+          <!-- swipe-up map peek -->
+          <div class="peek" id="peek">
+            <div class="handle-row" onclick="togglePeek()">
+              <span class="grip"></span>
+              <span class="htxt">Living <b>Atlas</b> — swipe up</span>
+            </div>
+            <div class="full">
+              <div class="map2" id="sessMap">
+                <div class="grid" style="position:absolute;inset:0;opacity:.5;background-image:repeating-linear-gradient(0deg,rgba(122,98,40,.16) 0 1px,transparent 1px 26px),repeating-linear-gradient(90deg,rgba(122,98,40,.16) 0 1px,transparent 1px 26px);-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 55%,transparent 88%);mask-image:radial-gradient(ellipse at 50% 45%,#000 55%,transparent 88%)"></div>
+                <div class="pin" style="left:30%;top:40%"><span class="ring"></span><span class="dot"></span><span class="cap">5 Star Hotels</span></div>
+                <div class="pin" style="left:54%;top:28%"><span class="ring"></span><span class="dot"></span><span class="cap">Private Jet Journeys</span></div>
+                <div class="pin" style="left:72%;top:54%"><span class="ring"></span><span class="dot"></span><span class="cap">Luxury Hotel Yachts</span></div>
+                <div class="pin" style="left:42%;top:74%"><span class="ring"></span><span class="dot"></span><span class="cap">Expedition Cruises</span></div>
+                <div class="pin" style="left:85%;top:36%"><span class="ring"></span><span class="dot"></span><span class="cap">World Cruises</span></div>
+              </div>
+              <div class="legend">
+                <span class="lg"><i></i>5 Star Hotels</span>
+                <span class="lg"><i></i>Private Jet Journeys</span>
+                <span class="lg"><i></i>Luxury Hotel Yachts</span>
+                <span class="lg"><i></i>Expedition Cruises</span>
+                <span class="lg"><i></i>World Cruises</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- sticky composer -->
+          <div class="composer">
+            <div class="row">
+              <div class="ta placeholder">Reply to The Guide…</div>
+              <button class="send">Send</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="hintline">
+    In the active session, tap <b>“Living Atlas — swipe up”</b> to expand the map, then tap again to collapse it back to chat.<br>
+    The composer never moves — performers type one line; dreamers wander the pins first.
+  </div>
+
+<script>
+  var stage = document.getElementById('stage');
+  var typingTimer = null;
+
+  function setSeg(active){
+    document.getElementById('segIdle').classList.toggle('active', active==='idle');
+    document.getElementById('segSess').classList.toggle('active', active==='session');
+  }
+
+  function toSession(userText, ctx){
+    document.getElementById('userEcho').textContent = userText;
+    document.getElementById('ctxLine').textContent = ctx;
+    // reset reply -> show typing -> reveal
+    document.getElementById('reply').style.display='none';
+    document.getElementById('typing').style.display='block';
+    closePeek();
+    stage.setAttribute('data-state','session');
+    setSeg('session');
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(function(){
+      document.getElementById('typing').style.display='none';
+      document.getElementById('reply').style.display='block';
+      var s=document.getElementById('stream'); s.scrollTop=s.scrollHeight;
+    }, 1400);
+  }
+
+  function toIdle(){
+    stage.setAttribute('data-state','idle');
+    setSeg('idle');
+    closePeek();
+  }
+
+  var peek = document.getElementById('peek');
+  function togglePeek(){ peek.classList.toggle('open'); }
+  function openPeek(){ peek.classList.add('open'); }
+  function closePeek(){ peek.classList.remove('open'); }
+</script>
+</body>
+</html>
