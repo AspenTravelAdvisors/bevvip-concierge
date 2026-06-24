@@ -978,30 +978,24 @@ main.page {
     margin-bottom: 18px;
   }
 
-  /* A horizontal swipe row of cards (rectangles across) instead of a tall
-     stack, so the seed prompts don't push the opening question off-screen.
-     Each card keeps its full phrase; the partial next card hints "swipe". */
+  /* All five seed cards visible at once — a row of tall (portrait) rectangles,
+     no scrolling. Narrow equal columns, so each phrase wraps down its card. */
   .chips {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    justify-content: flex-start;
-    gap: 9px;
-    padding-bottom: 4px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .chips::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
   }
   .chip {
-    flex: 0 0 72%;
-    scroll-snap-align: start;
-    border-radius: 12px;
-    padding: 13px 15px;
-    font-size: 13px;
+    min-height: 140px;
+    border-radius: 11px;
+    padding: 11px 8px;
+    font-size: 10px;
+    line-height: 1.3;
+    letter-spacing: 0;
     text-align: left;
     white-space: normal;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .cards {
