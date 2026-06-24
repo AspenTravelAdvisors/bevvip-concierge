@@ -115,6 +115,13 @@ header.site nav a[data-active="true"] {
   color: var(--gold-light);
   text-decoration: none;
 }
+/* The five Atlas tabs carry their map-legend color; hover still lifts to gold. */
+header.site nav a.tab-color {
+  color: var(--tab);
+}
+header.site nav a.tab-color:hover {
+  color: var(--gold-light);
+}
 
 main.page {
   flex: 1;
@@ -951,13 +958,17 @@ main.page {
 
   .chips {
     justify-content: flex-start;
+    gap: 8px;
   }
 
+  /* Compact pills (not full-width bars) so all five seed prompts wrap into
+     roughly the space the old four stacked cards used. */
   .chip {
-    flex: 1 1 100%;
-    border-radius: 12px;
-    padding: 11px 13px;
-    text-align: left;
+    flex: 0 1 auto;
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 12.5px;
+    text-align: center;
   }
 
   .cards {

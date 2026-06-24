@@ -59,11 +59,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </span>
             <nav>
               <Link href="/">The Guide</Link>
-              <a href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">Hotels</a>
-              <a href={externalAtlasLink("cruise")} target="_blank" rel="noreferrer">Cruises</a>
-              <a href={externalAtlasLink("jet")} target="_blank" rel="noreferrer">Jets</a>
-              <a href={externalAtlasLink("yacht")} target="_blank" rel="noreferrer">Yachts</a>
-              <a href={externalAtlasLink("worldcruise")} target="_blank" rel="noreferrer">World</a>
+              <a className="tab-color" style={{ "--tab": "#c9a84c" } as React.CSSProperties} href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">🏨 Hotels</a>
+              <a className="tab-color" style={{ "--tab": "#5aa9e6" } as React.CSSProperties} href={externalAtlasLink("cruise")} target="_blank" rel="noreferrer">🧭 Expeditions</a>
+              <a className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href={externalAtlasLink("jet")} target="_blank" rel="noreferrer">✈️ Jets</a>
+              <a className="tab-color" style={{ "--tab": "#e0b84a" } as React.CSSProperties} href={externalAtlasLink("yacht")} target="_blank" rel="noreferrer">🛥️ Yachts</a>
+              <a className="tab-color" style={{ "--tab": "#45d6c2" } as React.CSSProperties} href={externalAtlasLink("worldcruise")} target="_blank" rel="noreferrer">🌍 World</a>
             </nav>
           </header>
           <main className="page">{children}</main>

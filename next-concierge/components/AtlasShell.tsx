@@ -99,19 +99,18 @@ const GLOBE_FOG = {
   color: "rgb(11,13,18)", "high-color": "rgb(22,27,38)",
   "horizon-blend": 0.04, "space-color": "rgb(6,8,12)", "star-intensity": 0.45,
 };
-type StyleKey = "dark" | "satellite" | "warm";
+// The globe opens on Mapbox Standard Satellite (photoreal), with Standard
+// (clean vector) and Dark as alternates. Because we now start on satellite,
+// there is no longer a forced switch-to-satellite when results plot.
+type StyleKey = "satellite" | "standard" | "dark";
 const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string }> = {
-  dark: { label: "Globe (dark)", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
   satellite: {
-    label: "Satellite", url: "mapbox://styles/mapbox/satellite-streets-v12",
+    label: "Satellite", url: "mapbox://styles/mapbox/standard-satellite",
     fog: { color: "rgb(18,22,30)", "high-color": "rgb(40,52,72)", "horizon-blend": 0.06, "space-color": "rgb(6,8,12)", "star-intensity": 0.3 },
     sw: "#3b5a3a",
   },
-  warm: {
-    label: "Warm", url: "mapbox://styles/mapbox/outdoors-v12",
-    fog: { color: "rgb(34,28,22)", "high-color": "rgb(60,48,36)", "horizon-blend": 0.05, "space-color": "rgb(10,8,6)", "star-intensity": 0.25 },
-    sw: "#c8a04c",
-  },
+  standard: { label: "Standard", url: "mapbox://styles/mapbox/standard", fog: GLOBE_FOG, sw: "#5b7fa6" },
+  dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
 };
 
 // Imperative handle the control buttons call into; the map lifecycle effect
@@ -145,7 +144,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   const [mapFailed, setMapFailed] = useState(false);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [styleKey, setStyleKey] = useState<StyleKey>("dark");
+  const [styleKey, setStyleKey] = useState<StyleKey>("satellite");
   const [is3D, setIs3D] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
@@ -162,10 +161,9 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let focused = false;
     let restyling = false;
     let subsetActive = false;
-    let pendingFit = false;
     let homeZoom = 1.25;
     let projGlobe = true;
-    let styleKeyLocal: StyleKey = "dark";
+    let styleKeyLocal: StyleKey = "satellite";
     let ro: ResizeObserver | undefined;
     let loadTimeout = 0;
     const node = mapEl.current;
@@ -201,7 +199,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         mapboxgl.accessToken = token;
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: ATLAS_STYLES.dark.url,
+          style: ATLAS_STYLES.satellite.url,
           projection: "globe",
           center: [10, 20],
           zoom: 1.25,
@@ -416,15 +414,12 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           stopSpin();
           const leadDeep = tools.find((t) => t.deepLink)?.deepLink || meta.deepLink || undefined;
           setBadge({ n: features.length, total, deepLink: leadDeep });
-          // Switch to satellite for the result reveal (mirrors the original).
-          if (styleKeyLocal !== "satellite") {
-            pendingFit = true;
-            api.setStyle("satellite");
-          } else {
-            paintHotel(); // re-tint ambient field dimmer
-            paintFeatured();
-            fitFeatured();
-          }
+          // The globe already loads in Satellite, so we no longer force a style
+          // switch on results — just paint and fit in whatever basemap the
+          // traveler has chosen.
+          paintHotel(); // re-tint ambient field dimmer
+          paintFeatured();
+          fitFeatured();
         }
         function fitFeatured() {
           if (!featuredFC || !featuredFC.features.length) return;
@@ -472,7 +467,8 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             bootData();
           } else if (restyling) {
             restyling = false;
-            if (pendingFit) { pendingFit = false; fitFeatured(); }
+            // Keep any plotted results in view after a manual basemap switch.
+            if (subsetActive) fitFeatured();
           }
         });
 

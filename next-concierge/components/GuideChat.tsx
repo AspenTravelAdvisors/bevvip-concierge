@@ -8,11 +8,15 @@ import { useEffect, useRef, useState } from "react";
 import type { ChatMessage, GuideFrame, GuideMeta } from "@/lib/types";
 import ResultCards from "./ResultCards";
 
-const CHIPS = [
-  "Four Seasons in Caribbean",
-  "Galápagos Expedition Cruise journeys in January",
-  "Aman vs. Orient Express Luxury Yachts",
-  "Around the world by private jet trips in 2026",
+// Seed prompts for the empty state — one per Atlas vertical. The short label
+// (with its category emoji) keeps them chip-sized, especially on mobile; the
+// full `prompt` is what we actually send, so the conversation seed stays rich.
+const CHIPS: { label: string; prompt: string }[] = [
+  { label: "🏨 Five-Star Hotels", prompt: "Four Seasons in Caribbean" },
+  { label: "🧭 Expedition Cruises", prompt: "Galápagos Expedition Cruise journeys in January" },
+  { label: "✈️ Private Jet Journeys", prompt: "Around the world by private jet trips in 2026" },
+  { label: "🛥️ Luxury Hotel Yachts", prompt: "Aman vs. Orient Express Luxury Yachts" },
+  { label: "🚢 World Cruises", prompt: "World cruises and grand voyages for 2026" },
 ];
 
 // Advisor handoff target — the human advisor closes and books. Kept in sync
@@ -209,8 +213,8 @@ export default function GuideChat() {
             </p>
             <div className="chips">
               {CHIPS.map((chip) => (
-                <button key={chip} className="chip" onClick={() => send(chip)}>
-                  {chip}
+                <button key={chip.label} className="chip" onClick={() => send(chip.prompt)}>
+                  {chip.label}
                 </button>
               ))}
             </div>
