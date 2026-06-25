@@ -582,6 +582,31 @@ main.page {
   opacity: 0.45;
   cursor: default;
 }
+/* Start over — clears the conversation and resets the Living Atlas. Sits above
+   the input row, right-aligned, subtle until hovered. Available at every
+   breakpoint (the pinned mobile session bar carries its own copy). */
+.composer-tools {
+  max-width: 720px;
+  margin: 0 auto 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+.composer .restart {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--sub);
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  border-radius: 9px;
+  padding: 5px 11px;
+  transition: 0.15s;
+}
+.composer .restart:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
 
 /* ── Atlas pages ──────────────────────────────────── */
 .atlas-page {
@@ -1221,21 +1246,45 @@ main.page {
   }
 
   /* Pinned Guide session bar (rendered by GuideChat once a conversation starts;
-     hidden by the base rule until here). */
+     hidden by the base rule until here). A flex container holding the tappable
+     "back to top" summary and a Start-over button. */
   .guide-sessionbar {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
     flex: 0 0 auto;
-    text-align: left;
-    cursor: pointer;
     padding: 10px 14px;
-    border: 0;
     border-bottom: 1px solid var(--line);
     background: var(--panel);
     color: var(--text);
     font-family: var(--sans);
+  }
+  .gsb-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+  }
+  .gsb-restart {
+    flex: 0 0 auto;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    border: 1px solid var(--gold-dim);
+    border-radius: 7px;
+    padding: 6px 10px;
+    background: var(--user);
+    cursor: pointer;
   }
   .gsb-av {
     flex: 0 0 auto;
@@ -1267,16 +1316,6 @@ main.page {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .gsb-top {
-    flex: 0 0 auto;
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border: 1px solid var(--line);
-    border-radius: 7px;
-    padding: 6px 9px;
   }
 
   /* The composer stays in flow at the foot of the chat column — naturally

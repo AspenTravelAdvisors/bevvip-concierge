@@ -565,14 +565,24 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   }, [token]);
 
   // The Guide broadcasts recommendations; fit + satellite to reveal them.
+  // It also broadcasts "bevvip:atlas-reset" when the traveler starts the session
+  // over, so the globe drops any plotted results and returns to its resting,
+  // idle-spinning state — the same restart, in lockstep with the cleared chat.
   useEffect(() => {
     if (!allInventory) return;
     function onPlot(e: Event) {
       const meta = (e as CustomEvent<GuideMeta>).detail;
       if (meta) apiRef.current?.plot(meta);
     }
+    function onReset() {
+      apiRef.current?.resetView();
+    }
     window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
-    return () => window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
+    window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
+    return () => {
+      window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
+      window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
+    };
   }, [allInventory]);
 
   // Close the style menu on an outside click.

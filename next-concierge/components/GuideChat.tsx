@@ -36,6 +36,10 @@ export default function GuideChat() {
   const [status, setStatus] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
+  // Session "generation": bumped by Start over so an in-flight stream from the
+  // previous conversation can't write back into the freshly cleared transcript.
+  const genRef = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Restore after mount (not during render) so server and first client paint
   // agree and React does not flag a hydration mismatch.
@@ -95,6 +99,11 @@ export default function GuideChat() {
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
+    // Tie this turn to the current session generation and a fresh abort
+    // controller, so Start over can cancel it cleanly mid-stream.
+    const gen = genRef.current;
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
     setInput("");
     setBusy(true);
     setStatus("Reaching The Guide...");
@@ -107,6 +116,9 @@ export default function GuideChat() {
 
     const patchReply = (fn: (turn: Turn) => Turn) =>
       setTurns((t) => {
+        // The session was reset (or moved on) while this stream was open: drop
+        // the write rather than mutate a cleared/foreign transcript.
+        if (genRef.current !== gen || t.length === 0) return t;
         const next = [...t];
         next[next.length - 1] = fn(next[next.length - 1]);
         return next;
@@ -117,6 +129,7 @@ export default function GuideChat() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history }),
+        signal: ctrl.signal,
       });
       if (!res.ok || !res.body) {
         const err = await res.text().catch(() => "");
@@ -148,8 +161,9 @@ export default function GuideChat() {
           if (frame.type === "meta") {
             const { type: _t, ...meta } = frame;
             patchReply((turn) => ({ ...turn, meta }));
-            // Broadcast to the Living Atlas so it fits + satellites the results.
-            if (typeof window !== "undefined") {
+            // Broadcast to the Living Atlas so it fits + satellites the results —
+            // unless the session was reset out from under this stream.
+            if (typeof window !== "undefined" && genRef.current === gen) {
               window.dispatchEvent(new CustomEvent("bevvip:atlas-plot", { detail: meta }));
             }
           }
@@ -157,16 +171,47 @@ export default function GuideChat() {
         }
       }
     } catch (err) {
-      patchReply((turn) => ({
-        ...turn,
-        content:
-          turn.content ||
-          `I hit a snag reaching the inventory — ${err instanceof Error ? err.message : err}. Please try again.`,
-      }));
+      // A Start over aborts the fetch on purpose — that's not an error to show.
+      if (!(err instanceof DOMException && err.name === "AbortError")) {
+        patchReply((turn) => ({
+          ...turn,
+          content:
+            turn.content ||
+            `I hit a snag reaching the inventory — ${err instanceof Error ? err.message : err}. Please try again.`,
+        }));
+      }
     } finally {
-      setBusy(false);
-      setStatus(null);
+      // Only clear the busy/status if this is still the live turn; a reset (or a
+      // newer send) already owns that state otherwise.
+      if (genRef.current === gen) {
+        setBusy(false);
+        setStatus(null);
+      }
+      if (abortRef.current === ctrl) abortRef.current = null;
     }
+  }
+
+  // Restart everything: end any in-flight stream, wipe the conversation and its
+  // saved session, and tell the Living Atlas to drop plotted results and return
+  // to its resting state. The guide-session effect below then fires inactive
+  // (turns is empty), so the mobile shell un-collapses back to the idle home.
+  function startOver() {
+    genRef.current += 1; // invalidate any open stream's writebacks
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setTurns([]);
+    setInput("");
+    setBusy(false);
+    setStatus(null);
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* storage unavailable: nothing persisted to clear */
+    }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("bevvip:atlas-reset"));
+    }
+    transcriptRef.current?.scrollTo({ top: 0 });
   }
 
   // The first thing the traveler asked, as a one-line session summary for the
@@ -188,19 +233,29 @@ export default function GuideChat() {
   return (
     <section className="chat">
       {turns.length > 0 && (
-        <button
-          type="button"
-          className="guide-sessionbar"
-          title="Back to the top of the conversation"
-          onClick={() => transcriptRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <span className="gsb-av">G</span>
-          <span className="gsb-meta">
-            <span className="gsb-who">The Guide</span>
-            {firstAsk && <span className="gsb-ctx">{firstAsk}</span>}
-          </span>
-          <span className="gsb-top">Top</span>
-        </button>
+        <div className="guide-sessionbar">
+          <button
+            type="button"
+            className="gsb-main"
+            title="Back to the top of the conversation"
+            onClick={() => transcriptRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <span className="gsb-av">G</span>
+            <span className="gsb-meta">
+              <span className="gsb-who">The Guide</span>
+              {firstAsk && <span className="gsb-ctx">{firstAsk}</span>}
+            </span>
+          </button>
+          <button
+            type="button"
+            className="gsb-restart"
+            title="Start a new conversation"
+            aria-label="Start over"
+            onClick={startOver}
+          >
+            ↺ Start over
+          </button>
+        </div>
       )}
       <div className="transcript" ref={transcriptRef}>
         {turns.length === 0 ? (
@@ -229,6 +284,18 @@ export default function GuideChat() {
         )}
       </div>
       <div className="composer">
+        {turns.length > 0 && (
+          <div className="composer-tools">
+            <button
+              type="button"
+              className="restart"
+              title="Clear this conversation and reset the Living Atlas"
+              onClick={startOver}
+            >
+              ↺ Start over
+            </button>
+          </div>
+        )}
         <div className="row">
           <textarea
             rows={1}
