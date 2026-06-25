@@ -9,7 +9,7 @@
 // that atlas.
 //
 // Map controls (top-right) mirror the original app: fullscreen, a basemap
-// switcher (Dark / Satellite / Standard), and a 2D⇄3D (mercator⇄globe) toggle.
+// switcher (Dark / Satellite / Dusk), and a 2D⇄3D (mercator⇄globe) toggle.
 // When The Guide returns recommendations it broadcasts a "bevvip:atlas-plot"
 // event; the globe then fits the results and switches to satellite.
 //
@@ -101,11 +101,11 @@ const GLOBE_FOG = {
 };
 // The globe opens on Dark (the house default). When the Guide plots results we
 // flip to Satellite (photoreal) to reveal them; the traveler can switch back, or
-// to Standard (Mapbox vector with 3D buildings), at any time.
-type StyleKey = "dark" | "satellite" | "standard";
-const STANDARD_FOG = {
-  color: "rgb(186,210,235)", "high-color": "rgb(120,160,210)",
-  "horizon-blend": 0.06, "space-color": "rgb(20,30,50)", "star-intensity": 0.05,
+// to Dusk (Mapbox Standard vector with 3D buildings), at any time.
+type StyleKey = "dark" | "satellite" | "dusk";
+const DUSK_FOG = {
+  color: "rgb(58,48,62)", "high-color": "rgb(120,86,70)",
+  "horizon-blend": 0.05, "space-color": "rgb(10,8,12)", "star-intensity": 0.2,
 };
 const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
@@ -114,8 +114,9 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
     fog: { color: "rgb(18,22,30)", "high-color": "rgb(40,52,72)", "horizon-blend": 0.06, "space-color": "rgb(6,8,12)", "star-intensity": 0.3 },
     sw: "#3b5a3a",
   },
-  // Mapbox Standard renders 3D buildings at city zoom under its default day light.
-  standard: { label: "Standard", url: "mapbox://styles/mapbox/standard", fog: STANDARD_FOG, sw: "#9bb4cf" },
+  // Mapbox Standard renders 3D buildings at city zoom; the dusk light preset gives
+  // a warm golden-hour cast that stays legible without the brightness of day.
+  dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", fog: DUSK_FOG, sw: "#caa46a", light: "dusk" },
 };
 
 // Imperative handle the control buttons call into; the map lifecycle effect
