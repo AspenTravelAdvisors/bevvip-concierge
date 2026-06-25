@@ -33,6 +33,7 @@ const FALLBACK_TOKEN =
 const HOTEL_BASE = ATLASES.hotel.base;
 const HOTEL_DOT_MIN_ZOOM = 2.45; // let hotels emerge before the ambient cloud fades
 const HOTEL_CLICK_MIN_ZOOM = 4; // below this dots overlap — taps stay ambient
+const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
 // Master atlas overlays: cruise / jet / yacht / world-cruise region pins, each
@@ -177,6 +178,8 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     // Cached feeds so a basemap switch re-paints from memory, not the network.
     let hotelFC: HotelFC | null = null;
     const overlayFeats: Partial<Record<OverlayKey, OverlayFeature[]>> = {};
+    const routeLines: Partial<Record<OverlayKey, [number, number][][]>> = {};
+    let routesFetched = false;
     let featuredFC: FeaturedFC | null = null;
     let regionsGeo: Record<string, [number, number]> = {};
 
@@ -322,6 +325,54 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           paintHotel();
           overlayKeys.forEach(paintOverlay);
           paintFeatured();
+          if (routesFetched) overlayKeys.forEach(paintRoutesForKey);
+        }
+
+        function paintRoutesForKey(key: OverlayKey) {
+          const lines = routeLines[key];
+          if (!lines || !lines.length) return;
+          const cfg = OVERLAYS[key];
+          const src = "r_" + key;
+          const data = {
+            type: "FeatureCollection" as const,
+            features: lines.map((pts) => ({
+              type: "Feature" as const,
+              geometry: { type: "LineString" as const, coordinates: pts },
+              properties: { type: key },
+            })),
+          };
+          if (!map.getSource(src)) {
+            map.addSource(src, { type: "geojson", data });
+          } else {
+            map.getSource(src)?.setData(data);
+          }
+          addLayer(map, {
+            id: src + "_shadow", type: "line", source: src,
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": "#000010", "line-width": 4, "line-opacity": 0.22 },
+          });
+          addLayer(map, {
+            id: src + "_line", type: "line", source: src,
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": cfg.color, "line-width": 1.6, "line-dasharray": [1, 5], "line-opacity": 0.82 },
+          });
+          // Visibility: only above ROUTE_ZOOM and when the type is not hidden
+          const vis = map.getZoom() >= ROUTE_ZOOM && !hiddenRef.current.has(key) ? "visible" : "none";
+          [src + "_shadow", src + "_line"].forEach((id) => {
+            if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+          });
+        }
+
+        async function loadRoutes() {
+          routesFetched = true; // set early so style.load repaints work correctly
+          await Promise.all(
+            overlayKeys.map(async (key) => {
+              try {
+                routeLines[key] = await fetchRouteLines(key);
+                if (!cancelled) paintRoutesForKey(key);
+              } catch { /* route data is optional — one miss shouldn't break others */ }
+            }),
+          );
         }
 
         function applyHidden(key: string) {
@@ -377,6 +428,22 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           });
           map.on("mouseenter", "featured-dot", () => { map.getCanvas().style.cursor = "pointer"; });
           map.on("mouseleave", "featured-dot", () => { map.getCanvas().style.cursor = ""; });
+
+          // Progressive zoom: load route lines on first crossing above ROUTE_ZOOM,
+          // then toggle their visibility on subsequent zoom changes.
+          map.on("zoomend", () => {
+            const z = map.getZoom();
+            if (z >= ROUTE_ZOOM && !routesFetched) {
+              loadRoutes();
+            } else if (routesFetched) {
+              overlayKeys.forEach((key) => {
+                const vis = z >= ROUTE_ZOOM && !hiddenRef.current.has(key) ? "visible" : "none";
+                ["r_" + key + "_shadow", "r_" + key + "_line"].forEach((id) => {
+                  if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+                });
+              });
+            }
+          });
         }
 
         // ── Result plotting (fit + satellite), triggered by the Guide ─────────
@@ -869,7 +936,65 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
 }
 
 function layerIdsFor(key: string): string[] {
-  return key === "hotel" ? ["hotel-heat", "hotel-dots"] : ["t_" + key + "_glow", "t_" + key + "_dot"];
+  if (key === "hotel") return ["hotel-heat", "hotel-dots"];
+  // Route layers are only added once the user zooms past ROUTE_ZOOM; they may
+  // not exist yet when the legend toggle fires, so getLayer guards handle that.
+  return ["t_" + key + "_glow", "t_" + key + "_dot", "r_" + key + "_shadow", "r_" + key + "_line"];
+}
+
+// ── Route line feed ────────────────────────────────────────────────────────
+// Returns arrays of [lng, lat] coordinate pairs (one array per route/trip).
+// Each atlas stores route data differently; this normalises them all.
+
+async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
+  try {
+    if (key === "cruise") {
+      // Dedicated routes file: { [slug]: [{n, ll:[lat,lng]}] }
+      const r = await fetch(`${ATLASES.cruise.base}/data/itinerary-routes.json`);
+      if (!r.ok) return [];
+      const j: Record<string, { n?: string; ll?: [number, number] }[]> = await r.json();
+      return Object.values(j)
+        .map((stops) =>
+          stops
+            .filter((s) => Array.isArray(s.ll))
+            .map((s) => [s.ll![1], s.ll![0]] as [number, number]),
+        )
+        .filter((pts) => pts.length >= 2);
+    }
+    if (key === "jet") {
+      // itinerary.json → ROUTES: { [slug]: [{n, r, ll:[lat,lng]}] }
+      const r = await fetch(`${ATLASES.jet.base}/itinerary.json`);
+      if (!r.ok) return [];
+      const j: { ROUTES?: Record<string, { ll?: [number, number] }[]> } = await r.json();
+      const ROUTES = j.ROUTES || {};
+      return Object.values(ROUTES)
+        .map((stops) =>
+          stops
+            .filter((s) => Array.isArray(s.ll))
+            .map((s) => [s.ll![1], s.ll![0]] as [number, number]),
+        )
+        .filter((pts) => pts.length >= 2);
+    }
+    // yacht + worldcruise: itinerary.json → TRIPS array + PORTS: {name:[lat,lng]}
+    const base = key === "yacht" ? ATLASES.yacht.base : ATLASES.worldcruise.base;
+    const r = await fetch(`${base}/itinerary.json`);
+    if (!r.ok) return [];
+    const j: {
+      TRIPS?: { itin?: { n?: string }[] }[];
+      PORTS?: Record<string, [number, number]>;
+    } = await r.json();
+    const PORTS = j.PORTS || {};
+    const TRIPS = j.TRIPS || [];
+    return TRIPS
+      .map((trip) =>
+        (trip.itin || [])
+          .filter((s) => s.n && PORTS[s.n])
+          .map((s) => { const ll = PORTS[s.n!]; return [ll[1], ll[0]] as [number, number]; }),
+      )
+      .filter((pts) => pts.length >= 2);
+  } catch {
+    return [];
+  }
 }
 
 // ── Hotel point feed ───────────────────────────────────────────────────────
