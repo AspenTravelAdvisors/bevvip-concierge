@@ -1412,37 +1412,8 @@ main.page {
    A transparent, full-screen tour that spotlights each major part of Base Camp
    and floats a caption card beside it. The scrim dims the app while leaving the
    highlighted element bright; on small screens (where the gutter/globe collapse)
-   slides fall back to a centered card over a plain dim backdrop. */
-
-/* The re-open affordance — a small pill in the header, next to the Aspen Travel
-   Advisors byline. (The nav that follows it carries margin-left:auto, so it sits
-   tight against the byline rather than drifting toward the tabs.) */
-.tour-launch {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
-  font-family: var(--sans);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--sub);
-  background: rgba(201, 168, 76, 0.06);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: 0.16s ease;
-}
-.tour-launch:hover {
-  color: var(--gold-light);
-  border-color: var(--gold-dim);
-  background: rgba(201, 168, 76, 0.12);
-}
-.tour-launch span {
-  color: var(--gold);
-}
+   slides fall back to a centered card over a plain dim backdrop. The tour opens
+   itself once per browser, and can be replayed from the "The Guide" nav tab. */
 
 .tour {
   position: fixed;
@@ -1615,5 +1586,4 @@ main.page {
 
 @media (max-width: 560px) {
   .tour-title { font-size: 22px; }
-  .tour-launch { font-size: 10px; padding: 6px 10px; }
 }

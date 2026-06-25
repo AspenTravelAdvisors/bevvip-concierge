@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
-import Link from "next/link";
 import { externalAtlasLink } from "@/lib/atlas-config";
 import IntroTour from "@/components/IntroTour";
-import TourButton from "@/components/TourButton";
+import GuideTab from "@/components/GuideTab";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -59,9 +58,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Aspen Travel Advisors
               </a>
             </span>
-            <TourButton />
             <nav>
-              <Link className="tab-guide" href="/">The Guide</Link>
+              <GuideTab />
               <a className="tab-color" style={{ "--tab": "#e6d488" } as React.CSSProperties} href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">Hotels</a>
               <a className="tab-color" style={{ "--tab": "#5aa9e6" } as React.CSSProperties} href={externalAtlasLink("cruise")} target="_blank" rel="noreferrer">Expeditions</a>
               <a className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href={externalAtlasLink("jet")} target="_blank" rel="noreferrer">Jets</a>
