@@ -1414,33 +1414,31 @@ main.page {
    highlighted element bright; on small screens (where the gutter/globe collapse)
    slides fall back to a centered card over a plain dim backdrop. */
 
-/* The small, persistent re-open affordance parked in the corner. */
+/* The re-open affordance — a small pill in the header, next to the Aspen Travel
+   Advisors byline. (The nav that follows it carries margin-left:auto, so it sits
+   tight against the byline rather than drifting toward the tabs.) */
 .tour-launch {
-  position: fixed;
-  left: 16px;
-  bottom: 16px;
-  z-index: 60;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
+  gap: 5px;
+  padding: 5px 11px;
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--sub);
-  background: rgba(17, 17, 19, 0.78);
+  background: rgba(201, 168, 76, 0.06);
   border: 1px solid var(--line);
   border-radius: 999px;
-  backdrop-filter: blur(8px);
   cursor: pointer;
+  white-space: nowrap;
   transition: 0.16s ease;
 }
 .tour-launch:hover {
   color: var(--gold-light);
   border-color: var(--gold-dim);
-  background: rgba(24, 24, 27, 0.9);
+  background: rgba(201, 168, 76, 0.12);
 }
 .tour-launch span {
   color: var(--gold);

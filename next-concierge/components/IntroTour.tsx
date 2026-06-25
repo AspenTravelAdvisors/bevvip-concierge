@@ -84,12 +84,16 @@ interface Rect {
 export default function IntroTour() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
+  // The slides actually shown this run: SLIDES minus any whose spotlight target
+  // isn't on screen at this breakpoint (e.g. the resize gutter, which is hidden
+  // on mobile — describing a control the traveler can't see only confuses).
+  const [slides, setSlides] = useState<Slide[]>(SLIDES);
   const [rect, setRect] = useState<Rect | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardPos, setCardPos] = useState<{ top: number; left: number } | null>(null);
 
-  const slide = SLIDES[step];
-  const isLast = step === SLIDES.length - 1;
+  const slide = slides[step];
+  const isLast = step === slides.length - 1;
 
   // Open once per browser on first visit, plus on an explicit request.
   useEffect(() => {
@@ -101,13 +105,18 @@ export default function IntroTour() {
     }
     if (!seen) {
       // Wait a beat so the chat + globe have painted and can be spotlighted.
-      const t = window.setTimeout(() => setOpen(true), 700);
+      const t = window.setTimeout(() => {
+        setSlides(computeVisibleSlides());
+        setStep(0);
+        setOpen(true);
+      }, 700);
       return () => window.clearTimeout(t);
     }
   }, []);
 
   useEffect(() => {
     function onStart() {
+      setSlides(computeVisibleSlides());
       setStep(0);
       setOpen(true);
     }
@@ -210,92 +219,92 @@ export default function IntroTour() {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") close();
-      else if (e.key === "ArrowRight") setStep((s) => Math.min(s + 1, SLIDES.length - 1));
+      else if (e.key === "ArrowRight") setStep((s) => Math.min(s + 1, slides.length - 1));
       else if (e.key === "ArrowLeft") setStep((s) => Math.max(s - 1, 0));
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, close]);
+  }, [open, close, slides.length]);
 
   const next = () => {
     if (isLast) close();
-    else setStep((s) => Math.min(s + 1, SLIDES.length - 1));
+    else setStep((s) => Math.min(s + 1, slides.length - 1));
   };
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
+  if (!open || !slide) return null;
+
   return (
-    <>
-      <button
-        type="button"
-        className="tour-launch"
-        title="Take a tour of Base Camp"
-        aria-label="Take a tour of Base Camp"
-        onClick={() => {
-          setStep(0);
-          setOpen(true);
-        }}
+    <div className="tour" role="dialog" aria-modal="true" aria-label="Take a tour">
+      {/* The transparent scrim. With a spotlight, a ring with an enormous
+          spread shadow dims everything *except* the highlighted element;
+          without one, a plain dim backdrop sits behind the centered card. */}
+      {rect ? (
+        <div
+          className="tour-spot"
+          style={{
+            top: rect.top - 6,
+            left: rect.left - 6,
+            width: rect.width + 12,
+            height: rect.height + 12,
+          }}
+        />
+      ) : (
+        <div className="tour-scrim" onClick={close} />
+      )}
+
+      <div
+        ref={cardRef}
+        className={`tour-card${rect ? "" : " centered"}`}
+        style={cardPos ? { top: cardPos.top, left: cardPos.left } : undefined}
       >
-        <span aria-hidden="true">✦</span> Tour
-      </button>
+        <button type="button" className="tour-skip" onClick={close}>
+          Skip
+        </button>
 
-      {open && (
-        <div className="tour" role="dialog" aria-modal="true" aria-label="Take a tour">
-          {/* The transparent scrim. With a spotlight, a ring with an enormous
-              spread shadow dims everything *except* the highlighted element;
-              without one, a plain dim backdrop sits behind the centered card. */}
-          {rect ? (
-            <div
-              className="tour-spot"
-              style={{
-                top: rect.top - 6,
-                left: rect.left - 6,
-                width: rect.width + 12,
-                height: rect.height + 12,
-              }}
-            />
-          ) : (
-            <div className="tour-scrim" onClick={close} />
-          )}
+        <div className="tour-badge">{slide.badge}</div>
+        <h2 className="tour-title">{slide.title}</h2>
+        <p className="tour-body">{slide.body}</p>
 
-          <div
-            ref={cardRef}
-            className={`tour-card${rect ? "" : " centered"}`}
-            style={cardPos ? { top: cardPos.top, left: cardPos.left } : undefined}
-          >
-            <button type="button" className="tour-skip" onClick={close}>
-              Skip
+        <div className="tour-foot">
+          <div className="tour-dots" aria-hidden="true">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`tour-dot${i === step ? " on" : ""}`}
+                onClick={() => setStep(i)}
+                aria-label={`Go to step ${i + 1}`}
+              />
+            ))}
+          </div>
+          <div className="tour-nav">
+            {step > 0 && (
+              <button type="button" className="tour-btn ghost" onClick={back}>
+                Back
+              </button>
+            )}
+            <button type="button" className="tour-btn primary" onClick={next}>
+              {isLast ? "Get started" : "Next"}
             </button>
-
-            <div className="tour-badge">{slide.badge}</div>
-            <h2 className="tour-title">{slide.title}</h2>
-            <p className="tour-body">{slide.body}</p>
-
-            <div className="tour-foot">
-              <div className="tour-dots" aria-hidden="true">
-                {SLIDES.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className={`tour-dot${i === step ? " on" : ""}`}
-                    onClick={() => setStep(i)}
-                    aria-label={`Go to step ${i + 1}`}
-                  />
-                ))}
-              </div>
-              <div className="tour-nav">
-                {step > 0 && (
-                  <button type="button" className="tour-btn ghost" onClick={back}>
-                    Back
-                  </button>
-                )}
-                <button type="button" className="tour-btn primary" onClick={next}>
-                  {isLast ? "Get started" : "Next"}
-                </button>
-              </div>
-            </div>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
+}
+
+// The slides to actually show this run: keep every targetless (centered) slide,
+// and any whose spotlight target is currently on screen. Slides whose target is
+// hidden at this breakpoint — the resize gutter on mobile, the map controls when
+// the globe is in its fallback panel — drop out rather than describe something
+// the traveler can't see.
+function computeVisibleSlides(): Slide[] {
+  return SLIDES.filter((s) => {
+    if (!s.target) return true;
+    const el = document.querySelector(s.target);
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width >= 4 && r.height >= 4;
+  });
 }
