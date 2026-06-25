@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import Link from "next/link";
 import { externalAtlasLink } from "@/lib/atlas-config";
+import IntroTour from "@/components/IntroTour";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
           </header>
           <main className="page">{children}</main>
+          <IntroTour />
         </div>
       </body>
     </html>

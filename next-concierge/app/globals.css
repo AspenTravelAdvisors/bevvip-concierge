@@ -1407,3 +1407,215 @@ main.page {
     pointer-events: auto;
   }
 }
+
+/* ── Intro "Take a tour" overlay ─────────────────────────────────────────────
+   A transparent, full-screen tour that spotlights each major part of Base Camp
+   and floats a caption card beside it. The scrim dims the app while leaving the
+   highlighted element bright; on small screens (where the gutter/globe collapse)
+   slides fall back to a centered card over a plain dim backdrop. */
+
+/* The small, persistent re-open affordance parked in the corner. */
+.tour-launch {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sub);
+  background: rgba(17, 17, 19, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+.tour-launch:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+  background: rgba(24, 24, 27, 0.9);
+}
+.tour-launch span {
+  color: var(--gold);
+}
+
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+/* Centered-slide backdrop: a soft, transparent dim the whole app shows through. */
+.tour-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 8, 0.62);
+  backdrop-filter: blur(2px);
+  animation: tour-fade 0.25s ease;
+}
+
+/* Spotlight ring: a transparent window with a vast spread shadow that dims
+   everything around the highlighted element. */
+.tour-spot {
+  position: absolute;
+  border-radius: 14px;
+  border: 1.5px solid var(--gold);
+  box-shadow:
+    0 0 0 9999px rgba(6, 6, 8, 0.66),
+    0 0 0 2px rgba(201, 168, 76, 0.35),
+    0 0 26px 4px rgba(201, 168, 76, 0.28);
+  pointer-events: none;
+  transition: top 0.28s ease, left 0.28s ease, width 0.28s ease, height 0.28s ease;
+  animation: tour-fade 0.25s ease;
+}
+
+@keyframes tour-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tour-card {
+  position: absolute;
+  width: min(360px, calc(100vw - 32px));
+  background: linear-gradient(180deg, #141416, #0e0e10);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px 20px 16px;
+  box-shadow: var(--shadow), 0 0 0 1px rgba(201, 168, 76, 0.08);
+  transition: top 0.28s ease, left 0.28s ease;
+  animation: tour-rise 0.28s ease;
+}
+.tour-card.centered {
+  width: min(440px, calc(100vw - 32px));
+  text-align: center;
+}
+
+@keyframes tour-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tour-skip {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 9px;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+.tour-skip:hover {
+  color: var(--text);
+  border-color: var(--sub);
+}
+
+.tour-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.tour-card.centered .tour-badge {
+  margin-top: 6px;
+}
+.tour-title {
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.tour-body {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--sub);
+  margin: 0 0 16px;
+}
+
+.tour-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tour-card.centered .tour-foot {
+  flex-direction: column-reverse;
+  gap: 14px;
+}
+.tour-dots {
+  display: flex;
+  gap: 6px;
+}
+.tour-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+.tour-dot:hover {
+  background: var(--gold-dim);
+}
+.tour-dot.on {
+  background: var(--gold);
+  width: 18px;
+}
+
+.tour-nav {
+  display: flex;
+  gap: 8px;
+}
+.tour-btn {
+  padding: 8px 16px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+.tour-btn.ghost {
+  color: var(--sub);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+.tour-btn.ghost:hover {
+  color: var(--text);
+  border-color: var(--sub);
+}
+.tour-btn.primary {
+  color: #1a1408;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  border: 1px solid var(--gold);
+  font-weight: 600;
+}
+.tour-btn.primary:hover {
+  filter: brightness(1.06);
+}
+
+@media (max-width: 560px) {
+  .tour-title { font-size: 22px; }
+  .tour-launch { font-size: 10px; padding: 6px 10px; }
+}
