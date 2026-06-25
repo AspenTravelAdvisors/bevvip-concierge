@@ -9,7 +9,7 @@
 // that atlas.
 //
 // Map controls (top-right) mirror the original app: fullscreen, a basemap
-// switcher (Outdoors Night / Dark / Satellite), and a 2D⇄3D (mercator⇄globe) toggle.
+// switcher (Faded Night / Dark / Satellite), and a 2D⇄3D (mercator⇄globe) toggle.
 // When The Guide returns recommendations it broadcasts a "bevvip:atlas-plot"
 // event; the globe then fits the results and switches to satellite.
 //
@@ -99,7 +99,7 @@ const GLOBE_FOG = {
   color: "rgb(11,13,18)", "high-color": "rgb(22,27,38)",
   "horizon-blend": 0.04, "space-color": "rgb(6,8,12)", "star-intensity": 0.45,
 };
-// The globe opens on Outdoors Night (the house default), with Dark and
+// The globe opens on Faded Night (the house default), with Dark and
 // Satellite (photoreal) as alternates. Nothing forces a style switch when
 // results plot — the chosen basemap stays put.
 type StyleKey = "dark" | "satellite" | "outdoors";
@@ -107,8 +107,8 @@ const OUTDOORS_FOG = {
   color: "rgb(16,20,30)", "high-color": "rgb(36,46,66)",
   "horizon-blend": 0.05, "space-color": "rgb(4,6,10)", "star-intensity": 0.4,
 };
-const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string }> = {
-  outdoors: { label: "Outdoors Night", url: "mapbox://styles/mapbox/standard", fog: OUTDOORS_FOG, sw: "#2c4a63", light: "night" },
+const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string }> = {
+  outdoors: { label: "Faded Night", url: "mapbox://styles/mapbox/standard", fog: OUTDOORS_FOG, sw: "#2c4a63", light: "night", theme: "faded" },
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
   satellite: {
     label: "Satellite", url: "mapbox://styles/mapbox/standard-satellite",
@@ -460,10 +460,13 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (cancelled) return;
           const s = ATLAS_STYLES[styleKeyLocal] || ATLAS_STYLES.dark;
           setFog(map, s.fog);
-          // Outdoors Night uses Mapbox Standard under a night light preset; other
-          // Standard-family styles fall back to day. Classic styles (Dark) ignore this.
-          if (s.light) {
-            try { (map as unknown as { setConfigProperty(s: string, k: string, v: string): void }).setConfigProperty("basemap", "lightPreset", s.light); } catch { /* not a Standard style */ }
+          // Faded Night uses Mapbox Standard under a night light preset + faded
+          // theme; other Standard-family styles fall back to day/default. Classic
+          // styles (Dark) ignore these config calls.
+          if (s.light || s.theme) {
+            const cfg = map as unknown as { setConfigProperty(s: string, k: string, v: string): void };
+            if (s.light) { try { cfg.setConfigProperty("basemap", "lightPreset", s.light); } catch { /* not a Standard style */ } }
+            if (s.theme) { try { cfg.setConfigProperty("basemap", "theme", s.theme); } catch { /* theme unsupported */ } }
           }
           try { map.setProjection(projGlobe ? "globe" : "mercator"); } catch { /* projection optional */ }
           paintAll();
@@ -907,6 +910,14 @@ async function fetchHotelPage(offset: number, limit: number): Promise<{ total?: 
 
 function addLayer(map: MBMap, spec: Record<string, unknown>) {
   if (map.getLayer(spec.id as string)) return;
+  // On Standard-family styles circle layers are lit by the scene lighting model,
+  // so under a dusk/night light preset our pins darken. Force full emissive
+  // strength so they hold their color on every basemap (harmless on classic ones).
+  if (spec.type === "circle") {
+    const paint = (spec.paint ?? {}) as Record<string, unknown>;
+    if (paint["circle-emissive-strength"] == null) paint["circle-emissive-strength"] = 1;
+    spec.paint = paint;
+  }
   try { map.addLayer(spec); } catch { /* layer skipped */ }
 }
 
