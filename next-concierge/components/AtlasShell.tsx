@@ -34,6 +34,7 @@ const HOTEL_BASE = ATLASES.hotel.base;
 const HOTEL_DOT_MIN_ZOOM = 2.45; // let hotels emerge before the ambient cloud fades
 const HOTEL_CLICK_MIN_ZOOM = 4; // below this dots overlap — taps stay ambient
 const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
+const ROUTES_ENABLED = false;   // set true to activate progressive route layer
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
 // Master atlas overlays: cruise / jet / yacht / world-cruise region pins, each
@@ -325,7 +326,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           paintHotel();
           overlayKeys.forEach(paintOverlay);
           paintFeatured();
-          if (routesFetched) overlayKeys.forEach(paintRoutesForKey);
+          if (ROUTES_ENABLED && routesFetched) overlayKeys.forEach(paintRoutesForKey);
         }
 
         function paintRoutesForKey(key: OverlayKey) {
@@ -433,7 +434,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           // then toggle their visibility on subsequent zoom changes.
           map.on("zoomend", () => {
             const z = map.getZoom();
-            if (z >= ROUTE_ZOOM && !routesFetched) {
+            if (ROUTES_ENABLED && z >= ROUTE_ZOOM && !routesFetched) {
               loadRoutes();
             } else if (routesFetched) {
               overlayKeys.forEach((key) => {
