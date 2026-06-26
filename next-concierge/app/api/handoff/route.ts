@@ -58,7 +58,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   expedition: "Expedition Cruise",
   antarctica: "Antarctica",
   jet: "Private Jet Journey",
-  yacht: "Hotel-Brand Yacht",
+  yacht: "Luxury Hotel Yacht",
   worldcruise: "World Cruise / Grand Voyage",
   generic: "Trip Planning",
 };

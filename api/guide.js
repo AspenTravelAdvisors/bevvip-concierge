@@ -159,7 +159,7 @@ function statusForToolUses(toolUses = []) {
   }
   if (type === 'cruise') return 'Checking approved Expedition Cruise and yacht inventory...';
   if (type === 'jet') return 'Checking private jet journey inventory...';
-  if (type === 'yacht') return 'Checking hotel-brand yacht sailings...';
+  if (type === 'yacht') return 'Checking luxury hotel yacht sailings...';
   return 'Checking approved hotel inventory...';
 }
 

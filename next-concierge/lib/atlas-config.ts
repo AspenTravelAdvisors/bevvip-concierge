@@ -42,7 +42,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   yacht: {
     type: "yacht",
-    label: "Hotel-Brand Yacht Atlas",
+    label: "Luxury Hotel Yacht Atlas",
     tagline: "Aman, Ritz-Carlton, Four Seasons and Orient Express at sea",
     base:
       process.env.NEXT_PUBLIC_YACHT_ATLAS_BASE ||

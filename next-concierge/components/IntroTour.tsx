@@ -32,7 +32,7 @@ const SLIDES: Slide[] = [
   {
     badge: "Welcome",
     title: "This is Base Camp",
-    body: "Your concierge for the world's most extraordinary journeys — approved hotels, expedition cruises, private jets and hotel-brand yachts, all in one place. Here's a 30-second tour of how it works.",
+    body: "Your concierge for the world's most extraordinary journeys — approved hotels, expedition cruises, private jets and luxury hotel yachts, all in one place. Here's a 30-second tour of how it works.",
     placement: "center",
   },
   {

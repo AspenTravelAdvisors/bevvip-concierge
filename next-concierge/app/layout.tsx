@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s — Aspen Travel Advisors",
   },
   description:
-    "Expedition Bucket List — Aspen Travel Advisors' AI travel concierge. Approved luxury hotels, expedition cruises, private jet journeys and hotel-brand yachts — framed, mapped and booked by The Guide.",
+    "Expedition Bucket List — Aspen Travel Advisors' AI travel concierge. Approved luxury hotels, expedition cruises, private jet journeys and luxury hotel yachts — framed, mapped and booked by The Guide.",
 };
 
 export const viewport: Viewport = {
