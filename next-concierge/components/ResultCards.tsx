@@ -1,5 +1,6 @@
+import Link from "next/link";
 import type { GuideMeta, OfferingResult, OfferingType } from "@/lib/types";
-import { ATLASES, isOfferingType } from "@/lib/atlas-config";
+import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 
 // Cap cards per brand within a category (so one operator can't flood the row),
 // not per category — a two-brand comparison ("Aman vs Orient Express") and an
@@ -8,14 +9,16 @@ import { ATLASES, isOfferingType } from "@/lib/atlas-config";
 const GUIDE_CARD_LIMIT_PER_BRAND = 5;
 const GUIDE_CARD_LIMIT_TOTAL = 5;
 
-// Rich inventory cards built from the Guide's meta frame. Every card and the
-// shortlist handoff open the full standalone Atlas (in a new tab, so the
-// conversation is never lost). The home-page Living Atlas plots the same
-// results live alongside the chat, so there is no separate in-app atlas route.
+// Rich inventory cards built from the Guide's meta frame. Cards now open the
+// matching atlas *inside Base Camp* (the /atlas/<type> route), carrying the same
+// region/ids the standalone deep link used so the embedded atlas focuses the
+// right records. The home-page Living Atlas still plots the same results live
+// alongside the chat.
 export default function ResultCards({ meta }: { meta: GuideMeta }) {
   const cards = collectResultCards(meta);
+  const ctaHref = internalLeadLink(meta);
 
-  if (!cards.length && !meta.deepLink) return null;
+  if (!cards.length && !ctaHref) return null;
 
   return (
     <div>
@@ -26,11 +29,11 @@ export default function ResultCards({ meta }: { meta: GuideMeta }) {
           ))}
         </div>
       )}
-      {meta.deepLink && (
+      {ctaHref && (
         <div>
-          <a className="atlas-cta" href={meta.deepLink} target="_blank" rel="noreferrer">
-            Open full Atlas ↗
-          </a>
+          <Link className="atlas-cta" href={ctaHref}>
+            Open in the Atlas →
+          </Link>
         </div>
       )}
     </div>
@@ -104,30 +107,51 @@ function Card({
       <span className="kicker">{String(kicker)}</span>
       <span className="name">{result.name || "Untitled"}</span>
       {where && <span className="where">{where}</span>}
-      <span className="open">Open in Atlas ↗</span>
+      <span className="open">Open in Atlas →</span>
     </>
   );
 
-  // The whole card opens that result in its full standalone Atlas, in a new tab.
-  // Prefer the offering's own deep link (focuses the record with its detail
-  // open); otherwise fall back to the atlas, focused on the result's region.
-  const href = result.deepLink || externalCardLink(result, fallbackType);
+  // The whole card opens that result in the in-app atlas (/atlas/<type>). We
+  // reuse the query the standalone deep link carried (region + ids) so the
+  // embedded atlas focuses the same record; otherwise fall back to the result's
+  // region.
+  const href = internalCardLink(result, fallbackType);
   if (href) {
     return (
-      <a className="card" href={href} target="_blank" rel="noreferrer">
+      <Link className="card" href={href}>
         {body}
-      </a>
+      </Link>
     );
   }
   return <div className="card">{body}</div>;
 }
 
-// Fallback when a result carries no deep link: the result's full Atlas, focused
-// on its region when known.
-function externalCardLink(result: OfferingResult, type: OfferingType | null): string | null {
+// Build the in-app atlas link for a result. Prefer the search string the
+// standalone deep link already encoded (region + forward-compatible ids), then
+// fall back to the result's region, then the bare atlas.
+function internalCardLink(result: OfferingResult, type: OfferingType | null): string | null {
   if (!type) return null;
-  const base = ATLASES[type].base;
-  return result.region ? `${base}/?region=${encodeURIComponent(result.region)}` : base;
+  let query = "";
+  if (typeof result.deepLink === "string" && result.deepLink) {
+    try {
+      query = new URL(result.deepLink).search; // e.g. "?region=Med&ids=y_12"
+    } catch {
+      /* not a parseable URL — ignore and fall back */
+    }
+  }
+  if (!query && result.region) query = `?region=${encodeURIComponent(result.region)}`;
+  return internalAtlasLink(type, query);
+}
+
+// The "Open in the Atlas" CTA target: the lead tool's type, focused on the
+// chart region. Mirrors how the meta frame picks its lead/deepLink.
+function internalLeadLink(meta: GuideMeta): string | null {
+  const tools = [...(meta.tools ?? [])].reverse();
+  const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
+  const type = normalizeType(String(tool?.type ?? tool?.input?.type ?? ""));
+  if (!type) return null;
+  const region = meta.chartRegion;
+  return internalAtlasLink(type, region ? `?region=${encodeURIComponent(region)}` : "");
 }
 
 const MONTHS = [

@@ -70,3 +70,11 @@ export function externalAtlasLink(type: OfferingType, region?: string | null): s
   const base = ATLASES[type].base;
   return region ? `${base}/?region=${encodeURIComponent(region)}` : base;
 }
+
+// In-app atlas route (the atlas now lives inside Base Camp under /atlas/<type>,
+// rendering the copied standalone page). `query` is a pre-built search string
+// (e.g. "?region=Caribbean&ids=h_001") carried through to the embedded atlas,
+// which reads it from its own location.search inside the iframe.
+export function internalAtlasLink(type: OfferingType, query = ""): string {
+  return `/atlas/${type}${query}`;
+}

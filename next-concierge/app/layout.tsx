@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Cormorant_Garamond, Inter } from "next/font/google";
-import { externalAtlasLink } from "@/lib/atlas-config";
 import IntroTour from "@/components/IntroTour";
 import GuideTab from "@/components/GuideTab";
 import "./globals.css";
@@ -60,11 +60,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </span>
             <nav>
               <GuideTab />
-              <a className="tab-color" style={{ "--tab": "#e6d488" } as React.CSSProperties} href={externalAtlasLink("hotel")} target="_blank" rel="noreferrer">Hotels</a>
-              <a className="tab-color" style={{ "--tab": "#5aa9e6" } as React.CSSProperties} href={externalAtlasLink("cruise")} target="_blank" rel="noreferrer">Expeditions</a>
-              <a className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href={externalAtlasLink("jet")} target="_blank" rel="noreferrer">Jets</a>
-              <a className="tab-color" style={{ "--tab": "#e0b84a" } as React.CSSProperties} href={externalAtlasLink("yacht")} target="_blank" rel="noreferrer">Yachts</a>
-              <a className="tab-color" style={{ "--tab": "#45d6c2" } as React.CSSProperties} href={externalAtlasLink("worldcruise")} target="_blank" rel="noreferrer">World</a>
+              <Link className="tab-color" style={{ "--tab": "#e6d488" } as React.CSSProperties} href="/atlas/hotel">Hotels</Link>
+              <Link className="tab-color" style={{ "--tab": "#5aa9e6" } as React.CSSProperties} href="/atlas/cruise">Expeditions</Link>
+              <Link className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href="/atlas/jet">Jets</Link>
+              <Link className="tab-color" style={{ "--tab": "#e0b84a" } as React.CSSProperties} href="/atlas/yacht">Yachts</Link>
+              <Link className="tab-color" style={{ "--tab": "#45d6c2" } as React.CSSProperties} href="/atlas/worldcruise">World</Link>
             </nav>
           </header>
           <main className="page">{children}</main>

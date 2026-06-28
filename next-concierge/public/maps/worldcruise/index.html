@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>World Cruise Atlas — Around the World, Day by Day</title>
+<link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
+<link rel="preconnect" href="https://www.virtuoso.com">
+<link rel="dns-prefetch" href="https://www.virtuoso.com">
+<link rel="stylesheet" href="vendor/leaflet.min.css">
+<style>
+  :root{
+    --bg:#0a0d13; --panel:#11151d; --panel2:#171c26; --line:#2a3340;
+    --ink:#f4eee2; --muted:#a9a293; --accent:#3fc1b0; --accent2:#cfeee8;
+    --shadow:0 12px 44px rgba(0,0,0,.5);
+    --sans:'Segoe UI',Roboto,-apple-system,system-ui,Helvetica,Arial,sans-serif;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);overflow:hidden}
+  #map{position:absolute;inset:0;background:#0a0d13;z-index:1}
+  .topbar{position:absolute;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;gap:14px;padding:12px 18px;background:linear-gradient(180deg,rgba(5,7,11,.94),rgba(5,7,11,.55) 70%,transparent);pointer-events:none}
+  .topbar .brand{pointer-events:auto;display:flex;align-items:center;gap:13px}
+  .topbar h1{font-family:var(--serif);font-size:23px;margin:0;letter-spacing:.4px;font-weight:600;line-height:1}
+  .topbar h1 span{color:var(--accent)}
+  .topbar h1 a.bev{color:inherit;text-decoration:none;transition:.15s;pointer-events:auto}
+  .topbar h1 a.bev:hover{color:var(--accent)}
+  .topbar p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+  .logochip{background:#fff;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.25)}
+  .logochip img{display:block;object-fit:contain}
+  .logochip.mark{height:48px;padding:3px 7px}
+  .logochip.mark img{height:42px;max-width:170px}
+  .logochip.ata{height:40px;padding:3px 6px}
+  .logochip.ata img{height:34px;max-width:140px}
+  .partner{pointer-events:auto;margin-left:auto;display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--muted);transition:.15s}
+  .partner:hover{color:var(--ink)}
+  .partner span{font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;white-space:nowrap}
+  .rail{position:absolute;z-index:1000;top:78px;left:14px;width:236px;background:rgba(17,21,29,.93);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(8px);overflow:hidden;display:flex;flex-direction:column;max-height:calc(100% - 100px)}
+  .rail h2{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);margin:0;padding:13px 14px 9px}
+  .rail .railx{position:absolute;top:10px;right:10px;z-index:5;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;-webkit-tap-highlight-color:transparent}
+  .rail .railx:hover{border-color:var(--accent);color:var(--accent)}
+  .rail .ops{overflow-y:auto;padding:0 8px 8px}
+  .filterbtn{margin:11px 10px 4px;padding:11px 12px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,rgba(63,193,176,.16),rgba(63,193,176,.05));border:1px solid rgba(63,193,176,.5);transition:.16s;color:var(--ink)}
+  .filterbtn:hover{background:linear-gradient(135deg,rgba(63,193,176,.26),rgba(63,193,176,.08))}
+  .filterbtn.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 18px rgba(63,193,176,.25)}
+  .filterbtn .ico{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:#07332d;background:radial-gradient(circle at 35% 30%,#eafffb,#3fc1b0 60%,#1d6e63)}
+  .filterbtn .ft{font-size:12.5px;font-weight:700;line-height:1.15}
+  .filterbtn .fs{font-size:10.5px;color:var(--accent2);margin-top:2px}
+  .datepop{position:absolute;z-index:1002;top:88px;left:264px;width:318px;max-width:calc(100vw - 286px);background:rgba(17,21,29,.96);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(8px);padding:14px;display:none}
+  .datepop.open{display:block}
+  .datepop .dh{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .datepop h2{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);margin:0}
+  .datepop .clear{font-size:11.5px;color:var(--accent);cursor:pointer;white-space:nowrap}
+  .datepop .dhr{display:flex;align-items:center;gap:10px}
+  .datepop .popx{width:26px;height:26px;flex:0 0 auto;border-radius:7px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;-webkit-tap-highlight-color:transparent}
+  .datepop .popx:hover{border-color:var(--accent);color:var(--accent)}
+  .year{border-top:1px solid var(--line);padding-top:11px;margin-top:11px}
+  .year:first-of-type{border-top:0;padding-top:0;margin-top:0}
+  .year .yt{font-family:var(--serif);font-size:20px;line-height:1;color:var(--ink);margin-bottom:9px}
+  .months{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .month{height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-size:11.5px;cursor:pointer}
+  .month:hover{border-color:rgba(63,193,176,.65);color:var(--ink)}
+  .month.active{background:linear-gradient(135deg,#3fc1b0,#a9ecdf);border-color:#fff;color:#07332d;font-weight:800}
+  .op{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:.15s;margin-bottom:2px}
+  .op:hover{background:var(--panel2)}
+  .op.active{background:var(--panel2);border-color:var(--accent)}
+  .op .lg{width:30px;height:30px;border-radius:7px;background:#fff;flex:0 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800;font-size:13px}
+  .op .lg img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+  .op .nm{font-size:12.5px;line-height:1.15;font-weight:600}
+  .op .ct{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .op .dot{width:8px;height:8px;border-radius:50%;margin-left:auto;flex:0 0 auto;opacity:.9}
+  /* ---------- Ports filter ---------- */
+  .portpop{width:312px}
+  .portroles{display:flex;gap:5px;margin-bottom:10px}
+  .proll{flex:1;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-size:10.5px;cursor:pointer;padding:0 3px;transition:.14s}
+  .proll:hover{border-color:rgba(63,193,176,.6);color:var(--ink)}
+  .proll.active{background:linear-gradient(135deg,#3fc1b0,#a9ecdf);border-color:#fff;color:#07332d;font-weight:800}
+  .portsearch{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--ink);font:inherit;font-size:13px;padding:9px 11px;margin-bottom:9px}
+  .portsearch:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .portsearch::placeholder{color:var(--muted)}
+  .portlist{max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+  .portrow{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:9px;cursor:pointer;border:1px solid transparent;transition:.13s}
+  .portrow:hover{background:var(--panel2)}
+  .portrow.sel{background:var(--panel2);border-color:var(--accent)}
+  .portrow .pn{font-size:12.5px;font-weight:600;line-height:1.2}
+  .portrow .pb{font-size:10px;color:var(--muted);margin-top:2px}
+  .portrow .pc{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent2);background:rgba(63,193,176,.14);border:1px solid rgba(63,193,176,.32);border-radius:20px;padding:2px 8px;flex:0 0 auto}
+  .portempty{padding:16px 10px;color:var(--muted);font-size:12px;text-align:center}
+  .portpin{transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+  .pp-dot{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#eafffb,#3fc1b0 60%,#1d6e63);border:2px solid #fff;box-shadow:0 0 0 4px rgba(63,193,176,.32),0 4px 12px rgba(0,0,0,.6)}
+  .pp-lbl{margin-top:5px;white-space:nowrap;background:rgba(8,11,16,.92);border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;letter-spacing:.2px}
+  .rail .reset{margin:6px 10px 12px;text-align:center;font-size:11.5px;color:var(--accent);cursor:pointer;padding:7px;border:1px dashed var(--line);border-radius:9px;display:none}
+  .rail .reset.show{display:block}
+  /* ---------- Collapsible filter sections (ported from Private Jet Atlas) ---------- */
+  .railscroll{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
+  .secthead{display:flex;align-items:center;gap:8px;margin:11px 10px 2px;padding:9px 11px;border-radius:11px;
+    background:var(--panel2);border:1px solid var(--line);color:var(--muted);cursor:pointer;
+    font:700 11px var(--sans);text-transform:uppercase;letter-spacing:1.1px;-webkit-tap-highlight-color:transparent}
+  .secthead:hover{border-color:rgba(63,193,176,.5);color:var(--ink)}
+  .secthead .chev{margin-left:auto;font-size:10px;color:var(--accent);transition:transform .22s}
+  .secthead.collapsed .chev{transform:rotate(-90deg)}
+  .sectbody{overflow:hidden;max-height:800px;transition:max-height .26s ease,opacity .2s ease}
+  .sectbody.collapsed{max-height:0;opacity:0;pointer-events:none}
+  /* Region filter rows reuse .op; pin chip instead of a logo */
+  .op .regab{background:radial-gradient(circle at 35% 30%,#eafffb,#3fc1b0 60%,#1d6e63);color:#07332d;font-size:14px}
+  .op .dot.regtick{background:transparent;border:1.5px solid var(--line);width:14px;height:14px;border-radius:5px;opacity:.7}
+  .op.reg.active .dot.regtick{background:var(--accent);border-color:var(--accent);opacity:1}
+  .panel{position:absolute;z-index:1001;top:0;right:0;height:100%;width:392px;max-width:92vw;background:linear-gradient(180deg,var(--panel),#080b10);border-left:1px solid var(--line);box-shadow:-12px 0 40px rgba(0,0,0,.55);transform:translateX(105%);transition:transform .32s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+  .panel.open{transform:none}
+  .panel .hero{position:relative;padding:24px 22px 18px;border-bottom:1px solid var(--line);background:radial-gradient(120% 120% at 80% 0%,rgba(63,193,176,.20),transparent 60%)}
+  .panel .close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;font-size:15px}
+  .panel .klabel{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent)}
+  .panel h3{font-family:var(--serif);margin:7px 0 5px;font-size:27px;line-height:1.12;font-weight:600}
+  .panel .sub{font-size:12.5px;color:var(--muted)}
+  .panel .list{overflow-y:auto;padding:14px 16px 26px;flex:1}
+  .card{display:flex;align-items:center;gap:13px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);margin-bottom:10px;text-decoration:none;color:var(--ink);transition:.16s;position:relative}
+  .card:hover{border-color:var(--accent);transform:translateY(-1px);background:#1d232f}
+  .card.routed{border-color:var(--accent);background:#1d232f;box-shadow:0 0 0 1px var(--accent),0 0 20px rgba(63,193,176,.30)}
+  .card.routed::before{content:"\25C9 On map";position:absolute;top:-9px;right:11px;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:#07332d;background:linear-gradient(135deg,#3fc1b0,#a9ecdf);padding:2px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.45)}
+  .card .lg{width:48px;height:48px;border-radius:10px;background:#fff;flex:0 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800;font-size:15px}
+  .card .lg img{max-width:100%;max-height:100%;object-fit:contain}
+  .card .meta{min-width:0}
+  .card .meta .nm{font-size:14.5px;font-weight:700;line-height:1.18}
+  .card .meta .dt{font-size:12px;color:var(--accent2);margin-top:3px;font-variant-numeric:tabular-nums}
+  .card .meta .go{font-size:11.5px;color:var(--accent);margin-top:4px;display:flex;align-items:center;gap:5px}
+  .card .meta .rt{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+  .card .arrow{margin-left:auto;color:var(--muted);font-size:18px;flex:0 0 auto}
+  .rmarker{position:relative;transform:translate(-50%,-50%);cursor:pointer}
+  .rmarker .ring{width:var(--sz,34px);height:var(--sz,34px);border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(207,238,232,.95),rgba(63,193,176,.92) 58%,rgba(120,90,30,.92));border:2px solid rgba(255,255,255,.85);box-shadow:0 0 0 4px rgba(63,193,176,.22),0 5px 16px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#07332d;transition:.18s}
+  .rmarker:hover .ring{transform:scale(1.12);box-shadow:0 0 0 6px rgba(63,193,176,.3),0 6px 18px rgba(0,0,0,.6)}
+  .rmarker.dim .ring{opacity:.2;filter:grayscale(.55)}
+  .rmarker.hit .ring{background:radial-gradient(circle at 35% 30%,#eafffb,#a9ecdf 55%,#3fc1b0);border-color:#fff;box-shadow:0 0 0 5px rgba(207,238,232,.4),0 6px 18px rgba(0,0,0,.55)}
+  .rmarker .tag{position:absolute;left:50%;top:calc(var(--sz,34px) + 8px);transform:translateX(-50%);white-space:nowrap;background:rgba(8,11,16,.92);border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:600;padding:3px 8px;border-radius:7px;pointer-events:none;opacity:0;transition:.15s;letter-spacing:.2px}
+  .rmarker:hover .tag{opacity:1}
+  .hint{position:absolute;z-index:1000;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(17,21,29,.92);border:1px solid var(--line);border-radius:30px;padding:8px 18px;font-size:12.5px;color:var(--muted);box-shadow:var(--shadow);backdrop-filter:blur(6px);max-width:92vw;text-align:center}
+  .hint b{color:var(--ink)}
+  /* ---------- Route tracing (ported from Private Jet Atlas) ---------- */
+  .stopdot{transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#eafffb,#3fc1b0 65%,#1d6e63);border:1.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font:700 10px/1 var(--sans);color:#07332d}
+  .seatri{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid #7fdfd0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.65))}
+  .leaflet-tooltip.stoptip{background:rgba(8,11,16,.94);border:1px solid var(--line);color:var(--ink);font:600 11.5px var(--sans);padding:3px 8px;border-radius:7px;box-shadow:0 3px 10px rgba(0,0,0,.55)}
+  .leaflet-tooltip.stoptip:before{border-top-color:rgba(8,11,16,.94)}
+  .rmarker.route .ring{background:radial-gradient(circle at 35% 30%,#eafffb,#a9ecdf 55%,#3fc1b0);border-color:#fff;box-shadow:0 0 0 5px rgba(207,238,232,.4),0 6px 18px rgba(0,0,0,.55);transform:scale(1.08)}
+  .card .tracebtn{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:6px 11px;border-radius:9px;font-size:11.5px;font-weight:700;cursor:pointer;color:var(--accent);background:rgba(63,193,176,.10);border:1px solid rgba(63,193,176,.45);-webkit-tap-highlight-color:transparent;transition:.15s}
+  .card .tracebtn:hover{background:rgba(63,193,176,.20);border-color:var(--accent)}
+  .card .tracebtn:active{transform:scale(.97)}
+  .card .tracebtn.on{background:linear-gradient(135deg,#3fc1b0,#a9ecdf);color:#07332d;border-color:#fff}
+  .card .tracebtn.on:hover{filter:brightness(1.04)}
+  .card .askguide{display:inline-flex;align-items:center;gap:6px;margin-top:9px;margin-left:8px;padding:6px 11px;border-radius:9px;font-size:11.5px;font-weight:700;cursor:pointer;color:var(--accent);background:transparent;border:1px solid var(--accent);-webkit-tap-highlight-color:transparent;transition:.15s}
+  .card .askguide:hover{background:var(--accent);color:#07241f;border-color:var(--accent)}
+  .card .askguide:active{transform:scale(.97)}
+  .panel .cardteaser{display:flex;align-items:center;justify-content:center;gap:7px;margin:12px 16px 0;padding:8px 12px;border:1px dashed var(--accent);border-radius:10px;color:var(--accent);font-size:11.5px;font-weight:600;letter-spacing:.2px;text-align:center;line-height:1.3;opacity:.92}
+  body.tracing .rmarker{opacity:.28;transition:opacity .3s ease}
+  body.tracing .rmarker:hover{opacity:.85}
+  body.tracing .rmarker.route{opacity:1}
+  #routeBack{display:none;position:absolute;z-index:1200;left:50%;bottom:84px;transform:translateX(-50%);align-items:center;gap:7px;padding:10px 17px;border-radius:30px;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  @media (max-width:640px){body.tracing .panel.open{transform:translateX(102%) !important}body.tracing #routeBack{display:inline-flex}}
+  .leaflet-popup,.leaflet-control-attribution{font-family:var(--sans)}
+  .leaflet-bottom.leaflet-left{bottom:18px;left:14px}
+  .leaflet-bar{border:1px solid var(--line);box-shadow:var(--shadow)}
+  .leaflet-bar a{background:var(--panel2);color:var(--ink);border-bottom-color:var(--line)}
+  .leaflet-bar a:hover{background:#1d232f}
+
+  .sheetHandle,.sheetFooter,.sheetScrim{display:none}
+  .atlasVeil{position:absolute;inset:0;z-index:2500;display:flex;align-items:center;justify-content:center;background:rgba(5,7,11,.84);overflow:hidden;transition:opacity .32s ease,visibility .32s ease}
+  .atlasVeil.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .veilSkeleton{position:absolute;inset:0;z-index:0;overflow:hidden;background:radial-gradient(46% 46% at 50% 42%,rgba(63,193,176,.12),transparent 70%),radial-gradient(80% 80% at 50% 120%,rgba(91,141,214,.12),transparent 70%)}
+  .veilSkeleton:before{content:"";position:absolute;inset:-40% -10%;background:linear-gradient(115deg,transparent 38%,rgba(207,238,232,.08) 50%,transparent 62%);animation:shimmer 2.4s ease-in-out infinite}
+  @keyframes shimmer{0%{transform:translateX(-30%)}100%{transform:translateX(30%)}}
+  .atlasVeil .box{position:relative;z-index:1;width:420px;max-width:calc(100vw - 36px);text-align:center;background:rgba(17,21,29,.88);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:28px 26px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  .atlasVeil .box.hidden{display:none}
+  .spinner{width:42px;height:42px;border-radius:50%;border:3px solid rgba(63,193,176,.18);border-top-color:var(--accent);margin:0 auto 18px;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .atlasVeil h2{font-family:var(--serif);font-size:28px;line-height:1.1;font-weight:600;margin:0 0 8px}
+  .atlasVeil p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55}
+  .loadbar{width:230px;max-width:70vw;height:4px;margin:20px auto 0;border-radius:4px;background:rgba(63,193,176,.18);overflow:hidden}
+  .loadbar-fill{height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s cubic-bezier(.22,.61,.36,1)}
+  .errmark{font-size:38px;color:var(--accent);margin-bottom:8px;opacity:.9}
+  .errbtn{display:inline-block;margin:4px 5px;padding:10px 20px;border-radius:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#07332d;font-weight:800;font-size:13.5px;text-decoration:none}
+  .errbtn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  .errbtn:hover{filter:brightness(1.05)}
+  .setupNote{margin-top:20px;text-align:left;max-width:440px;margin-left:auto;margin-right:auto;border-top:1px solid var(--line);padding-top:12px}
+  .setupNote summary{cursor:pointer;font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);list-style:none}
+  .setupNote summary::-webkit-details-marker{display:none}
+  .setupNote summary:before{content:"\25B8 ";color:var(--accent)}
+  .setupNote[open] summary:before{content:"\25BE "}
+  .setupNote p{font-size:12.5px;margin:8px 0}
+  @media (max-width:640px){.rail{display:block;top:70px;left:12px;right:12px;width:auto;max-height:none;background:transparent;border:0;box-shadow:none;backdrop-filter:none}.rail h2,.rail .railscroll,.rail .reset{display:none}.filterbtn{margin:0;background:rgba(17,21,29,.94);box-shadow:var(--shadow);backdrop-filter:blur(8px)}.datepop{left:12px;right:12px;top:132px;width:auto;max-width:none}.panel{width:100%}.topbar p{display:none}.partner span{display:none}.logochip.mark{height:42px}.logochip.mark img{height:30px;max-width:120px}.hint{display:none}.leaflet-bottom.leaflet-left{bottom:18px}}
+  /* ── base-map style picker ─────────────────────────────────────────────── */
+  .stylectl{font-family:var(--sans);user-select:none}
+  .stylectl .scmenu{display:none;flex-direction:column;gap:2px;margin-bottom:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px;box-shadow:0 10px 28px rgba(0,0,0,.55)}
+  .stylectl.open .scmenu{display:flex}
+  .stylectl .scitem{display:flex;align-items:center;gap:8px;background:transparent;border:0;color:var(--ink);border-radius:7px;padding:7px 10px;font-size:12px;cursor:pointer;text-align:left;font-family:var(--sans);white-space:nowrap}
+  .stylectl .scitem:hover{background:var(--panel2)}
+  .stylectl .scitem.active{color:var(--accent)}
+  .stylectl .scbtn{display:flex;align-items:center;gap:7px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);font-family:var(--sans)}
+  .stylectl .scbtn:hover{border-color:var(--accent)}
+  .stylectl .scbtn .car{color:var(--muted);font-size:9px}
+  .stylectl .sw{width:13px;height:13px;border-radius:4px;border:1px solid rgba(255,255,255,.22);flex:0 0 auto}
+</style>
+<style id="bvnav-css">
+/* Cross-atlas top nav — copied from Base Camp (The Guide). Self-contained; sits inside the existing .topbar so no map/rail/search offsets change. */
+.bvnav{order:3;pointer-events:auto;display:flex;align-items:center;gap:5px;font-size:12px;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none;font-family:var(--sans,inherit)}
+.bvnav::-webkit-scrollbar{display:none}
+.bvnav a{flex:0 0 auto;color:#9c9070;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;font-weight:600;padding:7px 10px 6px;border:1px solid transparent;border-bottom:2px solid transparent;border-radius:9px 9px 0 0;text-decoration:none;transition:.15s}
+.bvnav a:hover{color:#e2c87a;background:rgba(255,255,255,.06);text-decoration:none}
+.bvnav a.bvnav-guide{color:#d8c79c}
+.bvnav a.bvnav-tab{color:var(--tab);border-bottom-color:var(--tab)}
+.bvnav a.bvnav-tab:hover{color:#e2c87a}
+.bvnav a.is-here{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#fff}
+@media(max-width:680px){
+  .topbar .partner{display:none!important}
+  .topbar .brand{min-width:0!important;overflow:hidden!important}
+  .topbar h1{max-width:44vw!important}
+  .bvnav{flex:1 1 0;min-width:0;margin-left:8px;gap:2px;font-size:10px}
+  .bvnav a{padding:6px 7px 5px;letter-spacing:.2px}
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="atlasVeil" id="atlasVeil">
+  <div class="veilSkeleton" aria-hidden="true"></div>
+  <div class="box" id="atlasLoad">
+    <div class="spinner"></div>
+    <h2>Loading the Atlas&hellip;</h2>
+    <p id="loadMsg">Preparing world cruises, ports, and voyage routes.</p>
+    <div class="loadbar" role="progressbar" aria-label="Loading the atlas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="loadBar">
+      <div class="loadbar-fill" id="loadFill"></div>
+    </div>
+  </div>
+  <div class="box hidden" id="atlasErr">
+    <div class="errmark" aria-hidden="true">&#9888;</div>
+    <h2>The Atlas is taking a moment</h2>
+    <p>World cruise voyages are not available right now. Please refresh, or reach our concierge and we&rsquo;ll send curated recommendations straight to you.</p>
+    <p style="margin-top:14px">
+      <a class="errbtn" href="#" onclick="location.reload();return false;">Refresh</a>
+      <a class="errbtn ghost" href="mailto:Book@BeVvip.com?subject=World%20Cruise%20Atlas%20help" data-help-open>Contact concierge</a>
+    </p>
+    <details class="setupNote"><summary>What happened</summary><p>This atlas loads map tiles and itinerary data in the browser. A refresh usually clears temporary network or data-loading issues.</p></details>
+  </div>
+</div>
+<script>
+(function(){
+  function setProgress(pct,msg){var fill=document.getElementById('loadFill'),bar=document.getElementById('loadBar'),lbl=document.getElementById('loadMsg');pct=Math.max(0,Math.min(100,pct||0));if(fill)fill.style.width=pct+'%';if(bar)bar.setAttribute('aria-valuenow',String(Math.round(pct)));if(msg&&lbl)lbl.textContent=msg;}
+  window.setAtlasProgress=setProgress;
+  window.__atlasSetApplyCount=function(n){window.__atlasLastApplyCount=n;var el=document.getElementById('applyCount');if(el)el.textContent=Number(n||0).toLocaleString();};
+  window.hideAtlasVeil=function(){var v=document.getElementById('atlasVeil');if(v)v.classList.add('hidden');};
+  window.showAtlasError=function(msg){var load=document.getElementById('atlasLoad'),err=document.getElementById('atlasErr'),lbl=document.getElementById('loadMsg');if(msg&&lbl)lbl.textContent=msg;if(load)load.classList.add('hidden');if(err)err.classList.remove('hidden');};
+  setProgress(6);
+})();
+</script>
+<div class="topbar">
+  <nav class="bvnav" aria-label="BeVvip Atlas family">
+    <a class="bvnav-guide" href="https://bevvip-concierge.vercel.app/" target="_blank" rel="noopener">The Guide</a>
+    <a class="bvnav-tab" style="--tab:#e6d488" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener">Hotels</a>
+    <a class="bvnav-tab" style="--tab:#5aa9e6" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener">Expeditions</a>
+    <a class="bvnav-tab" style="--tab:#dfe5f2" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener">Jets</a>
+    <a class="bvnav-tab" style="--tab:#e0b84a" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener">Yachts</a>
+    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#45d6c2" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener">World</a>
+  </nav>
+  <div class="brand">
+    <a class="logochip mark" href="https://www.expeditionbucketlist.com" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/57d86bcd46c3c49c625850a1/54c90494-d588-412d-9643-5d5650d856fd/ebl+2026+Gemini.png?content-type=image%2Fpng" alt="Expedition Bucket List"></a>
+    <div>
+      <h1>World Cruise <span>Atlas</span></h1>
+      <p>Explore world cruises &amp; grand voyages by region &middot; tap a pin to see every voyage</p>
+    </div>
+  </div>
+  <a class="partner" href="https://www.aspentraveladvisors.com" target="_blank" rel="noopener">
+    <span>Curated&nbsp;by</span>
+    <div class="logochip ata"><img src="https://images.squarespace-cdn.com/content/v1/57d86bcd46c3c49c625850a1/8c7b524b-9951-4a51-aaf2-44982357ccfe/ATA+logo+clear+2025+black.png?format=750w" alt="Aspen Travel Advisors"></div>
+  </a>
+</div>
+<div class="sheetScrim" id="sheetScrim" hidden></div>
+
+<aside class="rail" id="rail">
+  <div class="sheetHandle" id="railHandle" aria-hidden="true"><span></span></div>
+  <button type="button" class="railx" id="railClose" aria-label="Close filters">&#10005;</button>
+  <div class="filterbtn" id="dateBtn">
+    <div class="ico">&#128197;</div>
+    <div>
+      <div class="ft">Date Range</div>
+      <div class="fs" id="dateSummary">All voyages</div>
+    </div>
+  </div>
+  <div class="filterbtn" id="portBtn">
+    <div class="ico">&#9875;</div>
+    <div>
+      <div class="ft">Ports</div>
+      <div class="fs" id="portSummary">All ports</div>
+    </div>
+  </div>
+  <div class="railscroll">
+    <button type="button" class="secthead" id="lineHead">Cruise line<span class="chev">&#9662;</span></button>
+    <div class="sectbody ops" id="opList"></div>
+    <button type="button" class="secthead collapsed" id="regionHead">Region<span class="chev">&#9662;</span></button>
+    <div class="sectbody ops reglist collapsed" id="regionList"></div>
+  </div>
+  <div class="reset" id="reset">&#10005; Clear filter</div>
+  <div class="sheetFooter" id="railFooter">
+    <button type="button" class="sheetApply" id="railApply">Show <span id="applyCount">0</span> voyages</button>
+  </div>
+</aside>
+<div class="datepop" id="datePop">
+  <div class="dh">
+    <h2>Filter by departure month</h2>
+    <div class="dhr">
+      <div class="clear" id="dateClear">Clear dates</div>
+      <button type="button" class="popx" id="datePopClose" aria-label="Close">&#10005;</button>
+    </div>
+  </div>
+  <div id="dateGrid"></div>
+</div>
+<div class="datepop portpop" id="portPop">
+  <div class="dh">
+    <h2>Filter by port</h2>
+    <div class="dhr">
+      <div class="clear" id="portClear">Clear port</div>
+      <button type="button" class="popx" id="portPopClose" aria-label="Close">&#10005;</button>
+    </div>
+  </div>
+  <div class="portroles" id="portRoles">
+    <button type="button" class="proll active" data-role="any">All</button>
+    <button type="button" class="proll" data-role="embark">Embark</button>
+    <button type="button" class="proll" data-role="disembark">Disembark</button>
+    <button type="button" class="proll" data-role="call">Day&nbsp;visits</button>
+  </div>
+  <input id="portSearch" class="portsearch" type="search" placeholder="Search ports&hellip;" autocomplete="off">
+  <div class="portlist" id="portList"></div>
+</div>
+<section class="panel" id="panel">
+  <div class="sheetHandle drawerHandle" id="panelHandle" aria-hidden="true"><span></span></div>
+  <div class="hero">
+    <button class="close" id="close">&#10005;</button>
+    <div class="klabel">World cruise region</div>
+    <h3 id="pTitle">Region</h3>
+    <div class="sub" id="pSub"></div>
+  </div>
+  <div class="cardteaser">&#128071; Click any result for ship photos, day-to-day details &amp; more</div>
+  <div class="list" id="pList"></div>
+</section>
+<script src="vendor/leaflet.min.js"></script>
+<script>
+  // ── DATA LOADING ─────────────────────────────────────────────────────────
+  if(window.setAtlasProgress) window.setAtlasProgress(12,'Loading world cruise voyages...');
+  let BRANDS, REGIONS, TRIPS, PORTS;
+  const _dataReady = fetch('itinerary.json')
+    .then(r => r.json())
+    .then(d => {
+      BRANDS = d.BRANDS;
+      REGIONS = d.REGIONS;
+      TRIPS = d.TRIPS;
+      PORTS = d.PORTS || {};
+    });
+  
+;
+;
+;
+function logoEl(brandKey){
+  const m=BRANDS[brandKey]||{short:brandKey,domain:'',color:'#26506e'};
+  const wrap=document.createElement('div');wrap.className='lg';
+  function fallback(){wrap.innerHTML='';wrap.style.background=m.color;wrap.style.color='#fff';wrap.textContent=(m.short.match(/[A-Za-z]/g)||['?']).slice(0,2).join('').toUpperCase();}
+  if(!m.domain){fallback();return wrap;}
+  const sources=['logos/'+m.domain+'.png','https://www.google.com/s2/favicons?sz=128&domain='+m.domain,'https://icons.duckduckgo.com/ip3/'+m.domain+'.ico'];
+  const img=document.createElement('img');img.loading='lazy';img.alt=m.short;let i=0;
+  img.onerror=function(){if(i<sources.length){img.src=sources[i++];}else{fallback();}};
+  img.onload=function(){if(img.naturalWidth<8){img.onerror();}};
+  img.src=sources[i++];wrap.appendChild(img);return wrap;
+}
+_dataReady.then(() => {
+if(window.setAtlasProgress) window.setAtlasProgress(34,'Preparing voyage routes and ports...');
+const byRegion={};
+TRIPS.forEach(t=>t.g.forEach(k=>{(byRegion[k]=byRegion[k]||[]).push(t);}));
+Object.values(byRegion).forEach(arr=>arr.sort((a,b)=>a.dates.localeCompare(b.dates)||a.title.localeCompare(b.title)));
+const map=L.map('map',{worldCopyJump:true,minZoom:2,maxZoom:8,zoomControl:false}).setView([20,-10],2.1);
+function stabilizeMap(){map.invalidateSize(false);}
+setTimeout(stabilizeMap,120);
+setTimeout(stabilizeMap,700);
+window.addEventListener('resize',stabilizeMap);
+L.control.zoom({position:'bottomleft'}).addTo(map);
+window.__atlasMap=map;
+/* ── base-map styles + picker (default / dark / satellite, swappable) ────── */
+const DATA_CREDIT='Sailings: Brian Harris / Virtuoso';
+const _cr={esri:'Imagery &copy; Esri, Maxar, Earthstar Geographics',carto:'&copy; OpenStreetMap contributors &copy; CARTO'};
+const BASES={
+  voyager:{label:'Voyager',sw:'#cfe0ec',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:8,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},
+  dark:{label:'Dark',sw:'#10141b',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:8,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},
+  satellite:{label:'Satellite',sw:'#37503a',make:()=>L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:8,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:8})])}
+};
+const BASE_ORDER=['voyager','dark','satellite'];
+const DEFAULT_BASE='satellite';
+const _baseCache={}; let _baseKey=null,_baseLayer=null;
+function _mkBase(k){ return _baseCache[k]||(_baseCache[k]=BASES[k].make()); }
+function setBase(key){
+  if(!BASES[key]||key===_baseKey) return;
+  const next=_mkBase(key); next.addTo(map);
+  if(_baseLayer&&_baseLayer!==next) map.removeLayer(_baseLayer);
+  _baseLayer=next; _baseKey=key;
+  const sc=document.querySelector('.stylectl');
+  if(sc){ sc.querySelectorAll('.scitem').forEach(b=>b.classList.toggle('active',b.dataset.k===key));
+    sc.querySelector('.scbtn .sw').style.background=BASES[key].sw;
+    sc.querySelector('.scbtn .lbl').textContent=BASES[key].label; }
+}
+const StyleCtl=L.Control.extend({options:{position:'bottomright'},onAdd:function(){
+  const c=L.DomUtil.create('div','stylectl');
+  c.innerHTML='<div class="scmenu">'+BASE_ORDER.map(k=>'<button class="scitem" type="button" data-k="'+k+'"><i class="sw" style="background:'+BASES[k].sw+'"></i>'+BASES[k].label+'</button>').join('')+'</div>'+
+    '<button class="scbtn" type="button" title="Map style"><i class="sw"></i><span class="lbl"></span><span class="car">&#9662;</span></button>';
+  L.DomEvent.disableClickPropagation(c); L.DomEvent.disableScrollPropagation(c);
+  c.querySelector('.scbtn').addEventListener('click',function(e){e.stopPropagation();c.classList.toggle('open');});
+  c.querySelectorAll('.scitem').forEach(function(b){b.addEventListener('click',function(){setBase(b.dataset.k);c.classList.remove('open');});});
+  return c;
+}});
+map.addControl(new StyleCtl());
+document.addEventListener('click',function(){var sc=document.querySelector('.stylectl');if(sc)sc.classList.remove('open');});
+setBase(DEFAULT_BASE);
+if(window.setAtlasProgress) window.setAtlasProgress(50,'Rendering the world map...');
+
+/* ===== Stops + route tracing (ported from Private Jet Atlas) =====
+   Each trip's stops come from a future day-by-day `ports` array if present,
+   otherwise fall back to [from, to]. Names resolve to coords via PORTS. */
+/* Ordered itinerary entries: port = {n,ll,day}; sea day = {sea:true}.
+   Uses day-by-day `itin` if present, else falls back to [from,to]. */
+function tripStops(t){
+  if(t.itin&&t.itin.length){
+    return t.itin.map(e=> e.s ? {sea:true} : {n:e.n, ll:PORTS[e.n], day:e.d})
+                 .filter(e=> e.sea || e.ll);
+  }
+  return [t.from,t.to].map(n=>({n:(n||'').trim(), ll:PORTS[(n||'').trim()]})).filter(e=>e.ll);
+}
+function portCoords(t){ return tripStops(t).filter(e=>e.ll).map(e=>e.ll); }
+function isTraceable(t){
+  const c=portCoords(t);
+  return c.length>=2 && c.some(x=>x[0]!==c[0][0]||x[1]!==c[0][1]);
+}
+/* screen heading (deg) for a north-pointing triangle so its apex faces P->Q */
+function headingDeg(P,Q){
+  const latMid=(P[0]+Q[0])/2*Math.PI/180;
+  const dx=(Q[1]-P[1])*Math.cos(latMid), dy=(Q[0]-P[0]);
+  return Math.atan2(dx,dy)*180/Math.PI;
+}
+let pinnedTrip=null, routeLocked=false;
+const routeLayer=L.layerGroup().addTo(map);
+function clearRoute(){ routeLayer.clearLayers(); Object.values(markers).forEach(o=>o.el.classList.remove('route')); markRoutedCard(null); }
+/* Keep dateline-crossing routes visible when dragging across the world-copy
+   seam: Leaflet doesn't repaint vector layers in adjacent copies, so re-anchor
+   the whole route layer to whichever copy is now centered. */
+function reanchorRoutes(){
+  let lo=Infinity,hi=-Infinity;
+  const scan=ll=>{ if(ll.lng<lo)lo=ll.lng; if(ll.lng>hi)hi=ll.lng; };
+  const walk=v=>{ if(Array.isArray(v)) v.forEach(walk); else scan(v); };
+  routeLayer.eachLayer(l=>{ if(l.getLatLngs) walk(l.getLatLngs()); else if(l.getLatLng) scan(l.getLatLng()); });
+  if(lo===Infinity) return;
+  const delta=Math.round((map.getCenter().lng-(lo+hi)/2)/360)*360;
+  if(!delta) return;
+  const bump=v=>Array.isArray(v)?v.map(bump):[v.lat,v.lng+delta];
+  routeLayer.eachLayer(l=>{ if(l.setLatLngs) l.setLatLngs(bump(l.getLatLngs())); else if(l.setLatLng){ const p=l.getLatLng(); l.setLatLng([p.lat,p.lng+delta]); } });
+}
+map.on('move',reanchorRoutes);
+function markRoutedCard(trip,scroll){
+  let hit=null;
+  document.querySelectorAll('.card').forEach(c=>{ const on=trip&&c._trip===trip; c.classList.toggle('routed',on); if(on)hit=c; });
+  if(hit&&scroll) hit.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function unroll(coords){ const out=[coords[0].slice()]; for(let i=1;i<coords.length;i++){ let la=coords[i][0],lo=coords[i][1]; const prevLo=out[i-1][1]; while(lo-prevLo>180)lo-=360; while(lo-prevLo<-180)lo+=360; out.push([la,lo]); } return out; }
+function arcPts(a,b){ const la1=a[0],lo1=a[1],la2=b[0],lo2=b[1]; const mx=(lo1+lo2)/2,my=(la1+la2)/2,dx=lo2-lo1,dy=la2-la1; const k=0.16; const cx=mx-dy*k,cy=my+dx*k; const p=[]; for(let t=0;t<=1.0001;t+=0.04){ const x=(1-t)*(1-t)*lo1+2*(1-t)*t*cx+t*t*lo2; const y=(1-t)*(1-t)*la1+2*(1-t)*t*cy+t*t*la2; p.push([y,x]); } return p; }
+/* ===== Sea routing: keep cruise legs off land (land mask + A*) ===== */
+const SEA={mask:null,ocean:null,W:3600,H:1700,RES:10,LAT_MAX:85,ready:false};
+(function loadLandMask(){
+  fetch('data/landmask.bin').then(r=>r.ok?r.arrayBuffer():Promise.reject(r.status))
+   .then(buf=>{ SEA.mask=new Uint8Array(buf); buildOcean(); SEA.ready=true; _legCache.clear();
+     if(pinnedTrip) drawRoute(pinnedTrip,false); })
+   .catch(()=>{ SEA.ready=false; });   // routing disabled -> arcs as before
+})();
+function buildOcean(){            // flood-fill the open ocean so we never start/end a route in a closed bay
+  const N=SEA.W*SEA.H, ocean=new Uint8Array((N+7)>>3);
+  const getO=i=>(ocean[i>>3]>>(i&7))&1, setO=i=>{ocean[i>>3]|=(1<<(i&7));};
+  const q=new Int32Array(N); let head=0,tail=0;
+  for(const [la,lo] of [[0,-150],[0,-30],[0,80],[40,-45],[60,-180],[-40,60]]){
+    const c=_col(lo), r=_row(la); if(r<0||r>=SEA.H) continue; const i=r*SEA.W+c;
+    if(!isLandCell(c,r)&&!getO(i)){ setO(i); q[tail++]=i; }
+  }
+  while(head<tail){ const i=q[head++], r=(i/SEA.W)|0, c=i-r*SEA.W; let nc,ni;
+    nc=c+1>=SEA.W?0:c+1; ni=r*SEA.W+nc; if(!getO(ni)&&!isLandCell(nc,r)){setO(ni);q[tail++]=ni;}
+    nc=c-1<0?SEA.W-1:c-1; ni=r*SEA.W+nc; if(!getO(ni)&&!isLandCell(nc,r)){setO(ni);q[tail++]=ni;}
+    if(r+1<SEA.H){ni=(r+1)*SEA.W+c; if(!getO(ni)&&!isLandCell(c,r+1)){setO(ni);q[tail++]=ni;}}
+    if(r-1>=0){ni=(r-1)*SEA.W+c; if(!getO(ni)&&!isLandCell(c,r-1)){setO(ni);q[tail++]=ni;}}
+  }
+  SEA.ocean=ocean;
+}
+function oceanAt(c,r){ if(!SEA.ocean) return !isLandCell(c,r); if(r<0||r>=SEA.H)return false; if(c<0)c+=SEA.W; if(c>=SEA.W)c-=SEA.W; const i=r*SEA.W+c; return (SEA.ocean[i>>3]>>(i&7))&1; }
+const _legCache=new Map();
+function _normLng(lng){return ((lng+180)%360+360)%360-180;}
+function _col(lng){let c=Math.round((_normLng(lng)+180)*SEA.RES);if(c>=SEA.W)c-=SEA.W;if(c<0)c+=SEA.W;return c;}
+function _row(lat){return Math.round((SEA.LAT_MAX-lat)*SEA.RES);}
+function _cellLng(c){return -180+c/SEA.RES;}
+function _cellLat(r){return SEA.LAT_MAX-r/SEA.RES;}
+function isLandCell(c,r){ if(r<0||r>=SEA.H)return false; if(c<0)c+=SEA.W; if(c>=SEA.W)c-=SEA.W; const i=r*SEA.W+c; return (SEA.mask[i>>3]>>(i&7))&1; }
+function isLandLL(lat,lng){ if(!SEA.mask)return false; if(lat>SEA.LAT_MAX||lat<-SEA.LAT_MAX)return false; const r=_row(lat); if(r<0||r>=SEA.H)return false; return isLandCell(_col(lng),r); }
+function nearLandCell(c,r){return isLandCell(c+1,r)||isLandCell(c-1,r)||isLandCell(c,r+1)||isLandCell(c,r-1);}
+function lineHitsLand(a,b){
+  const dlat=b[0]-a[0], dlng=_normLng(b[1]-a[1]);
+  const steps=Math.max(2,Math.ceil(Math.hypot(dlat,dlng)*SEA.RES*1.5));
+  for(let i=1;i<steps;i++){const f=i/steps; if(isLandLL(a[0]+dlat*f, _normLng(a[1]+dlng*f))) return true;}
+  return false;
+}
+function polyHitsLand(pts){for(let i=0;i<pts.length-1;i++)if(lineHitsLand(pts[i],pts[i+1]))return true;return false;}
+function densify(a,b,n){const p=[];for(let i=0;i<=n;i++){const f=i/n;p.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f]);}return p;}
+function nearestSeaCell(lat,lng){     // snap to the connected open ocean, not just any sea pixel
+  const c0=_col(lng), r0=_row(lat);
+  if(oceanAt(c0,r0)) return [c0,r0];
+  for(let rad=1;rad<=30;rad++) for(let dy=-rad;dy<=rad;dy++) for(let dx=-rad;dx<=rad;dx++){
+    if(Math.max(Math.abs(dx),Math.abs(dy))!==rad) continue;
+    if(oceanAt(c0+dx,r0+dy)) return [c0+dx,r0+dy];
+  }
+  return null;
+}
+function _hPush(h,n){h.push(n);let i=h.length-1;while(i>0){const p=(i-1)>>1;if(h[p].f<=h[i].f)break;const t=h[p];h[p]=h[i];h[i]=t;i=p;}}
+function _hPop(h){const top=h[0],last=h.pop();if(h.length){h[0]=last;let i=0;const n=h.length;for(;;){let l=2*i+1,r=l+1,s=i;if(l<n&&h[l].f<h[s].f)s=l;if(r<n&&h[r].f<h[s].f)s=r;if(s===i)break;const t=h[s];h[s]=h[i];h[i]=t;i=s;}}return top;}
+function _searchSea(sa,sb,pad){
+  const minC=Math.min(sa[0],sb[0])-pad, maxC=Math.max(sa[0],sb[0])+pad;
+  const minR=Math.max(0,Math.min(sa[1],sb[1])-pad), maxR=Math.min(SEA.H-1,Math.max(sa[1],sb[1])+pad);
+  const bw=maxC-minC+1, bh=maxR-minR+1;
+  if(bw*bh>1400000) return null;
+  const idx=(c,r)=>(r-minR)*bw+(c-minC);
+  const inBox=(c,r)=>c>=minC&&c<=maxC&&r>=minR&&r<=maxR;
+  const g=new Float64Array(bw*bh).fill(Infinity);
+  const came=new Int32Array(bw*bh).fill(-1);
+  const closed=new Uint8Array(bw*bh);
+  const cosR=r=>Math.max(0.15,Math.cos(_cellLat(r)*Math.PI/180));
+  const hcost=(c,r)=>Math.hypot(Math.abs(c-sb[0])*cosR(r),Math.abs(r-sb[1]));
+  g[idx(sa[0],sa[1])]=0;
+  const heap=[]; _hPush(heap,{c:sa[0],r:sa[1],f:hcost(sa[0],sa[1])});
+  const dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  let found=false;
+  while(heap.length){
+    const cur=_hPop(heap), ci=idx(cur.c,cur.r);
+    if(closed[ci]) continue; closed[ci]=1;
+    if(cur.c===sb[0]&&cur.r===sb[1]){found=true;break;}
+    const base=g[ci], cl=cosR(cur.r);
+    for(const [dx,dy] of dirs){
+      const nc=cur.c+dx, nr=cur.r+dy;
+      if(!inBox(nc,nr)||isLandCell(nc,nr)) continue;
+      const ni=idx(nc,nr); if(closed[ni]) continue;
+      let step=(dx&&dy)?Math.hypot(cl,1):(dx?cl:1);
+      if(nearLandCell(nc,nr)) step*=1.6;          // bias ~1 cell offshore
+      const ng=base+step;
+      if(ng<g[ni]){ g[ni]=ng; came[ni]=ci; _hPush(heap,{c:nc,r:nr,f:ng+hcost(nc,nr)}); }
+    }
+  }
+  if(!found) return null;
+  const path=[]; let ci=idx(sb[0],sb[1]);
+  while(ci!==-1){ path.push([_cellLat(minR+Math.floor(ci/bw)), _cellLng(minC+(ci%bw))]); ci=came[ci]; }
+  return path.reverse();
+}
+function aStarSea(a,b){
+  const sa=nearestSeaCell(a[0],a[1]), sb=nearestSeaCell(b[0],b[1]);
+  if(!sa||!sb) return null;
+  const span=Math.max(Math.abs(sa[0]-sb[0]),Math.abs(sa[1]-sb[1]));
+  const pads=[Math.max(45,Math.round(span*0.9))];   // direct box, then widen for round-the-land detours
+  for(const p of [140,280,440]) if(p>pads[pads.length-1]) pads.push(p);
+  for(const pad of pads){ const r=_searchSea(sa,sb,pad); if(r) return r; }
+  return null;
+}
+function rdp(pts,eps){
+  if(pts.length<3) return pts.slice();
+  const a=pts[0], b=pts[pts.length-1], dx=b[0]-a[0], dy=b[1]-a[1], len=Math.hypot(dx,dy)||1e-9;
+  let dmax=0, k=0;
+  for(let i=1;i<pts.length-1;i++){ const d=Math.abs((pts[i][0]-a[0])*dy-(pts[i][1]-a[1])*dx)/len; if(d>dmax){dmax=d;k=i;} }
+  if(dmax>eps) return rdp(pts.slice(0,k+1),eps).slice(0,-1).concat(rdp(pts.slice(k),eps));
+  return [a,b];
+}
+function chaikin(pts,iters){
+  let p=pts;
+  for(let it=0;it<iters&&p.length>=3;it++){
+    const out=[p[0]];
+    for(let i=0;i<p.length-1;i++){ const a=p[i],b=p[i+1];
+      out.push([a[0]*0.75+b[0]*0.25,a[1]*0.75+b[1]*0.25]);
+      out.push([a[0]*0.25+b[0]*0.75,a[1]*0.25+b[1]*0.75]); }
+    out.push(p[p.length-1]); p=out;
+  }
+  return p;
+}
+function legGeometry(a,b){
+  if(!SEA.ready||!SEA.mask) return arcPts(a,b);
+  const key=a[0].toFixed(2)+','+a[1].toFixed(2)+'|'+b[0].toFixed(2)+','+b[1].toFixed(2);
+  if(_legCache.has(key)) return _legCache.get(key);
+  let out;
+  if(!lineHitsLand(a,b)){
+    const arc=arcPts(a,b);
+    out = polyHitsLand(arc) ? densify(a,b,14) : arc;
+  } else {
+    const raw=aStarSea(a,b);
+    if(raw && raw.length>=2){
+      let body=chaikin(rdp(raw,0.12),2);
+      if(polyHitsLand(body)) body=rdp(raw,0.12);
+      if(polyHitsLand(body)) body=raw;
+      const off=a[1]-_normLng(a[1]);   // realign A* (normalized lng) to the leg's unrolled frame
+      if(off) body=body.map(p=>[p[0],p[1]+off]);
+      out=[a.slice(),...body,b.slice()];
+    } else { out=arcPts(a,b); }
+  }
+  _legCache.set(key,out);
+  return out;
+}
+function drawRoute(trip,fit){
+  clearRoute();
+  const entries=tripStops(trip);
+  const ports=entries.filter(e=>e.ll);
+  if(ports.length<2) return;
+  const lls=unroll(ports.map(e=>e.ll));          // unrolled port coords
+  const legArcs=[];
+  for(let i=0;i<lls.length-1;i++){
+    const pts=legGeometry(lls[i],lls[i+1]); legArcs.push(pts);
+    L.polyline(pts,{color:'#07332d',weight:6,opacity:.22,lineCap:'round'}).addTo(routeLayer);
+    L.polyline(pts,{color:'#7fdfd0',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7'}).addTo(routeLayer);
+  }
+  // numbered port dots, tooltip shows the day + port
+  ports.forEach((e,i)=>{
+    const dot=L.divIcon({className:'',html:'<div class="stopdot">'+(i+1)+'</div>',iconSize:[0,0]});
+    const lbl=(e.day?('Day '+e.day+' · '):'')+e.n;
+    const stopMarker=L.marker(lls[i],{icon:dot,riseOnHover:true}).addTo(routeLayer)
+      .bindTooltip((i+1)+'. '+lbl,{direction:'top',offset:[0,-9],className:'stoptip',opacity:1});
+    stopMarker.on('click',()=>stopMarker.openTooltip());
+  });
+  // sea days -> count per leg (between consecutive ports)
+  const legSeas={}; let portIdx=-1;
+  entries.forEach(e=>{
+    if(e.ll){ portIdx++; }
+    else if(portIdx>=0 && portIdx<lls.length-1){ legSeas[portIdx]=(legSeas[portIdx]||0)+1; }
+  });
+  // place a triangle per sea day along its leg, apex pointing toward the next port
+  Object.keys(legSeas).forEach(key=>{
+    const li=+key, pts=legArcs[li], k=legSeas[li];
+    for(let j=0;j<k;j++){
+      const f=(j+1)/(k+1);
+      const idx=Math.min(pts.length-2, Math.max(1, Math.round(f*(pts.length-1))));
+      const deg=headingDeg(pts[idx],pts[idx+1]);
+      const tri=L.divIcon({className:'',html:'<div class="seatri" style="transform:translate(-50%,-50%) rotate('+deg.toFixed(1)+'deg)"></div>',iconSize:[0,0]});
+      L.marker(pts[idx],{icon:tri,interactive:false,keyboard:false}).addTo(routeLayer);
+    }
+  });
+  (trip.g||[]).forEach(k=>{ if(markers[k]) markers[k].el.classList.add('route'); });
+  markRoutedCard(trip,fit);
+  if(fit){
+    const small=window.matchMedia('(max-width:640px)').matches;
+    const panelOpen=document.getElementById('panel').classList.contains('open');
+    const padR=(!small&&panelOpen)?420:70;
+    map.fitBounds(L.latLngBounds(lls),{paddingTopLeft:[70,90],paddingBottomRight:[padR,70],maxZoom:6,animate:true,duration:.8});
+  }
+}
+
+const markers={};let activeBrands=new Set(),activeView=null;const activeMonths=new Set();
+const activeRegions=new Set();
+const activeIds=new Set();let activeSearchTerms=[];
+let activePort=null,activePortRole='any',portView=null;
+const portMarkerLayer=L.layerGroup().addTo(map);
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function cssEsc(s){return window.CSS&&CSS.escape?CSS.escape(s):String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
+/* embarkation = first named port, disembarkation = last named port, calls = the rest */
+function tripPortRoles(t){
+  let names=[];
+  if(t.itin&&t.itin.length){ names=t.itin.filter(e=>e.n).map(e=>(e.n||'').trim()).filter(Boolean); }
+  if(!names.length){ names=[t.from,t.to].map(n=>(n||'').trim()).filter(Boolean); }
+  const embark=names[0]||null, disembark=names.length>1?names[names.length-1]:null;
+  const calls=new Set(names.slice(1,-1));
+  return {embark,disembark,calls,all:new Set(names)};
+}
+function tripMatchesPort(t,port,role){
+  if(!port) return true;
+  const r=tripPortRoles(t);
+  if(role==='embark') return r.embark===port;
+  if(role==='disembark') return r.disembark===port;
+  if(role==='call') return r.calls.has(port);
+  return r.all.has(port);
+}
+Object.keys(byRegion).forEach(key=>{
+  const reg=REGIONS[key];if(!reg)return;
+  const sailings=byRegion[key];const sz=Math.max(34,Math.min(58,28+sailings.length*.14));
+  const el=document.createElement('div');el.className='rmarker';el.style.setProperty('--sz',sz+'px');
+  el.innerHTML='<div class="ring">'+sailings.length+'</div><div class="tag">'+reg.name+' &middot; '+sailings.length+' voyage'+(sailings.length>1?'s':'')+'</div>';
+  el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);});
+  const icon=L.divIcon({className:'',html:el,iconSize:[0,0]});
+  const mk=L.marker(reg.coord,{icon,riseOnHover:true}).addTo(map);
+  markers[key]={marker:mk,el,sailings};
+});
+if(window.setAtlasProgress) window.setAtlasProgress(68,'Placing world cruise regions and ports...');
+function dateSort(a,b){return (a.startY*10000+a.startM*100+a.startD)-(b.startY*10000+b.startM*100+b.startD);}
+function isPastTrip(t){const td=new Date();td.setHours(0,0,0,0);return new Date(t.startY,t.startM-1,t.startD)<td;}
+/* matchesNonRegion = every filter except the region filter (used for pin counts,
+   so each region pin reflects how many qualifying voyages reach it) */
+function matchesNonRegion(t){return !isPastTrip(t)
+  && (!activeBrands.size||activeBrands.has(t.brand))
+  && (!activeMonths.size||activeMonths.has(t.monthKey))
+  && (!activeIds.size||activeIds.has(String(t.id))||activeIds.has('wc_'+t.id))
+  && textMatches(t)
+  && (!activePort||tripMatchesPort(t,activePort,activePortRole));}
+function regionPass(t){return !activeRegions.size||(t.g||[]).some(k=>activeRegions.has(k));}
+function matchesFilters(t){return matchesNonRegion(t)&&regionPass(t);}
+function filteredSailings(sailings){return sailings.filter(matchesFilters);}
+function monthLabel(key){const parts=key.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(parts[1])-1]+' '+parts[0];}
+function norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
+function words(s){return norm(s).split(/\s+/).filter(w=>w&&!['the','and','or','of','in','to','for','cruise','cruises','yacht','yachts','sailing','sailings','voyage','voyages','ship','trip','trips','luxury'].includes(w));}
+function textMatches(t){
+  if(!activeSearchTerms.length)return true;
+  const regionNames=(t.g||[]).map(k=>REGIONS[k]&&REGIONS[k].name).filter(Boolean);
+  const hay=norm([t.title,BRANDS[t.brand]&&BRANDS[t.brand].short,t.ship,t.route,t.from,t.to,...regionNames].filter(Boolean).join(' '));
+  return activeSearchTerms.every(term=>hay.includes(term));
+}
+function findBrand(raw){
+  const v=norm(raw);if(!v)return null;
+  return Object.keys(BRANDS).find(k=>norm(k)===v||norm(BRANDS[k]&&BRANDS[k].short)===v)
+    ||Object.keys(BRANDS).find(k=>norm(k).includes(v)||norm(BRANDS[k]&&BRANDS[k].short).includes(v)||v.includes(norm(BRANDS[k]&&BRANDS[k].short)));
+}
+function findRegionKey(raw){
+  const v=norm(raw);if(!v)return null;
+  const aliases={mediterranean:'MED',med:'MED',adriatic:'MED',aegean:'MED',italy:'MED',greece:'MED',japan:'EASTASIA',asia:'SEASIA',caribbean:'CARIB',bermuda:'CARIB',polynesia:'PACIFIC',tahiti:'PACIFIC',fiji:'PACIFIC',norway:'NEUROPE',baltic:'NEUROPE',arctic:'NATL',iceland:'NATL',greenland:'NATL',antarctica:'ANTARCTIC',australia:'AUNZ',newzealand:'AUNZ','new zealand':'AUNZ',hawaii:'HAWAII',alaska:'NAMWEST',panama:'CAMER','panama canal':'CAMER',india:'INDIA',africa:'SAFRICA',arabia:'MIDEAST','middle east':'MIDEAST','south america':'SAMER','south pacific':'PACIFIC'};
+  if(aliases[v]&&REGIONS[aliases[v]])return aliases[v];
+  return Object.keys(REGIONS).find(k=>norm(k)===v||norm(REGIONS[k]&&REGIONS[k].name)===v||norm(REGIONS[k]&&REGIONS[k].ab)===v)
+    ||Object.keys(REGIONS).find(k=>norm(k).includes(v)||norm(REGIONS[k]&&REGIONS[k].name).includes(v)||v.includes(norm(REGIONS[k]&&REGIONS[k].name)));
+}
+function allMatchingTrips(){
+  const seen=new Set(),out=[];
+  TRIPS.filter(matchesFilters).forEach(t=>{if(!seen.has(t.id)){seen.add(t.id);out.push(t);}});
+  return out.sort((a,b)=>dateSort(a,b)||a.title.localeCompare(b.title));
+}
+function fitTrips(list){
+  const keys=[...new Set(list.flatMap(t=>t.g||[]).filter(k=>REGIONS[k]&&REGIONS[k].coord))];
+  if(!keys.length)return;
+  if(keys.length===1){const c=REGIONS[keys[0]].coord;map.flyTo([c[0],c[1]],Math.max(map.getZoom(),3),{duration:.8});return;}
+  map.fitBounds(L.latLngBounds(keys.map(k=>REGIONS[k].coord)),{padding:[90,90],maxZoom:4.2,animate:true,duration:.8});
+}
+function updateDateSummary(){
+  const summary=document.getElementById('dateSummary');
+  if(!activeMonths.size){summary.textContent='All voyages';return;}
+  const labels=Array.from(activeMonths).sort().map(monthLabel);
+  summary.textContent=labels.length===1?labels[0]:labels.length+' months selected';
+}
+function updateMarkerCounts(){
+  const anyFilter=!!activeBrands.size||activeMonths.size||activeIds.size||activeSearchTerms.length||!!activePort||activeRegions.size;
+  Object.entries(markers).forEach(([key,obj])=>{
+    // Dynamic count: how many qualifying voyages reach this region right now (ignores the region toggle itself)
+    const count=obj.sailings.filter(matchesNonRegion).length;
+    const reg=REGIONS[key];
+    obj.el.querySelector('.ring').textContent=count;
+    obj.el.querySelector('.tag').innerHTML=reg.name+' &middot; '+count+' voyage'+(count!==1?'s':'');
+    obj.el.style.setProperty('--sz',Math.max(34,Math.min(58,28+count*.14))+'px');
+    const row=document.querySelector('.reg[data-region="'+cssEsc(key)+'"]');
+    if(row){const sub=row.querySelector('.ct');if(sub)sub.textContent=count+' departure'+(count!==1?'s':'');}
+    if(obj.el.classList.contains('route'))return;
+    const regionSel=!activeRegions.size||activeRegions.has(key);
+    const hit=count>0&&regionSel;
+    obj.el.classList.toggle('dim',anyFilter&&!hit);
+    obj.el.classList.toggle('hit',anyFilter&&hit);
+  });
+}
+function buildDateGrid(){
+  const grid=document.getElementById('dateGrid');
+  const months=Array.from(new Set(TRIPS.map(t=>t.monthKey))).sort();
+  const years=Array.from(new Set(months.map(k=>k.slice(0,4)))).sort();
+  grid.innerHTML='';
+  years.forEach(y=>{
+    const wrap=document.createElement('div');wrap.className='year';
+    const title=document.createElement('div');title.className='yt';title.textContent=y;
+    const monthWrap=document.createElement('div');monthWrap.className='months';
+    months.filter(k=>k.startsWith(y+'-')).forEach(k=>{
+      const btn=document.createElement('button');btn.className='month';btn.type='button';btn.dataset.month=k;
+      btn.textContent=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(k.slice(5))-1];
+      btn.addEventListener('click',()=>{
+        if(activeMonths.has(k))activeMonths.delete(k);else activeMonths.add(k);
+        btn.classList.toggle('active',activeMonths.has(k));
+        document.getElementById('dateBtn').classList.toggle('active',!!activeMonths.size);
+        updateDateSummary();applyFilter();refreshActivePanel();
+      });
+      monthWrap.appendChild(btn);
+    });
+    wrap.appendChild(title);wrap.appendChild(monthWrap);grid.appendChild(wrap);
+  });
+}
+buildDateGrid();
+document.getElementById('dateBtn').addEventListener('click',e=>{
+  e.stopPropagation();portPop.classList.remove('open');document.getElementById('datePop').classList.toggle('open');
+});
+document.getElementById('datePop').addEventListener('click',e=>e.stopPropagation());
+document.getElementById('datePopClose').addEventListener('click',e=>{e.stopPropagation();document.getElementById('datePop').classList.remove('open');});
+document.getElementById('dateClear').addEventListener('click',()=>{
+  activeMonths.clear();document.querySelectorAll('.month').forEach(m=>m.classList.remove('active'));
+  document.getElementById('dateBtn').classList.remove('active');updateDateSummary();applyFilter();refreshActivePanel();
+});
+/* ===== Ports filter ===== */
+const portBtn=document.getElementById('portBtn'),portPop=document.getElementById('portPop');
+const portSearch=document.getElementById('portSearch'),portListEl=document.getElementById('portList');
+const portSummary=document.getElementById('portSummary');
+const roleLbl={any:'sailing visiting',embark:'sailing embarking at',disembark:'sailing disembarking at',call:'sailing with a day visit to'};
+/* aggregate ports across trips passing the *other* (date+brand) filters, not the port filter itself */
+function portAgg(role){
+  const agg={};
+  TRIPS.forEach(t=>{
+    if(isPastTrip(t))return;
+    if(activeBrands.size&&!activeBrands.has(t.brand))return;
+    if(activeMonths.size&&!activeMonths.has(t.monthKey))return;
+    const r=tripPortRoles(t);
+    const add=(name,k)=>{ if(!name||!PORTS[name])return; const a=agg[name]||(agg[name]={name,embark:0,disembark:0,call:0,seen:new Set()}); a[k]++; a.seen.add(t.id); };
+    add(r.embark,'embark');
+    if(r.disembark!==r.embark) add(r.disembark,'disembark');
+    r.calls.forEach(n=>add(n,'call'));
+  });
+  let arr=Object.values(agg).map(a=>({name:a.name,embark:a.embark,disembark:a.disembark,call:a.call,total:a.seen.size}));
+  if(role!=='any') arr=arr.filter(a=>a[role]>0);
+  arr.sort((a,b)=>a.name.localeCompare(b.name));
+  return arr;
+}
+function renderPortList(){
+  const q=(portSearch.value||'').trim().toLowerCase();
+  let arr=portAgg(activePortRole);
+  if(q) arr=arr.filter(a=>a.name.toLowerCase().includes(q));
+  portListEl.innerHTML='';
+  if(!arr.length){ portListEl.innerHTML='<div class="portempty">No ports match.</div>'; return; }
+  arr.forEach(a=>{
+    const row=document.createElement('div'); row.className='portrow'+(a.name===activePort?' sel':'');
+    const cnt=activePortRole==='any'?a.total:a[activePortRole];
+    const bits=[]; if(a.embark)bits.push(a.embark+' start'); if(a.disembark)bits.push(a.disembark+' end'); if(a.call)bits.push(a.call+' visit'+(a.call>1?'s':''));
+    row.innerHTML='<div><div class="pn">'+esc(a.name)+'</div><div class="pb">'+bits.join(' &middot; ')+'</div></div><div class="pc">'+cnt+'</div>';
+    row.addEventListener('click',()=>selectPort(a.name));
+    portListEl.appendChild(row);
+  });
+}
+function showPortPin(name){
+  portMarkerLayer.clearLayers();
+  const ll=PORTS[name]; if(!ll)return;
+  const html='<div class="portpin"><div class="pp-dot"></div><div class="pp-lbl">'+esc(name)+'</div></div>';
+  L.marker(ll,{icon:L.divIcon({className:'',html,iconSize:[0,0]}),interactive:false,keyboard:false,zIndexOffset:1000}).addTo(portMarkerLayer);
+  if(!routeLocked) map.flyTo(ll,Math.max(map.getZoom(),5),{duration:.8});
+}
+function openPortResults(name){
+  portView=name; activeView=null;
+  if(!routeLocked&&!pinnedTrip){ pinnedTrip=null; clearRoute(); document.body.classList.remove('tracing'); }
+  const list=TRIPS.filter(matchesFilters).sort((a,b)=>dateSort(a,b)||a.title.localeCompare(b.title));
+  document.querySelector('.panel .klabel').textContent='World cruise port';
+  document.getElementById('pTitle').textContent=name;
+  document.getElementById('pSub').textContent=list.length+' '+(roleLbl[activePortRole]||'sailing visiting')+' this port'+(list.length!==1?'s':'')+' &middot; hover a card to preview its route';
+  const L0=document.getElementById('pList'); L0.innerHTML=''; list.forEach(t=>L0.appendChild(makeCard(t)));
+  panel.classList.add('open');
+  revealPanel();
+  showPortPin(name);
+}
+function selectPort(name){
+  activePort=name;
+  portBtn.classList.add('active');
+  portSummary.textContent=name.length>24?name.slice(0,23)+'…':name;
+  portPop.classList.remove('open');
+  applyFilter();
+  openPortResults(name);
+}
+function clearPortFilter(){
+  activePort=null; portView=null; portMarkerLayer.clearLayers();
+  portBtn.classList.remove('active'); portSummary.textContent='All ports';
+}
+function refreshActivePanel(){ if(portView) openPortResults(portView); else if(activeView==='__search__') openSearchResults(); else if(activeView) openRegion(activeView); }
+portBtn.addEventListener('click',e=>{
+  e.stopPropagation(); document.getElementById('datePop').classList.remove('open');
+  const open=portPop.classList.toggle('open'); if(open) renderPortList();
+});
+portPop.addEventListener('click',e=>e.stopPropagation());
+document.getElementById('portPopClose').addEventListener('click',e=>{e.stopPropagation();portPop.classList.remove('open');});
+portSearch.addEventListener('input',renderPortList);
+document.getElementById('portRoles').addEventListener('click',e=>{
+  const b=e.target.closest('.proll'); if(!b)return;
+  activePortRole=b.dataset.role;
+  document.querySelectorAll('#portRoles .proll').forEach(x=>x.classList.toggle('active',x===b));
+  renderPortList();
+  if(activePort){ applyFilter(); if(portView) openPortResults(activePort); }
+});
+document.getElementById('portClear').addEventListener('click',()=>{
+  const had=!!portView; clearPortFilter(); applyFilter(); renderPortList();
+  if(had){ panel.classList.remove('open'); activeView=null; }
+});
+const opList=document.getElementById('opList');
+const brandCounts={};TRIPS.forEach(t=>brandCounts[t.brand]=(brandCounts[t.brand]||0)+1);
+Object.keys(BRANDS).forEach(key=>{
+  const m=BRANDS[key];const row=document.createElement('div');row.className='op';
+  const lg=logoEl(key);const txt=document.createElement('div');const n=brandCounts[key]||0;
+  txt.innerHTML='<div class="nm">'+m.short+'</div><div class="ct">'+n+' voyage'+(n!==1?'s':'')+'</div>';
+  const dot=document.createElement('div');dot.className='dot';dot.style.background=m.color;
+  row.dataset.brand=key;
+  row.appendChild(lg);row.appendChild(txt);row.appendChild(dot);row.addEventListener('click',()=>toggleBrand(key,row));opList.appendChild(row);
+});
+function toggleBrand(key,row){
+  if(activeBrands.has(key)){activeBrands.delete(key);row.classList.remove('active');}
+  else{activeBrands.add(key);row.classList.add('active');}
+  applyFilter();syncReset();
+  refreshActivePanel();
+}
+function syncReset(){document.getElementById('reset').classList.toggle('show',!!activeBrands.size||activeRegions.size||activeIds.size||activeSearchTerms.length);}
+/* ===== Region filter rows + collapsible section accordion ===== */
+const regionListEl=document.getElementById('regionList');
+Object.keys(REGIONS).forEach(key=>{
+  if(!markers[key])return;               // only regions with voyages (a marker)
+  const reg=REGIONS[key];
+  const n=(byRegion[key]||[]).length;
+  const row=document.createElement('div');
+  row.className='op reg';row.dataset.region=key;
+  row.innerHTML='<div class="lg regab">&#128205;</div>'+
+    '<div><div class="nm">'+reg.name+'</div><div class="ct">'+n+' departure'+(n!==1?'s':'')+'</div></div>'+
+    '<div class="dot regtick"></div>';
+  row.addEventListener('click',()=>toggleRegionFilter(key,row));
+  regionListEl.appendChild(row);
+});
+function toggleRegionFilter(key,row){
+  if(routeLocked){routeLocked=false;document.body.classList.remove('tracing');clearRoute();}
+  if(activeRegions.has(key))activeRegions.delete(key);else activeRegions.add(key);
+  row.classList.toggle('active',activeRegions.has(key));
+  applyFilter();syncReset();refreshActivePanel();
+}
+[['lineHead','opList'],['regionHead','regionList']].forEach(pair=>{
+  const head=document.getElementById(pair[0]),body=document.getElementById(pair[1]);
+  head.addEventListener('click',()=>{const c=head.classList.toggle('collapsed');body.classList.toggle('collapsed',c);});
+});
+function applyFilter(){
+  updateMarkerCounts();
+  if(window.__atlasSetApplyCount) window.__atlasSetApplyCount(allMatchingTrips().length);
+}
+document.getElementById('reset').addEventListener('click',()=>{
+  activeBrands.clear();document.querySelectorAll('.op').forEach(r=>r.classList.remove('active'));
+  activeIds.clear();activeSearchTerms=[];activeRegions.clear();
+  applyFilter();document.getElementById('reset').classList.remove('show');refreshActivePanel();
+});
+/* ===== Ask The Guide — opens BeVvip Base Camp pre-filled with this product ===== */
+const GUIDE_URL='https://bevvip-concierge.vercel.app/';
+function askGuideBtn(ctx,link){
+  const b=document.createElement('span');
+  b.className='askguide';b.setAttribute('role','button');b.tabIndex=0;
+  b.title='Ask The Guide about this';
+  b.innerHTML='&#10022; Ask The Guide';
+  const full=ctx+(link?(' (Virtuoso listing: '+link+')'):'');
+  function go(e){ e.preventDefault();e.stopPropagation();
+    window.open(GUIDE_URL+'?ask='+encodeURIComponent(full)+'&src=worldcruise','_blank','noopener'); }
+  b.addEventListener('click',go);
+  b.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')go(e); });
+  return b;
+}
+function makeCard(t){
+  const a=document.createElement('a');a.className='card';a.href=t.u;a.target='_blank';a.rel='noopener';
+  a._trip=t;
+  const lg=logoEl(t.brand);const meta=document.createElement('div');meta.className='meta';
+  meta.innerHTML='<div class="nm">'+t.title+'</div><div class="dt">'+t.dates+'</div><div class="go">'+BRANDS[t.brand].short+' &middot; '+t.ship+(t.days?' &middot; '+t.days+' days':'')+' &#8599;</div><div class="rt">'+t.route+'</div>';
+  const ar=document.createElement('div');ar.className='arrow';ar.textContent='›';
+  a.appendChild(lg);a.appendChild(meta);a.appendChild(ar);
+  if(activeBrands.size&&activeBrands.has(t.brand))a.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  if(isTraceable(t)){
+    a.addEventListener('mouseenter',()=>{ if(!routeLocked){ pinnedTrip=t; drawRoute(t,false); } });
+    const trace=document.createElement('span');
+    trace.className='tracebtn';trace.setAttribute('role','button');trace.tabIndex=0;
+    function syncTrace(){
+      const on=routeLocked&&pinnedTrip===t;
+      trace.classList.toggle('on',on);
+      trace.innerHTML=on?'&#128506; Route shown — tap to hide':'&#128506; Toggle route on map';
+    }
+    syncTrace();trace._sync=syncTrace;
+    const doTrace=e=>{ e.preventDefault();e.stopPropagation();
+      const on=routeLocked&&pinnedTrip===t;
+      if(on){ routeLocked=false; pinnedTrip=null; document.body.classList.remove('tracing'); clearRoute(); }
+      else { pinnedTrip=t; routeLocked=true; document.body.classList.add('tracing'); drawRoute(t,true); }
+      document.querySelectorAll('.card .tracebtn').forEach(b=>{ if(b._sync) b._sync(); });
+    };
+    trace.addEventListener('click',doTrace);
+    trace.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')doTrace(e); });
+    meta.appendChild(trace);
+  }
+  meta.appendChild(askGuideBtn(
+    'I\'m looking at the "'+t.title+'" world cruise on the BeVvip World Cruise Atlas — '
+    +BRANDS[t.brand].short+' aboard '+t.ship+', '+t.dates+(t.days?', '+t.days+' days':'')
+    +'. Route: '+t.route+'. Can you tell me more about it and help me plan it through BeVvip?', t.u));
+  return a;
+}
+function sortTrips(sailings){
+  return filteredSailings(sailings).slice().sort((a,b)=>{
+    if(activeBrands.size){const am=activeBrands.has(a.brand),bm=activeBrands.has(b.brand);if(am!==bm)return am?-1:1;}
+    return dateSort(a,b)||a.title.localeCompare(b.title);
+  });
+}
+const panel=document.getElementById('panel');
+/* Short J. Peterman–style evocations, one per region (shown under the title) */
+const REGION_BLURB={
+  CARIB:"Turquoise shallows over white sand, a steel drum somewhere down the beach, rum the color of late sun. The Caribbean asks nothing of you but that you slow down.",
+  CAMER:"Ocean lifted to meet ocean, lock by patient lock, jungle pressing green against the rails. The Panama crossing is engineering as theater — and you have the best seat.",
+  SAMER:"Glaciers calving into steel-grey fjords, a tango drifting from an open door, peaks that scrape the clouds. South America is passion and ice in the same long coastline.",
+  ANTARCTIC:"Ice the size of nations, a stillness older than history, penguins that have never once feared a soul. Antarctica is the last place on earth that owes you nothing.",
+  NAMEAST:"Lighthouses on granite headlands, lobster hauled at dawn, maples turning the shore to fire. The northeast coast keeps its welcome plain and its beauty honest.",
+  NAMWEST:"Forests that climb straight from the sea, the crack of a calving glacier, a bear at the very edge of the tide. The Pacific coast is wilderness you can sail right up to.",
+  HAWAII:"Volcanic cliffs draped in green, a lei still warm from the maker's hands, surf that has crossed an ocean to arrive. Hawaiʻi greets you and means it.",
+  PACIFIC:"Water in colors that have no proper names, an overwater bungalow, a horizon that belongs to you alone. The South Pacific is what the rest of the world is quietly dreaming about.",
+  MED:"Lemon groves above a cobalt sea, espresso at dawn in a square older than memory. The Mediterranean was never meant to be discovered — only revisited.",
+  WEUROPE:"Sea cliffs and standing stones, a harbor pub at the end of the world, rain that clears to impossible green. Western Europe's coast rewards the patient traveler.",
+  NEUROPE:"Fjords mirror-still at midnight, gabled towns the color of marzipan, a sun that forgets to set. Northern Europe trades in long light and older grandeur.",
+  NATL:"Black-sand coasts and steam rising straight from the ground, icebergs drifting past like slow white ships. The North Atlantic is the planet at its most elemental.",
+  WAFRICA:"Trade winds and volcanic peaks, markets loud with color, an Atlantic that built whole cultures on its currents. West Africa and its islands hum with crossings.",
+  SAFRICA:"Dust rising gold behind the herd, a sky with no edges, a silence broken only by lions at dusk. Africa doesn't show you the wild — it reminds you that you are part of it.",
+  MIDEAST:"Dunes the color of beaten gold, frankincense on the evening air, cities that gleam where there was only sand. Arabia rewards the traveler who arrives expecting nothing.",
+  INDIA:"Marble that blushes pink at first light, spice you can taste on the air, a palace at the end of every dusty road. India overwhelms you — then it spoils you for everywhere else.",
+  SEASIA:"Warm rain on old stone, longtail boats threading the limestone islands, a market awake long before you are. Southeast Asia is the tropics with a thousand years of grace.",
+  EASTASIA:"Mist on a temple roof, the hush of a tea house, neon rivers that refuse to sleep. East Asia keeps the ancient and the electric in a balance that unsettles and enchants.",
+  AUNZ:"Red desert and rainforest, glaciers and vineyards, a coastline that runs on past all reason. Australia and New Zealand are the ends of the earth — and worth every mile."
+};
+function revealPanel(){
+  document.body.classList.remove('panel-collapsed');
+  document.dispatchEvent(new Event('atlas:panel-sync'));
+}
+function hidePanel(){
+  document.getElementById('datePop').classList.remove('open');
+  portPop.classList.remove('open');
+  document.body.classList.add('panel-collapsed');
+  document.dispatchEvent(new Event('atlas:panel-sync'));
+}
+function openSearchResults(title){
+  activeView='__search__';portView=null;
+  if(!routeLocked){pinnedTrip=null;clearRoute();document.body.classList.remove('tracing');}
+  portMarkerLayer.clearLayers();
+  const sailings=allMatchingTrips();
+  document.querySelector('.panel .klabel').textContent='Guide shortlist';
+  document.getElementById('pTitle').textContent=title||'Search results';
+  document.getElementById('pSub').textContent=sailings.length+' world cruise'+(sailings.length!==1?'s':'')+' matched this Guide shortlist · hover a card to preview its route';
+  const list=document.getElementById('pList');list.innerHTML='';sailings.forEach(t=>list.appendChild(makeCard(t)));
+  panel.classList.add('open');
+  revealPanel();
+  fitTrips(sailings);
+}
+function openRegion(key){
+  if(activePort){ clearPortFilter(); applyFilter(); }
+  activeView=key;
+  if(!routeLocked){ pinnedTrip=null; clearRoute(); document.body.classList.remove('tracing'); }
+  const reg=REGIONS[key];const sailings=sortTrips(byRegion[key]);
+  document.querySelector('.panel .klabel').textContent='World cruise region';
+  document.getElementById('pTitle').textContent=reg.name;
+  document.getElementById('pSub').textContent=REGION_BLURB[key]||(sailings.length+' world cruise'+(sailings.length!==1?'s':'')+' found here.');
+  const list=document.getElementById('pList');list.innerHTML='';sailings.forEach(t=>list.appendChild(makeCard(t)));
+  panel.classList.add('open');
+  revealPanel();
+  if(!routeLocked){ const c=reg.coord;map.flyTo([c[0],c[1]],Math.max(map.getZoom(),3),{duration:.8}); }
+}
+applyFilter();
+function applyDeepLink(){
+  const sp=new URLSearchParams(location.search);
+  if(![...sp.keys()].length)return;
+  const ids=sp.get('ids');
+  if(ids) ids.split(',').map(s=>s.trim()).filter(Boolean).forEach(id=>activeIds.add(id));
+  const month=sp.get('month');
+  if(month){month.split(',').map(s=>s.trim()).filter(Boolean).forEach(m=>{activeMonths.add(m);const b=document.querySelector('.month[data-month="'+cssEsc(m)+'"]');if(b)b.classList.add('active');});if(activeMonths.size){document.getElementById('dateBtn').classList.add('active');updateDateSummary();}}
+  const brandParam=sp.get('brand')||sp.get('operator');
+  if(brandParam){brandParam.split(',').map(s=>s.trim()).filter(Boolean).forEach(b=>{const brand=findBrand(b);if(brand){activeBrands.add(brand);const row=document.querySelector('.op[data-brand="'+cssEsc(brand)+'"]');if(row)row.classList.add('active');}});}
+  const regions=sp.get('regions');
+  if(regions){regions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{if(REGIONS[k]&&markers[k]){activeRegions.add(k);const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]');if(r)r.classList.add('active');}});if(activeRegions.size){const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList');if(rh)rh.classList.remove('collapsed');if(rl)rl.classList.remove('collapsed');}}
+  activeSearchTerms=[...words(sp.get('q')),...words(sp.get('country'))];
+  if(activeIds.size||activeBrands.size||activeRegions.size||activeSearchTerms.length)document.getElementById('reset').classList.add('show');
+  const portParam=sp.get('port');
+  if(portParam&&PORTS[portParam]){const role=sp.get('portrole');if(role)activePortRole=role;selectPort(portParam);}
+  applyFilter();
+  const region=findRegionKey(sp.get('region'));
+  if(region)openRegion(region);
+  else if(portParam&&PORTS[portParam]){/* port panel already opened by selectPort */}
+  else if(activeIds.size||activeBrands.size||activeMonths.size||activeRegions.size||activeSearchTerms.length)openSearchResults(activeIds.size?'Guide shortlist':'Filtered sailings');
+}
+applyDeepLink();
+function closePanel(opts){
+  const preserveRoute=!!(opts&&opts.preserveRoute&&pinnedTrip);
+  panel.classList.remove('open');activeView=null;
+  if(preserveRoute){
+    routeLocked=false;document.body.classList.remove('tracing');markRoutedCard(pinnedTrip,false);
+  }else{
+    pinnedTrip=null;routeLocked=false;clearRoute();document.body.classList.remove('tracing');
+  }
+  document.getElementById('datePop').classList.remove('open');
+  portPop.classList.remove('open');
+  if(activePort){ clearPortFilter(); applyFilter(); }
+}
+/* Full reset: clear brand + port filters, close the panel, drop routes, un-dim pins */
+function showAll(){
+  activeBrands.clear(); document.querySelectorAll('.op').forEach(r=>r.classList.remove('active'));
+  activeIds.clear(); activeSearchTerms=[]; activeRegions.clear();
+  document.getElementById('reset').classList.remove('show');
+  clearPortFilter(); applyFilter(); closePanel();
+}
+window.__atlasShowAll=showAll;
+// Build a shareable URL that reproduces the current view (region/port/brand/month/search/shortlist)
+window.__atlasShareUrl=function(){
+  var p=new URLSearchParams();
+  if(activePort){ p.set('port',activePort); if(activePortRole&&activePortRole!=='any')p.set('portrole',activePortRole); }
+  if(activeView&&activeView!=='__search__')p.set('region',activeView);
+  if(activeBrands.size)p.set('brand',[...activeBrands].join(','));
+  if(activeMonths.size)p.set('month',[...activeMonths].join(','));
+  if(activeRegions.size)p.set('regions',[...activeRegions].join(','));
+  if(activeSearchTerms.length)p.set('q',activeSearchTerms.join(' '));
+  if(activeIds.size)p.set('ids',[...activeIds].join(','));
+  var qs=p.toString();
+  return location.origin+location.pathname+(qs?'?'+qs:'');
+};
+document.getElementById('close').addEventListener('click',hidePanel);
+map.on('click',()=>{
+  document.getElementById('datePop').classList.remove('open');
+  portPop.classList.remove('open');
+  if(routeLocked||pinnedTrip) return; // a traced route stays put until panel is closed or another card chosen
+  closePanel();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+const _routeBack=document.getElementById('routeBack');
+if(_routeBack){ _routeBack.addEventListener('click',()=>{ document.body.classList.remove('tracing'); }); }
+if(window.setAtlasProgress) window.setAtlasProgress(100,'Welcome to the World Cruise Atlas');
+setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
+}).catch(function(err){
+  console.error('World Cruise Atlas: data failed to load',err);
+  if(window.showAtlasError) window.showAtlasError('World cruise voyages could not be loaded.');
+});
+</script>
+
+<!-- ===== Menu show/hide toggle (mobile-friendly) ===== -->
+<style>
+  /* ---------- Auto-hiding top bar ---------- */
+  .topbar{transition:transform .3s ease,opacity .3s ease}
+  body.nav-hidden .topbar{transform:translateY(-115%);opacity:0;pointer-events:none}
+  /* ---------- Unified bottom toolbar (dock) ---------- */
+  /* ---------- One-time mobile coach hint ---------- */
+  .dockcoach{position:absolute;z-index:1250;left:50%;bottom:74px;transform:translateX(-50%) translateY(6px);display:none;align-items:center;gap:8px;max-width:calc(100vw - 28px);padding:9px 15px;border-radius:30px;font-size:12.5px;line-height:1.3;font-weight:600;color:var(--ink);background:rgba(17,21,29,.96);border:1px solid var(--accent);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .3s ease,transform .3s ease;text-align:center;cursor:pointer}
+  .dockcoach::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:7px solid var(--accent)}
+  .dockcoach.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0)}
+  .sharetoast{position:absolute;z-index:1300;left:50%;bottom:74px;transform:translateX(-50%) translateY(6px);display:none;align-items:center;gap:8px;max-width:calc(100vw - 28px);padding:9px 16px;border-radius:30px;font-size:12.5px;line-height:1.3;font-weight:700;color:var(--ink);background:rgba(17,21,29,.96);border:1px solid var(--accent);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s ease,transform .25s ease;text-align:center;pointer-events:none}
+  .sharetoast.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0)}
+  .dockcoach b{color:var(--accent);font-weight:700}
+  .dock{position:absolute;z-index:1200;left:50%;bottom:16px;transform:translateX(-50%);
+    display:flex;align-items:center;gap:6px;padding:6px;border-radius:34px;
+    background:rgba(17,21,29,.62);border:1px solid rgba(207,238,232,.16);box-shadow:var(--shadow);
+    -webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);
+    max-width:calc(100vw - 24px)}
+  .dockbtn{appearance:none;-webkit-appearance:none;display:inline-flex;align-items:center;gap:8px;height:42px;
+    padding:0 16px;border:0;border-radius:28px;cursor:pointer;text-decoration:none;
+    font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.3px;color:var(--ink);
+    background:transparent;transition:background .15s,opacity .2s,transform .12s;white-space:nowrap}
+  .dockbtn:hover{background:rgba(255,255,255,.08)}
+  .dockbtn:active{transform:scale(.95)}
+  .dockbtn .pi{font-size:16px;line-height:1;color:var(--accent);width:16px;text-align:center}
+  #panelPill{opacity:.4;pointer-events:none}
+  body.panel-active #panelPill{opacity:1;pointer-events:auto}
+  /* Left rail fades to transparent + blurred, then collapses into its pill */
+  .rail{transition:opacity .26s ease,transform .26s ease,visibility .26s}
+  body.rail-hidden .rail{opacity:0;transform:translateX(-12px) scale(.97);visibility:hidden;pointer-events:none}
+  body.rail-hidden #datePop{display:none}
+  /* Right detail panel collapses into its pill */
+  body.panel-collapsed .panel.open{transform:translateX(105%)}
+  body.panel-collapsed #datePop{display:none}
+  @media (max-width:640px){
+    .dockbtn .pl{display:none}
+    .dockbtn{padding:0 13px}
+    body.rail-shown .rail{display:flex !important;opacity:1;visibility:visible;transform:none;
+      background:rgba(17,21,29,.96) !important;border:1px solid var(--line) !important;border-radius:14px !important;
+      box-shadow:var(--shadow) !important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px) !important;
+      max-height:calc(100% - 150px) !important}
+    body.rail-shown .rail h2{display:block !important}
+    body.rail-shown .rail .railscroll{display:flex !important}
+    body.rail-shown .rail .reset.show{display:block !important}
+  }
+</style>
+<div class="dockcoach" id="dockCoach" role="status"><span>Tap <b>Filters</b> to refine &middot; <b>Details</b> for results</span></div>
+<div class="sharetoast" id="shareToast" role="status" aria-live="polite"></div>
+<div class="dock" role="toolbar" aria-label="Map controls">
+  <button id="railPill" class="dockbtn" type="button" aria-label="Show or hide the filters menu" title="Show / hide filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
+  <button id="panelPill" class="dockbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
+  <button id="resetAll" class="dockbtn" type="button" aria-label="Show all regions" title="Show all regions"><span class="pi">&#8634;</span><span class="pl">Show all</span></button>
+  <button id="shareDock" class="dockbtn" type="button" aria-label="Copy a shareable link to this view" title="Copy a link to this view"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><line x1="8.1" y1="10.9" x2="15.9" y2="6.1"/><line x1="8.1" y1="13.1" x2="15.9" y2="17.9"/></svg></span><span class="pl">Share</span></button>
+  <a id="helpDock" class="dockbtn" href="mailto:Book@BeVvip.com" data-help-open role="button" aria-label="Need help — contact us"><span class="pi">?</span><span class="pl">Need Help</span></a>
+</div>
+<div id="routeBack" role="button" tabindex="0">&#8593; Show voyages</div>
+<script>
+(function(){
+  var body=document.body;
+  var railPill=document.getElementById('railPill');
+  var panelPill=document.getElementById('panelPill');
+  var panel=document.querySelector('.panel');
+  var mq=window.matchMedia('(max-width:640px)');
+  var railCollapsed=mq.matches;               // hidden on mobile/small screens by default
+  function setIcon(el,ch){ var p=el&&el.querySelector('.pi'); if(p)p.innerHTML=ch; }
+  function syncRail(){
+    body.classList.toggle('rail-hidden',railCollapsed);
+    body.classList.toggle('rail-shown',!railCollapsed);
+    setIcon(railPill,railCollapsed?'&#9776;':'&#10005;');
+  }
+  function syncPanel(){
+    setIcon(panelPill, body.classList.contains('panel-collapsed')?'&#8249;':'&#10005;');
+  }
+  railPill.addEventListener('click',function(){ railCollapsed=!railCollapsed; syncRail(); });
+  var railClose=document.getElementById('railClose');
+  if(railClose) railClose.addEventListener('click',function(){ railCollapsed=true; syncRail(); });
+  panelPill.addEventListener('click',function(){ body.classList.toggle('panel-collapsed'); syncPanel(); });
+  document.addEventListener('atlas:panel-sync',syncPanel);
+  var resetAll=document.getElementById('resetAll');
+  if(resetAll){ resetAll.addEventListener('click',function(){ if(window.__atlasShowAll) window.__atlasShowAll(); }); }
+  var shareBtn=document.getElementById('shareDock');
+  var shareToast=document.getElementById('shareToast');
+  function flashShare(msg){ if(!shareToast)return; shareToast.textContent=msg; shareToast.classList.add('show'); clearTimeout(shareToast._t); shareToast._t=setTimeout(function(){shareToast.classList.remove('show');},1900); }
+  if(shareBtn){ shareBtn.addEventListener('click',function(){
+    var url; try{ url=window.__atlasShareUrl?window.__atlasShareUrl():location.href; }catch(e){ url=location.href; }
+    function ok(){ flashShare('Link copied — share this view'); }
+    function manual(){ try{ var ta=document.createElement('textarea'); ta.value=url; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='-1000px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); ok(); }catch(e){ window.prompt('Copy this link to share the current view:',url); } }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(ok,manual); } else { manual(); }
+  }); }
+  if(panel){
+    new MutationObserver(function(){
+      var open=panel.classList.contains('open');
+      body.classList.toggle('panel-active',open);
+      if(!open){ body.classList.remove('panel-collapsed'); }
+      if(mq.matches && open && !railCollapsed){ railCollapsed=true; syncRail(); }
+      syncPanel();
+    }).observe(panel,{attributes:true,attributeFilter:['class']});
+  }
+  /* viewport changes no longer force the filter menu closed */
+  syncRail(); syncPanel();
+  /* Auto-hide the top bar while dragging the map; tap the map to bring it back */
+  (function(){ function hook(m){ m.on('dragstart',function(){ body.classList.add('nav-hidden'); });
+    m.on('click',function(){ body.classList.remove('nav-hidden'); }); }
+    (function wait(){ if(window.__atlasMap){ hook(window.__atlasMap); } else { setTimeout(wait,150); } })(); })();
+})();
+</script>
+
+<!-- ===== Need Help contact modal + CTAs ===== -->
+<style>
+  .topbar .partner{margin-left:auto}
+  .hint .hintcta{color:var(--accent);text-decoration:none;cursor:pointer;font-weight:700}
+  .hint .hintcta:hover{text-decoration:underline}
+  .helpoverlay{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;
+    background:rgba(3,6,11,.62);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:18px}
+  .helpoverlay.open{display:flex}
+  .helpmodal{position:relative;width:420px;max-width:100%;max-height:calc(100% - 36px);overflow-y:auto;
+    background:linear-gradient(180deg,var(--panel),var(--bg));border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);padding:26px 24px 22px}
+  .helpclose{position:absolute;top:13px;right:13px;width:30px;height:30px;border-radius:8px;
+    border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;font-size:15px}
+  .helpkicker{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .helpmodal h3{font-family:var(--serif,inherit);margin:7px 0 8px;font-size:24px;line-height:1.15;font-weight:600}
+  .helpqual{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 16px}
+  .helpform{display:flex;flex-direction:column;gap:10px}
+  .helpform input,.helpform textarea{width:100%;background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;color:var(--ink);font:inherit;font-size:13.5px;padding:11px 12px;resize:vertical}
+  .helpform input:focus,.helpform textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .helpform input::placeholder,.helpform textarea::placeholder{color:var(--muted)}
+  .helpsubmit{margin-top:4px;padding:12px;border:none;border-radius:10px;cursor:pointer;font:inherit;
+    font-weight:700;font-size:14px;color:#10131a;background:linear-gradient(135deg,var(--accent),var(--accent2));transition:.16s}
+  .helpsubmit:hover{filter:brightness(1.06)}
+  .helpsubmit:active{transform:scale(.985)}
+  .helpsubmit[disabled]{opacity:.6;cursor:default}
+  .helpfallback{font-size:11.5px;color:var(--muted);text-align:center;margin-top:2px}
+  .helpfallback a{color:var(--accent);text-decoration:none}
+  .helpfallback a:hover{text-decoration:underline}
+  .helpstatus{font-size:12.5px;text-align:center;margin-top:4px;line-height:1.4}
+  .helpstatus.ok{color:var(--accent2)}
+  .helpstatus.err{color:#ff8a8a}
+  .helpstatus.err a{color:var(--accent)}
+  @media (max-width:640px){.topbar .partner{margin-left:auto}.topbar h1 a.bev{display:none}
+    .logochip.ata{height:30px;padding:2px 5px}.logochip.ata img{height:24px;max-width:96px}}
+</style>
+<div class="helpoverlay" id="helpOverlay" aria-hidden="true">
+  <div class="helpmodal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <button class="helpclose" id="helpClose" type="button" aria-label="Close">&#10005;</button>
+    <div class="helpkicker">Need help?</div>
+    <h3 id="helpTitle">Need help choosing your world cruise?</h3>
+    <p class="helpqual">From preferred-partner perks to seamless pre- and post-journey extensions, we're here to help chart the course. Send us a note and we'll be in touch.</p>
+    <form id="helpForm" class="helpform">
+      <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
+      <input type="email" name="email" placeholder="Your email" autocomplete="email" required>
+      <textarea name="message" placeholder="How can we help?" rows="4" required></textarea>
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
+      <input type="hidden" name="_subject" value="Need Help — World Cruise Atlas">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <button type="submit" class="helpsubmit">Send message</button>
+      <div class="helpfallback">or email us directly at <a href="mailto:Book@BeVvip.com?subject=Need%20Help%20%E2%80%94%20World%20Cruise%20Atlas">Book@BeVvip.com</a></div>
+      <div class="helpstatus" id="helpStatus" role="status"></div>
+    </form>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay=document.getElementById('helpOverlay');
+  if(!overlay) return;
+  var form=document.getElementById('helpForm');
+  var statusEl=document.getElementById('helpStatus');
+  var btn=form.querySelector('.helpsubmit');
+  function openHelp(e){ if(e) e.preventDefault(); overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false'); }
+  function closeHelp(){ overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true'); }
+  document.querySelectorAll('[data-help-open]').forEach(function(el){ el.addEventListener('click',openHelp); });
+  document.getElementById('helpClose').addEventListener('click',closeHelp);
+  overlay.addEventListener('click',function(e){ if(e.target===overlay) closeHelp(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&overlay.classList.contains('open')) closeHelp(); });
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    btn.disabled=true; statusEl.className='helpstatus'; statusEl.textContent='Sending…';
+    fetch('https://formsubmit.co/ajax/Book@BeVvip.com',{method:'POST',headers:{'Accept':'application/json'},body:new FormData(form)})
+      .then(function(r){return r.json();})
+      .then(function(){ statusEl.className='helpstatus ok'; statusEl.textContent='Thank you — your message is on its way. We’ll be in touch shortly.'; form.reset(); })
+      .catch(function(){ statusEl.className='helpstatus err'; statusEl.innerHTML='Sorry, something went wrong. Please email us directly at <a href="mailto:Book@BeVvip.com">Book@BeVvip.com</a>.'; })
+      .then(function(){ btn.disabled=false; });
+  });
+})();
+</script>
+<style>
+  @media (max-width:640px){
+    html{width:100%;overflow:hidden}
+    body{touch-action:manipulation}
+    #map{max-width:100vw;overflow:hidden}
+    .topbar{align-items:flex-start;gap:9px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px}
+    .topbar .brand{min-width:0;gap:9px}
+    .topbar h1{max-width:calc(100vw - 152px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:18px;line-height:1.05}
+    .logochip.mark{height:38px;padding:2px 5px}
+    .logochip.mark img{height:28px;max-width:104px}
+    .partner{align-self:flex-start}
+    .rail{top:calc(64px + env(safe-area-inset-top)) !important;left:10px !important;right:10px !important}
+    body.rail-shown .rail{max-height:calc(100dvh - 146px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important}
+    .datepop{top:calc(126px + env(safe-area-inset-top)) !important;left:10px !important;right:10px !important;max-height:calc(100dvh - 188px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;overflow-y:auto}
+    .portpop{width:auto !important}
+    .portlist{max-height:32dvh}
+    .months{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .panel{top:auto;bottom:calc(64px + env(safe-area-inset-bottom));height:calc(100dvh - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-width:100%;border-left:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0;box-shadow:0 -14px 34px rgba(0,0,0,.55)}
+    .panel .hero{padding:18px 48px 14px 16px}
+    .panel h3{font-size:23px}
+    .panel .list{padding:12px 12px 18px}
+    .card{gap:10px;padding:11px}
+    .card .lg{width:42px;height:42px}
+    .dock{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));gap:3px;padding:5px;max-width:calc(100vw - 16px)}
+    .dockbtn{height:44px;min-width:44px;justify-content:center;padding:0 12px}
+    #routeBack{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom));white-space:nowrap}
+    .leaflet-bottom.leaflet-left{bottom:calc(70px + env(safe-area-inset-bottom)) !important;left:10px}
+    .helpmodal{max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));padding:24px 18px 18px}
+  }
+  @media (max-width:380px){
+    .topbar h1{max-width:calc(100vw - 132px);font-size:16px}
+    .logochip.mark img{max-width:86px}
+    .dockbtn{padding:0 10px}
+  }
+</style>
+<style>
+  @media (max-width:680px){
+    .sheetScrim{display:block;position:fixed;inset:0;z-index:1250;background:rgba(3,6,11,.5);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .26s ease}
+    .sheetScrim.show{opacity:1;pointer-events:auto}
+    .sheetHandle{display:flex;justify-content:center;align-items:center;padding:9px 0 4px;touch-action:none;cursor:grab}
+    .sheetHandle span{width:38px;height:5px;border-radius:5px;background:var(--line);display:block}
+    body.panel-active:not(.rail-shown) .dock{z-index:1400 !important}
+    body.rail-shown .dock{z-index:1200 !important}
+    body.rail-shown .rail,.rail{position:fixed !important;left:0 !important;right:0 !important;top:auto !important;bottom:0 !important;z-index:1300 !important;width:100% !important;max-width:100% !important;max-height:86vh !important;border:1px solid var(--line) !important;border-bottom:0 !important;border-radius:18px 18px 0 0 !important;background:rgba(17,21,29,.98) !important;box-shadow:0 -12px 40px rgba(0,0,0,.55) !important;transform:translateY(100%) !important;transition:transform .3s cubic-bezier(.22,.61,.36,1) !important;opacity:1 !important;visibility:visible !important;display:flex !important;pointer-events:auto !important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px) !important}
+    body.rail-shown .rail{transform:translateY(0) !important}
+    .rail .railscroll{display:flex !important}
+    .rail .reset.show{display:block !important}
+    .rail #regionHead,.rail #regionList{display:none !important}
+    .sheetFooter{display:block;border-top:1px solid var(--line);background:rgba(17,21,29,.98);padding:10px 14px calc(12px + env(safe-area-inset-bottom,0))}
+    .sheetApply{width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;font:inherit;font-weight:800;font-size:15px;letter-spacing:.3px;color:#07332d;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .sheetApply:active{transform:scale(.99)}
+    .datepop{position:fixed !important;z-index:1350 !important;left:14px !important;right:14px !important;top:auto !important;bottom:calc(92px + env(safe-area-inset-bottom,0)) !important;width:auto !important;max-width:none !important;max-height:58vh !important;overflow-y:auto}
+    .rail .datepop{position:static !important;z-index:auto !important;left:auto !important;right:auto !important;top:auto !important;bottom:auto !important;width:auto !important;max-width:none !important;max-height:44vh !important;margin:8px 10px 6px !important;overflow-y:auto;box-shadow:none !important;background:rgba(23,28,38,.98) !important}
+    .rail .datepop.open{display:block !important}
+    .portpop{width:auto !important}
+    .portlist{max-height:34vh}
+    .panel{top:auto !important;bottom:0 !important;left:0 !important;right:0 !important;z-index:1300 !important;width:100% !important;max-width:100% !important;height:52vh !important;border-left:0 !important;border-top:1px solid var(--line) !important;border-radius:18px 18px 0 0 !important;box-shadow:0 -14px 44px rgba(0,0,0,.6) !important;transform:translateY(100%) !important;transition:transform .32s cubic-bezier(.22,.61,.36,1),height .3s cubic-bezier(.22,.61,.36,1) !important}
+    .panel.open{transform:translateY(0) !important}
+    .panel.drawer-expanded{height:92vh !important}
+    body.panel-collapsed .panel.open,body.tracing .panel.open{transform:translateY(100%) !important}
+    .panel .hero{padding:4px 48px 14px 16px !important}
+    .panel .close{top:8px}
+  }
+</style>
+<script>
+(function(){
+  var mq=window.matchMedia('(max-width:680px)');
+  var body=document.body;
+  var rail=document.getElementById('rail');
+  var railPill=document.getElementById('railPill');
+  var panel=document.getElementById('panel');
+  var scrim=document.getElementById('sheetScrim');
+  var railHandle=document.getElementById('railHandle');
+  var panelHandle=document.getElementById('panelHandle');
+  var applyBtn=document.getElementById('railApply');
+  var popovers=[{button:document.getElementById('dateBtn'),panel:document.getElementById('datePop')},{button:document.getElementById('portBtn'),panel:document.getElementById('portPop')}].filter(function(item){ return item.button&&item.panel; });
+  if(!rail||!railPill||!panel||!scrim) return;
+  popovers.forEach(function(item){ item.anchor=document.createComment(item.panel.id+'Anchor'); item.panel.parentNode.insertBefore(item.anchor,item.panel); });
+  function closePopovers(){ document.querySelectorAll('.datepop.open').forEach(function(el){ el.classList.remove('open'); }); }
+  function railOpen(){ return body.classList.contains('rail-shown')&&!body.classList.contains('rail-hidden'); }
+  function closeRail(){ closePopovers(); if(railOpen()) railPill.click(); }
+  function panelOpen(){ return panel.classList.contains('open')&&!body.classList.contains('panel-collapsed'); }
+  function closePanel(){ var closeBtn=document.getElementById('close'); if(closeBtn) closeBtn.click(); else { body.classList.add('panel-collapsed'); panel.classList.remove('open'); document.dispatchEvent(new Event('atlas:panel-sync')); } }
+  function expanded(){ return panel.classList.contains('drawer-expanded'); }
+  if(typeof window.__atlasLastApplyCount!=='undefined'&&window.__atlasSetApplyCount) window.__atlasSetApplyCount(window.__atlasLastApplyCount);
+  if(applyBtn) applyBtn.addEventListener('click',closeRail);
+  function placePopovers(){ popovers.forEach(function(item){ if(mq.matches){ if(item.button.nextSibling!==item.panel)item.button.parentNode.insertBefore(item.panel,item.button.nextSibling); }else if(item.anchor.parentNode&&item.anchor.nextSibling!==item.panel){ item.anchor.parentNode.insertBefore(item.panel,item.anchor.nextSibling); } }); }
+  function syncScrim(){ var show=mq.matches&&(railOpen()||panelOpen()); if(show){ scrim.hidden=false; requestAnimationFrame(function(){ scrim.classList.add('show'); }); } else { scrim.classList.remove('show'); setTimeout(function(){ if(!scrim.classList.contains('show')) scrim.hidden=true; },260); } }
+  scrim.addEventListener('click',function(){ if(railOpen()) closeRail(); else if(panelOpen()) closePanel(); });
+  var wasPanelOpen=panelOpen();
+  var wasRailOpen=railOpen();
+  function syncPanelState(){ placePopovers(); var openRail=railOpen(); if(mq.matches&&openRail&&!wasRailOpen&&panel.classList.contains('open')&&!body.classList.contains('panel-collapsed')){ body.classList.add('panel-collapsed'); document.dispatchEvent(new Event('atlas:panel-sync')); } wasRailOpen=openRail; var open=panelOpen(); if(open&&!wasPanelOpen&&mq.matches){ panel.classList.remove('drawer-expanded'); panel.style.removeProperty('transform'); } wasPanelOpen=open; syncScrim(); }
+  new MutationObserver(syncPanelState).observe(body,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(syncPanelState).observe(panel,{attributes:true,attributeFilter:['class']});
+  document.addEventListener('atlas:panel-sync',syncPanelState);
+  if(mq.addEventListener) mq.addEventListener('change',syncPanelState); else if(mq.addListener) mq.addListener(syncPanelState);
+  function dragify(grip,target,handlers){ if(!grip) return; var startY=0,dy=0,active=false; grip.addEventListener('touchstart',function(e){ if(!mq.matches) return; active=true; startY=e.touches[0].clientY; dy=0; target.style.transition='none'; },{passive:true}); grip.addEventListener('touchmove',function(e){ if(!active) return; dy=e.touches[0].clientY-startY; handlers.move(dy,e); },{passive:false}); function end(){ if(!active) return; active=false; target.style.transition=''; handlers.end(dy); dy=0; } grip.addEventListener('touchend',end); grip.addEventListener('touchcancel',end); }
+  function setT(el,y){ el.style.setProperty('transform','translateY('+y+'px)','important'); }
+  function clearT(el){ el.style.removeProperty('transform'); }
+  dragify(railHandle,rail,{move:function(dy,e){ if(dy>0){ e.preventDefault(); setT(rail,dy); } },end:function(dy){ clearT(rail); if(dy>90) closeRail(); }});
+  dragify(panelHandle,panel,{move:function(dy,e){ e.preventDefault(); if(dy>0) setT(panel,dy); },end:function(dy){ clearT(panel); if(dy<-50&&!expanded()) panel.classList.add('drawer-expanded'); else if(dy>110){ if(expanded()) panel.classList.remove('drawer-expanded'); else closePanel(); } }});
+  syncPanelState();
+})();
+</script>
+<script>
+(function(){try{
+  var coach=document.getElementById('dockCoach'); if(!coach) return;
+  var KEY='bvAtlasDockCoachSeen', seen=false;
+  try{ seen=localStorage.getItem(KEY)==='1'; }catch(e){}
+  if(!window.matchMedia('(max-width:640px)').matches || seen) return;
+  var done=false;
+  function dismiss(){ if(done) return; done=true; coach.classList.remove('show'); try{localStorage.setItem(KEY,'1');}catch(e){} }
+  setTimeout(function(){ if(!done) coach.classList.add('show'); },800);
+  setTimeout(dismiss,7000);
+  coach.addEventListener('click',dismiss);
+  var dock=document.querySelector('.dock'); if(dock) dock.addEventListener('click',dismiss,{once:true});
+}catch(e){}})();
+</script><!-- ===== BeVvip intro tour (Base Camp wayfinding layer) ===== -->
+<style id="bvi-style">
+  .bvi-scrim{position:fixed;inset:0;z-index:9000;background:rgba(6,9,13,.9);
+    -webkit-backdrop-filter:blur(15px) saturate(.92);backdrop-filter:blur(15px) saturate(.92);
+    clip-path:inset(0 0 100% 0);transition:clip-path .6s cubic-bezier(.16,.84,.34,1);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:64px 22px 30px;pointer-events:none;font-family:var(--sans)}
+  .bvi-scrim.bvi-open{clip-path:inset(0 0 0 0);pointer-events:auto}
+  .bvi-skip{position:absolute;top:15px;right:clamp(14px,4vw,30px);background:none;border:0;cursor:pointer;
+    color:var(--muted);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    display:flex;align-items:center;gap:7px;transition:color .25s;z-index:2}
+  .bvi-skip:hover{color:var(--ink)}
+  .bvi-skip svg{width:12px;height:12px}
+  .bvi-stage{width:min(660px,100%);overflow:hidden;opacity:0;transform:translateY(10px);
+    transition:opacity .5s .16s,transform .5s .16s}
+  .bvi-open .bvi-stage{opacity:1;transform:none}
+  .bvi-track{display:flex;transition:transform .46s cubic-bezier(.22,.61,.36,1)}
+  .bvi-slide{flex:0 0 100%;width:100%;min-height:clamp(286px,44vh,372px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px 8px}
+  .bvi-eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin:0 0 15px}
+  .bvi-title{font-family:var(--serif);font-size:clamp(28px,4.8vw,44px);line-height:1.16;font-weight:600;
+    margin:0 auto;max-width:16ch;color:var(--ink)}
+  .bvi-sub{font-size:13.5px;line-height:1.7;color:var(--muted);max-width:46ch;margin:18px auto 0}
+  .bvi-ic{width:62px;height:62px;border:1px solid var(--line);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--accent);margin:0 auto 22px;
+    background:rgba(255,255,255,.02)}
+  .bvi-ic svg{width:26px;height:26px}
+  .bvi-h{font-family:var(--serif);font-size:clamp(24px,3.6vw,32px);line-height:1.18;font-weight:600;margin:0;color:var(--ink)}
+  .bvi-d{font-size:13.5px;line-height:1.7;color:var(--muted);max-width:40ch;margin:14px auto 0}
+  .bvi-famlbl{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);
+    text-align:center;margin:0 0 18px;position:relative;width:100%}
+  .bvi-famlbl::before,.bvi-famlbl::after{content:"";position:absolute;top:50%;width:clamp(18px,16%,90px);height:1px;background:var(--line)}
+  .bvi-famlbl::before{left:0}.bvi-famlbl::after{right:0}
+  .bvi-links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px}
+  .bvi-link{display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--ink);
+    padding:10px 14px;border:1px solid transparent;border-radius:3px;transition:border-color .25s,background .25s;min-width:112px}
+  .bvi-link:hover{border-color:var(--line);background:rgba(255,255,255,.03)}
+  .bvi-link .bvi-g{width:17px;height:17px;color:var(--muted);transition:color .25s}
+  .bvi-link:hover .bvi-g{color:var(--accent)}
+  .bvi-link .bvi-nm{font-family:var(--serif);font-size:16px;line-height:1.1;text-align:center}
+  .bvi-link .bvi-tag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);min-height:10px}
+  .bvi-link.bvi-here{cursor:default}
+  .bvi-link.bvi-here .bvi-g,.bvi-link.bvi-here .bvi-tag{color:var(--accent)}
+  .bvi-nav{width:min(660px,100%);display:flex;align-items:center;justify-content:space-between;gap:14px;
+    margin-top:24px;opacity:0;transition:opacity .55s .3s}
+  .bvi-open .bvi-nav{opacity:1}
+  .bvi-arrow{display:inline-flex;align-items:center;gap:9px;background:none;border:1px solid var(--line);
+    color:var(--ink);cursor:pointer;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    padding:11px 18px;border-radius:2px;transition:background .3s,color .3s,border-color .3s,opacity .25s;white-space:nowrap}
+  .bvi-arrow svg{width:15px;height:11px}
+  .bvi-prev{padding:11px 16px}
+  .bvi-prev[disabled]{opacity:.28;pointer-events:none}
+  .bvi-next{border-color:var(--accent)}
+  .bvi-next:hover{background:var(--accent);color:var(--bg,#0a0d13)}
+  .bvi-dots{display:flex;gap:8px;align-items:center}
+  .bvi-dot{width:7px;height:7px;border-radius:50%;background:var(--line);border:0;padding:0;cursor:pointer;transition:.25s}
+  .bvi-dot.on{background:var(--accent);width:20px;border-radius:4px}
+  .bvi-reopen{position:fixed;left:14px;bottom:calc(16px + var(--vvb,0px));z-index:1500;display:flex;align-items:center;gap:7px;
+    background:rgba(10,13,19,.82);border:1px solid var(--line);color:var(--muted);cursor:pointer;border-radius:30px;
+    padding:7px 13px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:.2s}
+  .bvi-reopen:hover{color:var(--ink);border-color:var(--accent)}
+  .bvi-reopen svg{width:14px;height:14px;color:var(--accent)}
+  @media (max-width:640px){
+    .bvi-scrim{padding:56px 14px 22px}
+    .bvi-arrow span{display:none}.bvi-arrow{padding:11px 14px}
+    .bvi-reopen span{display:none}.bvi-reopen{padding:9px}
+    .bvi-link{min-width:44%}
+  }
+  @media (prefers-reduced-motion:reduce){.bvi-scrim,.bvi-stage,.bvi-nav,.bvi-track{transition:none}}
+</style>
+<button class="bvi-reopen" id="bviReopen" type="button" aria-label="Replay the intro tour">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/><path d="M15.5 8.5 L10.5 10.5 L8.5 15.5 L13.5 13.5 Z" fill="currentColor"/></svg>
+  <span>Tour</span>
+</button>
+<div class="bvi-scrim" id="bviScrim" role="dialog" aria-modal="true" aria-label="Welcome to the Atlas" aria-hidden="true">
+  <button class="bvi-skip" id="bviSkip" type="button" aria-label="Skip the intro">Skip
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+  </button>
+  <div class="bvi-stage"><div class="bvi-track" id="bviTrack"></div></div>
+  <div class="bvi-nav">
+    <button class="bvi-arrow bvi-prev" id="bviPrev" type="button" aria-label="Back">
+      <svg viewBox="0 0 24 12" fill="none" aria-hidden="true"><path d="M23 6 H3 M8 1 L2 6 L8 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Back</span>
+    </button>
+    <div class="bvi-dots" id="bviDots"></div>
+    <button class="bvi-arrow bvi-next" id="bviNext" type="button">
+      <span>Next</span>
+      <svg viewBox="0 0 24 12" fill="none" aria-hidden="true"><path d="M1 6 H21 M16 1 L22 6 L16 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+<script>
+(function(){
+  "use strict";
+  var INTRO = {"key": "bvi_intro_world_v1", "here": "world", "welcome": {"eyebrow": "Welcome aboard", "title": "Around the world, one voyage at a time.", "sub": "Map the great circumnavigations and grand voyages by region — every sailing plotted where it actually goes, day by day."}, "features": [{"icon": "filter", "t": "Filter by region", "d": "Open the rail to narrow the map by region, port, season or Cruise Line."}, {"icon": "pin", "t": "Tap a port", "d": "Each pin marks a port of call. Tap to see the world cruises calling there."}, {"icon": "card", "t": "See photos & day-by-day", "d": "Open any card to follow a deep link with photos, the day-by-day itinerary and full voyage details."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any voyage to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
+  var FAM=[
+    {nm:"VIP Hotels",         slug:"hotel",     url:"https://luxury-hotel-atlas-two.vercel.app",          glyph:"hotel"},
+    {nm:"Expedition Cruises", slug:"expedition",url:"https://expedition-cruise-map.vercel.app",            glyph:"cruise"},
+    {nm:"Private Jet",        slug:"jet",       url:"https://private-jet-expeditions.vercel.app",          glyph:"jet"},
+    {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",   glyph:"yacht"},
+    {nm:"World Cruises",      slug:"world",     url:"https://world-cruise-atlas.vercel.app",               glyph:"world"}
+  ];
+  var GLYPHS={
+    hotel:'<path d="M3 21h18M5 21V8l7-4 7 4v13M9 12h2M13 12h2M9 16h2M13 16h2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    cruise:'<path d="M4 17l1.5-5h13L20 17M3 17h18l-1.5 3H4.5L3 17M12 12V5M9 7h6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    jet:'<path d="M21 12l-9 2-3 5-2-1 1-4-4-1-2 2-1.5-.7L3 12 1.5 9.7 3 9l2 2 4-1-1-4 2-1 3 5 9 2z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/>',
+    yacht:'<path d="M5 19h14M6 19l-1-7 8-6 6 6-2 7M12 6V3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    world:'<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M3.5 12h17M12 3.5v17M5.5 7c2 1.6 11 1.6 13 0M5.5 17c2-1.6 11-1.6 13 0" stroke="currentColor" stroke-width="1.1" fill="none"/>',
+    filter:'<path d="M4 7h16M7 12h10M10 17h4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>',
+    pin:'<path d="M12 22s7-7.6 7-13a7 7 0 1 0-14 0c0 5.4 7 13 7 13z" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6" fill="none"/>',
+    card:'<rect x="3" y="5" width="18" height="14" rx="2.4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 16l4.5-4 3 2.6 4-4.6L21 15" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="9.5" r="1.3" fill="currentColor"/>',
+    compass:'<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M15.5 8.5 L10.5 10.5 L8.5 15.5 L13.5 13.5 Z" fill="currentColor"/>'
+  };
+  var track=document.getElementById('bviTrack');
+  function svg(g,cls){return '<svg class="'+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true">'+g+'</svg>';}
+
+  // ---- build slides ----
+  var slides=[];
+  // 0: welcome
+  var w=document.createElement('div');w.className='bvi-slide';
+  w.innerHTML='<p class="bvi-eyebrow">'+INTRO.welcome.eyebrow+'</p>'+
+    '<h2 class="bvi-title">'+INTRO.welcome.title+'</h2>'+
+    '<p class="bvi-sub">'+INTRO.welcome.sub+'</p>';
+  slides.push(w);
+  // feature slides
+  INTRO.features.forEach(function(f){
+    var s=document.createElement('div');s.className='bvi-slide';
+    s.innerHTML='<div class="bvi-ic">'+svg(GLYPHS[f.icon]||'')+'</div>'+
+      '<h2 class="bvi-h">'+f.t+'</h2><p class="bvi-d">'+f.d+'</p>';
+    slides.push(s);
+  });
+  // final: atlas family
+  var fam=document.createElement('div');fam.className='bvi-slide';
+  var links='';
+  FAM.forEach(function(a){
+    var here=a.slug===INTRO.here;
+    var inner=svg(GLYPHS[a.glyph],'bvi-g')+'<span class="bvi-nm">'+a.nm+'</span>'+
+      '<span class="bvi-tag">'+(here?'You are here':'')+'</span>';
+    links+= here ? '<div class="bvi-link bvi-here">'+inner+'</div>'
+                 : '<a class="bvi-link" href="'+a.url+'" target="_blank" rel="noopener">'+inner+'</a>';
+  });
+  fam.innerHTML='<div class="bvi-famlbl">The Atlas family</div><div class="bvi-links">'+links+'</div>';
+  slides.push(fam);
+  slides.forEach(function(s){track.appendChild(s);});
+
+  // ---- dots ----
+  var dotsWrap=document.getElementById('bviDots');
+  slides.forEach(function(_,i){
+    var b=document.createElement('button');b.type='button';b.className='bvi-dot';
+    b.setAttribute('aria-label','Go to slide '+(i+1));
+    b.addEventListener('click',function(){go(i);});
+    dotsWrap.appendChild(b);
+  });
+
+  var scrim=document.getElementById('bviScrim'),skip=document.getElementById('bviSkip'),
+      prev=document.getElementById('bviPrev'),next=document.getElementById('bviNext'),
+      nextLbl=next.querySelector('span'),reopen=document.getElementById('bviReopen');
+  var idx=0,last=slides.length-1;
+  function render(){
+    track.style.transform='translateX(-'+(idx*100)+'%)';
+    prev.disabled=idx===0;
+    nextLbl.textContent=idx===last?'Begin exploring':'Next';
+    [].forEach.call(dotsWrap.children,function(d,i){d.classList.toggle('on',i===idx);});
+  }
+  function go(i){idx=Math.max(0,Math.min(last,i));render();}
+  function done(){scrim.classList.remove('bvi-open');scrim.setAttribute('aria-hidden','true');try{localStorage.setItem(INTRO.key,'1');}catch(e){}}
+  function open(){idx=0;render();scrim.classList.add('bvi-open');scrim.setAttribute('aria-hidden','false');setTimeout(function(){try{next.focus();}catch(e){}},150);}
+
+  next.addEventListener('click',function(){ if(idx===last) done(); else go(idx+1); });
+  prev.addEventListener('click',function(){ go(idx-1); });
+  skip.addEventListener('click',done);
+  reopen.addEventListener('click',open);
+  scrim.addEventListener('click',function(e){if(e.target===scrim)done();});
+  document.addEventListener('keydown',function(e){
+    if(!scrim.classList.contains('bvi-open'))return;
+    if(e.key==='Escape')done();
+    else if(e.key==='ArrowRight'){ if(idx<last) go(idx+1); }
+    else if(e.key==='ArrowLeft'){ go(idx-1); }
+  });
+
+  render();
+  var force=/(?:[?#&])(?:tour|intro)\b/i.test(location.search+location.hash);
+  var seen=false;try{seen=localStorage.getItem(INTRO.key)==='1';}catch(e){}
+  if(force||!seen){
+    if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+      scrim.classList.add('bvi-open');scrim.setAttribute('aria-hidden','false');
+    }else{requestAnimationFrame(function(){requestAnimationFrame(open);});}
+  }
+})();
+</script>
+
+</body>
+</html>

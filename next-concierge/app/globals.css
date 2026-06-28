@@ -1587,3 +1587,175 @@ main.page {
 @media (max-width: 560px) {
   .tour-title { font-size: 22px; }
 }
+
+/* ── In-app Atlas view ────────────────────────────────
+   The embedded atlas fills the page; The Guide rides in a slim bottom bar that
+   pops a semi-transparent sheet up over the map. The iframe is sized to stop
+   just above the bar so the atlas's own dock stays visible. */
+.atlas-view {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden; /* clip the sheet as it slides down out of view */
+  background: var(--bg);
+}
+.atlas-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  border: 0;
+  display: block;
+}
+
+/* The dock occupies the bottom strip; the sheet is anchored to its top edge
+   (bottom:100%) so it always sits directly above the bar regardless of bar
+   height. */
+.atlas-dock {
+  position: relative;
+  flex: none;
+  z-index: 30;
+}
+
+.atlas-guidebar {
+  width: 100%;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, #121117, #0b0b0d);
+  color: var(--text);
+  font-family: var(--sans);
+  cursor: pointer;
+  text-align: left;
+}
+.atlas-guidebar:hover {
+  background: linear-gradient(180deg, #16151c, #0d0d10);
+}
+.agb-av {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-size: 17px;
+  color: #0b0b0d;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  box-shadow: 0 0 0 1px var(--gold-dim);
+}
+.agb-label {
+  flex: none;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+.agb-label b {
+  color: var(--gold-light);
+  font-weight: 600;
+}
+.agb-hint {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agb-chev {
+  flex: none;
+  color: var(--sub);
+  font-size: 13px;
+}
+
+/* The pop-up sheet: semi-transparent, blurred, anchored above the bar, sliding
+   up from behind it. Closed = translated down and out (clipped by .atlas-view's
+   overflow:hidden). */
+.atlas-guidesheet {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: min(60vh, 540px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(12, 12, 15, 0.82);
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.55);
+  transform: translateY(calc(100% + 56px));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.34s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.24s ease;
+}
+.atlas-dock--open .atlas-guidesheet {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Center the sheet's content like the home chat, but full-width on phones. */
+.atlas-guidesheet .chat {
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.ags-grip {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.ags-grip-where {
+  color: var(--sub);
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+}
+.ags-min {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--sub);
+  font-family: var(--sans);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.ags-min:hover {
+  color: var(--text);
+  border-color: var(--gold-dim);
+}
+.ags-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* The sheet supplies its own translucent backdrop, so let the chat panes be
+   transparent rather than painting the home page's solid panel colour. */
+.atlas-guidesheet .transcript,
+.atlas-guidesheet .composer {
+  background: transparent;
+}
+.atlas-guidesheet .empty {
+  margin-top: 3vh;
+}
+
+@media (max-width: 640px) {
+  .atlas-guidesheet {
+    height: min(72vh, 560px);
+  }
+  .agb-hint {
+    display: none; /* keep the bar to avatar + label on phones */
+  }
+}
