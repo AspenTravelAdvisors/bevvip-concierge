@@ -140,6 +140,27 @@
   .month:hover{border-color:rgba(var(--accent-rgb),.65);color:var(--ink)}
   .month.active{background:linear-gradient(135deg,var(--accent),var(--accent-mid));border-color:#fff;color:var(--accent-text);font-weight:800}
 
+  /* ---------- Location filter (All / Start / End / Stops) ---------- */
+  .locationpop{width:318px}
+  .locationroles{display:flex;gap:5px;margin-bottom:10px}
+  .locrole{flex:1;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-size:10.5px;cursor:pointer;padding:0 3px;transition:.14s}
+  .locrole:hover{border-color:rgba(var(--accent-rgb),.6);color:var(--ink)}
+  .locrole.active{background:linear-gradient(135deg,var(--accent),var(--accent-mid));border-color:#fff;color:var(--accent-text);font-weight:800}
+  .locationsearch{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--ink);font:inherit;font-size:13px;padding:9px 11px;margin-bottom:9px}
+  .locationsearch:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .locationsearch::placeholder{color:var(--muted)}
+  .locationlist{max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+  .locationrow{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:9px;cursor:pointer;border:1px solid transparent;transition:.13s}
+  .locationrow:hover{background:var(--panel2)}
+  .locationrow.sel{background:var(--panel2);border-color:var(--accent)}
+  .locationrow .ln{font-size:12.5px;font-weight:600;line-height:1.2}
+  .locationrow .lb{font-size:10px;color:var(--muted);margin-top:2px}
+  .locationrow .lc{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent2);background:rgba(var(--accent-rgb),.14);border:1px solid rgba(var(--accent-rgb),.32);border-radius:20px;padding:2px 8px;flex:0 0 auto}
+  .locationempty{padding:16px 10px;color:var(--muted);font-size:12px;text-align:center}
+  .locationpin{transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+  .lp-dot{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--accent-hi),var(--accent) 60%,var(--accent-deep));border:2px solid #fff;box-shadow:0 0 0 4px rgba(var(--accent-rgb),.32),0 4px 12px rgba(0,0,0,.6)}
+  .lp-lbl{margin-top:5px;white-space:nowrap;background:rgba(8,11,16,.92);border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;letter-spacing:.2px}
+
   /* ---------- Detail panel ---------- */
   .panel{
     position:absolute;z-index:1001;top:0;right:0;height:100%;width:392px;max-width:92vw;
@@ -404,6 +425,13 @@
       <div class="fs" id="dateSummary">All departures</div>
     </div>
   </div>
+  <div class="filterbtn" id="locationBtn">
+    <div class="ico">&#128205;</div>
+    <div>
+      <div class="ft">Location</div>
+      <div class="fs" id="locationSummary">All locations</div>
+    </div>
+  </div>
   <div class="railscroll">
     <button type="button" class="secthead" id="jetHead">Jet experience<span class="chev">&#9662;</span></button>
     <div class="sectbody ops" id="opList"></div>
@@ -425,6 +453,24 @@
     </div>
   </div>
   <div id="dateGrid"></div>
+</div>
+
+<div class="datepop locationpop" id="locationPop">
+  <div class="dh">
+    <h2>Filter by location</h2>
+    <div class="dhr">
+      <div class="clear" id="locationClear">Clear location</div>
+      <button type="button" class="popx" id="locationPopClose" aria-label="Close">&#10005;</button>
+    </div>
+  </div>
+  <div class="locationroles" id="locationRoles">
+    <button type="button" class="locrole active" data-role="any">All</button>
+    <button type="button" class="locrole" data-role="start">Start</button>
+    <button type="button" class="locrole" data-role="end">End</button>
+    <button type="button" class="locrole" data-role="stop">Stops</button>
+  </div>
+  <input id="locationSearch" class="locationsearch" type="search" placeholder="Search locations&hellip;" autocomplete="off">
+  <div class="locationlist" id="locationList"></div>
 </div>
 
 <section class="panel" id="panel">
@@ -616,6 +662,7 @@ let activeBrands=new Set(), activeView=null, pinnedTrip=null, routeLocked=false,
 let activeMonths=new Set();
 let activeRegions=new Set(), excludedRegions=new Set();
 const activeIds=new Set();let activeSearchTerms=[];
+let activeLocation=null, activeLocationRole='any', locationView=null;
 function isPastTrip(t){
   if(t.onDemand || !t.d) return false;
   const p=t.d.split('/'), td=new Date(); td.setHours(0,0,0,0);
@@ -631,14 +678,30 @@ function textMatches(t){
   const hay=norm([t.n,BRANDS[t.b]&&BRANDS[t.b].short,t.d,...regionNames,...cityNames].filter(Boolean).join(' '));
   return activeSearchTerms.every(term=>hay.includes(term));
 }
-/* matchesNonRegion = every filter except the region filter (used for pin counts,
-   so each region pin reflects how many qualifying journeys reach it) */
-function matchesNonRegion(t){
+function tripLocationRoles(t){
+  const names=(t.cities||[]).map(c=>c.n).filter(Boolean);
+  const start=names[0]||null, end=names.length>1?names[names.length-1]:null;
+  return {start,end,stops:new Set(names.slice(1,-1)),all:new Set(names)};
+}
+function tripMatchesLocation(t,location,role){
+  if(!location) return true;
+  const r=tripLocationRoles(t);
+  if(role==='start') return r.start===location;
+  if(role==='end') return r.end===location;
+  if(role==='stop') return r.stops.has(location);
+  return r.all.has(location);
+}
+function matchesNonLocation(t){
   if(isPastTrip(t)) return false;
   return (!activeBrands.size || activeBrands.has(t.b))
     && (t.onDemand || !activeMonths.size || (t.mk && activeMonths.has(t.mk)))
     && (!activeIds.size || activeIds.has(String(t.id)) || activeIds.has(t.guideId) || activeIds.has('jt_'+t.id))
     && textMatches(t);
+}
+/* matchesNonRegion = every filter except the region filter (used for pin counts,
+   so each region pin reflects how many qualifying journeys reach it) */
+function matchesNonRegion(t){
+  return matchesNonLocation(t) && tripMatchesLocation(t,activeLocation,activeLocationRole);
 }
 /* A trip passes the region filter when it reaches at least one *included* region
    (or none are selected) AND it touches none of the *excluded* regions. */
@@ -776,7 +839,11 @@ function updateDateSummary(){
   const labels=Array.from(activeMonths).sort().map(k=>MON[+k.slice(5)-1]+' '+k.slice(0,4));
   s.textContent=labels.length===1?labels[0]:labels.length+' months selected';
 }
-function refreshView(){ routeLocked=false; document.body.classList.remove('tracing'); if(activeView){ activeView==='__world__'?openWorld():(activeView==='__search__'?openSearchResults():openRegion(activeView)); } }
+function refreshView(){
+  routeLocked=false; document.body.classList.remove('tracing');
+  if(locationView) openLocationResults(locationView);
+  else if(activeView) activeView==='__world__'?openWorld():(activeView==='__search__'?openSearchResults():openRegion(activeView));
+}
 function buildDateGrid(){
   const grid=document.getElementById('dateGrid');
   const months=Array.from(new Set(TRIPS.filter(t=>t.mk).map(t=>t.mk))).sort();
@@ -802,13 +869,128 @@ function buildDateGrid(){
 }
 buildDateGrid();
 document.getElementById('dateBtn').addEventListener('click',e=>{
-  e.stopPropagation();document.getElementById('datePop').classList.toggle('open');
+  e.stopPropagation();document.getElementById('locationPop').classList.remove('open');document.getElementById('datePop').classList.toggle('open');
 });
 document.getElementById('datePop').addEventListener('click',e=>e.stopPropagation());
 document.getElementById('datePopClose').addEventListener('click',e=>{e.stopPropagation();document.getElementById('datePop').classList.remove('open');});
 document.getElementById('dateClear').addEventListener('click',()=>{
   activeMonths.clear();document.querySelectorAll('.month').forEach(m=>m.classList.remove('active'));
   document.getElementById('dateBtn').classList.remove('active');updateDateSummary();applyFilter();refreshView();
+});
+
+/* ===== Location filter (All / Start / End / Stops) =======================
+   Mirrors the Expedition Atlas port filter using each journey's mapped
+   city-to-city route. Pick a place, then narrow by its role in the journey. */
+const locationMarkerLayer=L.layerGroup().addTo(map);
+const LOCATION_LL={};
+TRIPS.forEach(t=>(t.cities||[]).forEach(c=>{ if(c.n&&c.ll&&!LOCATION_LL[c.n]) LOCATION_LL[c.n]=c.ll; }));
+const locationRoleLabel={
+  any:'journey visiting',
+  start:'journey starting in',
+  end:'journey ending in',
+  stop:'journey stopping in'
+};
+function locationAgg(role){
+  const agg={};
+  TRIPS.forEach(t=>{
+    if(!matchesNonLocation(t)||!regionPass(t)) return;
+    const r=tripLocationRoles(t);
+    const add=(name,key)=>{
+      if(!name||!LOCATION_LL[name]) return;
+      const o=agg[name]||(agg[name]={name,start:0,end:0,stop:0,seen:new Set()});
+      o[key]++; o.seen.add(t.guideId||t.n);
+    };
+    add(r.start,'start');
+    add(r.end,'end');
+    r.stops.forEach(name=>add(name,'stop'));
+  });
+  let arr=Object.values(agg).map(o=>({name:o.name,start:o.start,end:o.end,stop:o.stop,total:o.seen.size}));
+  if(role!=='any') arr=arr.filter(o=>o[role]>0);
+  return arr.sort((a,b)=>a.name.localeCompare(b.name));
+}
+const locationBtn=document.getElementById('locationBtn');
+const locationPop=document.getElementById('locationPop');
+const locationSearch=document.getElementById('locationSearch');
+const locationList=document.getElementById('locationList');
+const locationSummary=document.getElementById('locationSummary');
+function renderLocationList(){
+  const q=norm(locationSearch.value||'');
+  let arr=locationAgg(activeLocationRole);
+  if(q) arr=arr.filter(o=>norm(o.name).includes(q));
+  locationList.innerHTML='';
+  if(!arr.length){ locationList.innerHTML='<div class="locationempty">No locations match.</div>'; return; }
+  arr.forEach(o=>{
+    const row=document.createElement('div');
+    row.className='locationrow'+(o.name===activeLocation?' sel':'');
+    const count=activeLocationRole==='any'?o.total:o[activeLocationRole];
+    const bits=[];
+    if(o.start) bits.push(o.start+' start'+(o.start!==1?'s':''));
+    if(o.end) bits.push(o.end+' end'+(o.end!==1?'s':''));
+    if(o.stop) bits.push(o.stop+' stop'+(o.stop!==1?'s':''));
+    row.innerHTML='<div><div class="ln">'+esc(o.name)+'</div><div class="lb">'+bits.join(' &middot; ')+'</div></div><div class="lc">'+count+'</div>';
+    row.addEventListener('click',()=>selectLocation(o.name));
+    locationList.appendChild(row);
+  });
+}
+function showLocationPin(name){
+  locationMarkerLayer.clearLayers();
+  const ll=LOCATION_LL[name]; if(!ll) return;
+  const html='<div class="locationpin"><div class="lp-dot"></div><div class="lp-lbl">'+esc(name)+'</div></div>';
+  L.marker(ll,{icon:L.divIcon({className:'',html,iconSize:[0,0]}),interactive:false,keyboard:false,zIndexOffset:1000}).addTo(locationMarkerLayer);
+  if(!routeLocked) map.flyTo(ll,Math.max(map.getZoom(),5),{duration:.8});
+}
+function openLocationResults(name){
+  locationView=name; activeView=null;
+  if(!routeLocked){ pinnedTrip=null; clearRoute(); document.body.classList.remove('tracing'); }
+  applyFilter();
+  document.getElementById('worldBtn').classList.remove('active');
+  const trips=allMatchingTrips();
+  document.getElementById('pKlabel').textContent='Private jet location';
+  document.getElementById('pTitle').textContent=name;
+  const label=locationRoleLabel[activeLocationRole]||'journey visiting';
+  document.getElementById('pSub').textContent=trips.length+' private jet journey'+(trips.length!==1?'s':'')+' '+label.replace('journey ','')+' this location · each card includes its day-by-day route';
+  const list=document.getElementById('pList'); list.innerHTML='';
+  trips.forEach(t=>list.appendChild(makeCard(t)));
+  document.getElementById('panel').classList.add('open');
+  revealPanel(); showLocationPin(name);
+}
+function selectLocation(name){
+  activeLocation=name;
+  locationBtn.classList.add('active');
+  locationSummary.textContent=name.length>22?name.slice(0,21)+'…':name;
+  locationPop.classList.remove('open');
+  document.getElementById('reset').classList.add('show');
+  applyFilter(); openLocationResults(name);
+}
+function clearLocationFilter(){
+  activeLocation=null; locationView=null; locationMarkerLayer.clearLayers();
+  locationBtn.classList.remove('active'); locationSummary.textContent='All locations';
+}
+function resetLocationRoleUI(){
+  activeLocationRole='any';
+  document.querySelectorAll('#locationRoles .locrole').forEach(x=>x.classList.toggle('active',x.dataset.role==='any'));
+  locationSearch.value='';
+}
+locationBtn.addEventListener('click',e=>{
+  e.stopPropagation(); document.getElementById('datePop').classList.remove('open');
+  const open=locationPop.classList.toggle('open'); if(open) renderLocationList();
+});
+locationPop.addEventListener('click',e=>e.stopPropagation());
+document.getElementById('locationPopClose').addEventListener('click',e=>{e.stopPropagation();locationPop.classList.remove('open');});
+locationSearch.addEventListener('input',renderLocationList);
+document.getElementById('locationRoles').addEventListener('click',e=>{
+  const btn=e.target.closest('.locrole'); if(!btn) return;
+  activeLocationRole=btn.dataset.role;
+  document.querySelectorAll('#locationRoles .locrole').forEach(x=>x.classList.toggle('active',x===btn));
+  renderLocationList();
+  if(activeLocation){ applyFilter(); openLocationResults(activeLocation); }
+});
+document.getElementById('locationClear').addEventListener('click',()=>{
+  const hadView=!!locationView;
+  clearLocationFilter();
+  document.getElementById('reset').classList.toggle('show',!!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length);
+  applyFilter(); renderLocationList();
+  if(hadView) closePanel();
 });
 
 /* ===== Brand filter rail ===== */
@@ -835,8 +1017,8 @@ function toggleBrand(key,row){
   if(activeBrands.has(key)){ activeBrands.delete(key); row.classList.remove('active'); }
   else { activeBrands.add(key); row.classList.add('active'); }
   applyFilter();
-  document.getElementById('reset').classList.toggle('show', !!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length);
-  if(activeView){ activeView==='__world__' ? openWorld() : (activeView==='__search__'?openSearchResults():openRegion(activeView)); }
+  document.getElementById('reset').classList.toggle('show', !!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length||!!activeLocation);
+  refreshView();
 }
 /* ===== Region filter rows + collapsible section accordion ===== */
 const regionList=document.getElementById('regionList');
@@ -863,15 +1045,15 @@ function toggleRegionFilter(key,row){
   row.classList.toggle('active',activeRegions.has(key));
   row.classList.toggle('excluded',excludedRegions.has(key));
   applyFilter();
-  document.getElementById('reset').classList.toggle('show', !!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length);
-  if(activeView){ activeView==='__world__'?openWorld():(activeView==='__search__'?openSearchResults():openRegion(activeView)); }
+  document.getElementById('reset').classList.toggle('show', !!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length||!!activeLocation);
+  refreshView();
 }
 [['jetHead','opList'],['regionHead','regionList']].forEach(pair=>{
   const head=document.getElementById(pair[0]), body=document.getElementById(pair[1]);
   head.addEventListener('click',()=>{ const c=head.classList.toggle('collapsed'); body.classList.toggle('collapsed',c); });
 });
 function applyFilter(){
-  const anyFilter = !!activeBrands.size || activeMonths.size>0 || activeIds.size>0 || activeSearchTerms.length>0 || activeRegions.size>0 || excludedRegions.size>0;
+  const anyFilter = !!activeBrands.size || activeMonths.size>0 || activeIds.size>0 || activeSearchTerms.length>0 || activeRegions.size>0 || excludedRegions.size>0 || !!activeLocation;
   Object.entries(markers).forEach(([key,obj])=>{
     // Dynamic count: how many qualifying journeys reach this region right now
     const n=obj.trips.filter(matchesNonRegion).length;
@@ -893,8 +1075,9 @@ document.getElementById('reset').addEventListener('click',()=>{
   routeLocked=false; document.body.classList.remove('tracing');
   activeBrands.clear();document.querySelectorAll('.op').forEach(r=>r.classList.remove('active','excluded'));
   activeIds.clear();activeSearchTerms=[];activeRegions.clear();excludedRegions.clear();
+  const hadLocationView=!!locationView; clearLocationFilter(); resetLocationRoleUI();
   applyFilter();document.getElementById('reset').classList.remove('show');
-  if(activeView){ activeView==='__world__' ? openWorld() : (activeView==='__search__'?openSearchResults():openRegion(activeView)); }
+  if(hadLocationView) closePanel(); else refreshView();
 });
 
 /* ===== Card builder ===== */
@@ -1016,11 +1199,12 @@ function revealPanel(){
 }
 function hidePanel(){
   document.getElementById('datePop').classList.remove('open');
+  locationPop.classList.remove('open');
   document.body.classList.add('panel-collapsed');
   document.dispatchEvent(new Event('atlas:panel-sync'));
 }
 function openSearchResults(title){
-  activeView='__search__';
+  activeView='__search__'; locationView=null; locationMarkerLayer.clearLayers();
   if(!routeLocked){ pinnedTrip=null; clearRoute(); document.body.classList.remove('tracing'); }
   applyFilter();
   document.getElementById('worldBtn').classList.remove('active');
@@ -1036,7 +1220,7 @@ function openSearchResults(title){
   fitTrips(trips);
 }
 function openRegion(key){
-  activeView=key;
+  activeView=key; locationView=null; locationMarkerLayer.clearLayers();
   if(!routeLocked){ pinnedTrip=null; clearRoute(); document.body.classList.remove('tracing'); }
   applyFilter();
   document.getElementById('worldBtn').classList.remove('active');
@@ -1058,7 +1242,7 @@ function openRegion(key){
 
 /* ===== Around-the-world panel ===== */
 function openWorld(){
-  activeView='__world__'; pinnedTrip=null; routeLocked=false; clearRoute();
+  activeView='__world__'; locationView=null; locationMarkerLayer.clearLayers(); pinnedTrip=null; routeLocked=false; clearRoute();
   document.body.classList.remove('tracing');
   document.getElementById('worldBtn').classList.add('active');
   const trips=sortTrips(WORLD_TRIPS.filter(matchesFilters));
@@ -1079,7 +1263,7 @@ document.getElementById('worldCount').textContent = WORLD_TRIPS.length+' global 
 /* ===== Close handling ===== */
 function closePanel(opts){
   const preserveRoute=!!(opts&&opts.preserveRoute&&pinnedTrip);
-  panel.classList.remove('open'); activeView=null; routeLocked=false;
+  panel.classList.remove('open'); activeView=null; locationView=null; locationMarkerLayer.clearLayers(); routeLocked=false;
   if(preserveRoute){
     document.body.classList.remove('tracing');
     markRoutedCard(pinnedTrip,false);
@@ -1090,11 +1274,13 @@ function closePanel(opts){
   }
   document.getElementById('worldBtn').classList.remove('active');
   document.getElementById('datePop').classList.remove('open');
+  locationPop.classList.remove('open');
 }
-/* Full reset: clear brand filter, close any region/world panel, drop routes, un-dim pins */
+/* Full reset: clear filters, close any result panel, drop routes, un-dim pins */
 function showAll(){
   activeBrands.clear(); document.querySelectorAll('.op').forEach(r=>r.classList.remove('active','excluded'));
   activeIds.clear(); activeSearchTerms=[]; activeRegions.clear(); excludedRegions.clear();
+  clearLocationFilter(); resetLocationRoleUI();
   document.getElementById('reset').classList.remove('show');
   closePanel();
 }
@@ -1110,12 +1296,14 @@ window.__atlasShareUrl=function(){
   if(excludedRegions.size)p.set('exRegions',[...excludedRegions].join(','));
   if(activeSearchTerms.length)p.set('q',activeSearchTerms.join(' '));
   if(activeIds.size)p.set('ids',[...activeIds].join(','));
+  if(activeLocation){p.set('location',activeLocation);if(activeLocationRole&&activeLocationRole!=='any')p.set('locationrole',activeLocationRole);}
   var qs=p.toString();
   return location.origin+location.pathname+(qs?'?'+qs:'');
 };
 document.getElementById('close').addEventListener('click',hidePanel);
 map.on('click',()=>{
   document.getElementById('datePop').classList.remove('open');
+  locationPop.classList.remove('open');
   // A drawn route stays put when the map is panned or tapped — it clears only
   // when another item (region pin or card) is chosen, or the panel is closed.
   if(routeLocked || pinnedTrip){ return; }
@@ -1139,6 +1327,18 @@ function applyDeepLink(){
   activeSearchTerms=[...words(sp.get('q')),...words(sp.get('country'))];
   if(activeIds.size||activeBrands.size||activeRegions.size||excludedRegions.size||activeSearchTerms.length)document.getElementById('reset').classList.add('show');
   applyFilter();
+  const locationParam=sp.get('location');
+  if(locationParam){
+    const locationName=Object.keys(LOCATION_LL).find(name=>norm(name)===norm(locationParam));
+    const role=sp.get('locationrole');
+    if(locationName){
+      if(['start','end','stop'].includes(role)){
+        activeLocationRole=role;
+        document.querySelectorAll('#locationRoles .locrole').forEach(x=>x.classList.toggle('active',x.dataset.role===role));
+      }
+      selectLocation(locationName); return;
+    }
+  }
   const region=findRegionKey(sp.get('region'));
   const world=/^(1|true|yes|y)$/i.test(String(sp.get('world')||'').trim());
   if(world)openWorld();
@@ -1189,10 +1389,10 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
   /* Left rail fades to transparent + blurred, then collapses into its pill */
   .rail{transition:opacity .26s ease,transform .26s ease,visibility .26s}
   body.rail-hidden .rail{opacity:0;transform:translateX(-12px) scale(.97);visibility:hidden;pointer-events:none}
-  body.rail-hidden #datePop{display:none}
+  body.rail-hidden #datePop,body.rail-hidden #locationPop{display:none}
   /* Right detail panel collapses into its pill */
   body.panel-collapsed .panel.open{transform:translateX(105%)}
-  body.panel-collapsed #datePop{display:none}
+  body.panel-collapsed #datePop,body.panel-collapsed #locationPop{display:none}
   /* While tracing a route, darken region pins so the flight path stands out
      (pins stay clickable — opacity doesn't block pointer events) */
   body.tracing .rmarker{opacity:.28;transition:opacity .3s ease}
@@ -1467,7 +1667,8 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
   var panelHandle=document.getElementById('panelHandle');
   var applyBtn=document.getElementById('railApply');
   var popovers=[
-    {button:document.getElementById('dateBtn'),panel:document.getElementById('datePop')}
+    {button:document.getElementById('dateBtn'),panel:document.getElementById('datePop')},
+    {button:document.getElementById('locationBtn'),panel:document.getElementById('locationPop')}
   ].filter(function(item){ return item.button&&item.panel; });
   if(!rail||!railPill||!panel||!scrim) return;
   popovers.forEach(function(item){
@@ -1660,7 +1861,7 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
 <script>
 (function(){
   "use strict";
-  var INTRO = {"key": "bvi_intro_jet_v1", "here": "jet", "welcome": {"eyebrow": "Welcome aboard", "title": "Around the world, by private jet.", "sub": "Trace the great private-jet journeys across the globe — each route mapped where it actually flies, stop by stop."}, "features": [{"icon": "filter", "t": "Filter by region", "d": "Open the rail to narrow the map by experience, date or region."}, {"icon": "pin", "t": "Tap a stop", "d": "Each pin marks a stop on a route. Every itinerary can be privatized and customized."}, {"icon": "card", "t": "See photos & day-by-day", "d": "Open any card to follow a deep link with photos, the day-by-day itinerary and full journey details."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any journey to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
+  var INTRO = {"key": "bvi_intro_jet_v1", "here": "jet", "welcome": {"eyebrow": "Welcome aboard", "title": "Around the world, by private jet.", "sub": "Trace the great private-jet journeys across the globe — each route mapped where it actually flies, stop by stop."}, "features": [{"icon": "filter", "t": "Filter by location", "d": "Open the rail to narrow the map by location, date, experience or region."}, {"icon": "pin", "t": "Tap a stop", "d": "Each pin marks a stop on a route. Every itinerary can be privatized and customized."}, {"icon": "card", "t": "See photos & day-by-day", "d": "Open any card to follow a deep link with photos, the day-by-day itinerary and full journey details."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any journey to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
   var FAM=[
     {nm:"VIP Hotels",         slug:"hotel",     url:"/maps/hotel/",          glyph:"hotel"},
     {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
