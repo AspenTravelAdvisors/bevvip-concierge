@@ -491,8 +491,26 @@
   // ── DATA LOADING ─────────────────────────────────────────────────────────
   if(window.setAtlasProgress) window.setAtlasProgress(12,'Loading private jet departures...');
   let BRANDS, REGIONS, ROUTES, TRIPS;
-  const _dataReady = fetch('itinerary.json')
-    .then(r => r.json())
+  function loadJetAtlasData(){
+    const url='itinerary.json';
+    if(location.protocol!=='file:'){
+      return fetch(url).then(r=>{ if(!r.ok) throw new Error('itinerary.json HTTP '+r.status); return r.json(); });
+    }
+    /* A direct file preview cannot use fetch() in Chromium. XMLHttpRequest is
+       retained as a same-folder fallback for desktop preview shells; hosted
+       atlases continue through the normal fetch path above. */
+    return new Promise((resolve,reject)=>{
+      const xhr=new XMLHttpRequest();
+      xhr.open('GET',new URL(url,location.href).href,true);
+      xhr.onload=()=>{
+        if(xhr.status!==0&&xhr.status!==200){ reject(new Error('itinerary.json HTTP '+xhr.status)); return; }
+        try{ resolve(JSON.parse(xhr.responseText)); }catch(err){ reject(err); }
+      };
+      xhr.onerror=()=>reject(new Error('Local itinerary.json could not be read'));
+      xhr.send();
+    });
+  }
+  const _dataReady = loadJetAtlasData()
     .then(d => {
       BRANDS = d.BRANDS; REGIONS = d.REGIONS; ROUTES = d.ROUTES; TRIPS = d.TRIPS;
     });
@@ -899,7 +917,9 @@ const locationRoleLabel={
 function locationAgg(role){
   const agg={};
   TRIPS.forEach(t=>{
-    if(!matchesNonLocation(t)||!regionPass(t)) return;
+    /* Match the cruise port picker: its choices reflect date, operator and
+       search filters, while region selection is applied to the results. */
+    if(!matchesNonLocation(t)) return;
     const r=tripLocationRoles(t);
     const add=(name,key)=>{
       if(!name) return;
