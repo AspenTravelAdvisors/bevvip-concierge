@@ -154,7 +154,7 @@ const cruises = (raw.TRIPS || []).map((t) => {
 
 // --- filtering -------------------------------------------------------------
 function filterCruises(params = {}) {
-  const { q, region, country, month, brand, operator, ids, minDays, maxDays } = params;
+  const { q, region, country, month, year, brand, operator, ids, minDays, maxDays } = params;
   let list = cruises;
 
   if (ids != null && String(ids).trim() !== "") {
@@ -166,6 +166,14 @@ function filterCruises(params = {}) {
   const brandV = ci(brand || operator);
   if (brandV) list = list.filter((s) => ci(s.brand) === brandV);
   if (month) { const v = String(month).trim(); list = list.filter((s) => s.month === v); }
+  // A bare travel year. World cruises are booked a year or two out and span the
+  // turn of the year, so "in 2027" is a real filter the month= (YYYY-MM) param
+  // can't express. month (more specific) wins when both are present.
+  else if (year != null && String(year).trim() !== "") {
+    const y = String(year).trim();
+    list = list.filter((s) =>
+      String(s.month || "").startsWith(`${y}-`) || String(s.startDate || "").includes(y));
+  }
   const minD = parseInt(minDays, 10);
   if (Number.isFinite(minD)) list = list.filter((s) => (s.days || 0) >= minD);
   const maxD = parseInt(maxDays, 10);
@@ -228,7 +236,7 @@ function clampOffset(rawN) { let n = parseInt(rawN, 10); if (!Number.isFinite(n)
 
 function buildDeepLink(params = {}) {
   const usp = new URLSearchParams();
-  for (const k of ["region", "country", "brand", "month", "q", "intent"]) {
+  for (const k of ["region", "country", "brand", "month", "year", "q", "intent"]) {
     const val = params[k];
     if (val != null && String(val).trim() !== "") usp.set(k, String(val).trim());
   }

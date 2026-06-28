@@ -591,12 +591,29 @@ function monthFromText(raw, now = new Date()) {
   return bareMonth ? normalizeMonth(bareMonth[1], now) : null;
 }
 
+// A bare four-digit travel year (2024–2099) with NO specific month, pulled from
+// a month value or free text. World cruises are planned a year or two out and
+// span the turn of the year, so "in 2027" is a real, common filter the month=
+// (YYYY-MM) param cannot express. Returns "YYYY" or "". When the text already
+// names a specific month (resolved by monthFromText), the month filter is more
+// precise, so no year is returned.
+function yearFromText(raw, now = new Date()) {
+  if (raw == null) return "";
+  const s = String(raw);
+  if (monthFromText(s, now)) return "";
+  const m = s.match(/\b(20[2-9]\d)\b/);
+  return m ? m[1] : "";
+}
+
 function stripDateFromQuery(raw) {
   if (raw == null) return "";
   return String(raw)
     .replace(new RegExp(`\\b${MONTH_WORD_RE}\\s+\\d{4}\\b`, "ig"), " ")
     .replace(new RegExp(`\\b\\d{4}\\s+${MONTH_WORD_RE}\\b`, "ig"), " ")
     .replace(/\b\d{4}[-/]\d{1,2}\b/g, " ")
+    // A bare travel year is a date, not a descriptor; left in `q` it becomes an
+    // unmatchable token (the atlases don't index the year) and zeroes the search.
+    .replace(/\b20[2-9]\d\b/g, " ")
     .replace(new RegExp(`\\b${MONTH_WORD_RE}\\b`, "ig"), " ")
     .replace(/(?<!-)\b(what|whats|which|show|find|looking|recommend|recommends|recommendation|recommendations|me|i|we|want|need|please|most|best|nicest|finest|top|good|great|better|in|for|during|around|the|a|an|hotel|hotels|resort|resorts|property|properties|stay|stays|luxury|luxurious|vip|virtuoso)\b(?!-)/ig, " ")
     .replace(/\s+/g, " ")
@@ -1260,6 +1277,12 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     : candidateLimitForInput(input, limit);
   const cfg = OFFERINGS_ENDPOINTS[type];
   const month = normalizeMonth(input.month) || monthFromText(input.q);
+  // A bare travel year ("2027") when no specific month resolved. World cruises
+  // span years and are booked well ahead, so honor it as a year filter; the
+  // month= (YYYY-MM) param cannot express a whole year. Only worldcruise filters
+  // it on the backend today, so it is only sent there (sending an ignored param
+  // elsewhere would silently broaden, not constrain).
+  const year = month ? "" : (yearFromText(input.month) || yearFromText(input.q));
   let baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
     : type === "worldcruise" ? stripWorldCruiseTerms(stripDateFromQuery(input.q))
     : stripDateFromQuery(input.q);
@@ -1339,6 +1362,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     if (queryText && !dropQ) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
+    else if (year && type === "worldcruise") p.set("year", year);
     // Send intent only on a branded ask; an open search drops it so the page
     // is not sorted down to a single operator (see diversifySuppliers above).
     if (input.intent && !diversifySuppliers) p.set("intent", String(input.intent).trim());
@@ -1368,7 +1392,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     // indexed in the atlas `q` fields; combined with a real geographic anchor
     // they AND-filter the search to zero. With a region or country to keep the
     // search bounded, retry once without `q` rather than returning nothing.
-    const geoAnchor = !!(regionKey || country || worldCruiseRegion);
+    const geoAnchor = !!(regionKey || country || worldCruiseRegion || (year && type === "worldcruise"));
     if (geoAnchor && hadQText && !(j.results || []).length) {
       const retry = await run({ dropQ: true });
       if ((retry.results || []).length) {
