@@ -17,7 +17,7 @@ const CHIPS = [
   "Galápagos Expedition Cruise journeys in January",
   "Aman vs. Orient Express Luxury Yachts",
   "Around the world by private jet trips in 2026",
-  "World Cruises that call on Sydney, Australia in 2027",
+  "What world Cruises call on Sydney, Australia in 2027",
 ];
 
 interface Turn extends ChatMessage {
