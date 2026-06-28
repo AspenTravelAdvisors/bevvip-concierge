@@ -667,7 +667,7 @@ function boot(a){
     return out;
   }
 
-  let pinnedSailing=null, routeLocked=false;
+  let pinnedSailing=null, routeLocked=false, _hoverDrawT=null;
   const routeLayer=L.layerGroup().addTo(map);
   function clearRoute(){ routeLayer.clearLayers(); Object.values(markers).forEach(o=>o.el.classList.remove('route')); markRoutedCard(null); }
   /* Keep dateline-crossing routes visible when dragging across the world-copy
@@ -1030,7 +1030,9 @@ function boot(a){
     a0.appendChild(logoEl(s.operator));a0.appendChild(meta);a0.appendChild(ar);
     if(activeOps.size&&activeOps.has(s.operator))a0.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
     if(isTraceable(s)){
-      a0.addEventListener('mouseenter',()=>{ if(!routeLocked){ pinnedSailing=s; drawRoute(s,false); } });
+      a0.addEventListener('mouseenter',()=>{ if(routeLocked)return; clearTimeout(_hoverDrawT); _hoverDrawT=setTimeout(()=>{ if(!routeLocked){ pinnedSailing=s; drawRoute(s,false); } },170); });
+      a0.addEventListener('mouseleave',()=>{ clearTimeout(_hoverDrawT); });
+      a0.addEventListener('mousedown',()=>{ clearTimeout(_hoverDrawT); },true);
       const trace=document.createElement('span');
       trace.className='tracebtn';trace.setAttribute('role','button');trace.tabIndex=0;
       function syncTrace(){ const on=routeLocked&&pinnedSailing===s; trace.classList.toggle('on',on); trace.innerHTML=on?'&#128506; Route shown — tap to hide':'&#128506; Trace day-by-day route'; }

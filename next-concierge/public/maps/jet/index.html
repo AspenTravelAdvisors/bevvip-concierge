@@ -612,7 +612,7 @@ if(window.setAtlasProgress) window.setAtlasProgress(50,'Rendering the world map.
 
 /* ===== Build region markers ===== */
 const markers={}; // regionKey -> {marker, el, trips}
-let activeBrands=new Set(), activeView=null, pinnedTrip=null, routeLocked=false;
+let activeBrands=new Set(), activeView=null, pinnedTrip=null, routeLocked=false, _hoverDrawT=null;
 let activeMonths=new Set();
 let activeRegions=new Set(), excludedRegions=new Set();
 const activeIds=new Set();let activeSearchTerms=[];
@@ -932,7 +932,9 @@ function makeCard(t){
   a.appendChild(lg);a.appendChild(meta);a.appendChild(ar);
   if(activeBrands.size && activeBrands.has(t.b)) a.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
   if(t.cities&&t.cities.length>1){
-    a.addEventListener('mouseenter',()=>{ if(!routeLocked){ pinnedTrip=t; drawRoute(t,false); } });
+    a.addEventListener('mouseenter',()=>{ if(routeLocked)return; clearTimeout(_hoverDrawT); _hoverDrawT=setTimeout(()=>{ if(!routeLocked){ pinnedTrip=t; drawRoute(t,false); } },170); });
+    a.addEventListener('mouseleave',()=>{ clearTimeout(_hoverDrawT); });
+    a.addEventListener('mousedown',()=>{ clearTimeout(_hoverDrawT); },true);
     a.addEventListener('mouseleave',()=>{ if(routeLocked&&pinnedTrip) drawRoute(pinnedTrip,false); else if(!routeLocked){ pinnedTrip=null; clearRoute(); } });
     a.addEventListener('click',()=>{ pinnedTrip=t; drawRoute(t,true); });
     const trace=document.createElement('span');

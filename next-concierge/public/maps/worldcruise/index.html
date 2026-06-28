@@ -451,7 +451,7 @@ function headingDeg(P,Q){
   const dx=(Q[1]-P[1])*Math.cos(latMid), dy=(Q[0]-P[0]);
   return Math.atan2(dx,dy)*180/Math.PI;
 }
-let pinnedTrip=null, routeLocked=false;
+let pinnedTrip=null, routeLocked=false, _hoverDrawT=null;
 const routeLayer=L.layerGroup().addTo(map);
 function clearRoute(){ routeLayer.clearLayers(); Object.values(markers).forEach(o=>o.el.classList.remove('route')); markRoutedCard(null); }
 /* Keep dateline-crossing routes visible when dragging across the world-copy
@@ -985,7 +985,9 @@ function makeCard(t){
   a.appendChild(lg);a.appendChild(meta);a.appendChild(ar);
   if(activeBrands.size&&activeBrands.has(t.brand))a.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
   if(isTraceable(t)){
-    a.addEventListener('mouseenter',()=>{ if(!routeLocked){ pinnedTrip=t; drawRoute(t,false); } });
+    a.addEventListener('mouseenter',()=>{ if(routeLocked)return; clearTimeout(_hoverDrawT); _hoverDrawT=setTimeout(()=>{ if(!routeLocked){ pinnedTrip=t; drawRoute(t,false); } },170); });
+    a.addEventListener('mouseleave',()=>{ clearTimeout(_hoverDrawT); });
+    a.addEventListener('mousedown',()=>{ clearTimeout(_hoverDrawT); },true);
     const trace=document.createElement('span');
     trace.className='tracebtn';trace.setAttribute('role','button');trace.tabIndex=0;
     function syncTrace(){
