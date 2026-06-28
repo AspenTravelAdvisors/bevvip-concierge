@@ -84,7 +84,7 @@ const REGION_FALLBACK: Record<string, [number, number, number]> = {
   kimberley: [126, -16, 4.3], mediterranean: [15, 38.5, 3.4], norway: [12, 65, 3.4],
   japan: [138, 37, 3.9], namibia: [17, -22, 4.2], alaska: [-149, 60.5, 4],
   caribbean: [-66, 16, 4], baja: [-111.5, 24, 4.4], britishisles: [-3, 58, 4],
-  seychelles: [55.5, -4.6, 5],
+  seychelles: [55.5, -4.6, 5], "northwest passage": [-95, 74, 2.8],
 };
 
 const LEGEND: { key: string; label: string; color: string }[] = [
