@@ -140,7 +140,7 @@
   .month:hover{border-color:rgba(var(--accent-rgb),.65);color:var(--ink)}
   .month.active{background:linear-gradient(135deg,var(--accent),var(--accent-mid));border-color:#fff;color:var(--accent-text);font-weight:800}
 
-  /* ---------- Location filter (All / Start / End / Stops) ---------- */
+  /* ---------- Location filter (All / Start / End / Visits) ---------- */
   .locationpop{width:318px}
   .locationroles{display:flex;gap:5px;margin-bottom:10px}
   .locrole{flex:1;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-size:10.5px;cursor:pointer;padding:0 3px;transition:.14s}
@@ -467,7 +467,7 @@
     <button type="button" class="locrole active" data-role="any">All</button>
     <button type="button" class="locrole" data-role="start">Start</button>
     <button type="button" class="locrole" data-role="end">End</button>
-    <button type="button" class="locrole" data-role="stop">Stops</button>
+    <button type="button" class="locrole" data-role="visit">Visits</button>
   </div>
   <input id="locationSearch" class="locationsearch" type="search" placeholder="Search locations&hellip;" autocomplete="off">
   <div class="locationlist" id="locationList"></div>
@@ -675,20 +675,22 @@ function textMatches(t){
   if(!activeSearchTerms.length)return true;
   const regionNames=(t.g||[]).map(k=>REGIONS[k]&&REGIONS[k].name).filter(Boolean);
   const cityNames=(t.cities||[]).map(c=>c.n).filter(Boolean);
-  const hay=norm([t.n,BRANDS[t.b]&&BRANDS[t.b].short,t.d,...regionNames,...cityNames].filter(Boolean).join(' '));
+  const itineraryNames=(t.itin||[]).map(e=>e.n).filter(Boolean);
+  const hay=norm([t.n,BRANDS[t.b]&&BRANDS[t.b].short,t.d,...regionNames,...cityNames,...itineraryNames].filter(Boolean).join(' '));
   return activeSearchTerms.every(term=>hay.includes(term));
 }
 function tripLocationRoles(t){
-  const names=(t.cities||[]).map(c=>c.n).filter(Boolean);
+  const names=[];
+  (t.itin||[]).forEach(e=>{ if(e.n&&names[names.length-1]!==e.n) names.push(e.n); });
   const start=names[0]||null, end=names.length>1?names[names.length-1]:null;
-  return {start,end,stops:new Set(names.slice(1,-1)),all:new Set(names)};
+  return {start,end,visits:new Set(names.slice(1,-1)),all:new Set(names)};
 }
 function tripMatchesLocation(t,location,role){
   if(!location) return true;
   const r=tripLocationRoles(t);
   if(role==='start') return r.start===location;
   if(role==='end') return r.end===location;
-  if(role==='stop') return r.stops.has(location);
+  if(role==='visit'||role==='stop') return r.visits.has(location);
   return r.all.has(location);
 }
 function matchesNonLocation(t){
@@ -878,17 +880,21 @@ document.getElementById('dateClear').addEventListener('click',()=>{
   document.getElementById('dateBtn').classList.remove('active');updateDateSummary();applyFilter();refreshView();
 });
 
-/* ===== Location filter (All / Start / End / Stops) =======================
-   Mirrors the Expedition Atlas port filter using each journey's mapped
-   city-to-city route. Pick a place, then narrow by its role in the journey. */
+/* ===== Location filter (All / Start / End / Visits) ======================
+   Mirrors the Expedition Atlas port filter. Every place named in the
+   day-by-day itinerary is included, whether or not it has a mapped pin. */
 const locationMarkerLayer=L.layerGroup().addTo(map);
 const LOCATION_LL={};
+const LOCATION_NAMES=Array.from(new Set(TRIPS.flatMap(t=>(t.itin||[]).map(e=>e.n).filter(Boolean)))).sort((a,b)=>a.localeCompare(b));
 TRIPS.forEach(t=>(t.cities||[]).forEach(c=>{ if(c.n&&c.ll&&!LOCATION_LL[c.n]) LOCATION_LL[c.n]=c.ll; }));
+const LOCATION_LL_NORM={};
+Object.keys(LOCATION_LL).forEach(name=>{ if(!LOCATION_LL_NORM[norm(name)]) LOCATION_LL_NORM[norm(name)]=LOCATION_LL[name]; });
+TRIPS.forEach(t=>(t.itin||[]).forEach(e=>{ if(e.n&&!LOCATION_LL[e.n]&&LOCATION_LL_NORM[norm(e.n)]) LOCATION_LL[e.n]=LOCATION_LL_NORM[norm(e.n)]; }));
 const locationRoleLabel={
-  any:'journey visiting',
+  any:'journey including',
   start:'journey starting in',
   end:'journey ending in',
-  stop:'journey stopping in'
+  visit:'journey visiting'
 };
 function locationAgg(role){
   const agg={};
@@ -896,15 +902,15 @@ function locationAgg(role){
     if(!matchesNonLocation(t)||!regionPass(t)) return;
     const r=tripLocationRoles(t);
     const add=(name,key)=>{
-      if(!name||!LOCATION_LL[name]) return;
-      const o=agg[name]||(agg[name]={name,start:0,end:0,stop:0,seen:new Set()});
+      if(!name) return;
+      const o=agg[name]||(agg[name]={name,start:0,end:0,visit:0,seen:new Set()});
       o[key]++; o.seen.add(t.guideId||t.n);
     };
     add(r.start,'start');
     add(r.end,'end');
-    r.stops.forEach(name=>add(name,'stop'));
+    r.visits.forEach(name=>add(name,'visit'));
   });
-  let arr=Object.values(agg).map(o=>({name:o.name,start:o.start,end:o.end,stop:o.stop,total:o.seen.size}));
+  let arr=Object.values(agg).map(o=>({name:o.name,start:o.start,end:o.end,visit:o.visit,total:o.seen.size}));
   if(role!=='any') arr=arr.filter(o=>o[role]>0);
   return arr.sort((a,b)=>a.name.localeCompare(b.name));
 }
@@ -926,7 +932,7 @@ function renderLocationList(){
     const bits=[];
     if(o.start) bits.push(o.start+' start'+(o.start!==1?'s':''));
     if(o.end) bits.push(o.end+' end'+(o.end!==1?'s':''));
-    if(o.stop) bits.push(o.stop+' stop'+(o.stop!==1?'s':''));
+    if(o.visit) bits.push(o.visit+' visit'+(o.visit!==1?'s':''));
     row.innerHTML='<div><div class="ln">'+esc(o.name)+'</div><div class="lb">'+bits.join(' &middot; ')+'</div></div><div class="lc">'+count+'</div>';
     row.addEventListener('click',()=>selectLocation(o.name));
     locationList.appendChild(row);
@@ -1329,10 +1335,11 @@ function applyDeepLink(){
   applyFilter();
   const locationParam=sp.get('location');
   if(locationParam){
-    const locationName=Object.keys(LOCATION_LL).find(name=>norm(name)===norm(locationParam));
-    const role=sp.get('locationrole');
+    const locationName=LOCATION_NAMES.find(name=>norm(name)===norm(locationParam));
+    const rawRole=sp.get('locationrole');
+    const role=rawRole==='stop'?'visit':rawRole;
     if(locationName){
-      if(['start','end','stop'].includes(role)){
+      if(['start','end','visit'].includes(role)){
         activeLocationRole=role;
         document.querySelectorAll('#locationRoles .locrole').forEach(x=>x.classList.toggle('active',x.dataset.role===role));
       }
