@@ -689,6 +689,7 @@ function isPastTrip(t){
 function norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
 function words(s){return norm(s).split(/\s+/).filter(w=>w&&!['the','and','or','of','in','to','for','private','jet','jets','journey','journeys','trip','trips','tour','tours','luxury'].includes(w));}
 function cssEsc(s){return window.CSS&&CSS.escape?CSS.escape(s):String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function textMatches(t){
   if(!activeSearchTerms.length)return true;
   const regionNames=(t.g||[]).map(k=>REGIONS[k]&&REGIONS[k].name).filter(Boolean);
