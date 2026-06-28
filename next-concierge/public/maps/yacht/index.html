@@ -716,7 +716,7 @@ Object.keys(byRegion).forEach(key=>{
   const sailings=byRegion[key];const sz=Math.max(32,Math.min(60,28+sailings.length*.32));
   const el=document.createElement('div');el.className='rmarker';el.style.setProperty('--sz',sz+'px');
   el.innerHTML='<div class="ring">'+sailings.length+'</div><div class="tag">'+reg.name+' &middot; '+sailings.length+' sailing'+(sailings.length>1?'s':'')+'</div>';
-  el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);});
+  el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);if(window.matchMedia('(max-width:680px)').matches)panel.classList.add('drawer-expanded');});
   const icon=L.divIcon({className:'',html:el,iconSize:[0,0]});
   const mk=L.marker(reg.coord,{icon,riseOnHover:true}).addTo(map);
   markers[key]={marker:mk,el,sailings};

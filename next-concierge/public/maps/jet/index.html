@@ -661,7 +661,7 @@ Object.keys(byRegion).forEach(key=>{
   el.className='rmarker';
   el.style.setProperty('--sz',sz+'px');
   el.innerHTML=`<div class="ring">${trips.length}</div><div class="tag">${reg.name} &middot; ${trips.length} departure${trips.length>1?'s':''}</div>`;
-  el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);});
+  el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);if(window.matchMedia('(max-width:680px)').matches)panel.classList.add('drawer-expanded');});
   const icon=L.divIcon({className:'',html:el,iconSize:[0,0]});
   const mk=L.marker(reg.coord,{icon,riseOnHover:true}).addTo(map);
   markers[key]={marker:mk,el,trips};

@@ -460,7 +460,7 @@ function boot(a){
     const sz=Math.max(32,Math.min(60,28+all.length*0.32));
     const el=document.createElement('div');el.className='rmarker';el.style.setProperty('--sz',sz+'px');
     el.innerHTML='<div class="ring">'+all.length+'</div><div class="tag">'+esc(reg.name)+'</div>';
-    el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);});
+    el.addEventListener('click',e=>{e.stopPropagation();openRegion(key);if(window.matchMedia('(max-width:680px)').matches)panel.classList.add('drawer-expanded');});
     const mk=L.marker(reg.coord,{icon:L.divIcon({className:'',html:el,iconSize:[0,0]}),riseOnHover:true}).addTo(map);
     markers[key]={marker:mk,el};
   });
