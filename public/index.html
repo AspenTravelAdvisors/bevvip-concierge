@@ -287,7 +287,8 @@ const REGION_GEO = {};
 const REGION_FALLBACK = {
   antarctica:[0,-72,2.3], arctic:[8,79,2.3], galapagos:[-91,-0.4,5], amazon:[-60,-3.5,3.8],
   polynesia:[-149,-17,3.4], patagonia:[-72,-49,3.6], kimberley:[126,-16,4.3],
-  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2]
+  mediterranean:[15,38.5,3.4], norway:[12,65,3.4], japan:[138,37,3.9], namibia:[17,-22,4.2],
+  "northwest passage":[-95,74,2.8]
 };
 
 function showMapFallback(){ el("mapFallback").style.display="flex"; }
@@ -596,7 +597,7 @@ initLivingAtlas();
 
 /* ---- helpers ---- */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function stripChart(s){ return s.replace(/\[\[CHART:\s*[a-z]+\]\]/gi,"").trim(); }
+function stripChart(s){ return s.replace(/\[\[CHART:\s*[a-z ]+\]\]/gi,"").trim(); }
 
 // Extract a plain URL from a value that may be a markdown link [text](url) or a bare URL.
 function extractUrl(raw){

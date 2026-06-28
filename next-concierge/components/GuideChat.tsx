@@ -560,7 +560,7 @@ function transcript(turns: Turn[]): string {
 // tag still mid-stream, so they never flash as raw text in the revealed reply.
 function stripControlTags(s: string): string {
   return s
-    .replace(/\[\[CHART:\s*[a-z]+\]\]/gi, "")
+    .replace(/\[\[CHART:\s*[a-z ]+\]\]/gi, "")
     .replace(/\[\[OPTIONS:[^\]]*\]\]/gi, "")
     .replace(/\[\[BRIEF:[^\]]*\]\]/gi, "")
     .replace(/\n*\s*\[\[[^\]]*$/, "")
