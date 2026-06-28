@@ -46,5 +46,5 @@ export default async function AtlasPage({
   const query = qs.toString();
   const src = `/maps/${type}/index.html${query ? `?${query}` : ""}`;
 
-  return <AtlasView type={type} label={ATLASES[type].label} src={src} />;
+  return <AtlasView label={ATLASES[type].label} src={src} />;
 }

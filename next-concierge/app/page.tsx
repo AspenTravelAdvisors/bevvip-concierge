@@ -1,7 +1,7 @@
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
-import { externalAtlasLink } from "@/lib/atlas-config";
+import { internalAtlasLink } from "@/lib/atlas-config";
 
 // Base Camp landing: The Guide on the left, the Living Atlas globe on the right,
 // already populated (hotels + cruise/jet/yacht/world-cruise region pins) on
@@ -17,7 +17,7 @@ export default function Home() {
             <h2>Living Atlas</h2>
             <p>Approved hotels, expedition cruises, jets and luxury hotel yachts — mapped worldwide.</p>
           </div>
-          <AtlasShell type="hotel" region={null} externalLink={externalAtlasLink("hotel")} scope="all" />
+          <AtlasShell type="hotel" region={null} externalLink={internalAtlasLink("hotel")} scope="all" />
         </>
       }
     />

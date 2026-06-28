@@ -216,6 +216,7 @@
   .bvnav a{padding:6px 7px 5px;letter-spacing:.2px}
 }
 </style>
+<style id="basecamp-embed">.bvnav{display:none!important}</style>
 </head>
 <body>
 <div id="map"></div>
@@ -927,7 +928,7 @@ document.getElementById('reset').addEventListener('click',()=>{
   applyFilter();document.getElementById('reset').classList.remove('show');refreshActivePanel();
 });
 /* ===== Ask The Guide — opens BeVvip Base Camp pre-filled with this product ===== */
-const GUIDE_URL='https://bevvip-concierge.vercel.app/';
+const GUIDE_URL='/';
 function askGuideBtn(ctx,link){
   const b=document.createElement('span');
   b.className='askguide';b.setAttribute('role','button');b.tabIndex=0;
@@ -935,7 +936,7 @@ function askGuideBtn(ctx,link){
   b.innerHTML='&#10022; Ask The Guide';
   const full=ctx+(link?(' (Virtuoso listing: '+link+')'):'');
   function go(e){ e.preventDefault();e.stopPropagation();
-    window.open(GUIDE_URL+'?ask='+encodeURIComponent(full)+'&src=worldcruise','_blank','noopener'); }
+    (window.top||window).location.href=GUIDE_URL+'?ask='+encodeURIComponent(full)+'&src=worldcruise'; }
   b.addEventListener('click',go);
   b.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')go(e); });
   return b;

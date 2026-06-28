@@ -18,7 +18,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
-import { ATLASES } from "@/lib/atlas-config";
+import { ATLASES, internalAtlasLink } from "@/lib/atlas-config";
 
 const MAPBOX_JS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js";
 const MAPBOX_CSS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css";
@@ -392,11 +392,11 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             const id = f.properties.id || "";
             const name = f.properties.name || "VIP Hotel";
             const reg = f.properties.region;
-            const href = id ? `${HOTEL_BASE}/?ids=${encodeURIComponent(id)}` : HOTEL_BASE;
+            const href = id ? `/atlas/hotel?ids=${encodeURIComponent(id)}` : "/atlas/hotel";
             const html =
               `<div class="iw"><div class="iwn">${escapeHtml(name)}</div>` +
               (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "") +
-              `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open VIP Hotels Atlas ↗</a></div>`;
+              `<a href="${escapeHtml(href)}">Open VIP Hotels Atlas →</a></div>`;
             popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
           });
           map.on("mouseenter", "hotel-dots", () => {
@@ -411,11 +411,14 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
               const f = e.features?.[0];
               if (!f) return;
               const count = Number(f.properties.count) || undefined;
-              const href = f.properties.key ? `${cfg.url}?region=${encodeURIComponent(f.properties.key)}` : cfg.url;
+              const href = internalAtlasLink(
+                key,
+                f.properties.key ? `?region=${encodeURIComponent(f.properties.key)}` : "",
+              );
               const html =
                 `<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>` +
                 `<div class="iwm">${escapeHtml(overlayMeta(key, count))}</div>` +
-                `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">Open ${escapeHtml(cfg.label)} Atlas ↗</a></div>`;
+                `<a href="${escapeHtml(href)}">Open ${escapeHtml(cfg.label)} Atlas →</a></div>`;
               popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
             });
             map.on("mouseenter", src + "_dot", () => { map.getCanvas().style.cursor = "pointer"; });
@@ -487,7 +490,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           subsetActive = true;
           stopSpin();
           const leadDeep = tools.find((t) => t.deepLink)?.deepLink || meta.deepLink || undefined;
-          setBadge({ n: features.length, total, deepLink: leadDeep });
+          setBadge({ n: features.length, total, deepLink: toInternalAtlasHref(leadDeep) ?? leadDeep });
           paintHotel(); // re-tint ambient field dimmer
           // Flip to Satellite to reveal the plotted results on the photoreal
           // basemap. The restyle's style.load repaints every layer and re-fits
@@ -782,7 +785,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           {badge.total > badge.n && badge.deepLink ? (
             <>
               Showing {badge.n} of {badge.total} ·{" "}
-              <a href={badge.deepLink} target="_blank" rel="noreferrer">all in Atlas ↗</a>
+              <a href={badge.deepLink}>all in Atlas →</a>
             </>
           ) : (
             <>{badge.n} plotted</>
@@ -800,17 +803,15 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             Map unavailable right now. The full {ATLASES[type].label} is one click away —
             your selection carries over.
           </p>
-          <a className="atlas-cta" href={externalLink} target="_blank" rel="noreferrer">
-            Open {ATLASES[type].label} ↗
+          <a className="atlas-cta" href={externalLink}>
+            Open {ATLASES[type].label} →
           </a>
           <div className="region-chips">
             {ATLASES[type].sampleRegions.map((r) => (
               <a
                 key={r}
                 className="chip"
-                href={`${ATLASES[type].base}/?region=${encodeURIComponent(r)}`}
-                target="_blank"
-                rel="noreferrer"
+                href={internalAtlasLink(type, `?region=${encodeURIComponent(r)}`)}
               >
                 {r}
               </a>
@@ -925,14 +926,39 @@ function pointForResult(
   return [base[0] + Math.cos(ang) * 1.4, base[1] + Math.sin(ang) * 1.4];
 }
 
+// Translate an external atlas deep link (…vercel.app/?region=&ids=) into the
+// in-app atlas route (/atlas/<type>?…), preserving its query. Returns null when
+// the URL isn't one of our atlas bases (so callers can fall back).
+function toInternalAtlasHref(url?: string | null): string | null {
+  if (!url) return null;
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return null;
+  }
+  for (const t of Object.keys(ATLASES) as OfferingType[]) {
+    let baseOrigin: string;
+    try {
+      baseOrigin = new URL(ATLASES[t].base).origin;
+    } catch {
+      continue;
+    }
+    if (u.origin === baseOrigin) return internalAtlasLink(t, u.search);
+  }
+  return null;
+}
+
 function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) => string): string {
   const meta = [r.brand || r.operator, (r as { ship?: string }).ship, r.region].filter(Boolean).join(" · ");
   const when = [r.duration || r.country, r.dates || (r as { month?: string }).month].filter(Boolean).join("  ·  ");
-  const href = r.deepLink || OVERLAYS[kind as OverlayKey]?.url || HOTEL_BASE;
+  const href =
+    toInternalAtlasHref(r.deepLink) ||
+    internalAtlasLink(kind, r.region ? `?region=${encodeURIComponent(r.region)}` : "");
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
     `<div class="iwm">${esc([meta, when].filter(Boolean).join("  ·  "))}</div>` +
-    `<a href="${esc(href)}" target="_blank" rel="noopener">Open in Atlas ↗</a></div>`
+    `<a href="${esc(href)}">Open in Atlas →</a></div>`
   );
 }
 
