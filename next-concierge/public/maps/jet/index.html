@@ -296,6 +296,21 @@
 }
 </style>
 <style id="basecamp-embed">.bvnav{display:none!important}</style>
+<style id="route-anim">
+  /* #1 marching dashes flow along the route; #7 active route breathes with a soft glow */
+  @keyframes routeMarch{ to{ stroke-dashoffset:-80; } }
+  @keyframes routeGlow{
+    0%,100%{ filter:drop-shadow(0 0 1px rgba(180,210,255,.5)); }
+    50%{ filter:drop-shadow(0 0 6px rgba(180,210,255,.95)); }
+  }
+  path.rline{ animation:routeMarch 3s linear infinite, routeGlow 3.2s ease-in-out infinite; }
+  /* #6 elevation arcs: the lift glow is blurred and breathes; the apex highlight pulses brightest at altitude */
+  path.rlift{ filter:blur(3px); animation:routeLift 3.4s ease-in-out infinite; }
+  @keyframes routeLift{ 0%,100%{ opacity:.20; } 50%{ opacity:.40; } }
+  path.rapex{ filter:drop-shadow(0 0 4px rgba(160,200,255,.9)); animation:routeApex 3s ease-in-out infinite; }
+  @keyframes routeApex{ 0%,100%{ opacity:.7; } 50%{ opacity:1; } }
+  @media (prefers-reduced-motion:reduce){ path.rline,path.rlift,path.rapex{ animation:none; } }
+</style>
 </head>
 <body>
 <div id="map"></div>
@@ -704,17 +719,49 @@ function arcPts(a,b){
   }
   return p;
 }
+/* Progressive draw-on: each leg's solid underlay strokes from start to end while the
+   dashed accent, lift glow and apex highlight fade in, staggered leg by leg. Marching
+   dashes + glow are CSS. Honours prefers-reduced-motion by rendering instantly. */
+function revealRoute(segs){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  segs.forEach((seg,i)=>{
+    const delay=i*150;
+    const base=seg.base;
+    if(base){
+      let len=0; try{ len=base.getTotalLength(); }catch(e){}
+      if(len){
+        base.style.transition='none';
+        base.style.strokeDasharray=len+' '+len;
+        base.style.strokeDashoffset=len;
+        base.getBoundingClientRect();
+        base.style.transition='stroke-dashoffset .55s '+delay+'ms cubic-bezier(.45,0,.2,1)';
+        base.style.strokeDashoffset='0';
+        base.addEventListener('transitionend',function te(){ base.style.transition=''; base.style.strokeDasharray=''; base.style.strokeDashoffset=''; base.removeEventListener('transitionend',te); });
+      }
+    }
+    (seg.fade||[]).forEach(p=>{ if(!p)return; p.style.opacity='0'; p.style.transition='opacity .5s '+(delay+140)+'ms ease'; requestAnimationFrame(()=>{ p.style.opacity=''; }); });
+  });
+}
 function drawRoute(trip,fit){
   clearRoute();
   const stops = trip.cities
     ? trip.cities.map(c=>({ll:c.ll,label:c.n}))
     : trip.g.map(k=>({ll:REGIONS[k].coord,label:REGIONS[k].name}));
   const lls=unroll(stops.map(s=>s.ll));
+  const segs=[];
   for(let i=0;i<lls.length-1;i++){
     const pts=arcPts(lls[i],lls[i+1]);
-    L.polyline(pts,{color:'#111722',weight:6,opacity:.28,lineCap:'round'}).addTo(routeLayer);
-    L.polyline(pts,{color:'#f7f9fc',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7'}).addTo(routeLayer);
+    // #6 elevation feel: a soft blurred "lift" glow under each leg reads as altitude
+    const lift=L.polyline(pts,{color:'#5b8fd6',weight:9,opacity:.30,lineCap:'round',className:'rlift'}).addTo(routeLayer);
+    const base=L.polyline(pts,{color:'#111722',weight:6,opacity:.28,lineCap:'round',className:'rbase'}).addTo(routeLayer);
+    const line=L.polyline(pts,{color:'#f7f9fc',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7',className:'rline'}).addTo(routeLayer);
+    // #6 apex highlight: the mid third of the arc is brightest, as if cresting at altitude
+    const a0=Math.floor(pts.length*0.30), a1=Math.ceil(pts.length*0.70);
+    const apexPts=pts.slice(a0,a1);
+    const apex=apexPts.length>1 ? L.polyline(apexPts,{color:'#cfe6ff',weight:3.4,opacity:.95,lineCap:'round',className:'rapex'}).addTo(routeLayer) : null;
+    segs.push({base:base._path,fade:[lift._path,line._path,apex&&apex._path]});
   }
+  revealRoute(segs);
   lls.forEach((c,i)=>{
     const dot=L.divIcon({className:'',html:`<div class="stopdot">${i+1}</div>`,iconSize:[0,0]});
     const dayInfo=stopDaySummary(trip,stops[i].label);

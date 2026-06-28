@@ -217,6 +217,16 @@
 }
 </style>
 <style id="basecamp-embed">.bvnav{display:none!important}</style>
+<style id="route-anim">
+  /* #1 marching dashes flow along the route; #7 active route breathes with a soft glow */
+  @keyframes routeMarch{ to{ stroke-dashoffset:-80; } }
+  @keyframes routeGlow{
+    0%,100%{ filter:drop-shadow(0 0 1px rgba(127,223,208,.45)); }
+    50%{ filter:drop-shadow(0 0 5px rgba(127,223,208,.9)); }
+  }
+  path.rline{ animation:routeMarch 3s linear infinite, routeGlow 3.2s ease-in-out infinite; }
+  @media (prefers-reduced-motion:reduce){ path.rline{ animation:none; } }
+</style>
 </head>
 <body>
 <div id="map"></div>
@@ -605,18 +615,43 @@ function legGeometry(a,b){
   _legCache.set(key,out);
   return out;
 }
+/* Progressive draw-on: each leg's solid underlay strokes from start to end while
+   the dashed accent fades in, staggered leg by leg. Marching dashes + glow pulse
+   are CSS (.rline). Honours prefers-reduced-motion by rendering instantly. */
+function revealRoute(segs){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  segs.forEach((seg,i)=>{
+    const delay=i*150;
+    const base=seg.base;
+    if(base){
+      let len=0; try{ len=base.getTotalLength(); }catch(e){}
+      if(len){
+        base.style.transition='none';
+        base.style.strokeDasharray=len+' '+len;
+        base.style.strokeDashoffset=len;
+        base.getBoundingClientRect();
+        base.style.transition='stroke-dashoffset .55s '+delay+'ms cubic-bezier(.45,0,.2,1)';
+        base.style.strokeDashoffset='0';
+        base.addEventListener('transitionend',function te(){ base.style.transition=''; base.style.strokeDasharray=''; base.style.strokeDashoffset=''; base.removeEventListener('transitionend',te); });
+      }
+    }
+    (seg.fade||[]).forEach(p=>{ if(!p)return; p.style.opacity='0'; p.style.transition='opacity .5s '+(delay+140)+'ms ease'; requestAnimationFrame(()=>{ p.style.opacity=''; }); });
+  });
+}
 function drawRoute(trip,fit){
   clearRoute();
   const entries=tripStops(trip);
   const ports=entries.filter(e=>e.ll);
   if(ports.length<2) return;
   const lls=unroll(ports.map(e=>e.ll));          // unrolled port coords
-  const legArcs=[];
+  const legArcs=[]; const segs=[];
   for(let i=0;i<lls.length-1;i++){
     const pts=legGeometry(lls[i],lls[i+1]); legArcs.push(pts);
-    L.polyline(pts,{color:'#07332d',weight:6,opacity:.22,lineCap:'round'}).addTo(routeLayer);
-    L.polyline(pts,{color:'#7fdfd0',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7'}).addTo(routeLayer);
+    const base=L.polyline(pts,{color:'#07332d',weight:6,opacity:.22,lineCap:'round',className:'rbase'}).addTo(routeLayer);
+    const line=L.polyline(pts,{color:'#7fdfd0',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7',className:'rline'}).addTo(routeLayer);
+    segs.push({base:base._path,fade:[line._path]});
   }
+  revealRoute(segs);
   // numbered port dots, tooltip shows the day + port
   ports.forEach((e,i)=>{
     const dot=L.divIcon({className:'',html:'<div class="stopdot">'+(i+1)+'</div>',iconSize:[0,0]});
