@@ -1194,6 +1194,11 @@ function boot(a){
   .dockbtn .pi{font-size:16px;line-height:1;color:var(--accent);width:16px;text-align:center}
   #panelPill{opacity:.4;pointer-events:none}
   body.panel-active #panelPill{opacity:1;pointer-events:auto}
+  /* Emphasized Details button — primary detail toggle, pinned to the right of the dock */
+  #panelPill.detailbtn{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+  body.panel-active #panelPill.detailbtn{color:#161616;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 2px 12px rgba(0,0,0,.32)}
+  body.panel-active #panelPill.detailbtn .pi{color:#161616}
+  body.panel-active #panelPill.detailbtn:hover{filter:brightness(1.05);background:linear-gradient(135deg,var(--accent),var(--accent2))}
   .rail{transition:opacity .26s ease,transform .26s ease,visibility .26s}
   body.rail-hidden .rail{opacity:0;transform:translateX(-12px) scale(.97);visibility:hidden;pointer-events:none}
   body.rail-hidden #datePop{display:none}
@@ -1212,10 +1217,10 @@ function boot(a){
 <div class="sharetoast" id="shareToast" role="status" aria-live="polite"></div>
 <div class="dock" role="toolbar" aria-label="Map controls">
   <button id="railPill" class="dockbtn" type="button" aria-label="Show or hide the filters menu" title="Show / hide filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
-  <button id="panelPill" class="dockbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
   <button id="resetAll" class="dockbtn" type="button" aria-label="Show all regions" title="Show all regions"><span class="pi">&#8634;</span><span class="pl">Show all</span></button>
   <button id="shareDock" class="dockbtn" type="button" aria-label="Copy a shareable link to this view" title="Copy a link to this view"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><line x1="8.1" y1="10.9" x2="15.9" y2="6.1"/><line x1="8.1" y1="13.1" x2="15.9" y2="17.9"/></svg></span><span class="pl">Share</span></button>
   <a id="helpDock" class="dockbtn" href="mailto:Book@BeVvip.com" data-help-open role="button" aria-label="Need help — contact us"><span class="pi">?</span><span class="pl">Need Help</span></a>
+  <button id="panelPill" class="dockbtn detailbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
 </div>
 <script>
 (function(){
@@ -1231,11 +1236,11 @@ function boot(a){
     body.classList.toggle('rail-shown',!railCollapsed);
     setIcon(railPill,railCollapsed?'&#9776;':'&#10005;');
   }
-  function syncPanel(){ setIcon(panelPill, body.classList.contains('panel-collapsed')?'&#8249;':'&#10005;'); }
+  function syncPanel(){ setIcon(panelPill, (body.classList.contains('panel-collapsed')||body.classList.contains('tracing'))?'&#8249;':'&#10005;'); }
   railPill.addEventListener('click',function(){ railCollapsed=!railCollapsed; syncRail(); });
   var railClose=document.getElementById('railClose');
   if(railClose) railClose.addEventListener('click',function(){ railCollapsed=true; syncRail(); });
-  panelPill.addEventListener('click',function(){ body.classList.toggle('panel-collapsed'); syncPanel(); });
+  panelPill.addEventListener('click',function(){ if(body.classList.contains('tracing')){ body.classList.remove('tracing'); body.classList.remove('panel-collapsed'); } else { body.classList.toggle('panel-collapsed'); } syncPanel(); });
   document.addEventListener('atlas:panel-sync',syncPanel);
   var resetAll=document.getElementById('resetAll');
   if(resetAll){ resetAll.addEventListener('click',function(){ if(window.__atlasShowAll) window.__atlasShowAll(); }); }
@@ -1416,7 +1421,7 @@ function boot(a){
   if(typeof window.__atlasLastApplyCount!=='undefined'&&window.__atlasSetApplyCount) window.__atlasSetApplyCount(window.__atlasLastApplyCount);
   if(applyBtn) applyBtn.addEventListener('click',closeRail);
   function placePopovers(){ popovers.forEach(function(item){ if(mq.matches){ if(item.button.nextSibling!==item.panel)item.button.parentNode.insertBefore(item.panel,item.button.nextSibling); }else if(item.anchor.parentNode&&item.anchor.nextSibling!==item.panel){ item.anchor.parentNode.insertBefore(item.panel,item.anchor.nextSibling); } }); }
-  function syncScrim(){ var show=mq.matches&&(railOpen()||panelOpen()); if(show){ scrim.hidden=false; requestAnimationFrame(function(){ scrim.classList.add('show'); }); } else { scrim.classList.remove('show'); setTimeout(function(){ if(!scrim.classList.contains('show')) scrim.hidden=true; },260); } }
+  function syncScrim(){ var show=mq.matches&&!body.classList.contains('tracing')&&(railOpen()||panelOpen()); if(show){ scrim.hidden=false; requestAnimationFrame(function(){ scrim.classList.add('show'); }); } else { scrim.classList.remove('show'); setTimeout(function(){ if(!scrim.classList.contains('show')) scrim.hidden=true; },260); } }
   scrim.addEventListener('click',function(){ if(railOpen()) closeRail(); else if(panelOpen()) closePanel(); });
   var wasPanelOpen=panelOpen();
   var wasRailOpen=railOpen();
