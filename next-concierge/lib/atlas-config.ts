@@ -29,7 +29,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base:
       process.env.NEXT_PUBLIC_CRUISE_ATLAS_BASE ||
       "https://expedition-cruise-map.vercel.app",
-    sampleRegions: ["Antarctica", "Galapagos", "Arctic", "Patagonia"],
+    sampleRegions: ["Antarctica", "Galapagos", "Arctic", "Northwest Passage"],
   },
   jet: {
     type: "jet",

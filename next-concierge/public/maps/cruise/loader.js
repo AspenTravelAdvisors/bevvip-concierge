@@ -34,6 +34,7 @@ function norm(s) {
 }
 function correctedRegionName(region, name) {
   const t = norm(name);
+  if (t.includes('northwest passage')) return 'Northwest Passage';
   if (t.includes('alaska')) return 'Alaska & Yukon';
   if (t.includes('baja') || t.includes('sea of cortez')) return 'Baja California';
   if (t.includes('seychelles')) return 'Africa & Indian Ocean';
