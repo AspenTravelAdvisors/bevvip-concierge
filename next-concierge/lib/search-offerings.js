@@ -5,12 +5,17 @@
 // the [[CHART: region]] control. No model-knowledge invention; no final pricing.
 //
 // Inventory is the shared source of truth behind /api (SPEC architecture rule).
-// Each type is served by its own Atlas repo's query API, identical in contract
-// to the Hotel Atlas /api/luxury-hotels: { total, count, results, deepLink }.
-// The Guide queries each atlas the same way over HTTP.
+// Each type is served by a backend in lib/atlas, identical in contract to the
+// old Hotel Atlas /api/luxury-hotels: { total, count, results, deepLink }. The
+// Guide queries each the same way, now resolved in-process (no external deploys).
 
-const HOTEL_API_BASE =
-  process.env.HOTEL_ATLAS_API_BASE || "https://luxury-hotel-atlas-two.vercel.app";
+import atlasDispatch from "./atlas/index.js";
+
+// next-concierge serves every atlas backend in-process (lib/atlas), so the
+// Guide no longer crosses the network for inventory. HOTEL_API_BASE is now just
+// the internal hotel map root used for the per-hotel card deep link; the fetch
+// URLs built below resolve to the same in-process backends via atlasFetch.
+const HOTEL_API_BASE = process.env.ATLAS_HOTEL_URL || "/maps/hotel";
 const DEFAULT_RECOMMENDATION_LIMIT = 3;
 const MAX_RESULTS_PER_CATEGORY = 4;
 const MAX_CANDIDATE_LIMIT = 24;
@@ -20,25 +25,52 @@ const MAX_CANDIDATE_LIMIT = 24;
 // caps that supplier sweep so a busy category can't run away.
 const MAX_SUPPLIERS_PER_CATEGORY = 8;
 
-// type -> { base URL, endpoint path } for the cruise/jet/yacht Atlas APIs.
+// type -> { base, endpoint path }. The base is the internal map root only so the
+// built URLs stay self-describing; atlasFetch dispatches on the path to the
+// in-process backend (no network).
 const OFFERINGS_ENDPOINTS = {
   cruise: {
-    base: process.env.CRUISE_ATLAS_API_BASE || "https://expedition-cruise-map.vercel.app",
+    base: process.env.ATLAS_CRUISE_URL || "/maps/cruise",
     path: "/api/expedition-cruises",
   },
   jet: {
-    base: process.env.JET_ATLAS_API_BASE || "https://private-jet-expeditions.vercel.app",
+    base: process.env.ATLAS_JET_URL || "/maps/jet",
     path: "/api/jet-journeys",
   },
   yacht: {
-    base: process.env.YACHT_ATLAS_API_BASE || "https://luxury-hotel-brand-yacht-atlas.vercel.app",
+    base: process.env.ATLAS_YACHT_URL || "/maps/yacht",
     path: "/api/yacht-sailings",
   },
   worldcruise: {
-    base: process.env.WORLD_CRUISE_ATLAS_API_BASE || "https://world-cruise-atlas.vercel.app",
+    base: process.env.ATLAS_WORLD_CRUISE_URL || "/maps/worldcruise",
     path: "/api/world-cruises",
   },
 };
+
+// In-process replacement for the old per-atlas HTTP APIs. The Guide still builds
+// the same query URLs (now rooted at internal /maps/<type> paths); we read the
+// type off the path and resolve it against the bundled backend instead of
+// fetching over the network. Returns a minimal fetch-Response shape so the
+// surrounding query/fallback logic (`r.ok`, `await r.json()`) is unchanged.
+const ATLAS_PATHS = {
+  "/api/luxury-hotels": "hotel",
+  "/api/expedition-cruises": "cruise",
+  "/api/jet-journeys": "jet",
+  "/api/yacht-sailings": "yacht",
+  "/api/world-cruises": "worldcruise",
+};
+async function atlasFetch(rawUrl) {
+  const u = new URL(String(rawUrl), "http://internal.atlas");
+  const key = Object.keys(ATLAS_PATHS).find((p) => u.pathname.endsWith(p));
+  if (!key) return { ok: false, status: 404, json: async () => ({}) };
+  const params = Object.fromEntries(u.searchParams.entries());
+  try {
+    const result = atlasDispatch.queryAtlas(ATLAS_PATHS[key], params);
+    return { ok: true, status: 200, json: async () => result };
+  } catch (err) {
+    return { ok: false, status: 500, json: async () => ({ error: String(err) }) };
+  }
+}
 
 // Marquee region keys the Living Atlas can plot (CLAUDE.md / SPEC §3).
 // alaska and caribbean join the eleven classic keys as marquee regions;
@@ -1470,7 +1502,7 @@ async function searchWorldCruises(input, fetchImpl) {
 
 // Main entry. `input` is the validated tool input from the model.
 export async function searchOfferings(input = {}, opts = {}) {
-  const fetchImpl = opts.fetchImpl || fetch;
+  const fetchImpl = opts.fetchImpl || atlasFetch;
   const type = String(input.type || "any").toLowerCase();
 
   // World cruises outrank the Luxury Cruise advisor guard: "Regent world

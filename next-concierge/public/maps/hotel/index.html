@@ -206,12 +206,12 @@
 
 <div class="topbar">
   <nav class="bvnav" aria-label="BeVvip Atlas family">
-    <a class="bvnav-guide" href="https://bevvip-concierge.vercel.app/" target="_blank" rel="noopener">The Guide</a>
-    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#e6d488" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener">Hotels</a>
-    <a class="bvnav-tab" style="--tab:#5aa9e6" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener">Expeditions</a>
-    <a class="bvnav-tab" style="--tab:#dfe5f2" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener">Jets</a>
-    <a class="bvnav-tab" style="--tab:#e0b84a" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener">Yachts</a>
-    <a class="bvnav-tab" style="--tab:#45d6c2" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener">World</a>
+    <a class="bvnav-guide" href="/" target="_blank" rel="noopener">The Guide</a>
+    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#e6d488" href="/maps/hotel/" target="_blank" rel="noopener">Hotels</a>
+    <a class="bvnav-tab" style="--tab:#5aa9e6" href="/maps/cruise/" target="_blank" rel="noopener">Expeditions</a>
+    <a class="bvnav-tab" style="--tab:#dfe5f2" href="/maps/jet/" target="_blank" rel="noopener">Jets</a>
+    <a class="bvnav-tab" style="--tab:#e0b84a" href="/maps/yacht/" target="_blank" rel="noopener">Yachts</a>
+    <a class="bvnav-tab" style="--tab:#45d6c2" href="/maps/worldcruise/" target="_blank" rel="noopener">World</a>
   </nav>
   <div class="brand">
     <a class="logochip mark" href="https://www.expeditionbucketlist.com" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/57d86bcd46c3c49c625850a1/54c90494-d588-412d-9643-5d5650d856fd/ebl+2026+Gemini.png?content-type=image%2Fpng" alt="Expedition Bucket List"></a>
@@ -1568,11 +1568,11 @@ init();
   "use strict";
   var INTRO = {"key": "bvi_intro_hotel_v1", "here": "hotel", "welcome": {"eyebrow": "Welcome to the Atlas", "title": "Every luxury hotel brand, mapped where it actually stands.", "sub": "Explore the world's finest hotel houses by destination — who has a property where, and how the brands compare across regions."}, "features": [{"icon": "filter", "t": "Filter by region", "d": "Open the rail to narrow the map by region, category or brand."}, {"icon": "pin", "t": "Tap a pin", "d": "Each pin marks a property. Tap to bring its detail card forward."}, {"icon": "card", "t": "Book online", "d": "The detail card carries the brand, the setting — and a link to book VIP rates online."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any hotel to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
   var FAM=[
-    {nm:"VIP Hotels",         slug:"hotel",     url:"https://luxury-hotel-atlas-two.vercel.app",          glyph:"hotel"},
-    {nm:"Expedition Cruises", slug:"expedition",url:"https://expedition-cruise-map.vercel.app",            glyph:"cruise"},
-    {nm:"Private Jet",        slug:"jet",       url:"https://private-jet-expeditions.vercel.app",          glyph:"jet"},
-    {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",   glyph:"yacht"},
-    {nm:"World Cruises",      slug:"world",     url:"https://world-cruise-atlas.vercel.app",               glyph:"world"}
+    {nm:"VIP Hotels",         slug:"hotel",     url:"/maps/hotel/",          glyph:"hotel"},
+    {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
+    {nm:"Private Jet",        slug:"jet",       url:"/maps/jet/",          glyph:"jet"},
+    {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"/maps/yacht/",   glyph:"yacht"},
+    {nm:"World Cruises",      slug:"world",     url:"/maps/worldcruise/",               glyph:"world"}
   ];
   var GLYPHS={
     hotel:'<path d="M3 21h18M5 21V8l7-4 7 4v13M9 12h2M13 12h2M9 16h2M13 16h2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',

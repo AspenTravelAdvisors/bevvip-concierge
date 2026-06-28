@@ -263,12 +263,12 @@
 </script>
 <div class="topbar">
   <nav class="bvnav" aria-label="BeVvip Atlas family">
-    <a class="bvnav-guide" href="https://bevvip-concierge.vercel.app/" target="_blank" rel="noopener">The Guide</a>
-    <a class="bvnav-tab" style="--tab:#e6d488" href="https://luxury-hotel-atlas-two.vercel.app" target="_blank" rel="noopener">Hotels</a>
-    <a class="bvnav-tab" style="--tab:#5aa9e6" href="https://expedition-cruise-map.vercel.app" target="_blank" rel="noopener">Expeditions</a>
-    <a class="bvnav-tab" style="--tab:#dfe5f2" href="https://private-jet-expeditions.vercel.app" target="_blank" rel="noopener">Jets</a>
-    <a class="bvnav-tab" style="--tab:#e0b84a" href="https://luxury-hotel-brand-yacht-atlas.vercel.app" target="_blank" rel="noopener">Yachts</a>
-    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#45d6c2" href="https://world-cruise-atlas.vercel.app" target="_blank" rel="noopener">World</a>
+    <a class="bvnav-guide" href="/" target="_blank" rel="noopener">The Guide</a>
+    <a class="bvnav-tab" style="--tab:#e6d488" href="/maps/hotel/" target="_blank" rel="noopener">Hotels</a>
+    <a class="bvnav-tab" style="--tab:#5aa9e6" href="/maps/cruise/" target="_blank" rel="noopener">Expeditions</a>
+    <a class="bvnav-tab" style="--tab:#dfe5f2" href="/maps/jet/" target="_blank" rel="noopener">Jets</a>
+    <a class="bvnav-tab" style="--tab:#e0b84a" href="/maps/yacht/" target="_blank" rel="noopener">Yachts</a>
+    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#45d6c2" href="/maps/worldcruise/" target="_blank" rel="noopener">World</a>
   </nav>
   <div class="brand">
     <a class="logochip mark" href="https://www.expeditionbucketlist.com" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/57d86bcd46c3c49c625850a1/54c90494-d588-412d-9643-5d5650d856fd/ebl+2026+Gemini.png?content-type=image%2Fpng" alt="Expedition Bucket List"></a>
@@ -1555,11 +1555,11 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
   "use strict";
   var INTRO = {"key": "bvi_intro_world_v1", "here": "world", "welcome": {"eyebrow": "Welcome aboard", "title": "Around the world, one voyage at a time.", "sub": "Map the great circumnavigations and grand voyages by region — every sailing plotted where it actually goes, day by day."}, "features": [{"icon": "filter", "t": "Filter by region", "d": "Open the rail to narrow the map by region, port, season or Cruise Line."}, {"icon": "pin", "t": "Tap a port", "d": "Each pin marks a port of call. Tap to see the world cruises calling there."}, {"icon": "card", "t": "See photos & day-by-day", "d": "Open any card to follow a deep link with photos, the day-by-day itinerary and full voyage details."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any voyage to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
   var FAM=[
-    {nm:"VIP Hotels",         slug:"hotel",     url:"https://luxury-hotel-atlas-two.vercel.app",          glyph:"hotel"},
-    {nm:"Expedition Cruises", slug:"expedition",url:"https://expedition-cruise-map.vercel.app",            glyph:"cruise"},
-    {nm:"Private Jet",        slug:"jet",       url:"https://private-jet-expeditions.vercel.app",          glyph:"jet"},
-    {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"https://luxury-hotel-brand-yacht-atlas.vercel.app",   glyph:"yacht"},
-    {nm:"World Cruises",      slug:"world",     url:"https://world-cruise-atlas.vercel.app",               glyph:"world"}
+    {nm:"VIP Hotels",         slug:"hotel",     url:"/maps/hotel/",          glyph:"hotel"},
+    {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
+    {nm:"Private Jet",        slug:"jet",       url:"/maps/jet/",          glyph:"jet"},
+    {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"/maps/yacht/",   glyph:"yacht"},
+    {nm:"World Cruises",      slug:"world",     url:"/maps/worldcruise/",               glyph:"world"}
   ];
   var GLYPHS={
     hotel:'<path d="M3 21h18M5 21V8l7-4 7 4v13M9 12h2M13 12h2M9 16h2M13 16h2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',

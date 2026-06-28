@@ -1,0 +1,244 @@
+{
+ "OPERATORS": {
+  "PONANT EXPLORATIONS": {
+   "short": "Ponant",
+   "domain": "ponant.com",
+   "color": "#0b1f44",
+   "count": 588,
+   "blurb": "A French expedition line that somehow pairs glacial wilderness with foie gras and a proper Bordeaux. The polar ice may groan outside, but inside the ship someone is quietly polishing crystal stemware as if this were the Riviera."
+  },
+  "National Geographic-Lindblad Expeditions": {
+   "short": "Nat Geo–Lindblad",
+   "domain": "expeditions.com",
+   "color": "#f5c518",
+   "count": 1194,
+   "blurb": "The professors of the wild frontier. Less champagne pyramid, more zodiac launch at dawn with a marine biologist who has spent thirty winters in Antarctica. You leave with wet boots, 4,000 photos, and the unsettling realization that penguins may be better organized than most governments."
+  },
+  "HX Expeditions": {
+   "short": "HX · Hurtigruten",
+   "domain": "travelhx.com",
+   "color": "#c8102e",
+   "count": 322,
+   "blurb": "The practical Scandinavians of expedition cruising. Serious science, strong guides, robust ships, and fewer theatrics. Feels less like a floating resort and more like a capable research vessel that accidentally became comfortable."
+  },
+  "Aqua Expeditions": {
+   "short": "Aqua Expeditions",
+   "domain": "aquaexpeditions.com",
+   "color": "#1f6f8b",
+   "count": 516,
+   "blurb": "Floating boutique hotels for rivers and remote seas where design matters almost as much as destination. The kind of journey where the jungle hums outside your suite while lunch arrives looking Michelin-starred and suspiciously photogenic."
+  },
+  "Aurora Expeditions": {
+   "short": "Aurora Expeditions",
+   "domain": "auroraexpeditions.com",
+   "color": "#00467f",
+   "count": 101,
+   "blurb": "An Australian-born line with a mountaineer's spirit. More adventurous, more active, and often more rugged than luxury competitors. The crowd tends to care more about the next landing than the wine list."
+  },
+  "Swan Hellenic": {
+   "short": "Swan Hellenic",
+   "domain": "swanhellenic.com",
+   "color": "#0a2b4a",
+   "count": 120,
+   "blurb": "Quietly intellectual ships for travelers who still read museum placards all the way through. The onboard atmosphere feels less like a cruise and more like an elegant floating salon for curious adults."
+  },
+  "Quark Expeditions": {
+   "short": "Quark Expeditions",
+   "domain": "quarkexpeditions.com",
+   "color": "#d2232a",
+   "count": 109,
+   "blurb": "Polar specialists who treat the Arctic and Antarctica not as destinations, but as obsessions. Expedition-first, comfort-second, with guides who can discuss sea ice, emperor penguins, and survival history before breakfast."
+  },
+  "Atlas Ocean Voyages": {
+   "short": "Atlas Ocean Voyages",
+   "domain": "atlasoceanvoyages.com",
+   "color": "#0e3d5c",
+   "count": 129,
+   "blurb": "A younger line with yacht energy and expedition ambitions. Less formal than classic luxury brands, more social, more active, and often surprisingly strong value for travelers who want polar scenery without the ultra-luxury stiffness."
+  },
+  "Silversea": {
+   "short": "Silversea",
+   "domain": "silversea.com",
+   "color": "#1f3a5f",
+   "count": 177,
+   "blurb": "Old-world luxury draped over serious expedition hardware. Butler service and polar immersion coexist in a way that feels faintly absurd until you return from a zodiac landing to Dom Pérignon and heated bathroom floors."
+  },
+  "Seabourn": {
+   "short": "Seabourn",
+   "domain": "seabourn.com",
+   "color": "#0a2747",
+   "count": 286,
+   "blurb": "If a private club decided to start exploring the polar regions, it would resemble Seabourn. Caviar appears in places where no caviar has any business appearing, often within sight of glaciers the size of cathedrals."
+  }
+ },
+ "REGIONS": {
+  "Australia, NZ & South Pacific": {
+   "name": "Australia, NZ & South Pacific",
+   "coord": [
+    -27.0,
+    150.0
+   ],
+   "count": 79
+  },
+  "Hawaii & Tahiti": {
+   "name": "Hawaii & Tahiti",
+   "coord": [
+    0.0,
+    -152.0
+   ],
+   "count": 24
+  },
+  "Norway, Fjords & Coast": {
+   "name": "Norway, Fjords & Coast",
+   "coord": [
+    66.0,
+    12.0
+   ],
+   "count": 119
+  },
+  "Amazon & South America": {
+   "name": "Amazon & South America",
+   "coord": [
+    -14.0,
+    -66.0
+   ],
+   "count": 410
+  },
+  "Central America & Panama": {
+   "name": "Central America & Panama",
+   "coord": [
+    9.0,
+    -80.0
+   ],
+   "count": 82
+  },
+  "Alaska & Yukon": {
+   "name": "Alaska & Yukon",
+   "coord": [
+    60.5,
+    -149.0
+   ],
+   "count": 131
+  },
+  "Arctic": {
+   "name": "Arctic",
+   "coord": [
+    78.5,
+    16.0
+   ],
+   "count": 416
+  },
+  "Antarctica": {
+   "name": "Antarctica",
+   "coord": [
+    -64.5,
+    -62.0
+   ],
+   "count": 555
+  },
+  "Caribbean & Bermuda": {
+   "name": "Caribbean & Bermuda",
+   "coord": [
+    16.0,
+    -66.0
+   ],
+   "count": 58
+  },
+  "Galápagos": {
+   "name": "Galápagos",
+   "coord": [
+    -0.7,
+    -90.5
+   ],
+   "count": 1084
+  },
+  "Mediterranean": {
+   "name": "Mediterranean",
+   "coord": [
+    39.0,
+    14.0
+   ],
+   "count": 198
+  },
+  "Other": {
+   "name": "Other & Repositioning",
+   "coord": [
+    28.0,
+    -40.0
+   ],
+   "count": 79
+  },
+  "Northern Europe & British Isles": {
+   "name": "Northern Europe & British Isles",
+   "coord": [
+    58.0,
+    -3.0
+   ],
+   "count": 131
+  },
+  "Asia & Mekong": {
+   "name": "Asia & Mekong",
+   "coord": [
+    14.0,
+    105.0
+   ],
+   "count": 55
+  },
+  "Atlantic Islands": {
+   "name": "Atlantic Islands",
+   "coord": [
+    32.0,
+    -23.0
+   ],
+   "count": 45
+  },
+  "Canada & New England": {
+   "name": "Canada & New England",
+   "coord": [
+    48.0,
+    -65.0
+   ],
+   "count": 21
+  },
+  "Baja California": {
+   "name": "Baja California",
+   "coord": [
+    24.0,
+    -111.5
+   ],
+   "count": 2
+  },
+  "Europe Rivers": {
+   "name": "Europe Rivers",
+   "coord": [
+    49.0,
+    8.0
+   ],
+   "count": 11
+  },
+  "Africa & Indian Ocean": {
+   "name": "Africa & Indian Ocean",
+   "coord": [
+    -12.0,
+    45.0
+   ],
+   "count": 18
+  },
+  "US Rivers & Coast": {
+   "name": "US Rivers & Coast",
+   "coord": [
+    40.0,
+    -95.0
+   ],
+   "count": 21
+  },
+  "Great Lakes": {
+   "name": "Great Lakes",
+   "coord": [
+    45.5,
+    -84.0
+   ],
+   "count": 5
+  }
+ }
+}

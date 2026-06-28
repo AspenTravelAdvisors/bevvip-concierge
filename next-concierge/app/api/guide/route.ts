@@ -8,8 +8,8 @@
 // The hand-rolled Anthropic SSE parser from the original is replaced by the
 // official SDK's messages.stream() + finalMessage().
 //
-// Env: ANTHROPIC_API_KEY (required), CLAUDE_MODEL (optional),
-//      HOTEL_ATLAS_API_BASE etc. (optional; see lib/search-offerings.js).
+// Env: ANTHROPIC_API_KEY (required), CLAUDE_MODEL (optional). Atlas inventory is
+//      served in-process from lib/atlas (no external atlas API base needed).
 
 import Anthropic from "@anthropic-ai/sdk";
 import { GUIDE_PROMPT } from "@/lib/guide-prompt.js";

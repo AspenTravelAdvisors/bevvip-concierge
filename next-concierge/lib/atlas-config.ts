@@ -1,9 +1,10 @@
 import type { OfferingType } from "./types";
 
 // One registry for the five atlas surfaces. The unified /atlas/[type] route
-// renders them under a single shell; `base` points at each standalone atlas
-// app for the "Open full Atlas" handoff (same ?region= deep-link contract
-// documented in DEEPLINK-HANDOFF.md).
+// renders them under a single shell; `base` is the internal map root
+// (/maps/<type>) for the "Open full Atlas" handoff (same ?region= deep-link
+// contract documented in DEEPLINK-HANDOFF.md). Override with NEXT_PUBLIC_*_ATLAS_BASE
+// only if pointing at an external deploy.
 export interface AtlasConfig {
   type: OfferingType;
   label: string;
@@ -17,45 +18,35 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     type: "hotel",
     label: "Hotel Atlas",
     tagline: "Approved luxury hotel inventory, mapped worldwide",
-    base:
-      process.env.NEXT_PUBLIC_HOTEL_ATLAS_BASE ||
-      "https://luxury-hotel-atlas-two.vercel.app",
+    base: process.env.NEXT_PUBLIC_HOTEL_ATLAS_BASE || "/maps/hotel",
     sampleRegions: ["Caribbean", "Mediterranean", "Alps", "Southeast Asia"],
   },
   cruise: {
     type: "cruise",
     label: "Expedition Cruise Atlas",
     tagline: "Expedition cruise journeys by region and season",
-    base:
-      process.env.NEXT_PUBLIC_CRUISE_ATLAS_BASE ||
-      "https://expedition-cruise-map.vercel.app",
+    base: process.env.NEXT_PUBLIC_CRUISE_ATLAS_BASE || "/maps/cruise",
     sampleRegions: ["Antarctica", "Galapagos", "Arctic", "Northwest Passage"],
   },
   jet: {
     type: "jet",
     label: "Private Jet Atlas",
     tagline: "Around-the-world and regional private jet expeditions",
-    base:
-      process.env.NEXT_PUBLIC_JET_ATLAS_BASE ||
-      "https://private-jet-expeditions.vercel.app",
+    base: process.env.NEXT_PUBLIC_JET_ATLAS_BASE || "/maps/jet",
     sampleRegions: ["ANTARCTICA", "AFRICA", "ASIA", "WORLD"],
   },
   yacht: {
     type: "yacht",
     label: "Luxury Hotel Yacht Atlas",
     tagline: "Aman, Ritz-Carlton, Four Seasons and Orient Express at sea",
-    base:
-      process.env.NEXT_PUBLIC_YACHT_ATLAS_BASE ||
-      "https://luxury-hotel-brand-yacht-atlas.vercel.app",
+    base: process.env.NEXT_PUBLIC_YACHT_ATLAS_BASE || "/maps/yacht",
     sampleRegions: ["MED", "CARIB", "ASIA"],
   },
   worldcruise: {
     type: "worldcruise",
     label: "World Cruise Atlas",
     tagline: "World cruises and grand voyages, every port day by day",
-    base:
-      process.env.NEXT_PUBLIC_WORLD_CRUISE_ATLAS_BASE ||
-      "https://world-cruise-atlas.vercel.app",
+    base: process.env.NEXT_PUBLIC_WORLD_CRUISE_ATLAS_BASE || "/maps/worldcruise",
     sampleRegions: ["MED", "CARIB", "AUNZ", "EASTASIA"],
   },
 };

@@ -44,5 +44,7 @@ ANTHROPIC_API_KEY=sk-ant-... npm run dev
 | `ANTHROPIC_API_KEY` | yes | The Guide (Claude) |
 | `CLAUDE_MODEL` | no | Override model (default `claude-sonnet-4-6`, matching the legacy deployment) |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | no | Render the Living Atlas globe |
-| `HOTEL_ATLAS_API_BASE` etc. | no | Override Atlas data APIs (see `lib/search-offerings.js`) |
-| `NEXT_PUBLIC_*_ATLAS_BASE` | no | Override external atlas app URLs (see `lib/atlas-config.ts`) |
+| `GOOGLE_MAPS_API_KEY` | no* | Google Maps JS key for the hotel map iframe (served via `/api/hotel/config`). *Required for the hotel map to render tiles. |
+| `NEXT_PUBLIC_*_ATLAS_BASE` | no | Override the in-app atlas handoff path (default internal `/maps/<type>`; see `lib/atlas-config.ts`) |
+
+All atlas inventory and query logic is served in-process from `data/atlas/` + `lib/atlas/` — this app has no runtime dependency on the external `*.vercel.app` atlas deployments.
