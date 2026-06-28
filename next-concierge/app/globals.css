@@ -1425,7 +1425,7 @@ main.page {
 .tour-scrim {
   position: absolute;
   inset: 0;
-  background: rgba(6, 6, 8, 0.62);
+  background: rgba(6, 6, 8, 0.465);
   backdrop-filter: blur(2px);
   animation: tour-fade 0.25s ease;
 }
@@ -1437,7 +1437,7 @@ main.page {
   border-radius: 14px;
   border: 1.5px solid var(--gold);
   box-shadow:
-    0 0 0 9999px rgba(6, 6, 8, 0.66),
+    0 0 0 9999px rgba(6, 6, 8, 0.495),
     0 0 0 2px rgba(201, 168, 76, 0.35),
     0 0 26px 4px rgba(201, 168, 76, 0.28);
   pointer-events: none;
