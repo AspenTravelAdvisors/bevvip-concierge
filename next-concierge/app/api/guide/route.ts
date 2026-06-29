@@ -19,6 +19,7 @@ import {
   prioritizeMentionedPlace,
   searchOfferings,
 } from "@/lib/search-offerings.js";
+import { SEARCH_EXPERIENCES_TOOL, searchExperiences } from "@/lib/experiences.js";
 import type { ChatMessage, GuideFrame, GuideMeta, GuideToolMeta } from "@/lib/types";
 import { corsHeaders } from "@/lib/guide-cors";
 import { isRateLimited } from "@/lib/rate-limit";
@@ -146,7 +147,10 @@ async function runGuideTurnStream({
         max_tokens: MAX_TOKENS,
         system: GUIDE_PROMPT,
         messages: convo,
-        tools: [SEARCH_OFFERINGS_TOOL as Anthropic.Tool],
+        tools: [
+          SEARCH_OFFERINGS_TOOL as Anthropic.Tool,
+          SEARCH_EXPERIENCES_TOOL as Anthropic.Tool,
+        ],
       },
       (delta) => {
         text += delta;
@@ -173,19 +177,28 @@ async function runGuideTurnStream({
             tu.name === "search_offerings"
               ? prioritizeMentionedPlace(tu.input || {}, latestUserText)
               : tu.input || {};
-          result =
-            tu.name === "search_offerings"
-              ? await searchOfferings(input)
-              : { error: `unknown tool ${tu.name}` };
+          if (tu.name === "search_offerings") {
+            result = await searchOfferings(input);
+          } else if (tu.name === "search_experiences") {
+            result = await searchExperiences(input);
+          } else {
+            result = { error: `unknown tool ${tu.name}` };
+          }
           tu.input = input;
         } catch (e) {
           result = { error: e instanceof Error ? e.message : String(e) };
         }
-        toolMeta.push({
-          ...(result as object),
-          input: tu.input as Record<string, unknown>,
-          results: (result as GuideToolMeta)?.results || [],
-        } as GuideToolMeta);
+        // Only search_offerings feeds the result-card / map pipeline (toolMeta ->
+        // summarizeMeta -> ResultCards / AtlasShell). Experiences are prose-only:
+        // the model still reads the JSON below, but they never render as booking
+        // cards or map pins.
+        if (tu.name === "search_offerings") {
+          toolMeta.push({
+            ...(result as object),
+            input: tu.input as Record<string, unknown>,
+            results: (result as GuideToolMeta)?.results || [],
+          } as GuideToolMeta);
+        }
         toolResults.push({
           type: "tool_result",
           tool_use_id: tu.id,
@@ -235,6 +248,13 @@ async function streamRoundWithRetry(
 }
 
 function statusForToolUses(toolUses: Anthropic.ToolUseBlock[]): string {
+  // Experiences lookups can run alongside or instead of an inventory search.
+  const exp = toolUses.find((tu) => tu.name === "search_experiences");
+  if (exp && !toolUses.some((tu) => tu.name === "search_offerings")) {
+    const where = String((exp.input as Record<string, unknown>)?.place || "").trim();
+    return where ? `Looking at things to do in ${where}...` : "Looking at things to do nearby...";
+  }
+
   const input =
     (toolUses.find((tu) => tu.name === "search_offerings")?.input as
       | Record<string, unknown>
