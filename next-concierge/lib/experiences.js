@@ -93,44 +93,37 @@ const str = (v) => (v == null ? "" : String(v)).trim();
 const lower = (v) => str(v).toLowerCase();
 
 // ── Private / Elevate classification ─────────────────────────────────────────
-// CALIBRATE ME: how Project Expedition exposes "Private" and "Elevate" is not
-// documented, so this checks every field where the signal plausibly lives. Once
-// a real /return_tours response is in hand, tighten this to the actual fields
-// (verify against tour.type / tour.collection / tour.tags / the booking_meta).
-const PRIVATE_RE = /\bprivate\b|\bexclusive\b|\bprivate[\s-]?guide\b/i;
-const ELEVATE_RE = /\belevate\b|\belevated\b|\bpremium\b|\bcurated\b|\bsignature\b/i;
+// Calibrated against the real staging /return_tours response (2026-06-29): each
+// tour's `about` object carries the authoritative flags `private_tour` ("Yes"/
+// "No") and `elevate` ("Yes"/"No"). A name-based regex is kept only as a weak
+// fallback for records that somehow lack the flags. `private_tour_available`
+// means a public tour CAN be privatized — that is not a Private listing, so it
+// is intentionally ignored here.
+const PRIVATE_RE = /\bprivate\b|\bexclusive\b/i;
 
-function classifyExperience(tour = {}, about = {}) {
-  // Gather the likely-textual signal fields into one haystack.
-  const tagFields = []
-    .concat(tour.tags || tour.labels || tour.collections || [])
-    .concat(tour.collection || tour.tier || tour.experience_type || [])
-    .map(lower);
-  const hay = [
-    about.name || tour.name || tour.title,
-    tour.type || tour.tour_type || tour.product_type,
-    tour.category || about.category,
-    tour.collection || tour.tier,
-    ...tagFields,
-  ]
-    .map(lower)
-    .filter(Boolean)
-    .join(" | ");
+const isYes = (v) => lower(v) === "yes" || v === true;
 
-  // Explicit boolean flags win if the API exposes them.
-  const flaggedPrivate = tour.is_private === true || tour.private === true;
-  const flaggedElevate =
-    tour.is_elevate === true || tour.elevate === true || lower(tour.tier) === "elevate";
-
-  const isPrivate = flaggedPrivate || PRIVATE_RE.test(hay);
-  const isElevate = flaggedElevate || ELEVATE_RE.test(hay);
+function classifyExperience(tour = {}, about = tour.about || {}) {
+  const isPrivate = isYes(about.private_tour) || (about.private_tour == null && PRIVATE_RE.test(lower(about.name)));
+  const isElevate = isYes(about.elevate);
   return { preferred: isPrivate || isElevate, isPrivate, isElevate };
 }
 
+// Project Expedition stores highlights as one newline-delimited string of
+// "- bullet" lines, not an array. Split it into clean bullets.
+function parseHighlights(raw) {
+  if (Array.isArray(raw)) return raw.map(str).filter(Boolean);
+  return str(raw)
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^\s*[-•*]\s*/, "").trim())
+    .filter(Boolean);
+}
+
 // ── Normalization ────────────────────────────────────────────────────────────
-// Trim a raw tour to what the Guide needs to speak about it. Defensive to the
-// documented shape (about / itinerary / logistics) and common flat variants.
-// Intentionally omits pricing and booking_meta — discovery, not booking.
+// Trim a raw tour to what the Guide needs to speak about it. Field paths are
+// calibrated to the real staging shape (about / itinerary / logistics), with
+// loose fallbacks in case prod differs. Intentionally omits pricing and
+// booking_meta — discovery, not booking.
 function normalizeTour(tour = {}) {
   const about = tour.about || {};
   const itinerary = tour.itinerary || {};
@@ -139,35 +132,31 @@ function normalizeTour(tour = {}) {
   const name = str(about.name || tour.name || tour.title);
   if (!name) return null;
 
-  const highlightsRaw = itinerary.highlights || tour.highlights || [];
-  const highlights = (Array.isArray(highlightsRaw) ? highlightsRaw : [highlightsRaw])
-    .map(str)
-    .filter(Boolean)
-    .slice(0, 4);
+  const highlights = parseHighlights(itinerary.highlights ?? tour.highlights).slice(0, 4);
 
-  const location = str(
-    logistics.location ||
-      logistics.town ||
-      logistics.city ||
-      about.town ||
-      about.city ||
-      tour.location,
-  );
+  const town = str(logistics.town || logistics.city || logistics.start_town);
+  const region = str(logistics.region);
   const country = str(about.country || logistics.country || tour.country);
+  // "Naples, Campania" reads better than a bare town; fall back gracefully.
+  const location = [town, region].filter(Boolean).join(", ") || country;
+
   const duration = str(itinerary.duration || tour.duration);
   const summary = str(
-    about.summary || about.description || tour.summary || tour.description || itinerary.summary,
+    itinerary.description || about.summary || about.description || tour.description,
   ).slice(0, 280);
-  const category = str(tour.category || about.category || (itinerary.category || ""));
+  const category = str(about.type || tour.category);
 
-  const rating = Number(about.rating ?? tour.rating ?? about.review_score);
-  const reviewCount = Number(about.review_count ?? tour.review_count ?? about.reviews);
+  const rating = parseFloat(about.pe_rating ?? about.rating ?? tour.rating);
+  const reviews = tour.reviews;
+  const reviewCount = Array.isArray(reviews)
+    ? reviews.length
+    : Number(about.review_count ?? tour.review_count);
 
   const { preferred, isPrivate, isElevate } = classifyExperience(tour, about);
 
   return {
     name,
-    location: location || country || "",
+    location: location || "",
     country,
     duration: duration || null,
     category: category || null,
