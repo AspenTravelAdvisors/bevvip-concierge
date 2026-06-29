@@ -22,7 +22,9 @@
 import { normalizeCountry } from "./search-offerings.js";
 
 const PE_API_BASE = process.env.PE_API_BASE || "https://apistage.projectexpedition.com/v1";
-const PE_TOKEN = process.env.PROJECT_EXPEDITION_TOKEN || "";
+// Trim stray whitespace/newlines — a token pasted into a hosting dashboard often
+// carries a trailing newline, which corrupts the access-token header → 401.
+const PE_TOKEN = (process.env.PROJECT_EXPEDITION_TOKEN || "").trim();
 
 const DEFAULT_LIMIT = 3;
 const MAX_LIMIT = 6;
@@ -30,7 +32,10 @@ const MAX_LIMIT = 6;
 // pool lets the Private/Elevate picks float to the top even when the catalog
 // returns the popular group tours first.
 const CANDIDATE_POOL = 60;
-const REQUEST_TIMEOUT_MS = 4000;
+// Staging country pulls are large (~2 MB), and a cold serverless function adds
+// connect + TLS latency, so 4s aborted too eagerly in production. 8s default,
+// overridable via env.
+const REQUEST_TIMEOUT_MS = Number(process.env.PE_TIMEOUT_MS) || 8000;
 const CACHE_TTL_MS = 10 * 60 * 1000; // catalog is near-static within a session
 
 // In-memory response cache keyed by the normalized query. Survives across
@@ -217,7 +222,11 @@ async function fetchTours(params) {
       headers: { "access-token": PE_TOKEN, Accept: "application/json" },
       signal: controller.signal,
     });
-    if (!r.ok) throw new Error(`project expedition ${r.status}`);
+    if (!r.ok) {
+      // Read a little of the body for the log (auth errors usually explain why).
+      const detail = await r.text().catch(() => "");
+      throw new Error(`project expedition ${r.status} ${detail.slice(0, 200)}`);
+    }
     const body = await r.json();
     // Tolerate a few likely envelope shapes: bare array, { tours }, { results }, { data }.
     if (Array.isArray(body)) return body;
@@ -270,6 +279,14 @@ export async function searchExperiences(input = {}) {
       raw = await fetchTours(params);
       cache.set(cacheKey, { at: Date.now(), value: raw });
     } catch (err) {
+      // Surface the real cause in server/Vercel logs without leaking the token.
+      // AbortError => our timeout fired; "... 401/403 ..." => auth/IP; ENOTFOUND
+      // / ECONNREFUSED => network. tokenLen=0 here would mean the env var is unset.
+      const e = err || {};
+      console.error(
+        `[experiences] fetch failed name=${e.name || "?"} msg=${String(e.message || e).slice(0, 200)} ` +
+          `base=${PE_API_BASE} tokenLen=${PE_TOKEN.length} timeoutMs=${REQUEST_TIMEOUT_MS}`,
+      );
       return unavailableResult(
         "Project Expedition experiences are momentarily unreachable. " +
           "An advisor can source local tours and private guides directly.",
