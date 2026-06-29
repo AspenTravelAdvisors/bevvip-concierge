@@ -188,16 +188,26 @@ async function runGuideTurnStream({
         } catch (e) {
           result = { error: e instanceof Error ? e.message : String(e) };
         }
-        // Only search_offerings feeds the result-card / map pipeline (toolMeta ->
-        // summarizeMeta -> ResultCards / AtlasShell). Experiences are prose-only:
-        // the model still reads the JSON below, but they never render as booking
-        // cards or map pins.
+        // The result-card / map pipeline (toolMeta -> summarizeMeta -> ResultCards
+        // / AtlasShell + advisor CTA) is fed by hotel/cruise inventory only.
+        // Experiences themselves stay prose-only, but a search_experiences call
+        // also returns a few area hotels (result.hotels) that DO anchor the map,
+        // render as cards, and unlock the advisor hand-off — so push those.
         if (tu.name === "search_offerings") {
           toolMeta.push({
             ...(result as object),
             input: tu.input as Record<string, unknown>,
             results: (result as GuideToolMeta)?.results || [],
           } as GuideToolMeta);
+        } else if (tu.name === "search_experiences") {
+          const hotels = (result as { hotels?: GuideToolMeta })?.hotels;
+          if (hotels && (hotels.results?.length ?? 0) > 0) {
+            toolMeta.push({
+              ...hotels,
+              input: tu.input as Record<string, unknown>,
+              results: hotels.results || [],
+            } as GuideToolMeta);
+          }
         }
         toolResults.push({
           type: "tool_result",

@@ -19,7 +19,7 @@
 // returns { unavailable:true, total:0, preferred:[], others:[], note } and never
 // throws into the guide loop, so the Guide simply advises without experiences.
 
-import { normalizeCountry } from "./search-offerings.js";
+import { normalizeCountry, searchOfferings } from "./search-offerings.js";
 
 const PE_API_BASE = process.env.PE_API_BASE || "https://apistage.projectexpedition.com/v1";
 // Trim stray whitespace/newlines — a token pasted into a hosting dashboard often
@@ -245,9 +245,53 @@ const unavailableResult = (note) => ({
   note,
 });
 
+// A few real luxury stays in the same area, so an experiences request always
+// anchors the map and offers somewhere to stay (pre/post a cruise or jet, or
+// just "what to do here"). Reuses the hotel Atlas via searchOfferings; trimmed
+// to a small set and never throws — a miss simply means no hotels this turn.
+// The route surfaces these into meta.tools, which drives the map zoom, the
+// result cards, and the advisor hand-off CTA.
+async function fetchAreaHotels(input = {}) {
+  const place = str(input.place);
+  const country = str(input.country);
+  if (!place && !country) return null;
+  try {
+    const r = await searchOfferings({
+      type: "hotel",
+      place: place || undefined,
+      country: country || undefined,
+      intent: input.intent || undefined,
+      limit: 3,
+    });
+    if (!r || !(r.results || []).length) return null;
+    return {
+      type: "hotel",
+      total: r.total ?? r.results.length,
+      count: r.results.length,
+      results: r.results,
+      deepLink: r.deepLink || null,
+      chartRegion: r.chartRegion || null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 // ── Main entry ───────────────────────────────────────────────────────────────
-// input is the validated tool input from the model.
+// input is the validated tool input from the model. Runs two things in parallel:
+// the Project Expedition experiences (prose-only) and a small set of area hotels
+// (which the route renders as cards + map anchor + advisor CTA).
 export async function searchExperiences(input = {}) {
+  const [experiences, hotels] = await Promise.all([
+    collectExperiences(input),
+    fetchAreaHotels(input),
+  ]);
+  return { ...experiences, ...(hotels ? { hotels } : {}) };
+}
+
+// The experiences half: fetch, normalize, and split into Private/Elevate first
+// then the broader catalog. Always graceful.
+async function collectExperiences(input = {}) {
   if (!PE_TOKEN) {
     return unavailableResult(
       "The experiences catalog is not configured (no Project Expedition token). " +
