@@ -28,9 +28,11 @@ const PE_TOKEN = (process.env.PROJECT_EXPEDITION_TOKEN || "").trim();
 
 const DEFAULT_LIMIT = 3;
 const MAX_LIMIT = 6;
-// How many raw tours to consider before trimming to the per-list limit. A wide
-// pool lets the Private/Elevate picks float to the top even when the catalog
-// returns the popular group tours first.
+// Cap on how many place-matched tours go into the rank/sort, applied AFTER the
+// place filter so a named city is searched across the whole country pull (the
+// catalog is not ordered by place, so capping first could miss the city
+// entirely). Wide enough that Private/Elevate picks float to the top even when
+// the catalog lists the popular group tours first.
 const CANDIDATE_POOL = 60;
 // Staging country pulls are large (~2 MB), and a cold serverless function adds
 // connect + TLS latency, so 4s aborted too eagerly in production. 8s default,
@@ -338,9 +340,10 @@ async function collectExperiences(input = {}) {
     }
   }
 
-  const normalized = (raw || []).slice(0, CANDIDATE_POOL).map(normalizeTour).filter(Boolean);
+  const normalized = (raw || []).map(normalizeTour).filter(Boolean);
   let matched = normalized.filter((t) => matchesPlace(t, placeNeedles));
   if (!matched.length) matched = normalized; // never zero out a real country pull
+  matched = matched.slice(0, CANDIDATE_POOL);
 
   const rank = ranker(descriptorNeedles);
   const preferred = matched.filter((t) => t.preferred).sort(rank);
