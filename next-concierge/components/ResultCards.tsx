@@ -134,7 +134,9 @@ function internalCardLink(result: OfferingResult, type: OfferingType | null): st
   let query = "";
   if (typeof result.deepLink === "string" && result.deepLink) {
     try {
-      query = new URL(result.deepLink).search; // e.g. "?region=Med&ids=y_12"
+      // Deep links are internal paths ("/maps/hotel/?ids=h_1"), so parse
+      // against a placeholder base — a bare `new URL()` throws on them.
+      query = new URL(result.deepLink, "http://internal.atlas").search; // e.g. "?region=Med&ids=y_12"
     } catch {
       /* not a parseable URL — ignore and fall back */
     }
