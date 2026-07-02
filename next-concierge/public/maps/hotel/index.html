@@ -733,33 +733,63 @@ function renderActiveChips(){
 /* ---- cinematic camera: tween pan + zoom to a target instead of snapping ----
    Uses the Maps 3D flyCameraTo easing when present; falls back to a direct set
    on older builds so the camera always lands on target. */
+/* Camera targets use absolute altitude: at altitude 0 the look-at point in a
+   mountain town (Aspen sits at ~2,400m) is underground, so a close fly-in
+   drives the camera through the terrain. Resolve the ground elevation for the
+   target and aim there instead. Cached per rounded coordinate; falls back to
+   sea level (the old behavior) if the Elevation service is unavailable. */
+const ELEV_CACHE=new Map();
+let elevSvc=null;
+async function groundAltitude(lat,lng){
+  const key=lat.toFixed(3)+","+lng.toFixed(3);
+  if(ELEV_CACHE.has(key)) return ELEV_CACHE.get(key);
+  let alt=0;
+  try{
+    if(!elevSvc){ const lib=await google.maps.importLibrary("elevation"); elevSvc=new lib.ElevationService(); }
+    const r=await elevSvc.getElevationForLocations({locations:[{lat,lng}]});
+    const e=r&&r.results&&r.results[0];
+    if(e && isFinite(e.elevation)) alt=Math.max(0,e.elevation);
+  }catch(_){}
+  ELEV_CACHE.set(key,alt);
+  return alt;
+}
+let flySeq=0;
 function flyTo(opts){
   if(!map3d) return;
   stopIdleSpin();
   stopOrbit();
-  const center={lat:opts.lat,lng:opts.lng,altitude:opts.altitude||0};
+  const seq=++flySeq;
   const tilt=opts.tilt==null?45:opts.tilt;
   const heading=opts.heading==null?0:opts.heading;
   const range=opts.range==null?2600:opts.range;
-  if(typeof map3d.flyCameraTo==="function"){
-    try{
-      map3d.flyCameraTo({
-        endCamera:{center,tilt,range,heading},
-        durationMillis:opts.duration||2200
-      });
-      // opts.orbit: once the fly-in lands, begin a slow cinematic orbit
-      // (~80s per revolution, 3 laps). Any user gesture interrupts the
-      // animation natively; stopOrbit() covers panel close and re-frames.
-      if(opts.orbit && typeof map3d.flyCameraAround==="function"){
-        orbitArm=()=>{ orbitArm=null;
-          try{ map3d.flyCameraAround({camera:{center,tilt,range,heading},durationMillis:240000,rounds:3}); }catch(_){}
-        };
-        map3d.addEventListener("gmp-animationend",orbitArm,{once:true});
-      }
-      return;
-    }catch(_){ /* fall through to instant set */ }
-  }
-  try{ map3d.center=center; map3d.range=range; map3d.tilt=tilt; map3d.heading=heading; }catch(_){}
+  const go=(alt)=>{
+    if(seq!==flySeq) return; // superseded by a newer fly-to while awaiting elevation
+    const center={lat:opts.lat,lng:opts.lng,altitude:alt};
+    if(typeof map3d.flyCameraTo==="function"){
+      try{
+        map3d.flyCameraTo({
+          endCamera:{center,tilt,range,heading},
+          durationMillis:opts.duration||2200
+        });
+        // opts.orbit: once the fly-in lands, begin a slow cinematic orbit
+        // (~80s per revolution, 3 laps). Any user gesture interrupts the
+        // animation natively; stopOrbit() covers panel close and re-frames.
+        if(opts.orbit && typeof map3d.flyCameraAround==="function"){
+          orbitArm=()=>{ orbitArm=null;
+            try{ map3d.flyCameraAround({camera:{center,tilt,range,heading},durationMillis:240000,rounds:3}); }catch(_){}
+          };
+          map3d.addEventListener("gmp-animationend",orbitArm,{once:true});
+        }
+        return;
+      }catch(_){ /* fall through to instant set */ }
+    }
+    try{ map3d.center=center; map3d.range=range; map3d.tilt=tilt; map3d.heading=heading; }catch(_){}
+  };
+  if(opts.altitude!=null){ go(opts.altitude); return; }
+  // Terrain only matters up close; on wide framings a few km of elevation is
+  // negligible, so skip the lookup and fly immediately.
+  if(range>120000){ go(0); return; }
+  groundAltitude(opts.lat,opts.lng).then(go);
 }
 let orbitArm=null;
 function stopOrbit(){
