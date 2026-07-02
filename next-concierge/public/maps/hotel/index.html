@@ -386,16 +386,15 @@ const BRAND_DOMAINS = {
   "Corinthia":"corinthia.com",
 };
 
+/* Google favicon service is the primary logo source (Clearbit's logo API was
+   sunset after the HubSpot acquisition); on error the image simply hides. */
 function brandLogo(program){
   const domain = BRAND_DOMAINS[program];
   if(!domain) return null;
-  return `https://logo.clearbit.com/${domain}`;
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 }
-function brandLogoFallback(img, program){
-  const domain = BRAND_DOMAINS[program];
-  if(!domain){ img.style.display="none"; return; }
-  img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-  img.onerror = ()=>{ img.style.display="none"; };
+function brandLogoFallback(img){
+  img.style.display="none";
 }
 const catColor = c => CAT_COLORS[c] || "#caa44e";
 
@@ -737,6 +736,7 @@ function renderActiveChips(){
 function flyTo(opts){
   if(!map3d) return;
   stopIdleSpin();
+  stopOrbit();
   const center={lat:opts.lat,lng:opts.lng,altitude:opts.altitude||0};
   const tilt=opts.tilt==null?45:opts.tilt;
   const heading=opts.heading==null?0:opts.heading;
@@ -747,10 +747,25 @@ function flyTo(opts){
         endCamera:{center,tilt,range,heading},
         durationMillis:opts.duration||2200
       });
+      // opts.orbit: once the fly-in lands, begin a slow cinematic orbit
+      // (~80s per revolution, 3 laps). Any user gesture interrupts the
+      // animation natively; stopOrbit() covers panel close and re-frames.
+      if(opts.orbit && typeof map3d.flyCameraAround==="function"){
+        orbitArm=()=>{ orbitArm=null;
+          try{ map3d.flyCameraAround({camera:{center,tilt,range,heading},durationMillis:240000,rounds:3}); }catch(_){}
+        };
+        map3d.addEventListener("gmp-animationend",orbitArm,{once:true});
+      }
       return;
     }catch(_){ /* fall through to instant set */ }
   }
   try{ map3d.center=center; map3d.range=range; map3d.tilt=tilt; map3d.heading=heading; }catch(_){}
+}
+let orbitArm=null;
+function stopOrbit(){
+  if(!map3d) return;
+  if(orbitArm){ map3d.removeEventListener("gmp-animationend",orbitArm); orbitArm=null; }
+  try{ if(typeof map3d.stopCameraAnimation==="function") map3d.stopCameraAnimation(); }catch(_){}
 }
 // Compute the bounds of a set of features and fly the camera to frame them so
 // every result pin stays in view. The east-west span is scaled by the viewport
@@ -877,7 +892,17 @@ function buildFilters(){
   });
   document.addEventListener("click",e=>{ if(!e.target.closest("#searchBar")) document.getElementById("aclist").classList.remove("open"); });
   document.getElementById("reset").addEventListener("click",resetFilters);
-  document.getElementById("close").addEventListener("click",()=>document.getElementById("panel").classList.remove("open"));
+  document.getElementById("close").addEventListener("click",()=>{ stopOrbit(); document.getElementById("panel").classList.remove("open"); });
+  // Escape closes the detail panel (help modal and intro tour handlers win while open)
+  document.addEventListener("keydown",e=>{
+    if(e.key!=="Escape") return;
+    const help=document.getElementById("helpOverlay");
+    if(help && help.classList.contains("open")) return;
+    const intro=document.getElementById("bviScrim");
+    if(intro && intro.classList.contains("bvi-open")) return;
+    const panel=document.getElementById("panel");
+    if(panel.classList.contains("open")){ stopOrbit(); panel.classList.remove("open"); }
+  });
   /* railToggle no longer used — dock pills handle mobile toggle */
 }
 function optRow(setName,val,n,sw,program){
@@ -888,9 +913,9 @@ function optRow(setName,val,n,sw,program){
   if(sw){ const s=document.createElement("span"); s.className="sw"; s.style.background=sw; l.appendChild(s); }
   if(program && BRAND_DOMAINS[program]){
     const img=document.createElement("img"); img.className="blogo";
-    img.src=`https://logo.clearbit.com/${BRAND_DOMAINS[program]}`;
+    img.src=brandLogo(program);
     img.alt=""; img.loading="lazy";
-    img.onerror=()=>brandLogoFallback(img,program);
+    img.onerror=()=>brandLogoFallback(img);
     l.appendChild(img);
   }
   const nm=document.createElement("span"); nm.className="nm"; nm.textContent=val; nm.title=val; l.appendChild(nm);
@@ -907,7 +932,9 @@ function matches(f){
   if(state.ids.size && !state.ids.has(p.id)) return false;
   if(state.brand && (p.brand||"").toLowerCase()!==state.brand.toLowerCase()) return false;
   if(state.region && (p.marqueeRegion||"").toLowerCase()!==state.region.toLowerCase() && !matchesRegionAlias(state.region,p)) return false;
-  if(state.q){ const hay=(p.name+" "+p.city+" "+p.region+" "+p.country).toLowerCase(); if(hay.indexOf(state.q)<0) return false; }
+  // memoized lowercase haystack: built once per feature (covers both load
+  // paths — the paged API and the geojson fallback)
+  if(state.q){ const hay=p._hay||(p._hay=(p.name+" "+p.city+" "+p.region+" "+p.country).toLowerCase()); if(hay.indexOf(state.q)<0) return false; }
   return true;
 }
 let filterTimer;
@@ -1029,7 +1056,7 @@ async function openDetail(f){
   const progEl=document.getElementById("d-prog");
   if(p.program && BRAND_DOMAINS[p.program]){
     const logo=brandLogo(p.program);
-    progEl.innerHTML=`<span class="prog-logo"><img src="${logo}" alt="" onerror="brandLogoFallback(this,'${p.program.replace(/'/g,"\\'")}')"> ${p.program}</span>`;
+    progEl.innerHTML=`<span class="prog-logo"><img src="${logo}" alt="" onerror="brandLogoFallback(this)"> ${p.program}</span>`;
   } else {
     progEl.textContent=p.program||"—";
   }
@@ -1045,8 +1072,8 @@ async function openDetail(f){
   if(SELECTED && SELECTED._pin) try{SELECTED._pin.scale=0.7;}catch(_){}
   if(sel && sel._pin) try{sel._pin.scale=1.25;}catch(_){}
   SELECTED=sel||null;
-  // cinematically tween the camera to the hotel's coordinates
-  flyTo({lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],range:2600,tilt:67,duration:1800});
+  // cinematically tween the camera to the hotel, then settle into a slow orbit
+  flyTo({lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],range:2600,tilt:67,duration:1800,orbit:true});
 }
 
 function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
@@ -1412,7 +1439,7 @@ init();
   function railOpen(){ return body.classList.contains('rail-shown'); }
   function closeRail(){ if(railOpen()) railPill.click(); }
   function panelOpen(){ return panel.classList.contains('open') && !body.classList.contains('panel-collapsed'); }
-  function closePanel(){ panel.classList.remove('open'); }
+  function closePanel(){ try{ stopOrbit(); }catch(_){} panel.classList.remove('open'); }
   function expanded(){ return panel.classList.contains('drawer-expanded'); }
 
   /* keep the sticky "Show N stays" button in sync with the live result count */
