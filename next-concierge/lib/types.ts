@@ -31,6 +31,28 @@ export interface GuideToolMeta {
   sources?: unknown;
   results: OfferingResult[];
   related?: unknown;
+  trip?: TripParams;
+}
+
+// Dates/party the Guide extracted from the conversation, echoed back on the
+// tool meta so the client can persist them into the shared TripState.
+export interface TripParams {
+  checkIn?: string;        // "YYYY-MM-DD"
+  checkOut?: string;       // "YYYY-MM-DD"
+  adults?: number;
+  childrenAges?: number[];
+}
+
+// Shared trip state (BOOKING-SPEC §1): the single where/when/who object every
+// booking CTA reads. Owned by lib/trip-state.ts over sessionStorage.
+export interface TripState {
+  destination: string | null;  // free text as the traveler gave it
+  checkIn: string | null;      // "YYYY-MM-DD"
+  checkOut: string | null;     // "YYYY-MM-DD"
+  adults: number;              // default 2
+  childrenAges: number[];      // ages, not just a count — booking engines price by age
+  source: "strip" | "guide";   // who captured it last
+  updatedAt: string;           // ISO timestamp
 }
 
 export interface GuideMeta {

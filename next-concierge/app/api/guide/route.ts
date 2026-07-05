@@ -145,7 +145,9 @@ async function runGuideTurnStream({
       {
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        system: GUIDE_PROMPT,
+        // Today's date lets the model resolve relative timing ("spring break
+        // week", "the week after Christmas") into real checkIn/checkOut dates.
+        system: `${GUIDE_PROMPT}\n\nToday's date is ${new Date().toISOString().slice(0, 10)}.`,
         messages: convo,
         tools: [
           SEARCH_OFFERINGS_TOOL as Anthropic.Tool,
@@ -303,6 +305,7 @@ function summarizeMeta(toolMeta: GuideToolMeta[]): GuideMeta {
     sources: t.sources ?? null,
     results: t.results || [],
     related: t.related ?? null,
+    ...(t.trip ? { trip: t.trip } : {}),
   }));
   // Prefer the last tool call that actually returned inventory.
   const lead =

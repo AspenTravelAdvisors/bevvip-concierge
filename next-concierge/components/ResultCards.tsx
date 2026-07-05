@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { GuideMeta, OfferingResult, OfferingType } from "@/lib/types";
 import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
+import { bookingLink } from "@/lib/atlas/booking.js";
+import { getTrip } from "@/lib/trip-state";
 
 // Cap cards per brand within a category (so one operator can't flood the row),
 // not per category — a two-brand comparison ("Aman vs Orient Express") and an
@@ -116,14 +118,29 @@ function Card({
   // embedded atlas focuses the same record; otherwise fall back to the result's
   // region.
   const href = internalCardLink(result, fallbackType);
-  if (href) {
-    return (
-      <Link className="card" href={href}>
-        {body}
-      </Link>
-    );
-  }
-  return <div className="card">{body}</div>;
+  const card = href ? (
+    <Link className="card" href={href}>
+      {body}
+    </Link>
+  ) : (
+    <div className="card">{body}</div>
+  );
+
+  // Booking affordance via the single seam (lib/atlas/booking.js). In portal
+  // mode this is the VipTravelAi.com portal + access code, kept secondary under
+  // the card — the Atlas link stays the primary move (trust rule, SPEC §6).
+  // Rendered outside the atlas <Link> so anchors never nest.
+  const booking = bookingLink(result, getTrip());
+  if (!booking) return card;
+  return (
+    <div className="card-cell">
+      {card}
+      <a className="card-book" href={booking.url} target="_blank" rel="noreferrer">
+        {booking.label} ↗
+        {booking.note && <span className="card-book-note">{booking.note}</span>}
+      </a>
+    </div>
+  );
 }
 
 // Build the in-app atlas link for a result. Prefer the search string the

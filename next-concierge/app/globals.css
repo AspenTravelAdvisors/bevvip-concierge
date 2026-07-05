@@ -399,6 +399,36 @@ main.page {
   color: var(--gold-light);
   transition: 0.15s;
 }
+/* Secondary booking affordance under a hotel card: the VipTravelAi.com portal
+   link + access code note. Quiet by design — the card itself (Atlas) stays
+   the primary move until per-property deep links land (BOOKING-SPEC §6). */
+.card-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card-cell .card {
+  flex: 1;
+}
+.card-book {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
+  color: var(--gold-light);
+  transition: 0.15s;
+}
+.card-book:hover {
+  color: var(--gold);
+  text-decoration: none;
+}
+.card-book-note {
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: var(--sub);
+}
 .atlas-cta {
   display: inline-flex;
   align-items: center;

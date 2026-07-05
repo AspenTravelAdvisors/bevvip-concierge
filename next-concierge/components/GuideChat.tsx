@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChatMessage, GuideFrame, GuideMeta } from "@/lib/types";
+import { clearTrip, setTrip } from "@/lib/trip-state";
 import ResultCards from "./ResultCards";
 
 // The five seed prompts on the empty state. Each leads into a pillar AND
@@ -165,6 +166,12 @@ export default function GuideChat() {
             // unless the session was reset out from under this stream.
             if (typeof window !== "undefined" && genRef.current === gen) {
               window.dispatchEvent(new CustomEvent("bevvip:atlas-plot", { detail: meta }));
+              // Chat-first capture: dates/party the Guide extracted ride back on
+              // the tool meta; persist them into the shared trip state the
+              // booking CTAs (and the advisor brief) read.
+              for (const tool of meta.tools ?? []) {
+                if (tool.trip) setTrip(tool.trip, "guide");
+              }
             }
           }
           if (frame.type === "error") throw new Error(frame.error);
@@ -208,6 +215,7 @@ export default function GuideChat() {
     } catch {
       /* storage unavailable: nothing persisted to clear */
     }
+    clearTrip(); // trip state shares the conversation's lifetime
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("bevvip:atlas-reset"));
     }

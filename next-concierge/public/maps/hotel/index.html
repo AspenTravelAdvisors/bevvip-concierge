@@ -119,6 +119,7 @@
   .ups{list-style:none;padding:0;margin:6px 0 0}
   .ups li{font-size:12.5px;color:var(--ink);padding:7px 0 7px 20px;border-bottom:1px solid rgba(42,51,64,.6);position:relative;line-height:1.35}
   .ups li:before{content:'\2726';position:absolute;left:0;top:7px;color:var(--accent)}
+  .ups li em{margin-right:4px} /* italic overhang eats the space before "Upgrade" */
   .book{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px;border-radius:11px;background:linear-gradient(135deg,#caa44e,#ffe9b0);color:#3a2c0d;font-weight:800;font-size:13.5px;text-decoration:none;letter-spacing:.3px}
   .book:hover{filter:brightness(1.05)}
   .pw{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
@@ -1091,11 +1092,13 @@ async function openDetail(f){
     progEl.textContent=p.program||"—";
   }
   const ups=document.getElementById("d-ups"); ups.innerHTML="";
-  (p.upgrades||[]).forEach(u=>{const li=document.createElement("li");li.innerHTML=formatVipBenefit(u);ups.appendChild(li);});
+  // Skip bare year headers ("For 2026:") — a label in the source data, not a benefit.
+  (p.upgrades||[]).filter(u=>!/^for\s+20\d{2}(\s*&\s*20\d{2})?\s*:?\s*$/i.test(String(u==null?"":u).trim()))
+    .forEach(u=>{const li=document.createElement("li");li.innerHTML=formatVipBenefit(u);ups.appendChild(li);});
   const book=document.getElementById("d-book");
   let url=(p.bookUrl||"").trim(); if(url && !/^https?:/i.test(url)) url="https://"+url;
   if(url){ book.href=url; book.style.display=""; } else book.style.display="none";
-  document.getElementById("d-pw").innerHTML = p.password ? `Password: <b>${p.password}</b>` : "";
+  document.getElementById("d-pw").innerHTML = p.password ? `Access code: <b>${p.password}</b>` : "";
   document.getElementById("panel").classList.add("open");
   // enlarge the selected pin, reset the previously selected one
   const sel=MARKERS.find(m=>m._feat===f);
@@ -1111,8 +1114,13 @@ function formatVipBenefit(raw){
   const text=String(raw==null?"":raw).trim();
   if(!text) return text;
   const stripped=text.replace(/^["']?first priority["']?\s*/i,"");
-  if(/^room upgrade\b/i.test(stripped) || /^upgrade\b/i.test(stripped)){
+  // Only "First Priority" is italic; "Room Upgrade" stays upright. Source lines
+  // start with a bare "Upgrade...", so insert "Room" when it isn't already there.
+  if(/^room\s+upgrades?\b/i.test(stripped)){
     return '<em>First Priority</em> '+escapeHtml(stripped);
+  }
+  if(/^upgrades?\b/i.test(stripped)){
+    return '<em>First Priority</em> Room '+escapeHtml(stripped);
   }
   return escapeHtml(text);
 }

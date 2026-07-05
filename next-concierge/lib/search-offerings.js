@@ -493,9 +493,53 @@ export const SEARCH_OFFERINGS_TOOL = {
         description:
           "Private jet only. True when the traveler asks for Around the World, ATW, circumnavigation, seven-continent, or global private jet journeys.",
       },
+      checkIn: {
+        type: "string",
+        description: "Hotel check-in date, YYYY-MM-DD. Only when the traveler states dates. Never invent.",
+      },
+      checkOut: {
+        type: "string",
+        description: "Hotel check-out date, YYYY-MM-DD. Only when the traveler states dates. Never invent.",
+      },
+      adults: {
+        type: "integer",
+        description: "Adults in the party, when stated.",
+      },
+      childrenAges: {
+        type: "array",
+        items: { type: "integer" },
+        description: "Ages of children in the party, when stated. A bare count with no ages: use age 10 per child and note it.",
+      },
     },
   },
 };
+
+// Dates/party the model extracted (BOOKING-SPEC §3). These do NOT filter
+// results yet — they qualify the shortlist and the advisor brief — but they
+// are echoed back on the tool result as `trip` so the client can persist them
+// into the shared TripState the booking CTAs read. Returns null when nothing
+// usable was captured.
+function tripFromInput(input = {}) {
+  const day = (v) => {
+    const m = String(v || "").trim().match(/^\d{4}-\d{2}-\d{2}$/);
+    return m ? m[0] : "";
+  };
+  const trip = {};
+  const checkIn = day(input.checkIn);
+  const checkOut = day(input.checkOut);
+  if (checkIn) trip.checkIn = checkIn;
+  if (checkOut) trip.checkOut = checkOut;
+  const adults = parseInt(input.adults, 10);
+  if (Number.isFinite(adults) && adults > 0) trip.adults = Math.min(adults, 16);
+  if (Array.isArray(input.childrenAges)) {
+    const ages = input.childrenAges
+      .map((n) => parseInt(n, 10))
+      .filter((n) => Number.isFinite(n) && n >= 0 && n <= 17)
+      .slice(0, 8);
+    if (ages.length) trip.childrenAges = ages;
+  }
+  return Object.keys(trip).length ? trip : null;
+}
 
 function clampLimit(raw, fallback = DEFAULT_RECOMMENDATION_LIMIT) {
   let n = parseInt(raw, 10);
@@ -750,8 +794,11 @@ function hotelQueryForInput(input, regionText = "") {
 function firstPriorityBenefit(raw) {
   const text = String(raw == null ? "" : raw).trim();
   if (!text || /^["']?first priority["']?\b/i.test(text)) return text;
-  if (/^room upgrade\b/i.test(text)) return `"First Priority" ${text}`;
-  if (/^upgrade\b/i.test(text)) return `"First Priority" ${text}`;
+  // The benefit is a "First Priority Room Upgrade"; the source lines start with
+  // a bare "Upgrade...", so name it in full. Data that already says "Room
+  // Upgrade" keeps its wording.
+  if (/^room\s+upgrades?\b/i.test(text)) return `"First Priority" ${text}`;
+  if (/^upgrades?\b/i.test(text)) return `"First Priority" Room ${text}`;
   return text;
 }
 
@@ -1524,8 +1571,16 @@ async function searchWorldCruises(input, fetchImpl) {
   return related.length ? { ...r, related } : r;
 }
 
-// Main entry. `input` is the validated tool input from the model.
+// Main entry. `input` is the validated tool input from the model. Any
+// dates/party the model captured ride back on the result as `trip` so the
+// client can persist them (they do not filter inventory yet).
 export async function searchOfferings(input = {}, opts = {}) {
+  const result = await dispatchSearchOfferings(input, opts);
+  const trip = tripFromInput(input);
+  return trip ? { ...result, trip } : result;
+}
+
+async function dispatchSearchOfferings(input = {}, opts = {}) {
   const fetchImpl = opts.fetchImpl || atlasFetch;
   const type = String(input.type || "any").toLowerCase();
 

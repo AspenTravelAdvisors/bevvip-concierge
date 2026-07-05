@@ -68,13 +68,24 @@ function normalizeQueryText(raw) {
 function firstPriorityBenefit(raw) {
   const text = String(raw == null ? "" : raw).trim();
   if (!text || /^["']?first priority["']?\b/i.test(text)) return text;
-  if (/^room upgrade\b/i.test(text)) return `"First Priority" ${text}`;
-  if (/^upgrade\b/i.test(text)) return `"First Priority" ${text}`;
+  // The benefit is a "First Priority Room Upgrade"; the source lines start with
+  // a bare "Upgrade...", so name it in full. Data that already says "Room
+  // Upgrade" keeps its wording.
+  if (/^room\s+upgrades?\b/i.test(text)) return `"First Priority" ${text}`;
+  if (/^upgrades?\b/i.test(text)) return `"First Priority" Room ${text}`;
   return text;
 }
 
+// Bare year headers the source data carries between benefit lists ("For 2026:",
+// "For 2025 & 2026:") — a label, not a benefit, so it never renders as one.
+const BENEFIT_YEAR_HEADER_RE = /^for\s+20\d{2}(\s*&\s*20\d{2})?\s*:?\s*$/i;
+
 function normalizedBenefits(h) {
-  return Array.isArray(h.vipUpgrades) ? h.vipUpgrades.map(firstPriorityBenefit) : h.vipUpgrades;
+  return Array.isArray(h.vipUpgrades)
+    ? h.vipUpgrades
+        .filter((u) => !BENEFIT_YEAR_HEADER_RE.test(String(u == null ? "" : u).trim()))
+        .map(firstPriorityBenefit)
+    : h.vipUpgrades;
 }
 
 const INTENT_SCORE = {
