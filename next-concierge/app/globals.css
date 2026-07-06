@@ -251,11 +251,23 @@ main.page {
   padding: 8px 10px;
   font-size: 13px;
   font-family: var(--sans);
+  /* Render the native date-picker popup and its calendar icon in dark theme
+     (light text on dark) instead of the browser default black-on-black. */
+  color-scheme: dark;
 }
 .booking-strip input:focus,
 .booking-strip select:focus {
   outline: none;
   border-color: var(--gold-dim);
+}
+/* Make the calendar trigger icon clearly visible on the dark field. */
+.booking-strip input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.55;
+  cursor: pointer;
+}
+.booking-strip input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.9;
 }
 .bs-guests {
   display: flex;

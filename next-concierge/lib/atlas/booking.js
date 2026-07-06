@@ -62,11 +62,39 @@ export function travelWitsUrl({ label, checkIn, checkOut }) {
   return `${TW_BASE}?${toQuery(pairs)}`;
 }
 
-// "City, Country" label for a hotel card's own destination search.
+// US country spellings in the inventory, and full state name -> abbreviation.
+// TravelWits geocodes best on "City, ST, USA" (US) and "City, Country" (rest),
+// so US cards need the state abbreviation and "USA" rather than "United States".
+const US_COUNTRY = new Set([
+  "united states", "united states of america", "usa", "us", "u.s.", "u.s.a.", "america",
+]);
+const US_STATE_ABBR = {
+  "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
+  "colorado": "CO", "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA",
+  "hawaii": "HI", "idaho": "ID", "illinois": "IL", "indiana": "IN", "iowa": "IA",
+  "kansas": "KS", "kentucky": "KY", "louisiana": "LA", "maine": "ME", "maryland": "MD",
+  "massachusetts": "MA", "michigan": "MI", "minnesota": "MN", "mississippi": "MS",
+  "missouri": "MO", "montana": "MT", "nebraska": "NE", "nevada": "NV", "new hampshire": "NH",
+  "new jersey": "NJ", "new mexico": "NM", "new york": "NY", "north carolina": "NC",
+  "north dakota": "ND", "ohio": "OH", "oklahoma": "OK", "oregon": "OR", "pennsylvania": "PA",
+  "rhode island": "RI", "south carolina": "SC", "south dakota": "SD", "tennessee": "TN",
+  "texas": "TX", "utah": "UT", "vermont": "VT", "virginia": "VA", "washington": "WA",
+  "west virginia": "WV", "wisconsin": "WI", "wyoming": "WY",
+  "district of columbia": "DC", "washington dc": "DC", "washington, d.c.": "DC",
+};
+
+// TravelWits search label for a hotel card's own destination:
+//   US  -> "City, ST, USA"  (e.g. "Aspen, CO, USA", "New York, NY, USA")
+//   else -> "City, Country" (e.g. "Venice, Italy")
 function hotelSearchLabel(hotel) {
   if (!hotel) return "";
   const city = String(hotel.city || "").trim();
   const country = String(hotel.country || "").trim();
+  if (US_COUNTRY.has(country.toLowerCase())) {
+    const admin = String(hotel.adminRegion || "").trim();
+    const state = US_STATE_ABBR[admin.toLowerCase()] || admin; // fall back to the full name
+    return [city, state, "USA"].filter(Boolean).join(", ");
+  }
   if (city && country) return `${city}, ${country}`;
   return city || country || String(hotel.region || "").trim() || "";
 }
