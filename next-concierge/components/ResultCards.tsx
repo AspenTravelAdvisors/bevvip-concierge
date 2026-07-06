@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { GuideMeta, OfferingResult, OfferingType } from "@/lib/types";
+import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType } from "@/lib/types";
 import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
@@ -163,14 +163,47 @@ function internalCardLink(result: OfferingResult, type: OfferingType | null): st
 }
 
 // The "Open in the Atlas" CTA target: the lead tool's type, focused on the
-// chart region. Mirrors how the meta frame picks its lead/deepLink.
+// chart region AND carrying every result id in the lead shortlist. The atlas
+// reads `ids` to restrict the map to the shortlist, enlarge those pins, and
+// frame (zoom to fit) all of them — so the CTA opens showing the whole set,
+// not just the region. Individual card links still carry a single id so they
+// open one property. Mirrors how the meta frame picks its lead/deepLink.
 function internalLeadLink(meta: GuideMeta): string | null {
   const tools = [...(meta.tools ?? [])].reverse();
   const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
   const type = normalizeType(String(tool?.type ?? tool?.input?.type ?? ""));
   if (!type) return null;
+  const params = new URLSearchParams();
   const region = meta.chartRegion;
-  return internalAtlasLink(type, region ? `?region=${encodeURIComponent(region)}` : "");
+  if (region) params.set("region", region);
+  const ids = leadShortlistIds(tool);
+  if (ids.length) params.set("ids", ids.join(","));
+  const query = params.toString();
+  return internalAtlasLink(type, query ? `?${query}` : "");
+}
+
+// Collect the ids of the lead tool's results — the shortlist the cards show —
+// preferring the id the per-result deep link already encoded (so the format
+// always matches what the atlas markers key on), falling back to result.id.
+function leadShortlistIds(tool: GuideToolMeta | undefined): string[] {
+  const ids: string[] = [];
+  const seen = new Set<string>();
+  for (const result of tool?.results ?? []) {
+    let id = "";
+    if (typeof result.deepLink === "string" && result.deepLink) {
+      try {
+        id = new URL(result.deepLink, "http://internal.atlas").searchParams.get("ids") ?? "";
+      } catch {
+        /* not a parseable URL — fall back to result.id */
+      }
+    }
+    if (!id && result.id != null) id = String(result.id);
+    id = id.trim();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    ids.push(id);
+  }
+  return ids;
 }
 
 const MONTHS = [
