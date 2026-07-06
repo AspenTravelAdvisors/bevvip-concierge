@@ -115,6 +115,10 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
     label: "Satellite", url: "mapbox://styles/mapbox/standard-satellite",
     fog: { color: "rgb(18,22,30)", "high-color": "rgb(40,52,72)", "horizon-blend": 0.06, "space-color": "rgb(6,8,12)", "star-intensity": 0.3 },
     sw: "#3b5a3a",
+    // Without this, Standard Satellite falls to Mapbox's default `day` preset,
+    // whose bright atmosphere washes the ocean pale after the raster loads.
+    // `dusk` keeps the water deep and in key with the atlas's dark-luxe palette.
+    light: "dusk",
   },
   // Mapbox Standard renders 3D buildings at city zoom; the dusk light preset gives
   // a warm golden-hour cast that stays legible without the brightness of day.
