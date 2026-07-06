@@ -268,6 +268,7 @@
     <a class="bvnav-tab" style="--tab:#dfe5f2" href="/maps/jet/" target="_blank" rel="noopener">Jets</a>
     <a class="bvnav-tab" style="--tab:#e0b84a" href="/maps/yacht/" target="_blank" rel="noopener">Yachts</a>
     <a class="bvnav-tab is-here" aria-current="page" style="--tab:#45d6c2" href="/maps/worldcruise/" target="_blank" rel="noopener">World</a>
+    <a class="bvnav-tab" style="--tab:#e08d5f" href="/maps/train/" target="_blank" rel="noopener">Rails</a>
   </nav>
   <div class="brand">
     <a class="logochip mark" href="https://www.expeditionbucketlist.com" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/57d86bcd46c3c49c625850a1/54c90494-d588-412d-9643-5d5650d856fd/ebl+2026+Gemini.png?content-type=image%2Fpng" alt="Expedition Bucket List"></a>
@@ -1599,7 +1600,8 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
     {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
     {nm:"Private Jet",        slug:"jet",       url:"/maps/jet/",          glyph:"jet"},
     {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"/maps/yacht/",   glyph:"yacht"},
-    {nm:"World Cruises",      slug:"world",     url:"/maps/worldcruise/",               glyph:"world"}
+    {nm:"World Cruises",      slug:"world",     url:"/maps/worldcruise/",               glyph:"world"},
+    {nm:"Rail Journeys",      slug:"train",     url:"/maps/train/",               glyph:"train"}
   ];
   var GLYPHS={
     hotel:'<path d="M3 21h18M5 21V8l7-4 7 4v13M9 12h2M13 12h2M9 16h2M13 16h2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -1607,6 +1609,7 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
     jet:'<path d="M21 12l-9 2-3 5-2-1 1-4-4-1-2 2-1.5-.7L3 12 1.5 9.7 3 9l2 2 4-1-1-4 2-1 3 5 9 2z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/>',
     yacht:'<path d="M5 19h14M6 19l-1-7 8-6 6 6-2 7M12 6V3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     world:'<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M3.5 12h17M12 3.5v17M5.5 7c2 1.6 11 1.6 13 0M5.5 17c2-1.6 11-1.6 13 0" stroke="currentColor" stroke-width="1.1" fill="none"/>',
+    train:'<rect x="6" y="3.5" width="12" height="12.5" rx="2.6" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M6 10h12M9.5 19l-2 2.5M14.5 19l2 2.5M8 19h8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="9.3" cy="13.2" r="1" fill="currentColor"/><circle cx="14.7" cy="13.2" r="1" fill="currentColor"/>',
     filter:'<path d="M4 7h16M7 12h10M10 17h4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>',
     pin:'<path d="M12 22s7-7.6 7-13a7 7 0 1 0-14 0c0 5.4 7 13 7 13z" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6" fill="none"/>',
     card:'<rect x="3" y="5" width="18" height="14" rx="2.4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 16l4.5-4 3 2.6 4-4.6L21 15" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="9.5" r="1.3" fill="currentColor"/>',

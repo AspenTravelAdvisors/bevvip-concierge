@@ -49,6 +49,13 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_WORLD_CRUISE_ATLAS_BASE || "/maps/worldcruise",
     sampleRegions: ["MED", "CARIB", "AUNZ", "EASTASIA"],
   },
+  train: {
+    type: "train",
+    label: "Rail Journeys Atlas",
+    tagline: "The legendary trains and rail journeys, drawn along the tracks",
+    base: process.env.NEXT_PUBLIC_TRAIN_ATLAS_BASE || "/maps/train",
+    sampleRegions: ["BRITAIN", "EUROPE", "CANADA", "EASTASIA"],
+  },
 };
 
 export const ATLAS_TYPES = Object.keys(ATLASES) as OfferingType[];

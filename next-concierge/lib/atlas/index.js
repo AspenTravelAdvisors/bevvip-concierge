@@ -11,8 +11,9 @@ const cruise = require("./cruises-expedition");
 const jet = require("./journeys");
 const yacht = require("./sailings");
 const worldcruise = require("./cruises-world");
+const train = require("./trains");
 
-const BACKENDS = { hotel, cruise, jet, yacht, worldcruise };
+const BACKENDS = { hotel, cruise, jet, yacht, worldcruise, train };
 
 function backendFor(type) {
   const b = BACKENDS[String(type || "").trim()];

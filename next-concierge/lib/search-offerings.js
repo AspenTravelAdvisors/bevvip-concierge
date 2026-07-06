@@ -45,6 +45,10 @@ const OFFERINGS_ENDPOINTS = {
     base: process.env.ATLAS_WORLD_CRUISE_URL || "/maps/worldcruise",
     path: "/api/world-cruises",
   },
+  train: {
+    base: process.env.ATLAS_TRAIN_URL || "/maps/train",
+    path: "/api/rail-journeys",
+  },
 };
 
 // In-process replacement for the old per-atlas HTTP APIs. The Guide still builds
@@ -58,6 +62,7 @@ const ATLAS_PATHS = {
   "/api/jet-journeys": "jet",
   "/api/yacht-sailings": "yacht",
   "/api/world-cruises": "worldcruise",
+  "/api/rail-journeys": "train",
 };
 async function atlasFetch(rawUrl) {
   const u = new URL(String(rawUrl), "http://internal.atlas");
@@ -95,6 +100,7 @@ const EXTENDED_REGION_NATIVE = {
   cruise:      { alaska: false, caribbean: false, "northwest passage": false },
   jet:         { alaska: false, caribbean: false, "northwest passage": false },
   yacht:       { alaska: false, caribbean: false, "northwest passage": false },
+  train:       { alaska: true,  caribbean: false, "northwest passage": false },
 };
 // Marquee keys that are also real countries the atlases filter via country=, so
 // a "country" value naming one must not be rerouted to the region filter.
@@ -420,25 +426,43 @@ function normalizedJetBrand(raw) {
   return "";
 }
 
+// Rail Journeys Atlas brand short names; travelers also name the train itself
+// (the backend matches brand against both the operator and the named train).
+function normalizedTrainBrand(raw) {
+  const v = normalizeBrandKey(raw);
+  if (!v) return "";
+  if (/belmond/.test(v) && /peru/.test(v)) return "Belmond Peruvian Trains";
+  if (/belmond/.test(v)) return "Belmond Trains";
+  if (/rocky mountaineer/.test(v)) return "Rocky Mountaineer";
+  if (/dolce vita/.test(v)) return "La Dolce Vita Orient Express";
+  if (v === "a k" || v === "ak" || /abercrombie/.test(v)) return "Abercrombie & Kent";
+  if (/andbeyond|and beyond/.test(v)) return "andBeyond South Africa";
+  if (/^remote lands?$/.test(v)) return "Remote Lands";
+  if (/canada by design|discover holidays/.test(v)) return "Canada by Design";
+  return "";
+}
+
 // Anthropic tool-use schema (SPEC §6, verbatim shape).
 export const SEARCH_OFFERINGS_TOOL = {
   name: "search_offerings",
   description:
     "Search Aspen Travel Advisors inventory: luxury hotels, Expedition Cruise journeys, " +
-    "private jet journeys, luxury hotel yacht sailings, and world cruises. Use whenever a traveler " +
+    "private jet journeys, luxury hotel yacht sailings, world cruises, and rail journeys. Use whenever a traveler " +
     "names a place, brand, season, or trip type. Type cruise intentionally " +
     "searches both Expedition Cruise journeys and luxury hotel yachts. Type worldcruise " +
     "searches live world cruises and grand voyages (50-250 day sailings with day-by-day " +
     "itineraries), including lines like Regent Seven Seas, Crystal, Oceania, and Cunard. " +
-    "Ordinary (non-world) Luxury Cruises by those lines remain advisor-led outside the live inventory.",
+    "Ordinary (non-world) Luxury Cruises by those lines remain advisor-led outside the live inventory. " +
+    "Type train searches live luxury rail journeys (Venice Simplon-Orient-Express, Royal Scotsman, " +
+    "Rocky Mountaineer, Eastern & Oriental Express, and rail tours worldwide).",
   input_schema: {
     type: "object",
     properties: {
       type: {
         type: "string",
-        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "any"],
+        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "any"],
         description:
-          "Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
+          "Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
       },
       q: {
         type: "string",
@@ -491,7 +515,7 @@ export const SEARCH_OFFERINGS_TOOL = {
       world: {
         type: "boolean",
         description:
-          "Private jet only. True when the traveler asks for Around the World, ATW, circumnavigation, seven-continent, or global private jet journeys.",
+          "For type jet: true when the traveler asks for Around the World, ATW, circumnavigation, seven-continent, or global private jet journeys. For type train: true when the traveler asks for the legendary named trains specifically.",
       },
       checkIn: {
         type: "string",
@@ -1101,6 +1125,7 @@ function companionReason(type, label, brandUsed) {
   if (brandUsed) return `${brandUsed} ashore in ${label}, matching the yacht for nights before or after sailing.`;
   if (type === "cruise") return `Nature-forward lodges in ${label} to pair with the expedition, before or after.`;
   if (type === "jet") return `The highest-rated stays in ${label} to bookend the journey.`;
+  if (type === "train") return `The strongest stays in ${label}, for nights before boarding or after arrival.`;
   if (type === "worldcruise") return `The highest-rated stays in ${label}, for nights before or after embarkation.`;
   return `The strongest stays in ${label}, for nights before or after sailing.`;
 }
@@ -1346,6 +1371,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   let brand = rawBrand;
   if (type === "cruise") brand = normalizedCruiseOperator(rawBrand) || rawBrand;
   else if (type === "jet") brand = normalizedJetBrand(rawBrand) || rawBrand;
+  else if (type === "train") brand = normalizedTrainBrand(rawBrand) || rawBrand;
   else if (type === "worldcruise") brand = normalizedWorldCruiseOperator(rawBrand) || rawBrand;
   const yachtBrand = type === "yacht" ? normalizedYachtBrand(rawBrand) : "";
   let regionKey = normalizeRegionKey(input.region);
@@ -1406,10 +1432,14 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
         p.set("brand", brand);
       }
     }
+    // Legendary named trains ride the same world flag the jet ATW category uses.
+    if (type === "train" && (input.world === true || String(input.world || "").toLowerCase() === "true")) {
+      p.set("world", "true");
+    }
     if (queryText && !dropQ) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
-    else if (year && type === "worldcruise") p.set("year", year);
+    else if (year && (type === "worldcruise" || type === "train")) p.set("year", year);
     // Send intent only on a branded ask; an open search drops it so the page
     // is not sorted down to a single operator (see diversifySuppliers above).
     if (input.intent && !diversifySuppliers) p.set("intent", String(input.intent).trim());
@@ -1465,7 +1495,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     };
   } catch (err) {
     // Endpoint unreachable: tell the Guide so it can route to an advisor.
-    const typeLabel = type === "worldcruise" ? "World Cruise" : type;
+    const typeLabel = type === "worldcruise" ? "World Cruise" : type === "train" ? "Rail Journey" : type;
     return {
       type,
       total: 0,
@@ -1616,6 +1646,12 @@ async function dispatchSearchOfferings(input = {}, opts = {}) {
     const related = await sailingRelatedHotels(r.results, fetchImpl, "jet");
     return related.length ? { ...r, related } : r;
   }
+  if (type === "train") {
+    // Rail journeys bookend with the strongest stays in the origin city.
+    const r = await searchOfferingsByType(type, input, fetchImpl, null, { supplierCap: openSupplierCap });
+    const related = await sailingRelatedHotels(r.results, fetchImpl, "train");
+    return related.length ? { ...r, related } : r;
+  }
   // Unknown type -> treat as hotel search rather than erroring.
   return searchHotels(input, fetchImpl);
 }
@@ -1677,6 +1713,7 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
   const hasHotelIntent = /\b(hotel|hotels|resort|resorts|property|properties|stay|stays)\b/i.test(text);
   const hasCruiseIntent = /\b(cruise|cruises)\b/i.test(text);
   const hasYachtIntent = /\b(yacht|yachts)\b/i.test(text);
+  const hasTrainIntent = /\b(train|trains|rail|railway|railways|orient[\s-]*express|rocky\s+mountaineer|royal\s+scotsman)\b/i.test(text);
   let out = input;
   if (!out.intent) {
     const intent = inferIntentFromText(`${text} ${input.q || ""}`);
@@ -1693,6 +1730,7 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
   if (!hasHotelIntent && (type === "hotel" || type === "any")) {
     if (hasCruiseIntent) return { ...out, type: "cruise" };
     if (hasYachtIntent) return { ...out, type: "yacht" };
+    if (hasTrainIntent) return { ...out, type: "train" };
   }
 
   if (type !== "hotel" && type !== "any") return out;

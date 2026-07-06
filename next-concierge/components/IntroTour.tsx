@@ -69,7 +69,7 @@ const SLIDES: Slide[] = [
     target: "header.site nav",
     badge: "Collections",
     title: "Explore every collection",
-    body: "Jump straight into a full atlas — Hotels, Expeditions, Jets, Yachts or World Cruises. And once you've found contenders, The Guide can hand your shortlist to an Aspen Travel Advisors specialist to take it from here.",
+    body: "Jump straight into a full atlas — Hotels, Expeditions, Jets, Yachts, World Cruises or Rail Journeys. And once you've found contenders, The Guide can hand your shortlist to an Aspen Travel Advisors specialist to take it from here.",
     placement: "auto",
   },
 ];

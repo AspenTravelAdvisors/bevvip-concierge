@@ -37,9 +37,10 @@ const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
 const ROUTES_ENABLED = false;   // set true to activate progressive route layer
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
-// Master atlas overlays: cruise / jet / yacht / world-cruise region pins, each
-// from its own live app data. Colors stay distinguishable on the dark globe.
-type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise";
+// Master atlas overlays: cruise / jet / yacht / world-cruise / rail region
+// pins, each from its own live app data. Colors stay distinguishable on the
+// dark globe.
+type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise" | "train";
 const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; data: string }> = {
   cruise: {
     label: "Expedition Cruises",
@@ -64,6 +65,12 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
     color: "#45d6c2",
     url: ATLASES.worldcruise.base,
     data: `${ATLASES.worldcruise.base}/itinerary.json`,
+  },
+  train: {
+    label: "Rail Journeys",
+    color: "#e08d5f",
+    url: ATLASES.train.base,
+    data: `${ATLASES.train.base}/itinerary.json`,
   },
 };
 
@@ -93,6 +100,7 @@ const LEGEND: { key: string; label: string; color: string }[] = [
   { key: "jet", label: OVERLAYS.jet.label, color: OVERLAYS.jet.color },
   { key: "yacht", label: OVERLAYS.yacht.label, color: OVERLAYS.yacht.color },
   { key: "worldcruise", label: OVERLAYS.worldcruise.label, color: OVERLAYS.worldcruise.color },
+  { key: "train", label: OVERLAYS.train.label, color: OVERLAYS.train.color },
 ];
 
 // Selectable Mapbox basemaps surfaced via the style menu. Each carries its own
@@ -918,6 +926,7 @@ function overlayMeta(key: OverlayKey, count?: number): string {
   if (key === "cruise") return `Expedition Cruises${count ? ` · ${count} sailings` : ""}`;
   if (key === "worldcruise") return `World Cruises${count ? ` · ${count} voyages calling here` : ""}`;
   if (key === "jet") return `Private Jet Journeys${count ? ` · ${count} journeys` : ""}`;
+  if (key === "train") return `Rail Journeys${count ? ` · ${count} departures` : ""}`;
   return `Luxury Hotel Yachts${count ? ` · ${count} charters` : ""}`;
 }
 
@@ -1020,9 +1029,9 @@ async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
         )
         .filter((pts) => pts.length >= 2);
     }
-    if (key === "jet") {
+    if (key === "jet" || key === "train") {
       // itinerary.json → ROUTES: { [slug]: [{n, r, ll:[lat,lng]}] }
-      const r = await fetch(`${ATLASES.jet.base}/itinerary.json`);
+      const r = await fetch(`${ATLASES[key].base}/itinerary.json`);
       if (!r.ok) return [];
       const j: { ROUTES?: Record<string, { ll?: [number, number] }[]> } = await r.json();
       const ROUTES = j.ROUTES || {};

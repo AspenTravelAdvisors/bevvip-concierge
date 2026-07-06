@@ -65,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href="/atlas/jet">Jets</Link>
               <Link className="tab-color" style={{ "--tab": "#e0b84a" } as React.CSSProperties} href="/atlas/yacht">Yachts</Link>
               <Link className="tab-color" style={{ "--tab": "#45d6c2" } as React.CSSProperties} href="/atlas/worldcruise">World</Link>
+              <Link className="tab-color" style={{ "--tab": "#e08d5f" } as React.CSSProperties} href="/atlas/train">Rails</Link>
             </nav>
           </header>
           <main className="page">{children}</main>

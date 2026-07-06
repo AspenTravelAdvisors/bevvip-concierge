@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Private Jet Atlas — Where Each Journey Takes You</title>
+<title>Rail Journeys Atlas — Where the Great Trains Take You</title>
 <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
 <link rel="preconnect" href="https://www.virtuoso.com">
 <link rel="dns-prefetch" href="https://www.virtuoso.com">
 <link rel="stylesheet" href="vendor/leaflet.min.css">
 <style>
   :root{
-    --bg:#0a0d13; --panel:#11151d; --panel2:#171c26; --line:#2a3340;
-    --ink:#f4eee2; --muted:#a9a293; --accent:#dfe5f2; --accent2:#f7f9fc;
-    --accent-rgb:223,229,242; --accent-hi:#ffffff; --accent-mid:#e8edf6; --accent-deep:#9aa6ba; --accent-text:#111722;
+    --bg:#0c0a08; --panel:#151110; --panel2:#1d1714; --line:#3a2e26;
+    --ink:#f4eee2; --muted:#a99e8f; --accent:#e08d5f; --accent2:#f2c9a8;
+    --accent-rgb:224,141,95; --accent-hi:#ffd9b8; --accent-mid:#e8a97f; --accent-deep:#9a5a34; --accent-text:#231008;
     --shadow:0 12px 44px rgba(0,0,0,.5);
     --sans:'Segoe UI',Roboto,-apple-system,system-ui,Helvetica,Arial,sans-serif;
     --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
@@ -20,7 +20,7 @@
   *{box-sizing:border-box}
   html,body{height:100%;margin:0}
   body{font-family:var(--sans);background:var(--bg);color:var(--ink);overflow:hidden}
-  #map{position:absolute;inset:0;background:#0a0d13;z-index:1}
+  #map{position:absolute;inset:0;background:#0c0a08;z-index:1}
 
 
   /* ---------- Title bar ---------- */
@@ -318,14 +318,15 @@
 </style>
 <style id="basecamp-embed">.bvnav{display:none!important}</style>
 <style id="route-anim">
-  /* #1 marching dashes flow along the route; #7 active route breathes with a soft glow */
-  @keyframes routeMarch{ to{ stroke-dashoffset:-80; } }
+  /* sleeper ties march slowly along the rails like a train underway; the rail glows softly */
+  @keyframes routeMarch{ to{ stroke-dashoffset:-76; } }
   @keyframes routeGlow{
-    0%,100%{ filter:drop-shadow(0 0 1px rgba(180,210,255,.5)); }
-    50%{ filter:drop-shadow(0 0 6px rgba(180,210,255,.95)); }
+    0%,100%{ filter:drop-shadow(0 0 1px rgba(255,190,140,.45)); }
+    50%{ filter:drop-shadow(0 0 5px rgba(255,190,140,.85)); }
   }
-  path.rline{ animation:routeMarch 5s linear infinite, routeGlow 5.3s ease-in-out infinite; }
-  @media (prefers-reduced-motion:reduce){ path.rline{ animation:none; } }
+  path.rline{ animation:routeMarch 8s linear infinite; }
+  path.rrail{ animation:routeGlow 5.3s ease-in-out infinite; }
+  @media (prefers-reduced-motion:reduce){ path.rline,path.rrail{ animation:none; } }
 </style>
 </head>
 <body>
@@ -335,7 +336,7 @@
   <div class="box" id="atlasLoad">
     <div class="spinner"></div>
     <h2>Loading the Atlas&hellip;</h2>
-    <p id="loadMsg">Preparing private jet journeys and destination filters.</p>
+    <p id="loadMsg">Preparing rail journeys and destination filters.</p>
     <div class="loadbar" role="progressbar" aria-label="Loading the atlas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="loadBar">
       <div class="loadbar-fill" id="loadFill"></div>
     </div>
@@ -343,10 +344,10 @@
   <div class="box hidden" id="atlasErr">
     <div class="errmark" aria-hidden="true">&#9888;</div>
     <h2>The Atlas is taking a moment</h2>
-    <p>Private jet journeys are not available right now. Please refresh, or reach our concierge and we&rsquo;ll send curated recommendations straight to you.</p>
+    <p>Rail journeys are not available right now. Please refresh, or reach our concierge and we&rsquo;ll send curated recommendations straight to you.</p>
     <p style="margin-top:14px">
       <a class="errbtn" href="#" onclick="location.reload();return false;">Refresh</a>
-      <a class="errbtn ghost" href="mailto:Book@BeVvip.com?subject=Private%20Jet%20Atlas%20help" data-help-open>Contact concierge</a>
+      <a class="errbtn ghost" href="mailto:Book@BeVvip.com?subject=Rail%20Journeys%20Atlas%20help" data-help-open>Contact concierge</a>
     </p>
     <details class="setupNote">
       <summary>What happened</summary>
@@ -387,16 +388,16 @@
     <a class="bvnav-guide" href="/" target="_blank" rel="noopener">The Guide</a>
     <a class="bvnav-tab" style="--tab:#e6d488" href="/maps/hotel/" target="_blank" rel="noopener">Hotels</a>
     <a class="bvnav-tab" style="--tab:#5aa9e6" href="/maps/cruise/" target="_blank" rel="noopener">Expeditions</a>
-    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#dfe5f2" href="/maps/jet/" target="_blank" rel="noopener">Jets</a>
+    <a class="bvnav-tab" style="--tab:#dfe5f2" href="/maps/jet/" target="_blank" rel="noopener">Jets</a>
     <a class="bvnav-tab" style="--tab:#e0b84a" href="/maps/yacht/" target="_blank" rel="noopener">Yachts</a>
     <a class="bvnav-tab" style="--tab:#45d6c2" href="/maps/worldcruise/" target="_blank" rel="noopener">World</a>
-    <a class="bvnav-tab" style="--tab:#e08d5f" href="/maps/train/" target="_blank" rel="noopener">Rails</a>
+    <a class="bvnav-tab is-here" aria-current="page" style="--tab:#e08d5f" href="/maps/train/" target="_blank" rel="noopener">Rails</a>
   </nav>
   <div class="brand">
     <a class="logochip mark" href="https://www.expeditionbucketlist.com" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/v1/57d86bcd46c3c49c625850a1/54c90494-d588-412d-9643-5d5650d856fd/ebl+2026+Gemini.png?format=750w" alt="Expedition Bucket List"></a>
     <div>
-      <h1>Private Jet <span>Atlas</span></h1>
-      <p>Explore every departure by region &middot; or trace the great around-the-world journeys</p>
+      <h1>Rail Journeys <span>Atlas</span></h1>
+      <p>Explore every departure by region &middot; or trace the legendary named trains of the world</p>
     </div>
   </div>
   <a class="partner" href="https://www.aspentraveladvisors.com" target="_blank" rel="noopener">
@@ -413,9 +414,9 @@
   <div class="sheetHandle" id="railHandle" aria-hidden="true"><span></span></div>
   <button type="button" class="railx" id="railClose" aria-label="Close filters">&#10005;</button>
   <div class="worldbtn" id="worldBtn">
-    <div class="globe">&#9992;</div>
+    <div class="globe">&#128642;</div>
     <div>
-      <div class="wt">Around the World</div>
+      <div class="wt">Legendary Trains</div>
       <div class="ws" id="worldCount"></div>
     </div>
   </div>
@@ -434,14 +435,14 @@
     </div>
   </div>
   <div class="railscroll">
-    <button type="button" class="secthead" id="jetHead">Jet experience<span class="chev">&#9662;</span></button>
+    <button type="button" class="secthead" id="opHead">Rail operator<span class="chev">&#9662;</span></button>
     <div class="sectbody ops" id="opList"></div>
     <button type="button" class="secthead collapsed" id="regionHead">Region<span class="chev">&#9662;</span></button>
     <div class="sectbody ops reglist collapsed" id="regionList"><div class="reghint">Tap once to focus a region &middot; again to exclude it</div></div>
   </div>
   <div class="reset" id="reset">&#10005; Clear filter</div>
   <div class="sheetFooter" id="railFooter">
-    <button type="button" class="sheetApply" id="railApply">Show <span id="applyCount">0</span> journeys</button>
+    <button type="button" class="sheetApply" id="railApply">Show <span id="applyCount">0</span> rail journeys</button>
   </div>
 </aside>
 
@@ -478,11 +479,11 @@
   <div class="sheetHandle drawerHandle" id="panelHandle" aria-hidden="true"><span></span></div>
   <div class="hero">
     <button class="close" id="close">&#10005;</button>
-    <div class="klabel" id="pKlabel">Private jet destination</div>
+    <div class="klabel" id="pKlabel">Rail journey destination</div>
     <h3 id="pTitle">Region</h3>
     <div class="sub" id="pSub"></div>
   </div>
-  <div class="cardteaser">&#128071; Click any result for aircraft photos, day-to-day itinerary &amp; more</div>
+  <div class="cardteaser">&#128071; Click any result for train photos, day-by-day itinerary &amp; more</div>
   <div class="list" id="pList"></div>
 </section>
 
@@ -490,9 +491,9 @@
 <script src="vendor/leaflet.min.js"></script>
 <script>
   // ── DATA LOADING ─────────────────────────────────────────────────────────
-  if(window.setAtlasProgress) window.setAtlasProgress(12,'Loading private jet departures...');
+  if(window.setAtlasProgress) window.setAtlasProgress(12,'Loading rail departures...');
   let BRANDS, REGIONS, ROUTES, TRIPS;
-  function loadJetAtlasData(){
+  function loadTrainAtlasData(){
     const url='itinerary.json';
     if(location.protocol!=='file:'){
       return fetch(url).then(r=>{ if(!r.ok) throw new Error('itinerary.json HTTP '+r.status); return r.json(); });
@@ -511,13 +512,13 @@
       xhr.send();
     });
   }
-  const _dataReady = loadJetAtlasData()
+  const _dataReady = loadTrainAtlasData()
     .then(d => {
       BRANDS = d.BRANDS; REGIONS = d.REGIONS; ROUTES = d.ROUTES; TRIPS = d.TRIPS;
     });
 
 _dataReady.then(() => {
-if(window.setAtlasProgress) window.setAtlasProgress(34,'Preparing private jet journeys...');
+if(window.setAtlasProgress) window.setAtlasProgress(34,'Preparing rail journeys...');
 
 /* ===== Jet experience / brand metadata (filter rail order) ===== */
 ;
@@ -539,18 +540,18 @@ if(window.setAtlasProgress) window.setAtlasProgress(34,'Preparing private jet jo
 function dedupeOrder(a){const s=new Set(),o=[];a.forEach(x=>{if(!s.has(x)){s.add(x);o.push(x);}});return o;}
 function tripSlug(s){return s.toLowerCase().replace(/&/g,'and').replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 TRIPS.forEach((t,i)=>{
-  t.guideId = 'jt_'+i;
-  // Routed world trips reference an explicit ROUTES key; every other trip
-  // falls back to its day-by-day city route keyed by the slugged trip name.
+  t.guideId = 'rj_'+t.id;
+  // Every trip references its ROUTES key (the source product id); the curated
+  // g[] from the build is kept for region filtering & marker highlighting.
   const key = (t.route && ROUTES[t.route]) ? t.route
             : (ROUTES[tripSlug(t.n)] ? tripSlug(t.n) : null);
   if(key){
     t.cities = ROUTES[key];
-    // World trips derive their region list from the route; regional trips keep
-    // their curated g[] (used for region filtering & marker highlighting).
-    if(t.route || !t.g) t.g = dedupeOrder(t.cities.map(c=>c.r));
+    if(!t.g || !t.g.length) t.g = dedupeOrder(t.cities.map(c=>c.r));
   }
   if(t.d){ const p=t.d.split('/'); t.mk=p[2]+'-'+String(+p[0]).padStart(2,'0'); }
+  // every future departure month (products often run many dates a year)
+  t.mks = (t.mks&&t.mks.length) ? t.mks : (t.mk?[t.mk]:[]);
 });
 
 /* ===== Date helpers ===== */
@@ -633,18 +634,18 @@ Object.values(byRegion).forEach(arr=>arr.sort((a,b)=>sortKey(a)-sortKey(b)));
 const WORLD_TRIPS = TRIPS.filter(t=>t.world).sort((a,b)=>sortKey(a)-sortKey(b));
 
 /* ===== Map ===== */
-const map=L.map('map',{worldCopyJump:true,minZoom:1,maxZoom:8,zoomControl:false})
-  .setView([24,-10],2.4);
+const map=L.map('map',{worldCopyJump:true,minZoom:1,maxZoom:10,zoomControl:false})
+  .setView([30,4],2.3);
 L.control.zoom({position:'bottomleft'}).addTo(map);
 window.__atlasMap=map;
 /* ── base-map styles + picker (default / dark / satellite, swappable) ────── */
-const DATA_CREDIT='Itineraries: Four Seasons, Aman, TCS, Nat Geo &middot; Departures: Brian Harris / Virtuoso';
+const DATA_CREDIT='Itineraries: Belmond, Orient Express, Rocky Mountaineer &amp; partners &middot; Departures: Brian Harris / Virtuoso &middot; Rail routing &copy; OpenStreetMap contributors';
 const _cr={esri:'Imagery &copy; Esri, Maxar, Earthstar Geographics',carto:'&copy; OpenStreetMap contributors &copy; CARTO'};
 const BASES={
-  voyager:{label:'Voyager',sw:'#cfe0ec',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:8,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},
-  dark:{label:'Dark',sw:'#10141b',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:8,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},
+  voyager:{label:'Voyager',sw:'#cfe0ec',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:10,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},
+  dark:{label:'Dark',sw:'#10141b',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:10,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},
   satellite:{label:'Satellite',sw:'#37503a',make:()=>L.layerGroup([
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:8,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:10,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:8})])}
 };
 const BASE_ORDER=['voyager','dark','satellite'];
@@ -688,7 +689,7 @@ function isPastTrip(t){
   return new Date(+p[2],+p[0]-1,+p[1]) < td;
 }
 function norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
-function words(s){return norm(s).split(/\s+/).filter(w=>w&&!['the','and','or','of','in','to','for','private','jet','jets','journey','journeys','trip','trips','tour','tours','luxury'].includes(w));}
+function words(s){return norm(s).split(/\s+/).filter(w=>w&&!['the','and','or','of','in','to','for','rail','train','trains','journey','journeys','trip','trips','tour','tours','luxury'].includes(w));}
 function cssEsc(s){return window.CSS&&CSS.escape?CSS.escape(s):String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function textMatches(t){
@@ -716,8 +717,8 @@ function tripMatchesLocation(t,location,role){
 function matchesNonLocation(t){
   if(isPastTrip(t)) return false;
   return (!activeBrands.size || activeBrands.has(t.b))
-    && (t.onDemand || !activeMonths.size || (t.mk && activeMonths.has(t.mk)))
-    && (!activeIds.size || activeIds.has(String(t.id)) || activeIds.has(t.guideId) || activeIds.has('jt_'+t.id))
+    && (t.onDemand || !activeMonths.size || (t.mks && t.mks.some(k=>activeMonths.has(k))))
+    && (!activeIds.size || activeIds.has(String(t.id)) || activeIds.has(t.guideId) || activeIds.has('rj_'+t.id))
     && textMatches(t);
 }
 /* matchesNonRegion = every filter except the region filter (used for pin counts,
@@ -736,7 +737,7 @@ function regionPass(t){
 function matchesFilters(t){ return matchesNonRegion(t) && regionPass(t); }
 /* on-demand trips (no fixed departure) always pass the month filter so they
    sit at the bottom of every selected month */
-function monthMatch(t){ return !isPastTrip(t) && (t.onDemand || !activeMonths.size || (t.mk && activeMonths.has(t.mk))); }
+function monthMatch(t){ return !isPastTrip(t) && (t.onDemand || !activeMonths.size || (t.mks && t.mks.some(k=>activeMonths.has(k)))); }
 
 Object.keys(byRegion).forEach(key=>{
   const reg=REGIONS[key]; if(!reg) return;
@@ -751,9 +752,30 @@ Object.keys(byRegion).forEach(key=>{
   const mk=L.marker(reg.coord,{icon,riseOnHover:true}).addTo(map);
   markers[key]={marker:mk,el,trips};
 });
-if(window.setAtlasProgress) window.setAtlasProgress(68,'Placing private jet destinations...');
+if(window.setAtlasProgress) window.setAtlasProgress(68,'Placing rail destinations...');
 
-/* ===== Route drawing (city-to-city flight paths) ===== */
+/* ===== Route drawing (rail-following track paths) =====
+   Geometry is precomputed by scripts/build-train-atlas.mjs against the OSM
+   railway network and lazy-loaded here; legs the rail graph can't reach fall
+   back to road corridors, and over-water connections (ferry/flight) render as
+   a light dashed link rather than fake track. */
+let RAILGEO=null,_railLoad=null;
+function loadRailGeo(){
+  if(RAILGEO) return Promise.resolve(RAILGEO);
+  if(_railLoad) return _railLoad;
+  _railLoad=fetch('data/rail-routes.json').then(r=>r.ok?r.json():null)
+    .then(j=>{ RAILGEO=j; return j; }).catch(()=>null);
+  return _railLoad;
+}
+loadRailGeo(); // start fetching the track geometry alongside the map tiles
+function tripLegGeometry(trip){
+  if(!RAILGEO||!RAILGEO.trips||!RAILGEO.trips[trip.id]) return null;
+  const legs=RAILGEO.trips[trip.id].map(ref=>{
+    const leg=RAILGEO.legs[ref.k]; if(!leg) return null;
+    return {m:leg.m,pts:ref.rev?leg.p.slice().reverse():leg.p};
+  }).filter(Boolean);
+  return legs.length?legs:null;
+}
 const routeLayer=L.layerGroup().addTo(map);
 function clearRoute(){ routeLayer.clearLayers(); Object.values(markers).forEach(o=>o.el.classList.remove('route')); markRoutedCard(null); }
 /* Keep dateline-crossing routes visible when dragging across the world-copy
@@ -822,6 +844,18 @@ function revealRoute(segs){
     (seg.fade||[]).forEach(p=>{ if(!p)return; p.style.opacity='0'; p.style.transition='opacity .5s '+(delay+140)+'ms ease'; requestAnimationFrame(()=>{ p.style.opacity=''; }); });
   });
 }
+function trackSegment(pts,segs){
+  /* railway-map symbology: dark casing, copper rail, sleeper hatching on top */
+  const casing=L.polyline(pts,{color:'#140b06',weight:7,opacity:.5,lineCap:'round',className:'rbase'}).addTo(routeLayer);
+  const rail=L.polyline(pts,{color:'#e08d5f',weight:3.4,opacity:.98,lineCap:'butt',className:'rrail'}).addTo(routeLayer);
+  const ties=L.polyline(pts,{color:'#241007',weight:3.4,opacity:.92,lineCap:'butt',dashArray:'2.5 7',className:'rline'}).addTo(routeLayer);
+  segs.push({base:casing._path,fade:[rail._path,ties._path]});
+}
+function connSegment(pts,segs){
+  /* non-rail connection (ferry / short flight / transfer) — honest dashed link */
+  const line=L.polyline(pts,{color:'#f2d9c4',weight:2,opacity:.6,lineCap:'round',dashArray:'2 9',className:'rconn'}).addTo(routeLayer);
+  segs.push({base:null,fade:[line._path]});
+}
 function drawRoute(trip,fit){
   clearRoute();
   const stops = trip.cities
@@ -829,11 +863,13 @@ function drawRoute(trip,fit){
     : trip.g.map(k=>({ll:REGIONS[k].coord,label:REGIONS[k].name}));
   const lls=unroll(stops.map(s=>s.ll));
   const segs=[];
-  for(let i=0;i<lls.length-1;i++){
-    const pts=arcPts(lls[i],lls[i+1]);
-    const base=L.polyline(pts,{color:'#111722',weight:6,opacity:.28,lineCap:'round',className:'rbase'}).addTo(routeLayer);
-    const line=L.polyline(pts,{color:'#f7f9fc',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7',className:'rline'}).addTo(routeLayer);
-    segs.push({base:base._path,fade:[line._path]});
+  const legs=tripLegGeometry(trip);
+  if(legs){
+    legs.forEach(leg=>{ const pts=unroll(leg.pts); leg.m==='arc'?connSegment(pts,segs):trackSegment(pts,segs); });
+  }else{
+    // geometry not loaded yet (or missing): draw gentle arcs now, upgrade when ready
+    for(let i=0;i<lls.length-1;i++) trackSegment(arcPts(lls[i],lls[i+1]),segs);
+    if(_railLoad&&!RAILGEO) loadRailGeo().then(()=>{ if(pinnedTrip===trip&&tripLegGeometry(trip)) drawRoute(trip,false); });
   }
   revealRoute(segs);
   lls.forEach((c,i)=>{
@@ -850,7 +886,7 @@ function drawRoute(trip,fit){
     const small=window.matchMedia('(max-width:640px)').matches;
     const panelOpen=document.getElementById('panel').classList.contains('open');
     const padR=(!small&&panelOpen)?420:70; // keep tour clear of the right-hand panel
-    map.fitBounds(L.latLngBounds(lls),{paddingTopLeft:[70,90],paddingBottomRight:[padR,70],maxZoom:5,animate:true,duration:.8});
+    map.fitBounds(L.latLngBounds(lls),{paddingTopLeft:[70,90],paddingBottomRight:[padR,70],maxZoom:7,animate:true,duration:.8});
   }
 }
 
@@ -868,7 +904,7 @@ function refreshView(){
 }
 function buildDateGrid(){
   const grid=document.getElementById('dateGrid');
-  const months=Array.from(new Set(TRIPS.filter(t=>t.mk).map(t=>t.mk))).sort();
+  const months=Array.from(new Set(TRIPS.flatMap(t=>t.mks||[]))).sort();
   const years=Array.from(new Set(months.map(k=>k.slice(0,4)))).sort();
   grid.innerHTML='';
   years.forEach(y=>{
@@ -973,10 +1009,10 @@ function openLocationResults(name){
   applyFilter();
   document.getElementById('worldBtn').classList.remove('active');
   const trips=allMatchingTrips();
-  document.getElementById('pKlabel').textContent='Private jet location';
+  document.getElementById('pKlabel').textContent='Rail journey location';
   document.getElementById('pTitle').textContent=name;
   const label=locationRoleLabel[activeLocationRole]||'journey visiting';
-  document.getElementById('pSub').textContent=trips.length+' private jet journey'+(trips.length!==1?'s':'')+' '+label.replace('journey ','')+' this location · each card includes its day-by-day route';
+  document.getElementById('pSub').textContent=trips.length+' rail journey'+(trips.length!==1?'s':'')+' '+label.replace('journey ','')+' this location · each card includes its day-by-day route';
   const list=document.getElementById('pList'); list.innerHTML='';
   trips.forEach(t=>list.appendChild(makeCard(t)));
   document.getElementById('panel').classList.add('open');
@@ -1076,7 +1112,7 @@ function toggleRegionFilter(key,row){
   document.getElementById('reset').classList.toggle('show', !!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length||!!activeLocation);
   refreshView();
 }
-[['jetHead','opList'],['regionHead','regionList']].forEach(pair=>{
+[['opHead','opList'],['regionHead','regionList']].forEach(pair=>{
   const head=document.getElementById(pair[0]), body=document.getElementById(pair[1]);
   head.addEventListener('click',()=>{ const c=head.classList.toggle('collapsed'); body.classList.toggle('collapsed',c); });
 });
@@ -1118,7 +1154,7 @@ function askGuideBtn(ctx,link){
   b.innerHTML='&#10022; Ask The Guide';
   const full=ctx+(link?(' (Virtuoso listing: '+link+')'):'');
   function go(e){ e.preventDefault();e.stopPropagation();
-    (window.top||window).location.href=GUIDE_URL+'?ask='+encodeURIComponent(full)+'&src=jet'; }
+    (window.top||window).location.href=GUIDE_URL+'?ask='+encodeURIComponent(full)+'&src=train'; }
   b.addEventListener('click',go);
   b.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')go(e); });
   return b;
@@ -1132,12 +1168,13 @@ function makeCard(t){
   const meta=document.createElement('div');meta.className='meta';
   const path = t.cities ? t.cities.map(c=>c.n).join(' → ') : (t.g||[]).map(k=>REGIONS[k].ab).join(' · ');
   const n = t.cities ? t.cities.length : (t.g||[]).length;
-  const duration = t.d ? `${t.days||t.itin&&t.itin.length||''} days` : `${n} stop route`;
-  const label = t.world ? 'Around the World' : ((BRANDS[t.b]&&BRANDS[t.b].short)||'Private Jet');
-  const tail = `<div class="go">✈ ${label} &middot; ${duration}${n?` &middot; ${n} stops`:''} ↗</div>`+
+  const duration = t.days ? `${t.days} days` : `${n} stop route`;
+  const label = t.train || ((BRANDS[t.b]&&BRANDS[t.b].short)||'Rail Journey');
+  const tail = `<div class="go">🚆 ${label} &middot; ${duration}${n?` &middot; ${n} stops`:''} ↗</div>`+
     (path?`<div class="rt">${path}</div>`:'')+
     itineraryHTML(t);
-  const dateLine = t.d ? `<div class="dt">${fmtRange(t)}</div>` : (t.onDemand ? `<div class="dt">On Demand</div>` : `<div class="dt">By request</div>`);
+  const dateLine = t.d ? `<div class="dt">${fmtRange(t)}${t.depCount>1?` &middot; ${t.depCount} departures`:''}</div>`
+    : (t.win ? `<div class="dt">${t.win} &middot; dates on request</div>` : `<div class="dt">On Demand</div>`);
   meta.innerHTML=`<div class="nm">${t.n}</div>${dateLine}${tail}`;
   const ar=document.createElement('div');ar.className='arrow';ar.textContent='›';
   a.appendChild(lg);a.appendChild(meta);a.appendChild(ar);
@@ -1167,7 +1204,7 @@ function makeCard(t){
     meta.appendChild(trace);
   }
   meta.appendChild(askGuideBtn(
-    'I\'m looking at the "'+t.n+'" private jet journey on the BeVvip Private Jet Atlas — '
+    'I\'m looking at the "'+t.n+'" rail journey on the BeVvip Rail Journeys Atlas — '
     +label+(duration?', '+duration:'')+(path?'. Route: '+path:'')
     +'. Can you tell me more about it and help me plan it through BeVvip?', t.u));
   return a;
@@ -1185,7 +1222,7 @@ function findBrand(raw){
 }
 function findRegionKey(raw){
   const v=norm(raw);if(!v)return null;
-  const aliases={asia:'EASTASIA',japan:'EASTASIA',polynesia:'POLY',tahiti:'POLY',antarctica:'ANTARCTICA',arctic:'AURORA',northernlights:'AURORA',northernlight:'AURORA',africa:'AFRICA',namibia:'AFRICA',europe:'EUROPE',mediterranean:'EUROPE',amazon:'SAM',patagonia:'SAM',southamerica:'SAM'};
+  const aliases={scotland:'BRITAIN',britain:'BRITAIN',uk:'BRITAIN',unitedkingdom:'BRITAIN',england:'BRITAIN',wales:'BRITAIN',ireland:'BRITAIN',europe:'EUROPE',alps:'EUROPE',switzerland:'EUROPE',italy:'EUROPE',norway:'NORDICS',scandinavia:'NORDICS',nordics:'NORDICS',japan:'EASTASIA',korea:'EASTASIA',asia:'EASTASIA',seasia:'SEASIA',malaysia:'SEASIA',singapore:'SEASIA',indonesia:'SEASIA',india:'INDIA',africa:'AFRICA',southafrica:'AFRICA',peru:'SAM',andes:'SAM',southamerica:'SAM',canada:'CANADA',rockies:'CANADA',canadianrockies:'CANADA',us:'AMERICAS',usa:'AMERICAS',unitedstates:'AMERICAS',america:'AMERICAS',alaska:'AMERICAS',americanwest:'AMERICAS',australia:'ANZ',newzealand:'ANZ'};
   if(aliases[v]&&REGIONS[aliases[v]])return aliases[v];
   return Object.keys(REGIONS).find(k=>norm(k)===v||norm(REGIONS[k]&&REGIONS[k].name)===v||norm(REGIONS[k]&&REGIONS[k].ab)===v)
     ||Object.keys(REGIONS).find(k=>norm(k).includes(v)||norm(REGIONS[k]&&REGIONS[k].name).includes(v)||v.includes(norm(REGIONS[k]&&REGIONS[k].name)));
@@ -1206,20 +1243,17 @@ function fitTrips(list){
 const panel=document.getElementById('panel');
 /* Short J. Peterman–style evocations, one per region (shown under the title) */
 const REGION_BLURB={
-  EUROPE:"Lemon groves above a cobalt sea, espresso at dawn in a square older than memory. The Mediterranean was never meant to be discovered — only revisited.",
-  EASTASIA:"Mist on a temple roof, the hush of a tea house, neon rivers that refuse to sleep. East Asia keeps the ancient and the electric in a balance that unsettles and enchants.",
-  SEASIA:"Warm rain on old stone, longtail boats threading the limestone islands, a market awake long before you are. Southeast Asia is the tropics with a thousand years of grace.",
-  INDIA:"Marble that blushes pink at first light, spice you can taste on the air, a palace at the end of every dusty road. India overwhelms you — then it spoils you for everywhere else.",
-  SILK:"Blue-tiled domes rising straight out of the desert, the ghosts of caravans, melons sweeter than any you've known. The Silk Road still deals in wonder.",
-  MIDEAST:"Dunes the color of beaten gold, frankincense on the evening air, cities that gleam where there was only sand. Arabia rewards the traveler who arrives expecting nothing.",
-  AFRICA:"Dust rising gold behind the herd, a sky with no edges, a silence broken only by lions at dusk. Africa doesn't show you the wild — it reminds you that you are part of it.",
-  POLY:"Water in colors that have no proper names, an overwater bungalow, a horizon that belongs to you alone. The South Pacific is what the rest of the world is quietly dreaming about.",
-  ANZ:"Red desert and rainforest, glaciers and vineyards, a coastline that runs on past all reason. Australia and New Zealand are the ends of the earth — and worth every mile.",
-  SAM:"Andean peaks above the cloud line, a lost city in the green, a tango drifting through an open door. South America is passion, at altitude.",
-  AMERICAS:"Canyon walls lit like embers at sundown, pyramids swallowed by jungle, a continent of improbable variety. North and Central America still keep a few good secrets.",
-  CANADA:"Pine and granite and water without end, the crack of a calving glacier, a bear at the very edge of the ice. Canada's Far North is wilderness in its original language.",
-  AURORA:"Green fire across a black sky, steam rising straight from the ground, a silence you can feel on your skin. The Arctic is the planet at its most honest.",
-  ANTARCTICA:"Ice the size of nations, a stillness older than history, penguins that have never once feared a soul. Antarctica is the last place on earth that owes you nothing."
+  BRITAIN:"Steam over a Highland viaduct, whisky in a paneled observation car, castles sliding past the window at teatime. Britain invented the railway — and never stopped doing it beautifully.",
+  EUROPE:"Art-deco carriages gliding out of Paris at dusk, the Alps framed in a picture window, a grand terminus at the end of every line. Europe by rail is the golden age, still running on time.",
+  NORDICS:"Fjord water black and bottomless beside the track, birch forests running to the horizon, light that refuses to end in June and barely arrives in January. The North is best read from a train window.",
+  EASTASIA:"A bullet train sliding past Fuji at three hundred kilometres an hour, a bento box arranged like a jewel case, temples at the end of the platform. Japan and Korea run the most civilized railways on earth.",
+  SEASIA:"Teak and brass rolling through rubber plantations, paddies flooded gold at sunset, the scent of lemongrass in the dining car. Southeast Asia by rail is the tropics at nineteenth-century pace.",
+  INDIA:"Palaces on wheels, chai passed through the window at dawn, a subcontinent unspooling past the carriage door. India's great trains are journeys inside a journey.",
+  AFRICA:"Champagne on an open-air balcony car, the veld rolling past in amber light, elephants pausing to watch the train go by. Southern Africa's rails run straight through the sublime.",
+  SAM:"Switchbacks climbing above the cloud line, altiplano light on white peaks, a lost city waiting at the last station. The Andes by rail is the world's most vertical grand tour.",
+  AMERICAS:"Canyon walls close enough to touch, trestles over rivers with no road in sight, the American West framed in a dome car. Some country can only be seen from the rails.",
+  CANADA:"Glacier-fed lakes the color of turquoise, the Rockies filling every window, two thousand miles of wilderness between one coast and the other. Canada was stitched together by this railway.",
+  ANZ:"Red desert and rainforest, glaciers and vineyards, a coastline that runs on past all reason. Australia and New Zealand are the ends of the earth — and worth every mile."
 };
 function revealPanel(){
   document.body.classList.remove('panel-collapsed');
@@ -1239,7 +1273,7 @@ function openSearchResults(title){
   const trips=allMatchingTrips();
   document.getElementById('pKlabel').textContent='Guide shortlist';
   document.getElementById('pTitle').textContent=title||'Search results';
-  document.getElementById('pSub').textContent=trips.length+' private jet journey'+(trips.length!==1?'s':'')+' matched this Guide shortlist · each card includes day-by-day stops, route tracing, itinerary & pricing';
+  document.getElementById('pSub').textContent=trips.length+' rail journey'+(trips.length!==1?'s':'')+' matched this Guide shortlist · each card includes day-by-day stops, route tracing, itinerary & pricing';
   const list=document.getElementById('pList');
   list.innerHTML='';
   trips.forEach(t=>list.appendChild(makeCard(t)));
@@ -1254,9 +1288,9 @@ function openRegion(key){
   document.getElementById('worldBtn').classList.remove('active');
   const reg=REGIONS[key];
   const trips=sortTrips(byRegion[key].filter(matchesFilters));
-  document.getElementById('pKlabel').textContent='Private jet destination';
+  document.getElementById('pKlabel').textContent='Rail journey destination';
   document.getElementById('pTitle').textContent=reg.name;
-  document.getElementById('pSub').textContent = REGION_BLURB[key] || (trips.length+' private jet journey'+(trips.length!==1?'s':'')+' reach here.');
+  document.getElementById('pSub').textContent = REGION_BLURB[key] || (trips.length+' rail journey'+(trips.length!==1?'s':'')+' reach here.');
   const list=document.getElementById('pList');
   list.innerHTML='';
   trips.forEach(t=>list.appendChild(makeCard(t)));
@@ -1268,15 +1302,15 @@ function openRegion(key){
   }
 }
 
-/* ===== Around-the-world panel ===== */
+/* ===== Legendary named trains panel ===== */
 function openWorld(){
   activeView='__world__'; locationView=null; locationMarkerLayer.clearLayers(); pinnedTrip=null; routeLocked=false; clearRoute();
   document.body.classList.remove('tracing');
   document.getElementById('worldBtn').classList.add('active');
   const trips=sortTrips(WORLD_TRIPS.filter(matchesFilters));
-  document.getElementById('pKlabel').textContent='Global jet journeys';
-  document.getElementById('pTitle').textContent='Around the World';
-  document.getElementById('pSub').textContent=trips.length+' circumnavigation'+(trips.length!==1?'s':'')+' · hover a journey to trace its city-to-city flight path, with day-by-day stops shown on every card';
+  document.getElementById('pKlabel').textContent='The great named trains';
+  document.getElementById('pTitle').textContent='Legendary Trains';
+  document.getElementById('pSub').textContent=trips.length+' departure'+(trips.length!==1?'s':'')+' aboard the world\u2019s legendary named trains · hover a journey to trace its route along the rails, with day-by-day stops on every card';
   const list=document.getElementById('pList');
   list.innerHTML='';
   trips.forEach(t=>list.appendChild(makeCard(t)));
@@ -1286,7 +1320,7 @@ function openWorld(){
 document.getElementById('worldBtn').addEventListener('click',()=>{
   if(activeView==='__world__'){ closePanel(); } else { openWorld(); }
 });
-document.getElementById('worldCount').textContent = WORLD_TRIPS.length+' global journeys';
+document.getElementById('worldCount').textContent = WORLD_TRIPS.length+' legendary departures';
 
 /* ===== Close handling ===== */
 function closePanel(opts){
@@ -1375,11 +1409,11 @@ function applyDeepLink(){
   else if(activeIds.size||activeBrands.size||activeMonths.size||activeRegions.size||excludedRegions.size||activeSearchTerms.length)openSearchResults(activeIds.size?'Guide shortlist':'Filtered journeys');
 }
 applyDeepLink();
-if(window.setAtlasProgress) window.setAtlasProgress(100,'Welcome to the Private Jet Atlas');
+if(window.setAtlasProgress) window.setAtlasProgress(100,'Welcome to the Rail Journeys Atlas');
 setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
 }).catch(function(err){
-  console.error('Private Jet Atlas: data failed to load',err);
-  if(window.showAtlasError) window.showAtlasError('Private jet journeys could not be loaded.');
+  console.error('Rail Journeys Atlas: data failed to load',err);
+  if(window.showAtlasError) window.showAtlasError('Rail journeys could not be loaded.');
 });
 </script>
 
@@ -1555,18 +1589,18 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
   <div class="helpmodal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
     <button class="helpclose" id="helpClose" type="button" aria-label="Close">&#10005;</button>
     <div class="helpkicker">Need help?</div>
-    <h3 id="helpTitle">Need help choosing your expedition?</h3>
+    <h3 id="helpTitle">Need help choosing your rail journey?</h3>
     <p class="helpqual">From preferred-partner perks to seamless pre- and post-journey extensions, we're here to help chart the course. Send us a note and we'll be in touch.</p>
     <form id="helpForm" class="helpform">
       <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
       <input type="email" name="email" placeholder="Your email" autocomplete="email" required>
       <textarea name="message" placeholder="How can we help?" rows="4" required></textarea>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
-      <input type="hidden" name="_subject" value="Need Help — Private Jet Atlas">
+      <input type="hidden" name="_subject" value="Need Help — Rail Journeys Atlas">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
       <button type="submit" class="helpsubmit">Send message</button>
-      <div class="helpfallback">or email us directly at <a href="mailto:Book@BeVvip.com?subject=Need%20Help%20%E2%80%94%20Private%20Jet%20Atlas">Book@BeVvip.com</a></div>
+      <div class="helpfallback">or email us directly at <a href="mailto:Book@BeVvip.com?subject=Need%20Help%20%E2%80%94%20Rail%20Journeys%20Atlas">Book@BeVvip.com</a></div>
       <div class="helpstatus" id="helpStatus" role="status"></div>
     </form>
   </div>
@@ -1889,7 +1923,7 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
 <script>
 (function(){
   "use strict";
-  var INTRO = {"key": "bvi_intro_jet_v1", "here": "jet", "welcome": {"eyebrow": "Welcome aboard", "title": "Around the world, by private jet.", "sub": "Trace the great private-jet journeys across the globe — each route mapped where it actually flies, stop by stop."}, "features": [{"icon": "filter", "t": "Filter by location", "d": "Open the rail to narrow the map by location, date, experience or region."}, {"icon": "pin", "t": "Tap a stop", "d": "Each pin marks a stop on a route. Every itinerary can be privatized and customized."}, {"icon": "card", "t": "See photos & day-by-day", "d": "Open any card to follow a deep link with photos, the day-by-day itinerary and full journey details."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any journey to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
+  var INTRO = {"key": "bvi_intro_train_v1", "here": "train", "welcome": {"eyebrow": "Welcome aboard", "title": "The world's great journeys, by rail.", "sub": "Trace the legendary trains across the globe — every route drawn along the tracks it actually travels, stop by stop."}, "features": [{"icon": "filter", "t": "Filter by location", "d": "Open the rail to narrow the map by location, date, operator or region."}, {"icon": "pin", "t": "Tap a stop", "d": "Each pin marks a destination the rails reach. Every itinerary can be privatized and customized."}, {"icon": "card", "t": "See photos & day-by-day", "d": "Open any card to follow a deep link with photos, the day-by-day itinerary and full journey details."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any journey to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
   var FAM=[
     {nm:"VIP Hotels",         slug:"hotel",     url:"/maps/hotel/",          glyph:"hotel"},
     {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
