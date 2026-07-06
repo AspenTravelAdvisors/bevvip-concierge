@@ -320,7 +320,8 @@ export default function GuideChat() {
             <p>
               A region, a season, a hotel, or simply the kind of journey you&rsquo;re craving.
               I&rsquo;ll help frame the trip, surface the right possibilities, and guide the first
-              elegant move.
+              elegant move. And when the journey calls for a steadier hand &mdash; the kind with
+              a passport worn soft at the corners &mdash; a human advisor waits in the wings.
             </p>
             <BookingStrip onSearch={send} initial={trip} />
             <div className="chips-or">or explore</div>

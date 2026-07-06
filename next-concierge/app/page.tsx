@@ -15,7 +15,7 @@ export default function Home() {
         <>
           <div className="home-atlas-head">
             <h2>Living Atlas</h2>
-            <p>Approved hotels, expedition cruises, jets and luxury hotel yachts — mapped worldwide.</p>
+            <p>2,500 hotels where the VIP upgrade is already arranged. Expedition cruises. Private jets. Luxury hotel yachts. The entire world, mapped — spin it, zoom in, click. You were going anyway.</p>
           </div>
           <AtlasShell type="hotel" region={null} externalLink={internalAtlasLink("hotel")} scope="all" />
         </>

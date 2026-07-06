@@ -260,14 +260,15 @@ main.page {
   outline: none;
   border-color: var(--gold-dim);
 }
-/* Make the calendar trigger icon clearly visible on the dark field. */
+/* Make the calendar trigger icon clearly visible on the dark field.
+   color-scheme: dark above already renders the icon white — inverting it
+   here flipped it back to black-on-black, so no filter. */
 .booking-strip input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.55;
+  opacity: 0.8;
   cursor: pointer;
 }
 .booking-strip input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 0.9;
+  opacity: 1;
 }
 .bs-guests {
   display: flex;
