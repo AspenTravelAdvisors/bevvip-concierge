@@ -501,7 +501,11 @@ function startIdleSpin(){
   idleSpinFrame=requestAnimationFrame(tick);
 }
 function bindIdleSpinStop(){
-  const stopIfMapEvent=e=>{ if(eventHitsMap(e)) stopIdleSpin(); };
+  // A direct gesture on the map yields camera control to the traveler: stop the
+  // idle drift AND any open-detail orbit ("rotate mode"). Without stopping the
+  // orbit, flyCameraAround keeps re-setting the camera every frame and overrides
+  // the drag, so the map only became movable once the detail panel was closed.
+  const stopIfMapEvent=e=>{ if(eventHitsMap(e)){ stopIdleSpin(); stopOrbit(); } };
   ["pointerdown","mousedown","touchstart","click","wheel"].forEach(type=>{
     window.addEventListener(type,stopIfMapEvent,{capture:true,passive:true});
   });
@@ -824,7 +828,10 @@ function flyToFeatures(feats,opts){
 function fitToResults(){
   const shown=FEATURES.filter(matches);
   if(!shown.length || shown.length===FEATURES.length) return; // keep default world view
-  flyToFeatures(shown);
+  // A single property has zero span, so flyToFeatures bottoms out at its default
+  // minRange (9km up — too distant to read the setting). Come in close with some
+  // tilt instead, just shy of the detail-open cinematic (range 2600 / tilt 67).
+  flyToFeatures(shown, shown.length===1?{minRange:3400,tilt:60}:undefined);
 }
 function highlightDeepLinkIds(){
   if(!state.ids.size) return;

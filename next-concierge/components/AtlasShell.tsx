@@ -121,6 +121,23 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
   dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", fog: DUSK_FOG, sw: "#caa46a", light: "dusk" },
 };
 
+// The Guide's chat is persisted per session, but a route change (opening a
+// full atlas, then Back) re-mounts the Living Atlas and would drop the framed
+// subset. We stash the last plotted meta here so boot can replay it — the map
+// re-opens on the same results the chat still shows, instead of the idle globe.
+// Cleared on "start over" (resetView), in lockstep with the cleared chat.
+const PLOT_STORAGE_KEY = "bevvip:atlas:last-plot";
+function readStoredPlot(): GuideMeta | null {
+  try {
+    const raw = sessionStorage.getItem(PLOT_STORAGE_KEY);
+    if (!raw) return null;
+    const meta = JSON.parse(raw) as GuideMeta;
+    return meta && Array.isArray(meta.tools) ? meta : null;
+  } catch {
+    return null; // storage unavailable or corrupt — fall back to the globe
+  }
+}
+
 // Imperative handle the control buttons call into; the map lifecycle effect
 // fills it so React state (style key, projection, fullscreen) drives Mapbox.
 interface AtlasApi {
@@ -488,6 +505,9 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           featuredFC = { type: "FeatureCollection", features };
           if (!featuredFC.features.length) return; // nothing locatable to plot
           subsetActive = true;
+          // Remember this framing so a re-mount (Back from a full atlas) can
+          // replay it instead of resetting to the idle globe.
+          try { sessionStorage.setItem(PLOT_STORAGE_KEY, JSON.stringify(meta)); } catch { /* storage optional */ }
           stopSpin();
           const leadDeep = tools.find((t) => t.deepLink)?.deepLink || meta.deepLink || undefined;
           setBadge({ n: features.length, total, deepLink: toInternalAtlasHref(leadDeep) ?? leadDeep });
@@ -575,9 +595,16 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (cancelled) return;
           // Honor a ?region= deep link: focus that region instead of spinning.
           const focus = region ? regionCenter(region, regionsGeo, regionLookupKey) : null;
+          // Restore the last framed subset on the home Living Atlas after a
+          // re-mount (Back from a full atlas), so it re-opens on the results the
+          // persisted chat still shows rather than the resting globe. A ?region=
+          // deep link still wins — that's an explicit destination request.
+          const restored = !focus && allInventory ? readStoredPlot() : null;
           if (focus) {
             focused = true;
             map.flyTo({ center: [focus[0], focus[1]], zoom: focus[2], speed: 0.8 });
+          } else if (restored) {
+            plotResults(restored);
           } else {
             fitGlobe();
             startSpin();
@@ -618,6 +645,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           resetView() {
             subsetActive = false;
             featuredFC = null;
+            try { sessionStorage.removeItem(PLOT_STORAGE_KEY); } catch { /* storage optional */ }
             setBadge(null);
             if (map.getSource("featured")) {
               ["featured-glow", "featured-dot"].forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
