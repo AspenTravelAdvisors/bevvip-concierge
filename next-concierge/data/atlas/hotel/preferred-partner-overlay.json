@@ -36,6 +36,11 @@
       "noWalkPolicy": 1
     },
     "maximumAmenityBoost": 12,
+    "ratingBoosts": {
+      "fiveStar": 14,
+      "fourStar": 5
+    },
+    "ratingBoostRationale": "Forbes/AAA five-star co-leads with a booking-time upgrade as a foremost ranking signal: five-star edges out a bare preferred-eligible relationship, while a preferred partner that also upgrades at booking still outranks a five-star that carries no overlay benefit.",
     "rules": [
       "Do not infer upgradeAtBooking from generic room-upgrade language.",
       "Subject-to-availability benefits remain conditional even when confirmed at booking.",

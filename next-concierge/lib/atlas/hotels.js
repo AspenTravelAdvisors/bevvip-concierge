@@ -12,15 +12,16 @@
 
 const hotels = require("../../data/atlas/hotel/luxury-hotels.json");
 const hotelFit = require("../../data/atlas/hotel/hotel-fit.json");
-const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
+const { preferredScore, preferredTier } = require("./preferred-overlay");
 
 const ci = (s) => String(s == null ? "" : s).toLowerCase().trim();
 const fold = (s) => ci(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 const keyPart = (s) => ci(s).replace(/[^a-z0-9|]+/g, " ").trim();
 const fitKey = (h) => [h.name, h.city, h.country].map(keyPart).join("|");
+// hotelFit still supplies the Forbes/AAA rating and the `q` search haystack /
+// card copy; it no longer drives ranking order (see preferredRank).
 const fitFor = (h) => hotelFit[fitKey(h)] || null;
-const itineraryFitFor = (h) => itineraryFit[h.id] || null;
 const CARIBBEAN_COUNTRIES = new Set([
   "anguilla",
   "antigua and barbuda",
@@ -153,19 +154,16 @@ function ratingPriority(h) {
   return Math.max(ratingLevel(fit.forbesRating), ratingLevel(fit.aaaDiamondRating));
 }
 
-function ratingFirst(a, b) {
-  return ratingPriority(b) - ratingPriority(a);
+// Preferred-partner + star-rating ranking signal. Supersedes the old
+// overallFitScore for ordering: the compressed, low-confidence fit score no
+// longer participates. preferredScore blends the overlay relationship (with a
+// booking-time upgrade weighted highest) and the Forbes/AAA rating so a
+// Peninsula/Shangri-La/Oetker-tier stay and a five-star property both lead.
+function preferredRank(h) {
+  return preferredScore(h, ratingPriority(h));
 }
-
-function overallFit(h) {
-  const fit = fitFor(h) || {};
-  return Number.isFinite(fit.overallFitScore) ? fit.overallFitScore : 0;
-}
-
-function itineraryGuestFit(h, scoreKey) {
-  const row = itineraryFitFor(h);
-  const value = row && row.guestFit && row.guestFit[scoreKey];
-  return Number.isFinite(value) ? value : null;
+function preferredBand(h) {
+  return preferredTier(h, ratingPriority(h));
 }
 
 function destinationIconPriority(h) {
@@ -175,20 +173,6 @@ function destinationIconPriority(h) {
   if (tags.includes("private-island")) return 3;
   if (tags.includes("island")) return 2;
   return 0;
-}
-
-// Intent ranking blends the trip-type match score with the Forbes/AAA rating
-// (+2 per star level, so a 5-star gets +10). Most of the inventory is unrated,
-// and match scores carry ~25 points of real signal, so a clearly better-fit
-// property can outrank a mismatched rated one while ratings still break the
-// broad middle band.
-function intentScore(h, scoreKey) {
-  const itineraryScore = itineraryGuestFit(h, scoreKey);
-  if (itineraryScore != null) return itineraryScore + ratingPriority(h) * 2;
-
-  const fit = fitFor(h) || {};
-  const match = (fit.matchScores && fit.matchScores[scoreKey]) || 0;
-  return match + ratingPriority(h) * 2;
 }
 
 // Connector words dropped from free-text `q` so phrases like "Aman in Japan"
@@ -286,15 +270,22 @@ function filterHotels(params = {}) {
       allowAvoid: ids != null && String(ids).trim() !== "",
       attachFit: false,
     });
-    list = ranked.sort((a, b) => coreFirst(a, b));
+    // Preferred-partner status and five-star rating are foremost even under an
+    // intent: lead with the preferred/rating band, then let the intent fit
+    // (rankItems' order, captured here) decide within each band.
+    const intentOrder = new Map(ranked.map((h, i) => [h, i]));
+    list = ranked.sort((a, b) =>
+      coreFirst(a, b) ||
+      preferredBand(b) - preferredBand(a) ||
+      (intentOrder.get(a) - intentOrder.get(b)));
   } else {
-    // No intent: lead with destination-defining island stays, then
-    // ratings and overall fit for the broad middle band.
+    // No intent: preferred-partner + five-star lead (booking-time-upgrade
+    // brands highest), then destination-defining island stays for the middle
+    // band. The old overallFitScore no longer participates.
     list = [...list].sort((a, b) =>
       coreFirst(a, b) ||
-      destinationIconPriority(b) - destinationIconPriority(a) ||
-      ratingFirst(a, b) ||
-      overallFit(b) - overallFit(a));
+      preferredRank(b) - preferredRank(a) ||
+      destinationIconPriority(b) - destinationIconPriority(a));
   }
   return list;
 }
