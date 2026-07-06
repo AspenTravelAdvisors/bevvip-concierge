@@ -93,7 +93,7 @@ const BRAND_DEFS = [
   [/La Dolce Vita/i, "dolcevita", "La Dolce Vita Orient Express", "orient-express.com", "#7a1e2d"],
   [/Canada by Design/i, "canadabydesign", "Canada by Design", "canadabydesign.com", "#b03c2e"],
   [/^Inside Travel/i, "insidetravel", "Inside Travel (Japan)", "insidetravelgroup.com", "#c0392b"],
-  [/Canyon Spirit/i, "canyonspirit", "Canyon Spirit", "", "#a5652c"],
+  [/Canyon Spirit/i, "canyonspirit", "Canyon Spirit", "canyonspirit.com", "#a5652c"],
   [/Avanti Destinations/i, "avanti", "Avanti Destinations", "avantidestinations.com", "#0f6d75"],
   [/Bucher Travel/i, "bucher", "Bucher Travel — Switzerland", "buchertravel.ch", "#c8102e"],
   [/andBeyond/i, "andbeyond", "andBeyond South Africa", "andbeyond.com", "#4a5d23"],
