@@ -5,9 +5,45 @@
 // inventory result cards and an "Open in Atlas" handoff from the meta frame.
 
 import { useEffect, useRef, useState } from "react";
-import type { ChatMessage, GuideFrame, GuideMeta } from "@/lib/types";
-import { clearTrip, setTrip } from "@/lib/trip-state";
+import type { ChatMessage, GuideFrame, GuideMeta, TripState } from "@/lib/types";
+import { clearTrip, getTrip, onTrip, setTrip } from "@/lib/trip-state";
+import BookingStrip from "./BookingStrip";
 import ResultCards from "./ResultCards";
+
+const MONTHS_SHORT = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+// "Mar 14–21" (same month) or "Mar 14 – Apr 2" for the folded trip chip.
+function formatTripDates(checkIn: string | null, checkOut: string | null): string {
+  const parse = (s: string | null) => {
+    const m = String(s ?? "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? { mo: Number(m[2]) - 1, day: Number(m[3]) } : null;
+  };
+  const a = parse(checkIn);
+  const b = parse(checkOut);
+  if (a && b) {
+    return a.mo === b.mo
+      ? `${MONTHS_SHORT[a.mo]} ${a.day}–${b.day}`
+      : `${MONTHS_SHORT[a.mo]} ${a.day} – ${MONTHS_SHORT[b.mo]} ${b.day}`;
+  }
+  if (a) return `${MONTHS_SHORT[a.mo]} ${a.day}`;
+  return "";
+}
+
+// "Mar 14–21 · 2 adults · 2 kids" — the one-line trip summary on the chip.
+function tripSummary(trip: TripState): string {
+  const parts: string[] = [];
+  const dates = formatTripDates(trip.checkIn, trip.checkOut);
+  if (dates) parts.push(dates);
+  else if (trip.destination) parts.push(trip.destination);
+  parts.push(`${trip.adults} ${trip.adults === 1 ? "adult" : "adults"}`);
+  if (trip.childrenAges.length) {
+    parts.push(`${trip.childrenAges.length} ${trip.childrenAges.length === 1 ? "kid" : "kids"}`);
+  }
+  return parts.join(" · ");
+}
 
 // The five seed prompts on the empty state. Each leads into a pillar AND
 // quietly demonstrates a capability: cross-pillar + region search (a hotel ask
@@ -36,6 +72,10 @@ export default function GuideChat() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  // Shared trip state (dates/party), kept live so the folded summary chip and
+  // the booking CTAs react the moment the strip or the Guide captures dates.
+  const [trip, setLocalTrip] = useState<TripState | null>(null);
+  const [editingTrip, setEditingTrip] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
   // Session "generation": bumped by Start over so an in-flight stream from the
   // previous conversation can't write back into the freshly cleared transcript.
@@ -52,6 +92,13 @@ export default function GuideChat() {
       /* storage unavailable: start fresh */
     }
     setHydrated(true);
+  }, []);
+
+  // Mirror the shared trip store into local state (initial read + subscription)
+  // so the summary chip and card CTAs re-render when where/when/who changes.
+  useEffect(() => {
+    setLocalTrip(getTrip());
+    return onTrip(setLocalTrip);
   }, []);
 
   useEffect(() => {
@@ -216,6 +263,7 @@ export default function GuideChat() {
       /* storage unavailable: nothing persisted to clear */
     }
     clearTrip(); // trip state shares the conversation's lifetime
+    setEditingTrip(false);
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("bevvip:atlas-reset"));
     }
@@ -274,6 +322,8 @@ export default function GuideChat() {
               I&rsquo;ll help frame the trip, surface the right possibilities, and guide the first
               elegant move.
             </p>
+            <BookingStrip onSearch={send} initial={trip} />
+            <div className="chips-or">or explore</div>
             <div className="chips">
               {CHIPS.map((chip) => (
                 <button key={chip} className="chip" onClick={() => send(chip)}>
@@ -294,6 +344,16 @@ export default function GuideChat() {
       <div className="composer">
         {turns.length > 0 && (
           <div className="composer-tools">
+            {trip && (trip.checkIn || trip.destination) && !editingTrip && (
+              <button
+                type="button"
+                className="trip-chip"
+                title="Edit dates and party"
+                onClick={() => setEditingTrip(true)}
+              >
+                {tripSummary(trip)} <span className="trip-edit">✎</span>
+              </button>
+            )}
             <button
               type="button"
               className="restart"
@@ -303,6 +363,17 @@ export default function GuideChat() {
               ↺ Start over
             </button>
           </div>
+        )}
+        {turns.length > 0 && editingTrip && (
+          <BookingStrip
+            compact
+            initial={trip}
+            onCancel={() => setEditingTrip(false)}
+            onSearch={(ask) => {
+              setEditingTrip(false);
+              send(ask);
+            }}
+          />
         )}
         <div className="row">
           <textarea

@@ -1,24 +1,38 @@
 # Booking Spec — strip → Guide handoff & shared trip state
 
-Status: **Phase 1 capture layer shipped** (2026-07-05): `trip-state.ts`, tool
-schema + prompt extraction, meta echo into shared trip state, brief when=/party=
-alignment, `booking.js` in portal mode, and the ResultCards portal CTA ("Check
-VIP rates" + access code, secondary under the card). Still open from Phase 1:
-the BookingStrip component (§2). Phase 2 slots in when the TravelWits API
-integration lands and defines the deep-link URL format.
+Status: **Shipped end-to-end** (2026-07-05 capture; 2026-07-06 strip + deep
+links). Live: `trip-state.ts`, tool schema + prompt extraction, meta echo into
+shared trip state, brief when=/party= alignment, the **BookingStrip** (§2), and
+`booking.js` in **deep mode** (default) building real TravelWits destination
+searches, with a portal fallback when no dates are captured.
+
+**Deep-link discovery (2026-07-06):** TravelWits deep links are NOT per-property.
+They are a **destination + dates** search priced at a fixed set of preferred VIP
+rate codes. The URL carries: `checkInDate` / `checkOutDate`, the ten
+`rateCodes[n]` with `exactMatchRateCodesOnly=true`, `selectedCurrency=USD`,
+`searchRadiuses[0]=50`, `searchMode=2`, and a search area — `sa[value]` (a
+Google Place id) + `sa[label]` (human text). No occupancy params exist in the
+URL (guests are set on the results page), so the strip still *captures* party
+for the shortlist/brief but does not encode it in the link. Reference:
+`aspentraveladvisors.travelwits.com/?...&sa[value]=ChIJOwg_06VPwokRYv534QaPC8g&sa[label]=New%20York%2C%20NY%2C%20USA`.
+Consequence: a card's "Book VIP rate" searches the hotel's own city at VIP rates
+for the dates (the property appears in results); we can't target one property.
+`sa[value]` is included when the label is in the seeded place-id map (NYC today);
+otherwise `sa[label]` alone drives the search. Exact geocoding for arbitrary
+destinations = a later Google Places lookup or a growing place-id map.
 
 Wording rule (decided 2026-07-05): every surface says **"Access code:"**, never
 "Password:" — a password reads as a security barrier; an access code reads as a
 membership privilege. Applied in the Guide prompt, `booking.js`, and both Hotel
-Atlas copies.
+Atlas copies. The access code still gates the portal, so it rides along as a note
+on every booking affordance, deep or portal.
 
 The goal: let hotel-only travelers self-serve a booking. Base Camp captures
 **where / when / who** through a recognizable strip (or naturally in chat),
-carries that state through the Guide's shortlist, and — once TravelWits deep
-links exist — renders per-property "Book VIP rate →" CTAs that land on a live
-rate page. Until then, nothing in the UI promises a booking the link can't
-deliver (today every hotel's `bookUrl` is the same password-gated portal
-homepage — see §6).
+carries that state through the Guide's shortlist, and renders "Book VIP rate →"
+CTAs that land on a live TravelWits rate page for the destination + dates. When
+no dates are captured yet, the CTA falls back to the honest portal link ("Check
+VIP rates" + access code) rather than promising a rate page it can't deliver.
 
 ---
 

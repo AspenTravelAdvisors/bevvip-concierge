@@ -205,6 +205,188 @@ main.page {
   border-color: var(--gold-dim);
 }
 
+/* ── Booking strip — where/when/who capture ───────── */
+.booking-strip {
+  max-width: 560px;
+  margin: 0 auto 18px;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.booking-strip.compact {
+  margin: 0 0 10px;
+  max-width: none;
+  background: var(--user);
+}
+.bs-fields {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 10px;
+}
+.bs-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.bs-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-light);
+}
+.booking-strip input[type="text"],
+.booking-strip input[type="date"],
+.booking-strip select {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg, #101014);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: var(--sans);
+}
+.booking-strip input:focus,
+.booking-strip select:focus {
+  outline: none;
+  border-color: var(--gold-dim);
+}
+.bs-guests {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.bs-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  padding: 3px 6px;
+}
+.bs-stepper button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--gold-light);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.bs-stepper button:hover:not(:disabled) {
+  border-color: var(--gold-dim);
+  background: var(--card-hover);
+}
+.bs-stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.bs-count {
+  font-size: 12.5px;
+  color: var(--sub);
+  min-width: 58px;
+  text-align: center;
+}
+.bs-ages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bs-age {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.bs-age select {
+  width: auto;
+  padding: 5px 6px;
+}
+.bs-error {
+  font-size: 12px;
+  color: #d98b6b;
+}
+.bs-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.bs-submit {
+  border: 1px solid var(--gold-dim);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: #1a1407;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.bs-submit:hover {
+  filter: brightness(1.06);
+}
+.bs-cancel {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.bs-cancel:hover {
+  color: var(--sub);
+}
+.chips-or {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+/* Folded trip-summary chip above the composer once a conversation exists. */
+.trip-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--user);
+  color: var(--sub);
+  border-radius: 30px;
+  padding: 5px 13px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.trip-chip:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold-light);
+}
+.trip-edit {
+  color: var(--gold-light);
+  font-size: 12px;
+}
+
+@media (max-width: 520px) {
+  .bs-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bs-where {
+    grid-column: 1 / -1;
+  }
+}
+
 /* quick replies — clickable answers when The Guide asks for leading info */
 .quick-replies {
   margin: 14px 0 2px;
@@ -362,18 +544,23 @@ main.page {
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   transition: 0.15s;
-  color: inherit;
-  text-decoration: none;
-  cursor: pointer;
 }
 .card:hover {
   background: var(--card-hover);
   border-color: var(--gold-dim);
-  text-decoration: none;
 }
-.card:hover .open {
+.card-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.card-link:hover .open,
+.card:hover .card-link .open {
   color: var(--gold);
 }
 .card .kicker {
@@ -399,17 +586,10 @@ main.page {
   color: var(--gold-light);
   transition: 0.15s;
 }
-/* Secondary booking affordance under a hotel card: the VipTravelAi.com portal
-   link + access code note. Quiet by design — the card itself (Atlas) stays
-   the primary move until per-property deep links land (BOOKING-SPEC §6). */
-.card-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.card-cell .card {
-  flex: 1;
-}
+/* Secondary booking affordance inside the card: the VipTravelAi.com portal
+   link + access code note (or, for cruise/jet/yacht, the Virtuoso journey
+   page). Quiet by design — the atlas link stays the primary move
+   (BOOKING-SPEC §6). */
 .card-book {
   display: inline-flex;
   align-items: baseline;
@@ -424,10 +604,30 @@ main.page {
   color: var(--gold);
   text-decoration: none;
 }
+/* Deep link (dates present): a real "Book VIP rate" rate page, so give it more
+   presence than the portal fallback while still sitting inside the card. */
+.card-book.deep {
+  align-self: flex-start;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+  background: var(--user);
+  color: var(--gold-light);
+  font-weight: 600;
+}
+.card-book.deep:hover {
+  background: var(--card-hover);
+  border-color: var(--gold);
+}
 .card-book-note {
   font-size: 11px;
   letter-spacing: 0.3px;
   color: var(--sub);
+}
+.card-book.deep .card-book-note {
+  margin-left: 2px;
+  font-weight: 400;
 }
 .atlas-cta {
   display: inline-flex;

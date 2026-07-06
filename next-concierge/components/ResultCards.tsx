@@ -1,8 +1,23 @@
+"use client";
+
 import Link from "next/link";
-import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType } from "@/lib/types";
+import { useEffect, useState } from "react";
+import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType, TripState } from "@/lib/types";
 import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 import { bookingLink } from "@/lib/atlas/booking.js";
-import { getTrip } from "@/lib/trip-state";
+import { getTrip, onTrip } from "@/lib/trip-state";
+
+// The shared trip (dates/party) kept live, so a card's booking CTA upgrades
+// from the portal link to a dated "Book VIP rate" deep link the moment dates
+// arrive — including on cards rendered in earlier turns (BOOKING-SPEC §5).
+function useTrip(): TripState | null {
+  const [trip, setTrip] = useState<TripState | null>(null);
+  useEffect(() => {
+    setTrip(getTrip());
+    return onTrip(setTrip);
+  }, []);
+  return trip;
+}
 
 // Cap cards per brand within a category (so one operator can't flood the row),
 // not per category — a two-brand comparison ("Aman vs Orient Express") and an
@@ -19,6 +34,7 @@ const GUIDE_CARD_LIMIT_TOTAL = 5;
 export default function ResultCards({ meta }: { meta: GuideMeta }) {
   const cards = collectResultCards(meta);
   const ctaHref = internalLeadLink(meta);
+  const trip = useTrip();
 
   if (!cards.length && !ctaHref) return null;
 
@@ -27,7 +43,12 @@ export default function ResultCards({ meta }: { meta: GuideMeta }) {
       {cards.length > 0 && (
         <div className="cards">
           {cards.map(({ result, type }, i) => (
-            <Card key={`${type}:${result.id ?? result.name ?? i}`} result={result} fallbackType={type} />
+            <Card
+              key={`${type}:${result.id ?? result.name ?? i}`}
+              result={result}
+              fallbackType={type}
+              trip={trip}
+            />
           ))}
         </div>
       )}
@@ -88,9 +109,11 @@ function relatedEntries(raw: unknown): Array<{ kind?: string; results: OfferingR
 function Card({
   result,
   fallbackType,
+  trip,
 }: {
   result: OfferingResult;
   fallbackType: OfferingType | null;
+  trip: TripState | null;
 }) {
   const kicker =
     result.brand || result.operator || result.category || fallbackType || "Offering";
@@ -113,32 +136,39 @@ function Card({
     </>
   );
 
-  // The whole card opens that result in the in-app atlas (/atlas/<type>). We
-  // reuse the query the standalone deep link carried (region + ids) so the
-  // embedded atlas focuses the same record; otherwise fall back to the result's
-  // region.
+  // The atlas link covers most of the card. We reuse the query the standalone
+  // deep link carried (region + ids) so the embedded atlas focuses the same
+  // record; otherwise fall back to the result's region.
   const href = internalCardLink(result, fallbackType);
-  const card = href ? (
-    <Link className="card" href={href}>
+  const atlasLink = href ? (
+    <Link className="card-link" href={href}>
       {body}
     </Link>
   ) : (
-    <div className="card">{body}</div>
+    <div className="card-link">{body}</div>
   );
 
-  // Booking affordance via the single seam (lib/atlas/booking.js). In portal
-  // mode this is the VipTravelAi.com portal + access code, kept secondary under
-  // the card — the Atlas link stays the primary move (trust rule, SPEC §6).
-  // Rendered outside the atlas <Link> so anchors never nest.
-  const booking = bookingLink(result, getTrip());
-  if (!booking) return card;
+  // Booking affordance via the single seam (lib/atlas/booking.js), rendered as
+  // a sibling <a> inside the same card box so anchors never nest. For hotels,
+  // dates captured yields a "Book VIP rate" TravelWits deep link (kind "deep"),
+  // otherwise the gated VipTravelAi.com portal ("Check VIP rates"). Cruise/jet/
+  // yacht cards get the Virtuoso journey page, labeled "See more details" since
+  // it's not a rate quote (booking.js picks the label by result type).
+  const booking = bookingLink(result, trip);
   return (
-    <div className="card-cell">
-      {card}
-      <a className="card-book" href={booking.url} target="_blank" rel="noreferrer">
-        {booking.label} ↗
-        {booking.note && <span className="card-book-note">{booking.note}</span>}
-      </a>
+    <div className="card">
+      {atlasLink}
+      {booking && (
+        <a
+          className={`card-book${booking.kind === "deep" ? " deep" : ""}`}
+          href={booking.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {booking.label} {booking.kind === "deep" ? "→" : "↗"}
+          {booking.note && <span className="card-book-note">{booking.note}</span>}
+        </a>
+      )}
     </div>
   );
 }
