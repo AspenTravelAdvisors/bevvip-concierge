@@ -154,7 +154,13 @@ function geocodeQuery(name) {
 }
 // Hand fixes for stops the geocoders misplace or miss.
 const GEO_OVERRIDES = {
-  // name -> [lat, lng]
+  // name -> [lat, lng] — photon/nominatim return prefecture centroids for
+  // several Japanese city names; pin them to the main rail station instead.
+  "Fukuoka, Japan": [33.590, 130.421],   // Hakata Station
+  "Hiroshima, Japan": [34.398, 132.475], // Hiroshima Station
+  "Kumamoto, Japan": [32.790, 130.689],  // Kumamoto Station
+  "Saga, Japan": [33.264, 130.294],      // Saga Station
+  "Aso, Japan": [32.941, 131.085],       // Aso Station
 };
 const geoCache = loadJson(GEO_CACHE, {});
 async function geocode(name) {
