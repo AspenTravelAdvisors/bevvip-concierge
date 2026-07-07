@@ -61,7 +61,7 @@ const REGIONS = {
   AFRICA:   { name: "Southern Africa",            ab: "Africa",    coord: [-27.0, 25.0] },
   SAM:      { name: "South America",              ab: "S. America",coord: [-13.5, -72.5] },
   AMERICAS: { name: "American West & Alaska",     ab: "U.S.",      coord: [41.0, -111.5] },
-  CANADA:   { name: "Canada Coast to Coast",      ab: "Canada",    coord: [52.6, -100.0] },
+  CANADA:   { name: "Canada Coast to Coast",      ab: "Canada",    coord: [51.3, -120.5] },
   ANZ:      { name: "Australia & New Zealand",    ab: "ANZ",       coord: [-33, 151] },
 };
 const COUNTRY_REGION = [
