@@ -97,17 +97,55 @@ header.site .tag .byline:hover {
   color: var(--gold-light);
   text-decoration: none;
 }
-header.site nav {
+/* The tab row never truncates: whenever the seven tabs outgrow the space left
+   by the wordmark (landscape phones, tablets, half-width windows) the nav
+   scrolls sideways, scrollbar hidden. A mask fades the row out at an edge only
+   while tabs are actually hidden past it — NavTabs toggles data-fade-left /
+   data-fade-right on this wrapper — so the last visible tab clips mid-pill
+   into the fade: a deliberate "there's more this way" tease. */
+header.site .nav-wrap {
   margin-left: auto;
+  min-width: 0;
+}
+header.site nav {
   display: flex;
   align-items: flex-end;
   gap: 5px;
   font-size: 12px;
-  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  --fade-l: 0px;
+  --fade-r: 0px;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)),
+    transparent
+  );
+}
+header.site nav::-webkit-scrollbar {
+  display: none;
+}
+header.site .nav-wrap[data-fade-left="true"] nav {
+  --fade-l: 34px;
+}
+header.site .nav-wrap[data-fade-right="true"] nav {
+  --fade-r: 34px;
 }
 /* Top navigation rendered as a row of tabs: rounded-top, a 2px accent underline,
    and a faint fill on hover / for the active tab. */
 header.site nav a {
+  flex: 0 0 auto;
   color: var(--sub);
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -116,6 +154,7 @@ header.site nav a {
   border: 1px solid transparent;
   border-bottom: 2px solid transparent;
   border-radius: 9px 9px 0 0;
+  scroll-snap-align: center;
   transition: 0.15s;
 }
 header.site nav a:hover,
@@ -139,6 +178,37 @@ header.site nav a.tab-color {
 header.site nav a.tab-color:hover {
   color: var(--gold-light);
   background: var(--card);
+}
+/* On any touch screen — portrait or landscape — and in narrow windows, the
+   tabs become swipeable pills: comfortable rounded targets that read as a
+   scrollable row, clipping mid-pill under the edge fade. */
+@media (pointer: coarse), (max-width: 640px) {
+  header.site nav {
+    gap: 7px;
+    padding: 3px 2px;
+  }
+  header.site nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    font-size: 11.5px;
+    letter-spacing: 0.4px;
+    padding: 6px 13px;
+    border-radius: 30px;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  header.site nav a.tab-guide {
+    border-color: var(--gold);
+  }
+  header.site nav a.tab-color {
+    box-shadow: inset 0 -2px 0 var(--tab);
+  }
+  /* The collection you're currently in wears its accent as the pill border. */
+  header.site nav a.tab-color[data-active="true"] {
+    border-color: var(--tab);
+    color: var(--gold-light);
+  }
 }
 
 main.page {
@@ -1319,43 +1389,18 @@ main.page {
     line-height: 1.3;
   }
 
-  header.site nav {
+  /* The pill row gets its own full-width line under the wordmark; the pill
+     styling itself lives in the (pointer: coarse) block above. */
+  header.site .nav-wrap {
     width: 100%;
     margin-left: 0;
-    overflow-x: auto;
-    justify-content: flex-start;
-    gap: 7px;
+  }
+  header.site nav {
     padding: 3px 2px 8px;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
   }
 
-  header.site nav::-webkit-scrollbar,
   .atlas-tabs::-webkit-scrollbar {
     display: none;
-  }
-
-  /* Swipeable pill tabs — comfortable touch targets beat cramming seven tabs
-     into one phone row; the row scrolls with snap instead. */
-  header.site nav a {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    min-height: 32px;
-    font-size: 11.5px;
-    letter-spacing: 0.4px;
-    padding: 6px 13px;
-    border-radius: 30px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    scroll-snap-align: center;
-  }
-  header.site nav a.tab-guide {
-    border-color: var(--gold);
-  }
-  header.site nav a.tab-color {
-    box-shadow: inset 0 -2px 0 var(--tab);
   }
 
   .transcript {

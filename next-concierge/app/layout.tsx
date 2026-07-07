@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import Link from "next/link";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import IntroTour from "@/components/IntroTour";
-import GuideTab from "@/components/GuideTab";
+import NavTabs from "@/components/NavTabs";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -58,15 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Aspen Travel Advisors
               </a>
             </span>
-            <nav>
-              <GuideTab />
-              <Link className="tab-color" style={{ "--tab": "#e6d488" } as React.CSSProperties} href="/atlas/hotel">Hotels</Link>
-              <Link className="tab-color" style={{ "--tab": "#5aa9e6" } as React.CSSProperties} href="/atlas/cruise">Expeditions</Link>
-              <Link className="tab-color" style={{ "--tab": "#dfe5f2" } as React.CSSProperties} href="/atlas/jet">Jets</Link>
-              <Link className="tab-color" style={{ "--tab": "#e0b84a" } as React.CSSProperties} href="/atlas/yacht">Yachts</Link>
-              <Link className="tab-color" style={{ "--tab": "#45d6c2" } as React.CSSProperties} href="/atlas/worldcruise">World</Link>
-              <Link className="tab-color" style={{ "--tab": "#e08d5f" } as React.CSSProperties} href="/atlas/train">Rails</Link>
-            </nav>
+            <NavTabs />
           </header>
           <main className="page">{children}</main>
           <IntroTour />
