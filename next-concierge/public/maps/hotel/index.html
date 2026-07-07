@@ -195,10 +195,14 @@
 .bvnav a.is-here{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#fff}
 @media(max-width:680px){
   .topbar .partner{display:none!important}
+  .topbar{flex-wrap:wrap;row-gap:2px}
   .topbar .brand{min-width:0!important;overflow:hidden!important}
-  .topbar h1{max-width:44vw!important}
-  .bvnav{flex:1 1 0;min-width:0;margin-left:8px;gap:2px;font-size:10px}
-  .bvnav a{padding:6px 7px 5px;letter-spacing:.2px}
+  .topbar h1{max-width:78vw!important}
+  /* Swipeable pill nav on its own row — larger touch targets than seven cramped tabs. */
+  .bvnav{order:10;flex:1 1 100%;min-width:0;margin:4px -10px -2px;padding:2px 10px 6px;gap:7px;font-size:11px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .bvnav a{scroll-snap-align:center;display:inline-flex;align-items:center;min-height:32px;padding:6px 13px;letter-spacing:.4px;border-radius:30px;border:1px solid rgba(255,255,255,.14);background:rgba(11,14,20,.6)}
+  .bvnav a.bvnav-tab{box-shadow:inset 0 -2px 0 var(--tab)}
+  .bvnav a.is-here{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
 }
 </style>
 <style id="basecamp-embed">.bvnav{display:none!important}</style>
@@ -1170,7 +1174,6 @@ init();
   body.rail-hidden .rail{opacity:0;transform:translateX(-12px) scale(.97);visibility:hidden;pointer-events:none}
   body.panel-collapsed .panel.open{transform:translateX(105%)}
   @media (max-width:680px){
-    .dockbtn .pl{display:none}
     .dockbtn{padding:0 13px}
     body:not(.rail-shown) .rail{opacity:0;transform:translateX(-12px) scale(.97);visibility:hidden;pointer-events:none}
     /* When filters shown on mobile: overlay the map from top */
@@ -1185,11 +1188,74 @@ init();
 
 <div class="dockcoach" id="dockCoach" role="status"><span>Tap <b>Filters</b> to refine &middot; <b>Details</b> for results</span></div>
 <div class="sharetoast" id="shareToast" role="status" aria-live="polite"></div>
+<!-- ===== Quiet-map refinements: macro pin declutter, top-right actions menu, sheet safe areas ===== -->
+<style id="quiet-map">
+  /* Region pins stay small, elegant and unnumbered at macro zoom; counts appear
+     once the traveler zooms in and the geography has room for them. */
+  body.zoom-macro .rmarker .ring{width:15px;height:15px;font-size:0;border-width:1.5px;box-shadow:0 0 0 3px rgba(255,255,255,.14),0 3px 9px rgba(0,0,0,.45)}
+  body.zoom-macro .rmarker:hover .ring{transform:scale(1.35)}
+  body.zoom-macro .rmarker .tag{top:22px}
+  body.zoom-macro .rmarker::after{content:"";position:absolute;left:50%;top:50%;width:42px;height:42px;transform:translate(-50%,-50%)}
+  /* Secondary actions live in one quiet menu at the top right instead of crowding the bottom dock. */
+  .mapmenu{position:absolute;z-index:1210;top:calc(84px + env(safe-area-inset-top,0px));right:12px;font-family:var(--sans);transition:right .32s cubic-bezier(.22,.61,.36,1)}
+  .mapmenu .mm-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(17,21,29,.82);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:var(--shadow);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:border-color .15s,color .15s}
+  .mapmenu .mm-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .mapmenu .mm-drop{display:none;position:absolute;right:0;top:46px;min-width:196px;background:rgba(17,21,29,.97);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:5px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .mapmenu.open .mm-drop{display:flex;flex-direction:column}
+  .mapmenu .mm-drop .dockbtn{height:42px;width:100%;border-radius:9px;justify-content:flex-start;padding:0 13px}
+  .mapmenu .mm-drop .dockbtn .pl{display:inline!important}
+  /* Slide clear of the details panel when it is open on desktop. */
+  @media (min-width:681px){body.panel-active .mapmenu{right:312px}}
+  @media (max-width:680px){
+    .mapmenu{top:calc(74px + env(safe-area-inset-top,0px))}
+    body.bvnav-visible .mapmenu{top:calc(112px + env(safe-area-inset-top,0px))}
+    /* Bottom sheets clear the dock, and their scroll never pans the map behind them. */
+    .panel .list{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+    .panel .list,.panel .body,.rail .railscroll,.rail .ops,.portlist,.datepop{overscroll-behavior:contain}
+    .sheetHandle{touch-action:none}
+    /* The labeled dock spans most of the phone width now — lift the style picker clear of it. */
+    .leaflet-bottom.leaflet-right .stylectl{margin-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  }
+</style>
+<div class="mapmenu" id="mapMenu">
+  <button class="mm-btn" id="mapMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More options" title="More options">&#8943;</button>
+  <div class="mm-drop" id="mapMenuDrop">
+    <button id="shareDock" class="dockbtn" type="button" aria-label="Copy a shareable link to this view" title="Copy a link to this view"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><line x1="8.1" y1="10.9" x2="15.9" y2="6.1"/><line x1="8.1" y1="13.1" x2="15.9" y2="17.9"/></svg></span><span class="pl">Share</span></button>
+    <a id="helpDock" class="dockbtn" href="mailto:Book@BeVvip.com" data-help-open role="button" aria-label="Need help — contact us"><span class="pi">?</span><span class="pl">Need Help</span></a>
+    <button class="dockbtn" id="bviReopen" type="button" aria-label="Replay the intro tour"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/><path d="M15.5 8.5 L10.5 10.5 L8.5 15.5 L13.5 13.5 Z" fill="currentColor"/></svg></span><span class="pl">Replay tour</span></button>
+  </div>
+</div>
+<script>
+(function(){
+  var menu=document.getElementById('mapMenu'),btn=document.getElementById('mapMenuBtn');
+  function closeMenu(){menu.classList.remove('open');btn.setAttribute('aria-expanded','false');}
+  if(menu&&btn){
+    btn.addEventListener('click',function(e){e.stopPropagation();var open=menu.classList.toggle('open');btn.setAttribute('aria-expanded',open?'true':'false');});
+    document.addEventListener('click',function(e){if(!menu.contains(e.target))closeMenu();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});
+    menu.querySelectorAll('.mm-drop .dockbtn').forEach(function(el){el.addEventListener('click',closeMenu);});
+  }
+  /* Macro-zoom pin declutter: counts render only once zoomed past the threshold. */
+  var tries=0;
+  (function wait(){
+    var m=window.__atlasMap;
+    if(m&&typeof m.on==='function'&&typeof m.getZoom==='function'){
+      var sync=function(){document.body.classList.toggle('zoom-macro',m.getZoom()<3.2);};
+      m.on('zoom',sync);m.on('zoomend',sync);sync();
+    }else if(++tries<40){setTimeout(wait,150);}
+  })();
+  /* Embedded in Base Camp the bvnav is hidden (style#basecamp-embed); flag when
+     it actually renders so offsets below the taller pill row only apply then. */
+  var nav=document.querySelector('.bvnav');
+  if(nav&&getComputedStyle(nav).display!=='none')document.body.classList.add('bvnav-visible');
+  /* Keep the current atlas tab centered in the mobile pill nav. */
+  var here=document.querySelector('.bvnav a.is-here');
+  if(here&&here.scrollIntoView){try{here.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}}
+})();
+</script>
 <div class="dock" role="toolbar" aria-label="Map controls">
   <button id="railPill" class="dockbtn" type="button" aria-label="Show or hide the filters menu" title="Show / hide filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
   <button id="searchPill" class="dockbtn" type="button" aria-label="Show or hide search" title="Search a hotel, city or region"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="pl">Search</span></button>
-  <button id="shareDock" class="dockbtn" type="button" aria-label="Copy a shareable link to this view" title="Copy a link to this view"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><line x1="8.1" y1="10.9" x2="15.9" y2="6.1"/><line x1="8.1" y1="13.1" x2="15.9" y2="17.9"/></svg></span><span class="pl">Share</span></button>
-  <a id="helpDock" class="dockbtn" href="mailto:Book@BeVvip.com" data-help-open role="button" aria-label="Need help — contact us"><span class="pi">?</span><span class="pl">Need Help</span></a>
   <button id="panelPill" class="dockbtn detailbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
 </div>
 
@@ -1394,6 +1460,7 @@ init();
     .topbar h1{max-width:calc(100vw - 132px);font-size:16px}
     .logochip.mark img{max-width:86px}
     .dockbtn{padding:0 10px}
+    .dockbtn .pl{display:none}
   }
 </style>
 
@@ -1615,10 +1682,6 @@ init();
   }
   @media (prefers-reduced-motion:reduce){.bvi-scrim,.bvi-stage,.bvi-nav,.bvi-track{transition:none}}
 </style>
-<button class="bvi-reopen" id="bviReopen" type="button" aria-label="Replay the intro tour">
-  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/><path d="M15.5 8.5 L10.5 10.5 L8.5 15.5 L13.5 13.5 Z" fill="currentColor"/></svg>
-  <span>Tour</span>
-</button>
 <div class="bvi-scrim" id="bviScrim" role="dialog" aria-modal="true" aria-label="Welcome to the Atlas" aria-hidden="true">
   <button class="bvi-skip" id="bviSkip" type="button" aria-label="Skip the intro">Skip
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>

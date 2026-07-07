@@ -76,6 +76,9 @@ export default function GuideChat() {
   // the booking CTAs react the moment the strip or the Guide captures dates.
   const [trip, setLocalTrip] = useState<TripState | null>(null);
   const [editingTrip, setEditingTrip] = useState(false);
+  // Progressive disclosure for the empty-state manifesto: one hook line shows,
+  // the rest opens on request so the mobile viewport leads with the chat.
+  const [introOpen, setIntroOpen] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
   // Session "generation": bumped by Start over so an in-flight stream from the
   // previous conversation can't write back into the freshly cleared transcript.
@@ -318,11 +321,21 @@ export default function GuideChat() {
           <div className="empty">
             <h1>Where are you headed next?</h1>
             <p>
-              A region, a season, a hotel, or simply the kind of journey you&rsquo;re craving.
-              I&rsquo;ll help frame the trip, surface the right possibilities, and guide the first
-              elegant move. And when the journey calls for a steadier hand &mdash; the kind with
-              a passport worn soft at the corners &mdash; a human advisor waits in the wings.
+              A region, a season, or simply the kind of journey you&rsquo;re craving &mdash;
+              and a human advisor waits in the wings.
             </p>
+            {introOpen ? (
+              <p className="empty-more">
+                I&rsquo;ll help frame the trip, surface the right possibilities, and guide the
+                first elegant move. And when the journey calls for a steadier hand &mdash; the
+                kind with a passport worn soft at the corners &mdash; your advisor takes it
+                from there.
+              </p>
+            ) : (
+              <button type="button" className="empty-toggle" onClick={() => setIntroOpen(true)}>
+                How The Guide works
+              </button>
+            )}
             <BookingStrip onSearch={send} initial={trip} />
             <div className="chips-or">or explore</div>
             <div className="chips">
