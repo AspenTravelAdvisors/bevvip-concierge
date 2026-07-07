@@ -10,8 +10,9 @@
 //
 // Map controls (top-right) mirror the original app: fullscreen, a basemap
 // switcher (Dark / Satellite / Dusk), and a 2D⇄3D (mercator⇄globe) toggle.
-// When The Guide returns recommendations it broadcasts a "bevvip:atlas-plot"
-// event; the globe then fits the results and switches to satellite.
+// The globe boots on Satellite. When The Guide returns recommendations it
+// broadcasts a "bevvip:atlas-plot" event; the globe fits the results (and
+// returns to satellite if the traveler had switched away).
 //
 // Without a Mapbox token it degrades to an elegant fallback panel with the
 // external-atlas handoff, so the app still works with zero configuration.
@@ -109,9 +110,10 @@ const GLOBE_FOG = {
   color: "rgb(11,13,18)", "high-color": "rgb(22,27,38)",
   "horizon-blend": 0.04, "space-color": "rgb(6,8,12)", "star-intensity": 0.45,
 };
-// The globe opens on Dark (the house default). When the Guide plots results we
-// flip to Satellite (photoreal) to reveal them; the traveler can switch back, or
-// to Dusk (Mapbox Standard vector with 3D buildings), at any time.
+// The globe opens on Satellite (photoreal, the house default). When the Guide
+// plots results we make sure we're on Satellite to reveal them; the traveler
+// can switch to Dark or Dusk (Mapbox Standard vector with 3D buildings) at any
+// time.
 type StyleKey = "dark" | "satellite" | "dusk";
 const DUSK_FOG = {
   color: "rgb(58,48,62)", "high-color": "rgb(120,86,70)",
@@ -181,7 +183,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   const [mapFailed, setMapFailed] = useState(false);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [styleKey, setStyleKey] = useState<StyleKey>("dark");
+  const [styleKey, setStyleKey] = useState<StyleKey>("satellite");
   const [is3D, setIs3D] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
@@ -200,7 +202,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let subsetActive = false;
     let homeZoom = 1.25;
     let projGlobe = true;
-    let styleKeyLocal: StyleKey = "dark";
+    let styleKeyLocal: StyleKey = "satellite";
     let ro: ResizeObserver | undefined;
     let loadTimeout = 0;
     const node = mapEl.current;
@@ -238,7 +240,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         mapboxgl.accessToken = token;
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: ATLAS_STYLES.dark.url,
+          style: ATLAS_STYLES.satellite.url,
           projection: "globe",
           center: [10, 20],
           zoom: 1.25,
@@ -567,7 +569,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         // place we (re)apply fog, projection and all data layers.
         map.on("style.load", () => {
           if (cancelled) return;
-          const s = ATLAS_STYLES[styleKeyLocal] || ATLAS_STYLES.dark;
+          const s = ATLAS_STYLES[styleKeyLocal] || ATLAS_STYLES.satellite;
           setFog(map, s.fog);
           // Some Standard-family styles carry a light preset / theme override;
           // styles without them keep Mapbox's day default. Classic styles (Dark)
