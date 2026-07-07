@@ -273,7 +273,9 @@ main.page {
   color: var(--text);
   border-radius: 8px;
   padding: 8px 10px;
-  font-size: 13px;
+  /* 16px keeps iOS Safari from auto-zooming the viewport when a field
+     (notably the date pickers) is focused. Do not drop below 16px. */
+  font-size: 16px;
   font-family: var(--sans);
   /* Render the native date-picker popup and its calendar icon in dark theme
      (light text on dark) instead of the browser default black-on-black. */
