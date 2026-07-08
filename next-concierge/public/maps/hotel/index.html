@@ -1793,7 +1793,13 @@ init();
   render();
   var force=/(?:[?#&])(?:tour|intro)\b/i.test(location.search+location.hash);
   var seen=false;try{seen=localStorage.getItem(INTRO.key)==='1';}catch(e){}
-  if(force||!seen){
+  /* Suppress the intro tour when this atlas is embedded by a cross-origin page
+     (e.g. the marketing site's hero background); the full-screen scrim would
+     otherwise cover the map. Same-origin embedding (the in-app /atlas/<type>
+     wrapper) and direct visits still show the tour. */
+  var framedExternally=false;
+  try{ if(window.self!==window.top){ try{ void window.top.location.href; }catch(x){ framedExternally=true; } } }catch(e){ framedExternally=true; }
+  if((force||!seen)&&!framedExternally){
     if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches){
       scrim.classList.add('bvi-open');scrim.setAttribute('aria-hidden','false');
     }else{requestAnimationFrame(function(){requestAnimationFrame(open);});}
