@@ -1086,7 +1086,8 @@ function toggleBrand(key,row){
   else { activeBrands.add(key); row.classList.add('active'); }
   applyFilter();
   document.getElementById('reset').classList.toggle('show', !!activeBrands.size||activeRegions.size||excludedRegions.size||activeIds.size||activeSearchTerms.length||!!activeLocation);
-  refreshView();
+  if(activeView||locationView) refreshView();
+  else if(activeBrands.size) openSearchResults('Filtered journeys');
 }
 /* ===== Region filter rows + collapsible section accordion ===== */
 const regionList=document.getElementById('regionList');

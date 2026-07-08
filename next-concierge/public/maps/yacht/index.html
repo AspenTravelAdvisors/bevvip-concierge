@@ -930,7 +930,8 @@ function toggleBrand(key,row){
   if(activeBrands.has(key)){activeBrands.delete(key);row.classList.remove('active');}
   else{activeBrands.add(key);row.classList.add('active');}
   applyFilter();syncReset();
-  refreshActivePanel();
+  if(portView||activeView) refreshActivePanel();
+  else if(activeBrands.size) openSearchResults('Filtered sailings');
 }
 function syncReset(){document.getElementById('reset').classList.toggle('show',!!activeBrands.size||activeRegions.size||activeIds.size||activeSearchTerms.length);}
 /* ===== Region filter rows + collapsible section accordion ===== */

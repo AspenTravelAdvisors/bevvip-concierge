@@ -935,7 +935,9 @@ function boot(a){
     if(activeOps.has(name)){activeOps.delete(name);row.classList.remove('active');}
     else{activeOps.add(name);row.classList.add('active');}
     syncReset();
-    updateMarkers(); refreshActivePanel();
+    updateMarkers();
+    if(portView||activeView) refreshActivePanel();
+    else if(activeOps.size) openSearchResults('Filtered sailings');
   }
   document.getElementById('reset').addEventListener('click',()=>{
     activeOps.clear();document.querySelectorAll('.op').forEach(r=>r.classList.remove('active'));
