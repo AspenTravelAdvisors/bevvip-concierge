@@ -102,8 +102,12 @@ function composeMessage(body: HandoffBody): string {
   }
 
   if (body.deepLink) {
+    // The data layer encodes deep links against the standalone map path
+    // (/maps/<type>/...); rewrite to the in-app concierge atlas route
+    // (/atlas/<type>) so the advisor opens Base Camp, not the bare map page.
+    const atlasLink = body.deepLink.replace(/\/maps\/([^/]+)\/?/, "/atlas/$1");
     lines.push("See it on the Atlas:");
-    lines.push(body.deepLink);
+    lines.push(atlasLink);
     lines.push("");
   }
 

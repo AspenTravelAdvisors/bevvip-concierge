@@ -9,10 +9,6 @@ import AtlasView from "@/components/AtlasView";
 // Guide as a minimizable bottom sheet. The header chrome comes from layout.tsx,
 // so the traveler never leaves Base Camp.
 
-// Forward only the deep-link params the atlases understand, so a Guide card or
-// the header tab can focus a region / specific records on open.
-const PASS_THROUGH = ["region", "ids", "q", "month"] as const;
-
 export function generateStaticParams() {
   return Object.keys(ATLASES).map((type) => ({ type }));
 }
@@ -36,10 +32,13 @@ export default async function AtlasPage({
   const { type } = await params;
   if (!isOfferingType(type)) notFound();
 
+  // Forward every deep-link param through to the embedded atlas so a shared
+  // link (built by the atlas's own Share button, which now targets /atlas/<type>)
+  // reproduces the full view — region, brand/program, operator, port, month,
+  // shortlist ids and any other filter the atlas encoded.
   const sp = await searchParams;
   const qs = new URLSearchParams();
-  for (const key of PASS_THROUGH) {
-    const v = sp[key];
+  for (const [key, v] of Object.entries(sp)) {
     const value = Array.isArray(v) ? v[0] : v;
     if (value) qs.set(key, value);
   }

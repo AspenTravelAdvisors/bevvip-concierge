@@ -699,7 +699,10 @@ function buildShareUrl(){
   if(state.region) p.set("region",state.region);
   if(state.ids.size) p.set("ids",[...state.ids].join(","));
   const qs=p.toString();
-  return location.origin+location.pathname+(qs?"?"+qs:"");
+  // Point the share link back into the concierge app's in-app atlas route
+  // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).
+  const _t=(location.pathname.match(/\/maps\/([^/]+)/)||[])[1];
+  return location.origin+(_t?"/atlas/"+_t:location.pathname)+(qs?"?"+qs:"");
 }
 window.__atlasShareUrl=buildShareUrl;
 // Clear every active filter without touching the URL/history (used before

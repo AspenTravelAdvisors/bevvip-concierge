@@ -1365,7 +1365,10 @@ window.__atlasShareUrl=function(){
   if(activeIds.size)p.set('ids',[...activeIds].join(','));
   if(activeLocation){p.set('location',activeLocation);if(activeLocationRole&&activeLocationRole!=='any')p.set('locationrole',activeLocationRole);}
   var qs=p.toString();
-  return location.origin+location.pathname+(qs?'?'+qs:'');
+  // Point the share link back into the concierge app's in-app atlas route
+  // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).
+  var _t=(location.pathname.match(/\/maps\/([^/]+)/)||[])[1];
+  return location.origin+(_t?'/atlas/'+_t:location.pathname)+(qs?'?'+qs:'');
 };
 document.getElementById('close').addEventListener('click',hidePanel);
 map.on('click',()=>{
