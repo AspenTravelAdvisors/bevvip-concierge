@@ -585,12 +585,29 @@ function showError(){
   document.getElementById("veilErr").classList.remove("hidden");
 }
 
-/* ---- inventory load (single source of truth: /api/luxury-hotels) ---- */
+/* ---- inventory load (fast path: static points, detail hydrated on tap) ---- */
 async function loadInventory(){
-  // Primary path: the shared data layer behind /api, paginated to the 200 cap.
-  // Falls back to the bundled hotels.geojson if the endpoint is unreachable so
-  // the atlas still renders. The API returns normalized records, which we adapt
-  // back into the GeoJSON-feature shape the rest of this file expects.
+  // Primary path: a tiny CDN-cacheable point feed generated from the shared
+  // inventory. Rich detail still comes from /api/luxury-hotels/:id on tap.
+  try{
+    const data=await fetch("hotel-points.json",{cache:"force-cache"}).then(r=>{
+      if(!r.ok) throw new Error("points "+r.status);
+      return r.json();
+    });
+    const out=(data.features||[]).map(f=>({
+      type:"Feature",
+      geometry:f.geometry,
+      properties:{...(f.properties||{}),_detailLoaded:false}
+    }));
+    if(out.length) return out;
+    throw new Error("points returned no records");
+  }catch(err){
+    console.warn("hotel-points.json unavailable, falling back to luxury-hotels API:",err);
+  }
+
+  // Backup path: the shared data layer behind /api, paginated to the 200 cap.
+  // The API returns normalized records, which we adapt back into the GeoJSON
+  // feature shape the rest of this file expects.
   try{
     const PAGE=200;
     const fetchPage=async offset=>{
@@ -607,7 +624,7 @@ async function loadInventory(){
     if(out.length) return out;
     throw new Error("api returned no records");
   }catch(err){
-    console.warn("luxury-hotels API unavailable, falling back to hotels.geojson:",err);
+    console.warn("luxury-hotels API unavailable, falling back to legacy hotels.geojson:",err);
     const data=await fetch("hotels.geojson").then(r=>r.json());
     return data.features;
   }

@@ -1079,6 +1079,37 @@ interface FeaturedFC {
 }
 
 async function fetchHotelPoints(): Promise<HotelFC> {
+  try {
+    const r = await fetch(`${HOTEL_BASE}/hotel-points.json`, { cache: "force-cache" });
+    if (r.ok) {
+      const data = (await r.json()) as {
+        type?: string;
+        features?: {
+          geometry?: { coordinates?: [number, number] };
+          properties?: { id?: string; name?: string; region?: string | null; marqueeRegion?: string | null };
+        }[];
+      };
+      if (data && data.type === "FeatureCollection" && Array.isArray(data.features)) {
+        const features: HotelFC["features"] = data.features.flatMap((f) => {
+          const lng = Number(f.geometry?.coordinates?.[0]), lat = Number(f.geometry?.coordinates?.[1]);
+          if (!Number.isFinite(lng) || !Number.isFinite(lat)) return [];
+          return [{
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [lng, lat] },
+            properties: {
+              id: f.properties?.id || "",
+              region: f.properties?.marqueeRegion || f.properties?.region || null,
+              name: f.properties?.name || "",
+            },
+          }];
+        });
+        if (features.length) return { type: "FeatureCollection", features };
+      }
+    }
+  } catch {
+    // Fall back to the paged API below; the point file is a speed path, not a dependency.
+  }
+
   const PAGE = 200;
   const first = await fetchHotelPage(0, PAGE);
   const total = Number(first.total) || (first.results || []).length;
@@ -1102,7 +1133,7 @@ async function fetchHotelPoints(): Promise<HotelFC> {
 }
 
 async function fetchHotelPage(offset: number, limit: number): Promise<{ total?: number; results?: unknown[] }> {
-  const r = await fetch(`${HOTEL_BASE}/api/luxury-hotels?limit=${limit}&offset=${offset}`, { cache: "force-cache" });
+  const r = await fetch(`${HOTEL_BASE}/api/luxury-hotels?limit=${limit}&offset=${offset}&summary=1`, { cache: "force-cache" });
   if (!r.ok) throw new Error("hotel atlas " + r.status);
   return r.json();
 }
