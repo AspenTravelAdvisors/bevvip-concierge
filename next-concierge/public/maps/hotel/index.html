@@ -299,7 +299,7 @@
   </div>
 </section>
 
-<div class="hint" id="hint"><b>Drag</b> to move &middot; hold <b>&#8984;</b> + <b>scroll</b> to zoom &middot; hold <b>Ctrl</b> + <b>scroll</b> to tilt &middot; <b>tap</b> a pin for details</div>
+<div class="hint" id="hint"><b>Drag</b> to move &middot; hold <b>&#8984;</b> + <b>scroll</b> to zoom &middot; hold <b>Ctrl</b> + <b>drag</b> to tilt &middot; <b>tap</b> a pin for details</div>
 
 <!-- veil: loading + setup help -->
 <div class="veil" id="veil">
@@ -450,7 +450,7 @@ const DETAIL_RANGE=2600;
 const DETAIL_TILT=67;
 const TILT_RESET_START_RANGE=4200;
 const TILT_RESET_END_RANGE=220000;
-let cameraEventsBound=false, compassButtonBound=false, tiltSyncFrame=0;
+let cameraEventsBound=false, tiltSyncFrame=0;
 const CARIBBEAN_COUNTRIES = new Set([
   "anguilla",
   "antigua and barbuda",
@@ -542,17 +542,6 @@ function tiltForRange(tilt,range){
   if(!Number.isFinite(t)) return 0;
   return Math.min(t,maxTiltForRange(range));
 }
-function headingFromNorth(heading){
-  const h=(((Number(heading)||0)%360)+360)%360;
-  return Math.abs((((h+180)%360)+360)%360-180);
-}
-function syncCompass(){
-  const btn=document.getElementById("compassBtn");
-  if(!btn || !map3d) return;
-  const heading=(((Number(map3d.heading)||0)%360)+360)%360;
-  btn.style.setProperty("--heading",(-heading)+"deg");
-  btn.classList.toggle("active",headingFromNorth(heading)>1);
-}
 function syncTiltToRange(){
   tiltSyncFrame=0;
   if(!map3d) return;
@@ -565,36 +554,11 @@ function scheduleTiltSync(){
   if(tiltSyncFrame) return;
   tiltSyncFrame=requestAnimationFrame(syncTiltToRange);
 }
-function resetMapHeading(){
-  if(!map3d) return;
-  stopIdleSpin();
-  stopOrbit();
-  flySeq++;
-  const center=map3d.center || {lat:18.2,lng:-66.5,altitude:0};
-  const range=Number.isFinite(Number(map3d.range)) ? Number(map3d.range) : 15000000;
-  const tilt=tiltForRange(map3d.tilt,range);
-  if(typeof map3d.flyCameraTo==="function"){
-    try{
-      map3d.flyCameraTo({endCamera:{center,range,tilt,heading:0},durationMillis:650});
-      return;
-    }catch(_){}
-  }
-  try{ map3d.heading=0; map3d.tilt=tilt; }catch(_){}
-  syncCompass();
-}
 function bindCameraControls(){
-  const btn=document.getElementById("compassBtn");
-  if(btn && !compassButtonBound){
-    compassButtonBound=true;
-    btn.addEventListener("click",e=>{ e.stopPropagation(); resetMapHeading(); });
-  }
   if(map3d && !cameraEventsBound){
     cameraEventsBound=true;
-    map3d.addEventListener("gmp-headingchange",syncCompass);
-    map3d.addEventListener("gmp-tiltchange",syncCompass);
-    map3d.addEventListener("gmp-rangechange",()=>{ syncCompass(); scheduleTiltSync(); });
+    map3d.addEventListener("gmp-rangechange",scheduleTiltSync);
   }
-  syncCompass();
   scheduleTiltSync();
 }
 
@@ -1307,17 +1271,11 @@ init();
   .mapmenu.open .mm-drop{display:flex;flex-direction:column}
   .mapmenu .mm-drop .dockbtn{height:42px;width:100%;border-radius:9px;justify-content:flex-start;padding:0 13px}
   .mapmenu .mm-drop .dockbtn .pl{display:inline!important}
-  .compassbtn{position:absolute;z-index:1210;top:calc(132px + env(safe-area-inset-top,0px));right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(17,21,29,.82);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:right .32s cubic-bezier(.22,.61,.36,1),border-color .15s,color .15s,background .15s}
-  .compassbtn svg{width:22px;height:22px;transform:rotate(var(--heading,0deg));transition:transform .18s ease}
-  .compassbtn:hover,.compassbtn.active{border-color:var(--accent);color:var(--accent)}
-  .compassbtn:active{transform:scale(.95)}
   /* Slide clear of the details panel when it is open on desktop. */
-  @media (min-width:681px){body.panel-active .mapmenu,body.panel-active .compassbtn{right:312px}}
+  @media (min-width:681px){body.panel-active .mapmenu{right:312px}}
   @media (max-width:680px){
     .mapmenu{top:calc(74px + env(safe-area-inset-top,0px))}
-    .compassbtn{top:calc(122px + env(safe-area-inset-top,0px))}
     body.bvnav-visible .mapmenu{top:calc(112px + env(safe-area-inset-top,0px))}
-    body.bvnav-visible .compassbtn{top:calc(160px + env(safe-area-inset-top,0px))}
     /* Bottom sheets clear the dock, and their scroll never pans the map behind them. */
     .panel .list{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
     .panel .list,.panel .body,.rail .railscroll,.rail .ops,.portlist,.datepop{overscroll-behavior:contain}
@@ -1334,13 +1292,6 @@ init();
     <button class="dockbtn" id="bviReopen" type="button" aria-label="Replay the intro tour"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/><path d="M15.5 8.5 L10.5 10.5 L8.5 15.5 L13.5 13.5 Z" fill="currentColor"/></svg></span><span class="pl">Replay tour</span></button>
   </div>
 </div>
-<button class="compassbtn" id="compassBtn" type="button" aria-label="Reorient map north" title="Reorient map north">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    <path d="M12 3.5 15.2 13 12 11.5 8.8 13 12 3.5Z" fill="currentColor"/>
-    <path d="M12 20.5 8.8 11 12 12.5 15.2 11 12 20.5Z" fill="rgba(244,238,226,.42)"/>
-  </svg>
-</button>
 <script>
 (function(){
   var menu=document.getElementById('mapMenu'),btn=document.getElementById('mapMenuBtn');
@@ -1367,7 +1318,6 @@ init();
   /* Keep the current atlas tab centered in the mobile pill nav. */
   var here=document.querySelector('.bvnav a.is-here');
   if(here&&here.scrollIntoView){try{here.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}}
-  try{ bindCameraControls(); }catch(e){}
 })();
 </script>
 <div class="dock" role="toolbar" aria-label="Map controls">
