@@ -67,6 +67,17 @@
   .rail .rheadr{display:flex;align-items:center;gap:8px}
   .rail .railx{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 auto;-webkit-tap-highlight-color:transparent}
   .rail .railx:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ---------- Collapsed filter tab (top-left) ---------- */
+  .railtab{position:absolute;z-index:1001;top:140px;left:14px;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 15px;border-radius:12px;cursor:pointer;color:var(--ink);
+    background:rgba(17,21,29,.92);border:1px solid var(--line);box-shadow:var(--shadow);
+    -webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
+    font:700 12px/1 var(--sans);letter-spacing:.5px;-webkit-tap-highlight-color:transparent;transition:.15s}
+  .railtab:hover{border-color:var(--accent);color:var(--accent)}
+  .railtab .pi{font-size:16px;line-height:1}
+  body.rail-shown .railtab{opacity:0;visibility:hidden;pointer-events:none}
+  @media (max-width:640px){.railtab{display:none}}
   .rail .rhead h2{font-size:12px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);margin:0}
   .rail .rhead .count{font-size:11.5px;color:var(--accent);font-variant-numeric:tabular-nums;font-weight:700}
   .rail .scroller{overflow-y:auto;padding:8px 12px 12px}
@@ -254,6 +265,7 @@
 <div class="sheetScrim" id="sheetScrim"></div>
 
 <!-- filter rail (hidden on load — opened from the Filters pill; bottom sheet on mobile) -->
+<button type="button" class="railtab" id="railTab" aria-label="Show filters" title="Filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
 <aside class="rail" id="rail">
   <div class="railtoggle" id="railToggle">&#9776;&nbsp; Filters &amp; results</div>
   <div class="sheetHandle" id="railHandle" aria-hidden="true"><span></span></div>
@@ -1067,6 +1079,11 @@ function resetFilters(){
   try{ history.replaceState(null,"",location.pathname); }catch(_){}
   applyFilters();
 }
+// Full reset + zoom back out to the default world view (used by the dock "Show all")
+window.__atlasShowAll=function(){
+  resetFilters();
+  flyTo({lat:18.2,lng:-66.5,range:15000000,tilt:0,heading:0,duration:2000});
+};
 
 /* ---- search autocomplete (local data only) — hotels + city/town/region ---- */
 const PLACE_ICON='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg>';
@@ -1322,6 +1339,7 @@ init();
 </script>
 <div class="dock" role="toolbar" aria-label="Map controls">
   <button id="railPill" class="dockbtn" type="button" aria-label="Show or hide the filters menu" title="Show / hide filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
+  <button id="resetAll" class="dockbtn" type="button" aria-label="Show all hotels" title="Show all hotels"><span class="pi">&#8634;</span><span class="pl">Show all</span></button>
   <button id="searchPill" class="dockbtn" type="button" aria-label="Show or hide search" title="Search a hotel, city or region"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="pl">Search</span></button>
   <button id="panelPill" class="dockbtn detailbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
 </div>
@@ -1346,6 +1364,10 @@ init();
   railPill.addEventListener('click',function(){ railCollapsed=!railCollapsed; syncRail(); });
   var railClose=document.getElementById('railClose');
   if(railClose) railClose.addEventListener('click',function(){ railCollapsed=true; syncRail(); });
+  var railTab=document.getElementById('railTab');
+  if(railTab) railTab.addEventListener('click',function(){ railCollapsed=false; syncRail(); });
+  var resetAll=document.getElementById('resetAll');
+  if(resetAll){ resetAll.addEventListener('click',function(){ if(window.__atlasShowAll) window.__atlasShowAll(); }); }
   panelPill.addEventListener('click',function(){ body.classList.toggle('panel-collapsed'); if(!body.classList.contains('panel-collapsed')) body.classList.remove('search-open'); syncPanel(); });
   // Watch panel open/close to sync pill state and auto-hide filters
   var panel=document.getElementById('panel');
