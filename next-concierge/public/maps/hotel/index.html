@@ -219,6 +219,18 @@
 <style id="basecamp-embed">.bvnav{display:none!important}</style>
 </head>
 <body>
+<!-- hero-embed: ?hero=1 strips the atlas chrome (nav, title, rail, dock) so the
+     marketing landers can run the live map as an ambient hero background.
+     The map itself, its loading veil and the details panel stay. -->
+<script>if(new URLSearchParams(location.search).get('hero')==='1')document.documentElement.classList.add('hero-embed');</script>
+<style>
+  html.hero-embed .topbar,html.hero-embed .searchbar,html.hero-embed .railtab,
+  html.hero-embed .rail,html.hero-embed .dock,html.hero-embed .dockcoach,
+  html.hero-embed .hint,html.hero-embed .logochip,
+  html.hero-embed .bvi-scrim,html.hero-embed .bvi-reopen,
+  html.hero-embed .leaflet-control-zoom,html.hero-embed .stylectl,
+  html.hero-embed .mapmenu{display:none!important}
+</style>
 
 <div class="topbar">
   <nav class="bvnav" aria-label="BeVvip Atlas family">

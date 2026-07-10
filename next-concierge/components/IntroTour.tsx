@@ -97,6 +97,13 @@ export default function IntroTour() {
 
   // Open once per browser on first visit, plus on an explicit request.
   useEffect(() => {
+    // Never auto-open inside an iframe: the marketing landers embed /atlas/*
+    // (and Base Camp itself) as dimmed hero backgrounds, where the welcome
+    // card would bleed through behind the lander's own headline.
+    if (window.self !== window.top) return;
+    // The slides spotlight home-page elements (.home-chat, .chips, the globe),
+    // so first-visit auto-open only makes sense on the home route.
+    if (window.location.pathname !== "/") return;
     let seen = false;
     try {
       seen = window.localStorage.getItem(SEEN_KEY) === "1";

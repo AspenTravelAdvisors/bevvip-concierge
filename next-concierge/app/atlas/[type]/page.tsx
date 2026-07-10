@@ -45,5 +45,11 @@ export default async function AtlasPage({
   const query = qs.toString();
   const src = `/maps/${type}/index.html${query ? `?${query}` : ""}`;
 
-  return <AtlasView label={ATLASES[type].label} src={src} />;
+  // ?hero=1 — ambient mode for the marketing landers, which embed this route
+  // as a dimmed hero background. Hides Base Camp's header here (and, since the
+  // param is forwarded above, the atlas hides its own chrome) so only the map
+  // shows through the blur.
+  const hero = qs.get("hero") === "1";
+
+  return <AtlasView label={ATLASES[type].label} src={src} hero={hero} />;
 }

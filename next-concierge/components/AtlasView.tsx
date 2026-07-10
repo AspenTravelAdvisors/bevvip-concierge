@@ -6,9 +6,19 @@
 // and the Hotel Atlas API proxy (see next.config.ts) just work. The Guide is
 // reached from the atlas's own per-card "Ask The Guide" buttons (which navigate
 // back to Base Camp's home Guide), so there is no separate dock here.
-export default function AtlasView({ label, src }: { label: string; src: string }) {
+// With `hero` (from /atlas/<type>?hero=1) the view is an ambient backdrop for
+// the marketing landers: Base Camp's header is hidden via .atlas-view--hero.
+export default function AtlasView({
+  label,
+  src,
+  hero = false,
+}: {
+  label: string;
+  src: string;
+  hero?: boolean;
+}) {
   return (
-    <div className="atlas-view">
+    <div className={`atlas-view${hero ? " atlas-view--hero" : ""}`}>
       <iframe className="atlas-frame" src={src} title={`${label} — Living Atlas`} />
     </div>
   );

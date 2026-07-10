@@ -1936,3 +1936,11 @@ main.page {
   border: 0;
   display: block;
 }
+
+/* ── Hero (ambient) mode — /atlas/<type>?hero=1 ───────
+   The marketing landers embed the atlas route as a dimmed hero background.
+   Drop Base Camp's header so only the map reads through the blur; the atlas
+   hides its own chrome via the same forwarded param. */
+.app:has(.atlas-view--hero) header.site {
+  display: none;
+}
