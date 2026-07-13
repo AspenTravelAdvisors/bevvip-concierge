@@ -177,6 +177,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || FALLBACK_TOKEN;
   const mapEl = useRef<HTMLDivElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
   const apiRef = useRef<AtlasApi | null>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -715,9 +716,32 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     return () => window.removeEventListener("click", onDoc);
   }, [menuOpen]);
 
-  // Esc exits fullscreen.
+  // Enter/exit true monitor fullscreen via the Fullscreen API. On browsers that
+  // reject it (notably iOS Safari, which only fullscreens <video>), fall back to
+  // the CSS `.fs` fill so the button still expands the map within the window.
+  function toggleFull() {
+    const el = shellRef.current;
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+      return;
+    }
+    if (el?.requestFullscreen) {
+      el.requestFullscreen().catch(() => setIsFull((v) => !v));
+    } else {
+      setIsFull((v) => !v); // CSS fallback
+    }
+  }
+
+  // Keep `isFull` in sync with native fullscreen (covers Esc / browser exit).
   useEffect(() => {
-    if (!isFull) return;
+    function onFsChange() { setIsFull(!!document.fullscreenElement); }
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+
+  // Esc exits the CSS fallback fill (native fullscreen handles its own Esc).
+  useEffect(() => {
+    if (!isFull || document.fullscreenElement) return;
     function onKey(e: KeyboardEvent) { if (e.key === "Escape") setIsFull(false); }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -745,7 +769,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   const legendRows = LEGEND.filter((it) => loaded.has(it.key));
 
   return (
-    <div className={`atlas-map${isFull ? " fs" : ""}`}>
+    <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
       {token && !mapFailed && <div ref={mapEl} className="atlas-canvas" />}
       {token && !mapFailed && !mapReady && (
         <div className="fallback">
@@ -759,7 +783,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           <button
             type="button"
             className="actrl"
-            onClick={() => setIsFull((v) => !v)}
+            onClick={toggleFull}
             aria-pressed={isFull}
             title={isFull ? "Exit fullscreen" : "Fullscreen map"}
           >
