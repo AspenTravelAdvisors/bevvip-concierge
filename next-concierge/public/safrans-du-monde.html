@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safrans du Monde — The Journey of a Lifetime, by Private Jet | Expedition Bucket List</title>
+<meta name="description" content="Safrans du Monde crafts around-the-world private jet expeditions and bespoke luxury journeys from Paris. An Expedition Bucket List feature — every itinerary, from the World Tour Grands Classiques to the 7 Wonders of Asia.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
+
+:root{
+  --ink:#20180f;
+  --ink-soft:#5a4d3d;
+  --paper:#fbf8f3;
+  --paper-2:#f4ede1;
+  --cream:#fffdf9;
+  --gold:#b08d38;
+  --gold-deep:#8a6d24;
+  --gold-soft:#d8c295;
+  --line:rgba(120,98,58,.22);
+  --night:#171009;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Jost',-apple-system,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;line-height:1.12;letter-spacing:.01em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+a{color:inherit;text-decoration:none}
+.eyebrow{
+  font-family:'Jost',sans-serif;font-size:11.5px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--gold-deep);font-weight:500;
+}
+.gold-rule{display:inline-block;width:54px;height:1px;background:var(--gold);vertical-align:middle}
+
+/* ---------- TOP BAR ---------- */
+.topbar{
+  position:sticky;top:0;z-index:60;
+  background:rgba(251,248,243,.86);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+.brandmark{font-family:'Cormorant Garamond',serif;font-size:23px;letter-spacing:.02em;font-weight:600}
+.brandmark small{display:block;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.32em;color:var(--gold-deep);text-transform:uppercase;font-weight:500;margin-top:-2px}
+.navlinks{display:flex;gap:30px;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.navlinks a{transition:color .2s}
+.navlinks a:hover{color:var(--gold-deep)}
+.nav-cta{border:1px solid var(--gold);color:var(--gold-deep);padding:9px 18px;border-radius:2px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;transition:.25s}
+.nav-cta:hover{background:var(--gold);color:#fff}
+@media(max-width:860px){.navlinks{display:none}}
+
+/* ---------- EBL FEATURE RIBBON ---------- */
+.ribbon{background:var(--night);color:#e8dcc4;text-align:center;font-size:11px;letter-spacing:.26em;text-transform:uppercase;padding:9px 20px}
+.ribbon b{color:var(--gold-soft);font-weight:500}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;background:var(--night)}
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.55}
+.hero-sky{position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(120% 90% at 78% 8%, rgba(214,178,110,.24), transparent 55%),
+    linear-gradient(90deg, rgba(13,10,6,.94) 0%, rgba(13,10,6,.76) 42%, rgba(13,10,6,.30) 100%),
+    linear-gradient(160deg,rgba(13,10,6,.55) 0%,rgba(28,20,11,.35) 45%,rgba(42,29,14,.45) 100%);
+}
+.hero-globe{position:absolute;right:-8%;top:50%;transform:translateY(-50%);width:min(680px,62vw);opacity:.55;pointer-events:none;z-index:2;mix-blend-mode:screen}
+.hero-grain{position:absolute;inset:0;opacity:.05;mix-blend-mode:overlay;
+  background-image:radial-gradient(rgba(255,255,255,.9) .5px,transparent .5px);background-size:4px 4px}
+.hero .wrap{position:relative;z-index:3}
+.hero-inner{max-width:660px;color:#f3ead9;padding:60px 0}
+.hero .eyebrow{color:var(--gold-soft)}
+.hero h1{font-size:clamp(44px,7vw,86px);color:#fdf8ee;margin:22px 0 8px;font-weight:500}
+.hero h1 em{font-style:italic;color:var(--gold-soft)}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(19px,2.4vw,25px);color:#d8c9b0;font-style:italic;max-width:520px;margin-bottom:14px}
+.hero-lede{font-size:15px;color:#c3b291;max-width:500px;margin-bottom:34px}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-block;padding:15px 30px;border-radius:2px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;transition:.28s;cursor:pointer;border:1px solid transparent}
+.btn-gold{background:linear-gradient(135deg,#d3b268,#b08d38);color:#241a0a;box-shadow:0 10px 30px -12px rgba(176,141,56,.7)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 38px -12px rgba(176,141,56,.85)}
+.btn-ghost{border-color:rgba(216,194,149,.5);color:#e8dcc4}
+.btn-ghost:hover{border-color:var(--gold-soft);background:rgba(216,194,149,.08)}
+.hero-meta{position:absolute;bottom:34px;left:0;right:0;z-index:3}
+.hero-meta .wrap{display:flex;gap:38px;flex-wrap:wrap;color:#b9a888;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+.hero-meta span b{color:var(--gold-soft);font-weight:500}
+
+/* ---------- STAT STRIP ---------- */
+.stats{background:var(--cream);border-bottom:1px solid var(--line)}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center}
+.stat{padding:40px 18px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat .n{font-family:'Cormorant Garamond',serif;font-size:46px;color:var(--gold-deep);line-height:1}
+.stat .l{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+@media(max-width:720px){.stats .wrap{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}}
+
+/* ---------- SECTION SHELL ---------- */
+section{padding:96px 0}
+.sec-head{max-width:720px;margin:0 auto 58px;text-align:center}
+.sec-head .eyebrow{display:block;margin-bottom:16px}
+.sec-head h2{font-size:clamp(34px,5vw,52px)}
+.sec-head p{color:var(--ink-soft);font-size:16px;margin-top:16px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px}
+
+/* ---------- ABOUT ---------- */
+.about{background:var(--paper)}
+.about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.about-grid h2{font-size:clamp(32px,4.4vw,46px);margin-bottom:22px}
+.about-grid p{color:var(--ink-soft);margin-bottom:18px;font-size:15.5px}
+.about-grid .lead{font-family:'Cormorant Garamond',serif;font-size:23px;font-style:italic;color:var(--ink);line-height:1.5}
+.crest{aspect-ratio:1/1.08;border:1px solid var(--line);border-radius:4px;background:
+  linear-gradient(160deg,#fffdf9,#f1e7d5);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:44px;position:relative;overflow:hidden}
+.crest::before{content:"";position:absolute;inset:14px;border:1px solid var(--gold-soft);border-radius:3px}
+.crest .est{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep)}
+.crest .big{font-family:'Cormorant Garamond',serif;font-size:64px;color:var(--ink);margin:6px 0}
+.crest .loc{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft)}
+.crest .div{width:40px;height:1px;background:var(--gold);margin:20px 0}
+.crest .tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--ink-soft)}
+@media(max-width:820px){.about-grid{grid-template-columns:1fr;gap:40px}.crest{max-width:340px;margin:0 auto}}
+
+/* ---------- FILTER TABS ---------- */
+.filters{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-bottom:48px}
+.filters button{
+  font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  padding:11px 20px;border:1px solid var(--line);background:transparent;color:var(--ink-soft);
+  border-radius:2px;cursor:pointer;transition:.22s}
+.filters button:hover{border-color:var(--gold);color:var(--gold-deep)}
+.filters button.active{background:var(--night);border-color:var(--night);color:var(--gold-soft)}
+
+/* ---------- ITINERARY CARDS ---------- */
+.journeys{background:var(--cream)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px}
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:5px;overflow:hidden;
+  display:flex;flex-direction:column;transition:.3s;position:relative}
+.card:hover{transform:translateY(-4px);box-shadow:0 24px 50px -26px rgba(60,42,14,.4);border-color:var(--gold-soft)}
+.card-plate{height:186px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:16px}
+.card-plate .kicker{position:relative;z-index:3;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#fff;font-weight:500;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.card-plate .yr{position:absolute;top:14px;right:16px;z-index:3;font-family:'Cormorant Garamond',serif;font-size:16px;color:#fff;letter-spacing:.1em;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.plate-svg{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;transition:transform .6s ease}
+.card:hover .card-photo{transform:scale(1.06)}
+.card-plate::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(18,12,4,.72),rgba(18,12,4,.12) 46%,rgba(18,12,4,.28))}
+.card-body{padding:22px 22px 24px;flex:1;display:flex;flex-direction:column}
+.card-body h3{font-size:25px;margin-bottom:6px;letter-spacing:0}
+.route{font-size:13px;color:var(--gold-deep);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;margin-bottom:14px;line-height:1.45}
+.card-desc{font-size:14px;color:var(--ink-soft);margin-bottom:18px;flex:1}
+.specs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.spec{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:var(--paper-2);border:1px solid var(--line);padding:5px 10px;border-radius:2px}
+.card-foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:16px;margin-top:auto}
+.card-foot .depart{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.card-foot a{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.card-foot a:hover{gap:11px}
+.collection-tag{position:absolute;top:0;left:0;z-index:3}
+
+/* ---------- BESPOKE BAND ---------- */
+.bespoke{background:var(--night);color:#eaddc6;position:relative;overflow:hidden}
+.bespoke::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 90% 10%,rgba(176,141,56,.22),transparent 60%)}
+.bespoke .wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.bespoke h2{font-size:clamp(32px,4.6vw,48px);color:#fdf6e9;margin-bottom:18px}
+.bespoke h2 em{color:var(--gold-soft);font-style:italic}
+.bespoke p{color:#c6b492;font-size:15.5px;margin-bottom:16px}
+.dest-cloud{display:flex;flex-wrap:wrap;gap:10px}
+.dest-cloud span{border:1px solid rgba(216,194,149,.3);color:#d8c295;font-size:12px;letter-spacing:.1em;padding:8px 14px;border-radius:2px}
+@media(max-width:820px){.bespoke .wrap{grid-template-columns:1fr;gap:32px}}
+
+/* ---------- WHY / AMENITIES ---------- */
+.why{background:var(--paper-2)}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin-top:12px}
+.why-card{text-align:center;padding:20px}
+.why-card .ic{width:52px;height:52px;margin:0 auto 18px;color:var(--gold-deep)}
+.why-card h3{font-size:23px;margin-bottom:10px}
+.why-card p{font-size:14px;color:var(--ink-soft)}
+@media(max-width:760px){.why-grid{grid-template-columns:1fr;gap:20px}}
+
+/* ---------- EDITORIAL QUOTE ---------- */
+.pull{background:var(--paper);text-align:center}
+.pull .wrap{max-width:860px}
+.pull blockquote{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,4vw,40px);font-style:italic;line-height:1.35;color:var(--ink)}
+.pull .attr{margin-top:26px;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep)}
+
+/* ---------- CTA / CONTACT ---------- */
+.contact{background:var(--night);color:#eaddc6}
+.contact .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.contact h2{font-size:clamp(34px,5vw,52px);color:#fdf6e9;margin-bottom:18px}
+.contact h2 em{font-style:italic;color:var(--gold-soft)}
+.contact .lede{color:#c6b492;font-size:16px;margin-bottom:28px;max-width:440px}
+.contact-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.info-card{background:rgba(255,253,249,.04);border:1px solid rgba(216,194,149,.25);border-radius:5px;padding:32px}
+.info-row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(216,194,149,.14);align-items:flex-start}
+.info-row:last-child{border-bottom:0}
+.info-row .ic{width:20px;height:20px;color:var(--gold-soft);flex-shrink:0;margin-top:3px}
+.info-row .k{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#a8926c}
+.info-row .v{font-size:15px;color:#ecdfc8;font-family:'Cormorant Garamond',serif;font-size:18px}
+.socials{display:flex;gap:14px;margin-top:22px}
+.socials a{width:38px;height:38px;border:1px solid rgba(216,194,149,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);transition:.25s}
+.socials a:hover{background:var(--gold);color:var(--night);border-color:var(--gold)}
+.socials svg{width:17px;height:17px}
+@media(max-width:820px){.contact .wrap{grid-template-columns:1fr;gap:36px}}
+
+/* ---------- FOOTER ---------- */
+footer{background:#0f0b06;color:#8a7a5e;text-align:center;padding:40px 20px;font-size:12px;letter-spacing:.06em}
+footer .fbrand{font-family:'Cormorant Garamond',serif;font-size:20px;color:#d8c295;letter-spacing:.04em;margin-bottom:8px}
+footer .ebl{margin-top:14px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#6b5d44}
+footer a{color:var(--gold-soft)}
+
+.fade{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.fade.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="ribbon">An <b>Expedition&nbsp;Bucket&nbsp;List</b> Feature &nbsp;·&nbsp; Curated Luxury, Reviewed &amp; Recommended</div>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brandmark">Safrans du Monde<small>Paris · Since 2003</small></div>
+    <nav class="navlinks">
+      <a href="#journeys">Expeditions</a>
+      <a href="#precieuse">Collection Précieuse</a>
+      <a href="#bespoke">Bespoke</a>
+      <a href="#about">Maison</a>
+    </nav>
+    <a href="#contact" class="nav-cta">Enquire</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;min-height:92vh">
+  <img class="hero-photo" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80" alt="" onerror="this.remove()">
+  <div class="hero-sky"></div>
+  <svg class="hero-globe" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="gl" cx="38%" cy="34%" r="72%">
+        <stop offset="0%" stop-color="#3a2c17"/><stop offset="60%" stop-color="#211710"/><stop offset="100%" stop-color="#0e0a06"/>
+      </radialGradient>
+      <linearGradient id="rt" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e6c988"/><stop offset="100%" stop-color="#a37f30"/>
+      </linearGradient>
+    </defs>
+    <circle cx="250" cy="250" r="200" fill="url(#gl)" stroke="#5a4622" stroke-width="1"/>
+    <g stroke="#6b5228" stroke-width=".8" fill="none" opacity=".55">
+      <ellipse cx="250" cy="250" rx="200" ry="66"/><ellipse cx="250" cy="250" rx="200" ry="130"/>
+      <ellipse cx="250" cy="250" rx="66" ry="200"/><ellipse cx="250" cy="250" rx="130" ry="200"/>
+      <line x1="50" y1="250" x2="450" y2="250"/><line x1="250" y1="50" x2="250" y2="450"/>
+    </g>
+    <path d="M120 300 Q 250 120 400 210" stroke="url(#rt)" stroke-width="2" fill="none" stroke-dasharray="3 6" opacity=".9"/>
+    <path d="M140 200 Q 260 360 380 300" stroke="url(#rt)" stroke-width="2" fill="none" stroke-dasharray="3 6" opacity=".7"/>
+    <g fill="#e6c988">
+      <circle cx="120" cy="300" r="4"/><circle cx="400" cy="210" r="4"/><circle cx="250" cy="176" r="3"/>
+      <circle cx="140" cy="200" r="4"/><circle cx="380" cy="300" r="4"/><circle cx="290" cy="300" r="3"/>
+    </g>
+    <path d="M300 150 l14 -30 l14 30 l-14 8 z" fill="#e6c988" transform="rotate(28 314 132)" opacity=".95"/>
+  </svg>
+  <div class="hero-grain"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <span class="eyebrow">The Art of Travel · Private Jet Expeditions</span>
+      <h1>The journey of a <em>lifetime</em>, by private jet.</h1>
+      <p class="hero-sub">From Bora Bora to Petra, from Easter Island to Angkor Wat — the world's most remarkable places, gathered into a single seamless voyage.</p>
+      <p class="hero-lede">For twenty years, this Paris maison has chartered the sky so that discovery arrives without friction: no queues, no logistics, no compromise. Only the world, revealed.</p>
+      <div class="hero-cta">
+        <a href="#journeys" class="btn btn-gold">Explore the Expeditions</a>
+        <a href="#contact" class="btn btn-ghost">Speak with a Luxury Expert</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="wrap">
+      <span><b>50</b> guests maximum</span>
+      <span><b>22–25</b> days around the world</span>
+      <span><b>100+</b> countries, bespoke</span>
+      <span><b>Est. 2003</b> · Paris</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="n">20</div><div class="l">Years of Savoir-Faire</div></div>
+    <div class="stat"><div class="n">9–10</div><div class="l">Iconic Stops per Tour</div></div>
+    <div class="stat"><div class="n">50</div><div class="l">Guests, Never More</div></div>
+    <div class="stat"><div class="n">∞</div><div class="l">All-Inclusive, Door to Door</div></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="wrap about-grid fade">
+    <div>
+      <span class="eyebrow"><span class="gold-rule"></span>&nbsp; The Maison</span>
+      <h2>A French house built for those who have seen the postcards — and want the place itself.</h2>
+      <p class="lead">"All of our travels are curated by our team of Luxury Experts."</p>
+      <p>Founded in Paris in 2003, Safrans du Monde was born from a single conviction: that the great journeys of the world should be effortless. The maison designs private-jet expeditions and small-group grand-luxury tours in which every transfer, every table, every threshold has already been arranged — so the traveller is free to simply arrive.</p>
+      <p>Its signature is French <em>savoir-faire</em> applied to logistics: privileged access to sites after hours, legendary palace hotels held under exclusive contract, expert lecturers and local guides, and a concierge cadence that anticipates rather than reacts. Whether a honeymoon, a milestone, or the trip one has promised oneself for a lifetime, the house tailors it to the guest.</p>
+    </div>
+    <div class="crest">
+      <div class="est">Maison de Voyage</div>
+      <div class="big">SdM</div>
+      <div class="loc">Boulevard des Capucines · Paris</div>
+      <div class="div"></div>
+      <div class="tag">Reveal the hidden treasures<br>in every destination.</div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEYS -->
+<section class="journeys" id="journeys">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <span class="eyebrow">The Collections</span>
+      <h2>Every Journey</h2>
+      <p>The complete portfolio — around-the-world private-jet expeditions, intimate grand-luxury tours, and palace escapes. Each curated end to end.</p>
+      <div style="margin-top:26px"><a href="/atlas/jet?brand=safrans" target="_blank" rel="noopener" class="btn btn-gold">✈ Trace every route on the Private Jet Atlas</a></div>
+    </div>
+    <div class="filters fade" id="filters">
+      <button class="active" data-f="all">All Journeys</button>
+      <button data-f="jet">Private Jet Expeditions</button>
+      <button data-f="precieuse">Collection Précieuse</button>
+      <button data-f="palace">Palace Collection</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- BESPOKE -->
+<section class="bespoke" id="bespoke">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" style="color:var(--gold-soft)"><span class="gold-rule"></span>&nbsp; Bespoke Destinations</span>
+      <h2>And if the route you dream of <em>isn't on the map?</em></h2>
+      <p>Beyond the signature expeditions, Safrans du Monde composes entirely private journeys to more than one hundred countries — from an over-water suite in the Maldives to a private audience with a Kyoto tea master, from Rome after closing to a mobile-tented safari beneath the Southern Cross.</p>
+      <p>Tell the maison where your imagination points. The team designs the rest — flights, palaces, guides, and the small impossible things — around you.</p>
+      <div class="dest-cloud" style="margin-top:22px">
+        <span>Maldives</span><span>Tokyo &amp; Kyoto</span><span>Rome</span><span>African Safaris</span><span>Patagonia</span><span>Polynesia</span><span>Petra</span><span>Angkor</span><span>Easter Island</span><span>+ 100 countries</span>
+      </div>
+      <div style="margin-top:30px"><a href="#contact" class="btn btn-gold">Design My Journey</a></div>
+    </div>
+    <div>
+      <img src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=900&q=80" alt="A private over-water villa in the Maldives" loading="lazy"
+           style="width:100%;border-radius:8px;display:block;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);border:1px solid rgba(216,194,149,.2)"
+           onerror="this.style.display='none'">
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="wrap">
+    <div class="sec-head fade">
+      <span class="eyebrow">The Safrans Difference</span>
+      <h2>Why Travel This Way</h2>
+    </div>
+    <div class="why-grid fade">
+      <div class="why-card">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        <h3>Seamless by Air</h3>
+        <p>A dedicated private jet erases the friction of travel — no connections, no queues, no lost days. Nine wonders in the time others spend on two.</p>
+      </div>
+      <div class="why-card">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+        <h3>Legendary Addresses</h3>
+        <p>Palace hotels and grand houses held under exclusive contract — the finest room in the finest place, arranged before you arrive.</p>
+      </div>
+      <div class="why-card">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <h3>Fifty Guests, Never More</h3>
+        <p>Intimate by design. Expert lecturers, private after-hours access, and a concierge who learns your name on day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section class="pull">
+  <div class="wrap fade">
+    <blockquote>"There are trips you take, and there are trips that rearrange how you see the world. This is decidedly the second kind — the whole planet, unrolled at cruising altitude, with someone else carrying the bags."</blockquote>
+    <div class="attr">— Expedition Bucket List, on the private-jet grand tour</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" style="color:var(--gold-soft)"><span class="gold-rule"></span>&nbsp; Plan &amp; Book</span>
+      <h2>Begin your journey of a <em>lifetime.</em></h2>
+      <p class="lede">Every Safrans du Monde journey is planned and reserved for you by <strong style="color:#f0e4cc">Aspen Travel Advisors</strong> — the Virtuoso-accredited agency behind Expedition Bucket List. One advisor, VIP amenities, and door-to-door concierge care from first enquiry to final descent.</p>
+      <div class="contact-cta">
+        <a href="https://aspentraveladvisors.com/contact" target="_blank" rel="noopener" class="btn btn-gold">Plan with Aspen Travel Advisors</a>
+        <a href="/atlas/jet?brand=safrans" target="_blank" rel="noopener" class="btn btn-ghost">✈ Trace the routes on the Atlas</a>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-row">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+        <div><div class="k">Your Advisor</div><div class="v">Aspen Travel Advisors<br>Virtuoso member · Aspen, Colorado</div></div>
+      </div>
+      <div class="info-row">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div><div class="k">Plan your journey</div><div class="v"><a href="https://aspentraveladvisors.com/contact" target="_blank" rel="noopener" style="color:#ecdfc8">aspentraveladvisors.com/contact</a></div></div>
+      </div>
+      <div class="info-row">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><div class="k">Book with VIP amenities</div><div class="v"><a href="https://aspentraveladvisors.com/bevvip-luxury-travel" target="_blank" rel="noopener" style="color:#ecdfc8">BeVvip Luxury Travel</a></div></div>
+      </div>
+      <div class="info-row">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+        <div><div class="k">Featured on</div><div class="v"><a href="https://expeditionbucketlist.com" target="_blank" rel="noopener" style="color:#ecdfc8">Expedition Bucket List</a></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">Safrans du Monde</div>
+  <div>The journey of a lifetime, by private jet · Paris, since 2003</div>
+  <div class="ebl">Featured on <a href="https://expeditionbucketlist.com">Expedition Bucket List</a> · An Aspen Travel Advisors publication</div>
+</footer>
+
+<script>
+const IMG='https://images.unsplash.com/photo-';
+const JOURNEYS = [
+  {
+    cat:"jet", tag:"Private Jet Expedition", title:"World Tour · Grands Classiques", year:"2026",
+    slug:"sdm-world-classiques-2026", q:"grands classiques 2026", img:IMG+"1451187580459-43490279c0fa?w=800&q=75",
+    route:"Petra · Taj Mahal · Angkor Wat · Bora Bora · Easter Island · Machu Picchu",
+    desc:"The flagship circumnavigation — nine to ten of the planet's most iconic sites, gathered into a single seamless voyage aboard a privatised jet.",
+    specs:["22–25 days","8–10 stops","Max 50 guests"], depart:"Departures · Paris & US", hue:220
+  },
+  {
+    cat:"jet", tag:"Private Jet Expedition", title:"World Tour · Grands Classiques", year:"2027",
+    slug:"sdm-world-classiques-2027", q:"grands classiques 2027", img:IMG+"1512100356356-de1b84283e18?w=800&q=75",
+    route:"Marrakech · Serengeti · Angkor Wat · Sydney · Bora Bora · Rio de Janeiro",
+    desc:"The 2027 running of the signature circumnavigation, with a refreshed line-up of legendary destinations and palace stays.",
+    specs:["22–25 days","8–10 stops","Max 50 guests"], depart:"Departures · Paris & US", hue:205
+  },
+  {
+    cat:"jet", tag:"Private Jet Expedition", title:"World Tour · Special Edition", year:"2026",
+    slug:"sdm-world-special-2026", q:"special edition 2026", img:IMG+"1539768942893-daf53e448371?w=800&q=75",
+    route:"Giza · Petra · Maldives · Angkor Wat · Kyoto · Bora Bora · Machu Picchu",
+    desc:"A special-edition global tour with an alternate itinerary of icons and hidden treasures — offered for a single season.",
+    specs:["Around the world","Curated routing","Max 50 guests"], depart:"Departures · Paris & US", hue:30
+  },
+  {
+    cat:"jet", tag:"Private Jet Expedition", title:"7 Wonders of Asia", year:"2026",
+    slug:"sdm-7wonders-asia", q:"wonders asia 2026", img:IMG+"1508009603885-50cf7c579365?w=800&q=75",
+    route:"Taj Mahal · Kathmandu · Bagan · Angkor Wat · Ha Long Bay · Great Wall · Kyoto",
+    desc:"A regional expedition through Asia's most extraordinary temples, cities and landscapes — flown between them by private jet.",
+    specs:["14–20 days","6–9 stops","From Paris"], depart:"Departure · Paris", hue:160
+  },
+  {
+    cat:"jet", tag:"Private Jet Expedition", title:"7 Wonders of Asia", year:"2027",
+    slug:"sdm-7wonders-asia", q:"wonders asia 2027", img:IMG+"1508009603885-50cf7c579365?w=800&q=75",
+    route:"The wonders of the East, 2027 edition",
+    desc:"The next edition of the Asian grand tour — seven wonders of the continent linked in one uninterrupted flight of discovery.",
+    specs:["14–20 days","6–9 stops","From Paris"], depart:"Departure · Paris", hue:150
+  },
+  {
+    cat:"palace", tag:"Palace Collection", title:"New Year's Eve · Ultra Symphony", year:"2026–27",
+    slug:"sdm-nye-symphony", q:"symphony", img:IMG+"1531572753322-ad063cecc140?w=800&q=75",
+    route:"Vienna · Prague · Rome · Paris — a European crescendo across the turning of the year",
+    desc:"Ring in the new year at the height of European elegance — a private-jet escape blending grand galas, culture and legendary hotels.",
+    specs:["8 days","26 Dec – 2 Jan","Palace hotels"], depart:"New Year's voyage", hue:280
+  },
+  {
+    cat:"precieuse", tag:"Collection Précieuse", title:"Japan in Grand Luxury · Spring", year:"2026",
+    slug:"sdm-japan", q:"japan spring", img:IMG+"1490806843957-31f4c9a91c65?w=800&q=75",
+    route:"Tokyo · Mt Fuji · Kyoto · Nara · Itsukushima's floating torii",
+    desc:"An intimate small-group journey through Japan at the height of sakura — temples, gardens and grand ryokan, in grand luxury.",
+    specs:["Small group","Spring season","Grand luxury"], depart:"Seasonal · Spring 2026", hue:340
+  },
+  {
+    cat:"precieuse", tag:"Collection Précieuse", title:"Japan in Grand Luxury · Autumn", year:"2026",
+    slug:"sdm-japan", q:"japan autumn", img:IMG+"1493976040374-85c8e12f0c0e?w=800&q=75",
+    route:"Tokyo · Mt Fuji · Kyoto · Nara · Hiroshima — Japan ablaze in autumn",
+    desc:"The autumn counterpart — Japan's landscapes ablaze in red and gold, explored in an intimate, expertly guided small group.",
+    specs:["Small group","Autumn season","Grand luxury"], depart:"Seasonal · Autumn 2026", hue:20
+  },
+  {
+    cat:"precieuse", tag:"Collection Précieuse", title:"South America in Grand Luxury", year:"",
+    slug:"sdm-south-america", q:"south america", img:IMG+"1526392060635-9d6019884377?w=800&q=75",
+    route:"Atacama Desert · Machu Picchu · Iguazu Falls · Rio · Buenos Aires",
+    desc:"From the star-fields of the Atacama across South America's most dramatic landscapes, in a curated small-group tour.",
+    specs:["Small group","Grand luxury","Guided"], depart:"By departure date", hue:35
+  },
+  {
+    cat:"precieuse", tag:"Collection Précieuse", title:"Majesty of Southern Africa", year:"2025",
+    slug:"sdm-southern-africa", q:"southern africa", img:IMG+"1516426122078-c23e76319801?w=800&q=75",
+    route:"Cape Town · Sabi Sand · Victoria Falls · Okavango Delta · Chobe",
+    desc:"Big-game safari and cultural discovery across Southern Africa, with separate US and Europe departures for a seamless connection.",
+    specs:["Small group","Safari","US & EU departures"], depart:"Departures · US & Europe", hue:45
+  },
+  {
+    cat:"precieuse", tag:"Collection Précieuse", title:"Rajasthan in Grand Luxury", year:"",
+    slug:"sdm-rajasthan", q:"rajasthan", img:IMG+"1548013146-72479768bada?w=800&q=75",
+    route:"Delhi · Taj Mahal · Jaipur · Jodhpur · Udaipur — India's land of kings",
+    desc:"A journey through India's land of kings — forts, palace hotels and the colour of Rajasthan, in an intimate grand-luxury group.",
+    specs:["Small group","Palace stays","Grand luxury"], depart:"By departure date", hue:355
+  },
+  {
+    cat:"precieuse", tag:"Collection Précieuse", title:"Tour de France in Grand Luxury", year:"",
+    slug:"sdm-tour-de-france", q:"tour de france", img:IMG+"1502602898657-3e91760cbb34?w=800&q=75",
+    route:"Paris · Loire Valley · Bordeaux · Provence · Riviera · Champagne",
+    desc:"The maison's home turf — a grand-luxury tour of France, from the châteaux and gardens of the Loire to its finest tables.",
+    specs:["Small group","France","Grand luxury"], depart:"By departure date", hue:210
+  }
+];
+
+const grid = document.getElementById('grid');
+function plateSvg(hue){
+  return `<svg class="plate-svg" viewBox="0 0 400 160" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="p${hue}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="hsl(${hue},32%,26%)"/>
+        <stop offset="100%" stop-color="hsl(${(hue+30)%360},40%,14%)"/>
+      </linearGradient>
+    </defs>
+    <rect width="400" height="160" fill="url(#p${hue})"/>
+    <g stroke="rgba(230,201,136,.32)" stroke-width="1" fill="none">
+      <ellipse cx="200" cy="80" rx="240" ry="52"/><ellipse cx="200" cy="80" rx="150" ry="52"/>
+    </g>
+    <path d="M40 120 Q200 20 360 70" stroke="rgba(230,201,136,.85)" stroke-width="1.6" fill="none" stroke-dasharray="2 6"/>
+    <circle cx="40" cy="120" r="3.5" fill="#e6c988"/><circle cx="360" cy="70" r="3.5" fill="#e6c988"/>
+    <path d="M230 46 l9 -18 l9 18 l-9 5 z" fill="#e6c988" transform="rotate(30 239 37)"/>
+  </svg>`;
+}
+const ATLAS='/atlas/jet?brand=safrans';
+function atlasLink(j){ return ATLAS+(j.q?'&q='+encodeURIComponent(j.q):''); }
+function render(filter){
+  grid.innerHTML='';
+  JOURNEYS.filter(j=>filter==='all'||j.cat===filter).forEach(j=>{
+    const el=document.createElement('article');
+    el.className='card fade in';
+    el.id=j.slug;
+    el.innerHTML=`
+      <div class="card-plate">
+        ${plateSvg(j.hue)}
+        <img class="card-photo" src="${j.img}" alt="${j.title}" loading="lazy" onerror="this.remove()">
+        <span class="kicker">${j.tag}</span>
+        ${j.year?`<span class="yr">${j.year}</span>`:''}
+      </div>
+      <div class="card-body">
+        <h3>${j.title}</h3>
+        <div class="route">${j.route}</div>
+        <p class="card-desc">${j.desc}</p>
+        <div class="specs">${j.specs.map(s=>`<span class="spec">${s}</span>`).join('')}</div>
+        <div class="card-foot">
+          <span class="depart">${j.depart}</span>
+          <a href="${atlasLink(j)}" target="_blank" rel="noopener" title="Trace this route on the Private Jet Atlas">Trace on the Atlas ↗</a>
+        </div>
+      </div>`;
+    grid.appendChild(el);
+  });
+}
+render('all');
+
+document.querySelectorAll('#filters button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    render(b.dataset.f);
+  });
+});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

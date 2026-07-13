@@ -666,7 +666,7 @@ const map=L.map('map',{worldCopyJump:true,minZoom:1,maxZoom:8,zoomControl:false}
 L.control.zoom({position:'bottomleft'}).addTo(map);
 window.__atlasMap=map;
 /* ── base-map styles + picker (default / dark / satellite, swappable) ────── */
-const DATA_CREDIT='Itineraries: Four Seasons, Aman, TCS, Nat Geo &middot; Departures: Brian Harris / Virtuoso';
+const DATA_CREDIT='Itineraries: Four Seasons, Aman, TCS, Nat Geo, Safrans du Monde &middot; Departures: Brian Harris / Virtuoso';
 const _cr={esri:'Imagery &copy; Esri, Maxar, Earthstar Geographics',carto:'&copy; OpenStreetMap contributors &copy; CARTO'};
 const BASES={
   voyager:{label:'Voyager',sw:'#cfe0ec',make:()=>L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:8,subdomains:'abcd',attribution:_cr.carto+' &middot; '+DATA_CREDIT})},

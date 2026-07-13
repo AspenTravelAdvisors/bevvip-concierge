@@ -45,6 +45,12 @@
       "short": "Blue Parallel",
       "domain": "blueparallel.com",
       "color": "#1677a3"
+    },
+    "safrans": {
+      "short": "Safrans du Monde",
+      "domain": "safransdumonde.com",
+      "color": "#b08d38",
+      "glyph": "✦"
     }
   },
   "REGIONS": {
@@ -4973,6 +4979,546 @@
         "ll": [
           7.96,
           -82.03
+        ]
+      }
+    ],
+    "sdm-world-classiques-2026": [
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      },
+      {
+        "n": "Petra",
+        "r": "MIDEAST",
+        "ll": [
+          30.33,
+          35.44
+        ]
+      },
+      {
+        "n": "Taj Mahal, Agra",
+        "r": "INDIA",
+        "ll": [
+          27.17,
+          78.04
+        ]
+      },
+      {
+        "n": "Angkor Wat",
+        "r": "SEASIA",
+        "ll": [
+          13.41,
+          103.87
+        ]
+      },
+      {
+        "n": "Bora Bora",
+        "r": "POLY",
+        "ll": [
+          -16.5,
+          -151.74
+        ]
+      },
+      {
+        "n": "Easter Island",
+        "r": "SAM",
+        "ll": [
+          -27.11,
+          -109.35
+        ]
+      },
+      {
+        "n": "Machu Picchu",
+        "r": "SAM",
+        "ll": [
+          -13.16,
+          -72.54
+        ]
+      },
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      }
+    ],
+    "sdm-world-classiques-2027": [
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      },
+      {
+        "n": "Marrakech",
+        "r": "AFRICA",
+        "ll": [
+          31.63,
+          -7.98
+        ]
+      },
+      {
+        "n": "Serengeti",
+        "r": "AFRICA",
+        "ll": [
+          -2.33,
+          34.83
+        ]
+      },
+      {
+        "n": "Taj Mahal, Agra",
+        "r": "INDIA",
+        "ll": [
+          27.17,
+          78.04
+        ]
+      },
+      {
+        "n": "Angkor Wat",
+        "r": "SEASIA",
+        "ll": [
+          13.41,
+          103.87
+        ]
+      },
+      {
+        "n": "Sydney",
+        "r": "ANZ",
+        "ll": [
+          -33.87,
+          151.21
+        ]
+      },
+      {
+        "n": "Bora Bora",
+        "r": "POLY",
+        "ll": [
+          -16.5,
+          -151.74
+        ]
+      },
+      {
+        "n": "Easter Island",
+        "r": "SAM",
+        "ll": [
+          -27.11,
+          -109.35
+        ]
+      },
+      {
+        "n": "Rio de Janeiro",
+        "r": "SAM",
+        "ll": [
+          -22.91,
+          -43.17
+        ]
+      },
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      }
+    ],
+    "sdm-world-special-2026": [
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      },
+      {
+        "n": "Pyramids of Giza",
+        "r": "AFRICA",
+        "ll": [
+          29.98,
+          31.13
+        ]
+      },
+      {
+        "n": "Petra",
+        "r": "MIDEAST",
+        "ll": [
+          30.33,
+          35.44
+        ]
+      },
+      {
+        "n": "Maldives",
+        "r": "INDIA",
+        "ll": [
+          3.2,
+          73.22
+        ]
+      },
+      {
+        "n": "Angkor Wat",
+        "r": "SEASIA",
+        "ll": [
+          13.41,
+          103.87
+        ]
+      },
+      {
+        "n": "Kyoto",
+        "r": "EASTASIA",
+        "ll": [
+          35.01,
+          135.77
+        ]
+      },
+      {
+        "n": "Bora Bora",
+        "r": "POLY",
+        "ll": [
+          -16.5,
+          -151.74
+        ]
+      },
+      {
+        "n": "Machu Picchu",
+        "r": "SAM",
+        "ll": [
+          -13.16,
+          -72.54
+        ]
+      },
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      }
+    ],
+    "sdm-7wonders-asia": [
+      {
+        "n": "Taj Mahal, Agra",
+        "r": "INDIA",
+        "ll": [
+          27.17,
+          78.04
+        ]
+      },
+      {
+        "n": "Boudhanath Stupa, Kathmandu",
+        "r": "INDIA",
+        "ll": [
+          27.72,
+          85.36
+        ]
+      },
+      {
+        "n": "Bagan",
+        "r": "SEASIA",
+        "ll": [
+          21.17,
+          94.86
+        ]
+      },
+      {
+        "n": "Angkor Wat",
+        "r": "SEASIA",
+        "ll": [
+          13.41,
+          103.87
+        ]
+      },
+      {
+        "n": "Ha Long Bay",
+        "r": "SEASIA",
+        "ll": [
+          20.91,
+          107.18
+        ]
+      },
+      {
+        "n": "Great Wall, Beijing",
+        "r": "EASTASIA",
+        "ll": [
+          40.43,
+          116.57
+        ]
+      },
+      {
+        "n": "Kyoto",
+        "r": "EASTASIA",
+        "ll": [
+          35.01,
+          135.77
+        ]
+      }
+    ],
+    "sdm-japan": [
+      {
+        "n": "Tokyo",
+        "r": "EASTASIA",
+        "ll": [
+          35.68,
+          139.69
+        ]
+      },
+      {
+        "n": "Hakone / Mt Fuji",
+        "r": "EASTASIA",
+        "ll": [
+          35.23,
+          139.02
+        ]
+      },
+      {
+        "n": "Kyoto",
+        "r": "EASTASIA",
+        "ll": [
+          35.01,
+          135.77
+        ]
+      },
+      {
+        "n": "Nara",
+        "r": "EASTASIA",
+        "ll": [
+          34.68,
+          135.8
+        ]
+      },
+      {
+        "n": "Itsukushima, Hiroshima",
+        "r": "EASTASIA",
+        "ll": [
+          34.3,
+          132.32
+        ]
+      }
+    ],
+    "sdm-south-america": [
+      {
+        "n": "Santiago",
+        "r": "SAM",
+        "ll": [
+          -33.45,
+          -70.67
+        ]
+      },
+      {
+        "n": "Atacama Desert",
+        "r": "SAM",
+        "ll": [
+          -23.85,
+          -68.2
+        ]
+      },
+      {
+        "n": "Machu Picchu",
+        "r": "SAM",
+        "ll": [
+          -13.16,
+          -72.54
+        ]
+      },
+      {
+        "n": "Iguazu Falls",
+        "r": "SAM",
+        "ll": [
+          -25.69,
+          -54.44
+        ]
+      },
+      {
+        "n": "Rio de Janeiro",
+        "r": "SAM",
+        "ll": [
+          -22.91,
+          -43.17
+        ]
+      },
+      {
+        "n": "Buenos Aires",
+        "r": "SAM",
+        "ll": [
+          -34.6,
+          -58.38
+        ]
+      }
+    ],
+    "sdm-southern-africa": [
+      {
+        "n": "Cape Town",
+        "r": "AFRICA",
+        "ll": [
+          -33.92,
+          18.42
+        ]
+      },
+      {
+        "n": "Sabi Sand, Kruger",
+        "r": "AFRICA",
+        "ll": [
+          -24.8,
+          31.5
+        ]
+      },
+      {
+        "n": "Victoria Falls",
+        "r": "AFRICA",
+        "ll": [
+          -17.92,
+          25.86
+        ]
+      },
+      {
+        "n": "Okavango Delta",
+        "r": "AFRICA",
+        "ll": [
+          -19.28,
+          22.9
+        ]
+      },
+      {
+        "n": "Chobe",
+        "r": "AFRICA",
+        "ll": [
+          -18.35,
+          24.65
+        ]
+      }
+    ],
+    "sdm-rajasthan": [
+      {
+        "n": "Delhi",
+        "r": "INDIA",
+        "ll": [
+          28.61,
+          77.21
+        ]
+      },
+      {
+        "n": "Taj Mahal, Agra",
+        "r": "INDIA",
+        "ll": [
+          27.17,
+          78.04
+        ]
+      },
+      {
+        "n": "Jaipur",
+        "r": "INDIA",
+        "ll": [
+          26.91,
+          75.79
+        ]
+      },
+      {
+        "n": "Jodhpur",
+        "r": "INDIA",
+        "ll": [
+          26.24,
+          73.02
+        ]
+      },
+      {
+        "n": "Udaipur",
+        "r": "INDIA",
+        "ll": [
+          24.58,
+          73.68
+        ]
+      }
+    ],
+    "sdm-tour-de-france": [
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
+        ]
+      },
+      {
+        "n": "Loire Valley",
+        "r": "EUROPE",
+        "ll": [
+          47.39,
+          0.69
+        ]
+      },
+      {
+        "n": "Bordeaux",
+        "r": "EUROPE",
+        "ll": [
+          44.84,
+          -0.58
+        ]
+      },
+      {
+        "n": "Provence",
+        "r": "EUROPE",
+        "ll": [
+          43.95,
+          4.81
+        ]
+      },
+      {
+        "n": "French Riviera, Nice",
+        "r": "EUROPE",
+        "ll": [
+          43.7,
+          7.27
+        ]
+      },
+      {
+        "n": "Champagne, Reims",
+        "r": "EUROPE",
+        "ll": [
+          49.26,
+          4.03
+        ]
+      }
+    ],
+    "sdm-nye-symphony": [
+      {
+        "n": "Vienna",
+        "r": "EUROPE",
+        "ll": [
+          48.21,
+          16.37
+        ]
+      },
+      {
+        "n": "Prague",
+        "r": "EUROPE",
+        "ll": [
+          50.08,
+          14.44
+        ]
+      },
+      {
+        "n": "Rome",
+        "r": "EUROPE",
+        "ll": [
+          41.9,
+          12.5
+        ]
+      },
+      {
+        "n": "Paris",
+        "r": "EUROPE",
+        "ll": [
+          48.85,
+          2.35
         ]
       }
     ]
@@ -15565,6 +16111,107 @@
           "n": "Fernando de Noronha"
         }
       ]
+    },
+    {
+      "n": "The World Tour · Grands Classiques 2026",
+      "b": "safrans",
+      "route": "sdm-world-classiques-2026",
+      "u": "/safrans-du-monde.html#sdm-world-classiques-2026",
+      "days": 24,
+      "world": true,
+      "onDemand": true
+    },
+    {
+      "n": "The World Tour · Grands Classiques 2027",
+      "b": "safrans",
+      "route": "sdm-world-classiques-2027",
+      "u": "/safrans-du-monde.html#sdm-world-classiques-2027",
+      "days": 24,
+      "world": true,
+      "onDemand": true
+    },
+    {
+      "n": "The World Tour · Special Edition 2026",
+      "b": "safrans",
+      "route": "sdm-world-special-2026",
+      "u": "/safrans-du-monde.html#sdm-world-special-2026",
+      "days": 23,
+      "world": true,
+      "onDemand": true
+    },
+    {
+      "n": "7 Wonders of Asia by Private Jet 2026",
+      "b": "safrans",
+      "route": "sdm-7wonders-asia",
+      "u": "/safrans-du-monde.html#sdm-7wonders-asia",
+      "days": 17,
+      "onDemand": true
+    },
+    {
+      "n": "7 Wonders of Asia by Private Jet 2027",
+      "b": "safrans",
+      "route": "sdm-7wonders-asia",
+      "u": "/safrans-du-monde.html#sdm-7wonders-asia",
+      "days": 17,
+      "onDemand": true
+    },
+    {
+      "n": "New Year's Eve Ultra Symphony",
+      "b": "safrans",
+      "route": "sdm-nye-symphony",
+      "u": "/safrans-du-monde.html#sdm-nye-symphony",
+      "days": 8,
+      "d": "12/26/2026",
+      "r": "1/2/2027",
+      "onDemand": false
+    },
+    {
+      "n": "Japan in Grand Luxury · Spring",
+      "b": "safrans",
+      "route": "sdm-japan",
+      "u": "/safrans-du-monde.html#sdm-japan",
+      "days": 12,
+      "onDemand": true
+    },
+    {
+      "n": "Japan in Grand Luxury · Autumn",
+      "b": "safrans",
+      "route": "sdm-japan",
+      "u": "/safrans-du-monde.html#sdm-japan",
+      "days": 12,
+      "onDemand": true
+    },
+    {
+      "n": "South America in Grand Luxury",
+      "b": "safrans",
+      "route": "sdm-south-america",
+      "u": "/safrans-du-monde.html#sdm-south-america",
+      "days": 14,
+      "onDemand": true
+    },
+    {
+      "n": "Majesty of Southern Africa",
+      "b": "safrans",
+      "route": "sdm-southern-africa",
+      "u": "/safrans-du-monde.html#sdm-southern-africa",
+      "days": 13,
+      "onDemand": true
+    },
+    {
+      "n": "Rajasthan in Grand Luxury",
+      "b": "safrans",
+      "route": "sdm-rajasthan",
+      "u": "/safrans-du-monde.html#sdm-rajasthan",
+      "days": 11,
+      "onDemand": true
+    },
+    {
+      "n": "Tour de France in Grand Luxury",
+      "b": "safrans",
+      "route": "sdm-tour-de-france",
+      "u": "/safrans-du-monde.html#sdm-tour-de-france",
+      "days": 9,
+      "onDemand": true
     }
   ]
 }
