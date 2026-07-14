@@ -187,7 +187,7 @@ const Q_STOPWORDS = new Set([
 // All params optional and combinable (SPEC §4). Returns the full unpaginated
 // match set; pagination is applied separately in query().
 function filterHotels(params = {}) {
-  const { q, brand, program, category, country, region, bbox, ids, intent } = params;
+  const { q, brand, program, category, country, region, bbox, places, ids, intent } = params;
   let list = hotels;
   let coreMatch = null; // populated by the q filter; identity matches rank first
 
@@ -220,6 +220,27 @@ function filterHotels(params = {}) {
       list = list.filter(
         (h) => h.lng >= minLng && h.lng <= maxLng && h.lat >= minLat && h.lat <= maxLat
       );
+    }
+  }
+
+  // places: an OR list of concrete city/area names, the decomposition of a
+  // colloquial region the `q` token-AND cannot match (French Riviera -> Nice,
+  // Cannes, Antibes, ...). A hotel matches when any place name appears in its
+  // city, adminRegion, country, or name. ANDs with country/bbox so those still
+  // narrow. Supplied comma- or pipe-separated by search-offerings.
+  if (places != null && String(places).trim() !== "") {
+    // Whole-word match, not substring: "Nice" must not match "Venice", and
+    // "Eze" must not match "Trapeze". \b handles the hyphens in "Saint-Tropez".
+    const res = String(places)
+      .split(/[|,]/)
+      .map((s) => fold(s).trim())
+      .filter(Boolean)
+      .map((w) => new RegExp("\\b" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b"));
+    if (res.length) {
+      list = list.filter((h) => {
+        const hay = [h.city, h.adminRegion, h.country, h.name].map(fold).join(" ");
+        return res.some((re) => re.test(hay));
+      });
     }
   }
   if (q != null && String(q).trim() !== "") {

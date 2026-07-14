@@ -10,6 +10,7 @@
 // Guide queries each the same way, now resolved in-process (no external deploys).
 
 import atlasDispatch from "./atlas/index.js";
+import { resolveFringeLocation } from "./location-resolver.js";
 
 // next-concierge serves every atlas backend in-process (lib/atlas), so the
 // Guide no longer crosses the network for inventory. HOTEL_API_BASE is now just
@@ -493,6 +494,24 @@ export const SEARCH_OFFERINGS_TOOL = {
         description:
           "Specific destination place, city, town, island, resort area, or neighborhood, " +
           "e.g. Aspen, Paris, Kyoto, Maui, Beverly Hills. Use this whenever the traveler names a place.",
+      },
+      places: {
+        type: "array",
+        items: { type: "string" },
+        description:
+          "When the traveler names a colloquial or sub-national AREA that is not one of the marquee " +
+          "regions (French Riviera, Amalfi Coast, the Hamptons, Napa, the Cotswolds, Costa Smeralda), " +
+          "list the concrete cities/towns that area covers so the search matches real inventory instead " +
+          "of an unmatchable label, e.g. French Riviera -> [\"Nice\",\"Cannes\",\"Antibes\",\"Saint-Tropez\"]. " +
+          "Also set country. Prefer this over putting the colloquial name in place.",
+      },
+      bbox: {
+        type: "string",
+        description:
+          "Approximate geographic bounding box \"minLng,minLat,maxLng,maxLat\" for an AREA the inventory " +
+          "may not name literally. Provide your best estimate alongside places/country for hotel searches " +
+          "so results match by location, not spelling. French Riviera is roughly \"6.55,43.15,7.55,43.85\". " +
+          "Hotels only; omit for cruise/jet/rail.",
       },
       brand: {
         type: "string",
@@ -1237,6 +1256,19 @@ async function searchHotels(input, fetchImpl) {
     || (!chartKey && working.region ? String(working.region).trim() : "");
   const queryInput = placeCountry ? { ...working, place: "" } : working;
   const { place, q, descriptor, landmark } = hotelQueryForInput(queryInput, regionText);
+
+  // Model-supplied geographic decomposition of a colloquial area (the "French
+  // Riviera -> Nice/Cannes/... + bbox" path). places OR-match on city/area; bbox
+  // filters by coordinates, so results match by location instead of a label the
+  // inventory never spells. Both ride every query in the fallback chain below,
+  // like region/country, so loosening q keeps the geography bounded.
+  const placesParam = Array.isArray(input.places)
+    ? input.places.map((s) => String(s || "").trim()).filter(Boolean).join("|")
+    : String(input.places || "").trim();
+  const bboxParam = Array.isArray(input.bbox)
+    ? input.bbox.map(Number).filter(Number.isFinite).join(",")
+    : String(input.bbox || "").trim();
+
   const notes = [];
   if (landmark) {
     notes.push(
@@ -1251,6 +1283,8 @@ async function searchHotels(input, fetchImpl) {
     if (regionKey) p.set("region", regionKey);
     if (brand && !dropBrand) p.set("brand", brand);
     if (country) p.set("country", country);
+    if (placesParam) p.set("places", placesParam);
+    if (bboxParam) p.set("bbox", bboxParam);
     if (input.intent) p.set("intent", String(input.intent).trim());
     if (month) p.set("month", month);
     p.set("limit", String(candidateLimit));
@@ -1304,6 +1338,50 @@ async function searchHotels(input, fetchImpl) {
         : `Nothing matched "${descriptor}" exactly; showing strong approved options in ${where} instead.`);
     }
   }
+  // AI fringe-location fallback (last resort). The traveler named an area the
+  // inventory does not index by name (French Riviera, Amalfi Coast) and nothing
+  // above matched. Resolve it to concrete geography with the model and retry
+  // once, matching by bounding box + constituent cities rather than the label.
+  // Best-effort: any miss leaves j untouched and the honest notes above stand.
+  if (!count(j)) {
+    const phrase = [place, regionText].filter(Boolean).join(" ").trim();
+    if (phrase) {
+      const resolved = await resolveFringeLocation(phrase);
+      if (resolved) {
+        // bbox + places + country carry the recall; the marquee region (when
+        // any) drives only the map chart below, never the filter, so an area
+        // hotel with a null region field is not dropped from the retry.
+        const rp = new URLSearchParams();
+        const rCountry = normalizeCountry(resolved.country || "");
+        if (rCountry) rp.set("country", rCountry);
+        if (resolved.bbox) rp.set("bbox", resolved.bbox.join(","));
+        if (resolved.places && resolved.places.length) rp.set("places", resolved.places.join("|"));
+        if (brand) rp.set("brand", brand);
+        if (input.intent) rp.set("intent", String(input.intent).trim());
+        if (month) rp.set("month", month);
+        rp.set("limit", String(candidateLimit));
+        try {
+          const rr = await fetchImpl(`${HOTEL_API_BASE}/api/luxury-hotels?${rp.toString()}`);
+          if (rr.ok) {
+            const rj = await rr.json();
+            if (count(rj)) {
+              j = rj;
+              if (!chartKey && resolved.region) chartKey = resolved.region;
+              const where = (resolved.places && resolved.places.length)
+                ? resolved.places.slice(0, 4).join(", ")
+                : (rCountry || resolved.label || phrase);
+              notes.push(
+                `"${phrase}" is not indexed by name in the approved set; showing the strongest ` +
+                `approved stays across ${resolved.label || phrase} (${where}). ` +
+                `An advisor can target the exact town.`
+              );
+            }
+          }
+        } catch { /* resolver retry failed; keep the honest zero-result notes */ }
+      }
+    }
+  }
+
   const advisorCategory = advisorLedCategoryFrom(input);
   if (advisorCategory) {
     notes.push(

@@ -1,0 +1,12 @@
+{
+  "french riviera": {"label":"the French Riviera","country":"France","region":"mediterranean","places":["Nice","Cannes","Antibes","Saint-Tropez","Saint-Jean-Cap-Ferrat","Eze","Villefranche","Menton","Vence","Ramatuelle"],"bbox":[6.55,43.15,7.55,43.85]},
+  "cote d azur": {"label":"the Côte d'Azur","country":"France","region":"mediterranean","places":["Nice","Cannes","Antibes","Saint-Tropez","Saint-Jean-Cap-Ferrat","Eze","Villefranche","Menton"],"bbox":[6.55,43.15,7.55,43.85]},
+  "amalfi coast": {"label":"the Amalfi Coast","country":"Italy","region":"mediterranean","places":["Positano","Amalfi","Ravello","Praiano","Sorrento"],"bbox":[14.45,40.55,14.75,40.72]},
+  "italian riviera": {"label":"the Italian Riviera","country":"Italy","region":"mediterranean","places":["Portofino","Santa Margherita Ligure","Cinque Terre","Genoa","San Remo"],"bbox":[7.5,43.75,9.9,44.45]},
+  "tuscany": {"label":"Tuscany","country":"Italy","region":null,"places":["Florence","Siena","Montalcino","Chianti","San Gimignano","Lucca","Pienza"],"bbox":[9.7,42.4,12.4,44.5]},
+  "the cotswolds": {"label":"the Cotswolds","country":"United Kingdom","region":null,"places":["Cotswolds","Cheltenham","Burford","Great Milton","Eynsham","Bruton","Kingham"],"bbox":[-2.3,51.6,-1.4,52.1]},
+  "the hamptons": {"label":"the Hamptons","country":"United States","region":null,"places":["East Hampton","Southampton","Montauk","Sag Harbor","Bridgehampton"],"bbox":[-72.6,40.85,-71.85,41.1]},
+  "napa valley": {"label":"Napa Valley","country":"United States","region":null,"places":["Napa","Yountville","St. Helena","Calistoga","Rutherford"],"bbox":[-122.6,38.2,-122.15,38.65]},
+  "costa smeralda": {"label":"the Costa Smeralda","country":"Italy","region":"mediterranean","places":["Porto Cervo","Porto Rotondo","Olbia","Arzachana"],"bbox":[9.3,40.9,9.6,41.2]},
+  "the swiss alps": {"label":"the Swiss Alps","country":"Switzerland","region":null,"places":["Zermatt","St. Moritz","Gstaad","Verbier","Grindelwald","Interlaken"],"bbox":[6.8,45.9,10.3,47.0]}
+}
