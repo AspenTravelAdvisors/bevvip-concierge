@@ -310,6 +310,37 @@ function villaPins(params = {}) {
   };
 }
 
+// Living Atlas overlay feed: one pin per villa region, in the same
+// {REGIONS: {key: {coord: [lat, lng], name, count}}} shape the other atlas
+// overlay feeds use, so AtlasShell's fetchOverlay consumes it unchanged.
+// Keys are the dataset's own region names ("Caribbean", "Europe"), which the
+// villa atlas filters natively — the overlay's ?region= click-through just works.
+// Longitude uses a circular mean so a region spanning the antimeridian
+// (South Pacific, US incl. Hawaii) centers on its villas, not near 0°.
+function villaOverlayRegions() {
+  const groups = new Map();
+  for (const v of loadVillas().villas) {
+    if (!v.region || !Number.isFinite(v.lat) || !Number.isFinite(v.lon)) continue;
+    let g = groups.get(v.region);
+    if (!g) {
+      g = { count: 0, sumLat: 0, sumSin: 0, sumCos: 0 };
+      groups.set(v.region, g);
+    }
+    g.count++;
+    g.sumLat += v.lat;
+    const rad = (v.lon * Math.PI) / 180;
+    g.sumSin += Math.sin(rad);
+    g.sumCos += Math.cos(rad);
+  }
+  const r4 = (n) => Math.round(n * 1e4) / 1e4;
+  const REGIONS = {};
+  for (const [name, g] of groups) {
+    const lng = (Math.atan2(g.sumSin / g.count, g.sumCos / g.count) * 180) / Math.PI;
+    REGIONS[name] = { coord: [r4(g.sumLat / g.count), r4(lng)], name, count: g.count };
+  }
+  return { REGIONS };
+}
+
 // --- single record + taxonomy -------------------------------------------------
 
 function getVillaById(id) {
@@ -349,6 +380,7 @@ function getMatches(criteria = {}) {
 module.exports = {
   loadVillas,
   searchVillas,
+  villaOverlayRegions,
   resolveRegion,
   resolveDestination,
   resolveLocation,

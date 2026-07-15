@@ -11,7 +11,7 @@
 // transitional allowlist). The dataset changes only when the source JSON is
 // re-uploaded, so responses are CDN-cached for a day per URL.
 
-import { searchVillas, villaPins } from "@/lib/villas.js";
+import { searchVillas, villaPins, villaOverlayRegions } from "@/lib/villas.js";
 import { isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -38,6 +38,11 @@ export async function GET(req) {
 
   if (params.view === "pins") {
     return new Response(JSON.stringify(villaPins(params)), { status: 200, headers });
+  }
+
+  // Living Atlas overlay: per-region pins in the shared REGIONS shape.
+  if (params.view === "overlay") {
+    return new Response(JSON.stringify(villaOverlayRegions()), { status: 200, headers });
   }
 
   let perPage = parseInt(params.perPage, 10);

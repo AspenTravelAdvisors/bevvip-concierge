@@ -1995,9 +1995,13 @@ main.page {
   background: #0b0d12;
   margin-bottom: 14px;
 }
+/* Sized with height/width rather than absolute inset: mapbox-gl.css loads at
+   runtime (after this sheet) and its .mapboxgl-map { position: relative } wins
+   the cascade at equal specificity, which collapsed an inset-positioned box
+   to zero height. 100% of the fixed-height wrap is immune to that override. */
 .villa-map {
-  position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .villa-map-fallback {
   position: absolute;

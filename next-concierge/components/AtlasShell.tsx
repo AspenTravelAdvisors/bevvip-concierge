@@ -38,10 +38,10 @@ const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
 const ROUTES_ENABLED = false;   // set true to activate progressive route layer
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
-// Master atlas overlays: cruise / jet / yacht / world-cruise / rail region
-// pins, each from its own live app data. Colors stay distinguishable on the
-// dark globe.
-type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise" | "train";
+// Master atlas overlays: cruise / jet / yacht / world-cruise / rail / villa
+// region pins, each from its own live app data. Colors stay distinguishable on
+// the dark globe.
+type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise" | "train" | "villa";
 const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; data: string }> = {
   cruise: {
     label: "Expedition Cruises",
@@ -73,6 +73,16 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
     url: ATLASES.train.base,
     data: `${ATLASES.train.base}/itinerary.json`,
   },
+  // Villa pins come from the villa search API's overlay view (the villa atlas
+  // is server-rendered; there is no static /maps/villa data file). Keys are
+  // the villa dataset's region names, which /atlas/villa?region= filters
+  // natively, so the shared ?region= click-through works unchanged.
+  villa: {
+    label: "Private Villas",
+    color: "#a8d08d",
+    url: ATLASES.villa.base,
+    data: "/api/villas/search?view=overlay",
+  },
 };
 
 // Globe-only pin nudges: each atlas centers a region on its own itineraries, so
@@ -81,6 +91,9 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
 const PIN_NUDGE: Partial<Record<OverlayKey, Record<string, [number, number]>>> = {
   worldcruise: { MED: [20, 36.5] },
   yacht: { MED: [9.36, 41.24], SEASIA: [104.7, 6.6], CENTRALAM: [-81.99, 9.67] },
+  // Hawaii's villa volume drags the US circular mean into the Pacific; pin the
+  // mainland instead.
+  villa: { "United States": [-98.5, 38.5] },
 };
 
 // Fallback region centers [lng,lat,zoom] used to focus a ?region= deep link
@@ -102,6 +115,7 @@ const LEGEND: { key: string; label: string; color: string }[] = [
   { key: "yacht", label: OVERLAYS.yacht.label, color: OVERLAYS.yacht.color },
   { key: "worldcruise", label: OVERLAYS.worldcruise.label, color: OVERLAYS.worldcruise.color },
   { key: "train", label: OVERLAYS.train.label, color: OVERLAYS.train.color },
+  { key: "villa", label: OVERLAYS.villa.label, color: OVERLAYS.villa.color },
 ];
 
 // Selectable Mapbox basemaps surfaced via the style menu. Each carries its own
@@ -953,6 +967,7 @@ function overlayMeta(key: OverlayKey, count?: number): string {
   if (key === "worldcruise") return `World Cruises${count ? ` · ${count} voyages calling here` : ""}`;
   if (key === "jet") return `Private Jet Journeys${count ? ` · ${count} journeys` : ""}`;
   if (key === "train") return `Rail Journeys${count ? ` · ${count} departures` : ""}`;
+  if (key === "villa") return `Private Villas${count ? ` · ${count} villas` : ""}`;
   return `Luxury Hotel Yachts${count ? ` · ${count} charters` : ""}`;
 }
 
@@ -1069,6 +1084,7 @@ async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
         )
         .filter((pts) => pts.length >= 2);
     }
+    if (key === "villa") return []; // villas are stays, not routes
     // yacht + worldcruise: itinerary.json → TRIPS array + PORTS: {name:[lat,lng]}
     const base = key === "yacht" ? ATLASES.yacht.base : ATLASES.worldcruise.base;
     const r = await fetch(`${base}/itinerary.json`);
