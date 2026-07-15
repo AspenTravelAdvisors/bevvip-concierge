@@ -56,6 +56,16 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_TRAIN_ATLAS_BASE || "/maps/train",
     sampleRegions: ["BRITAIN", "EUROPE", "CANADA", "EASTASIA"],
   },
+  // Villa is the first server-rendered atlas: no /maps/villa iframe page
+  // exists. base points at the in-app route itself; the /atlas/[type] iframe
+  // route excludes it (app/atlas/villa is its own static route).
+  villa: {
+    type: "villa",
+    label: "Villa Atlas",
+    tagline: "Private villas and vacation homes, advisor arranged worldwide",
+    base: "/atlas/villa",
+    sampleRegions: ["Caribbean", "United States", "Europe", "Mexico"],
+  },
 };
 
 export const ATLAS_TYPES = Object.keys(ATLASES) as OfferingType[];

@@ -719,6 +719,7 @@ function handoffCategory(meta: GuideMeta): string {
   if (type === "yacht") return "yacht";
   if (type === "worldcruise") return "worldcruise";
   if (type === "train") return "train";
+  if (type === "villa") return "villa";
   if (type === "cruise") return region === "antarctica" ? "antarctica" : "expedition";
   return "generic";
 }
@@ -733,6 +734,7 @@ const HANDOFF_CTA: Record<string, string> = {
   yacht: "Show My Best Yacht Options",
   worldcruise: "Compare World Cruises",
   train: "Compare Rail Journeys",
+  villa: "Request This Villa Through Your Advisor",
   generic: "Continue With A Specialist",
 };
 

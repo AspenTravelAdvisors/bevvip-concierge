@@ -281,6 +281,7 @@ function statusForToolUses(toolUses: Anthropic.ToolUseBlock[]): string {
   if (type === "cruise") return "Checking approved Expedition Cruise and yacht inventory...";
   if (type === "jet") return "Checking private jet journey inventory...";
   if (type === "yacht") return "Checking luxury hotel yacht sailings...";
+  if (type === "villa") return "Checking private villa inventory...";
   return "Checking approved hotel inventory...";
 }
 

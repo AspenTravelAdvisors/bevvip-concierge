@@ -10,7 +10,11 @@ import AtlasView from "@/components/AtlasView";
 // so the traveler never leaves Base Camp.
 
 export function generateStaticParams() {
-  return Object.keys(ATLASES).map((type) => ({ type }));
+  // villa has no /maps/villa iframe page — it's the server-rendered atlas at
+  // the static app/atlas/villa route, which wins over this dynamic segment.
+  return Object.keys(ATLASES)
+    .filter((type) => type !== "villa")
+    .map((type) => ({ type }));
 }
 
 export async function generateMetadata({
@@ -30,7 +34,9 @@ export default async function AtlasPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { type } = await params;
-  if (!isOfferingType(type)) notFound();
+  // "villa" never reaches here at runtime (the static app/atlas/villa route
+  // takes precedence); the guard covers direct generateStaticParams misuse.
+  if (!isOfferingType(type) || type === "villa") notFound();
 
   // Forward every deep-link param through to the embedded atlas so a shared
   // link (built by the atlas's own Share button, which now targets /atlas/<type>)

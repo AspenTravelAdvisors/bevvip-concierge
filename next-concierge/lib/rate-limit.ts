@@ -12,7 +12,18 @@
 const WINDOW_MS = Number(process.env.GUIDE_RATE_WINDOW_MS) || 60_000;
 const MAX_REQUESTS = Number(process.env.GUIDE_RATE_MAX) || 10;
 
-// ip -> { count, resetAt }
+// Optional per-route budget override. The Guide's 10/min default is right for
+// a model-backed endpoint, but far too tight for a browsing surface like the
+// villa search API (map pins + pagination legitimately burst past 10/min).
+// `bucket` keeps each route's counter separate so browsing the villa atlas
+// never eats the traveler's Guide budget.
+export interface RateLimitOptions {
+  max?: number;
+  windowMs?: number;
+  bucket?: string;
+}
+
+// bucket:ip -> { count, resetAt }
 const hits = new Map<string, { count: number; resetAt: number }>();
 
 function clientIp(req: Request): string {
@@ -26,14 +37,17 @@ function clientIp(req: Request): string {
 export function isRateLimited(
   req: Request,
   extraHeaders: Record<string, string> = {},
+  opts: RateLimitOptions = {},
 ): Response | null {
+  const max = opts.max ?? MAX_REQUESTS;
+  const windowMs = opts.windowMs ?? WINDOW_MS;
   const now = Date.now();
-  const ip = clientIp(req);
+  const key = `${opts.bucket ?? "guide"}:${clientIp(req)}`;
 
-  let rec = hits.get(ip);
+  let rec = hits.get(key);
   if (!rec || now >= rec.resetAt) {
-    rec = { count: 0, resetAt: now + WINDOW_MS };
-    hits.set(ip, rec);
+    rec = { count: 0, resetAt: now + windowMs };
+    hits.set(key, rec);
   }
   rec.count++;
 
@@ -42,7 +56,7 @@ export function isRateLimited(
     for (const [k, v] of hits) if (now >= v.resetAt) hits.delete(k);
   }
 
-  if (rec.count > MAX_REQUESTS) {
+  if (rec.count > max) {
     const retryAfter = Math.max(1, Math.ceil((rec.resetAt - now) / 1000));
     return Response.json(
       { error: "Too many requests. Please slow down and try again shortly." },
@@ -51,7 +65,7 @@ export function isRateLimited(
         headers: {
           ...extraHeaders,
           "Retry-After": String(retryAfter),
-          "X-RateLimit-Limit": String(MAX_REQUESTS),
+          "X-RateLimit-Limit": String(max),
           "X-RateLimit-Remaining": "0",
           "X-RateLimit-Reset": String(Math.ceil(rec.resetAt / 1000)),
         },

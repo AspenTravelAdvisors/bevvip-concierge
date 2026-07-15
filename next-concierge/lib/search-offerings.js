@@ -10,6 +10,7 @@
 // Guide queries each the same way, now resolved in-process (no external deploys).
 
 import atlasDispatch from "./atlas/index.js";
+import villaLib from "./villas.js";
 import { resolveFringeLocation } from "./location-resolver.js";
 
 // next-concierge serves every atlas backend in-process (lib/atlas), so the
@@ -455,15 +456,19 @@ export const SEARCH_OFFERINGS_TOOL = {
     "itineraries), including lines like Regent Seven Seas, Crystal, Oceania, and Cunard. " +
     "Ordinary (non-world) Luxury Cruises by those lines remain advisor-led outside the live inventory. " +
     "Type train searches live luxury rail journeys (Venice Simplon-Orient-Express, Royal Scotsman, " +
-    "Rocky Mountaineer, Eastern & Oriental Express, and rail tours worldwide).",
+    "Rocky Mountaineer, Eastern & Oriental Express, and rail tours worldwide). " +
+    "Type villa searches 3,900+ private villas and vacation homes worldwide (Caribbean, US, Europe, " +
+    "Mexico and beyond) — whole-property rentals filtered by destination, party size (sleeps), " +
+    "bedrooms, and nightly-rate ceiling. Villas are advisor-arranged: no live availability or " +
+    "instant booking.",
   input_schema: {
     type: "object",
     properties: {
       type: {
         type: "string",
-        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "any"],
+        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "villa", "any"],
         description:
-          "Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
+          "Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Use villa for private villa or vacation-home rentals — whole-property stays, often for larger parties. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
       },
       q: {
         type: "string",
@@ -479,7 +484,7 @@ export const SEARCH_OFFERINGS_TOOL = {
           "first-timer", "uhnw", "wellness", "foodie", "value", "simpleVip",
         ],
         description:
-          "Guest-fit intent when clear. Applies across all five Atlases: honeymoon, couples, family, multigen, celebration, business, active, expedition, culture, wildlife, photography, first-timer, uhnw, wellness, foodie, value, or simpleVip.",
+          "Guest-fit intent when clear. Applies across all seven Atlases: honeymoon, couples, family, multigen, celebration, business, active, expedition, culture, wildlife, photography, first-timer, uhnw, wellness, foodie, value, or simpleVip.",
       },
       region: {
         type: "string",
@@ -547,6 +552,22 @@ export const SEARCH_OFFERINGS_TOOL = {
       adults: {
         type: "integer",
         description: "Adults in the party, when stated.",
+      },
+      sleeps: {
+        type: "integer",
+        description:
+          "For type villa: minimum sleeping capacity, e.g. 10 for a party of ten. " +
+          "Set it whenever the traveler states a party size for a villa search.",
+      },
+      bedrooms: {
+        type: "integer",
+        description: "For type villa: minimum bedroom count, when the traveler asks by bedrooms.",
+      },
+      priceMax: {
+        type: "integer",
+        description:
+          "For type villa: maximum nightly rate in USD when the traveler states a budget cap, " +
+          "e.g. 3000 for 'under $3,000 a night'. Villas with pricing on request are excluded under a cap.",
       },
       childrenAges: {
         type: "array",
@@ -1616,6 +1637,152 @@ function interleaveResults(groups, perCategoryLimit, { allowDuplicateBrands = fa
   return candidates;
 }
 
+// ── Villa channel ────────────────────────────────────────────────────────────
+// Villas of Distinction inventory, served in-process by lib/villas.js (no
+// atlasFetch URL round-trip — the villa search params are richer than the
+// shared query contract). Villas are advisor-arranged: the records carry a
+// "from" nightly rate or "Call for Pricing", never live availability, and the
+// CTA is always the advisor, never a booking engine.
+
+// Marquee region keys -> the villa dataset's own region names. Broader than a
+// marquee in places (mediterranean -> Europe), but better than zeroing out.
+const VILLA_REGION_FOR_MARQUEE = {
+  caribbean: "Caribbean",
+  mediterranean: "Europe",
+  norway: "Europe",
+  japan: "Asia",
+  polynesia: "South Pacific",
+  amazon: "South America",
+  patagonia: "South America",
+  namibia: "Africa",
+  alaska: "United States",
+};
+
+// Trim a normalized villa record to what the Guide renders on a card. The
+// supplier deep link is intentionally NOT included: it is an internal
+// reference, never client-facing (guardrail).
+function villaCard(v) {
+  return {
+    type: "villa",
+    id: String(v.id),
+    name: v.name,
+    category: "Villa",
+    city: v.location,
+    country: v.destination,
+    region: v.region,
+    sleeps: v.sleeps,
+    bedrooms: v.bedrooms,
+    bathrooms: v.bathrooms,
+    price: v.priceDisplay,          // "From $X/nt" or "Call for Pricing" — never $0
+    nightlyFromUsd: v.nightlyFromUsd, // null => pricing on request
+    featured: v.featured,
+    hasSpecials: v.hasSpecials,
+    specialCategory: v.specialCategory,
+    summary: v.summary,
+    thumb: v.imageUrl,
+    photos: v.imageUrl ? [v.imageUrl] : [],
+    lat: v.lat,
+    lng: v.lon,
+    deepLink: `/atlas/villa?ids=${encodeURIComponent(v.id)}`,
+    advisorLed: true,
+  };
+}
+
+// Map the tool input's geography onto the villa taxonomy: a place resolves as
+// destination, then location, then region; a country as destination, then
+// region. Anything unresolvable falls into the q text so it still constrains.
+function villaParamsFromInput(input = {}) {
+  const params = {};
+  const extraQ = [];
+
+  const marquee = normalizeRegionKey(input.region);
+  const regionRaw = marquee ? VILLA_REGION_FOR_MARQUEE[marquee] || "" : String(input.region || "").trim();
+  if (regionRaw && villaLib.resolveRegion(regionRaw)) params.region = regionRaw;
+  else if (regionRaw) extraQ.push(regionRaw);
+
+  const tryGeo = (raw, includeLocation) => {
+    const s = String(raw || "").trim();
+    if (!s) return;
+    if (!params.destination && villaLib.resolveDestination(s)) params.destination = s;
+    else if (includeLocation && !params.location && villaLib.resolveLocation(s)) params.location = s;
+    else if (!params.region && villaLib.resolveRegion(s)) params.region = s;
+    else extraQ.push(s);
+  };
+  tryGeo(input.place, true);
+  for (const p of Array.isArray(input.places) ? input.places : []) tryGeo(p, true);
+  tryGeo(normalizeCountry(input.country), false);
+
+  const sleeps = parseInt(input.sleeps, 10);
+  const adults = parseInt(input.adults, 10);
+  const kids = Array.isArray(input.childrenAges) ? input.childrenAges.length : 0;
+  const party = (Number.isFinite(adults) && adults > 0 ? adults : 0) + kids;
+  if (Number.isFinite(sleeps) && sleeps > 0) params.sleepsMin = sleeps;
+  else if (party > 0) params.sleepsMin = party;
+
+  const bedrooms = parseInt(input.bedrooms, 10);
+  if (Number.isFinite(bedrooms) && bedrooms > 0) params.bedroomsMin = bedrooms;
+
+  const priceMax = parseInt(input.priceMax, 10);
+  if (Number.isFinite(priceMax) && priceMax > 0) params.priceMax = priceMax;
+
+  const q = [stripDateFromQuery(input.q), ...extraQ].filter(Boolean).join(" ").trim();
+  if (q) params.q = q;
+  return params;
+}
+
+async function searchVillasChannel(input = {}) {
+  const limit = requestedLimit(input);
+  const params = villaParamsFromInput(input);
+  try {
+    let r = villaLib.searchVillas({ ...params, perPage: MAX_CANDIDATE_LIMIT });
+    let note = null;
+    // Descriptor words that aren't in the villa text plus a real geographic
+    // anchor AND-filter to zero; retry once without q (same rule as the atlases).
+    const geoAnchor = !!(params.region || params.destination || params.location);
+    if (!r.total && params.q && geoAnchor) {
+      const { q: _q, ...withoutQ } = params;
+      const retry = villaLib.searchVillas({ ...withoutQ, perPage: MAX_CANDIDATE_LIMIT });
+      if (retry.total) {
+        r = retry;
+        note = "Some descriptive words did not match the villa records; broadened to the area to surface live inventory.";
+      }
+    }
+    // Be honest about what a price cap hides: "Call for Pricing" villas can't
+    // be verified against a budget, so they're excluded, not misrepresented.
+    if (params.priceMax) {
+      const { priceMax: _p, ...uncapped } = params;
+      const hidden = villaLib.searchVillas({ ...uncapped, perPage: 1 }).facets.callForPricing;
+      if (hidden > 0) {
+        const cfpNote = `${hidden} villa${hidden === 1 ? "" : "s"} in this area price on request and are excluded under the stated cap; an advisor can confirm those rates.`;
+        note = note ? `${note} ${cfpNote}` : cfpNote;
+      }
+    }
+    const results = r.results.slice(0, limit).map(villaCard);
+    return {
+      type: "villa",
+      total: r.total,
+      count: results.length,
+      results,
+      deepLink: deepLinkWithResultIds(r.deepLink, results),
+      chartRegion: chartRegionForTravelInput(input, results),
+      advisorLed: true,
+      ...(note ? { note } : {}),
+    };
+  } catch (err) {
+    return {
+      type: "villa",
+      total: 0,
+      count: 0,
+      results: [],
+      deepLink: null,
+      chartRegion: normalizeRegionKey(input.region),
+      unavailable: true,
+      advisorLed: true,
+      note: "Villa inventory is momentarily unreachable. An advisor can source private villas directly.",
+    };
+  }
+}
+
 async function searchCruisesAndYachts(input, fetchImpl) {
   const limit = requestedLimit(input);
   // No brand named → sweep one sailing per operator across both atlases so every
@@ -1703,6 +1870,9 @@ async function dispatchSearchOfferings(input = {}, opts = {}) {
   // reach an advisor, not be silently answered with yacht inventory.
   if ((type === "cruise" || type === "yacht" || type === "any") && luxuryCruiseAdvisorIntent(input, type)) {
     return advisorLedLuxuryCruiseResult(input);
+  }
+  if (type === "villa") {
+    return searchVillasChannel(input);
   }
   if (type === "hotel" || type === "any") {
     return searchHotels(input, fetchImpl);
@@ -1792,6 +1962,11 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
   const hasCruiseIntent = /\b(cruise|cruises)\b/i.test(text);
   const hasYachtIntent = /\b(yacht|yachts)\b/i.test(text);
   const hasTrainIntent = /\b(train|trains|rail|railway|railways|orient[\s-]*express|rocky\s+mountaineer|royal\s+scotsman)\b/i.test(text);
+  // "overwater villa" is a hotel-room descriptor (Maldives-style), not a
+  // whole-property rental — leave those on the hotel path.
+  const hasVillaIntent =
+    /\b(villas?|vacation\s+(?:home|homes|rental|rentals)|home\s+rentals?)\b/i.test(text) &&
+    !/\boverwater\b/i.test(text);
   let out = input;
   if (!out.intent) {
     const intent = inferIntentFromText(`${text} ${input.q || ""}`);
@@ -1809,6 +1984,7 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
     if (hasCruiseIntent) return { ...out, type: "cruise" };
     if (hasYachtIntent) return { ...out, type: "yacht" };
     if (hasTrainIntent) return { ...out, type: "train" };
+    if (hasVillaIntent) return { ...out, type: "villa" };
   }
 
   if (type !== "hotel" && type !== "any") return out;

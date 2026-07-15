@@ -437,7 +437,9 @@
     "relationship": "preferred",
     "commissionTier": "low",
     "commissionPct": 11,
-    "appliesTo": [],
+    "appliesTo": [
+      "villa"
+    ],
     "type": "villa",
     "alwaysInclude": false,
     "aliases": [
@@ -446,7 +448,7 @@
     "notes": [
       {
         "audience": "all",
-        "note": "11% commissionable rates; 10% under $10k. Villa-only — no current atlas",
+        "note": "11% commissionable rates; 10% under $10k. Villa supplier; only villas-of-distinction has Atlas inventory today",
         "weight": 1,
         "clientSafe": false
       }
@@ -481,7 +483,9 @@
     "relationship": "preferred",
     "commissionTier": "low",
     "commissionPct": 10,
-    "appliesTo": [],
+    "appliesTo": [
+      "villa"
+    ],
     "type": "villa",
     "alwaysInclude": false,
     "aliases": [
@@ -491,7 +495,7 @@
     "notes": [
       {
         "audience": "all",
-        "note": "10% rental referral; 5% client-home; 25% of net on home purchase. Villa-only — no current atlas",
+        "note": "10% rental referral; 5% client-home; 25% of net on home purchase. Villa supplier; only villas-of-distinction has Atlas inventory today",
         "weight": 1,
         "clientSafe": false
       }
@@ -882,7 +886,9 @@
     "relationship": "preferred",
     "commissionTier": "low",
     "commissionPct": 10,
-    "appliesTo": [],
+    "appliesTo": [
+      "villa"
+    ],
     "type": "villa",
     "alwaysInclude": false,
     "aliases": [
@@ -892,7 +898,31 @@
     "notes": [
       {
         "audience": "all",
-        "note": "10% net of villa rental price. Villa-only — no current atlas",
+        "note": "10% net of villa rental price. Villa supplier; only villas-of-distinction has Atlas inventory today",
+        "weight": 1,
+        "clientSafe": false
+      }
+    ]
+  },
+  "villas-of-distinction": {
+    "brandId": "villas-of-distinction",
+    "relationship": "preferred",
+    "commissionTier": null,
+    "commissionPct": null,
+    "appliesTo": [
+      "villa"
+    ],
+    "type": "villa",
+    "alwaysInclude": false,
+    "aliases": [
+      "vod",
+      "wth villas",
+      "villainfo"
+    ],
+    "notes": [
+      {
+        "audience": "all",
+        "note": "Villa Atlas source supplier (3,902 villas, static feed dated 2026-07-15). commissionPct intentionally null: confirm the current WTH agent commission before quoting or ranking on it; do not guess a number.",
         "weight": 1,
         "clientSafe": false
       }

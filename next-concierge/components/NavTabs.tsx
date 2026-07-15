@@ -1,6 +1,6 @@
 "use client";
 
-// The header collection tabs. All seven live in a single row that scrolls
+// The header collection tabs. All eight live in a single row that scrolls
 // sideways whenever it can't fit — landscape phones, tablets, half-width
 // windows — instead of clipping the tail of the row off the screen. A soft
 // fade is shown only on the side that actually has hidden tabs, so the
@@ -21,6 +21,7 @@ const ATLAS_TABS = [
   { href: "/atlas/yacht", label: "Yachts", color: "#e0b84a" },
   { href: "/atlas/worldcruise", label: "World", color: "#45d6c2" },
   { href: "/atlas/train", label: "Rails", color: "#e08d5f" },
+  { href: "/atlas/villa", label: "Villas", color: "#a8d08d" },
 ];
 
 export default function NavTabs() {
