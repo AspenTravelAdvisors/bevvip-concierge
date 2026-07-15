@@ -1995,6 +1995,17 @@ main.page {
   background: #0b0d12;
   margin-bottom: 14px;
 }
+/* Fullscreen (CSS fallback + native): fill the viewport like .atlas-map.fs. */
+.villa-map-wrap.fs,
+.villa-map-wrap:fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  height: auto;
+  border-radius: 0;
+  border: 0;
+  margin: 0;
+}
 /* Sized with height/width rather than absolute inset: mapbox-gl.css loads at
    runtime (after this sheet) and its .mapboxgl-map { position: relative } wins
    the cascade at equal specificity, which collapsed an inset-positioned box

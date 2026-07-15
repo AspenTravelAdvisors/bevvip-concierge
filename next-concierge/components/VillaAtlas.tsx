@@ -91,14 +91,36 @@ function requestAdvisorHref(v: Villa): string {
   )}`;
 }
 
+// The house basemaps, same set as the Living Atlas (AtlasShell). The villa map
+// is a flat mercator inset, so fog is skipped; the Standard-family styles keep
+// their dusk light preset so the water stays deep against the brass pins.
+type StyleKey = "dark" | "satellite" | "dusk";
+const VILLA_STYLES: Record<StyleKey, { label: string; url: string; sw: string; light?: string }> = {
+  dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", sw: "#11151c" },
+  satellite: {
+    label: "Satellite",
+    url: "mapbox://styles/mapbox/standard-satellite",
+    sw: "#3b5a3a",
+    light: "dusk",
+  },
+  dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", sw: "#caa46a", light: "dusk" },
+};
+
 export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) {
   const [params, setParams] = useState<Params>(initialParams);
   const [data, setData] = useState<SearchPayload>(initial);
   const [loading, setLoading] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
+  const [styleKey, setStyleKey] = useState<StyleKey>("dark");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isFull, setIsFull] = useState(false);
+  const [shared, setShared] = useState(false);
   const mapEl = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
   const mapReadyRef = useRef(false);
+  const styleKeyRef = useRef<StyleKey>("dark");
+  const pinsFCRef = useRef<unknown>(null);
   const firstRender = useRef(true);
 
   // Filter params only (no page/sort): the map pins track these.
@@ -132,7 +154,9 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
           }));
         const src = m.getSource("villas") as MBGeoJSONSource | undefined;
         if (!src) return;
-        src.setData({ type: "FeatureCollection", features });
+        const fc = { type: "FeatureCollection", features };
+        pinsFCRef.current = fc; // cached so a basemap switch repaints without refetching
+        src.setData(fc);
         if (q && features.length > 0 && features.length < 3600) {
           let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
           for (const f of features) {
@@ -204,17 +228,32 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
           projection: "mercator",
         }) as MBMap;
         mapRef.current = map;
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+        // bottom-right: top-right belongs to the fullscreen/style/share stack
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
         const popup = new mapboxgl.Popup({ closeButton: true, offset: 10, maxWidth: "250px" });
 
-        map.on("load", () => {
-          map.addSource("villas", {
-            type: "geojson",
-            data: { type: "FeatureCollection", features: [] },
-            cluster: true,
-            clusterMaxZoom: 11,
-            clusterRadius: 42,
-          });
+        // style.load fires on the first load AND after every basemap switch —
+        // a setStyle wipes all sources/layers, so this is the one place they
+        // are (re)added. Click handlers are wired once; Mapbox delegates them
+        // by layer id, so they survive the layers being re-created.
+        let wired = false;
+        map.on("style.load", () => {
+          const s = VILLA_STYLES[styleKeyRef.current];
+          if (s.light) {
+            try {
+              (map as { setConfigProperty(g: string, k: string, v: string): void })
+                .setConfigProperty("basemap", "lightPreset", s.light);
+            } catch { /* classic styles have no config */ }
+          }
+          if (!map.getSource("villas")) {
+            map.addSource("villas", {
+              type: "geojson",
+              data: pinsFCRef.current || { type: "FeatureCollection", features: [] },
+              cluster: true,
+              clusterMaxZoom: 11,
+              clusterRadius: 42,
+            });
+          }
           map.addLayer({
             id: "villa-clusters",
             type: "circle",
@@ -268,6 +307,16 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
             },
           });
 
+          if (!wired) {
+            wired = true;
+            wireHandlers();
+          }
+          mapReadyRef.current = true;
+          // A basemap switch repaints from the cache; only the first load fetches.
+          if (!pinsFCRef.current) refreshPins();
+        });
+
+        function wireHandlers() {
           map.on("click", "villa-clusters", (e: MBEvent) => {
             const f = map.queryRenderedFeatures(e.point, { layers: ["villa-clusters"] })[0];
             if (!f) return;
@@ -313,9 +362,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
             map.on("mouseenter", layer, () => (map.getCanvas().style.cursor = "pointer"));
             map.on("mouseleave", layer, () => (map.getCanvas().style.cursor = ""));
           }
-          mapReadyRef.current = true;
-          refreshPins();
-        });
+        }
       })
       .catch(() => setMapFailed(true));
     return () => {
@@ -331,6 +378,87 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   useEffect(() => {
     refreshPins();
   }, [filterQuery, refreshPins]);
+
+  // ── map controls: basemap, fullscreen, share ─────────────────────────────
+  function switchStyle(k: StyleKey) {
+    if (k === styleKeyRef.current) return;
+    styleKeyRef.current = k;
+    setStyleKey(k);
+    setMenuOpen(false);
+    try {
+      mapRef.current?.setStyle(VILLA_STYLES[k].url); // style.load re-adds the layers
+    } catch { /* keep the current basemap */ }
+  }
+
+  // Native fullscreen with the same CSS `.fs` fill fallback the Living Atlas
+  // uses (iOS Safari only fullscreens <video>).
+  function toggleFull() {
+    const el = wrapRef.current;
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+      return;
+    }
+    if (el?.requestFullscreen) {
+      el.requestFullscreen().catch(() => setIsFull((v) => !v));
+    } else {
+      setIsFull((v) => !v);
+    }
+  }
+  useEffect(() => {
+    const onFsChange = () => setIsFull(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+  useEffect(() => {
+    if (!isFull || document.fullscreenElement) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsFull(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isFull]);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        mapRef.current?.resize();
+      } catch { /* noop */ }
+    }, 60);
+    return () => clearTimeout(t);
+  }, [isFull]);
+
+  // Share the current view: the URL already carries every active filter
+  // (kept in sync via history.replaceState). Native share sheet where the
+  // platform has one, clipboard copy elsewhere.
+  async function shareView() {
+    const url = window.location.href;
+    const confirmCopied = () => {
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Villa Atlas", url });
+      } catch { /* user dismissed the sheet */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      confirmCopied();
+    } catch {
+      // Clipboard API blocked (permissions / older browsers): legacy shim.
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        confirmCopied();
+      } catch { /* nothing left to try */ }
+    }
+  }
 
   // ── derived UI state ─────────────────────────────────────────────────────
   const totalPages = Math.max(1, Math.ceil(data.total / data.perPage));
@@ -357,11 +485,60 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         </div>
       </div>
 
-      <div className="villa-map-wrap">
+      <div ref={wrapRef} className={`villa-map-wrap${isFull ? " fs" : ""}`}>
         {mapFailed ? (
           <div className="villa-map-fallback">Map unavailable right now. The list below is live.</div>
         ) : (
           <div ref={mapEl} className="villa-map" />
+        )}
+        {!mapFailed && (
+          <div className="atlas-ctrls" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="actrl"
+              onClick={toggleFull}
+              aria-pressed={isFull}
+              title={isFull ? "Exit fullscreen" : "Fullscreen map"}
+            >
+              {isFull ? "✕ Exit" : "⛶ Fullscreen"}
+            </button>
+            <div className="actrl-style">
+              <button
+                type="button"
+                className="actrl"
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
+                title="Map style"
+              >
+                <i className="sw" style={{ background: VILLA_STYLES[styleKey].sw }} /> Style
+              </button>
+              {menuOpen && (
+                <div className="actrl-menu" role="menu">
+                  {(Object.keys(VILLA_STYLES) as StyleKey[]).map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      role="menuitem"
+                      className={k === styleKey ? "active" : ""}
+                      onClick={() => switchStyle(k)}
+                    >
+                      <i className="sw" style={{ background: VILLA_STYLES[k].sw }} />
+                      {VILLA_STYLES[k].label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button
+              type="button"
+              className="actrl"
+              onClick={shareView}
+              title="Share this view — the link carries your filters"
+            >
+              {shared ? "✓ Link copied" : "Share"}
+            </button>
+          </div>
         )}
       </div>
 
