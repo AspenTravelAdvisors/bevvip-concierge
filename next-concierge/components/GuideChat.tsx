@@ -50,7 +50,7 @@ function tripSummary(trip: TripState): string {
 // that also surfaces yachts), month-only search, two-brand comparison, an
 // around-the-world theme, and port-of-call search on a grand voyage.
 const CHIPS = [
-  "Four Seasons in Caribbean",
+  "Four Seasons in the Caribbean",
   "Galápagos Expedition Cruise journeys in January",
   "Aman vs. Orient Express Luxury Yachts",
   "Around the world by private jet trips in 2026",
