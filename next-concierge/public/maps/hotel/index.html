@@ -1162,6 +1162,80 @@ function selectPlace(e){
 }
 
 /* ---- detail panel ---- */
+const TW_BASE="https://aspentraveladvisors.travelwits.com/";
+const TW_RATE_CODES=["X2T","VMC","API","BEL","CDH","L72","RQ6","SAC","STP","TLC"];
+const TW_PLACE_IDS={
+  "savoy palace, london, uk":"ChIJ2TTjMsoEdkgRRQZD30XAn68",
+  "new york, ny, usa":"ChIJOwg_06VPwokRYv534QaPC8g"
+};
+const TW_US_COUNTRY=new Set(["united states","united states of america","usa","us","u.s.","u.s.a.","america"]);
+const TW_UK_COUNTRY=new Set(["united kingdom","uk","u.k.","great britain","gb"]);
+const TW_US_STATE_ABBR={
+  "alabama":"AL","alaska":"AK","arizona":"AZ","arkansas":"AR","california":"CA",
+  "colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA",
+  "hawaii":"HI","idaho":"ID","illinois":"IL","indiana":"IN","iowa":"IA",
+  "kansas":"KS","kentucky":"KY","louisiana":"LA","maine":"ME","maryland":"MD",
+  "massachusetts":"MA","michigan":"MI","minnesota":"MN","mississippi":"MS",
+  "missouri":"MO","montana":"MT","nebraska":"NE","nevada":"NV","new hampshire":"NH",
+  "new jersey":"NJ","new mexico":"NM","new york":"NY","north carolina":"NC",
+  "north dakota":"ND","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA",
+  "rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN",
+  "texas":"TX","utah":"UT","vermont":"VT","virginia":"VA","washington":"WA",
+  "west virginia":"WV","wisconsin":"WI","wyoming":"WY",
+  "district of columbia":"DC","washington dc":"DC","washington, d.c.":"DC"
+};
+function twNorm(s){return String(s||"").toLowerCase().replace(/\s+/g," ").trim();}
+function twPad2(n){return String(n).padStart(2,"0");}
+function twIsoDay(d){return `${d.getFullYear()}-${twPad2(d.getMonth()+1)}-${twPad2(d.getDate())}`;}
+function twAddDays(d,days){const x=new Date(d);x.setDate(x.getDate()+days);return x;}
+function twTomorrowNightStay(){
+  const now=new Date();
+  return {checkIn:twIsoDay(twAddDays(now,1)),checkOut:twIsoDay(twAddDays(now,2))};
+}
+function twCompactParts(parts){
+  const out=[], seen=new Set();
+  parts.forEach(part=>{
+    const value=String(part||"").trim(), key=twNorm(value);
+    if(!value || seen.has(key)) return;
+    seen.add(key); out.push(value);
+  });
+  return out;
+}
+function twHotelSearchLabel(p){
+  const name=String(p&&p.name||"").trim();
+  const city=String(p&&p.city||"").trim();
+  const country=String(p&&p.country||"").trim();
+  if(TW_US_COUNTRY.has(country.toLowerCase())){
+    const admin=String(p&&p.region||"").trim();
+    const state=TW_US_STATE_ABBR[admin.toLowerCase()]||admin;
+    return twCompactParts([name,city,state,"USA"]).join(", ");
+  }
+  const displayCountry=TW_UK_COUNTRY.has(country.toLowerCase())?"UK":country;
+  return twCompactParts([name,city,displayCountry]).join(", ");
+}
+function twQuery(pairs){
+  return pairs
+    .filter(pair=>pair[1]!=null && pair[1]!=="")
+    .map(pair=>`${pair[0]}=${encodeURIComponent(pair[1])}`)
+    .join("&");
+}
+function twHotelBookingUrl(p){
+  const label=twHotelSearchLabel(p);
+  if(!label) return "";
+  const stay=twTomorrowNightStay();
+  const pairs=[
+    ["checkInDate",stay.checkIn],
+    ["checkOutDate",stay.checkOut],
+    ...TW_RATE_CODES.map((code,i)=>[`rateCodes[${i}]`,code]),
+    ["exactMatchRateCodesOnly","true"],
+    ["searchRadiuses[0]","50"],
+    ["selectedCurrency","USD"],
+    ["searchMode","2"],
+    ["sa[value]",TW_PLACE_IDS[twNorm(label)]||""],
+    ["sa[label]",label]
+  ];
+  return `${TW_BASE}?${twQuery(pairs)}`;
+}
 async function openDetail(f){
   stopIdleSpin();
   try{ await hydrateFeatureDetail(f); }
@@ -1204,7 +1278,7 @@ async function openDetail(f){
   (p.upgrades||[]).filter(u=>!/^for\s+20\d{2}(\s*&\s*20\d{2})?\s*:?\s*$/i.test(String(u==null?"":u).trim()))
     .forEach(u=>{const li=document.createElement("li");li.innerHTML=formatVipBenefit(u);ups.appendChild(li);});
   const book=document.getElementById("d-book");
-  let url=(p.bookUrl||"").trim(); if(url && !/^https?:/i.test(url)) url="https://"+url;
+  let url=twHotelBookingUrl(p);
   if(url){ book.href=url; book.style.display=""; } else book.style.display="none";
   document.getElementById("d-pw").innerHTML = p.password ? `Access code: <b>${p.password}</b>` : "";
   document.getElementById("panel").classList.add("open");

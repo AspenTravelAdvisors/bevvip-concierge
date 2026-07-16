@@ -3,13 +3,9 @@
 // TravelWits URL by hand. mode: "off" | "portal" | "deep" from
 // NEXT_PUBLIC_BOOKING_MODE (default "deep").
 //
-// TravelWits deep links (aspentraveladvisors.travelwits.com) are a
-// DESTINATION + DATES search priced at the preferred VIP rate codes — there is
-// no per-property id in the URL. The search area is a Google Place (sa[value])
-// plus a human label (sa[label]); the ten rateCodes with exactMatch make the
-// results price at the VIP rate. So a dated destination search lands on live
-// VIP rates that include the property, which satisfies the trust rule (§6): the
-// link only appears once we have dates, and it lands on a real rate page.
+// TravelWits deep links (aspentraveladvisors.travelwits.com) are a named-place
+// search priced at the preferred VIP rate codes. For hotel CTAs, we search the
+// property name itself for a one-night stay checking in tomorrow.
 //
 // The access code (bookPassword) still gates the portal, so it rides along as a
 // note on every booking affordance, deep or portal.
@@ -27,10 +23,29 @@ const TW_RATE_CODES = ["X2T", "VMC", "API", "BEL", "CDH", "L72", "RQ6", "SAC", "
 // recur, or resolve via a Places lookup later. Keyed by a normalized label.
 const TW_PLACE_IDS = {
   "new york, ny, usa": "ChIJOwg_06VPwokRYv534QaPC8g",
+  "savoy palace, london, uk": "ChIJ2TTjMsoEdkgRRQZD30XAn68",
 };
 
 const norm = (s) => String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
 const isDay = (v) => /^\d{4}-\d{2}-\d{2}$/.test(String(v || "").trim());
+const pad2 = (n) => String(n).padStart(2, "0");
+
+function localIsoDay(date) {
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+}
+
+function addLocalDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+export function tomorrowNightStay(now = new Date()) {
+  return {
+    checkIn: localIsoDay(addLocalDays(now, 1)),
+    checkOut: localIsoDay(addLocalDays(now, 2)),
+  };
+}
 
 // Serialize as `key=encodedValue`, keeping the literal `[` / `]` in keys (like
 // rateCodes[0], sa[label]) that the reference URL uses — URLSearchParams would
@@ -49,12 +64,12 @@ export function travelWitsUrl({ label, checkIn, checkOut }) {
   const location = String(label || "").trim();
   if (!location || !isDay(checkIn) || !isDay(checkOut)) return null;
   const pairs = [
-    ["selectedCurrency", "USD"],
     ["checkInDate", checkIn],
     ["checkOutDate", checkOut],
     ...TW_RATE_CODES.map((code, i) => [`rateCodes[${i}]`, code]),
     ["exactMatchRateCodesOnly", "true"],
     ["searchRadiuses[0]", "50"],
+    ["selectedCurrency", "USD"],
     ["searchMode", "2"],
     ["sa[value]", TW_PLACE_IDS[norm(location)] || ""],
     ["sa[label]", location],
@@ -63,11 +78,13 @@ export function travelWitsUrl({ label, checkIn, checkOut }) {
 }
 
 // US country spellings in the inventory, and full state name -> abbreviation.
-// TravelWits geocodes best on "City, ST, USA" (US) and "City, Country" (rest),
-// so US cards need the state abbreviation and "USA" rather than "United States".
+// TravelWits geocodes best when US labels use the state abbreviation and "USA"
+// rather than "United States"; UK labels use the short "UK" form from the
+// reference URL.
 const US_COUNTRY = new Set([
   "united states", "united states of america", "usa", "us", "u.s.", "u.s.a.", "america",
 ]);
+const UK_COUNTRY = new Set(["united kingdom", "uk", "u.k.", "great britain", "gb"]);
 const US_STATE_ABBR = {
   "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
   "colorado": "CO", "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA",
@@ -83,27 +100,43 @@ const US_STATE_ABBR = {
   "district of columbia": "DC", "washington dc": "DC", "washington, d.c.": "DC",
 };
 
-// TravelWits search label for a hotel card's own destination:
-//   US  -> "City, ST, USA"  (e.g. "Aspen, CO, USA", "New York, NY, USA")
-//   else -> "City, Country" (e.g. "Venice, Italy")
+function compactParts(parts) {
+  const out = [];
+  const seen = new Set();
+  for (const part of parts) {
+    const value = String(part || "").trim();
+    const key = norm(value);
+    if (!value || seen.has(key)) continue;
+    seen.add(key);
+    out.push(value);
+  }
+  return out;
+}
+
+// TravelWits search label for a hotel card's own property:
+//   US  -> "Hotel Name, City, ST, USA"
+//   UK  -> "Hotel Name, City, UK"
+//   else -> "Hotel Name, City, Country"
 function hotelSearchLabel(hotel) {
   if (!hotel) return "";
+  const name = String(hotel.name || "").trim();
   const city = String(hotel.city || "").trim();
   const country = String(hotel.country || "").trim();
   if (US_COUNTRY.has(country.toLowerCase())) {
     const admin = String(hotel.adminRegion || "").trim();
     const state = US_STATE_ABBR[admin.toLowerCase()] || admin; // fall back to the full name
-    return [city, state, "USA"].filter(Boolean).join(", ");
+    return compactParts([name, city, state, "USA"]).join(", ");
   }
-  if (city && country) return `${city}, ${country}`;
-  return city || country || String(hotel.region || "").trim() || "";
+  const displayCountry = UK_COUNTRY.has(country.toLowerCase()) ? "UK" : country;
+  return compactParts([name, city, displayCountry]).join(", ")
+    || String(hotel.region || "").trim();
 }
 
 // The booking affordance for a hotel card, or null when no booking UI should
 // render. Shape: { kind, url, label, external, note? }.
-//  - deep  (dates present): TravelWits search of the hotel's own city at VIP
-//    rates for the captured dates → "Book VIP rate". Primary-worthy.
-//  - portal (no dates, or deep unavailable): the gated VipTravelAi.com portal →
+//  - deep: TravelWits search of the hotel's own name at VIP rates for a
+//    one-night stay checking in tomorrow → "Book VIP rate". Primary-worthy.
+//  - portal (deep unavailable): the gated VipTravelAi.com portal →
 //    "Check VIP rates". Secondary; honest about being a portal, not a rate page.
 export function bookingLink(hotel, trip) {
   if (MODE === "off") return null;
@@ -114,15 +147,16 @@ export function bookingLink(hotel, trip) {
   const isHotel = type === "hotel" || !type;
 
   if (MODE === "deep" && isHotel) {
+    const stay = tomorrowNightStay();
     const url = travelWitsUrl({
       label: hotelSearchLabel(hotel) || (trip && trip.destination) || "",
-      checkIn: trip && trip.checkIn,
-      checkOut: trip && trip.checkOut,
+      checkIn: stay.checkIn,
+      checkOut: stay.checkOut,
     });
     if (url) {
       return { kind: "deep", url, label: "Book VIP rate", external: true, ...(note ? { note } : {}) };
     }
-    // no dates yet (or unresolvable) → fall through to the portal affordance
+    // no property label → fall through to the portal affordance
   }
 
   const raw = String((hotel && hotel.bookUrl) || "").trim();

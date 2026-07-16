@@ -7,9 +7,8 @@ import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip } from "@/lib/trip-state";
 
-// The shared trip (dates/party) kept live, so a card's booking CTA upgrades
-// from the portal link to a dated "Book VIP rate" deep link the moment dates
-// arrive — including on cards rendered in earlier turns (BOOKING-SPEC §5).
+// The shared trip is still kept live for handoff state and non-hotel booking
+// surfaces. Hotel CTAs now use the standard tomorrow-night property search.
 function useTrip(): TripState | null {
   const [trip, setTrip] = useState<TripState | null>(null);
   useEffect(() => {
@@ -149,11 +148,10 @@ function Card({
   );
 
   // Booking affordance via the single seam (lib/atlas/booking.js), rendered as
-  // a sibling <a> inside the same card box so anchors never nest. For hotels,
-  // dates captured yields a "Book VIP rate" TravelWits deep link (kind "deep"),
-  // otherwise the gated VipTravelAi.com portal ("Check VIP rates"). Cruise/jet/
-  // yacht cards get the Virtuoso journey page, labeled "See more details" since
-  // it's not a rate quote (booking.js picks the label by result type).
+  // a sibling <a> inside the same card box so anchors never nest. Hotel cards
+  // get a TravelWits property-name search for tomorrow night; cruise/jet/yacht
+  // cards get the Virtuoso journey page, labeled "See more details" since it's
+  // not a rate quote (booking.js picks the label by result type).
   const booking = bookingLink(result, trip);
   return (
     <div className="card">
