@@ -46,6 +46,38 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
     window.setTimeout(() => window.dispatchEvent(new Event("resize")), 460);
   }, []);
 
+  // The handle's label promises "swipe up / swipe down", so honour a real swipe
+  // as well as a tap. A vertical drag past the threshold toggles the peek and
+  // flags the gesture so the tap-click that follows touchend doesn't undo it.
+  const swipeStartY = useRef<number | null>(null);
+  const swipeConsumed = useRef(false);
+  const onHandleTouchStart = useCallback((e: React.TouchEvent) => {
+    swipeStartY.current = e.touches[0].clientY;
+  }, []);
+  const onHandleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const y0 = swipeStartY.current;
+      swipeStartY.current = null;
+      if (y0 == null) return;
+      const dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dy) < 24) return; // a tap — let the click handler toggle
+      swipeConsumed.current = true;
+      setPeekOpen((v) => {
+        const next = dy < 0; // swipe up opens, swipe down closes
+        return next === v ? v : next;
+      });
+      window.setTimeout(() => window.dispatchEvent(new Event("resize")), 460);
+    },
+    [],
+  );
+  const onHandleClick = useCallback(() => {
+    if (swipeConsumed.current) {
+      swipeConsumed.current = false;
+      return;
+    }
+    togglePeek();
+  }, [togglePeek]);
+
   // Restore a saved ratio on mount (client-only so SSR stays at the default).
   useEffect(() => {
     const saved = Number(window.localStorage.getItem(STORAGE_KEY));
@@ -135,7 +167,9 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
           className="home-atlas-handle"
           aria-expanded={peekOpen}
           aria-label={peekOpen ? "Collapse the Living Atlas" : "Open the Living Atlas"}
-          onClick={togglePeek}
+          onClick={onHandleClick}
+          onTouchStart={onHandleTouchStart}
+          onTouchEnd={onHandleTouchEnd}
         >
           <span className="hah-grip" aria-hidden="true" />
           <span className="hah-label">

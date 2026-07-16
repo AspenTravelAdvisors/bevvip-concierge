@@ -1614,10 +1614,16 @@ init();
     .partner{align-self:flex-start}
     gmp-map-3d{top:calc(58px + env(safe-area-inset-top));height:calc(100% - 58px - env(safe-area-inset-top))}
     .veil{inset:calc(58px + env(safe-area-inset-top)) 0 0 0}
-    .searchbar{bottom:calc(70px + env(safe-area-inset-bottom) + var(--vvb,0px))}
+    .searchbar{bottom:calc(78px + env(safe-area-inset-bottom) + var(--vvb,0px))}
     /* while the field is focused the keyboard is up — ride just above it */
     body.search-typing .searchbar{bottom:calc(var(--kb,0px) + 10px);
       transition:bottom .18s ease,opacity .2s ease,transform .2s ease}
+    /* …and tuck the dock away while typing: with the searchbar pinned to the
+       keyboard the two would otherwise share the same strip of screen, putting
+       Filters/Show all/Search/Details right under the field being completed. */
+    body.search-typing .dock{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(14px)}
+    /* the coach bubble parks in the searchbar's slot — never both at once */
+    body.search-open .dockcoach{opacity:0!important;pointer-events:none}
     body.rail-shown .rail{top:calc(124px + env(safe-area-inset-top)) !important;left:10px !important;right:auto !important;width:230px !important;max-width:calc(100vw - 20px) !important;max-height:calc(100dvh - 210px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important}
     /* size to content so the whole card is visible without an inner scroll;
        only clamp (and then scroll) if it would exceed the space above the dock */
@@ -1627,7 +1633,7 @@ init();
     .panel .body{padding:14px 16px 20px}
     .row{display:block}
     .row .lk{min-width:0;margin-bottom:2px}
-    .dock{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom) + var(--vvb,0px));gap:3px;padding:5px;max-width:calc(100vw - 16px)}
+    .dock{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom) + var(--vvb,0px));gap:3px;padding:5px;max-width:calc(100vw - 16px);transition:opacity .2s ease,transform .2s ease}
     .dockbtn{height:44px;min-width:44px;justify-content:center;padding:0 12px}
     .helpmodal{max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));padding:24px 18px 18px}
   }

@@ -189,7 +189,11 @@ export default function IntroTour() {
     const GAP = 18; // gap between spotlight and card
 
     if (!rect || slide?.placement === "center") {
-      setCardPos({ top: Math.round((vh - ch) / 2), left: Math.round((vw - cw) / 2) });
+      // Centered slides position themselves in CSS (.tour-card.centered), so a
+      // rotation/resize can never strand them — a JS-computed centre would go
+      // stale: on resize measure() re-sets rect to null, React bails on the
+      // identical value, and this effect would never re-run.
+      setCardPos(null);
       return;
     }
 

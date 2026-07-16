@@ -756,6 +756,8 @@ function extractOptions(text: string): string[] {
 const isTableRow = (l: string) => /^\s*\|.*\|\s*$/.test(l.trim());
 const isListItem = (l: string) => /^\s*[-•]\s+/.test(l);
 const isHeading = (l: string) => /^\s*#{1,6}\s+\S/.test(l);
+// ---, *** or ___ alone on a line — otherwise it leaks into the reply as text.
+const isHr = (l: string) => /^\s*(?:-{3,}|_{3,}|\*{3,})\s*$/.test(l);
 const isTableDivider = (l: string) =>
   splitTableCells(l).every((c) => /^:?-{2,}:?$/.test(c.replace(/\s+/g, "")));
 
@@ -787,6 +789,11 @@ function renderText(text: string) {
       i++;
       continue;
     }
+    if (isHr(line)) {
+      out.push(<hr key={key++} className="reply-hr" />);
+      i++;
+      continue;
+    }
     if (isListItem(line)) {
       const items: string[] = [];
       while (i < lines.length && isListItem(lines[i])) { items.push(lines[i].replace(/^\s*[-•]\s+/, "")); i++; }
@@ -801,7 +808,7 @@ function renderText(text: string) {
     const para: string[] = [];
     while (
       i < lines.length && lines[i].trim() &&
-      !isTableRow(lines[i]) && !isListItem(lines[i]) && !isHeading(lines[i])
+      !isTableRow(lines[i]) && !isListItem(lines[i]) && !isHeading(lines[i]) && !isHr(lines[i])
     ) { para.push(lines[i]); i++; }
     out.push(<p key={key++}>{inline(para.join(" "))}</p>);
   }
