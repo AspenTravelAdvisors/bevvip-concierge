@@ -316,6 +316,10 @@ function computeVisibleSlides(): Slide[] {
     const el = document.querySelector(s.target);
     if (!el) return false;
     const r = el.getBoundingClientRect();
-    return r.width >= 4 && r.height >= 4;
+    if (r.width < 4 || r.height < 4) return false;
+    // Off-viewport targets drop out too — on the map-first phone home the chat
+    // sheet (and the empty-state chips inside it) park below the fold, where a
+    // spotlight can't reach them.
+    return r.bottom > 0 && r.right > 0 && r.top < window.innerHeight && r.left < window.innerWidth;
   });
 }

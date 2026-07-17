@@ -173,6 +173,7 @@ interface AtlasApi {
   setProjection(globe: boolean): void;
   resize(): void;
   plot(meta: GuideMeta): void;
+  refit(): void;
   resetView(): void;
 }
 
@@ -556,8 +557,21 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           try {
             const b = new (mapboxgl as MapboxModule).LngLatBounds();
             featuredFC.features.forEach((f) => b.extend(f.geometry.coordinates));
-            map.fitBounds(b, { padding: 78, maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
+            map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
           } catch { /* fit optional */ }
+        }
+        // On the phone home the chat sheet / result-card dock overlays the lower
+        // part of the full-viewport canvas, so frame plotted results into the
+        // strip of map that stays visible above them. Everywhere else (desktop
+        // split, full atlas pages) nothing overlays the map — keep the even fit.
+        function fitPad(): number | { top: number; bottom: number; left: number; right: number } {
+          if (!allInventory || !window.matchMedia("(max-width: 640px)").matches) return 78;
+          const h = node.clientHeight;
+          const sheetUp = !!document.querySelector(".home--sheet-half, .home--sheet-full");
+          const bottom = sheetUp
+            ? Math.round(h * 0.62) // half sheet: fit into the top ~38%
+            : Math.min(260, Math.round(h * 0.42)); // pill: clear the card strip
+          return { top: 56, left: 34, right: 34, bottom };
         }
 
         // Mapbox emits benign "error" events all session — log, never tear down.
@@ -671,6 +685,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             setTimeout(() => { try { map.resize(); } catch { /* noop */ } }, 60);
           },
           plot(meta) { plotResults(meta); },
+          refit() { if (subsetActive) fitFeatured(); },
           resetView() {
             subsetActive = false;
             featuredFC = null;
@@ -714,11 +729,18 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     function onReset() {
       apiRef.current?.resetView();
     }
+    // The mobile chat sheet changing detent moves the visible strip of map —
+    // re-frame any plotted subset into it.
+    function onRefit() {
+      apiRef.current?.refit();
+    }
     window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
     window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
+    window.addEventListener("bevvip:atlas-refit", onRefit);
     return () => {
       window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
       window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
+      window.removeEventListener("bevvip:atlas-refit", onRefit);
     };
   }, [allInventory]);
 

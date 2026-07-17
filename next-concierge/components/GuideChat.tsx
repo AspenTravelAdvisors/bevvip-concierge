@@ -49,7 +49,8 @@ function tripSummary(trip: TripState): string {
 // quietly demonstrates a capability: cross-pillar + region search (a hotel ask
 // that also surfaces yachts), month-only search, two-brand comparison, an
 // around-the-world theme, and port-of-call search on a grand voyage.
-const CHIPS = [
+// Exported so the mobile atlas dock can offer the same starters over the map.
+export const GUIDE_CHIPS = [
   "Four Seasons in the Caribbean",
   "Galápagos Expedition Cruise journeys in January",
   "Aman vs. Orient Express Luxury Yachts",
@@ -146,6 +147,20 @@ export default function GuideChat() {
     send(ask);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated]);
+
+  // External surfaces (the mobile atlas dock's prompt chips) ask The Guide by
+  // dispatching "bevvip:guide-ask" — routed through the same send pipeline as
+  // typing. A ref keeps the listener stable while send closes over fresh state.
+  const sendRef = useRef<(text: string) => void>(() => {});
+  sendRef.current = send;
+  useEffect(() => {
+    function onAsk(e: Event) {
+      const text = (e as CustomEvent<{ text?: string }>).detail?.text ?? "";
+      if (text.trim()) sendRef.current(text);
+    }
+    window.addEventListener("bevvip:guide-ask", onAsk as EventListener);
+    return () => window.removeEventListener("bevvip:guide-ask", onAsk as EventListener);
+  }, []);
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -339,7 +354,7 @@ export default function GuideChat() {
             <BookingStrip onSearch={send} initial={trip} />
             <div className="chips-or">or explore</div>
             <div className="chips">
-              {CHIPS.map((chip) => (
+              {GUIDE_CHIPS.map((chip) => (
                 <button key={chip} className="chip" onClick={() => send(chip)}>
                   {chip}
                 </button>

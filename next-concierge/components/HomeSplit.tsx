@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import AtlasDock from "./AtlasDock";
 
 // Base Camp split: chat on the left, Living Atlas on the right, with a draggable
 // gutter between them so guests can trade space toward more chat or more map.
@@ -9,11 +10,19 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 // so each drag dispatches a (rAF-throttled) synthetic one to keep the globe
 // fitted instead of letterboxed. Below 900px the panes stack (see globals.css)
 // and the gutter hides, so this only governs the side-by-side desktop layout.
+//
+// Phones invert the pairing: the Living Atlas owns the whole stage and The
+// Guide rides over it as a bottom sheet with three detents — parked off-screen
+// behind the dock's "Ask The Guide" pill, half-height (map still visible and
+// animating above as answers plot), or nearly full for reading. The sheet state
+// is a class on .home (home--sheet-*) that only the phone breakpoint styles.
 
 const STORAGE_KEY = "bevvip.basecamp.atlasPct";
 const MIN_PCT = 28; // atlas can't get narrower than this…
 const MAX_PCT = 68; // …or wider than this, so neither pane collapses.
 const DEFAULT_PCT = 44; // matches the original flex-basis.
+
+type SheetState = "pill" | "half" | "full";
 
 export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: ReactNode }) {
   const rowRef = useRef<HTMLDivElement>(null);
@@ -21,34 +30,65 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   const [dragging, setDragging] = useState(false);
   const rafRef = useRef<number | null>(null);
 
-  // Mobile-only state. `sessionActive` (broadcast by The Guide once a
-  // conversation starts) collapses the home into the chat view and demotes the
-  // Living Atlas to a swipe-up peek; `peekOpen` expands that peek back to the
-  // live globe. Both classes are inert on desktop/tablet — the CSS only acts on
-  // them below the phone breakpoint, so the side-by-side split is unchanged.
-  const [sessionActive, setSessionActive] = useState(false);
-  const [peekOpen, setPeekOpen] = useState(false);
+  // Mobile chat-sheet detent. Inert on desktop/tablet — the CSS only acts on
+  // the home--sheet-* classes below the phone breakpoint.
+  const [sheet, setSheet] = useState<SheetState>("pill");
 
+  // Transaction mode: an ?ask= deep link (from an atlas card or a campaign)
+  // means the traveler arrives knowing what they want — open the sheet so the
+  // auto-sent question and its streaming answer are in view, map above it.
+  // Discovery mode (no ask) keeps the world full-screen behind the pill.
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get("ask")?.trim()) setSheet("half");
+    } catch {
+      /* no query / unavailable */
+    }
+  }, []);
+
+  // Starting the conversation over returns the stage to the idle, map-first
+  // home. (An active session never forces the sheet open — the map is primary.)
   useEffect(() => {
     function onSession(e: Event) {
       const active = !!(e as CustomEvent<{ active?: boolean }>).detail?.active;
-      setSessionActive(active);
-      if (!active) setPeekOpen(false); // returning to the idle home closes the peek
+      if (!active) setSheet("pill");
     }
     window.addEventListener("bevvip:guide-session", onSession as EventListener);
     return () => window.removeEventListener("bevvip:guide-session", onSession as EventListener);
   }, []);
 
-  // Mapbox only refits off a window resize, so nudge it after the sheet's height
-  // transition settles when the peek opens/closes.
-  const togglePeek = useCallback(() => {
-    setPeekOpen((v) => !v);
-    window.setTimeout(() => window.dispatchEvent(new Event("resize")), 460);
+  // Whenever the sheet changes detent, ask the atlas to re-frame any plotted
+  // results into the strip of map that remains visible (after the slide).
+  const setSheetAndRefit = useCallback((next: SheetState | ((s: SheetState) => SheetState)) => {
+    setSheet((prev) => {
+      const value = typeof next === "function" ? next(prev) : next;
+      if (value !== prev) {
+        window.setTimeout(() => window.dispatchEvent(new Event("bevvip:atlas-refit")), 460);
+      }
+      return value;
+    });
   }, []);
 
-  // The handle's label promises "swipe up / swipe down", so honour a real swipe
-  // as well as a tap. A vertical drag past the threshold toggles the peek and
-  // flags the gesture so the tap-click that follows touchend doesn't undo it.
+  // Open the sheet from the dock. Focusing the composer (pill tap) raises the
+  // keyboard; chip taps skip it so the streaming reply gets the room instead.
+  const openChat = useCallback(
+    (focus: boolean) => {
+      setSheetAndRefit((s) => (s === "pill" ? "half" : s));
+      if (focus) {
+        window.setTimeout(() => {
+          document
+            .querySelector<HTMLTextAreaElement>(".home-chat .composer textarea")
+            ?.focus({ preventScroll: true });
+        }, 460);
+      }
+    },
+    [setSheetAndRefit],
+  );
+
+  // The handle's label promises swiping, so honour a real swipe as well as a
+  // tap. Swipe up grows the sheet a detent, swipe down shrinks it; a tap
+  // toggles half ↔ full. The gesture flags itself so the tap-click that
+  // follows touchend doesn't double-step.
   const swipeStartY = useRef<number | null>(null);
   const swipeConsumed = useRef(false);
   const onHandleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -62,21 +102,20 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
       const dy = e.changedTouches[0].clientY - y0;
       if (Math.abs(dy) < 24) return; // a tap — let the click handler toggle
       swipeConsumed.current = true;
-      setPeekOpen((v) => {
-        const next = dy < 0; // swipe up opens, swipe down closes
-        return next === v ? v : next;
+      setSheetAndRefit((s) => {
+        if (dy < 0) return s === "half" ? "full" : s; // swipe up grows
+        return s === "full" ? "half" : "pill"; // swipe down shrinks
       });
-      window.setTimeout(() => window.dispatchEvent(new Event("resize")), 460);
     },
-    [],
+    [setSheetAndRefit],
   );
   const onHandleClick = useCallback(() => {
     if (swipeConsumed.current) {
       swipeConsumed.current = false;
       return;
     }
-    togglePeek();
-  }, [togglePeek]);
+    setSheetAndRefit((s) => (s === "full" ? "half" : "full"));
+  }, [setSheetAndRefit]);
 
   // Restore a saved ratio on mount (client-only so SSR stays at the default).
   useEffect(() => {
@@ -139,11 +178,37 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   return (
     <div
       ref={rowRef}
-      className={`home${dragging ? " dragging" : ""}${sessionActive ? " home--session" : ""}${
-        peekOpen ? " home--peek-open" : ""
-      }`}
+      className={`home${dragging ? " dragging" : ""} home--sheet-${sheet}`}
     >
-      <div className="home-chat">{chat}</div>
+      <div className="home-chat">
+        <div className="home-chat-handle">
+          <button
+            type="button"
+            className="hch-drag"
+            aria-label={
+              sheet === "full" ? "Shrink The Guide to half height" : "Expand The Guide"
+            }
+            onClick={onHandleClick}
+            onTouchStart={onHandleTouchStart}
+            onTouchEnd={onHandleTouchEnd}
+          >
+            <span className="hch-grip" aria-hidden="true" />
+            <span className="hch-label">
+              The <b>Guide</b>
+              {sheet === "full" ? " — swipe down" : " — swipe up"}
+            </span>
+          </button>
+          <button
+            type="button"
+            className="hch-map"
+            aria-label="Back to the map"
+            onClick={() => setSheetAndRefit("pill")}
+          >
+            Map ▾
+          </button>
+        </div>
+        {chat}
+      </div>
       <div
         className="home-gutter"
         role="separator"
@@ -162,23 +227,9 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
         <span className="home-gutter-grip" aria-hidden="true" />
       </div>
       <aside className="home-atlas" style={{ flexBasis: `${atlasPct}%` }}>
-        <button
-          type="button"
-          className="home-atlas-handle"
-          aria-expanded={peekOpen}
-          aria-label={peekOpen ? "Collapse the Living Atlas" : "Open the Living Atlas"}
-          onClick={onHandleClick}
-          onTouchStart={onHandleTouchStart}
-          onTouchEnd={onHandleTouchEnd}
-        >
-          <span className="hah-grip" aria-hidden="true" />
-          <span className="hah-label">
-            Living <b>Atlas</b>
-            {peekOpen ? " — swipe down" : " — swipe up"}
-          </span>
-        </button>
         {atlas}
       </aside>
+      <AtlasDock onOpenChat={openChat} />
     </div>
   );
 }

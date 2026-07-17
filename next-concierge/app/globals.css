@@ -1385,12 +1385,13 @@ main.page {
   margin-top: 14px;
 }
 
-/* Mobile-only chrome: a swipe-up handle on the Living Atlas sheet and a pinned
-   Guide session bar. Hidden everywhere by default — only the phone breakpoint
-   below reveals them, so the desktop/tablet side-by-side split (and its
-   draggable gutter) is completely unchanged. */
-.home-atlas-handle,
-.guide-sessionbar {
+/* Mobile-only chrome: the chat-sheet drag handle, the pinned Guide session bar
+   and the atlas dock (pill + chips + card strip). Hidden everywhere by default —
+   only the phone breakpoint below reveals them, so the desktop/tablet
+   side-by-side split (and its draggable gutter) is completely unchanged. */
+.home-chat-handle,
+.guide-sessionbar,
+.atlas-dock {
   display: none;
 }
 
@@ -1593,16 +1594,18 @@ main.page {
   }
 }
 
-/* ── Mobile redesign: chat-first spine + swipe-up Living Atlas ──────────────
-   Phones only. The home becomes a single fixed-height stage: The Guide fills it
-   (transcript scrolls, composer pinned under the thumb), and the Living Atlas
-   sits as a bottom sheet — browsable on the idle home, collapsed to a swipe-up
-   peek once a conversation starts. State is driven by two classes on .home
-   (home--session, home--peek-open) set by HomeSplit. Desktop and tablet keep
-   the side-by-side split defined above; nothing here touches them. */
+/* ── Mobile redesign: atlas-first canvas + Guide bottom sheet ───────────────
+   Phones only. The Living Atlas owns the full stage — the map IS the home —
+   and The Guide rides over it as a bottom sheet with three detents, driven by
+   a class on .home (home--sheet-pill / -half / -full, set by HomeSplit):
+   parked off-screen behind the dock's "Ask The Guide" pill, half-height with
+   the map still visible (and animating) above, or nearly full for reading.
+   The atlas dock (pill + quick-start chips + plotted-result card strip) is the
+   idle home's only chrome. Desktop and tablet keep the side-by-side split
+   defined above; nothing here touches them. */
 @media (max-width: 640px) {
-  /* Pin the stage to the viewport so the chat scrolls inside its own pane and
-     the atlas sheet / composer can anchor to the bottom edge. */
+  /* Pin the stage to the viewport so the map fills it edge to edge and the
+     sheet / dock can anchor to the bottom. */
   .app {
     height: 100dvh;
     min-height: 0;
@@ -1613,29 +1616,142 @@ main.page {
     min-height: 0;
   }
 
-  /* The Guide fills the whole stage. */
-  .home-chat {
+  /* The Living Atlas owns the whole stage. */
+  .home-atlas {
     position: absolute;
     inset: 0;
+    z-index: 1;
+    flex: none !important;
+    max-width: none;
+    padding: 0;
+    gap: 0;
+  }
+  .home-atlas .atlas-map {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  /* The seven-row layer legend would swallow the small map — the phone home
+     leads with the world itself (full atlases keep their own layer controls). */
+  .home-atlas .atlas-legend {
+    display: none;
+  }
+  /* The plotted-results badge would sit under the dock at the map's foot —
+     park it below the framing line instead, where it stays tappable. */
+  .home-atlas .atlas-badge {
+    right: auto;
+    left: 12px;
+    top: 44px;
+    bottom: auto;
+  }
+  /* One floating line of framing — then the world. */
+  .home-atlas .home-atlas-head {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    right: 118px; /* clear the map controls */
+    z-index: 3;
+    padding: 0;
+    pointer-events: none;
+  }
+  .home-atlas-head h2 {
+    font-size: 15px;
+    margin: 0;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
+  }
+  .home-atlas-head p {
+    display: none;
+  }
+
+  /* ── The Guide as a bottom sheet over the map ── */
+  .home-chat {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 6;
+    height: 60dvh;
     min-height: 0;
     border-bottom: 0;
     display: flex;
     flex-direction: column;
-    z-index: 1;
+    background: var(--panel);
+    border-top: 1px solid var(--gold-dim);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -16px 44px rgba(0, 0, 0, 0.55);
+    /* Pill ↔ half slides with transform (cheap, uninterruptible); only the
+       half ↔ full step animates height. */
+    transition:
+      transform 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .home-chat .chat {
     flex: 1;
     min-height: 0;
   }
-
-  /* Reserve room at the foot of the transcript so content clears the atlas
-     sheet: a deep reserve on the idle home (tall, browsable sheet), a slim one
-     once collapsed to the peek. */
-  .home .transcript {
-    padding-bottom: 76px;
+  .home--sheet-pill .home-chat {
+    transform: translateY(103%);
+    box-shadow: none;
   }
-  .home:not(.home--session) .transcript {
-    padding-bottom: calc(44dvh + 14px);
+  .home--sheet-full .home-chat {
+    height: calc(100dvh - 52px - env(safe-area-inset-top));
+  }
+
+  /* Sheet chrome: the drag handle row with its "Map ▾" dismiss. */
+  .home-chat-handle {
+    display: flex;
+    align-items: stretch;
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--line);
+  }
+  .hch-drag {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 46px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--sans);
+    /* The handle owns its vertical drags (swipes move the sheet between
+       detents) — don't let the browser turn them into page scrolls. */
+    touch-action: none;
+  }
+  .hch-grip {
+    width: 38px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--gold-dim);
+  }
+  .hch-label {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sub);
+  }
+  .hch-label b {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+  .hch-map {
+    flex: 0 0 auto;
+    align-self: center;
+    margin-right: 12px;
+    padding: 7px 12px;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    background: var(--user);
+    cursor: pointer;
   }
 
   /* Pinned Guide session bar (rendered by GuideChat once a conversation starts;
@@ -1711,96 +1827,139 @@ main.page {
     text-overflow: ellipsis;
   }
 
-  /* The composer stays in flow at the foot of the chat column — naturally
-     pinned to the bottom edge, where the thumb and keyboard live. */
-
-  /* Living Atlas as a bottom sheet, floating just above the composer. */
-  .home-atlas {
+  /* ── Atlas dock: pill + chips + result strip riding over the map ── */
+  .atlas-dock {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(70px + env(safe-area-inset-bottom));
+    bottom: 0;
     z-index: 5;
-    flex: none !important;
-    max-width: none;
-    padding: 0;
-    gap: 0;
-    height: 44dvh;
-    background: var(--panel);
-    border-top: 1px solid var(--gold-dim);
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    transition: height 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 26px 12px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgba(6, 6, 8, 0) 0%, rgba(6, 6, 8, 0.86) 46%);
+    pointer-events: none; /* the gradient is decoration — children re-enable */
   }
-  .home-atlas .home-atlas-head {
-    padding: 11px 14px 0;
+  .atlas-dock > * {
+    pointer-events: auto;
   }
-  .home-atlas-head h2 {
-    font-size: 18px;
-  }
-  .home-atlas .atlas-map {
-    min-height: 0;
-    border: 0;
-    border-radius: 0;
-  }
-
-  /* Swipe-up handle — only shown on the collapsed peek (session state). */
-  .home-atlas-handle {
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    height: 60px;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    font-family: var(--sans);
-    /* The handle owns its vertical drags (swipe up/down toggles the peek) —
-       don't let the browser turn them into page scrolls. */
-    touch-action: none;
-  }
-  .hah-grip {
-    width: 38px;
-    height: 4px;
-    border-radius: 4px;
-    background: var(--gold-dim);
-  }
-  .hah-label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--sub);
-  }
-  .hah-label b {
-    color: var(--gold-light);
-    font-weight: 600;
-  }
-
-  /* Conversation underway: collapse the sheet to a peek; hide the head + globe
-     until the traveler swipes it open. */
-  .home--session .home-atlas {
-    height: 60px;
-  }
-  .home--session .home-atlas-handle {
-    display: flex;
-  }
-  .home--session .home-atlas-head {
+  /* Sheet up: the dock stands down. */
+  .home--sheet-half .atlas-dock,
+  .home--sheet-full .atlas-dock {
     display: none;
   }
-  .home--session .home-atlas .atlas-map {
-    opacity: 0;
-    pointer-events: none;
+
+  .dock-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 54px;
+    padding: 8px 10px 8px 8px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    background: linear-gradient(180deg, #17171a, #101013);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    color: var(--sub);
+    font-family: var(--sans);
+    font-size: 14.5px;
+    cursor: pointer;
+  }
+  .dock-pill-av {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1407;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  }
+  .dock-pill-text {
+    flex: 1;
+    text-align: left;
+  }
+  .dock-pill-hint {
+    flex: 0 0 auto;
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    padding: 6px 11px;
   }
 
-  /* Peek opened: expand the sheet and bring the live globe back. */
-  .home--session.home--peek-open .home-atlas {
-    height: 66dvh;
+  /* Quick-start chips: one swipeable row above the pill on the idle home. */
+  .dock-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 0;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
-  .home--session.home--peek-open .home-atlas .atlas-map {
-    opacity: 1;
-    pointer-events: auto;
+  .dock-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .dock-chips .chip {
+    flex: 0 0 auto;
+    max-width: 72vw;
+    scroll-snap-align: start;
+  }
+
+  /* Result-card strip: the Guide's shortlist swiping over the plotted map. */
+  .dock-results {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .dock-results-cap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--sub);
+    padding: 0 4px;
+  }
+  .dock-results-open {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--gold-light);
+    cursor: pointer;
+  }
+  .dock-results .cards {
+    display: flex;
+    grid-template-columns: none;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .dock-results .cards::-webkit-scrollbar {
+    display: none;
+  }
+  .dock-results .card {
+    flex: 0 0 76vw;
+    scroll-snap-align: start;
+  }
+  .dock-results .atlas-cta {
+    display: none; /* the sheet's notes view carries the full-atlas link */
   }
 }
 
