@@ -15,7 +15,11 @@ export default function Home() {
         <>
           <div className="home-atlas-head">
             <h2>Living Atlas</h2>
-            <p>2,500 hotels where the VIP upgrade is already arranged. Expedition cruises. Private jets. Luxury hotel yachts. The entire world, mapped — spin it, zoom in, click. You were going anyway.</p>
+            {/* One blurb, two lengths: phones swap in the short line via CSS. */}
+            <p>
+              <span className="blurb-full">2,500 hotels where the VIP upgrade is already arranged. Expedition cruises. Private jets. Luxury hotel yachts. The entire world, mapped — spin it, zoom in, click. You were going anyway.</span>
+              <span className="blurb-short">2,500 VIP-upgrade hotels. Jets, yachts, expeditions — the world, mapped. You were going anyway.</span>
+            </p>
           </div>
           <AtlasShell type="hotel" region={null} externalLink={internalAtlasLink("hotel")} scope="all" />
         </>

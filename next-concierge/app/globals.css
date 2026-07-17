@@ -493,15 +493,6 @@ main.page {
   font-size: 12px;
 }
 
-@media (max-width: 520px) {
-  .bs-fields {
-    grid-template-columns: 1fr 1fr;
-  }
-  .bs-where {
-    grid-column: 1 / -1;
-  }
-}
-
 /* Touch ergonomics — on any coarse pointer, everything tappable grows toward
    the 44px guideline: the booking form's steppers/fields/CTA and the small
    text links inside reply cards. Desktop pointer users are untouched. */
@@ -1338,6 +1329,10 @@ main.page {
   max-width: 560px;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
 }
+/* Desktop reads the full blurb; the phone block below swaps in the short one. */
+.home-atlas-head .blurb-short {
+  display: none;
+}
 
 /* ── Desktop/tablet: The Guide as a floating panel docked left ──────────────
    Google Maps' desktop grammar: full-bleed map, panel over it. Width is the
@@ -1754,11 +1749,19 @@ main.page {
   }
   .home-atlas-head h2 {
     font-size: 15px;
-    margin: 0;
+    margin: 0 0 2px;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
   }
+  /* The short blurb rides under the framing line — two small lines, tops. */
   .home-atlas-head p {
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+  .home-atlas-head .blurb-full {
     display: none;
+  }
+  .home-atlas-head .blurb-short {
+    display: inline;
   }
 
   /* ── The Guide as a bottom sheet over the map ── */

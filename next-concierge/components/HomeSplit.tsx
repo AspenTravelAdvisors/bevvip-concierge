@@ -21,7 +21,7 @@ import AtlasDock from "./AtlasDock";
 // its ambient camera) into the strip of map that remains visible.
 
 const WIDTH_KEY = "bevvip.basecamp.guideW";
-const MIN_W = 340; // the transcript stays readable…
+const MIN_W = 420; // narrowest width where the booking strip's date windows still show a full mm/dd/yyyy
 const MAX_W = 680; // …and the map keeps the frame.
 const DEFAULT_W = 440;
 const PANEL_GAP = 16; // .home-chat's CSS left offset
