@@ -317,10 +317,16 @@ main.page {
   max-width: none;
   background: var(--user);
 }
+/* Where on its own row, Check-in/Check-out splitting the next — so the date
+   windows always show the full mm/dd/yyyy inside the floating Guide panel
+   (and the phone sheet) instead of clipping against a Where column. */
 .bs-fields {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
+}
+.bs-where {
+  grid-column: 1 / -1;
 }
 .bs-field {
   display: flex;
