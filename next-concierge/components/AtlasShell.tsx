@@ -212,6 +212,8 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let cancelled = false;
     let spinRAF = 0;
     let spinning = false;
+    let pulseRAF = 0;
+    let pulsing = false;
     let ready = false;
     let focused = false;
     let restyling = false;
@@ -295,6 +297,38 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           spinStep();
         }
 
+        // ── Result-pin pulse ─────────────────────────────────────────────────
+        // Plotted results share their gold with the ambient yacht dots, so they
+        // announce themselves with motion instead: a sonar ring that expands and
+        // fades each cycle, over a glow that gently breathes. Honors
+        // prefers-reduced-motion (static glow only) and pauses in hidden tabs.
+        const PULSE_MS = 2200;
+        function stopPulse() {
+          pulsing = false;
+          cancelAnimationFrame(pulseRAF);
+        }
+        function pulseStep(now: number) {
+          if (!pulsing) return;
+          pulseRAF = requestAnimationFrame(pulseStep);
+          if (document.hidden || !map.getLayer("featured-pulse")) return;
+          const t = (now % PULSE_MS) / PULSE_MS; // 0→1 each cycle
+          const ease = 1 - (1 - t) * (1 - t); // ring races out, then coasts
+          try {
+            map.setPaintProperty("featured-pulse", "circle-radius", 7 + ease * 22);
+            map.setPaintProperty("featured-pulse", "circle-stroke-opacity", (1 - t) * 0.6);
+            // The glow breathes on its own slower rhythm.
+            const breathe = 0.5 + 0.5 * Math.sin((now / PULSE_MS) * Math.PI); // 0→1→0
+            map.setPaintProperty("featured-glow", "circle-radius", 11 + breathe * 5);
+            map.setPaintProperty("featured-glow", "circle-opacity", 0.2 + breathe * 0.18);
+          } catch { /* mid-restyle: layers momentarily gone */ }
+        }
+        function startPulse() {
+          if (pulsing) return;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          pulsing = true;
+          pulseRAF = requestAnimationFrame(pulseStep);
+        }
+
         // ── Layer painting (re-run on every style.load so basemap switches keep
         //    their layers) ───────────────────────────────────────────────────
         function paintHotel() {
@@ -359,6 +393,14 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           } else {
             map.getSource("featured")?.setData(featuredFC);
           }
+          // Sonar ring under the glow — stroke only, animated by pulseStep.
+          addLayer(map, {
+            id: "featured-pulse", type: "circle", source: "featured",
+            paint: {
+              "circle-radius": 7, "circle-color": "rgba(0,0,0,0)",
+              "circle-stroke-color": "#f4e3ae", "circle-stroke-width": 1.6, "circle-stroke-opacity": 0.6,
+            },
+          });
           addLayer(map, {
             id: "featured-glow", type: "circle", source: "featured",
             paint: { "circle-radius": 12, "circle-color": "#e2c87a", "circle-opacity": 0.24, "circle-blur": 0.7 },
@@ -367,6 +409,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             id: "featured-dot", type: "circle", source: "featured",
             paint: { "circle-radius": 5.5, "circle-color": "#e2c87a", "circle-stroke-color": "#5f4c1d", "circle-stroke-width": 0.8 },
           });
+          startPulse();
         }
 
         function paintAll() {
@@ -718,8 +761,9 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             featuredFC = null;
             try { sessionStorage.removeItem(PLOT_STORAGE_KEY); } catch { /* storage optional */ }
             setBadge(null);
+            stopPulse();
             if (map.getSource("featured")) {
-              ["featured-glow", "featured-dot"].forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
+              ["featured-pulse", "featured-glow", "featured-dot"].forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
               try { (map as MBMap).removeSource("featured"); } catch { /* noop */ }
             }
             paintHotel(); // restore full ambient opacity
@@ -734,6 +778,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     return () => {
       cancelled = true;
       cancelAnimationFrame(spinRAF);
+      cancelAnimationFrame(pulseRAF);
       clearTimeout(loadTimeout);
       ro?.disconnect();
       apiRef.current = null;
