@@ -1526,7 +1526,7 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
   scrim.addEventListener('click',function(){ if(railOpen()) closeRail(); else if(panelOpen()) closePanel(); });
   var wasPanelOpen=panelOpen();
   var wasRailOpen=railOpen();
-  function syncPanelState(){ placePopovers(); var openRail=railOpen(); if(mq.matches&&openRail&&!wasRailOpen&&panel.classList.contains('open')&&!body.classList.contains('panel-collapsed')){ body.classList.add('panel-collapsed'); document.dispatchEvent(new Event('atlas:panel-sync')); } wasRailOpen=openRail; var open=panelOpen(); if(open&&!wasPanelOpen&&mq.matches){ panel.classList.remove('drawer-expanded'); panel.style.removeProperty('transform'); } wasPanelOpen=open; syncScrim(); }
+  function syncPanelState(){ placePopovers(); var openRail=railOpen(); if(mq.matches&&openRail&&!wasRailOpen&&panel.classList.contains('open')&&!body.classList.contains('panel-collapsed')){ body.classList.add('panel-collapsed'); document.dispatchEvent(new Event('atlas:panel-sync')); } wasRailOpen=openRail; var open=panelOpen(); if(open&&!wasPanelOpen&&mq.matches){ panel.classList.remove('drawer-expanded'); panel.style.removeProperty('transform'); panel.style.removeProperty('height'); panel.style.removeProperty('transition'); } wasPanelOpen=open; syncScrim(); }
   new MutationObserver(syncPanelState).observe(body,{attributes:true,attributeFilter:['class']});
   new MutationObserver(syncPanelState).observe(panel,{attributes:true,attributeFilter:['class']});
   document.addEventListener('atlas:panel-sync',syncPanelState);
@@ -1535,7 +1535,68 @@ setTimeout(function(){ if(window.hideAtlasVeil) window.hideAtlasVeil(); },180);
   function setT(el,y){ el.style.setProperty('transform','translateY('+y+'px)','important'); }
   function clearT(el){ el.style.removeProperty('transform'); }
   dragify(railHandle,rail,{move:function(dy,e){ if(dy>0){ e.preventDefault(); setT(rail,dy); } },end:function(dy){ clearT(rail); if(dy>90) closeRail(); }});
-  dragify(panelHandle,panel,{move:function(dy,e){ e.preventDefault(); if(dy>0) setT(panel,dy); },end:function(dy){ clearT(panel); if(dy<-50&&!expanded()) panel.classList.add('drawer-expanded'); else if(dy>110){ if(expanded()) panel.classList.remove('drawer-expanded'); else closePanel(); } }});
+  /* details drawer — follows the finger in both directions, then snaps by
+     position + flick velocity between expanded / teaser / dismissed */
+  var EASE='cubic-bezier(.22,.61,.36,1)';
+  function teaserH(){ return window.innerHeight*0.52; }
+  function fullH(){ return window.innerHeight*0.92; }
+  function panelGrip(grip){
+    var startY=0,startH=0,curH=0,active=false,lastY=0,lastT=0,vel=0;
+    grip.addEventListener('touchstart',function(e){
+      if(!mq.matches || !panelOpen()) return;
+      active=true; startY=lastY=e.touches[0].clientY; lastT=e.timeStamp; vel=0;
+      startH=curH=panel.getBoundingClientRect().height;
+      panel.style.transition='none';
+    },{passive:true});
+    grip.addEventListener('touchmove',function(e){
+      if(!active) return;
+      e.preventDefault();
+      var y=e.touches[0].clientY, dt=e.timeStamp-lastT;
+      if(dt>0){ vel=(y-lastY)/dt; lastY=y; lastT=e.timeStamp; }
+      curH=startH-(y-startY);
+      if(curH>=teaserH()){
+        /* between the snap points: live-resize, soft resistance past the top */
+        var h=Math.min(curH,fullH());
+        panel.style.setProperty('height',(h+(curH-h)/4)+'px','important');
+        clearT(panel);
+      }else{
+        /* below the teaser: slide the whole sheet toward dismissal */
+        panel.style.setProperty('height',teaserH()+'px','important');
+        setT(panel,teaserH()-curH);
+      }
+    },{passive:false});
+    function end(){
+      if(!active) return; active=false;
+      var target;                                   /* 'full' | 'teaser' | 'closed' */
+      if(vel<-0.4) target='full';                   /* flick up */
+      else if(vel>0.4) target=(curH>teaserH()*1.15)?'teaser':'closed'; /* flick down */
+      else if(curH>=(teaserH()+fullH())/2) target='full';
+      else if(curH>=teaserH()*0.6) target='teaser';
+      else target='closed';
+      panel.style.transition='height .26s '+EASE+', transform .26s '+EASE;
+      requestAnimationFrame(function(){
+        if(target==='closed'){
+          setT(panel,teaserH());                    /* glide fully off screen… */
+          setTimeout(function(){
+            closePanel(); panel.classList.remove('drawer-expanded');
+            panel.style.removeProperty('height'); panel.style.transition=''; clearT(panel);
+          },270);
+          return;
+        }
+        clearT(panel);
+        panel.style.setProperty('height',(target==='full'?fullH():teaserH())+'px','important');
+        setTimeout(function(){                      /* …then hand back to the CSS classes */
+          panel.classList.toggle('drawer-expanded', target==='full');
+          panel.style.removeProperty('height'); panel.style.transition='';
+        },270);
+      });
+    }
+    grip.addEventListener('touchend',end);
+    grip.addEventListener('touchcancel',end);
+  }
+  panelGrip(panelHandle);
+  var panelHero=panel.querySelector('.hero');
+  if(panelHero) panelGrip(panelHero);
   syncPanelState();
 })();
 </script>
