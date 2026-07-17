@@ -560,18 +560,41 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
           } catch { /* fit optional */ }
         }
-        // On the phone home the chat sheet / result-card dock overlays the lower
-        // part of the full-viewport canvas, so frame plotted results into the
-        // strip of map that stays visible above them. Everywhere else (desktop
-        // split, full atlas pages) nothing overlays the map — keep the even fit.
+        // The home canvas is full-bleed with Guide chrome overlaying it — the
+        // bottom sheet / card dock on phones, the floating panel on the left
+        // everywhere else — so frame plotted results into the strip of map that
+        // stays visible. Full atlas pages have no overlay; keep the even fit.
         function fitPad(): number | { top: number; bottom: number; left: number; right: number } {
-          if (!allInventory || !window.matchMedia("(max-width: 640px)").matches) return 78;
-          const h = node.clientHeight;
-          const sheetUp = !!document.querySelector(".home--sheet-half, .home--sheet-full");
-          const bottom = sheetUp
-            ? Math.round(h * 0.62) // half sheet: fit into the top ~38%
-            : Math.min(260, Math.round(h * 0.42)); // pill: clear the card strip
-          return { top: 56, left: 34, right: 34, bottom };
+          if (!allInventory) return 78;
+          if (window.matchMedia("(max-width: 640px)").matches) {
+            const h = node.clientHeight;
+            const sheetUp = !!document.querySelector(".home--sheet-half, .home--sheet-full");
+            const bottom = sheetUp
+              ? Math.round(h * 0.62) // half sheet: fit into the top ~38%
+              : Math.min(260, Math.round(h * 0.42)); // pill: clear the card strip
+            return { top: 56, left: 34, right: 34, bottom };
+          }
+          const left = panelOverlayWidth();
+          if (!left) return 78;
+          return { top: 70, left: left + 60, right: 60, bottom: 60 };
+        }
+        // Width of the floating Guide panel overlaying the home canvas's left
+        // edge (0 when closed / on phones / on atlas pages), clamped so padding
+        // can never exceed the canvas.
+        function panelOverlayWidth(): number {
+          const panel = document.querySelector(".home:not(.home--panel-closed) .home-chat");
+          if (!panel) return 0;
+          return Math.min(Math.round(panel.getBoundingClientRect().width), Math.round(node.clientWidth * 0.55));
+        }
+        // Keep the *ambient* camera (idle globe, region focus) centered in the
+        // visible map rather than under the panel. Persistent map padding; every
+        // explicit fit passes its own fitPad() which supersedes it for that move.
+        function ambientPadding() {
+          if (!allInventory) return;
+          const mobile = window.matchMedia("(max-width: 640px)").matches;
+          try {
+            map.setPadding({ top: 0, bottom: 0, right: 0, left: mobile ? 0 : panelOverlayWidth() });
+          } catch { /* padding optional */ }
         }
 
         // Mapbox emits benign "error" events all session — log, never tear down.
@@ -636,6 +659,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           }
           regionsGeo = await loadRegions();
           if (cancelled) return;
+          ambientPadding(); // camera lives right of the floating Guide panel
           // Honor a ?region= deep link: focus that region instead of spinning.
           const focus = region ? regionCenter(region, regionsGeo, regionLookupKey) : null;
           // Restore the last framed subset on the home Living Atlas after a
@@ -685,7 +709,10 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             setTimeout(() => { try { map.resize(); } catch { /* noop */ } }, 60);
           },
           plot(meta) { plotResults(meta); },
-          refit() { if (subsetActive) fitFeatured(); },
+          refit() {
+            ambientPadding(); // panel opened/closed/resized — recenter ambient camera
+            if (subsetActive) fitFeatured();
+          },
           resetView() {
             subsetActive = false;
             featuredFC = null;
@@ -696,6 +723,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
               try { (map as MBMap).removeSource("featured"); } catch { /* noop */ }
             }
             paintHotel(); // restore full ambient opacity
+            ambientPadding();
             if (projGlobe) { focused = false; fitGlobe(); startSpin(); }
           },
         };
@@ -1241,6 +1269,7 @@ interface MBMap {
   setZoom(z: number): void;
   flyTo(opts: { center: [number, number]; zoom: number; speed?: number }): void;
   fitBounds(b: MBBounds, opts: Record<string, unknown>): void;
+  setPadding(p: { top: number; bottom: number; left: number; right: number }): void;
   resize(): void;
   remove(): void;
   addSource(id: string, src: unknown): void;

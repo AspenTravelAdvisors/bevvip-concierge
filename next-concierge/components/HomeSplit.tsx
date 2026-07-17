@@ -1,53 +1,66 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import AtlasDock from "./AtlasDock";
 
-// Base Camp split: chat on the left, Living Atlas on the right, with a draggable
-// gutter between them so guests can trade space toward more chat or more map.
-// The ratio is the atlas pane's share of the row, clamped to sane bounds and
-// remembered between visits. Mapbox only resizes off the *window* resize event,
-// so each drag dispatches a (rAF-throttled) synthetic one to keep the globe
-// fitted instead of letterboxed. Below 900px the panes stack (see globals.css)
-// and the gutter hides, so this only governs the side-by-side desktop layout.
+// Base Camp is atlas-first at every size: the Living Atlas owns the full stage
+// and The Guide floats over it.
 //
-// Phones invert the pairing: the Living Atlas owns the whole stage and The
-// Guide rides over it as a bottom sheet with three detents — parked off-screen
-// behind the dock's "Ask The Guide" pill, half-height (map still visible and
-// animating above as answers plot), or nearly full for reading. The sheet state
-// is a class on .home (home--sheet-*) that only the phone breakpoint styles.
+// Desktop/tablet (>640px): the chat is a docked panel on the left — Google
+// Maps' desktop grammar. Its width drags at the right edge (persisted), a tab
+// on that edge collapses it to a floating "Ask The Guide" pill for full-map
+// immersion, and the collapsed/open state is the home--panel-closed class.
+//
+// Phones (≤640px): the chat is a bottom sheet with three detents — parked
+// off-screen behind the atlas dock's pill, half-height (map animating above),
+// or nearly full for reading — driven by the home--sheet-* classes. The two
+// state machines are independent; each breakpoint's CSS reads only its own.
+//
+// Whenever either state changes the panel/sheet footprint, we dispatch
+// "bevvip:atlas-refit" so the atlas re-frames plotted results (and recenters
+// its ambient camera) into the strip of map that remains visible.
 
-const STORAGE_KEY = "bevvip.basecamp.atlasPct";
-const MIN_PCT = 28; // atlas can't get narrower than this…
-const MAX_PCT = 68; // …or wider than this, so neither pane collapses.
-const DEFAULT_PCT = 44; // matches the original flex-basis.
+const WIDTH_KEY = "bevvip.basecamp.guideW";
+const MIN_W = 340; // the transcript stays readable…
+const MAX_W = 680; // …and the map keeps the frame.
+const DEFAULT_W = 440;
+const PANEL_GAP = 16; // .home-chat's CSS left offset
 
 type SheetState = "pill" | "half" | "full";
 
 export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: ReactNode }) {
   const rowRef = useRef<HTMLDivElement>(null);
-  const [atlasPct, setAtlasPct] = useState(DEFAULT_PCT);
+  const [guideW, setGuideW] = useState(DEFAULT_W);
   const [dragging, setDragging] = useState(false);
-  const rafRef = useRef<number | null>(null);
 
-  // Mobile chat-sheet detent. Inert on desktop/tablet — the CSS only acts on
-  // the home--sheet-* classes below the phone breakpoint.
+  // Desktop panel open/closed. Phones never toggle this (the tab and pill that
+  // drive it are hidden there), so the sheet styles are unaffected by it.
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  // Mobile chat-sheet detent.
   const [sheet, setSheet] = useState<SheetState>("pill");
 
+  const requestRefit = useCallback(() => {
+    window.setTimeout(() => window.dispatchEvent(new Event("bevvip:atlas-refit")), 420);
+  }, []);
+
   // Transaction mode: an ?ask= deep link (from an atlas card or a campaign)
-  // means the traveler arrives knowing what they want — open the sheet so the
-  // auto-sent question and its streaming answer are in view, map above it.
-  // Discovery mode (no ask) keeps the world full-screen behind the pill.
+  // means the traveler arrives knowing what they want — surface the chat so the
+  // auto-sent question and its streaming answer are in view. Discovery mode
+  // (no ask) keeps the world primary: pill on phones, open panel on desktop.
   useEffect(() => {
     try {
-      if (new URLSearchParams(window.location.search).get("ask")?.trim()) setSheet("half");
+      if (new URLSearchParams(window.location.search).get("ask")?.trim()) {
+        setSheet("half");
+        setPanelOpen(true);
+      }
     } catch {
       /* no query / unavailable */
     }
   }, []);
 
-  // Starting the conversation over returns the stage to the idle, map-first
-  // home. (An active session never forces the sheet open — the map is primary.)
+  // Starting the conversation over returns the phone stage to the idle,
+  // map-first home. Desktop keeps whatever panel state the traveler chose.
   useEffect(() => {
     function onSession(e: Event) {
       const active = !!(e as CustomEvent<{ active?: boolean }>).detail?.active;
@@ -57,38 +70,49 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
     return () => window.removeEventListener("bevvip:guide-session", onSession as EventListener);
   }, []);
 
-  // Whenever the sheet changes detent, ask the atlas to re-frame any plotted
-  // results into the strip of map that remains visible (after the slide).
-  const setSheetAndRefit = useCallback((next: SheetState | ((s: SheetState) => SheetState)) => {
-    setSheet((prev) => {
-      const value = typeof next === "function" ? next(prev) : next;
-      if (value !== prev) {
-        window.setTimeout(() => window.dispatchEvent(new Event("bevvip:atlas-refit")), 460);
-      }
-      return value;
-    });
+  const setSheetAndRefit = useCallback(
+    (next: SheetState | ((s: SheetState) => SheetState)) => {
+      setSheet((prev) => {
+        const value = typeof next === "function" ? next(prev) : next;
+        if (value !== prev) requestRefit();
+        return value;
+      });
+    },
+    [requestRefit],
+  );
+
+  const focusComposer = useCallback(() => {
+    window.setTimeout(() => {
+      document
+        .querySelector<HTMLTextAreaElement>(".home-chat .composer textarea")
+        ?.focus({ preventScroll: true });
+    }, 460);
   }, []);
 
-  // Open the sheet from the dock. Focusing the composer (pill tap) raises the
-  // keyboard; chip taps skip it so the streaming reply gets the room instead.
+  // Open the sheet from the mobile dock. Focusing the composer (pill tap)
+  // raises the keyboard; chip taps skip it so the streaming reply gets the room.
   const openChat = useCallback(
     (focus: boolean) => {
       setSheetAndRefit((s) => (s === "pill" ? "half" : s));
-      if (focus) {
-        window.setTimeout(() => {
-          document
-            .querySelector<HTMLTextAreaElement>(".home-chat .composer textarea")
-            ?.focus({ preventScroll: true });
-        }, 460);
-      }
+      if (focus) focusComposer();
     },
-    [setSheetAndRefit],
+    [setSheetAndRefit, focusComposer],
   );
 
-  // The handle's label promises swiping, so honour a real swipe as well as a
-  // tap. Swipe up grows the sheet a detent, swipe down shrinks it; a tap
-  // toggles half ↔ full. The gesture flags itself so the tap-click that
-  // follows touchend doesn't double-step.
+  const togglePanel = useCallback(
+    (open: boolean, focus = false) => {
+      setPanelOpen((prev) => {
+        if (prev !== open) requestRefit();
+        return open;
+      });
+      if (open && focus) focusComposer();
+    },
+    [requestRefit, focusComposer],
+  );
+
+  // Sheet handle gestures (phones): swipe up grows a detent, swipe down
+  // shrinks; a tap toggles half ↔ full. The gesture flags itself so the
+  // tap-click that follows touchend doesn't double-step.
   const swipeStartY = useRef<number | null>(null);
   const swipeConsumed = useRef(false);
   const onHandleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -117,18 +141,18 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
     setSheetAndRefit((s) => (s === "full" ? "half" : "full"));
   }, [setSheetAndRefit]);
 
-  // Restore a saved ratio on mount (client-only so SSR stays at the default).
+  // Restore a saved panel width on mount (client-only so SSR stays at the
+  // default).
   useEffect(() => {
-    const saved = Number(window.localStorage.getItem(STORAGE_KEY));
-    if (Number.isFinite(saved) && saved >= MIN_PCT && saved <= MAX_PCT) setAtlasPct(saved);
+    const saved = Number(window.localStorage.getItem(WIDTH_KEY));
+    if (Number.isFinite(saved) && saved >= MIN_W && saved <= MAX_W) setGuideW(saved);
   }, []);
 
-  const nudgeMapResize = useCallback(() => {
-    if (rafRef.current != null) return;
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = null;
-      window.dispatchEvent(new Event("resize"));
-    });
+  const clampW = useCallback((w: number) => {
+    const row = rowRef.current;
+    // Never let the panel take more than ~55% of the stage from the map.
+    const max = row ? Math.min(MAX_W, Math.round(row.getBoundingClientRect().width * 0.55)) : MAX_W;
+    return Math.min(max, Math.max(MIN_W, Math.round(w)));
   }, []);
 
   useEffect(() => {
@@ -137,17 +161,17 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
     const onMove = (e: PointerEvent) => {
       const row = rowRef.current;
       if (!row) return;
-      const rect = row.getBoundingClientRect();
-      // Pointer measured from the right edge → atlas share of the row width.
-      const pct = ((rect.right - e.clientX) / rect.width) * 100;
-      const clamped = Math.min(MAX_PCT, Math.max(MIN_PCT, pct));
-      setAtlasPct(clamped);
-      nudgeMapResize();
+      // Pointer measured from the panel's left edge → new panel width. The map
+      // beneath is full-bleed and never resizes, so no Mapbox nudges needed.
+      setGuideW(clampW(e.clientX - row.getBoundingClientRect().left - PANEL_GAP));
     };
     const onUp = () => {
       setDragging(false);
-      window.localStorage.setItem(STORAGE_KEY, String(Math.round(atlasPct)));
-      window.dispatchEvent(new Event("resize"));
+      setGuideW((w) => {
+        window.localStorage.setItem(WIDTH_KEY, String(w));
+        return w;
+      });
+      requestRefit(); // plotted results re-frame beside the new width
     };
 
     window.addEventListener("pointermove", onMove);
@@ -160,26 +184,30 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
       document.body.style.cursor = "";
       document.body.style.userSelect = "";
     };
-  }, [dragging, atlasPct, nudgeMapResize]);
+  }, [dragging, clampW, requestRefit]);
 
   // Keyboard nudges for accessibility (focus the handle, then arrow keys).
   const onKeyDown = (e: React.KeyboardEvent) => {
-    let next = atlasPct;
-    if (e.key === "ArrowLeft") next = Math.min(MAX_PCT, atlasPct + 2); // more map
-    else if (e.key === "ArrowRight") next = Math.max(MIN_PCT, atlasPct - 2); // more chat
-    else if (e.key === "Home") next = DEFAULT_PCT;
+    let next = guideW;
+    if (e.key === "ArrowRight") next = clampW(guideW + 16); // wider panel
+    else if (e.key === "ArrowLeft") next = clampW(guideW - 16); // more map
+    else if (e.key === "Home") next = DEFAULT_W;
     else return;
     e.preventDefault();
-    setAtlasPct(next);
-    window.localStorage.setItem(STORAGE_KEY, String(Math.round(next)));
-    nudgeMapResize();
+    setGuideW(next);
+    window.localStorage.setItem(WIDTH_KEY, String(next));
+    requestRefit();
   };
 
   return (
     <div
       ref={rowRef}
-      className={`home${dragging ? " dragging" : ""} home--sheet-${sheet}`}
+      className={`home${dragging ? " dragging" : ""} home--sheet-${sheet}${
+        panelOpen ? "" : " home--panel-closed"
+      }`}
+      style={{ "--guide-panel-w": `${guideW}px` } as CSSProperties}
     >
+      <aside className="home-atlas">{atlas}</aside>
       <div className="home-chat">
         <div className="home-chat-handle">
           <button
@@ -213,10 +241,10 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
         className="home-gutter"
         role="separator"
         aria-orientation="vertical"
-        aria-label="Resize chat and atlas"
-        aria-valuenow={Math.round(atlasPct)}
-        aria-valuemin={MIN_PCT}
-        aria-valuemax={MAX_PCT}
+        aria-label="Resize The Guide panel"
+        aria-valuenow={guideW}
+        aria-valuemin={MIN_W}
+        aria-valuemax={MAX_W}
         tabIndex={0}
         onPointerDown={(e) => {
           e.preventDefault();
@@ -226,9 +254,22 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
       >
         <span className="home-gutter-grip" aria-hidden="true" />
       </div>
-      <aside className="home-atlas" style={{ flexBasis: `${atlasPct}%` }}>
-        {atlas}
-      </aside>
+      <button
+        type="button"
+        className="guide-tab"
+        aria-expanded={panelOpen}
+        aria-label="Hide The Guide panel"
+        title="Hide The Guide — full map"
+        onClick={() => togglePanel(false)}
+      >
+        ‹
+      </button>
+      <button type="button" className="guide-pill" onClick={() => togglePanel(true, true)}>
+        <span className="gp-av" aria-hidden="true">
+          G
+        </span>
+        Ask The Guide…
+      </button>
       <AtlasDock onOpenChat={openChat} />
     </div>
   );

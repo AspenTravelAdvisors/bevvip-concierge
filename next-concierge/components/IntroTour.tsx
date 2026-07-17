@@ -48,10 +48,12 @@ const SLIDES: Slide[] = [
     body: "Not sure where to begin? Tap one of these starters. Each opens a real search — a hotel in a region, an expedition in a given month, two brands compared side by side — so you can see The Guide at work.",
   },
   {
-    target: ".home-atlas",
+    // The atlas is the full-bleed stage now — a spotlight ring around the whole
+    // viewport reads as broken, so this slide centers over the open map.
     badge: "Living Atlas",
     title: "Watch it land on the globe",
-    body: "The Living Atlas maps the entire collection worldwide. As The Guide returns recommendations, they're plotted right here — so every suggestion has a place on the map you can explore.",
+    body: "The Living Atlas maps the entire collection worldwide. As The Guide returns recommendations, they're plotted right onto the map behind this card — so every suggestion has a place in the world you can explore.",
+    placement: "center",
   },
   {
     target: ".atlas-ctrls",

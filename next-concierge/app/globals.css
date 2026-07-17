@@ -44,11 +44,9 @@ a:hover {
 .app {
   display: flex;
   flex-direction: column;
-  /* Pin the shell to the viewport so the chat transcript scrolls inside its
-     own pane. With min-height the column could grow to fit a long conversation,
-     which pushed the page taller and stretched the side-by-side Living Atlas
-     into a distorted, oversized globe. The stacked mobile layout below restores
-     normal page scrolling. */
+  /* Pin the shell to the viewport: the Living Atlas fills the stage edge to
+     edge and the chat transcript scrolls inside its floating panel/sheet, so
+     the page itself never scrolls. */
   height: 100dvh;
 }
 
@@ -1284,62 +1282,36 @@ main.page {
 }
 
 /* ── Landing: chat + Living Atlas, side by side ───── */
+/* ── Base Camp stage: atlas-first at every size ─────────────────────────────
+   The Living Atlas owns the full frame; The Guide floats over it — a docked
+   left panel on desktop/tablet (min-width block below), a bottom sheet on
+   phones (the max-width: 640px block further down). */
 .home {
+  position: relative;
   flex: 1;
-  display: flex;
   min-height: 0;
 }
-.home-chat {
-  flex: 1 1 0;
-  min-width: 0;
-  min-height: 0;
+.home-atlas {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+}
+.home-atlas .atlas-map {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+.home-chat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
 .home-chat .chat {
   flex: 1;
-}
-.home-atlas {
-  flex: 0 0 44%; /* flex-basis overridden inline by the drag ratio */
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 18px;
-  gap: 12px;
-}
-
-/* Draggable gutter between chat and atlas. The 1px line lives here now
-   (moved off .home-chat's right border) so the grab target straddles it. */
-.home-gutter {
-  flex: 0 0 9px;
-  align-self: stretch;
-  position: relative;
-  cursor: col-resize;
-  background: var(--line);
-  background-clip: content-box;
-  padding: 0 4px;
-  touch-action: none;
-}
-.home-gutter:hover,
-.home-gutter:focus-visible,
-.home.dragging .home-gutter {
-  background-color: var(--gold-dim);
-  outline: none;
-}
-.home-gutter-grip {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 4px;
-  height: 34px;
-  border-radius: 4px;
-  background: var(--gold-dim);
-}
-.home-gutter:hover .home-gutter-grip,
-.home-gutter:focus-visible .home-gutter-grip,
-.home.dragging .home-gutter-grip {
-  background: var(--gold);
+  min-height: 0;
 }
 /* While dragging, don't let the map canvas swallow the pointer stream. */
 .home.dragging .home-chat,
@@ -1348,14 +1320,160 @@ main.page {
 }
 .home-atlas-head h2 {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 600;
-  margin: 0 0 2px;
+  margin: 0 0 3px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9);
 }
 .home-atlas-head p {
   color: var(--sub);
-  font-size: 12.5px;
+  font-size: 12px;
   margin: 0;
+  max-width: 560px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* ── Desktop/tablet: The Guide as a floating panel docked left ──────────────
+   Google Maps' desktop grammar: full-bleed map, panel over it. Width is the
+   --guide-panel-w var HomeSplit sets inline (drag-persisted at the panel's
+   right edge); home--panel-closed slides the panel away, hides its edge
+   chrome and swaps in the reopen pill. */
+@media (min-width: 641px) {
+  .home-chat {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    bottom: 14px;
+    width: var(--guide-panel-w, 440px);
+    max-width: calc(100% - 96px);
+    z-index: 6;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition:
+      transform 0.34s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.34s ease;
+  }
+  .home--panel-closed .home-chat {
+    transform: translateX(calc(-100% - 26px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Width drag: an invisible strip straddling the panel's right edge. */
+  .home-gutter {
+    display: block;
+    position: absolute;
+    top: 14px;
+    bottom: 14px;
+    left: calc(16px + var(--guide-panel-w, 440px) - 5px);
+    width: 10px;
+    z-index: 7;
+    cursor: col-resize;
+    touch-action: none;
+  }
+  .home--panel-closed .home-gutter {
+    display: none;
+  }
+  .home-gutter:focus-visible {
+    outline: none;
+  }
+  .home-gutter-grip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 34px;
+    border-radius: 4px;
+    background: var(--gold-dim);
+  }
+  .home-gutter:hover .home-gutter-grip,
+  .home-gutter:focus-visible .home-gutter-grip,
+  .home.dragging .home-gutter-grip {
+    background: var(--gold);
+  }
+
+  /* Collapse tab riding the panel's edge. */
+  .guide-tab {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: calc(16px + var(--guide-panel-w, 440px));
+    transform: translateY(-50%);
+    z-index: 7;
+    width: 24px;
+    height: 58px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    border-left: 0;
+    border-radius: 0 10px 10px 0;
+    background: var(--panel);
+    color: var(--gold-light);
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .guide-tab:hover {
+    color: var(--gold);
+  }
+  .home--panel-closed .guide-tab {
+    display: none;
+  }
+
+  /* Reopen pill — the panel's collapsed self. */
+  .home--panel-closed .guide-pill {
+    display: inline-flex;
+    position: absolute;
+    left: 16px;
+    bottom: 18px;
+    z-index: 7;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 8px 18px 8px 8px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    background: linear-gradient(180deg, #17171a, #101013);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    color: var(--sub);
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .guide-pill .gp-av {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1407;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  }
+
+  /* Framing line + layer legend live right of the panel, over the open map. */
+  .home-atlas .home-atlas-head {
+    position: absolute;
+    top: 14px;
+    left: calc(16px + var(--guide-panel-w, 440px) + 22px);
+    right: 130px;
+    z-index: 3;
+    padding: 0;
+    pointer-events: none;
+  }
+  .home-atlas .atlas-legend {
+    left: calc(16px + var(--guide-panel-w, 440px) + 22px);
+    top: 86px;
+  }
+  .home--panel-closed .home-atlas-head,
+  .home--panel-closed .home-atlas .atlas-legend {
+    left: 24px;
+  }
 }
 .atlas-map .fallback {
   text-align: center;
@@ -1385,43 +1503,15 @@ main.page {
   margin-top: 14px;
 }
 
-/* Mobile-only chrome: the chat-sheet drag handle, the pinned Guide session bar
-   and the atlas dock (pill + chips + card strip). Hidden everywhere by default —
-   only the phone breakpoint below reveals them, so the desktop/tablet
-   side-by-side split (and its draggable gutter) is completely unchanged. */
+/* Overlay chrome hidden by default; each breakpoint's block reveals its own —
+   phones the sheet handle / session bar / atlas dock, desktop the width gutter
+   and (when the panel is closed) the reopen pill. */
 .home-chat-handle,
 .guide-sessionbar,
-.atlas-dock {
+.atlas-dock,
+.home-gutter,
+.guide-pill {
   display: none;
-}
-
-/* Stack chat over the atlas once the two panes get cramped. */
-@media (max-width: 900px) {
-  /* Stacked, the two panes are taller than the viewport, so let the page scroll
-     again instead of pinning the shell (which would clip the lower pane). */
-  .app {
-    height: auto;
-    min-height: 100dvh;
-  }
-  .home {
-    flex-direction: column;
-  }
-  .home-chat {
-    border-bottom: 1px solid var(--line);
-    min-height: 52vh;
-  }
-  /* Stacked vertically, there's nothing to drag — hide the gutter and let the
-     atlas take whatever height it needs (drag ratio doesn't apply here). */
-  .home-gutter {
-    display: none;
-  }
-  .home-atlas {
-    flex: 1 1 auto !important;
-    max-width: none;
-  }
-  .home-atlas .atlas-map {
-    min-height: 46vh;
-  }
 }
 
 @media (max-width: 640px) {
