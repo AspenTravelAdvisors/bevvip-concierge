@@ -57,12 +57,19 @@ function toQuery(pairs) {
     .join("&");
 }
 
-// Build the TravelWits destination-search URL for a label + dates. Returns null
-// when a required piece (dates, label) is missing — a "Book VIP rate" link must
-// never point at a page that cannot show a rate.
-export function travelWitsUrl({ label, checkIn, checkOut }) {
+// Build the TravelWits search URL for a place + dates. The portal only
+// auto-runs the search when the place is identified by a TravelWits hotelId
+// (sa[hotelId] + sa[lat]/sa[lon]) or a Google Place id (sa[value]); with a bare
+// text label it strands the visitor at the search form ("Address is
+// required"). So this returns null unless dates, a label, AND one of those
+// identifiers are present — a "Book VIP rate" link must never point at a page
+// that cannot show a rate.
+export function travelWitsUrl({ label, checkIn, checkOut, hotelId, lat, lon }) {
   const location = String(label || "").trim();
   if (!location || !isDay(checkIn) || !isDay(checkOut)) return null;
+  const placeId = TW_PLACE_IDS[norm(location)] || "";
+  const hasHotel = hotelId != null && String(hotelId).trim() !== "";
+  if (!hasHotel && !placeId) return null;
   const pairs = [
     ["checkInDate", checkIn],
     ["checkOutDate", checkOut],
@@ -71,8 +78,17 @@ export function travelWitsUrl({ label, checkIn, checkOut }) {
     ["searchRadiuses[0]", "50"],
     ["selectedCurrency", "USD"],
     ["searchMode", "2"],
-    ["sa[value]", TW_PLACE_IDS[norm(location)] || ""],
-    ["sa[label]", location],
+    ...(hasHotel
+      ? [
+          ["sa[hotelId]", String(hotelId).trim()],
+          ["sa[label]", location],
+          ["sa[lat]", lat],
+          ["sa[lon]", lon],
+        ]
+      : [
+          ["sa[value]", placeId],
+          ["sa[label]", location],
+        ]),
   ];
   return `${TW_BASE}?${toQuery(pairs)}`;
 }
@@ -147,16 +163,24 @@ export function bookingLink(hotel, trip) {
   const isHotel = type === "hotel" || !type;
 
   if (MODE === "deep" && isHotel) {
+    // The TravelWits identity (hotelId + coords + canonical label) rides on the
+    // record as `tw`, attached server-side from the harvested overlay. Without
+    // it a deep link cannot auto-run the search, so we fall through to the
+    // portal instead of emitting a dead-end link.
+    const tw = hotel && hotel.tw;
     const stay = tomorrowNightStay();
-    const url = travelWitsUrl({
-      label: hotelSearchLabel(hotel) || (trip && trip.destination) || "",
+    const url = tw && travelWitsUrl({
+      label: tw.label || hotelSearchLabel(hotel),
       checkIn: stay.checkIn,
       checkOut: stay.checkOut,
+      hotelId: tw.hotelId,
+      lat: tw.lat,
+      lon: tw.lon,
     });
     if (url) {
       return { kind: "deep", url, label: "Book VIP rate", external: true, ...(note ? { note } : {}) };
     }
-    // no property label → fall through to the portal affordance
+    // no TravelWits identity → fall through to the portal affordance
   }
 
   const raw = String((hotel && hotel.bookUrl) || "").trim();

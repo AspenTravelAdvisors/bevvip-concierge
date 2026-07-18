@@ -14,6 +14,7 @@ const hotels = require("../../data/atlas/hotel/luxury-hotels.json");
 const hotelFit = require("../../data/atlas/hotel/hotel-fit.json");
 const { rankItems } = require("./supplier-fit");
 const { preferredScore, preferredTier } = require("./preferred-overlay");
+const { travelWitsFor } = require("./travelwits-overlay");
 
 const ci = (s) => String(s == null ? "" : s).toLowerCase().trim();
 const fold = (s) => ci(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -118,10 +119,14 @@ const INTENT_SCORE = {
 
 function enriched(h) {
   const fit = fitFor(h);
+  // tw: the property's TravelWits identity (hotelId/coords/label) — the piece
+  // a booking deep link needs to auto-run the portal search (lib/atlas/booking.js).
+  const tw = travelWitsFor(h);
   return {
     ...h,
     vipUpgrades: normalizedBenefits(h),
     ...(fit ? { fit } : {}),
+    ...(tw ? { tw } : {}),
   };
 }
 

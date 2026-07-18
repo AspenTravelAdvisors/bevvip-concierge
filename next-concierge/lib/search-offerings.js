@@ -985,6 +985,8 @@ function hotelCard(h) {
     vipUpgrades: (h.vipUpgrades || []).map(firstPriorityBenefit),
     bookUrl: h.bookUrl,
     bookPassword: h.bookPassword,
+    // TravelWits identity for the card's booking deep link (lib/atlas/booking.js).
+    tw: h.tw || null,
   };
 }
 

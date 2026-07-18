@@ -725,6 +725,7 @@ function detailProps(h){
     marqueeRegion:h.region, address:h.address,
     upgrades:h.vipUpgrades||[], bookUrl:h.bookUrl,
     password:h.bookPassword, fit:h.fit||null,
+    tw:h.tw||null,
     _detailLoaded:true
   };
 }
@@ -1219,8 +1220,16 @@ function twQuery(pairs){
     .map(pair=>`${pair[0]}=${encodeURIComponent(pair[1])}`)
     .join("&");
 }
+// A TravelWits deep link only auto-runs the search when the property is
+// identified by its TravelWits hotelId (sa[hotelId] + sa[lat]/sa[lon]); with a
+// bare text label the portal strands the visitor at the search form ("Address
+// is required"). The identity arrives on the hydrated detail as p.tw from the
+// harvested overlay (scripts/build-travelwits-overlay.mjs); without it we
+// return "" so the CTA falls back to the portal bookUrl.
 function twHotelBookingUrl(p){
-  const label=twHotelSearchLabel(p);
+  const tw=p&&p.tw;
+  if(!tw || !tw.hotelId) return "";
+  const label=tw.label||twHotelSearchLabel(p);
   if(!label) return "";
   const stay=twTomorrowNightStay();
   const pairs=[
@@ -1231,8 +1240,10 @@ function twHotelBookingUrl(p){
     ["searchRadiuses[0]","50"],
     ["selectedCurrency","USD"],
     ["searchMode","2"],
-    ["sa[value]",TW_PLACE_IDS[twNorm(label)]||""],
-    ["sa[label]",label]
+    ["sa[hotelId]",String(tw.hotelId)],
+    ["sa[label]",label],
+    ["sa[lat]",tw.lat],
+    ["sa[lon]",tw.lon]
   ];
   return `${TW_BASE}?${twQuery(pairs)}`;
 }
@@ -1278,8 +1289,15 @@ async function openDetail(f){
   (p.upgrades||[]).filter(u=>!/^for\s+20\d{2}(\s*&\s*20\d{2})?\s*:?\s*$/i.test(String(u==null?"":u).trim()))
     .forEach(u=>{const li=document.createElement("li");li.innerHTML=formatVipBenefit(u);ups.appendChild(li);});
   const book=document.getElementById("d-book");
+  // Deep link when the property has a TravelWits identity; otherwise the gated
+  // portal (bookUrl) — honest labels for each, never a dead-end search form.
   let url=twHotelBookingUrl(p);
-  if(url){ book.href=url; book.style.display=""; } else book.style.display="none";
+  if(url){
+    book.href=url; book.textContent="Book VIP rate →"; book.style.display="";
+  } else if(p.bookUrl){
+    const portal=/^https?:\/\//i.test(p.bookUrl)?p.bookUrl:`https://${p.bookUrl}`;
+    book.href=portal; book.textContent="Check VIP rates ↗"; book.style.display="";
+  } else book.style.display="none";
   document.getElementById("d-pw").innerHTML = p.password ? `Access code: <b>${p.password}</b>` : "";
   document.getElementById("panel").classList.add("open");
   // enlarge the selected pin, reset the previously selected one
