@@ -123,9 +123,12 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   const pinsFCRef = useRef<unknown>(null);
   const firstRender = useRef(true);
 
-  // Filter params only (no page/sort): the map pins track these.
+  // Filter params only (no page/sort/bbox): the map pins track these. bbox is
+  // excluded on purpose — it limits the *list* to the visible area, while the
+  // map keeps showing every pin for the active filters (spatial context), and
+  // leaving it out means a "Search this area" click never refits the map.
   const filterParams = useMemo(() => {
-    const { page: _p, sort: _s, ...rest } = params;
+    const { page: _p, sort: _s, bbox: _b, ...rest } = params;
     return rest;
   }, [params]);
   const filterQuery = useMemo(() => queryString(filterParams), [filterParams]);
@@ -204,12 +207,30 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     setParams((prev) => {
       const next: Params = { ...prev, ...patch };
       delete next.page; // any filter change restarts at page 1
+      // Changing any real filter drops the map-area limit — the map refits to the
+      // new filter and the user can "Search this area" again from there. Only a
+      // patch that sets bbox itself keeps it.
+      if (!("bbox" in patch)) delete next.bbox;
       // A region change invalidates a narrower destination pick.
       if ("region" in patch) delete next.destination;
       for (const k of Object.keys(next)) if (!next[k]) delete next[k];
       return next;
     });
   }, []);
+
+  // Limit the result list to the villas inside the current map viewport. The map
+  // itself is untouched (pins ignore bbox), so this reads as "show me what's in
+  // view" rather than a jump.
+  const searchThisArea = useCallback(() => {
+    const map = mapRef.current;
+    if (!map || !mapReadyRef.current) return;
+    const b = map.getBounds?.();
+    if (!b) return;
+    const bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]
+      .map((n: number) => Math.round(n * 1e5) / 1e5)
+      .join(",");
+    setFilter({ bbox });
+  }, [setFilter]);
 
   // ── map ─────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -469,6 +490,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     (r) => r.name.toLowerCase() === String(params.region || "").toLowerCase(),
   );
   const shortlistMode = !!params.ids;
+  const areaActive = !!params.bbox;
 
   return (
     <>
@@ -540,12 +562,41 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
             </button>
           </div>
         )}
+        {!mapFailed && (
+          <div className="villa-area-ctrl" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="actrl"
+              onClick={searchThisArea}
+              title="Limit the list below to the villas in the current map view"
+            >
+              ⌖ Search this area
+            </button>
+            {areaActive && (
+              <button
+                type="button"
+                className="actrl area-clear"
+                onClick={() => setFilter({ bbox: "" })}
+                title="Show villas everywhere again"
+              >
+                ✕ Clear area
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {shortlistMode && (
         <div className="villa-shortlist-note mono">
           Showing your shortlist from The Guide.{" "}
           <button onClick={() => setFilter({ ids: "" })}>Show all villas</button>
+        </div>
+      )}
+
+      {areaActive && (
+        <div className="villa-shortlist-note mono">
+          Limited to the villas in the current map view.{" "}
+          <button onClick={() => setFilter({ bbox: "" })}>Show all villas</button>
         </div>
       )}
 

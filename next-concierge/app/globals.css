@@ -1079,7 +1079,8 @@ main.page {
   gap: 8px;
   align-items: flex-end;
 }
-.atlas-ctrls .actrl {
+.atlas-ctrls .actrl,
+.villa-area-ctrl .actrl {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1097,9 +1098,24 @@ main.page {
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
-.atlas-ctrls .actrl:hover {
+.atlas-ctrls .actrl:hover,
+.villa-area-ctrl .actrl:hover {
   border-color: var(--gold);
   color: var(--gold);
+}
+/* "Search this area" cluster, bottom-left of the villa map (bottom-right holds
+   the Mapbox zoom control, top-right the fullscreen/style/share stack). */
+.villa-area-ctrl {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 6;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.villa-area-ctrl .area-clear {
+  color: var(--sub);
 }
 .atlas-ctrls .actrl .sw {
   width: 11px;

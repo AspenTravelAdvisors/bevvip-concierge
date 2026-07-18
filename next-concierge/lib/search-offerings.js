@@ -1061,29 +1061,54 @@ function relatedRegionFromInput(input = {}) {
     .find(Boolean) || null;
 }
 
+// Countries too large for "same country" to ever mean "same area": a sailing
+// out of Miami is not a cross-sell for an Aspen hotel ask. When the hotel
+// search names a specific place inside one of these, the sailings must reach
+// the place itself or the sidecar stays empty.
+const CONTINENTAL_COUNTRY_RE = /^(the\s+)?(usa|u\.?s\.?a?\.?|united states( of america)?|america|canada|australia|brazil|china|india|russia|mexico|argentina)$/i;
+
 // Yacht sailings that share the hotel search's brand and/or geography.
 async function relatedYachtsForHotels(input, fetchImpl, month) {
   const brand = String(input.brand || "").trim();
   const yachtBrand = normalizedYachtBrand(brand);
-  const geo = String(input.country || input.place || "").trim();
+  const place = String(input.place || "").trim();
+  const country = String(input.country || "").trim();
+  const geo = country || place;
   const isYachtBrand = !!yachtBrand || YACHT_CAPABLE_HOTEL_BRAND_RE.test(brand);
   // Only worth a call when there is a yacht-capable brand or real geography.
   if (!isYachtBrand && !geo && !input.region) return null;
   if (brand && !isYachtBrand) return null; // brand named, but it has no yachts
 
   // Hotel descriptors ("ski-in", "overwater villa") would zero out sailings,
-  // so the sidecar matches on brand + geography + month only.
-  const sub = {
-    region: input.region,
-    country: input.country || (geo || undefined),
-    brand: yachtBrand || brand,
-    month: month || input.month,
-    intent: input.intent,
-  };
-  const r = await searchOfferingsByType("yacht", sub, fetchImpl, DEFAULT_RECOMMENDATION_LIMIT);
+  // so the sidecar matches on brand + geography + month only. The yacht
+  // country param substring-matches ports/route, so a place works there too.
+  const search = (geoText) =>
+    searchOfferingsByType("yacht", {
+      region: input.region,
+      country: geoText || undefined,
+      brand: yachtBrand || brand,
+      month: month || input.month,
+      intent: input.intent,
+    }, fetchImpl, DEFAULT_RECOMMENDATION_LIMIT);
+
+  // Same-area rule: a named place must itself appear on a sailing. Falling
+  // back to the whole country is only honest where country ~= area (Italy,
+  // Norway); a continental country never is (see CONTINENTAL_COUNTRY_RE).
+  let r;
+  let where;
+  if (place) {
+    r = await search(place);
+    where = place;
+    if ((!r || r.unavailable || !r.count) && country && !CONTINENTAL_COUNTRY_RE.test(country)) {
+      r = await search(country); // Florence -> Four Seasons yachts at Italian ports
+      where = country;
+    }
+  } else {
+    r = await search(country);
+    where = geo || input.region;
+  }
   if (!r || r.unavailable || !r.count) return null;
   const who = yachtBrand || "Luxury hotel yacht";
-  const where = geo || input.region;
   return relatedEntry(
     "yacht",
     where
@@ -1351,6 +1376,20 @@ async function searchHotels(input, fetchImpl) {
       notes.push(`"${rawBrand}" did not match an exact brand name; results matched it as text.`);
     }
   }
+  if (!count(j) && brand && place) {
+    // A real place where the named brand simply has no property: keep the
+    // place and drop the brand — the trip is to the place, the brand is a
+    // preference. Dropping the place instead surfaced the brand's whole
+    // country ("Ritz-Carlton Aspen" -> 42 US Ritz-Carltons), which reads as
+    // recommending Chicago for an Aspen trip.
+    j = await fetchHotelQuery(place, { dropBrand: true });
+    if (count(j)) {
+      notes.push(
+        `${rawBrand} has no approved property in ${place}; showing the strongest ` +
+        `approved ${place} stays instead. An advisor can check ${rawBrand} options nearby.`
+      );
+    }
+  }
   if (!count(j) && q && (country || regionKey)) {
     j = await fetchHotelQuery("");
     if (count(j)) {
@@ -1459,7 +1498,10 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   let baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
     : type === "worldcruise" ? stripWorldCruiseTerms(stripDateFromQuery(input.q))
     : stripDateFromQuery(input.q);
-  let placeText = !atwJet && type !== "jet" && input.place ? normalizeLoosePlace(input.place) : "";
+  // place binds as free text for every type, jets included: the jet haystack
+  // now carries itinerary stops, so "Kyoto" matches the Japan jet that lands
+  // there — and "Aspen" honestly returns nothing instead of the whole catalog.
+  let placeText = !atwJet && input.place ? normalizeLoosePlace(input.place) : "";
   const rawBrand = String(input.brand || input.operator || "").trim();
   // No specific brand asked → diversify suppliers. The cruise/yacht/jet atlases
   // cap a page at 24 records and, when an intent is passed, sort so heavily by

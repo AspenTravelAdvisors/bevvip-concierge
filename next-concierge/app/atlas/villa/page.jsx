@@ -29,7 +29,7 @@ export const metadata = {
 // Read only the params the villa search understands; everything else is noise.
 const PARAM_KEYS = [
   "region", "destination", "location", "sleeps", "bedrooms", "priceMax",
-  "featured", "specials", "q", "ids", "page", "sort",
+  "featured", "specials", "q", "ids", "page", "sort", "bbox",
 ];
 
 export default async function VillaAtlasPage({ searchParams }) {
@@ -46,6 +46,10 @@ export default async function VillaAtlasPage({ searchParams }) {
   if (params.destination)
     params.destination = resolveDestination(params.destination) || params.destination;
   if (params.location) params.location = resolveLocation(params.location) || params.location;
+  // The atlas list reads high → low by nightly rate by default (Call-for-Pricing
+  // records sort last). Featured villas no longer float to the top of an open
+  // list — the Featured checkbox is the only thing that surfaces them now.
+  if (!params.sort) params.sort = "priceDesc";
   const initial = searchVillas(params);
 
   // Filter menus come from the taxonomy tree, trimmed to names + slugs only —

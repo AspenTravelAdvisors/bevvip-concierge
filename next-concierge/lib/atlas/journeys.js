@@ -124,7 +124,10 @@ function filterJourneys(params = {}) {
   if (brand) { const v = ci(brand); list = list.filter((j) => ci(j.brand) === v); }
   if (month) { const v = String(month).trim(); list = list.filter((j) => j.month === v); }
 
-  const hay = (j) => `${ci(j.name)} ${ci(j.brand)} ${ci(j.regionLabel)}`;
+  // Include the route slug and every itinerary stop so a place or country in
+  // country/q only matches journeys that genuinely touch it; name + brand +
+  // region alone can't answer "does this jet actually land in Kyoto?".
+  const hay = (j) => `${ci(j.name)} ${ci(j.brand)} ${ci(j.regionLabel)} ${ci(j.route)} ${(j.itinerary || []).map((s) => ci(s && s.n)).join(" ")}`;
   if (country != null && String(country).trim() !== "") {
     const v = ci(country); list = list.filter((j) => hay(j).includes(v));
   }

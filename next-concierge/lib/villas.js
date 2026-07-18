@@ -216,6 +216,24 @@ function filterVillas(params = {}) {
       });
     }
   }
+
+  // Map-viewport filter: bbox=west,south,east,north (lng/lat degrees), set by
+  // the atlas "Search this area" button from the live Mapbox bounds. A box whose
+  // west > east straddles the antimeridian, so its longitude test is an OR.
+  if (params.bbox != null && String(params.bbox).trim() !== "") {
+    const b = String(params.bbox).split(",").map(Number);
+    if (b.length === 4 && b.every(Number.isFinite)) {
+      const [west, south, east, north] = b;
+      const inLng = west <= east
+        ? (lng) => lng >= west && lng <= east
+        : (lng) => lng >= west || lng <= east;
+      list = list.filter(
+        (v) =>
+          Number.isFinite(v.lat) && Number.isFinite(v.lon) &&
+          v.lat >= south && v.lat <= north && inLng(v.lon),
+      );
+    }
+  }
   return list;
 }
 
