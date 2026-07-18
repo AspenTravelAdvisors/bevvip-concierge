@@ -1956,10 +1956,11 @@ init();
   "use strict";
   var INTRO = {"key": "bvi_intro_hotel_v1", "here": "hotel", "welcome": {"eyebrow": "Welcome to the Atlas", "title": "Every luxury hotel brand, mapped where it actually stands.", "sub": "Explore the world's finest hotel houses by destination — who has a property where, and how the brands compare across regions."}, "features": [{"icon": "filter", "t": "Filter by region", "d": "Open the rail to narrow the map by region, category or brand."}, {"icon": "pin", "t": "Tap a pin", "d": "Each pin marks a property. Tap to bring its detail card forward."}, {"icon": "card", "t": "Book online", "d": "The detail card carries the brand, the setting — and a link to book VIP rates online."}, {"icon": "compass", "t": "Ask The Guide", "d": "Send any hotel to The Guide for a tailored shortlist. Aspen Travel Advisors is ready to tailor every detail to your preferences, ensuring your journey feels effortless from the very beginning."}]};
   var FAM=[
-    {nm:"VIP Hotels",         slug:"hotel",     url:"/maps/hotel/",          glyph:"hotel"},
-    {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
     {nm:"Private Jet",        slug:"jet",       url:"/maps/jet/",          glyph:"jet"},
     {nm:"Luxury Hotel Yachts",slug:"yacht",     url:"/maps/yacht/",   glyph:"yacht"},
+    {nm:"VIP Hotels",         slug:"hotel",     url:"/maps/hotel/",          glyph:"hotel"},
+    {nm:"Private Villas",     slug:"villa",     url:"/atlas/villa",          glyph:"villa"},
+    {nm:"Expedition Cruises", slug:"expedition",url:"/maps/cruise/",            glyph:"cruise"},
     {nm:"World Cruises",      slug:"world",     url:"/maps/worldcruise/",               glyph:"world"},
     {nm:"Rail Journeys",      slug:"train",     url:"/maps/train/",               glyph:"train"}
   ];
@@ -1968,6 +1969,7 @@ init();
     cruise:'<path d="M4 17l1.5-5h13L20 17M3 17h18l-1.5 3H4.5L3 17M12 12V5M9 7h6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     jet:'<path d="M21 12l-9 2-3 5-2-1 1-4-4-1-2 2-1.5-.7L3 12 1.5 9.7 3 9l2 2 4-1-1-4 2-1 3 5 9 2z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/>',
     yacht:'<path d="M5 19h14M6 19l-1-7 8-6 6 6-2 7M12 6V3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    villa:'<path d="M3 11l9-7 9 7M5 9.5V20h14V9.5M10 20v-6h4v6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     world:'<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M3.5 12h17M12 3.5v17M5.5 7c2 1.6 11 1.6 13 0M5.5 17c2-1.6 11-1.6 13 0" stroke="currentColor" stroke-width="1.1" fill="none"/>',
     train:'<rect x="6" y="3.5" width="12" height="12.5" rx="2.6" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M6 10h12M9.5 19l-2 2.5M14.5 19l2 2.5M8 19h8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="9.3" cy="13.2" r="1" fill="currentColor"/><circle cx="14.7" cy="13.2" r="1" fill="currentColor"/>',
     filter:'<path d="M4 7h16M7 12h10M10 17h4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>',
