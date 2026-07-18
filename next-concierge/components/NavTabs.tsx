@@ -15,13 +15,13 @@ import GuideTab from "./GuideTab";
 
 // The atlas tabs carry their map-legend color as text + accent underline.
 const ATLAS_TABS = [
-  { href: "/atlas/hotel", label: "Hotels", color: "#e6d488" },
-  { href: "/atlas/cruise", label: "Expeditions", color: "#5aa9e6" },
   { href: "/atlas/jet", label: "Jets", color: "#dfe5f2" },
   { href: "/atlas/yacht", label: "Yachts", color: "#e0b84a" },
-  { href: "/atlas/worldcruise", label: "World", color: "#45d6c2" },
-  { href: "/atlas/train", label: "Rails", color: "#e08d5f" },
+  { href: "/atlas/hotel", label: "Hotels", color: "#e6d488" },
   { href: "/atlas/villa", label: "Villas", color: "#a8d08d" },
+  { href: "/atlas/cruise", label: "Expeditions", color: "#5aa9e6" },
+  { href: "/atlas/worldcruise", label: "Voyages", color: "#45d6c2" },
+  { href: "/atlas/train", label: "Rails", color: "#e08d5f" },
 ];
 
 export default function NavTabs() {
