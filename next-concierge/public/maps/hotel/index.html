@@ -1092,10 +1092,9 @@ function resetFilters(){
   try{ history.replaceState(null,"",location.pathname); }catch(_){}
   applyFilters();
 }
-// Full reset + zoom back out to the default world view (used by the dock "Show all")
+// Full reset — clears filters but leaves the camera where it is (no auto-recenter)
 window.__atlasShowAll=function(){
   resetFilters();
-  flyTo({lat:18.2,lng:-66.5,range:15000000,tilt:0,heading:0,duration:2000});
 };
 
 /* ---- search autocomplete (local data only) — hotels + city/town/region ---- */
