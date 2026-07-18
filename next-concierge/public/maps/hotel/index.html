@@ -1193,6 +1193,36 @@ function twTomorrowNightStay(){
   const now=new Date();
   return {checkIn:twIsoDay(twAddDays(now,1)),checkOut:twIsoDay(twAddDays(now,2))};
 }
+// The captured trip (Base Camp BookingStrip): the shared sessionStorage state
+// wins — when this page runs as the /atlas/hotel iframe it shares Base Camp's
+// origin, so `bevvip.trip` is live and fresher than any link. URL params
+// (?checkIn=&checkOut=&adults=&childrenAges=10,6) fill in for shared or
+// new-tab links that arrive without the session.
+const TW_DAY_RE=/^\d{4}-\d{2}-\d{2}$/;
+function twTrip(){
+  let t={};
+  try{ t=JSON.parse(sessionStorage.getItem("bevvip.trip")||"null")||{}; }catch(_){ t={}; }
+  const qp=new URLSearchParams(location.search);
+  const day=v=>TW_DAY_RE.test(String(v||"").trim())?String(v).trim():"";
+  const checkIn=day(t.checkIn)||day(qp.get("checkIn"));
+  const checkOut=day(t.checkOut)||day(qp.get("checkOut"));
+  const adultsRaw=(t.adults!=null?t.adults:qp.get("adults"));
+  const adults=Math.round(Number(adultsRaw));
+  const agesRaw=Array.isArray(t.childrenAges)?t.childrenAges:String(qp.get("childrenAges")||"").split(",");
+  const childrenAges=agesRaw.map(a=>Math.round(Number(a)))
+    .filter(a=>Number.isFinite(a)&&a>=0&&a<=17).slice(0,8);
+  return {
+    checkIn,checkOut,
+    adults:(Number.isFinite(adults)&&adults>=1)?Math.min(adults,12):null,
+    childrenAges
+  };
+}
+function twTripStay(trip){
+  if(trip && trip.checkIn && trip.checkOut && trip.checkOut>trip.checkIn){
+    return {checkIn:trip.checkIn,checkOut:trip.checkOut};
+  }
+  return twTomorrowNightStay();
+}
 function twCompactParts(parts){
   const out=[], seen=new Set();
   parts.forEach(part=>{
@@ -1231,13 +1261,16 @@ function twHotelBookingUrl(p){
   if(!tw || !tw.hotelId) return "";
   const label=tw.label||twHotelSearchLabel(p);
   if(!label) return "";
-  const stay=twTomorrowNightStay();
+  const trip=twTrip();
+  const stay=twTripStay(trip);
   const pairs=[
     ["checkInDate",stay.checkIn],
     ["checkOutDate",stay.checkOut],
     ...TW_RATE_CODES.map((code,i)=>[`rateCodes[${i}]`,code]),
     ["exactMatchRateCodesOnly","true"],
     ["searchRadiuses[0]","50"],
+    ...(trip.adults!=null?[["staterooms[0][adults]",trip.adults]]:[]),
+    ...trip.childrenAges.map((age,i)=>[`staterooms[0][children][${i}]`,age]),
     ["selectedCurrency","USD"],
     ["searchMode","2"],
     ["sa[hotelId]",String(tw.hotelId)],

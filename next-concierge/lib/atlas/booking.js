@@ -5,7 +5,8 @@
 //
 // TravelWits deep links (aspentraveladvisors.travelwits.com) are a named-place
 // search priced at the preferred VIP rate codes. For hotel CTAs, we search the
-// property name itself for a one-night stay checking in tomorrow.
+// property itself for the captured trip's dates and party; with no captured
+// dates, a one-night stay checking in tomorrow.
 //
 // The access code (bookPassword) still gates the portal, so it rides along as a
 // note on every booking affordance, deep or portal.
@@ -47,6 +48,33 @@ export function tomorrowNightStay(now = new Date()) {
   };
 }
 
+// The stay a booking CTA should price: the captured trip's dates when they form
+// a real range, else the tomorrow-night default. ISO days compare as strings.
+export function stayFromTrip(trip, now = new Date()) {
+  if (trip && isDay(trip.checkIn) && isDay(trip.checkOut) && trip.checkOut > trip.checkIn) {
+    return { checkIn: trip.checkIn, checkOut: trip.checkOut };
+  }
+  return tomorrowNightStay(now);
+}
+
+// Party size from the captured trip, in the shape travelWitsUrl takes. Empty
+// when nothing was captured — the portal then prices its own default (2 guests).
+// Caps mirror BookingStrip's steppers (12 adults, 8 children, ages 0–17).
+export function occupancyFromTrip(trip) {
+  if (!trip) return {};
+  const out = {};
+  const adults = Math.round(Number(trip.adults));
+  if (Number.isFinite(adults) && adults >= 1) out.adults = Math.min(adults, 12);
+  if (Array.isArray(trip.childrenAges)) {
+    const ages = trip.childrenAges
+      .map((a) => Math.round(Number(a)))
+      .filter((a) => Number.isFinite(a) && a >= 0 && a <= 17)
+      .slice(0, 8);
+    if (ages.length) out.childrenAges = ages;
+  }
+  return out;
+}
+
 // Serialize as `key=encodedValue`, keeping the literal `[` / `]` in keys (like
 // rateCodes[0], sa[label]) that the reference URL uses — URLSearchParams would
 // percent-encode the brackets, so we build the query by hand.
@@ -64,7 +92,7 @@ function toQuery(pairs) {
 // required"). So this returns null unless dates, a label, AND one of those
 // identifiers are present — a "Book VIP rate" link must never point at a page
 // that cannot show a rate.
-export function travelWitsUrl({ label, checkIn, checkOut, hotelId, lat, lon }) {
+export function travelWitsUrl({ label, checkIn, checkOut, hotelId, lat, lon, adults, childrenAges }) {
   const location = String(label || "").trim();
   if (!location || !isDay(checkIn) || !isDay(checkOut)) return null;
   const placeId = TW_PLACE_IDS[norm(location)] || "";
@@ -76,6 +104,10 @@ export function travelWitsUrl({ label, checkIn, checkOut, hotelId, lat, lon }) {
     ...TW_RATE_CODES.map((code, i) => [`rateCodes[${i}]`, code]),
     ["exactMatchRateCodesOnly", "true"],
     ["searchRadiuses[0]", "50"],
+    // Party, in the portal's own encoding (children ride as one age per index).
+    // Omitted entirely when not captured; the portal defaults to 2 guests.
+    ...(adults != null ? [["staterooms[0][adults]", adults]] : []),
+    ...(childrenAges || []).map((age, i) => [`staterooms[0][children][${i}]`, age]),
     ["selectedCurrency", "USD"],
     ["searchMode", "2"],
     ...(hasHotel
@@ -150,8 +182,9 @@ function hotelSearchLabel(hotel) {
 
 // The booking affordance for a hotel card, or null when no booking UI should
 // render. Shape: { kind, url, label, external, note? }.
-//  - deep: TravelWits search of the hotel's own name at VIP rates for a
-//    one-night stay checking in tomorrow → "Book VIP rate". Primary-worthy.
+//  - deep: TravelWits search of the property at VIP rates for the captured
+//    trip's dates and party (tomorrow-night default) → "Book VIP rate".
+//    Primary-worthy.
 //  - portal (deep unavailable): the gated VipTravelAi.com portal →
 //    "Check VIP rates". Secondary; honest about being a portal, not a rate page.
 export function bookingLink(hotel, trip) {
@@ -168,7 +201,7 @@ export function bookingLink(hotel, trip) {
     // it a deep link cannot auto-run the search, so we fall through to the
     // portal instead of emitting a dead-end link.
     const tw = hotel && hotel.tw;
-    const stay = tomorrowNightStay();
+    const stay = stayFromTrip(trip);
     const url = tw && travelWitsUrl({
       label: tw.label || hotelSearchLabel(hotel),
       checkIn: stay.checkIn,
@@ -176,6 +209,7 @@ export function bookingLink(hotel, trip) {
       hotelId: tw.hotelId,
       lat: tw.lat,
       lon: tw.lon,
+      ...occupancyFromTrip(trip),
     });
     if (url) {
       return { kind: "deep", url, label: "Book VIP rate", external: true, ...(note ? { note } : {}) };
@@ -201,5 +235,6 @@ export function destinationBookingUrl(trip) {
     label: trip.destination || "",
     checkIn: trip.checkIn,
     checkOut: trip.checkOut,
+    ...occupancyFromTrip(trip),
   });
 }
