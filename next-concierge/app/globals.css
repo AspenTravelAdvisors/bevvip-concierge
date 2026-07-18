@@ -1757,11 +1757,8 @@ main.page {
     font-size: 11.5px;
     line-height: 1.45;
   }
-  .home-atlas-head .blurb-full {
+  .home-atlas-head p {
     display: none;
-  }
-  .home-atlas-head .blurb-short {
-    display: inline;
   }
 
   /* ── The Guide as a bottom sheet over the map ── */
