@@ -233,8 +233,16 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let loadTimeout = 0;
     const node = mapEl.current;
 
+    // Data fetches launch immediately — in parallel with the mapbox-gl script
+    // download and style/tile loading — so no feed waits on the map to boot.
+    const hotelPromise: Promise<HotelFC | null> = showsHotel
+      ? fetchHotelPoints().catch(() => null)
+      : Promise.resolve(null);
+    const regionsPromise = loadRegions();
+
     // Cached feeds so a basemap switch re-paints from memory, not the network.
     let hotelFC: HotelFC | null = null;
+    let hotelRevealed = false; // first paint fades the field in; repaints are instant
     const overlayFeats: Partial<Record<OverlayKey, OverlayFeature[]>> = {};
     const routeLines: Partial<Record<OverlayKey, [number, number][][]>> = {};
     let routesFetched = false;
@@ -367,13 +375,21 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (!map.getSource(HOTEL_DENSITY_SOURCE)) {
             map.addSource(HOTEL_DENSITY_SOURCE, { type: "geojson", data: hotelFC });
           }
+          const heatOpacity = ["interpolate", ["linear"], ["zoom"], 0, 0.36, 3.4, 0.18, 4.3, 0];
+          const dotOpacity = subsetActive
+            ? 0.12
+            : ["interpolate", ["linear"], ["zoom"], 2.45, 0.18, 3.2, 0.62, 7, 0.92];
+          // The pins arrive after the globe is already on screen (they no
+          // longer gate first paint), so the very first paint breathes them in
+          // instead of popping. Basemap-switch repaints stay instant.
+          const fadeIn = !hotelRevealed && !map.getLayer("hotel-dots");
           addLayer(map, {
             id: "hotel-heat", type: "heatmap", source: HOTEL_DENSITY_SOURCE, maxzoom: 4.35,
             paint: {
               "heatmap-weight": 1,
               "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 0.65, 3, 1.1],
               "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 12, 3, 24],
-              "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.36, 3.4, 0.18, 4.3, 0],
+              "heatmap-opacity": fadeIn ? 0 : heatOpacity,
               "heatmap-color": [
                 "interpolate", ["linear"], ["heatmap-density"],
                 0, "rgba(201,168,76,0)", 0.22, "rgba(201,168,76,0.15)",
@@ -387,14 +403,27 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             paint: {
               "circle-radius": ["interpolate", ["linear"], ["zoom"], 2.45, 1.5, 4, 2.7, 7, 3.6, 10, 4.8],
               "circle-color": "#f7e6a0",
-              "circle-opacity": subsetActive
-                ? 0.12
-                : ["interpolate", ["linear"], ["zoom"], 2.45, 0.18, 3.2, 0.62, 7, 0.92],
+              "circle-opacity": fadeIn ? 0 : dotOpacity,
+              "circle-stroke-opacity": fadeIn ? 0 : 1,
               "circle-stroke-color": "rgba(26,20,7,.88)",
               "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 2.45, 0.45, 7, 1.1],
               "circle-blur": 0,
             },
           });
+          if (fadeIn) {
+            hotelRevealed = true;
+            requestAnimationFrame(() => {
+              if (cancelled) return;
+              try {
+                map.setPaintProperty("hotel-heat", "heatmap-opacity-transition", { duration: 900 });
+                map.setPaintProperty("hotel-dots", "circle-opacity-transition", { duration: 900 });
+                map.setPaintProperty("hotel-dots", "circle-stroke-opacity-transition", { duration: 900 });
+                map.setPaintProperty("hotel-heat", "heatmap-opacity", heatOpacity);
+                map.setPaintProperty("hotel-dots", "circle-opacity", dotOpacity);
+                map.setPaintProperty("hotel-dots", "circle-stroke-opacity", 1);
+              } catch { /* mid-restyle: layers momentarily gone */ }
+            });
+          }
           applyHidden("hotel");
         }
 
@@ -724,42 +753,59 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           }
         });
 
-        // First-load data fetch → cache → paint → fit/spin or focus region.
+        // First-load boot: the globe fits (and readies its spin) immediately —
+        // the feeds were kicked off at mount and each paints the moment it
+        // lands, so nothing network-bound holds the camera hostage.
         async function bootData() {
-          if (showsHotel) {
-            try {
-              hotelFC = await fetchHotelPoints();
-              if (cancelled) return;
-              paintHotel();
-              setLoaded((l) => new Set(l).add("hotel"));
-            } catch { /* dot field optional */ }
-          }
-          regionsGeo = await loadRegions();
-          if (cancelled) return;
           ambientPadding(); // camera lives right of the floating Guide panel
-          // Honor a ?region= deep link: focus that region instead of spinning.
-          const focus = region ? regionCenter(region, regionsGeo, regionLookupKey) : null;
           // Restore the last framed subset on the home Living Atlas after a
           // re-mount (Back from a full atlas), so it re-opens on the results the
           // persisted chat still shows rather than the resting globe. A ?region=
           // deep link still wins — that's an explicit destination request.
-          const restored = !focus && allInventory ? readStoredPlot() : null;
+          const restored = !region && allInventory ? readStoredPlot() : null;
+          if (!region && !restored) {
+            fitGlobe();
+            spinWhenRevealed();
+          }
+
+          // Hotel field: fades in on arrival, off the critical path.
+          hotelPromise.then((fc) => {
+            if (cancelled || !fc) return;
+            hotelFC = fc;
+            paintHotel();
+            setLoaded((l) => new Set(l).add("hotel"));
+          });
+
+          // Overlay pins: all feeds in parallel, each painting on arrival.
+          overlayKeys.forEach(async (key) => {
+            try {
+              const feats = await fetchOverlay(key);
+              if (cancelled) return;
+              overlayFeats[key] = feats;
+              paintOverlay(key);
+              setLoaded((l) => new Set(l).add(key));
+            } catch { /* one atlas down should not break the rest */ }
+          });
+
+          // Region geometry resolves the ?region= deep link / stored-plot
+          // anchors; only those camera moves wait for it.
+          regionsGeo = await regionsPromise;
+          if (cancelled) return;
+          const focus = region ? regionCenter(region, regionsGeo, regionLookupKey) : null;
           if (focus) {
             focused = true;
             map.flyTo({ center: [focus[0], focus[1]], zoom: focus[2], speed: 0.8 });
           } else if (restored) {
             plotResults(restored);
-          } else {
-            fitGlobe();
-            spinWhenRevealed();
-          }
-          for (const key of overlayKeys) {
-            try {
-              overlayFeats[key] = await fetchOverlay(key);
-              if (cancelled) return;
-              paintOverlay(key);
-              setLoaded((l) => new Set(l).add(key));
-            } catch { /* one atlas down should not break the rest */ }
+          } else if (region) {
+            // ?region= that never resolved: replay a stored subset if the home
+            // canvas has one (the pre-restructure behavior), else rest + spin.
+            const restoredLate = allInventory ? readStoredPlot() : null;
+            if (restoredLate) plotResults(restoredLate);
+            else {
+              fitGlobe();
+              spinWhenRevealed();
+            }
           }
         }
 
