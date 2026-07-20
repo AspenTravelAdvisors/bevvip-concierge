@@ -20,9 +20,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
 import { ATLASES, internalAtlasLink } from "@/lib/atlas-config";
-
-const MAPBOX_JS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js";
-const MAPBOX_CSS = "https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css";
+import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
