@@ -197,6 +197,12 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   const apiRef = useRef<AtlasApi | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
+  // Poster frame: a pre-rendered globe (same camera framing) painted from the
+  // SSR HTML so the first "globe" pixel lands before any JS runs. It crossfades
+  // out when the live map has fully drawn (mapPainted), then unmounts.
+  const [mapPainted, setMapPainted] = useState(false);
+  const [posterGone, setPosterGone] = useState(false);
+  const [posterPad, setPosterPad] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [styleKey, setStyleKey] = useState<StyleKey>("satellite");
@@ -265,6 +271,26 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           minZoom: 0.6,
         }) as MBMap;
         mapRef.current = map;
+
+        // First full draw: start the poster crossfade, and only then release
+        // the idle spin (after the blend) so the poster and live globe stay
+        // aligned while both are visible.
+        let revealed = false;
+        let onRevealed: (() => void) | null = null;
+        map.on("load", () => {
+          if (cancelled) return;
+          setMapPainted(true);
+          window.setTimeout(() => {
+            revealed = true;
+            onRevealed?.();
+            onRevealed = null;
+          }, 750);
+        });
+        function spinWhenRevealed() {
+          if (revealed) startSpin();
+          else onRevealed = startSpin;
+        }
+
         const popup = new mapboxgl.Popup({
           closeButton: true,
           closeOnClick: true,
@@ -717,7 +743,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             plotResults(restored);
           } else {
             fitGlobe();
-            startSpin();
+            spinWhenRevealed();
           }
           for (const key of overlayKeys) {
             try {
@@ -817,6 +843,21 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     };
   }, [allInventory]);
 
+  // Align the poster with the ambient camera: on the home canvas the map is
+  // padded right of the floating Guide panel (ambientPadding), so offset the
+  // poster's contained globe by the same panel width. Mount-time measurement is
+  // enough — the poster only lives for the first seconds of the session.
+  useEffect(() => {
+    if (!allInventory || posterGone) return;
+    if (window.matchMedia("(max-width: 640px)").matches) return;
+    const panel = document.querySelector(".home:not(.home--panel-closed) .home-chat");
+    const canvasW = mapEl.current?.clientWidth || 0;
+    if (panel && canvasW) {
+      setPosterPad(Math.min(Math.round(panel.getBoundingClientRect().width), Math.round(canvasW * 0.55)));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allInventory]);
+
   // Close the style menu on an outside click.
   useEffect(() => {
     if (!menuOpen) return;
@@ -880,7 +921,24 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   return (
     <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
       {token && !mapFailed && <div ref={mapEl} className="atlas-canvas" />}
-      {token && !mapFailed && !mapReady && (
+      {token && !mapFailed && !posterGone && (
+        <div
+          className={`atlas-poster${mapPainted ? " out" : ""}`}
+          style={posterPad ? { paddingLeft: posterPad } : undefined}
+          aria-hidden="true"
+          onTransitionEnd={() => setPosterGone(true)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/globe-poster.webp"
+            alt=""
+            fetchPriority="high"
+            draggable={false}
+            onError={() => setPosterGone(true)}
+          />
+        </div>
+      )}
+      {token && !mapFailed && !mapReady && posterGone && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : ATLASES[type].label}</span>
           <p>Charting the Atlas…</p>

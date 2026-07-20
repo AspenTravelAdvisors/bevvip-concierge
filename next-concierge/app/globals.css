@@ -1068,6 +1068,32 @@ main.page {
   outline: none;
 }
 
+/* Poster frame: a pre-rendered globe painted over the canvas from the SSR HTML,
+   so a "globe" pixel lands well before mapbox-gl boots. Sits above the canvas,
+   ignores the pointer (the live map is interactive beneath it), and crossfades
+   out (.out) once the live globe has fully drawn. The square poster is
+   object-fit contained, which reproduces the live camera's min(w,h) globe
+   sizing at any aspect ratio; padding-left mirrors the ambient camera's Guide
+   panel offset on the home canvas. */
+.atlas-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgb(6, 8, 12);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  box-sizing: border-box;
+}
+.atlas-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.atlas-poster.out {
+  opacity: 0;
+}
+
 /* Map controls (top-right): fullscreen, 2D/3D, basemap switcher. */
 .atlas-ctrls {
   position: absolute;
