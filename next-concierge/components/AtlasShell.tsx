@@ -29,6 +29,18 @@ import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 const FALLBACK_TOKEN =
   "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 
+// mapbox-gl v3.7's Standard-Satellite style fragment predates the
+// show3dObjects config (its schema doesn't carry the key — getConfigProperty
+// returns null), yet the fragment ships a ~40-entry .glb model catalog (oak /
+// maple / pine / palm / turbine) that the runtime eagerly downloads even
+// though nothing at globe zoom renders them. transformRequest serves those
+// requests this empty-but-valid glTF instead: zero network, zero error
+// events, nothing to draw. Drop it (the init/config show3dObjects toggles
+// take over) once GL JS moves to a version whose satellite fragment carries
+// show3dObjects in its schema.
+const EMPTY_GLB =
+  "data:model/gltf-binary;base64,Z2xURgIAAAB4AAAAZAAAAEpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAifSwic2NlbmVzIjpbeyJub2RlcyI6W119XSwic2NlbmUiOjAsIm5vZGVzIjpbXSwibWVzaGVzIjpbXSwibWF0ZXJpYWxzIjpbXX0g";
+
 const HOTEL_BASE = ATLASES.hotel.base;
 const HOTEL_DOT_MIN_ZOOM = 2.45; // let hotels emerge before the ambient cloud fades
 const HOTEL_CLICK_MIN_ZOOM = 4; // below this dots overlap — taps stay ambient
@@ -282,6 +294,12 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           // Suppress the boot style's 3D model pipeline before it starts
           // fetching (style.load config below re-asserts this per basemap).
           config: { basemap: { show3dObjects: false } },
+          // GL 3.7's satellite fragment ignores show3dObjects (see EMPTY_GLB);
+          // stub its model catalog. Dusk keeps its real 3D buildings.
+          transformRequest: (url: string) =>
+            styleKeyLocal === "satellite" && url.includes("api.mapbox.com/models/")
+              ? { url: EMPTY_GLB }
+              : undefined,
         }) as MBMap;
         mapRef.current = map;
 
