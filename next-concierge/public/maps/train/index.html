@@ -1391,7 +1391,8 @@ window.__atlasShareUrl=function(){
   if(activeIds.size)p.set('ids',[...activeIds].join(','));
   if(activeLocation){p.set('location',activeLocation);if(activeLocationRole&&activeLocationRole!=='any')p.set('locationrole',activeLocationRole);}
   // A locked/highlighted itinerary becomes the focus of the shared view.
-  if(routeLocked&&pinnedTrip&&pinnedTrip.id!=null)p.set('trip',String(pinnedTrip.id));
+  var _tid=(pinnedTrip&&pinnedTrip.guideId!=null)?pinnedTrip.guideId:(pinnedTrip&&pinnedTrip.id);
+  if(routeLocked&&pinnedTrip&&_tid!=null)p.set('trip',String(_tid));
   var qs=p.toString();
   // Point the share link back into the concierge app's in-app atlas route
   // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).

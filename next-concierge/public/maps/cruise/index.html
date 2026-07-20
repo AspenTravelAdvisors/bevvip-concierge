@@ -1179,7 +1179,8 @@ function boot(a){
     if(activeIds.size)p.set('ids',[...activeIds].join(','));
     if(activePort){ p.set('port',activePort); if(activePortRole&&activePortRole!=='any')p.set('portrole',activePortRole); }
     // A locked/highlighted itinerary becomes the focus of the shared view.
-    if(routeLocked&&pinnedSailing&&pinnedSailing.id!=null)p.set('trip',String(pinnedSailing.id));
+    var _tid=(pinnedSailing&&pinnedSailing.guideId!=null)?pinnedSailing.guideId:(pinnedSailing&&pinnedSailing.id);
+    if(routeLocked&&pinnedSailing&&_tid!=null)p.set('trip',String(_tid));
     var qs=p.toString();
     // Point the share link back into the concierge app's in-app atlas route
     // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).
