@@ -1356,11 +1356,22 @@ window.__atlasShareUrl=function(){
   if(activeSearchTerms.length)p.set('q',activeSearchTerms.join(' '));
   if(activeIds.size)p.set('ids',[...activeIds].join(','));
   if(activeLocation){p.set('location',activeLocation);if(activeLocationRole&&activeLocationRole!=='any')p.set('locationrole',activeLocationRole);}
+  // A locked/highlighted itinerary becomes the focus of the shared view.
+  if(routeLocked&&pinnedTrip&&pinnedTrip.id!=null)p.set('trip',String(pinnedTrip.id));
   var qs=p.toString();
   // Point the share link back into the concierge app's in-app atlas route
   // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).
   var _t=(location.pathname.match(/\/maps\/([^/]+)/)||[])[1];
   return location.origin+(_t?'/atlas/'+_t:location.pathname)+(qs?'?'+qs:'');
+};
+// Re-highlight a shared itinerary: find the trip by id, pin it and lock its route.
+window.__atlasPinTrip=function(tid){
+  if(tid==null||typeof TRIPS==='undefined'||!TRIPS)return;
+  var t=TRIPS.find(function(x){return String(x.id)===String(tid)||x.guideId===tid;});
+  if(!t)return;
+  pinnedTrip=t; routeLocked=true; document.body.classList.add('tracing');
+  drawRoute(t,true);
+  document.querySelectorAll('.card .tracebtn').forEach(function(b){ if(b._sync) b._sync(); });
 };
 document.getElementById('close').addEventListener('click',hidePanel);
 map.on('click',()=>{
@@ -1376,6 +1387,8 @@ if(window.setAtlasProgress) window.setAtlasProgress(90,'Finalizing filters and s
 function applyDeepLink(){
   const sp=new URLSearchParams(location.search);
   if(![...sp.keys()].length)return;
+  const tripParam=sp.get('trip');
+  if(tripParam) setTimeout(()=>window.__atlasPinTrip(tripParam),70);
   const ids=sp.get('ids');
   if(ids) ids.split(',').map(s=>s.trim()).filter(Boolean).forEach(id=>activeIds.add(id));
   const month=sp.get('month');

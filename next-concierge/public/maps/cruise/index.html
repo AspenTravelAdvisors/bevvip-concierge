@@ -788,6 +788,15 @@ function boot(a){
     }
   }
   function stopTracing(){ routeLocked=false; pinnedSailing=null; document.body.classList.remove('tracing'); clearRoute(); document.querySelectorAll('.card .tracebtn').forEach(b=>{ if(b._sync) b._sync(); }); }
+  // Re-highlight a shared itinerary: find the sailing by id, pin it and lock its route.
+  function pinSailingFromLink(tid){
+    if(tid==null||!a||!a.sailings)return;
+    const s=a.sailings.find(x=>String(x.id)===String(tid)||('cr_'+x.id)===tid);
+    if(!s||!isTraceable(s))return;
+    pinnedSailing=s; routeLocked=true; document.body.classList.add('tracing');
+    drawRoute(s,true);
+    document.querySelectorAll('.card .tracebtn').forEach(b=>{ if(b._sync) b._sync(); });
+  }
   const routeBack=document.getElementById('routeBack');
   if(routeBack){ const back=()=>stopTracing(); routeBack.addEventListener('click',back); routeBack.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();back();} }); }
 
@@ -1169,6 +1178,8 @@ function boot(a){
     if(activeSearchTerms.length)p.set('q',activeSearchTerms.join(' '));
     if(activeIds.size)p.set('ids',[...activeIds].join(','));
     if(activePort){ p.set('port',activePort); if(activePortRole&&activePortRole!=='any')p.set('portrole',activePortRole); }
+    // A locked/highlighted itinerary becomes the focus of the shared view.
+    if(routeLocked&&pinnedSailing&&pinnedSailing.id!=null)p.set('trip',String(pinnedSailing.id));
     var qs=p.toString();
     // Point the share link back into the concierge app's in-app atlas route
     // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).
@@ -1203,7 +1214,10 @@ function boot(a){
      ?portrole= deep link is applied here, after the port index exists. */
   const _dlPort=new URLSearchParams(location.search).get('port');
   const _dlRole=new URLSearchParams(location.search).get('portrole');
+  const _dlTrip=new URLSearchParams(location.search).get('trip');
   loadRoutes().then(()=>{
+    // A shared, highlighted itinerary re-traces once its day-by-day route is ready.
+    if(_dlTrip) setTimeout(()=>pinSailingFromLink(_dlTrip),80);
     if(_dlPort){
       buildPortIndex();
       if(_dlRole&&['embark','disembark','call'].includes(_dlRole)){ activePortRole=_dlRole; document.querySelectorAll('#portRoles .proll').forEach(x=>x.classList.toggle('active',x.dataset.role===_dlRole)); }
