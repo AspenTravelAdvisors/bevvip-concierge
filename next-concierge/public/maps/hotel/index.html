@@ -470,7 +470,7 @@ let CITY_INDEX=[], REGION_INDEX=[];   // place lookups for search (city/town/reg
 let idleSpinFrame=0, idleSpinLast=0, idleSpinStopped=false;
 const IDLE_SPIN_LONGITUDE_DEGREES_PER_SECOND=0.6;
 const state={ cats:new Set(), brands:new Set(), countries:new Set(), regions:new Set(), q:"",
-  brand:null, region:null, ids:new Set() };  // brand/region/ids arrive via deep link
+  brand:null, region:null, ids:new Set(), hotel:null };  // brand/region/ids/hotel arrive via deep link
 const DETAIL_RANGE=2600;
 const DETAIL_TILT=67;
 const TILT_RESET_START_RANGE=4200;
@@ -644,6 +644,7 @@ async function init(){
     await buildMarkers();      // ends with applyFilters(), so the subset is live
     fitToResults();            // frame the map to the deep-linked subset
     highlightDeepLinkIds();    // enlarge (and, if single, open) any ids
+    openSharedHotel();         // a shared ?hotel= opens its detail panel + orbit
     setProgress(100,"Welcome to the Atlas");
     document.getElementById("veil").classList.add("hidden");
     // Keep the loaded atlas stationary unless the traveler moves it.
@@ -772,6 +773,8 @@ function applyParams(val){
   if(val("region")) state.region=val("region");
   const ids=val("ids");
   if(ids) String(ids).split(",").map(s=>s.trim()).filter(Boolean).forEach(id=>state.ids.add(id));
+  // A shared selected hotel: opens its detail panel and starts the orbit on load.
+  if(val("hotel")) state.hotel=val("hotel");
   renderActiveChips();
 }
 // Build a shareable URL that reproduces the current view
@@ -788,6 +791,10 @@ function buildShareUrl(){
   if(state.brand) p.set("brand",state.brand);
   if(state.region) p.set("region",state.region);
   if(state.ids.size) p.set("ids",[...state.ids].join(","));
+  // A selected hotel becomes the focus of the shared view — the recipient lands
+  // on its open detail panel with the cinematic orbit already turning.
+  if(SELECTED && SELECTED._feat && SELECTED._feat.properties && SELECTED._feat.properties.id!=null)
+    p.set("hotel",String(SELECTED._feat.properties.id));
   const qs=p.toString();
   // Point the share link back into the concierge app's in-app atlas route
   // (/atlas/<type>) rather than this standalone map page (/maps/<type>/).
@@ -799,7 +806,7 @@ window.__atlasShareUrl=buildShareUrl;
 // applying an external filter pushed by the embedding app).
 function clearAllFilters(){
   state.cats.clear();state.brands.clear();state.countries.clear();state.regions.clear();state.q="";
-  state.brand=null;state.region=null;state.ids.clear();
+  state.brand=null;state.region=null;state.ids.clear();state.hotel=null;
   document.querySelectorAll(".opt input").forEach(c=>c.checked=false);
   const s=document.getElementById("search"); if(s) s.value="";
   const sb=document.getElementById("searchBar"); if(sb) sb.classList.remove("has-text");
@@ -936,6 +943,13 @@ function highlightDeepLinkIds(){
   const hit=MARKERS.filter(m=>state.ids.has(m._feat.properties.id));
   for(const m of hit){ if(m._pin) try{ m._pin.scale=1.25; }catch(_){} }
   if(hit.length===1) openDetail(hit[0]._feat);  // single shortlist -> open it
+}
+// A shared ?hotel=<id> lands the recipient on that hotel's open detail panel
+// with the cinematic orbit already turning (openDetail flies in with orbit:true).
+function openSharedHotel(){
+  if(!state.hotel) return;
+  const hit=MARKERS.find(m=>String(m._feat.properties.id)===String(state.hotel));
+  if(hit) openDetail(hit._feat);
 }
 
 /* ---- markers ---- */
@@ -1084,7 +1098,7 @@ function applyFilters(){
 }
 function resetFilters(){
   state.cats.clear();state.brands.clear();state.countries.clear();state.regions.clear();state.q="";
-  state.brand=null;state.region=null;state.ids.clear();
+  state.brand=null;state.region=null;state.ids.clear();state.hotel=null;
   document.querySelectorAll(".opt input").forEach(c=>c.checked=false);
   document.getElementById("search").value="";
   document.getElementById("searchBar").classList.remove("has-text");
