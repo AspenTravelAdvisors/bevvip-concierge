@@ -133,7 +133,7 @@ const DUSK_FOG = {
   color: "rgb(58,48,62)", "high-color": "rgb(120,86,70)",
   "horizon-blend": 0.05, "space-color": "rgb(10,8,12)", "star-intensity": 0.2,
 };
-const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string }> = {
+const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string; objects3d?: boolean }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
   satellite: {
     label: "Satellite", url: "mapbox://styles/mapbox/standard-satellite",
@@ -143,6 +143,10 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
     // whose bright atmosphere washes the ocean pale after the raster loads.
     // `dusk` keeps the water deep and in key with the atlas's dark-luxe palette.
     light: "dusk",
+    // Standard Satellite ships ~40 .glb tree/turbine models that are invisible
+    // at globe zoom but cost seconds of cold-load network + parse. Off here;
+    // Dusk (Standard) keeps its 3D buildings.
+    objects3d: false,
   },
   // Mapbox Standard renders 3D buildings at city zoom; the dusk light preset gives
   // a warm golden-hour cast that stays legible without the brightness of day.
@@ -269,6 +273,9 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           center: [10, 20],
           zoom: 1.25,
           minZoom: 0.6,
+          // Suppress the boot style's 3D model pipeline before it starts
+          // fetching (style.load config below re-asserts this per basemap).
+          config: { basemap: { show3dObjects: false } },
         }) as MBMap;
         mapRef.current = map;
 
@@ -695,10 +702,13 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           // Some Standard-family styles carry a light preset / theme override;
           // styles without them keep Mapbox's day default. Classic styles (Dark)
           // ignore these config calls.
-          if (s.light || s.theme) {
-            const cfg = map as unknown as { setConfigProperty(s: string, k: string, v: string): void };
+          {
+            const cfg = map as unknown as { setConfigProperty(s: string, k: string, v: string | boolean): void };
             if (s.light) { try { cfg.setConfigProperty("basemap", "lightPreset", s.light); } catch { /* not a Standard style */ } }
             if (s.theme) { try { cfg.setConfigProperty("basemap", "theme", s.theme); } catch { /* theme unsupported */ } }
+            // Per-basemap 3D objects: off for Satellite (globe-zoom models are
+            // pure waste), on for Dusk's intentional city buildings.
+            try { cfg.setConfigProperty("basemap", "show3dObjects", s.objects3d !== false); } catch { /* not a Standard style */ }
           }
           try { map.setProjection(projGlobe ? "globe" : "mercator"); } catch { /* projection optional */ }
           paintAll();
