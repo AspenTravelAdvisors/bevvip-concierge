@@ -1,0 +1,14 @@
+{
+  "schema": "living_atlas.yacht_ships.v1",
+  "note": "Per-yacht facts for the hotel-brand yachts in the Yacht Atlas (data/atlas/yacht/itinerary.json). `ship` matches the itinerary spelling exactly for joins. Figures compiled July 2026 from brand materials — suite counts and capacities are as published and may shift through launch seasons; verify before quoting.",
+  "compiled": "2026-07-21",
+  "ships": [
+    { "brand": "ritzcarlton", "ship": "Evrima", "suites": 149, "guests": 298, "lengthM": 190, "launched": 2022, "marina": true, "notes": "The ship that invented the hotel-brand yacht category; aft marina, no buffets, Med and Caribbean seasons." },
+    { "brand": "ritzcarlton", "ship": "Ilma", "suites": 224, "guests": 448, "lengthM": 241, "launched": 2024, "marina": true, "notes": "Larger second-generation hull; two-story loft suites." },
+    { "brand": "ritzcarlton", "ship": "Luminara", "suites": 226, "guests": 452, "lengthM": 242, "launched": 2025, "marina": true, "notes": "Sister to Ilma; extends the fleet to Asia-Pacific seasons." },
+    { "brand": "fourseasons", "ship": "Four Seasons I", "suites": 95, "guests": 190, "lengthM": 207, "launched": 2026, "marina": true, "notes": "Highest space-per-guest ratio in the category; 11-room Funnel Suite; residential layouts with sea-level marina." },
+    { "brand": "orientexpress", "ship": "Orient Express Corinthian", "suites": 54, "guests": 108, "lengthM": 220, "launched": 2026, "marina": true, "sailingYacht": true, "notes": "Three-masted SolidSail rig — the world's largest sailing-yacht silhouette; Accor's Orient Express marque at sea." },
+    { "brand": "orientexpress", "ship": "Orient Express Olympian", "suites": 54, "guests": 108, "lengthM": 220, "launched": 2027, "marina": true, "sailingYacht": true, "notes": "Sister to Corinthian; on sale ahead of delivery." },
+    { "brand": "aman", "ship": "Amangati", "suites": 50, "guests": 100, "lengthM": 183, "launched": 2027, "marina": true, "notes": "Aman at Sea's first motoryacht; Aman spa-to-guest ratios afloat. Pre-launch figures — confirm at booking." }
+  ]
+}

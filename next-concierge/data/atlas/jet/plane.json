@@ -1,0 +1,17 @@
+{
+  "schema": "living_atlas.jet_aircraft.v1",
+  "note": "Per-program aircraft facts for the Jet Atlas. The itinerary data (data/atlas/jet/itinerary.json) carries no aircraft field, so entries key on the same brand slugs as its BRANDS map. Aircraft and capacities are the programs' typical published configurations compiled July 2026 — charter programs swap aircraft by departure; verify per trip before quoting.",
+  "compiled": "2026-07-21",
+  "planes": [
+    { "brand": "fourseasons", "program": "Four Seasons Private Jet", "aircraft": "Airbus A321LRneo (custom)", "guests": 48, "config": "Handcrafted lie-flat leather seats, one cabin", "crew": "Four Seasons crew, onboard chef, physician, concierge", "notes": "The benchmark of the category — the hotel brand owns the whole experience, air and ground." },
+    { "brand": "aman", "program": "Aman Jet Expeditions", "aircraft": "VIP-configured Airbus ACJ (varies by expedition)", "guests": 19, "config": "Corporate-jet cabin, small single group", "crew": "Aman hosts and expedition leadership", "notes": "Smallest group size in the category; itineraries link Aman properties." },
+    { "brand": "natgeo", "program": "National Geographic Private Jet Expeditions", "aircraft": "Boeing 757-200 (VIP)", "guests": 75, "config": "2×2 leather seating", "crew": "Nat Geo experts, photographers and expedition staff aboard", "notes": "Around-the-world expedition routings with the deepest lecture program." },
+    { "brand": "ak", "program": "Abercrombie & Kent Private Jet", "aircraft": "Boeing 757-200 (VIP)", "guests": 50, "config": "48–50 flat-bed seats", "crew": "A&K expedition team, chef, physician", "notes": "The most departures of any program in our Atlas; wing-style around-the-world and regional routings." },
+    { "brand": "tcs", "program": "TCS World Travel", "aircraft": "Airbus A321neo-LR (custom)", "guests": 52, "config": "Flat-bed seats, single cabin", "crew": "TCS expedition staff, chef, physician", "notes": "The longest-running dedicated jet-expedition operator; also flies for brand partners." },
+    { "brand": "remotelands", "program": "Remote Lands", "aircraft": "Chartered VIP jets (ACJ / Gulfstream class, varies)", "guests": 18, "config": "Bespoke small-group or private charters", "crew": "Remote Lands Asia specialists", "notes": "Asia-focused bespoke jet itineraries rather than fixed-departure world tours." },
+    { "brand": "safrans", "program": "Safrans du Monde", "aircraft": "Chartered widebody (A340/787 class, varies)", "guests": 90, "config": "Business-class cabin charter", "crew": "French-hosted; bilingual tours", "notes": "Grand world tours in the French tradition; largest group size in the category." },
+    { "brand": "signature", "program": "Signature Jet Journeys", "aircraft": "Varies by journey", "guests": null, "config": "Curated third-party and charter programs", "crew": "Varies", "notes": "Umbrella label for curated jet departures in the Virtuoso network." },
+    { "brand": "seasonz", "program": "Seasonz New Zealand", "aircraft": "Light jets and helicopters (domestic NZ)", "guests": 8, "config": "Private charters within New Zealand", "crew": "Local pilot-guides", "notes": "Heli-and-jet touring of NZ lodges rather than long-haul expedition flying." },
+    { "brand": "blueparallel", "program": "Blue Parallel", "aircraft": "Light–midsize private jets (varies)", "guests": 8, "config": "Fully private family/group charters", "crew": "Blue Parallel guides", "notes": "Bespoke Latin America and Mediterranean itineraries flown privately." }
+  ]
+}

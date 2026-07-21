@@ -80,3 +80,14 @@ data source, or major surface ships.
   JSON-LD already point at it. Until then the pages serve fine on
   bevvip-concierge.vercel.app but canonicals reference the custom domain.
   Also verify Vercel Security settings aren't challenging AI crawler bots.
+
+## Entity fact datasets (added 2026-07-21)
+
+- `data/atlas/cruise/ships.json` (expedition, 29 ships), `data/atlas/world/ships.json`
+  (51 world-cruise ships), `data/atlas/yacht/ships.json` (7 hotel-brand yachts),
+  `data/atlas/jet/plane.json` (10 jet programs — itinerary data has no aircraft
+  field, so keyed on BRANDS slugs), `data/atlas/train/train.json` (11 named trains).
+- Entity names/brand keys match the corresponding itinerary.json spelling exactly
+  (including ® in Cunard/Princess names) so future entity pages can join on them;
+  validated zero orphans both directions at creation. Figures are operator-published
+  values compiled 2026-07-21 — approximate, re-verify before quoting in bookings.
