@@ -20,9 +20,8 @@ const ATLAS_TABS = [
   { href: "/atlas/hotel", label: "Hotels", color: "#e6d488" },
   { href: "/atlas/villa", label: "Villas", color: "#a8d08d" },
   { href: "/atlas/cruise", label: "Expeditions", color: "#5aa9e6" },
-  { href: "/atlas/worldcruise", label: "Voyages", color: "#45d6c2" },
+  { href: "/atlas/worldcruise", label: "World Cruises", color: "#45d6c2" },
   { href: "/atlas/train", label: "Rails", color: "#e08d5f" },
-  { href: "/answers", label: "Answers", color: "#c9a84c" },
 ];
 
 export default function NavTabs() {
