@@ -13,7 +13,7 @@
  * Usage:
  *     import { loadAtlas } from './loader.js';      // or window.loadAtlas
  *     const atlas = await loadAtlas();
- *     atlas.sailings            // [{id, operator, name, region, url, productUrl,
+ *     atlas.sailings            // [{id, operator, name, region, ship, url, productUrl,
  *                               //   start, end, nights, startY, startM, startD,
  *                               //   monthKey, dates}, ...]
  *     atlas.OPERATORS           // { "Silversea": {short, domain, color, count}, ... }
@@ -43,11 +43,14 @@ function correctedRegionName(region, name) {
 }
 
 /** Expand one columnar row into a sailing object: rebuild URLs + derive dates. */
-function rowToSailing(row, urlBase, productBase) {
-  const [id, operator, name, start, nights, rawRegion, slug, product] = row;
+function rowToSailing(row, idx, urlBase, productBase) {
+  const get = name => (idx[name] == null ? undefined : row[idx[name]]);
+  const id = get('id'), operator = get('operator'), name = get('name');
+  const start = get('start'), nights = get('nights'), rawRegion = get('region');
+  const slug = get('slug'), product = get('product'), ship = get('ship') || '';
   const region = correctedRegionName(rawRegion, name);
   const s = {
-    id, operator, name, region, nights,
+    id, operator, name, region, ship, nights,
     start,                                                  // ISO "2027-04-01" (may be null)
     url: slug ? urlBase + id + '/' + slug : null,
     productUrl: product ? productBase + product : null,
@@ -78,7 +81,8 @@ export async function loadAtlas(opts = {}) {
   ]);
 
   const urlBase = data.urlBase || '', productBase = data.productBase || '';
-  const sailings = data.rows.map(row => rowToSailing(row, urlBase, productBase));
+  const idx = Object.fromEntries((data.schema || []).map((name, index) => [name, index]));
+  const sailings = data.rows.map(row => rowToSailing(row, idx, urlBase, productBase));
   const OPERATORS = meta.OPERATORS || {};
   const REGIONS = meta.REGIONS || {};
 

@@ -347,9 +347,8 @@
     <div class="sectbody ops" id="opList"></div>
     <button type="button" class="secthead collapsed" id="regionHead">Region<span class="chev">&#9662;</span></button>
     <div class="sectbody ops reglist collapsed" id="regionList"></div>
-    <button type="button" class="secthead collapsed" id="shipHead">Ship &amp; fleet<span class="chev">&#9662;</span></button>
+    <button type="button" class="secthead collapsed" id="shipHead">Ship<span class="chev">&#9662;</span></button>
     <div class="sectbody ops shiplist collapsed" id="shipList">
-      <div class="shiphint">Expedition itineraries rotate across each line's fleet &mdash; picking a ship shows that operator's sailings in the ship's cruising regions, with the vessel's specs.</div>
       <input id="shipSearch" class="shipsearch" type="search" placeholder="Search ships&hellip;" autocomplete="off" style="display:none">
       <div class="shiprows" id="shipRows"></div>
     </div>
@@ -480,7 +479,7 @@ function boot(a){
   const {OPERATORS,REGIONS,byRegion}=a;
   const markers={}; let activeOps=new Set(), activeView=null; const activeMonths=new Set();
   const activeRegions=new Set();
-  const activeShips=new Set(); let SHIP_CATALOG=[], SHIP_BY_NAME={}, _pendingShips=null;
+  const activeShips=new Set(); let SHIP_CATALOG=[], SHIP_BY_NAME={};
   const activeIds=new Set(); let activeSearchTerms=[];
   let activePort=null, activePortRole='any', portView=null;
   const today=new Date().toISOString().slice(0,10);
@@ -492,15 +491,8 @@ function boot(a){
     && (!activeMonths.size||activeMonths.has(s.monthKey))
     && (!activeIds.size||activeIds.has(String(s.id))||activeIds.has("cr_"+s.id))
     && (!activePort||sailingMatchesPort(s,activePort,activePortRole))
-    && shipPass(s)
+    && (!activeShips.size||activeShips.has(s.ship))
     && textMatches(s); }
-  /* Fleet browser: a ship implies its operator (certain) + its cruising regions
-     (curated). Expedition sailings aren't tagged to a specific hull, so this
-     narrows to the ship's line within the regions it actually sails. */
-  function shipPass(s){ if(!activeShips.size)return true;
-    for(const nm of activeShips){ const sh=SHIP_BY_NAME[nm]; if(!sh||sh.operator!==s.operator)continue;
-      if(!sh.regionKeys||!sh.regionKeys.size)return true; if(sh.regionKeys.has(s.region))return true; }
-    return false; }
   function regionPass(s){ return !activeRegions.size||activeRegions.has(s.region); }
   function regionSailings(key){ return (byRegion.get(key)||[]).filter(matches)
     .sort((x,y)=>{ if(activeOps.size){const a1=activeOps.has(x.operator),b1=activeOps.has(y.operator);if(a1!==b1)return a1?-1:1;}
@@ -928,7 +920,7 @@ function boot(a){
   });
 
   function updateMarkers(){
-    const anyFilter=!!activeOps.size||activeMonths.size||activeIds.size||activeSearchTerms.length||activeRegions.size||!!activePort;
+    const anyFilter=!!activeOps.size||activeShips.size||activeMonths.size||activeIds.size||activeSearchTerms.length||activeRegions.size||!!activePort;
     a.mappableRegions.forEach(key=>{
       const n=regionSailings(key).length; const o=markers[key];   // count ignores the region toggle itself
       o.el.querySelector('.ring').textContent=n;
@@ -948,7 +940,7 @@ function boot(a){
   function cssEsc(s){return window.CSS&&CSS.escape?CSS.escape(s):String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
   function textMatches(s){
     if(!activeSearchTerms.length)return true;
-    const hay=norm([s.name,s.operator,s.region].filter(Boolean).join(' '));
+    const hay=norm([s.name,s.operator,s.ship,s.region].filter(Boolean).join(' '));
     return activeSearchTerms.every(t=>hay.includes(t));
   }
   function findRegionKey(raw){
@@ -1022,13 +1014,29 @@ function boot(a){
     syncReset();
     updateMarkers(); refreshActivePanel();
   }
-  /* ── Ship & fleet browser (from ships.json) ──────────────────────────── */
+  /* ── Ship filter rows + catalog enrichment ───────────────────────────── */
   const shipRowsEl=document.getElementById('shipRows');
   const shipSearchEl=document.getElementById('shipSearch');
-  /* Catalog region tokens → atlas region names (broad tokens omitted → the ship
-     is treated as operator-wide with no region narrowing). */
-  const SHIP_REGION_ALIAS={'Alaska':['Alaska & Yukon'],'Amazon':['Amazon & South America'],'Antarctica':['Antarctica'],'Arctic':['Arctic'],'Greenland':['Arctic'],'North Pole':['Arctic'],'Norway':['Norway, Fjords & Coast'],'Galápagos':['Galápagos'],'Kimberley':['Australia, NZ & South Pacific'],'South Pacific':['Australia, NZ & South Pacific','Hawaii & Tahiti'],'Mediterranean':['Mediterranean']};
-  function regionKeyByName(nm){ const v=norm(nm); return a.mappableRegions.find(k=>norm(REGIONS[k]&&REGIONS[k].name)===v||norm(k)===v)||null; }
+  function expandedCatalogShipNames(ship){
+    if(ship==='Ponant Explorers class (Le Bellot, Le Jacques-Cartier + 4 sisters)')return ['Le Bellot','Le Bougainville','Le Champlain',"Le Dumont-d'Urville",'Le Jacques-Cartier','Le Lapérouse'];
+    if(ship==="Sisterships Le Boréal / L'Austral / Le Soléal / Le Lyrial")return ['Le Boréal',"L'Austral",'Le Soléal','Le Lyrial'];
+    if(ship==='World Navigator / World Traveller / World Voyager / World Seeker')return ['World Navigator','World Traveller','World Voyager','World Seeker'];
+    if(ship==='Aria Amazon / Aqua Nera')return ['Aria Amazon','Aqua Nera'];
+    return String(ship||'').split(/\s+\/\s+/).map(s=>s.trim()).filter(Boolean);
+  }
+  function indexShipCatalog(catalog){
+    SHIP_CATALOG=catalog||[]; SHIP_BY_NAME={};
+    SHIP_CATALOG.forEach(sh=>{
+      const opShort=(OPERATORS[sh.operator]&&OPERATORS[sh.operator].short)||sh.operator;
+      expandedCatalogShipNames(sh.ship).forEach(name=>{ SHIP_BY_NAME[name]={...sh,ship:name,catalogShip:sh.ship,opShort}; });
+    });
+  }
+  function shipFacts(name,operator,count){
+    const sh=SHIP_BY_NAME[name], opShort=(OPERATORS[operator]&&OPERATORS[operator].short)||operator;
+    const guests=sh&&(sh.guestsPolar||sh.guests);
+    const bits=[opShort, sh&&sh.iceClass?sh.iceClass+' ice':null, guests?guests+' guests':null].filter(Boolean);
+    return bits.concat(count+' departure'+(count!==1?'s':'')).join(' · ');
+  }
   function toggleShipFilter(name,row){
     if(activeShips.has(name))activeShips.delete(name);else activeShips.add(name);
     row.classList.toggle('active',activeShips.has(name));
@@ -1037,41 +1045,34 @@ function boot(a){
     else if(activeShips.size||activeOps.size) openSearchResults('Filtered sailings');
   }
   function buildShipSection(catalog){
-    SHIP_CATALOG=catalog||[];
-    SHIP_CATALOG.forEach(sh=>{
-      const keys=new Set();
-      (sh.regions||[]).forEach(tok=>{ (SHIP_REGION_ALIAS[tok]||[]).forEach(nm=>{ const k=regionKeyByName(nm); if(k)keys.add(k); }); });
-      sh.regionKeys=keys;
-      sh.opShort=(OPERATORS[sh.operator]&&OPERATORS[sh.operator].short)||sh.operator;
-      sh.count=a.sailings.filter(s=>s.start>=today&&s.operator===sh.operator&&(!keys.size||keys.has(s.region))).length;
-      SHIP_BY_NAME[sh.ship]=sh;
+    indexShipCatalog(catalog);
+    const byShip={};
+    a.sailings.forEach(s=>{
+      if(s.start<today||!s.ship||/^varies\b/i.test(s.ship))return;
+      const item=byShip[s.ship]||(byShip[s.ship]={ship:s.ship,operator:s.operator,count:0});
+      item.count++;
     });
     const opOrder=Object.keys(OPERATORS);
-    const sorted=[...SHIP_CATALOG].sort((x,y)=>{ const ox=opOrder.indexOf(x.operator),oy=opOrder.indexOf(y.operator); if(ox!==oy)return ox-oy; return x.ship.localeCompare(y.ship); });
+    const sorted=Object.values(byShip).sort((x,y)=>{ const ox=opOrder.indexOf(x.operator),oy=opOrder.indexOf(y.operator); if(ox!==oy)return ox-oy; return x.ship.localeCompare(y.ship); });
     shipRowsEl.innerHTML='';
     sorted.forEach(sh=>{
-      const guests=sh.guestsPolar||sh.guests;
-      const facts=[sh.opShort, sh.iceClass?sh.iceClass+' ice':null, guests?guests+' guests':null].filter(Boolean).join(' · ');
+      const enrich=SHIP_BY_NAME[sh.ship];
       const row=document.createElement('div'); row.className='op ship'; row.dataset.ship=sh.ship;
+      row.classList.toggle('active',activeShips.has(sh.ship));
       row.innerHTML='<div class="lg shipab">&#128674;</div>'+
-        '<div class="reginner"><div class="nm">'+esc(sh.ship)+'</div><div class="ct">'+esc(facts)+' · '+sh.count+' sailing'+(sh.count!==1?'s':'')+'</div></div>'+
+        '<div class="reginner"><div class="nm">'+esc(sh.ship)+'</div><div class="ct">'+esc(shipFacts(sh.ship,sh.operator,sh.count))+'</div></div>'+
         '<div class="dot regtick"></div>';
-      if(sh.notes)row.title=sh.notes;
+      if(enrich&&enrich.notes)row.title=enrich.notes;
       row.addEventListener('click',()=>toggleShipFilter(sh.ship,row));
       shipRowsEl.appendChild(row);
     });
     if(sorted.length>12&&shipSearchEl){ shipSearchEl.style.display='';
-      shipSearchEl.addEventListener('input',()=>{ const q=shipSearchEl.value.trim().toLowerCase(); let any=false;
+      shipSearchEl.oninput=()=>{ const q=shipSearchEl.value.trim().toLowerCase(); let any=false;
         shipRowsEl.querySelectorAll('.ship').forEach(r=>{ const sh=SHIP_BY_NAME[r.dataset.ship]; const hit=!q||r.dataset.ship.toLowerCase().includes(q)||(sh&&sh.opShort.toLowerCase().includes(q)); r.style.display=hit?'':'none'; if(hit)any=true; });
-        let empty=shipRowsEl.querySelector('.shipempty'); if(!any){ if(!empty){empty=document.createElement('div');empty.className='shipempty';empty.textContent='No ships match.';shipRowsEl.appendChild(empty);} } else if(empty){empty.remove();} });
-    }
-    if(_pendingShips&&_pendingShips.length){
-      _pendingShips.forEach(nm=>{ if(SHIP_BY_NAME[nm]){ activeShips.add(nm); const r=document.querySelector('.ship[data-ship="'+cssEsc(nm)+'"]'); if(r)r.classList.add('active'); } });
-      _pendingShips=null;
-      if(activeShips.size){ const sh=document.getElementById('shipHead'),sl=document.getElementById('shipList'); if(sh)sh.classList.remove('collapsed'); if(sl)sl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); syncReset(); updateMarkers();
-        if(portView||activeView) refreshActivePanel(); else openSearchResults('Filtered sailings'); }
+        let empty=shipRowsEl.querySelector('.shipempty'); if(!any){ if(!empty){empty=document.createElement('div');empty.className='shipempty';empty.textContent='No ships match.';shipRowsEl.appendChild(empty);} } else if(empty){empty.remove();} };
     }
   }
+  buildShipSection([]);
   fetch('ships.json').then(r=>r.ok?r.json():null).then(j=>{ if(j&&j.ships) buildShipSection(j.ships); }).catch(err=>{ console.warn('Expedition Atlas: ship catalog unavailable —',err); });
   [['lineHead','opList'],['regionHead','regionList'],['shipHead','shipList']].forEach(pair=>{
     const head=document.getElementById(pair[0]),body=document.getElementById(pair[1]);
@@ -1134,12 +1135,13 @@ function boot(a){
     a0._sailing=s;
     const meta=document.createElement('div');meta.className='meta';
     const op=OPERATORS[s.operator]?OPERATORS[s.operator].short:s.operator;
+    const ship=s.ship?(' &middot; '+s.ship):'';
     const nights=(typeof s.nights==='number')?(' &middot; '+s.nights+' night'+(s.nights!==1?'s':'')):'';
     const ends=sailingEnds(s);
     const rt=ends?('<div class="rt">'+esc(ends.from)+(ends.to!==ends.from?(' &rarr; '+esc(ends.to)):'')+' &middot; '+ends.count+' stop'+(ends.count!==1?'s':'')+'</div>'):'';
     meta.innerHTML='<div class="nm">'+esc(s.name)+'</div>'
       +'<div class="dt">'+esc(s.dates)+'</div>'
-      +'<div class="go">'+esc(op)+nights+' &#8599;</div>'+rt;
+      +'<div class="go">'+esc(op+ship)+nights+' &#8599;</div>'+rt;
     const ar=document.createElement('div');ar.className='arrow';ar.textContent='›';
     a0.appendChild(logoEl(s.operator));a0.appendChild(meta);a0.appendChild(ar);
     if(activeOps.size&&activeOps.has(s.operator))a0.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
@@ -1278,12 +1280,12 @@ function boot(a){
     const regions=sp.get('regions');
     if(regions){ regions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{ if(REGIONS[k]&&markers[k]){ activeRegions.add(k); const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]'); if(r)r.classList.add('active'); } }); if(activeRegions.size){ const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList'); if(rh)rh.classList.remove('collapsed'); if(rl)rl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); } }
     const ships=sp.get('ships');
-    if(ships){ _pendingShips=ships.split(',').map(s=>s.trim()).filter(Boolean); if(_pendingShips.length)document.getElementById('reset').classList.add('show'); }
+    if(ships){ ships.split(',').map(s=>s.trim()).filter(Boolean).forEach(nm=>{ const row=document.querySelector('.ship[data-ship="'+cssEsc(nm)+'"]'); if(row){ activeShips.add(nm); row.classList.add('active'); } }); if(activeShips.size){ const sh=document.getElementById('shipHead'),sl=document.getElementById('shipList'); if(sh)sh.classList.remove('collapsed'); if(sl)sl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); } }
     activeSearchTerms=[...words(sp.get('q')), ...words(sp.get('country'))];
     updateMarkers();
     const region=findRegionKey(sp.get('region'));
     if(region) openRegion(region);
-    else if(activeIds.size||activeOps.size||activeMonths.size||activeRegions.size||activeSearchTerms.length) openSearchResults(activeIds.size?'Guide shortlist':'Filtered sailings');
+    else if(activeIds.size||activeOps.size||activeShips.size||activeMonths.size||activeRegions.size||activeSearchTerms.length) openSearchResults(activeIds.size?'Guide shortlist':'Filtered sailings');
   }
   applyDeepLink();
 

@@ -5,6 +5,8 @@
   "scripts": {
     "prebuild": "npm run build:hotel-points",
     "build:hotel-points": "node scripts/build-hotel-points.mjs",
+    "harvest:expedition-ships": "node scripts/harvest-expedition-ships.mjs",
+    "build:expedition-ships": "node scripts/build-expedition-ships.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
