@@ -1481,7 +1481,11 @@ let mapboxPromise: Promise<MapboxModule> | null = null;
 function loadMapbox(): Promise<MapboxModule> {
   if (window.mapboxgl) return Promise.resolve(window.mapboxgl);
   if (mapboxPromise) return mapboxPromise;
-  if (!document.querySelector(`link[href="${MAPBOX_CSS}"]`)) {
+  // Match stylesheets only: the root layout preloads this same href
+  // (rel="preload" as="style"), which downloads but never APPLIES the CSS —
+  // an href-only check sees it and skips the real stylesheet, leaving the map
+  // unstyled (attribution in flow, popups shifting layout, broken touch-action).
+  if (!document.querySelector(`link[rel="stylesheet"][href="${MAPBOX_CSS}"]`)) {
     const css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = MAPBOX_CSS;
