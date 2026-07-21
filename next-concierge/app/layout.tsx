@@ -19,6 +19,7 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://basecamp.aspentraveladvisors.com"),
   title: {
     default: "Base Camp · The Guide — Aspen Travel Advisors",
     template: "%s — Aspen Travel Advisors",

@@ -53,3 +53,30 @@ data source, or major surface ships.
    and `/atlas/villa` (map pins + pagination + no $0 anywhere).
 4. Deploy. CDN cache on the search API is s-maxage=86400, so stale results age out
    within a day of the deploy.
+
+## Answers surface (AEO question pages) — LIVE (added 2026-07-21)
+
+- Surfaces: `/answers` (index, ItemList JSON-LD) + `/answers/[slug]` — 24 fully
+  static question pages (SSG, `dynamicParams = false`) targeting AI answer-engine
+  queries. Each page: question as H1, direct-answer lead, data tables, FAQ block,
+  FAQPage + BreadcrumbList JSON-LD, canonical URL, related links into the atlases.
+- Content lives in `data/answers/{expedition,hotels,villas,journeys}.js`;
+  registry + JSON-LD builders in `lib/answers.js`. Counts cited in copy
+  (sailings per region, hotel/brand counts, villa queries) are snapshots
+  computed from the atlas datasets on the `updated` date in each module —
+  when atlas data refreshes, re-run the counts and bump `updated`.
+- `data/atlas/cruise/ships.json` (`living_atlas.expedition_ships.v1`): per-ship
+  expedition facts (guests, expedition-team size, ice class, kayak/camp/sub/heli
+  flags) compiled July 2026 from operator materials; powers the guide-ratio,
+  smallest-ships and adventure-options pages. Figures are typical/approximate —
+  re-verify before quoting in bookings.
+- SEO plumbing: `app/robots.js` (allows all + explicit AI crawlers — GPTBot,
+  ClaudeBot, PerplexityBot, etc.; disallows `/api/`), `app/sitemap.js`
+  (147 URLs: core + 7 atlases + 24 answers + 114 featured villa details),
+  `metadataBase` = https://basecamp.aspentraveladvisors.com in `app/layout.tsx`.
+  "Answers" tab added to NavTabs.
+- DOMAIN PREREQ: `basecamp.aspentraveladvisors.com` must be attached to the
+  Vercel project (Settings → Domains + DNS CNAME) — canonical URLs, sitemap and
+  JSON-LD already point at it. Until then the pages serve fine on
+  bevvip-concierge.vercel.app but canonicals reference the custom domain.
+  Also verify Vercel Security settings aren't challenging AI crawler bots.
