@@ -121,7 +121,15 @@
   .op.reg .reginner{flex:1 1 0;min-width:0}
   .op .regab{background:radial-gradient(circle at 35% 30%,var(--accent-hi),var(--accent) 60%,var(--accent-deep));color:var(--accent-text);font-size:14px}
   .op .dot.regtick{background:transparent;border:1.5px solid var(--line);width:14px;height:14px;border-radius:5px;opacity:.7}
-  .op.reg.active .dot.regtick{background:var(--accent);border-color:var(--accent);opacity:1}
+  .op.reg.active .dot.regtick,.op.ship.active .dot.regtick{background:var(--accent);border-color:var(--accent);opacity:1}
+  /* Ship & fleet rows reuse .op; anchor chip + fleet facts */
+  .op.ship .reginner{flex:1 1 0;min-width:0}
+  .op .shipab{background:radial-gradient(circle at 35% 30%,#eef4fb,#8fb2cf 60%,#3a5f7d);color:#12324a;font-size:14px}
+  .shiphint{font-size:10px;color:var(--muted);line-height:1.35;margin:2px 10px 6px}
+  .shipsearch{width:calc(100% - 20px);margin:0 10px 4px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--ink);font:inherit;font-size:12.5px;padding:8px 10px}
+  .shipsearch:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .shipsearch::placeholder{color:var(--muted)}
+  .shipempty{font-size:11px;color:var(--muted);padding:6px 10px}
   .panel{position:absolute;z-index:1001;top:0;right:0;height:100%;width:392px;max-width:92vw;background:linear-gradient(180deg,var(--panel),#080b10);border-left:1px solid var(--line);box-shadow:-12px 0 40px rgba(0,0,0,.55);transform:translateX(105%);transition:transform .32s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
   .panel.open{transform:none}
   .panel .hero{position:relative;padding:24px 22px 18px;border-bottom:1px solid var(--line);background:radial-gradient(120% 120% at 80% 0%,rgba(var(--accent-rgb),.20),transparent 60%)}
@@ -339,6 +347,12 @@
     <div class="sectbody ops" id="opList"></div>
     <button type="button" class="secthead collapsed" id="regionHead">Region<span class="chev">&#9662;</span></button>
     <div class="sectbody ops reglist collapsed" id="regionList"></div>
+    <button type="button" class="secthead collapsed" id="shipHead">Ship &amp; fleet<span class="chev">&#9662;</span></button>
+    <div class="sectbody ops shiplist collapsed" id="shipList">
+      <div class="shiphint">Expedition itineraries rotate across each line's fleet &mdash; picking a ship shows that operator's sailings in the ship's cruising regions, with the vessel's specs.</div>
+      <input id="shipSearch" class="shipsearch" type="search" placeholder="Search ships&hellip;" autocomplete="off" style="display:none">
+      <div class="shiprows" id="shipRows"></div>
+    </div>
   </div>
   <div class="reset" id="reset">&#10005; Clear filter</div>
   <div class="sheetFooter" id="railFooter">
@@ -466,6 +480,7 @@ function boot(a){
   const {OPERATORS,REGIONS,byRegion}=a;
   const markers={}; let activeOps=new Set(), activeView=null; const activeMonths=new Set();
   const activeRegions=new Set();
+  const activeShips=new Set(); let SHIP_CATALOG=[], SHIP_BY_NAME={}, _pendingShips=null;
   const activeIds=new Set(); let activeSearchTerms=[];
   let activePort=null, activePortRole='any', portView=null;
   const today=new Date().toISOString().slice(0,10);
@@ -477,7 +492,15 @@ function boot(a){
     && (!activeMonths.size||activeMonths.has(s.monthKey))
     && (!activeIds.size||activeIds.has(String(s.id))||activeIds.has("cr_"+s.id))
     && (!activePort||sailingMatchesPort(s,activePort,activePortRole))
+    && shipPass(s)
     && textMatches(s); }
+  /* Fleet browser: a ship implies its operator (certain) + its cruising regions
+     (curated). Expedition sailings aren't tagged to a specific hull, so this
+     narrows to the ship's line within the regions it actually sails. */
+  function shipPass(s){ if(!activeShips.size)return true;
+    for(const nm of activeShips){ const sh=SHIP_BY_NAME[nm]; if(!sh||sh.operator!==s.operator)continue;
+      if(!sh.regionKeys||!sh.regionKeys.size)return true; if(sh.regionKeys.has(s.region))return true; }
+    return false; }
   function regionPass(s){ return !activeRegions.size||activeRegions.has(s.region); }
   function regionSailings(key){ return (byRegion.get(key)||[]).filter(matches)
     .sort((x,y)=>{ if(activeOps.size){const a1=activeOps.has(x.operator),b1=activeOps.has(y.operator);if(a1!==b1)return a1?-1:1;}
@@ -963,7 +986,7 @@ function boot(a){
     if(m.blurb){const ds=document.createElement('div');ds.className='desc';ds.textContent=m.blurb;row.title=m.blurb;row.appendChild(ds);}
     row.addEventListener('click',()=>toggleOp(name,row));opList.appendChild(row);
   });
-  function syncReset(){ document.getElementById('reset').classList.toggle('show',!!activeOps.size||activeRegions.size||activeIds.size||activeSearchTerms.length||!!activePort); }
+  function syncReset(){ document.getElementById('reset').classList.toggle('show',!!activeOps.size||activeShips.size||activeRegions.size||activeIds.size||activeSearchTerms.length||!!activePort); }
   function refreshActivePanel(){ if(portView) openPortResults(portView); else if(activeView==='__search__') openSearchResults(); else if(activeView) openRegion(activeView); }
   function toggleOp(name,row){
     if(activeOps.has(name)){activeOps.delete(name);row.classList.remove('active');}
@@ -975,7 +998,7 @@ function boot(a){
   }
   document.getElementById('reset').addEventListener('click',()=>{
     activeOps.clear();document.querySelectorAll('.op').forEach(r=>r.classList.remove('active'));
-    activeIds.clear();activeSearchTerms=[];activeRegions.clear();
+    activeIds.clear();activeSearchTerms=[];activeRegions.clear();activeShips.clear();
     const hadPort=!!portView; clearPortFilter();
     document.getElementById('reset').classList.remove('show');updateMarkers();
     if(hadPort&&!activeView){ panel.classList.remove('open'); } else { refreshActivePanel(); }
@@ -999,7 +1022,58 @@ function boot(a){
     syncReset();
     updateMarkers(); refreshActivePanel();
   }
-  [['lineHead','opList'],['regionHead','regionList']].forEach(pair=>{
+  /* ── Ship & fleet browser (from ships.json) ──────────────────────────── */
+  const shipRowsEl=document.getElementById('shipRows');
+  const shipSearchEl=document.getElementById('shipSearch');
+  /* Catalog region tokens → atlas region names (broad tokens omitted → the ship
+     is treated as operator-wide with no region narrowing). */
+  const SHIP_REGION_ALIAS={'Alaska':['Alaska & Yukon'],'Amazon':['Amazon & South America'],'Antarctica':['Antarctica'],'Arctic':['Arctic'],'Greenland':['Arctic'],'North Pole':['Arctic'],'Norway':['Norway, Fjords & Coast'],'Galápagos':['Galápagos'],'Kimberley':['Australia, NZ & South Pacific'],'South Pacific':['Australia, NZ & South Pacific','Hawaii & Tahiti'],'Mediterranean':['Mediterranean']};
+  function regionKeyByName(nm){ const v=norm(nm); return a.mappableRegions.find(k=>norm(REGIONS[k]&&REGIONS[k].name)===v||norm(k)===v)||null; }
+  function toggleShipFilter(name,row){
+    if(activeShips.has(name))activeShips.delete(name);else activeShips.add(name);
+    row.classList.toggle('active',activeShips.has(name));
+    syncReset(); updateMarkers();
+    if(portView||activeView) refreshActivePanel();
+    else if(activeShips.size||activeOps.size) openSearchResults('Filtered sailings');
+  }
+  function buildShipSection(catalog){
+    SHIP_CATALOG=catalog||[];
+    SHIP_CATALOG.forEach(sh=>{
+      const keys=new Set();
+      (sh.regions||[]).forEach(tok=>{ (SHIP_REGION_ALIAS[tok]||[]).forEach(nm=>{ const k=regionKeyByName(nm); if(k)keys.add(k); }); });
+      sh.regionKeys=keys;
+      sh.opShort=(OPERATORS[sh.operator]&&OPERATORS[sh.operator].short)||sh.operator;
+      sh.count=a.sailings.filter(s=>s.start>=today&&s.operator===sh.operator&&(!keys.size||keys.has(s.region))).length;
+      SHIP_BY_NAME[sh.ship]=sh;
+    });
+    const opOrder=Object.keys(OPERATORS);
+    const sorted=[...SHIP_CATALOG].sort((x,y)=>{ const ox=opOrder.indexOf(x.operator),oy=opOrder.indexOf(y.operator); if(ox!==oy)return ox-oy; return x.ship.localeCompare(y.ship); });
+    shipRowsEl.innerHTML='';
+    sorted.forEach(sh=>{
+      const guests=sh.guestsPolar||sh.guests;
+      const facts=[sh.opShort, sh.iceClass?sh.iceClass+' ice':null, guests?guests+' guests':null].filter(Boolean).join(' · ');
+      const row=document.createElement('div'); row.className='op ship'; row.dataset.ship=sh.ship;
+      row.innerHTML='<div class="lg shipab">&#128674;</div>'+
+        '<div class="reginner"><div class="nm">'+esc(sh.ship)+'</div><div class="ct">'+esc(facts)+' · '+sh.count+' sailing'+(sh.count!==1?'s':'')+'</div></div>'+
+        '<div class="dot regtick"></div>';
+      if(sh.notes)row.title=sh.notes;
+      row.addEventListener('click',()=>toggleShipFilter(sh.ship,row));
+      shipRowsEl.appendChild(row);
+    });
+    if(sorted.length>12&&shipSearchEl){ shipSearchEl.style.display='';
+      shipSearchEl.addEventListener('input',()=>{ const q=shipSearchEl.value.trim().toLowerCase(); let any=false;
+        shipRowsEl.querySelectorAll('.ship').forEach(r=>{ const sh=SHIP_BY_NAME[r.dataset.ship]; const hit=!q||r.dataset.ship.toLowerCase().includes(q)||(sh&&sh.opShort.toLowerCase().includes(q)); r.style.display=hit?'':'none'; if(hit)any=true; });
+        let empty=shipRowsEl.querySelector('.shipempty'); if(!any){ if(!empty){empty=document.createElement('div');empty.className='shipempty';empty.textContent='No ships match.';shipRowsEl.appendChild(empty);} } else if(empty){empty.remove();} });
+    }
+    if(_pendingShips&&_pendingShips.length){
+      _pendingShips.forEach(nm=>{ if(SHIP_BY_NAME[nm]){ activeShips.add(nm); const r=document.querySelector('.ship[data-ship="'+cssEsc(nm)+'"]'); if(r)r.classList.add('active'); } });
+      _pendingShips=null;
+      if(activeShips.size){ const sh=document.getElementById('shipHead'),sl=document.getElementById('shipList'); if(sh)sh.classList.remove('collapsed'); if(sl)sl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); syncReset(); updateMarkers();
+        if(portView||activeView) refreshActivePanel(); else openSearchResults('Filtered sailings'); }
+    }
+  }
+  fetch('ships.json').then(r=>r.ok?r.json():null).then(j=>{ if(j&&j.ships) buildShipSection(j.ships); }).catch(err=>{ console.warn('Expedition Atlas: ship catalog unavailable —',err); });
+  [['lineHead','opList'],['regionHead','regionList'],['shipHead','shipList']].forEach(pair=>{
     const head=document.getElementById(pair[0]),body=document.getElementById(pair[1]);
     head.addEventListener('click',()=>{ const c=head.classList.toggle('collapsed'); body.classList.toggle('collapsed',c); });
   });
@@ -1158,7 +1232,7 @@ function boot(a){
   function resetPortRoleUI(){ activePortRole='any'; document.querySelectorAll('#portRoles .proll').forEach(x=>x.classList.toggle('active',x.dataset.role==='any')); if(portSearch)portSearch.value=''; }
   function showAll(){
     activeOps.clear();activeMonths.clear();
-    activeIds.clear();activeSearchTerms=[];activeRegions.clear();
+    activeIds.clear();activeSearchTerms=[];activeRegions.clear();activeShips.clear();
     clearPortFilter();resetPortRoleUI();
     document.querySelectorAll('.op').forEach(r=>r.classList.remove('active'));
     document.querySelectorAll('.month').forEach(m=>m.classList.remove('active'));
@@ -1175,6 +1249,7 @@ function boot(a){
     if(activeOps.size)p.set('operator',[...activeOps].join(','));
     if(activeMonths.size)p.set('month',[...activeMonths].join(','));
     if(activeRegions.size)p.set('regions',[...activeRegions].join(','));
+    if(activeShips.size)p.set('ships',[...activeShips].join(','));
     if(activeSearchTerms.length)p.set('q',activeSearchTerms.join(' '));
     if(activeIds.size)p.set('ids',[...activeIds].join(','));
     if(activePort){ p.set('port',activePort); if(activePortRole&&activePortRole!=='any')p.set('portrole',activePortRole); }
@@ -1202,6 +1277,8 @@ function boot(a){
     if(opParam){ opParam.split(',').map(s=>s.trim()).filter(Boolean).forEach(o=>{ const op=findOperator(o); if(op){ activeOps.add(op); const row=document.querySelector('.op[data-operator="'+cssEsc(op)+'"]'); if(row)row.classList.add('active'); } }); if(activeOps.size) document.getElementById('reset').classList.add('show'); }
     const regions=sp.get('regions');
     if(regions){ regions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{ if(REGIONS[k]&&markers[k]){ activeRegions.add(k); const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]'); if(r)r.classList.add('active'); } }); if(activeRegions.size){ const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList'); if(rh)rh.classList.remove('collapsed'); if(rl)rl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); } }
+    const ships=sp.get('ships');
+    if(ships){ _pendingShips=ships.split(',').map(s=>s.trim()).filter(Boolean); if(_pendingShips.length)document.getElementById('reset').classList.add('show'); }
     activeSearchTerms=[...words(sp.get('q')), ...words(sp.get('country'))];
     updateMarkers();
     const region=findRegionKey(sp.get('region'));
