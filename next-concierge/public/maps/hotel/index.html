@@ -576,8 +576,12 @@ function syncTiltToRange(){
   }
 }
 function scheduleTiltSync(){
-  if(tiltSyncFrame) return;
-  tiltSyncFrame=requestAnimationFrame(syncTiltToRange);
+  // Debounce, don't run per-frame: writing map3d.tilt on every gmp-rangechange
+  // cancels the in-flight inertial zoom, which made zooming OUT feel sticky
+  // (out lowers the max tilt, so it was the only direction that kept writing).
+  // Let the range settle first, then flatten the tilt once.
+  if(tiltSyncFrame) clearTimeout(tiltSyncFrame);
+  tiltSyncFrame=setTimeout(syncTiltToRange,160);
 }
 function bindCameraControls(){
   if(map3d && !cameraEventsBound){
@@ -836,7 +840,7 @@ function renderActiveChips(){
     const c=document.createElement("button"); c.type="button"; c.className="afchip";
     c.innerHTML=label+' <span aria-hidden="true">&times;</span>';
     c.setAttribute("aria-label","Remove filter "+label);
-    c.addEventListener("click",()=>{ clear(); renderActiveChips(); applyFilters(); fitToResults(); });
+    c.addEventListener("click",()=>{ clear(); renderActiveChips(); applyFilters(); syncPinScales(); fitToResults(); });
     box.appendChild(c);
   }
 }
@@ -930,19 +934,44 @@ function flyToFeatures(feats,opts){
   flyTo({lat:cLat,lng:cLng,range,tilt:opts.tilt!=null?opts.tilt:(effSpan>6?0:45),
     heading:0,duration:opts.duration||2400});
 }
+// The pins a deep link points at (a shortlist of ids and/or a shared hotel).
+// These are highlighted, not filtered, so they drive the camera framing even
+// though every other hotel stays on the map.
+function focusFeatures(){
+  if(state.ids.size) return FEATURES.filter(f=>state.ids.has(f.properties.id));
+  if(state.hotel){ const h=String(state.hotel); return FEATURES.filter(f=>String(f.properties.id)===h); }
+  return null;
+}
 function fitToResults(){
-  const shown=FEATURES.filter(matches);
+  // Frame the deep-linked hotel(s) first — they are highlight-only now, so
+  // matches() would report the whole field and skip framing otherwise.
+  const focus=focusFeatures();
+  const shown=(focus&&focus.length)?focus:FEATURES.filter(matches);
   if(!shown.length || shown.length===FEATURES.length) return; // keep default world view
   // A single property has zero span, so flyToFeatures bottoms out at its default
   // minRange (9km up — too distant to read the setting). Come in close with some
   // tilt instead, just shy of the detail-open cinematic (range 2600 / tilt 67).
   flyToFeatures(shown, shown.length===1?{minRange:3400,tilt:60}:undefined);
 }
+// A deep-linked result pin (shortlist id or shared hotel) stays visibly larger
+// than the rest of the field — even after it is selected and deselected again.
+const RESULT_SCALE=1.25, BASE_SCALE=0.7;
+function isResultMarker(m){
+  const p=m&&m._feat&&m._feat.properties; if(!p) return false;
+  if(state.ids.size && state.ids.has(p.id)) return true;
+  if(state.hotel && String(p.id)===String(state.hotel)) return true;
+  return false;
+}
+function baseScale(m){ return isResultMarker(m)?RESULT_SCALE:BASE_SCALE; }
+// Re-apply resting pin sizes after the result set changes (e.g. the Shortlist
+// chip is cleared) so de-highlighted pins shrink back; the open pin stays large.
+function syncPinScales(){
+  for(const m of MARKERS){ if(!m._pin) continue; try{ m._pin.scale=(m===SELECTED)?1.25:baseScale(m); }catch(_){} }
+}
 function highlightDeepLinkIds(){
-  if(!state.ids.size) return;
-  const hit=MARKERS.filter(m=>state.ids.has(m._feat.properties.id));
-  for(const m of hit){ if(m._pin) try{ m._pin.scale=1.25; }catch(_){} }
-  if(hit.length===1) openDetail(hit[0]._feat);  // single shortlist -> open it
+  const hit=MARKERS.filter(isResultMarker);
+  for(const m of hit){ if(m._pin) try{ m._pin.scale=RESULT_SCALE; }catch(_){} }
+  if(state.ids.size===1 && hit.length===1) openDetail(hit[0]._feat);  // single shortlist -> open it
 }
 // A shared ?hotel=<id> lands the recipient on that hotel's open detail panel
 // with the cinematic orbit already turning (openDetail flies in with orbit:true).
@@ -1078,8 +1107,9 @@ function matches(f){
   if(state.regions.size && !state.regions.has(macroRegion(p.country))) return false;
   if(state.brands.size && !state.brands.has(p.program)) return false;
   if(state.countries.size && !state.countries.has(p.country)) return false;
-  // deep-link-only axes
-  if(state.ids.size && !state.ids.has(p.id)) return false;
+  // deep-link-only axes. NOTE: `ids` (a Guide shortlist / single-hotel link) and
+  // `hotel` are highlight-only — they enlarge and frame their pins but never hide
+  // the rest of the field, so a shared hotel is always seen in context.
   if(state.brand && (p.brand||"").toLowerCase()!==state.brand.toLowerCase()) return false;
   if(state.region && (p.marqueeRegion||"").toLowerCase()!==state.region.toLowerCase() && !matchesRegionAlias(state.region,p)) return false;
   // memoized lowercase haystack: built once per feature (covers both load
@@ -1349,7 +1379,7 @@ async function openDetail(f){
   document.getElementById("panel").classList.add("open");
   // enlarge the selected pin, reset the previously selected one
   const sel=MARKERS.find(m=>m._feat===f);
-  if(SELECTED && SELECTED._pin) try{SELECTED._pin.scale=0.7;}catch(_){}
+  if(SELECTED && SELECTED._pin) try{SELECTED._pin.scale=baseScale(SELECTED);}catch(_){}
   if(sel && sel._pin) try{sel._pin.scale=1.25;}catch(_){}
   SELECTED=sel||null;
   // cinematically tween the camera to the hotel, then settle into a slow orbit

@@ -959,9 +959,11 @@ function boot(a){
     return out.sort((x,y)=>(x.start||'').localeCompare(y.start||'')||x.name.localeCompare(y.name));
   }
   function fitSailings(list){
-    const keys=[...new Set(list.map(s=>s.region).filter(k=>REGIONS[k]&&REGIONS[k].coord))];
+    // Frame the region pins that currently show results ("hit") so any filter zooms to the live pins.
+    let keys=Object.keys(markers).filter(k=>markers[k].el.classList.contains('hit')&&REGIONS[k]&&REGIONS[k].coord);
+    if(!keys.length) keys=[...new Set((list||[]).map(s=>s.region).filter(k=>REGIONS[k]&&REGIONS[k].coord))];
     if(!keys.length)return;
-    if(keys.length===1){ const c=REGIONS[keys[0]].coord; map.flyTo([c[0],c[1]],Math.max(map.getZoom(),3.2),{duration:.8}); return; }
+    if(keys.length===1){ const c=REGIONS[keys[0]].coord; map.flyTo([c[0],c[1]],Math.max(map.getZoom(),3.5),{duration:.8}); return; }
     const b=L.latLngBounds(keys.map(k=>REGIONS[k].coord));
     map.fitBounds(b,{padding:[90,90],maxZoom:4.2,animate:true,duration:.8});
   }
