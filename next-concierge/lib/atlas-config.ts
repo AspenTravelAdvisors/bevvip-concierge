@@ -162,6 +162,25 @@ export function collectionsSummary(): string {
   return `${counted}, ${named.slice(0, -1).join(", ")} and ${named[named.length - 1]}`;
 }
 
+/**
+ * The same list at map-overlay length — counts for the big three, bare nouns
+ * for the rest, middot-separated.
+ *
+ * This exists because prose length is a layout constraint here, not a style
+ * choice: the home page's blurb is absolutely positioned above the map legend,
+ * so a blurb that wraps to a third line lands on top of it. `collectionsSummary`
+ * (a full sentence) did exactly that. The CSS now clamps the paragraph so no
+ * copy change can collide again, but the honest fix is to not write past the
+ * space — two lines at ~95 characters each.
+ */
+export function collectionsCompact(): string {
+  const [a, b, c, ...rest] = COLLECTIONS;
+  const counted = [a, b, c]
+    .map((x) => `${nf.format(x.count)} ${x.nav.toLowerCase()}`)
+    .join(" · ");
+  return `${counted} · ${rest.map((x) => x.nav.toLowerCase()).join(", ")}`;
+}
+
 export function isOfferingType(value: string): value is OfferingType {
   return value in ATLASES;
 }

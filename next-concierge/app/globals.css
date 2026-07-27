@@ -1145,26 +1145,25 @@ main.page {
   margin: 0 0 3px;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9);
 }
+/* HARD TWO-LINE CAP. This paragraph is absolutely positioned above the map
+   legend (which sits at a fixed offset below it), so a third line renders on
+   top of the legend — which is exactly what happened when the blurb grew to
+   name all seven collections. Clamping here means a copy edit can never
+   reintroduce the collision; the copy should still be written to fit. */
 .home-atlas-head p {
   color: var(--sub);
   font-size: 12px;
   margin: 0;
   max-width: 560px;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
-/* Desktop reads the full blurb; phones swap in the short one. The swap rule
-   had gone missing, so .blurb-short was hidden everywhere and never shown —
-   phones were reading the long line. */
 .home-atlas-head .blurb-short {
   display: none;
-}
-@media (max-width: 640px) {
-  .home-atlas-head .blurb-full {
-    display: none;
-  }
-  .home-atlas-head .blurb-short {
-    display: inline;
-  }
 }
 
 /* ── Desktop/tablet: The Guide as a floating panel docked left ──────────────
@@ -1300,9 +1299,12 @@ main.page {
     padding: 0;
     pointer-events: none;
   }
+  /* Clears the head block above it: 14px top + ~22px h2 + 3px + two clamped
+     12px/1.6 lines ≈ 78px, plus breathing room. The head is line-clamped to
+     two lines precisely so this number can stay a constant. */
   .home-atlas .atlas-legend {
     left: calc(16px + var(--guide-panel-w, 440px) + 22px);
-    top: 86px;
+    top: 94px;
   }
   .home--panel-closed .home-atlas-head,
   .home--panel-closed .home-atlas .atlas-legend {
@@ -1388,13 +1390,30 @@ main.page {
     text-align: left;
   }
 
+  /* Sized to the 46dvh resting sheet: headline, subhead, prompts and composer
+     all have to clear the fold together. The subhead is clamped rather than
+     shortened so the full promise is still there when the sheet is expanded
+     for reading — it just can't push the composer off-screen at rest. */
   .empty h1 {
-    font-size: 29px;
+    font-size: 25px;
+    margin-bottom: 6px;
   }
 
   .empty p {
-    font-size: 14px;
-    margin-bottom: 18px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+  /* Expanded for reading: no reason to withhold the rest of the sentence. */
+  .home--sheet-full .empty p {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
   }
 
   /* A swipeable row of comfortable pills — like the header tabs. Five narrow
@@ -1508,13 +1527,20 @@ main.page {
    The Guide" pill, half-height with the map still visible above, or nearly
    full for reading.
 
-   The sheet now OPENS at half rather than pill. The phone home used to load
-   map-first with the conversation dismissed, which is the wrong priority for a
-   product whose job is to get a described trip in front of an advisor — on a
-   390px screen the visitor should land already able to type. Every detent
-   change is reachable by tap (handle, "Full map ▾", the dock pill); the swipe
-   gestures remain for those who try them, but nothing depends on discovering
-   them. Desktop and tablet keep the side-by-side split defined above. */
+   THE RESTING DETENT IS A COMPROMISE, ON PURPOSE. The phone home used to load
+   with the sheet dismissed entirely (map 100%, conversation behind a pill),
+   which is the wrong priority for a product whose job is to get a described
+   trip in front of an advisor. Opening at the old half height (60dvh) fixed
+   the priority and lost the map — 40% of a phone screen is not a globe, it's
+   a strip.
+
+   So half is now 46dvh: the map leads the screen, and the composer, the
+   example prompts and the headline are all above the fold without a tap. The
+   traveler sees the world first and can still type immediately. Reading grows
+   it (tap the handle → full); "Full map ▾" still surrenders the whole screen
+   to the map. Every detent change is reachable by tap; the swipe gestures
+   remain for those who try them but nothing depends on discovering them.
+   Desktop and tablet keep the side-by-side split defined above. */
 @media (max-width: 640px) {
   /* Pin the stage to the viewport so the map fills it edge to edge and the
      sheet / dock can anchor to the bottom. */
@@ -1573,11 +1599,10 @@ main.page {
     margin: 0 0 2px;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
   }
-  /* The short blurb rides under the framing line — two small lines, tops. */
-  .home-atlas-head p {
-    font-size: 11.5px;
-    line-height: 1.45;
-  }
+  /* No blurb over a phone-sized map: the sheet below already carries the
+     promise, and the map's job here is to be the map. (These were two
+     contradictory rules — a font size for a paragraph, then display:none on
+     the same paragraph.) */
   .home-atlas-head p {
     display: none;
   }
@@ -1589,8 +1614,12 @@ main.page {
     right: 0;
     bottom: 0;
     z-index: 6;
-    height: 60dvh;
-    min-height: 0;
+    /* The resting detent — see the note at the top of this block. Tuned so the
+       headline, the three example prompts and the composer all clear the fold
+       on a 667px-tall phone, while the map keeps the majority of the screen. */
+    height: 46dvh;
+    min-height: 340px;
+    max-height: 62dvh;
     border-bottom: 0;
     display: flex;
     flex-direction: column;
@@ -1614,6 +1643,8 @@ main.page {
   }
   .home--sheet-full .home-chat {
     height: calc(100dvh - 52px - env(safe-area-inset-top));
+    /* Must beat the resting detent's cap, or "full" tops out at 62dvh. */
+    max-height: none;
   }
 
   /* Sheet chrome: the drag handle row with its "Map ▾" dismiss. */

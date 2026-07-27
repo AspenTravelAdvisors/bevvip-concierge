@@ -1,7 +1,7 @@
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
-import { collectionsSummary, internalAtlasLink } from "@/lib/atlas-config";
+import { collectionsCompact, internalAtlasLink } from "@/lib/atlas-config";
 
 // The landing page: The Guide docked over a populated globe.
 //
@@ -19,10 +19,12 @@ export default function Home() {
           <div className="home-atlas-head">
             <h2>The whole collection, mapped</h2>
             {/* One blurb, two lengths: phones swap in the short line via CSS. */}
+            {/* Two lines, hard limit. This block is absolutely positioned
+                directly above the map legend; a third line lands on top of it.
+                The CSS clamps it as a backstop, but keep the copy short. */}
             <p>
               <span className="blurb-full">
-                {collectionsSummary()} — every one of them placed in the world. Spin it, zoom
-                in, click a pin to ask about it.
+                {collectionsCompact()}. Click any pin to ask about it.
               </span>
               <span className="blurb-short">
                 Hotels, villas, expeditions, world cruises, rail, yachts and jets — mapped.
