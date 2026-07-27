@@ -1,12 +1,22 @@
 "use client";
 
 // BookingStrip — where / when / who capture (BOOKING-SPEC §2).
-// Rendered by GuideChat on the empty state (full) and, once a conversation
-// exists, in compact form behind the folded trip-summary chip. Submit does two
-// things in order: persist the shared trip state, then compose a plain
-// natural-language ask and hand it to the Guide's existing send(). It never
-// posts a hidden payload — the transcript stays honest and editable — and it
-// never blocks a traveler who has no dates yet (only destination is required).
+//
+// No longer the front door. It used to render unprompted on the empty state,
+// the largest and most search-engine-looking control on the page, and it always
+// composed "VIP hotels in {destination}" — so a visitor who typed "Antarctica"
+// into a box flanked by check-in and check-out dates got a hotel search for
+// Antarctica. In a seven-collection concierge, the most prominent control was
+// silently a hotel filter.
+//
+// Two changes: it now sits behind "Have dates and a party size? Add them", and
+// the ask it composes names no category at all. The Guide routes it, which is
+// the entire reason the Guide exists.
+//
+// Submit still does two things in order: persist the shared trip state, then
+// compose a plain natural-language ask and hand it to the Guide's existing
+// send(). It never posts a hidden payload — the transcript stays honest and
+// editable — and it never blocks a traveler who has no dates yet.
 
 import { useMemo, useState } from "react";
 import type { TripState } from "@/lib/types";
@@ -28,6 +38,10 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 
 // The plain-language ask handed to the Guide. Mirrors the traveler's own words
 // so it reads naturally in the transcript and stays re-askable.
+//
+// Deliberately category-free. This used to open with "VIP hotels in …", which
+// meant the strip decided what kind of trip you were taking before you had said
+// anything — and decided wrong for six of the seven collections.
 function composeAsk(t: {
   destination: string;
   checkIn: string;
@@ -35,8 +49,8 @@ function composeAsk(t: {
   adults: number;
   childrenAges: number[];
 }): string {
-  const parts = [`VIP hotels in ${t.destination.trim()}`];
-  if (t.checkIn && t.checkOut) parts.push(`check-in ${t.checkIn} to check-out ${t.checkOut}`);
+  const parts = [t.destination.trim()];
+  if (t.checkIn && t.checkOut) parts.push(`${t.checkIn} to ${t.checkOut}`);
   else if (t.checkIn) parts.push(`around ${t.checkIn}`);
   const who: string[] = [`${t.adults} ${t.adults === 1 ? "adult" : "adults"}`];
   if (t.childrenAges.length) {
@@ -103,7 +117,7 @@ export default function BookingStrip({
           <span className="bs-label">Where</span>
           <input
             type="text"
-            placeholder="Caribbean, Japan, a hotel name…"
+            placeholder="Caribbean, Antarctica, Japan, a hotel name…"
             value={destination}
             onChange={(e) => {
               setDestination(e.target.value);
@@ -176,10 +190,12 @@ export default function BookingStrip({
       {error && <div className="bs-error">{error}</div>}
 
       <div className="bs-actions">
+        {/* "See VIP rates" promised a rate page this button has never opened —
+            it hands an ask to the Guide. Say that. */}
         <button type="button" className="bs-submit" onClick={submit}>
-          See VIP rates
+          Find options
         </button>
-        {compact && onCancel && (
+        {onCancel && (
           <button type="button" className="bs-cancel" onClick={onCancel}>
             Cancel
           </button>

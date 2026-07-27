@@ -5,8 +5,23 @@
 // inventory result cards and an "Open in Atlas" handoff from the meta frame.
 
 import { useEffect, useRef, useState } from "react";
-import type { ChatMessage, GuideFrame, GuideMeta, TripState } from "@/lib/types";
+import type { ChatMessage, GuideFrame, GuideMeta, GuideTurn, TripState } from "@/lib/types";
 import { clearTrip, getTrip, onTrip, setTrip } from "@/lib/trip-state";
+import {
+  buildAdvisorContext,
+  hasBrief,
+  shortlistNames,
+  stripControlTags,
+} from "@/lib/handoff";
+import {
+  clearConversation,
+  describeAge,
+  loadConversation,
+  saveConversation,
+} from "@/lib/conversation-store";
+import { askSent, resultsReturned, type AskSource } from "@/lib/analytics";
+import { collectionsSummary } from "@/lib/atlas-config";
+import { openAdvisor, ADVISOR_CTA, ADVISOR_SLA } from "./AdvisorRequest";
 import BookingStrip from "./BookingStrip";
 import ResultCards from "./ResultCards";
 
@@ -45,27 +60,27 @@ function tripSummary(trip: TripState): string {
   return parts.join(" · ");
 }
 
-// The five seed prompts on the empty state. Each leads into a pillar AND
-// quietly demonstrates a capability: cross-pillar + region search (a hotel ask
-// that also surfaces yachts), month-only search, two-brand comparison, an
-// around-the-world theme, and port-of-call search on a grand voyage.
-// Exported so the mobile atlas dock can offer the same starters over the map.
+// The seed prompts on the empty state.
+//
+// There were five, and they were written to demonstrate the engine's range —
+// "Galápagos Expedition Cruise journeys in January", "What world Cruises call
+// on Sydney, Australia in 2027". Those are impressive and they are also a
+// specification: they teach the visitor that questions must be phrased with a
+// category, a proper noun and a date, which is the opposite of the thing being
+// sold. Three now, short, and deliberately vaguer than the search engine
+// underneath — because the point is that vague is allowed.
 export const GUIDE_CHIPS = [
+  "Antarctica in January",
+  "Somewhere warm in February",
   "Four Seasons in the Caribbean",
-  "Galápagos Expedition Cruise journeys in January",
-  "Aman vs. Orient Express Luxury Yachts",
-  "Around the world by private jet trips in 2026",
-  "What world Cruises call on Sydney, Australia in 2027",
 ];
 
-interface Turn extends ChatMessage {
-  meta?: GuideMeta;
-}
+type Turn = GuideTurn;
 
-// The conversation survives leaving and returning to Base Camp (opening a full
-// Atlas, a card, or the header links). It is persisted per browser session so
-// the traveler is never dropped back to a blank slate mid-trip-planning.
-const STORAGE_KEY = "bevvip.guide.turns";
+// What the product contains, read from the one canonical list so the promise
+// on the empty state can never drift from what the map actually plots. The old
+// blurb named four collections; the nav offered seven.
+const COLLECTION_SUMMARY = collectionsSummary();
 
 export default function GuideChat() {
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -77,9 +92,11 @@ export default function GuideChat() {
   // the booking CTAs react the moment the strip or the Guide captures dates.
   const [trip, setLocalTrip] = useState<TripState | null>(null);
   const [editingTrip, setEditingTrip] = useState(false);
-  // Progressive disclosure for the empty-state manifesto: one hook line shows,
-  // the rest opens on request so the mobile viewport leads with the chat.
-  const [introOpen, setIntroOpen] = useState(false);
+  // The booking strip is no longer the front door — see the empty state below.
+  const [datesOpen, setDatesOpen] = useState(false);
+  // A conversation found in localStorage that's old enough to confirm before
+  // restoring, rather than silently resurrecting it under the traveler.
+  const [resume, setResume] = useState<{ turns: Turn[]; updatedAt: number } | null>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
   // Session "generation": bumped by Start over so an in-flight stream from the
   // previous conversation can't write back into the freshly cleared transcript.
@@ -87,13 +104,13 @@ export default function GuideChat() {
   const abortRef = useRef<AbortController | null>(null);
 
   // Restore after mount (not during render) so server and first client paint
-  // agree and React does not flag a hydration mismatch.
+  // agree and React does not flag a hydration mismatch. A recent conversation
+  // comes straight back; an older one is offered rather than imposed.
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
-      if (raw) setTurns(JSON.parse(raw));
-    } catch {
-      /* storage unavailable: start fresh */
+    const saved = loadConversation();
+    if (saved) {
+      if (saved.stale) setResume({ turns: saved.turns, updatedAt: saved.updatedAt });
+      else setTurns(saved.turns);
     }
     setHydrated(true);
   }, []);
@@ -107,12 +124,11 @@ export default function GuideChat() {
 
   useEffect(() => {
     if (!hydrated) return; // don't clobber saved turns before the restore runs
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(turns));
-    } catch {
-      /* over quota or unavailable: best effort */
-    }
-  }, [turns, hydrated]);
+    // An unanswered resume offer must not be overwritten by the empty transcript
+    // sitting in front of it.
+    if (resume && turns.length === 0) return;
+    saveConversation(turns);
+  }, [turns, hydrated, resume]);
 
   useEffect(() => {
     const el = transcriptRef.current;
@@ -148,23 +164,26 @@ export default function GuideChat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated]);
 
-  // External surfaces (the mobile atlas dock's prompt chips) ask The Guide by
-  // dispatching "bevvip:guide-ask" — routed through the same send pipeline as
-  // typing. A ref keeps the listener stable while send closes over fresh state.
-  const sendRef = useRef<(text: string) => void>(() => {});
+  // External surfaces (the mobile atlas dock's prompt chips, atlas pins) ask The
+  // Guide by dispatching "bevvip:guide-ask" — routed through the same send
+  // pipeline as typing. A ref keeps the listener stable while send closes over
+  // fresh state.
+  const sendRef = useRef<(text: string, source?: AskSource) => void>(() => {});
   sendRef.current = send;
   useEffect(() => {
     function onAsk(e: Event) {
-      const text = (e as CustomEvent<{ text?: string }>).detail?.text ?? "";
-      if (text.trim()) sendRef.current(text);
+      const detail = (e as CustomEvent<{ text?: string; source?: AskSource }>).detail;
+      const text = detail?.text ?? "";
+      if (text.trim()) sendRef.current(text, detail?.source ?? "dock");
     }
     window.addEventListener("bevvip:guide-ask", onAsk as EventListener);
     return () => window.removeEventListener("bevvip:guide-ask", onAsk as EventListener);
   }, []);
 
-  async function send(text: string) {
+  async function send(text: string, source: AskSource = "composer") {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
+    askSent(source, turns.length === 0);
     // Tie this turn to the current session generation and a fresh abort
     // controller, so Start over can cancel it cleanly mid-stream.
     const gen = genRef.current;
@@ -227,6 +246,13 @@ export default function GuideChat() {
           if (frame.type === "meta") {
             const { type: _t, ...meta } = frame;
             patchReply((turn) => ({ ...turn, meta }));
+            const lead = [...(meta.tools ?? [])]
+              .reverse()
+              .find((t) => (t.results ?? []).length > 0);
+            resultsReturned(
+              String(lead?.type ?? ""),
+              (meta.tools ?? []).reduce((n, t) => n + (t.results?.length ?? 0), 0),
+            );
             // Broadcast to the Living Atlas so it fits + satellites the results —
             // unless the session was reset out from under this stream.
             if (typeof window !== "undefined" && genRef.current === gen) {
@@ -263,10 +289,22 @@ export default function GuideChat() {
     }
   }
 
+  // Stop the current reply and keep everything else. Previously the only way
+  // out of a slow answer was Start over, which also wiped the transcript and
+  // the captured trip — a destructive escape hatch for a non-destructive
+  // problem. Aborting without bumping genRef lets the partial reply stand as
+  // written, exactly as if the Guide had finished there.
+  function stop() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setBusy(false);
+    setStatus(null);
+  }
+
   // Restart everything: end any in-flight stream, wipe the conversation and its
-  // saved session, and tell the Living Atlas to drop plotted results and return
-  // to its resting state. The guide-session effect below then fires inactive
-  // (turns is empty), so the mobile shell un-collapses back to the idle home.
+  // saved state, and tell the map to drop plotted results and return to its
+  // resting state. The guide-session effect below then fires inactive (turns is
+  // empty), so the mobile shell un-collapses back to the idle home.
   function startOver() {
     genRef.current += 1; // invalidate any open stream's writebacks
     abortRef.current?.abort();
@@ -275,13 +313,11 @@ export default function GuideChat() {
     setInput("");
     setBusy(false);
     setStatus(null);
-    try {
-      sessionStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* storage unavailable: nothing persisted to clear */
-    }
+    setResume(null);
+    clearConversation();
     clearTrip(); // trip state shares the conversation's lifetime
     setEditingTrip(false);
+    setDatesOpen(false);
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("bevvip:atlas-reset"));
     }
@@ -306,6 +342,10 @@ export default function GuideChat() {
 
   return (
     <section className="chat">
+      {/* The session bar carried its own "↺ Start over" while an identical one
+          sat in the composer toolbar — same glyph, same words, both on screen
+          at once. The composer keeps it (it's where the traveler's hands are);
+          this bar is now purely context. */}
       {turns.length > 0 && (
         <div className="guide-sessionbar">
           <button
@@ -320,46 +360,94 @@ export default function GuideChat() {
               {firstAsk && <span className="gsb-ctx">{firstAsk}</span>}
             </span>
           </button>
-          <button
-            type="button"
-            className="gsb-restart"
-            title="Start a new conversation"
-            aria-label="Start over"
-            onClick={startOver}
-          >
-            ↺ Start over
-          </button>
+          {/* Reachable the moment there's anything worth handing over, rather
+              than only on turns that happened to return inventory. */}
+          {(hasBrief(turns) || turns.length >= 3) && (
+            <button
+              type="button"
+              className="gsb-advisor"
+              onClick={() => openAdvisor({ source: "chat", context: buildAdvisorContext(turns) })}
+            >
+              Talk to an advisor
+            </button>
+          )}
         </div>
       )}
       <div className="transcript" ref={transcriptRef}>
         {turns.length === 0 ? (
+          /* The empty state used to stack five things: a headline, a paragraph,
+             a "How The Guide works" disclosure, a full where/when/who search
+             form with a "See VIP rates" button, an "or explore" divider, and
+             five long example prompts — three different search paradigms
+             competing in 400px, with the most search-engine-looking one
+             (the date form) hard-framing a seven-collection concierge as a
+             hotel booking box. One opening move now: say what you want. Dates
+             are an optional refinement, behind a single line, where they
+             belong. */
           <div className="empty">
-            <h1>Where are you headed next?</h1>
-            <p>
-              A region, a season, or simply the kind of journey you&rsquo;re craving &mdash;
-              and a human advisor waits in the wings.
-            </p>
-            {introOpen ? (
-              <p className="empty-more">
-                I&rsquo;ll help frame the trip, surface the right possibilities, and guide the
-                first elegant move. And when the journey calls for a steadier hand &mdash; the
-                kind with a passport worn soft at the corners &mdash; your advisor takes it
-                from there.
-              </p>
+            {resume ? (
+              <div className="resume">
+                <p>
+                  You were planning a trip here {describeAge(resume.updatedAt)} &mdash;{" "}
+                  <b>&ldquo;{resume.turns.find((t) => t.role === "user")?.content.trim()}&rdquo;</b>
+                </p>
+                <div className="resume-actions">
+                  <button
+                    type="button"
+                    className="resume-yes"
+                    onClick={() => {
+                      setTurns(resume.turns);
+                      setResume(null);
+                    }}
+                  >
+                    Pick up where I left off
+                  </button>
+                  <button
+                    type="button"
+                    className="resume-no"
+                    onClick={() => {
+                      setResume(null);
+                      clearConversation();
+                    }}
+                  >
+                    Start fresh
+                  </button>
+                </div>
+              </div>
             ) : (
-              <button type="button" className="empty-toggle" onClick={() => setIntroOpen(true)}>
-                How The Guide works
-              </button>
+              <>
+                <h1>Where are you headed next?</h1>
+                <p>
+                  Describe the trip in your own words &mdash; a region, a season, an occasion.
+                  The Guide searches {COLLECTION_SUMMARY}, then an Aspen advisor takes it from
+                  there. {ADVISOR_SLA}
+                </p>
+
+                <div className="chips">
+                  {GUIDE_CHIPS.map((chip) => (
+                    <button key={chip} className="chip" onClick={() => send(chip, "chip")}>
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+
+                {datesOpen ? (
+                  <BookingStrip
+                    onSearch={(ask) => send(ask, "strip")}
+                    initial={trip}
+                    onCancel={() => setDatesOpen(false)}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className="empty-toggle"
+                    onClick={() => setDatesOpen(true)}
+                  >
+                    Have dates and a party size? Add them
+                  </button>
+                )}
+              </>
             )}
-            <BookingStrip onSearch={send} initial={trip} />
-            <div className="chips-or">or explore</div>
-            <div className="chips">
-              {GUIDE_CHIPS.map((chip) => (
-                <button key={chip} className="chip" onClick={() => send(chip)}>
-                  {chip}
-                </button>
-              ))}
-            </div>
           </div>
         ) : (
           <div className="wrap">
@@ -386,7 +474,7 @@ export default function GuideChat() {
             <button
               type="button"
               className="restart"
-              title="Clear this conversation and reset the Living Atlas"
+              title="Clear this conversation and reset the map"
               onClick={startOver}
             >
               ↺ Start over
@@ -400,27 +488,37 @@ export default function GuideChat() {
             onCancel={() => setEditingTrip(false)}
             onSearch={(ask) => {
               setEditingTrip(false);
-              send(ask);
+              send(ask, "strip");
             }}
           />
         )}
+        {/* The textarea used to be disabled while a reply streamed, so a
+            traveler could not write down the next thought while reading the
+            current answer, and the only way out of a slow reply was the
+            destructive Start over. Typing is always allowed now; Send waits its
+            turn, and Stop ends the stream without costing anything. */}
         <div className="row">
           <textarea
             rows={1}
             placeholder="Ask The Guide…"
             value={input}
-            disabled={busy}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                send(input);
+                if (!busy) send(input);
               }
             }}
           />
-          <button className="send" disabled={busy || !input.trim()} onClick={() => send(input)}>
-            Send
-          </button>
+          {busy ? (
+            <button className="send send-stop" onClick={stop} title="Stop this reply">
+              Stop
+            </button>
+          ) : (
+            <button className="send" disabled={!input.trim()} onClick={() => send(input)}>
+              Send
+            </button>
+          )}
         </div>
       </div>
     </section>
@@ -435,13 +533,11 @@ function Message({
 }: {
   turn: Turn;
   turns: Turn[];
-  onPick: (text: string) => void;
+  onPick: (text: string, source: AskSource) => void;
   busy: boolean;
 }) {
   const isUser = turn.role === "user";
   const options = isUser ? [] : extractOptions(turn.content);
-  // Show the advisor handoff once a turn has surfaced inventory (cards or an
-  // Atlas deep link) — this is where the traveler hands the shortlist off.
   const hasResults =
     !isUser && !!turn.meta && (!!turn.meta.deepLink || shortlistNames(turn.meta).length > 0);
   return (
@@ -460,7 +556,7 @@ function Message({
                   type="button"
                   className="qr-chip"
                   disabled={busy}
-                  onClick={() => onPick(opt)}
+                  onClick={() => onPick(opt, "quickreply")}
                 >
                   {opt}
                 </button>
@@ -468,290 +564,38 @@ function Message({
             </div>
           </div>
         )}
-        {hasResults && turn.meta && (
-          <ChatMoves meta={turn.meta} turns={turns} busy={busy} />
-        )}
+        {hasResults && turn.meta && <ChatMoves meta={turn.meta} turns={turns} busy={busy} />}
       </div>
     </div>
   );
 }
 
-// The close-out of a results block. The primary move is a category-aware
-// hand-off: tapping it opens a light contact capture, then POSTs the qualified
-// brief + shortlist + transcript to /api/handoff so the advisor reaches the
-// traveler already knowing how to follow up. Email and phone stay as secondary
-// conveniences. Replaces the old four-button renderMoves().
-function ChatMoves({
-  meta,
-  turns,
-  busy,
-}: {
-  meta: GuideMeta;
-  turns: Turn[];
-  busy: boolean;
-}) {
-  const category = handoffCategory(meta);
-  const ctaLabel = HANDOFF_CTA[category] ?? HANDOFF_CTA.generic;
-
-  // "idle" → the CTA; "form" → contact capture; "sending"/"done"/"error".
-  const [phase, setPhase] = useState<"idle" | "form" | "sending" | "done" | "error">("idle");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
-  const [error, setError] = useState("");
-
-  const submit = async () => {
-    const cleanEmail = email.trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
-      setError("Please enter a valid email so the specialist can reach you.");
-      setPhase("form");
-      return;
-    }
-    setPhase("sending");
-    setError("");
-    try {
-      const res = await fetch("/api/handoff", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category,
-          action: ctaLabel,
-          brief: latestBrief(turns),
-          shortlist: shortlistNames(meta),
-          deepLink: meta.deepLink ?? null,
-          contact: { name: name.trim(), email: cleanEmail, phone: phone.trim() },
-          notes: notes.trim(),
-          transcript: transcript(turns),
-          pageUrl: typeof window !== "undefined" ? window.location.href : "",
-        }),
-      });
-      if (!res.ok) {
-        let msg = `Could not send (${res.status}).`;
-        try {
-          const j = await res.json();
-          if (j?.error) msg = j.error;
-        } catch {
-          /* non-JSON error body */
-        }
-        throw new Error(msg);
-      }
-      setPhase("done");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not send. Please try again.");
-      setPhase("error");
-    }
-  };
-
-  if (phase === "done") {
-    return (
-      <div className="moves-done">
-        <p>
-          Done — an Aspen Travel Advisors specialist is joining the conversation. They have your shortlist and
-          the details of what we discussed, and will be in touch at {email.trim()}. You can
-          keep exploring here in the meantime.
-        </p>
-      </div>
-    );
-  }
-
-  if (phase === "form" || phase === "sending" || phase === "error") {
-    const sending = phase === "sending";
-    return (
-      <div className="moves-capture">
-        <div className="mc-lead">Bring in an advisor</div>
-        <div className="mc-note">
-          An Aspen Travel Advisors specialist will pick up this conversation with your
-          shortlist in hand and reach out to take it from here.
-        </div>
-        <input
-          className="mc-field"
-          type="text"
-          placeholder="Name"
-          value={name}
-          disabled={sending}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          className="mc-field"
-          type="email"
-          inputMode="email"
-          placeholder="Email"
-          value={email}
-          disabled={sending}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="mc-field"
-          type="tel"
-          inputMode="tel"
-          placeholder="Phone (optional)"
-          value={phone}
-          disabled={sending}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <textarea
-          className="mc-field mc-notes"
-          rows={2}
-          placeholder="Anything you'd like the advisor to know? (optional)"
-          value={notes}
-          disabled={sending}
-          onChange={(e) => setNotes(e.target.value)}
-        />
-        {error && <div className="mc-error">{error}</div>}
-        <div className="mc-actions">
-          <button type="button" className="move move-primary" disabled={sending} onClick={submit}>
-            {sending ? "Sending…" : "Connect me with an advisor"}
-          </button>
-          <button
-            type="button"
-            className="move"
-            disabled={sending}
-            onClick={() => {
-              setPhase("idle");
-              setError("");
-            }}
-          >
-            Back
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+// The close-out of a results block.
+//
+// This used to render its own copy of the contact form inline, behind one of
+// six different button labels ("Prepare My Hotel Shortlist", "Find My Best
+// Expeditions", "Show My Best Yacht Options"…). Six grammars for one action
+// meant the most important control in the app was never twice the same, and a
+// second, near-identical implementation of the form lived in this file.
+//
+// Now: one label, every time, opening the one shared dialog. The category still
+// speaks — through HANDOFF_BLURB, in the explanation, where specificity helps
+// instead of costing recognition.
+function ChatMoves({ meta, turns, busy }: { meta: GuideMeta; turns: Turn[]; busy: boolean }) {
   return (
     <div className="moves">
       <button
         type="button"
         className="move move-primary"
         disabled={busy}
-        onClick={() => setPhase("form")}
+        onClick={() => openAdvisor({ source: "chat", context: buildAdvisorContext(turns, meta) })}
       >
-        {ctaLabel}
+        {ADVISOR_CTA}
       </button>
-      <span className="moves-hint">Brings an Aspen Travel Advisors specialist into the conversation</span>
+      <span className="moves-hint">{ADVISOR_SLA} Nothing is booked until you say so.</span>
     </div>
   );
 }
-
-// The top result names from a meta frame, carried to the advisor. Mirrors the
-// card collection order (latest tool first) without the per-brand card caps.
-function shortlistNames(meta: GuideMeta): string[] {
-  const names: string[] = [];
-  const seen = new Set<string>();
-  for (const tool of [...(meta.tools ?? [])].reverse()) {
-    for (const r of tool.results ?? []) {
-      const name = typeof r?.name === "string" ? r.name.trim() : "";
-      if (name && !seen.has(name)) {
-        seen.add(name);
-        names.push(name);
-      }
-    }
-  }
-  return names.slice(0, 5);
-}
-
-// A compact, plain-text rendering of the conversation for the email handoff:
-// control tags stripped, each turn labelled, capped so the mailto body stays
-// within what mail clients accept.
-function transcript(turns: Turn[]): string {
-  const lines = turns
-    .filter((t) => t.content && t.content.trim())
-    .map((t) => `${t.role === "user" ? "You" : "The Guide"}: ${stripControlTags(t.content)}`);
-  let out = lines.join("\n\n");
-  const CAP = 4000;
-  if (out.length > CAP) out = "…(earlier messages trimmed)…\n\n" + out.slice(out.length - CAP);
-  return out;
-}
-
-// Strip control tags ([[CHART:..]], [[OPTIONS:..]]) and any trailing partial
-// tag still mid-stream, so they never flash as raw text in the revealed reply.
-function stripControlTags(s: string): string {
-  return s
-    .replace(/\[\[CHART:\s*[a-z ]+\]\]/gi, "")
-    .replace(/\[\[OPTIONS:[^\]]*\]\]/gi, "")
-    .replace(/\[\[BRIEF:[^\]]*\]\]/gi, "")
-    .replace(/\n*\s*\[\[[^\]]*$/, "")
-    .trim();
-}
-
-// The qualified advisor brief, carried silently in a [[BRIEF: ...]] tag the
-// Guide emits once it has enough signal. It is the structured "how to follow
-// up" the human advisor receives, instead of re-reading the whole transcript.
-interface Brief {
-  destination?: string;
-  when?: string;
-  party?: string;
-  budget?: string;
-  style?: string;
-  considering?: string;
-}
-
-// Parse the latest [[BRIEF: dest=.. | when=.. | ...]] tag out of one message.
-function extractBrief(text: string): Brief | null {
-  const m = text.match(/\[\[BRIEF:\s*([^\]]+)\]\]/i);
-  if (!m) return null;
-  const kv: Record<string, string> = {};
-  for (const pair of m[1].split("|")) {
-    const i = pair.indexOf("=");
-    if (i < 0) continue;
-    const k = pair.slice(0, i).trim().toLowerCase();
-    const v = pair.slice(i + 1).trim();
-    if (v) kv[k] = v;
-  }
-  const brief: Brief = {
-    destination: kv.dest || kv.destination,
-    when: kv.when,
-    party: kv.party,
-    budget: kv.budget,
-    style: kv.style,
-    considering: kv.considering,
-  };
-  return Object.values(brief).some(Boolean) ? brief : null;
-}
-
-// The most recent brief across the whole conversation (the Guide re-emits an
-// updated tag as it learns more; the latest one wins).
-function latestBrief(turns: Turn[]): Brief {
-  for (let i = turns.length - 1; i >= 0; i--) {
-    if (turns[i].role !== "assistant") continue;
-    const b = extractBrief(turns[i].content);
-    if (b) return b;
-  }
-  return {};
-}
-
-// Which pillar the hand-off should speak to, derived from the inventory that
-// surfaced. Antarctica is split out from generic expedition cruising because
-// the ship-vs-destination decision there warrants its own framing.
-function handoffCategory(meta: GuideMeta): string {
-  const region = (meta.chartRegion || "").toLowerCase();
-  const tools = [...(meta.tools ?? [])].reverse();
-  const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
-  const type = (tool?.type || "").toLowerCase();
-  if (type === "hotel") return "hotel";
-  if (type === "jet") return "jet";
-  if (type === "yacht") return "yacht";
-  if (type === "worldcruise") return "worldcruise";
-  if (type === "train") return "train";
-  if (type === "villa") return "villa";
-  if (type === "cruise") return region === "antarctica" ? "antarctica" : "expedition";
-  return "generic";
-}
-
-// The category-aware primary call to action. The searching is done; this is the
-// "a specialist does the next layer" move, not "contact an advisor."
-const HANDOFF_CTA: Record<string, string> = {
-  hotel: "Prepare My Hotel Shortlist",
-  expedition: "Find My Best Expeditions",
-  antarctica: "Compare Antarctica Options",
-  jet: "Compare Private Jet Journeys",
-  yacht: "Show My Best Yacht Options",
-  worldcruise: "Compare World Cruises",
-  train: "Compare Rail Journeys",
-  villa: "Request This Villa Through Your Advisor",
-  generic: "Continue With A Specialist",
-};
 
 // Pull the [[OPTIONS: a | b | c]] tag (if any) into up to 4 quick-reply strings.
 function extractOptions(text: string): string[] {

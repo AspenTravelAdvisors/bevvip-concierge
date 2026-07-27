@@ -1,12 +1,15 @@
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
-import { internalAtlasLink } from "@/lib/atlas-config";
+import { collectionsSummary, internalAtlasLink } from "@/lib/atlas-config";
 
-// Base Camp landing: The Guide on the left, the Living Atlas globe on the right,
-// already populated (hotels + cruise/jet/yacht/world-cruise region pins) on
-// first paint — the same single-screen pairing as the standalone atlas. The
-// gutter between the two panes drags to trade space toward more chat or map.
+// The landing page: The Guide docked over a populated globe.
+//
+// The heading here used to read "Living Atlas" — a proper noun for the thing
+// the visitor was already looking at, which cost a decode step and returned
+// nothing. And the blurb beneath it named four collections while the header
+// offered seven and the legend showed however many had finished loading. All
+// three now read the same canonical list.
 export default function Home() {
   return (
     <HomeSplit
@@ -14,11 +17,16 @@ export default function Home() {
       atlas={
         <>
           <div className="home-atlas-head">
-            <h2>Living Atlas</h2>
+            <h2>The whole collection, mapped</h2>
             {/* One blurb, two lengths: phones swap in the short line via CSS. */}
             <p>
-              <span className="blurb-full">2,500 hotels where the VIP upgrade is already arranged. Expedition cruises. Private jets. Luxury hotel yachts. The entire world, mapped — spin it, zoom in, click. You were going anyway.</span>
-              <span className="blurb-short">2,500 VIP-upgrade hotels. Jets, yachts, expeditions — the world, mapped. You were going anyway.</span>
+              <span className="blurb-full">
+                {collectionsSummary()} — every one of them placed in the world. Spin it, zoom
+                in, click a pin to ask about it.
+              </span>
+              <span className="blurb-short">
+                Hotels, villas, expeditions, world cruises, rail, yachts and jets — mapped.
+              </span>
             </p>
           </div>
           <AtlasShell type="hotel" region={null} externalLink={internalAtlasLink("hotel")} scope="all" />

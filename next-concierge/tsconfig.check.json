@@ -1,0 +1,29 @@
+{
+  // Fast typecheck for the UI layer.
+  //
+  // `npx tsc` against the root config takes many minutes, because
+  // resolveJsonModule + allowJs makes TypeScript infer a literal type for
+  // data/villas-of-distinction.json (7.3 MB) and
+  // data/atlas/shared/itinerary-fit.json (7.1 MB), which several lib/*.js
+  // modules `require`. That is a pre-existing property of the repo, not
+  // something a UI change should have to pay for on every check.
+  //
+  // This config checks the components, hooks, routes and typed libs — where
+  // the UI work actually lives — and excludes the data-heavy JS modules and
+  // the API routes that pull them in. Use `npm run build` for the full check
+  // before deploying.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "tsBuildInfoFile": "./.next/check.tsbuildinfo"
+  },
+  "include": ["next-env.d.ts", "components/**/*.tsx", "lib/*.ts", "app/*.tsx", "app/atlas/**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "lib/villas.js",
+    "lib/search-offerings.js",
+    "lib/atlas/**",
+    "app/api/**"
+  ]
+}

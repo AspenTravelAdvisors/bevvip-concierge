@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import AdvisorRequest from "@/components/AdvisorRequest";
 import IntroTour from "@/components/IntroTour";
-import NavTabs from "@/components/NavTabs";
+import SiteNav from "@/components/SiteNav";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import "./globals.css";
 
@@ -49,6 +51,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preload" as="script" href={MAPBOX_JS} />
         <link rel="preload" as="style" href={MAPBOX_CSS} />
         <div className="app">
+          {/* The header used to open with five proper nouns — Expedition Bucket
+              List, Base Camp, The Guide, Aspen Travel Advisors — before saying
+              what any of it does. "Base Camp" and "Living Atlas" named things
+              the visitor was already looking at (an app, a map), so they cost a
+              decode step and returned nothing; they now live in prose only.
+              "The Guide" stays: it names an actor with a job, which is what
+              tells you to talk to it in sentences. */}
           <header className="site">
             <a
               className="mark"
@@ -59,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Expedition <b>Bucket List</b>
             </a>
             <span className="tag">
-              Base Camp · The Guide · By{" "}
+              Private travel, arranged by{" "}
               <a
                 className="byline"
                 href="https://aspentraveladvisors.com"
@@ -69,11 +78,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Aspen Travel Advisors
               </a>
             </span>
-            <NavTabs />
+            <SiteNav />
           </header>
           <main className="page">{children}</main>
+          {/* Mounted app-wide so the route to a human is available from every
+              page, including ones with no chat on them. */}
+          <AdvisorRequest />
           <IntroTour />
         </div>
+        <Analytics />
       </body>
     </html>
   );

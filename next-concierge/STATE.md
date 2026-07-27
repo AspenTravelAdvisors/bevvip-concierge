@@ -4,6 +4,62 @@ Running record of what is live in next-concierge (deployed at bevvip-concierge.v
 Vercel Root Directory = `next-concierge`). Update this file when an offering type,
 data source, or major surface ships.
 
+## UX pass — SHIPPED 2026-07-27
+
+Full rationale in `UX-AUDIT.md`; that file is the record of *why*, this is the
+record of *what*. Waves 1–4 of the audit shipped; item 9's target fix (one map)
+and item 16 (result-shape normalization) did not — see "Deliberately not done".
+
+**Load-bearing changes, in the order they matter:**
+
+1. **The advisor path is no longer gated behind a search.** The hand-off form
+   was extracted from GuideChat into `components/AdvisorRequest.tsx` — one
+   dialog, opened from anywhere via `openAdvisor({ source, context })`. It is in
+   the header on every page, in the chat session bar, and on every atlas route.
+   One label everywhere ("Send this to an advisor" / "Talk to an advisor" cold);
+   the six category-specific button labels became `HANDOFF_BLURB` supporting
+   copy in `lib/handoff.ts`. The form shows the traveler the brief being sent.
+2. **`lib/atlas-config.ts` is now the canonical collection list.** `COLLECTIONS`
+   (ordered, colored, counted) feeds the header menu, the map legend and the
+   home blurb, which previously disagreed — four collections named in the blurb,
+   seven in the nav, and however many had finished loading in the legend.
+3. **Nav rebuilt.** `NavTabs.tsx` + `GuideTab.tsx` deleted → `SiteNav.tsx`:
+   The Guide · Explore ▾ · Answers · How this works · **Talk to an advisor**.
+   (The old "The Guide" tab swallowed clicks on `/` to open the tour.)
+4. **The tour no longer auto-opens.** Opt-in from "How this works"; 7 slides → 4.
+5. **Booking tells the truth.** `bookingLink()` returns `label: "Search VIP
+   rates"` (was "Book VIP rate"), plus `stay` and `needsDates`. When no real
+   dates are captured, ResultCards asks for them inline instead of linking to a
+   silently-defaulted tomorrow-night search.
+6. **Persistence moved to localStorage.** `lib/conversation-store.ts` +
+   `lib/trip-state.ts`; conversations older than 45 min are offered back via a
+   resume prompt rather than silently restored. Start over clears both.
+7. **`lib/analytics.ts`** — Vercel Analytics + the lead funnel:
+   `ask_sent → results_returned → advisor_cta_clicked → advisor_request_sent`,
+   with `booking_clicked` as the parallel self-serve path. Nothing was measured
+   before this.
+8. **`components/AtlasFrame.tsx`** wraps all seven collection routes (both the
+   iframed Leaflet maps and the server-rendered villa browser) in one consistent
+   bar: breadcrumb, count, an "ask about this" box, advisor CTA.
+
+**Deliberately not done:**
+
+- **One map (audit item 9, target).** Base Camp still has three map products:
+  the Mapbox globe (`AtlasShell`), six iframed Leaflet apps under
+  `public/maps/*`, and `VillaAtlas`. AtlasFrame makes the *frame* consistent;
+  it does not unify the maps. This is a port and needs its own project. No
+  traffic yet = no redirect risk when it happens.
+- **Result-shape normalization (item 16).** `ResultCards.cardDate` /
+  `cardDuration` still juggle `dates | startDate | month | nights | days`
+  per collection. Fixing it properly means touching `lib/search-offerings.js`
+  across seven datasets with no test coverage; not worth the risk in a UX pass.
+
+**Verification status:** `npm run check` (new — fast tsc over the UI layer,
+`tsconfig.check.json`) passes clean. A full `npm run build` was NOT run — it
+takes many minutes because `resolveJsonModule` + `allowJs` makes tsc infer
+literal types for `villas-of-distinction.json` (7.3 MB) and
+`itinerary-fit.json` (7.1 MB). **Run `npm run build` locally before deploying.**
+
 ## Offering types (7)
 
 | Type | Surface | Data | Fulfillment |

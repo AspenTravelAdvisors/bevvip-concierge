@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType, TripState } from "@/lib/types";
 import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 import { bookingLink } from "@/lib/atlas/booking.js";
-import { getTrip, onTrip } from "@/lib/trip-state";
+import { getTrip, onTrip, setTrip as persistTrip } from "@/lib/trip-state";
+import { atlasOpened, bookingClicked } from "@/lib/analytics";
 
 // The shared trip drives the hotel booking CTAs: bookingLink prices the
 // captured dates and party (tomorrow-night default), and hotel atlas links
@@ -24,19 +25,33 @@ function useTrip(): TripState | null {
 // open search that surfaced several operators must show every brand, not just
 // whichever the last tool happened to fill the category bucket with.
 const GUIDE_CARD_LIMIT_PER_BRAND = 5;
-const GUIDE_CARD_LIMIT_TOTAL = 5;
+// Three, not five. Five cards plus a group CTA plus a per-card booking link
+// plus the advisor CTA gave every answer four competing next-actions; the eye
+// has to price all of them before it can act. Three examples and an honest
+// count of the rest reads faster and says more.
+const GUIDE_CARD_LIMIT_TOTAL = 3;
 
-// Rich inventory cards built from the Guide's meta frame. Cards now open the
-// matching atlas *inside Base Camp* (the /atlas/<type> route), carrying the same
-// region/ids the standalone deep link used so the embedded atlas focuses the
-// right records. The home-page Living Atlas still plots the same results live
-// alongside the chat.
+// Inventory cards built from the Guide's meta frame.
+//
+// The action hierarchy here is deliberate and is the whole point of the
+// component. Before, a single hotel answer offered: "Open in Atlas →" on each
+// card, "Book VIP rate →" on each card, "Open in the Atlas →" beneath the row,
+// and the advisor CTA below that — two of them worded almost identically and
+// meaning different things (one property vs. the whole shortlist). Now:
+//
+//   primary   — the advisor CTA (rendered by GuideChat's ChatMoves, below)
+//   secondary — the map: the card itself, and one group link scoped by count
+//   tertiary  — booking, hotels only, only once real dates exist
 export default function ResultCards({ meta }: { meta: GuideMeta }) {
   const cards = collectResultCards(meta);
   const trip = useTrip();
   const ctaHref = internalLeadLink(meta, trip);
+  const total = totalResults(meta);
+  const hidden = Math.max(0, total - cards.length);
 
   if (!cards.length && !ctaHref) return null;
+
+  const leadType = leadOfferingType(meta);
 
   return (
     <div>
@@ -52,15 +67,38 @@ export default function ResultCards({ meta }: { meta: GuideMeta }) {
           ))}
         </div>
       )}
-      {ctaHref && (
+      {/* One map link, worded by what it actually opens — and only when there
+          is something beyond the cards to see. When every result is already on
+          screen, the cards are the link. */}
+      {ctaHref && hidden > 0 && (
         <div>
-          <Link className="atlas-cta" href={ctaHref}>
-            Open in the Atlas →
+          <Link
+            className="atlas-cta"
+            href={ctaHref}
+            onClick={() => atlasOpened(leadType ?? "", "shortlist")}
+          >
+            See all {total} on the map →
           </Link>
         </div>
       )}
     </div>
   );
+}
+
+function totalResults(meta: GuideMeta): number {
+  const seen = new Set<string>();
+  for (const tool of meta.tools ?? []) {
+    for (const r of tool.results ?? []) {
+      seen.add(`${r.id ?? ""}|${r.name ?? ""}|${String(r.startDate ?? "")}`);
+    }
+  }
+  return seen.size;
+}
+
+function leadOfferingType(meta: GuideMeta): OfferingType | null {
+  const tools = [...(meta.tools ?? [])].reverse();
+  const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
+  return normalizeType(String(tool?.type ?? tool?.input?.type ?? ""));
 }
 
 function collectResultCards(meta: GuideMeta): Array<{ result: OfferingResult; type: OfferingType | null }> {
@@ -132,7 +170,9 @@ function Card({
       <span className="kicker">{String(kicker)}</span>
       <span className="name">{result.name || "Untitled"}</span>
       {where && <span className="where">{where}</span>}
-      <span className="open">Open in Atlas →</span>
+      {/* Was "Open in Atlas →", which sat one line above a group CTA reading
+          "Open in the Atlas →". Two near-identical labels, different scopes. */}
+      <span className="open">See on the map →</span>
     </>
   );
 
@@ -142,36 +182,159 @@ function Card({
   // the captured trip so the atlas's own booking CTA prices the same stay.
   const href = withTripQuery(internalCardLink(result, fallbackType), fallbackType, trip);
   const atlasLink = href ? (
-    <Link className="card-link" href={href}>
+    <Link
+      className="card-link"
+      href={href}
+      onClick={() => atlasOpened(String(fallbackType ?? ""), "card")}
+    >
       {body}
     </Link>
   ) : (
     <div className="card-link">{body}</div>
   );
 
-  // Booking affordance via the single seam (lib/atlas/booking.js), rendered as
-  // a sibling <a> inside the same card box so anchors never nest. Hotel cards
-  // get a TravelWits property search priced for the captured trip (tomorrow
-  // night when no dates yet); cruise/jet/yacht cards get the Virtuoso journey
-  // page, labeled "See more details" since it's not a rate quote (booking.js
-  // picks the label by result type).
-  const booking = bookingLink(result, trip);
   return (
     <div className="card">
       {atlasLink}
-      {booking && (
-        <a
-          className={`card-book${booking.kind === "deep" ? " deep" : ""}`}
-          href={booking.url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {booking.label} {booking.kind === "deep" ? "→" : "↗"}
-          {booking.note && <span className="card-book-note">{booking.note}</span>}
-        </a>
-      )}
+      <CardBooking result={result} trip={trip} type={fallbackType} />
     </div>
   );
+}
+
+/**
+ * The tertiary booking affordance, rendered as a sibling of the card's <a> so
+ * anchors never nest.
+ *
+ * The important behavior is the dateless case. `bookingLink` will happily build
+ * a TravelWits search using an invented tomorrow-night stay, which is how a
+ * traveler planning next spring ended up on a list priced for tonight. When
+ * `needsDates` is set we don't link at all — we ask, inline, and only then send
+ * them somewhere real. One extra step; every click lands on a true search.
+ */
+function CardBooking({
+  result,
+  trip,
+  type,
+}: {
+  result: OfferingResult;
+  trip: TripState | null;
+  type: OfferingType | null;
+}) {
+  const [asking, setAsking] = useState(false);
+  const booking = bookingLink(result, trip);
+  if (!booking) return null;
+
+  const kindClass = booking.kind === "deep" ? " deep" : "";
+
+  if (booking.kind === "deep" && booking.needsDates) {
+    return asking ? (
+      <BookingDates
+        result={result}
+        trip={trip}
+        onCancel={() => setAsking(false)}
+        onDone={() => setAsking(false)}
+      />
+    ) : (
+      <button type="button" className={`card-book${kindClass}`} onClick={() => setAsking(true)}>
+        {booking.label} →
+      </button>
+    );
+  }
+
+  const stay = booking.stay;
+  return (
+    <a
+      className={`card-book${kindClass}`}
+      href={booking.url}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() => bookingClicked(String(type ?? ""), !booking.needsDates)}
+    >
+      {booking.label} {booking.kind === "deep" ? "→" : "↗"}
+      {/* The dates being searched, said before the click rather than
+          discovered after it. */}
+      {stay && <span className="card-book-note">{formatStay(stay.checkIn, stay.checkOut)}</span>}
+    </a>
+  );
+}
+
+/** Two dates, inline, so the link that follows is priced for a real stay. */
+function BookingDates({
+  result,
+  trip,
+  onCancel,
+  onDone,
+}: {
+  result: OfferingResult;
+  trip: TripState | null;
+  onCancel: () => void;
+  onDone: () => void;
+}) {
+  const today = new Date().toISOString().slice(0, 10);
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const ready = !!checkIn && !!checkOut && checkOut > checkIn;
+
+  const go = () => {
+    if (!ready) return;
+    // Persist first: the trip is shared, so every other card's CTA lights up
+    // with the same dates the moment this one is answered.
+    const next = persistTrip(
+      {
+        destination: trip?.destination ?? (result.city as string) ?? null,
+        checkIn,
+        checkOut,
+        adults: trip?.adults ?? 2,
+        childrenAges: trip?.childrenAges ?? [],
+      },
+      "strip",
+    );
+    const link = bookingLink(result, next);
+    bookingClicked(String(result.type ?? ""), true);
+    if (link?.url) window.open(link.url, "_blank", "noopener,noreferrer");
+    onDone();
+  };
+
+  return (
+    <div className="card-dates">
+      <div className="cd-cap">Which nights?</div>
+      <div className="cd-row">
+        <input
+          type="date"
+          aria-label="Check-in"
+          min={today}
+          value={checkIn}
+          onChange={(e) => {
+            setCheckIn(e.target.value);
+            if (checkOut && e.target.value && checkOut <= e.target.value) setCheckOut("");
+          }}
+        />
+        <input
+          type="date"
+          aria-label="Check-out"
+          min={checkIn || today}
+          value={checkOut}
+          onChange={(e) => setCheckOut(e.target.value)}
+        />
+      </div>
+      <div className="cd-actions">
+        <button type="button" className="cd-go" disabled={!ready} onClick={go}>
+          Search rates
+        </button>
+        <button type="button" className="cd-cancel" onClick={onCancel}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function formatStay(checkIn: string, checkOut: string): string {
+  const fmt = (iso: string) => {
+    const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}` : iso;
+  };
+  return `${fmt(checkIn)} – ${fmt(checkOut)}`;
 }
 
 // Build the in-app atlas link for a result. Prefer the search string the

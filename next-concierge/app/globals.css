@@ -95,122 +95,6 @@ header.site .tag .byline:hover {
   color: var(--gold-light);
   text-decoration: none;
 }
-/* The tab row never truncates: whenever the seven tabs outgrow the space left
-   by the wordmark (landscape phones, tablets, half-width windows) the nav
-   scrolls sideways, scrollbar hidden. A mask fades the row out at an edge only
-   while tabs are actually hidden past it — NavTabs toggles data-fade-left /
-   data-fade-right on this wrapper — so the last visible tab clips mid-pill
-   into the fade: a deliberate "there's more this way" tease. */
-header.site .nav-wrap {
-  margin-left: auto;
-  min-width: 0;
-}
-header.site nav {
-  display: flex;
-  align-items: flex-end;
-  gap: 5px;
-  font-size: 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-  --fade-l: 0px;
-  --fade-r: 0px;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 var(--fade-l),
-    #000 calc(100% - var(--fade-r)),
-    transparent
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 var(--fade-l),
-    #000 calc(100% - var(--fade-r)),
-    transparent
-  );
-}
-header.site nav::-webkit-scrollbar {
-  display: none;
-}
-header.site .nav-wrap[data-fade-left="true"] nav {
-  --fade-l: 34px;
-}
-header.site .nav-wrap[data-fade-right="true"] nav {
-  --fade-r: 34px;
-}
-/* Top navigation rendered as a row of tabs: rounded-top, a 2px accent underline,
-   and a faint fill on hover / for the active tab. */
-header.site nav a {
-  flex: 0 0 auto;
-  color: var(--sub);
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  white-space: nowrap;
-  padding: 7px 11px 6px;
-  border: 1px solid transparent;
-  border-bottom: 2px solid transparent;
-  border-radius: 9px 9px 0 0;
-  scroll-snap-align: center;
-  transition: 0.15s;
-}
-header.site nav a:hover,
-header.site nav a[data-active="true"] {
-  color: var(--gold-light);
-  text-decoration: none;
-  background: var(--card);
-}
-/* The Guide — the active "home" tab. */
-header.site nav a.tab-guide {
-  color: var(--gold-light);
-  background: var(--card);
-  border-color: var(--line);
-  border-bottom-color: var(--gold);
-}
-/* The five Atlas tabs carry their map-legend color as text + accent underline. */
-header.site nav a.tab-color {
-  color: var(--tab);
-  border-bottom-color: var(--tab);
-}
-header.site nav a.tab-color:hover {
-  color: var(--gold-light);
-  background: var(--card);
-}
-/* On any touch screen — portrait or landscape — and in narrow windows, the
-   tabs become swipeable pills: comfortable rounded targets that read as a
-   scrollable row, clipping mid-pill under the edge fade. */
-@media (pointer: coarse), (max-width: 640px) {
-  header.site nav {
-    gap: 7px;
-    padding: 3px 2px;
-  }
-  header.site nav a {
-    display: inline-flex;
-    align-items: center;
-    /* 40px+ pills — close enough to the 44px touch-target guideline without
-       the wrapped header row growing a third line. */
-    min-height: 40px;
-    font-size: 11.5px;
-    letter-spacing: 0.4px;
-    padding: 8px 14px;
-    border-radius: 30px;
-    border: 1px solid var(--line);
-    background: var(--card);
-  }
-  header.site nav a.tab-guide {
-    border-color: var(--gold);
-  }
-  header.site nav a.tab-color {
-    box-shadow: inset 0 -2px 0 var(--tab);
-  }
-  /* The collection you're currently in wears its accent as the pill border. */
-  header.site nav a.tab-color[data-active="true"] {
-    border-color: var(--tab);
-    color: var(--gold-light);
-  }
-}
-
 main.page {
   flex: 1;
   display: flex;
@@ -253,11 +137,13 @@ main.page {
   margin: 0 auto 24px;
   max-width: 520px;
 }
-/* Progressive disclosure: the manifesto stays a single hook line; the rest
-   opens on request so the first screen leads with the interactive pieces. */
+/* The dates disclosure. This is deliberately the quietest control on the empty
+   state: a dashed underline, muted, below the example prompts. It used to be a
+   full where/when/who form sitting above them, which made the page read as a
+   hotel search engine and mis-routed anyone whose trip wasn't a hotel. */
 .empty-toggle {
   display: inline-block;
-  margin: -12px auto 24px;
+  margin: 18px auto 0;
   padding: 4px 2px;
   border: 0;
   border-bottom: 1px dashed var(--line);
@@ -273,10 +159,7 @@ main.page {
   color: var(--gold-light);
   border-bottom-color: var(--gold);
 }
-.empty p.empty-more {
-  margin-top: -12px;
-  font-size: 13.5px;
-}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -299,10 +182,10 @@ main.page {
   border-color: var(--gold-dim);
 }
 
-/* ── Booking strip — where/when/who capture ───────── */
+/* ── Booking strip — where/when/who capture (now a refinement, not the door) ── */
 .booking-strip {
   max-width: 560px;
-  margin: 0 auto 18px;
+  margin: 18px auto 0;
   text-align: left;
   border: 1px solid var(--line);
   background: var(--card);
@@ -462,14 +345,7 @@ main.page {
 .bs-cancel:hover {
   color: var(--sub);
 }
-.chips-or {
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 12px;
-}
+
 /* Folded trip-summary chip above the composer once a conversation exists. */
 .trip-chip {
   display: inline-flex;
@@ -857,77 +733,6 @@ main.page {
   letter-spacing: 0.2px;
 }
 
-/* contact capture — the light "where should we send these" step */
-.moves-capture {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 14px 0 2px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line-soft);
-}
-.mc-lead {
-  flex: 1 0 100%;
-  font-size: 13px;
-  color: var(--gold-light);
-  letter-spacing: 0.3px;
-  margin-bottom: 2px;
-}
-/* sub-line under the capture lead — spells out that this hands the
-   conversation to a real advisor, so the move never reads as just a form */
-.mc-note {
-  flex: 1 0 100%;
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--sub);
-  margin: -2px 0 4px;
-}
-/* the optional free-text the traveler can add for the advisor */
-.mc-notes {
-  flex: 1 0 100%;
-  resize: vertical;
-  min-height: 38px;
-  line-height: 1.4;
-}
-.mc-field {
-  flex: 1 1 160px;
-  min-width: 0;
-  border: 1px solid var(--line);
-  background: var(--user);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 9px 12px;
-  font-size: 13px;
-  font-family: var(--sans);
-}
-.mc-field:focus {
-  outline: none;
-  border-color: var(--gold-dim);
-}
-.mc-error {
-  flex: 1 0 100%;
-  font-size: 12px;
-  color: #e0a05a;
-}
-.mc-actions {
-  flex: 1 0 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 2px;
-}
-.moves-done {
-  margin: 14px 0 2px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line-soft);
-  font-size: 13px;
-  color: var(--gold-light);
-  line-height: 1.5;
-}
-.moves-done p {
-  margin: 0;
-}
-
 /* ── Composer ─────────────────────────────────────── */
 .composer {
   border-top: 1px solid var(--line);
@@ -1008,31 +813,7 @@ main.page {
   padding: 22px;
   gap: 16px;
 }
-.atlas-tabs {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  min-width: 0;
-}
-.atlas-tabs a {
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--sub);
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-size: 12.5px;
-  letter-spacing: 0.4px;
-}
-.atlas-tabs a:hover {
-  text-decoration: none;
-  border-color: var(--gold-dim);
-  color: var(--text);
-}
-.atlas-tabs a[data-active="true"] {
-  border-color: var(--gold);
-  color: var(--gold-light);
-  background: var(--user);
-}
+
 .atlas-head h1 {
   font-family: var(--serif);
   font-size: 30px;
@@ -1371,9 +1152,19 @@ main.page {
   max-width: 560px;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
 }
-/* Desktop reads the full blurb; the phone block below swaps in the short one. */
+/* Desktop reads the full blurb; phones swap in the short one. The swap rule
+   had gone missing, so .blurb-short was hidden everywhere and never shown —
+   phones were reading the long line. */
 .home-atlas-head .blurb-short {
   display: none;
+}
+@media (max-width: 640px) {
+  .home-atlas-head .blurb-full {
+    display: none;
+  }
+  .home-atlas-head .blurb-short {
+    display: inline;
+  }
 }
 
 /* ── Desktop/tablet: The Guide as a floating panel docked left ──────────────
@@ -1580,18 +1371,11 @@ main.page {
     line-height: 1.3;
   }
 
-  /* The pill row gets its own full-width line under the wordmark; the pill
-     styling itself lives in the (pointer: coarse) block above. */
-  header.site .nav-wrap {
+  /* The nav gets its own full-width line under the wordmark. */
+  .site-nav {
     width: 100%;
     margin-left: 0;
-  }
-  header.site nav {
-    padding: 3px 2px 8px;
-  }
-
-  .atlas-tabs::-webkit-scrollbar {
-    display: none;
+    padding: 2px 0 4px;
   }
 
   .transcript {
@@ -1683,19 +1467,9 @@ main.page {
     gap: 12px;
   }
 
-  .atlas-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
+  
 
-  .atlas-tabs a {
-    flex: 0 0 auto;
-    padding: 8px 11px;
-    font-size: 11.5px;
-  }
+  
 
   .atlas-head h1 {
     font-size: 25px;
@@ -1727,15 +1501,20 @@ main.page {
   }
 }
 
-/* ── Mobile redesign: atlas-first canvas + Guide bottom sheet ───────────────
-   Phones only. The Living Atlas owns the full stage — the map IS the home —
-   and The Guide rides over it as a bottom sheet with three detents, driven by
-   a class on .home (home--sheet-pill / -half / -full, set by HomeSplit):
-   parked off-screen behind the dock's "Ask The Guide" pill, half-height with
-   the map still visible (and animating) above, or nearly full for reading.
-   The atlas dock (pill + quick-start chips + plotted-result card strip) is the
-   idle home's only chrome. Desktop and tablet keep the side-by-side split
-   defined above; nothing here touches them. */
+/* ── Mobile: map canvas + Guide bottom sheet ────────────────────────────────
+   Phones only. The map fills the stage and The Guide rides over it as a bottom
+   sheet with three detents, driven by a class on .home (home--sheet-pill /
+   -half / -full, set by HomeSplit): parked off-screen behind the dock's "Ask
+   The Guide" pill, half-height with the map still visible above, or nearly
+   full for reading.
+
+   The sheet now OPENS at half rather than pill. The phone home used to load
+   map-first with the conversation dismissed, which is the wrong priority for a
+   product whose job is to get a described trip in front of an advisor — on a
+   390px screen the visitor should land already able to type. Every detent
+   change is reachable by tap (handle, "Full map ▾", the dock pill); the swipe
+   gestures remain for those who try them, but nothing depends on discovering
+   them. Desktop and tablet keep the side-by-side split defined above. */
 @media (max-width: 640px) {
   /* Pin the stage to the viewport so the map fills it edge to edge and the
      sheet / dock can anchor to the bottom. */
@@ -2898,4 +2677,615 @@ main.page {
   color: var(--sub);
   font-size: 14px;
   margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UX pass — 2026-07-27. See UX-AUDIT.md.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Header nav: one Explore menu + a persistent route to a human ──────────
+   Replaces a horizontally-scrolling row of eight tabs. The lead CTA is the
+   only gold-filled control in the header because it is the only one the
+   business needs clicked. */
+.site-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.nav-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--sub);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 8px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: 0.15s;
+}
+.nav-link:hover,
+.nav-link[data-active="true"] {
+  color: var(--gold-light);
+  background: var(--card);
+  text-decoration: none;
+}
+.nav-link[data-active="true"] {
+  border-color: var(--line);
+}
+.nav-caret {
+  font-size: 9px;
+  opacity: 0.8;
+}
+.nav-explore {
+  position: relative;
+}
+.nav-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 268px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+.nav-menu-cap {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 4px 8px 8px;
+}
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 8px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13.5px;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+}
+.nav-menu-item:hover,
+.nav-menu-item[data-active="true"] {
+  background: var(--card);
+  text-decoration: none;
+}
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.nav-menu-label {
+  flex: 1;
+}
+/* The count is the proof. It is also the reason the order is what it is. */
+.nav-menu-count {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.nav-menu-foot {
+  padding: 10px 8px 4px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.nav-cta {
+  flex: 0 0 auto;
+  margin-left: 4px;
+  padding: 8px 15px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.nav-cta:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+}
+/* On a phone the header is tight; "How this works" is the first thing to go. */
+@media (max-width: 720px) {
+  .nav-how {
+    display: none;
+  }
+}
+
+/* ── Advisor dialog — the conversion event ─────────────────────────────── */
+.adv-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(6, 6, 8, 0.72);
+  backdrop-filter: blur(3px);
+}
+.adv-dialog {
+  width: min(520px, 100%);
+  max-height: min(88dvh, 760px);
+  overflow-y: auto;
+  padding: 22px 24px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+.adv-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.adv-head h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text);
+}
+.adv-close {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: none;
+  color: var(--sub);
+  font-size: 13px;
+  cursor: pointer;
+}
+.adv-close:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
+.adv-note {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--sub);
+}
+.adv-note b {
+  color: var(--gold-light);
+  font-weight: 500;
+}
+/* What's going with the message. Their own words, shown back to them — this is
+   what turns a contact form into a hand-off. */
+.adv-brief {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--user);
+}
+.adv-brief-cap {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.adv-brief-row {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 2px 0;
+}
+.adv-brief-row span {
+  flex: 0 0 88px;
+  color: var(--muted);
+}
+.adv-brief-row b {
+  color: var(--text);
+  font-weight: 400;
+  min-width: 0;
+}
+.adv-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 9px;
+  padding: 10px 13px;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+.adv-field:focus {
+  outline: none;
+  border-color: var(--gold-dim);
+}
+.adv-row {
+  display: flex;
+  gap: 8px;
+}
+.adv-row .adv-field {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.adv-notes {
+  resize: vertical;
+  min-height: 42px;
+  line-height: 1.45;
+}
+.adv-error {
+  margin: 2px 0 8px;
+  font-size: 12.5px;
+  color: #e0a05a;
+}
+.adv-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.adv-submit {
+  flex: 1 1 auto;
+  padding: 12px 18px;
+  border: 1px solid var(--gold);
+  border-radius: 9px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+.adv-submit:hover:not(:disabled) {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+}
+.adv-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.adv-cancel {
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: none;
+  color: var(--sub);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.adv-cancel:hover:not(:disabled) {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
+.adv-done {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.adv-done b {
+  color: var(--gold-light);
+  font-weight: 500;
+}
+
+/* ── Resume prompt — a conversation that outlived the tab ──────────────── */
+.resume {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.resume p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--sub);
+}
+.resume p b {
+  color: var(--text);
+  font-weight: 400;
+}
+.resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.resume-yes {
+  padding: 9px 15px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.resume-yes:hover {
+  background: var(--gold-light);
+}
+.resume-no {
+  padding: 9px 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: none;
+  color: var(--sub);
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+}
+.resume-no:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
+
+/* ── Session bar: advisor route replaces the duplicate Start over ──────── */
+.gsb-advisor {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 20px;
+  background: var(--user);
+  color: var(--gold-light);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.gsb-advisor:hover {
+  background: var(--card-hover);
+  border-color: var(--gold);
+}
+
+/* ── Composer: Stop ends the stream without ending the conversation ────── */
+.send-stop {
+  background: var(--card) !important;
+  border-color: var(--line) !important;
+  color: var(--sub) !important;
+}
+.send-stop:hover {
+  border-color: var(--gold-dim) !important;
+  color: var(--gold-light) !important;
+}
+
+/* ── Card booking: ask for dates rather than inventing them ────────────── */
+button.card-book {
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+.card-dates {
+  padding: 10px 12px;
+  border-top: 1px solid var(--line-soft);
+  background: var(--user);
+}
+.cd-cap {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.cd-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.cd-row input {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 7px;
+  padding: 7px 9px;
+  font-size: 12.5px;
+  font-family: var(--sans);
+  color-scheme: dark;
+}
+.cd-row input:focus {
+  outline: none;
+  border-color: var(--gold-dim);
+}
+.cd-actions {
+  display: flex;
+  gap: 6px;
+}
+.cd-go {
+  padding: 7px 14px;
+  border: 1px solid var(--gold);
+  border-radius: 7px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cd-go:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.cd-cancel {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: none;
+  color: var(--sub);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+/* ── Map legend: every collection, always; pressed state carries meaning ── */
+.atlas-legend .lgi.pending {
+  opacity: 0.4;
+  cursor: default;
+}
+.atlas-legend .lgi.pending i {
+  animation: lg-pulse 1.4s ease-in-out infinite;
+}
+@keyframes lg-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+/* "Hidden" must be legible as a state, not just as dimmer text. */
+.atlas-legend .lgi.off span {
+  text-decoration: line-through;
+  text-decoration-color: var(--muted);
+}
+
+/* ── Atlas frame: the same chrome around three different map products ──── */
+.atlas-frame-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.afw-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding: 11px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.afw-where {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.afw-back {
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--sub);
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.afw-back:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+  text-decoration: none;
+}
+.afw-title {
+  min-width: 0;
+}
+.afw-title h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  color: var(--text);
+}
+.afw-title p {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.afw-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+/* The one thing the foreign UI inside the iframe cannot offer: a question. */
+.afw-ask {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.afw-ask input {
+  width: min(280px, 46vw);
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: var(--sans);
+}
+.afw-ask input:focus {
+  outline: none;
+  border-color: var(--gold-dim);
+}
+.afw-ask button {
+  padding: 9px 14px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+  background: var(--user);
+  color: var(--gold-light);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.afw-ask button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.afw-advisor {
+  padding: 9px 14px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.afw-advisor:hover {
+  background: var(--gold-light);
+}
+@media (max-width: 720px) {
+  .afw-bar {
+    padding: 9px 14px;
+  }
+  .afw-title h1 {
+    font-size: 18px;
+  }
+  .afw-title p,
+  .afw-ask {
+    display: none;
+  }
 }

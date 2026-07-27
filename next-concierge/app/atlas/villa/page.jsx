@@ -13,6 +13,7 @@ import {
   resolveLocation,
 } from "@/lib/villas.js";
 import VillaAtlas from "@/components/VillaAtlas";
+import AtlasFrame from "@/components/AtlasFrame";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -63,9 +64,13 @@ export default async function VillaAtlasPage({ searchParams }) {
     })),
   }));
 
+  // Villas is the third distinct map UI in this app (globe / iframed Leaflet /
+  // this). AtlasFrame is what makes arriving here feel like the same product.
   return (
-    <div className={`villa-atlas ${mono.variable}`}>
-      <VillaAtlas initial={initial} initialParams={params} taxonomy={taxonomy} />
-    </div>
+    <AtlasFrame type="villa">
+      <div className={`villa-atlas ${mono.variable}`}>
+        <VillaAtlas initial={initial} initialParams={params} taxonomy={taxonomy} />
+      </div>
+    </AtlasFrame>
   );
 }

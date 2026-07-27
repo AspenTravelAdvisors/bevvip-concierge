@@ -1,11 +1,16 @@
 // lib/trip-state.ts — shared trip state (BOOKING-SPEC §1).
-// One where/when/who object, persisted per browser session beside the Guide
-// transcript, readable by every surface that renders a booking CTA. No
-// component touches storage directly; this module owns read/write/subscribe.
+// One where/when/who object, persisted beside the Guide transcript and readable
+// by every surface that renders a booking CTA. No component touches storage
+// directly; this module owns read/write/subscribe.
+//
+// Storage is localStorage, matching lib/conversation-store: a traveler who
+// entered "March 14–21, two adults, kids 7 and 9" should not have to enter it
+// again because they closed a tab. Start over clears both together.
 
 import type { TripState } from "./types";
 
 const STORAGE_KEY = "bevvip.trip";
+const storage = () => window.localStorage;
 const EVENT = "bevvip:trip";
 
 const EMPTY: TripState = {
@@ -21,7 +26,7 @@ const EMPTY: TripState = {
 export function getTrip(): TripState | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const raw = storage().getItem(STORAGE_KEY);
     if (!raw) return null;
     return { ...EMPTY, ...(JSON.parse(raw) as Partial<TripState>) };
   } catch {
@@ -45,7 +50,7 @@ export function setTrip(
     updatedAt: new Date().toISOString(),
   };
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    storage().setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {
     /* storage unavailable: state still broadcast for this page's lifetime */
   }
@@ -56,7 +61,7 @@ export function setTrip(
 export function clearTrip(): void {
   if (typeof window === "undefined") return;
   try {
-    sessionStorage.removeItem(STORAGE_KEY);
+    storage().removeItem(STORAGE_KEY);
   } catch {
     /* nothing persisted to clear */
   }

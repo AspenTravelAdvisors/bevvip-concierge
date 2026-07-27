@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ATLASES, isOfferingType } from "@/lib/atlas-config";
+import AtlasFrame from "@/components/AtlasFrame";
 import AtlasView from "@/components/AtlasView";
 
 // In-app atlas view. Each of the five atlases now lives inside Base Camp as a
@@ -57,5 +58,13 @@ export default async function AtlasPage({
   // shows through the blur.
   const hero = qs.get("hero") === "1";
 
-  return <AtlasView label={ATLASES[type].label} src={src} hero={hero} />;
+  // Ambient hero embeds get the bare map — no chrome of ours to bleed through
+  // the lander's own headline.
+  if (hero) return <AtlasView label={ATLASES[type].label} src={src} hero />;
+
+  return (
+    <AtlasFrame type={type}>
+      <AtlasView label={ATLASES[type].label} src={src} />
+    </AtlasFrame>
+  );
 }

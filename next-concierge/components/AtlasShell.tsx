@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
-import { ATLASES, internalAtlasLink } from "@/lib/atlas-config";
+import { ATLASES, COLLECTIONS, internalAtlasLink } from "@/lib/atlas-config";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
@@ -118,15 +118,15 @@ const REGION_FALLBACK: Record<string, [number, number, number]> = {
   seychelles: [55.5, -4.6, 5], "northwest passage": [-95, 74, 2.8],
 };
 
-const LEGEND: { key: string; label: string; color: string }[] = [
-  { key: "hotel", label: "VIP Hotels", color: "#e6d488" },
-  { key: "cruise", label: OVERLAYS.cruise.label, color: OVERLAYS.cruise.color },
-  { key: "jet", label: OVERLAYS.jet.label, color: OVERLAYS.jet.color },
-  { key: "yacht", label: OVERLAYS.yacht.label, color: OVERLAYS.yacht.color },
-  { key: "worldcruise", label: OVERLAYS.worldcruise.label, color: OVERLAYS.worldcruise.color },
-  { key: "train", label: OVERLAYS.train.label, color: OVERLAYS.train.color },
-  { key: "villa", label: OVERLAYS.villa.label, color: OVERLAYS.villa.color },
-];
+// Derived from the canonical COLLECTIONS list rather than hand-maintained, so
+// the legend's order and colors can never drift from the header's Explore menu
+// or the home page's promise. (They had: the legend led with hotels, the nav
+// led with jets, and the blurb mentioned neither villas nor rail.)
+const LEGEND: { key: string; label: string; color: string }[] = COLLECTIONS.map((c) => ({
+  key: c.type,
+  label: c.type === "hotel" ? "VIP Hotels" : OVERLAYS[c.type as OverlayKey]?.label ?? c.nav,
+  color: c.color,
+}));
 
 // Selectable Mapbox basemaps surfaced via the style menu. Each carries its own
 // fog so the globe atmosphere stays in key with the basemap.
@@ -988,7 +988,10 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
   }
 
   const showFallback = !token || mapFailed;
-  const legendRows = LEGEND.filter((it) => loaded.has(it.key));
+  // Every collection, always — see the note on the legend below. On a
+  // single-category atlas route only that category is plotted, so the legend
+  // narrows to it; on the home globe it is the full canonical list.
+  const legendRows = scope === "all" ? LEGEND : LEGEND.filter((it) => it.key === type);
 
   return (
     <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
@@ -1067,21 +1070,34 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         </div>
       )}
 
+      {/* The legend used to render only the layers whose feed had finished
+          loading, so it described a different product on every page load —
+          five collections on a slow connection, seven on a fast one. It now
+          always lists all of them; the ones still in flight read as loading
+          rather than silently not existing. Caption was "Tap to hide", an
+          instruction used as a heading that named one direction of a toggle;
+          the pressed state carries that meaning now, for screen readers too. */}
       {!showFallback && legendRows.length > 0 && (
         <div className="atlas-legend">
-          <div className="lgcap">Tap to hide</div>
-          {legendRows.map((it) => (
-            <button
-              key={it.key}
-              type="button"
-              className={`lgi${hidden.has(it.key) ? " off" : ""}`}
-              onClick={() => toggleLayer(it.key)}
-              title={hidden.has(it.key) ? "Tap to show" : "Tap to hide"}
-            >
-              <i style={{ background: it.color }} />
-              <span>{it.label}</span>
-            </button>
-          ))}
+          <div className="lgcap">Collections</div>
+          {legendRows.map((it) => {
+            const pending = !loaded.has(it.key);
+            const off = hidden.has(it.key);
+            return (
+              <button
+                key={it.key}
+                type="button"
+                className={`lgi${off ? " off" : ""}${pending ? " pending" : ""}`}
+                aria-pressed={!off}
+                disabled={pending}
+                onClick={() => toggleLayer(it.key)}
+                title={pending ? "Still loading" : off ? "Show on the map" : "Hide from the map"}
+              >
+                <i style={{ background: it.color }} />
+                <span>{it.label}</span>
+              </button>
+            );
+          })}
         </div>
       )}
 

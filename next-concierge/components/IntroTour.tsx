@@ -1,26 +1,32 @@
 "use client";
 
-// Intro "Take a tour" overlay. A transparent, full-screen scrim that walks a
-// first-time traveler through the major parts of Base Camp in a few slides —
-// The Guide, the quick-start prompts, the Living Atlas, its controls, the
-// resize gutter and the header collections. Each slide spotlights the *real*
-// element behind the scrim (a highlight ring punched out of the dim) and floats
-// a caption card beside it; where that element is hidden (e.g. the gutter and
-// globe collapse on mobile) the slide gracefully falls back to a centered card.
+// Intro tour overlay. A transparent, full-screen scrim that spotlights the real
+// element behind it and floats a caption card beside it; where that element is
+// hidden at this breakpoint the slide falls back to a centered card.
 //
-// It opens itself once per browser (a localStorage flag), carries a Skip button
-// on every slide, and can be re-opened any time from the small "Tour" button it
-// parks in the corner — or by dispatching a "bevvip:start-tour" event.
+// IT NO LONGER OPENS ITSELF. It used to fire 700ms after first paint — seven
+// dimming slides teaching the chrome before the visitor had seen any value,
+// which converts curiosity into a dismissal reflex. It is now opt-in only, from
+// "How this works" in the header (or a "bevvip:start-tour" event). A tour is a
+// confession that the interface isn't self-evident; the fix for that is the
+// interface, and everything else in this pass is that fix.
+//
+// It also got shorter. The slide explaining the desktop resize gutter is gone:
+// a whole step of a guided tour spent on a layout preference almost nobody sets
+// is a step spent not explaining what the product does.
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-
-const SEEN_KEY = "bevvip.tour.seen";
+import { tourFinished } from "@/lib/analytics";
 
 type Placement = "auto" | "center";
 
 interface Slide {
   // CSS selector of the element to spotlight. Omitted → a centered slide.
   target?: string;
+  // A centered slide still describes *something*. `requires` names the element
+  // that has to be on the page for the slide to be worth showing — without it,
+  // opening the tour from /answers would narrate a map that isn't there.
+  requires?: string;
   // Preferred side for the caption card relative to the spotlight.
   placement?: Placement;
   badge: string;
@@ -30,48 +36,32 @@ interface Slide {
 
 const SLIDES: Slide[] = [
   {
-    badge: "Welcome",
-    title: "This is Base Camp",
-    body: "Your concierge for the world's most extraordinary journeys — approved hotels, expedition cruises, private jets and luxury hotel yachts, all in one place. Here's a 30-second tour of how it works.",
-    placement: "center",
+    target: ".home-chat .composer",
+    badge: "Asking",
+    title: "Describe the trip in your own words",
+    body: "A region, a season, an occasion, a hotel you already like — whatever you'd say to a person. You don't have to pick a category first; The Guide searches all seven and works out which ones fit.",
   },
   {
-    target: ".home-chat",
-    badge: "The Guide",
-    title: "Ask The Guide anything",
-    body: "Describe a region, a season, a hotel, or simply the kind of trip you're craving. The Guide frames the journey, searches the live collection and surfaces the right possibilities — conversationally.",
-  },
-  {
-    target: ".chips",
-    badge: "Quick start",
-    title: "Or start with a prompt",
-    body: "Not sure where to begin? Tap one of these starters. Each opens a real search — a hotel in a region, an expedition in a given month, two brands compared side by side — so you can see The Guide at work.",
-  },
-  {
-    // The atlas is the full-bleed stage now — a spotlight ring around the whole
+    // The map is the full-bleed stage — a spotlight ring around the whole
     // viewport reads as broken, so this slide centers over the open map.
-    badge: "Living Atlas",
-    title: "Watch it land on the globe",
-    body: "The Living Atlas maps the entire collection worldwide. As The Guide returns recommendations, they're plotted right onto the map behind this card — so every suggestion has a place in the world you can explore.",
+    badge: "The map",
+    title: "Answers land on the map",
+    body: "Everything The Guide finds is plotted on the globe behind this card, so each suggestion has a place in the world you can zoom into. Click any pin to ask about it.",
     placement: "center",
+    requires: ".atlas-map",
   },
   {
-    target: ".atlas-ctrls",
-    badge: "Map controls",
-    title: "Steer the view",
-    body: "Go fullscreen, switch the basemap between Dark, Satellite and Warm, or flip between the 3D globe and a flat 2D map. Tap any pin to open its full atlas in a new tab.",
+    target: ".nav-explore",
+    badge: "Browsing",
+    title: "Or browse the collection yourself",
+    body: "Hotels, villas, expedition sailings, world cruises, rail journeys, hotel yachts and private jets — each on its own map, if you'd rather look around than ask.",
+    placement: "auto",
   },
   {
-    target: ".home-gutter",
-    badge: "Your layout",
-    title: "Trade space as you like",
-    body: "Drag this divider to give more room to the conversation or more room to the map — whichever you're leaning into. Your preference is remembered for next time.",
-  },
-  {
-    target: "header.site nav",
-    badge: "Collections",
-    title: "Explore every collection",
-    body: "Jump straight into a full atlas — Hotels, Expeditions, Jets, Yachts, World Cruises or Rail Journeys. And once you've found contenders, The Guide can hand your shortlist to an Aspen Travel Advisors specialist to take it from here.",
+    target: ".nav-cta",
+    badge: "Advisors",
+    title: "A person finishes the job",
+    body: "Nothing here books itself. When you've found contenders — or if you'd rather just start with a human — this sends everything you've described to an Aspen Travel Advisors specialist, who replies within 24 hours.",
     placement: "auto",
   },
 ];
@@ -86,9 +76,9 @@ interface Rect {
 export default function IntroTour() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
-  // The slides actually shown this run: SLIDES minus any whose spotlight target
-  // isn't on screen at this breakpoint (e.g. the resize gutter, which is hidden
-  // on mobile — describing a control the traveler can't see only confuses).
+  // The slides actually shown this run: SLIDES minus any whose subject isn't on
+  // this page or at this breakpoint. Describing a control the traveler can't
+  // see only confuses.
   const [slides, setSlides] = useState<Slide[]>(SLIDES);
   const [rect, setRect] = useState<Rect | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -97,32 +87,8 @@ export default function IntroTour() {
   const slide = slides[step];
   const isLast = step === slides.length - 1;
 
-  // Open once per browser on first visit, plus on an explicit request.
-  useEffect(() => {
-    // Never auto-open inside an iframe: the marketing landers embed /atlas/*
-    // (and Base Camp itself) as dimmed hero backgrounds, where the welcome
-    // card would bleed through behind the lander's own headline.
-    if (window.self !== window.top) return;
-    // The slides spotlight home-page elements (.home-chat, .chips, the globe),
-    // so first-visit auto-open only makes sense on the home route.
-    if (window.location.pathname !== "/") return;
-    let seen = false;
-    try {
-      seen = window.localStorage.getItem(SEEN_KEY) === "1";
-    } catch {
-      /* storage blocked: treat as unseen, but never crash */
-    }
-    if (!seen) {
-      // Wait a beat so the chat + globe have painted and can be spotlighted.
-      const t = window.setTimeout(() => {
-        setSlides(computeVisibleSlides());
-        setStep(0);
-        setOpen(true);
-      }, 700);
-      return () => window.clearTimeout(t);
-    }
-  }, []);
-
+  // Opt-in only — "How this works" in the header, or any other surface that
+  // dispatches the event. There is deliberately no first-visit auto-open.
   useEffect(() => {
     function onStart() {
       setSlides(computeVisibleSlides());
@@ -133,18 +99,16 @@ export default function IntroTour() {
     return () => window.removeEventListener("bevvip:start-tour", onStart);
   }, []);
 
-  const markSeen = useCallback(() => {
-    try {
-      window.localStorage.setItem(SEEN_KEY, "1");
-    } catch {
-      /* best effort */
-    }
-  }, []);
+  // How far anyone actually gets is the only evidence that will tell us whether
+  // this should exist at all. Tracked through a ref so reporting it on close
+  // doesn't schedule a state update on a closing overlay.
+  const stepRef = useRef(0);
+  stepRef.current = step;
 
   const close = useCallback(() => {
     setOpen(false);
-    markSeen();
-  }, [markSeen]);
+    tourFinished(stepRef.current, slides.length);
+  }, [slides.length]);
 
   // Measure the spotlight target whenever the slide, window size or scroll
   // changes. A missing/zero-size target (hidden on this breakpoint) → centered.
@@ -271,8 +235,9 @@ export default function IntroTour() {
         className={`tour-card${rect ? "" : " centered"}`}
         style={cardPos ? { top: cardPos.top, left: cardPos.left } : undefined}
       >
+        {/* "Skip" made sense when the tour ambushed you. Opt-in, it's "Close". */}
         <button type="button" className="tour-skip" onClick={close}>
-          Skip
+          Close
         </button>
 
         <div className="tour-badge">{slide.badge}</div>
@@ -298,7 +263,7 @@ export default function IntroTour() {
               </button>
             )}
             <button type="button" className="tour-btn primary" onClick={next}>
-              {isLast ? "Get started" : "Next"}
+              {isLast ? "Done" : "Next"}
             </button>
           </div>
         </div>
@@ -314,6 +279,7 @@ export default function IntroTour() {
 // the traveler can't see.
 function computeVisibleSlides(): Slide[] {
   return SLIDES.filter((s) => {
+    if (s.requires && !document.querySelector(s.requires)) return false;
     if (!s.target) return true;
     const el = document.querySelector(s.target);
     if (!el) return false;

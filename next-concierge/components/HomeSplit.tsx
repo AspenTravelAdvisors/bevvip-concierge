@@ -38,7 +38,13 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   const [panelOpen, setPanelOpen] = useState(true);
 
   // Mobile chat-sheet detent.
-  const [sheet, setSheet] = useState<SheetState>("pill");
+  //
+  // Opens at "half", not "pill". The phone home used to load with the map at
+  // full height and the conversation parked off-screen behind a pill — a
+  // map-first stage for a product whose entire job is to get a described trip
+  // in front of an advisor. The globe is beautiful and it is not the thing
+  // being sold; on a 390px screen the visitor should land already able to type.
+  const [sheet, setSheet] = useState<SheetState>("half");
 
   const requestRefit = useCallback(() => {
     window.setTimeout(() => window.dispatchEvent(new Event("bevvip:atlas-refit")), 420);
@@ -59,12 +65,12 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
     }
   }, []);
 
-  // Starting the conversation over returns the phone stage to the idle,
-  // map-first home. Desktop keeps whatever panel state the traveler chose.
+  // Starting over returns the phone stage to the idle home — which is now the
+  // composer at half height, not the map with the chat dismissed.
   useEffect(() => {
     function onSession(e: Event) {
       const active = !!(e as CustomEvent<{ active?: boolean }>).detail?.active;
-      if (!active) setSheet("pill");
+      if (!active) setSheet("half");
     }
     window.addEventListener("bevvip:guide-session", onSession as EventListener);
     return () => window.removeEventListener("bevvip:guide-session", onSession as EventListener);
@@ -221,18 +227,22 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
             onTouchEnd={onHandleTouchEnd}
           >
             <span className="hch-grip" aria-hidden="true" />
+            {/* The label used to read "— swipe up", advertising a gesture as
+                the way in, when the whole handle has always been tappable too.
+                Naming the tap makes the sheet discoverable without teaching a
+                gesture first; the swipe still works for those who try it. */}
             <span className="hch-label">
               The <b>Guide</b>
-              {sheet === "full" ? " — swipe down" : " — swipe up"}
+              {sheet === "full" ? " — tap to shrink" : " — tap to expand"}
             </span>
           </button>
           <button
             type="button"
             className="hch-map"
-            aria-label="Back to the map"
+            aria-label="Hide the conversation and show the full map"
             onClick={() => setSheetAndRefit("pill")}
           >
-            Map ▾
+            Full map ▾
           </button>
         </div>
         {chat}

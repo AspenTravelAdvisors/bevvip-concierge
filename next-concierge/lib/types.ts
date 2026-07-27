@@ -73,3 +73,8 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
 }
+
+/** A transcript entry: the message plus whatever inventory that turn surfaced. */
+export interface GuideTurn extends ChatMessage {
+  meta?: GuideMeta;
+}

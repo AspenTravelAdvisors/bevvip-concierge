@@ -180,13 +180,47 @@ function hotelSearchLabel(hotel) {
     || String(hotel.region || "").trim();
 }
 
-// The booking affordance for a hotel card, or null when no booking UI should
-// render. Shape: { kind, url, label, external, note? }.
-//  - deep: TravelWits search of the property at VIP rates for the captured
-//    trip's dates and party (tomorrow-night default) → "Book VIP rate".
-//    Primary-worthy.
-//  - portal (deep unavailable): the gated VipTravelAi.com portal →
-//    "Check VIP rates". Secondary; honest about being a portal, not a rate page.
+/** Does this trip carry real, traveler-stated dates (vs. our default stay)? */
+export function hasRealDates(trip) {
+  return !!(
+    trip &&
+    isDay(trip.checkIn) &&
+    isDay(trip.checkOut) &&
+    trip.checkOut > trip.checkIn
+  );
+}
+
+// The booking affordance for a card, or null when no booking UI should render.
+// Shape: { kind, url, label, external, note?, needsDates?, stay? }.
+//
+//  - deep: a TravelWits search of the property at VIP rates. NOTE WHAT THIS IS:
+//    a search, priced for a specific stay — not a property page and not a
+//    confirmed rate. It was labeled "Book VIP rate", which promised a checkout
+//    the link cannot deliver, and when no dates had been captured it silently
+//    substituted a one-night stay checking in *tomorrow*. So a traveler reading
+//    about Kyoto next spring could click "Book" and land on a third-party list
+//    priced for tomorrow night. It now says what it does, and `needsDates` lets
+//    the UI collect real dates before sending anyone anywhere.
+//  - portal: the gated VipTravelAi.com portal. Honest about being a portal.
+//
+// The access code rides as `note` but must NOT be rendered inside the button:
+// on the CTA it reads as a barrier at the exact moment of intent. Show it after
+// the click, or as secondary text.
+/**
+ * @typedef {Object} BookingAffordance
+ * @property {"deep"|"portal"} kind
+ * @property {string} url
+ * @property {string} label
+ * @property {boolean} external
+ * @property {string} [note]          Access code — never render inside the CTA.
+ * @property {boolean} [needsDates]   True when `stay` is our default, not theirs.
+ * @property {{checkIn: string, checkOut: string}} [stay]
+ */
+/**
+ * @param {any} hotel
+ * @param {any} trip
+ * @returns {BookingAffordance | null}
+ */
 export function bookingLink(hotel, trip) {
   if (MODE === "off") return null;
 
@@ -212,7 +246,17 @@ export function bookingLink(hotel, trip) {
       ...occupancyFromTrip(trip),
     });
     if (url) {
-      return { kind: "deep", url, label: "Book VIP rate", external: true, ...(note ? { note } : {}) };
+      return {
+        kind: "deep",
+        url,
+        label: "Search VIP rates",
+        external: true,
+        stay,
+        // True when `stay` is our invented tomorrow-night default rather than
+        // dates the traveler gave us. The UI asks before it links out.
+        needsDates: !hasRealDates(trip),
+        ...(note ? { note } : {}),
+      };
     }
     // no TravelWits identity → fall through to the portal affordance
   }

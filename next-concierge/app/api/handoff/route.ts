@@ -38,6 +38,10 @@ interface HandoffBody {
   category?: string;
   // Human label of the button the traveler tapped, for the advisor's context.
   action?: string;
+  // Which surface the request came from: "chat" (a shortlist is attached),
+  // "header" (a cold ask with no search behind it — treat the note as the
+  // whole brief) or "atlas". Changes how an advisor should open the reply.
+  source?: string;
   brief?: Brief;
   // Curated shortlist names the traveler is looking at (from the result cards).
   shortlist?: string[];
@@ -79,6 +83,12 @@ function composeMessage(body: HandoffBody): string {
 
   lines.push(`New hand-off from Base Camp — ${cat}`);
   if (body.action) lines.push(`Traveler tapped: ${body.action}`);
+  if (body.source === "header") {
+    // A cold request: nobody searched, so there is no shortlist and the brief
+    // is mostly blank by design. Say so, rather than letting the advisor read
+    // six "(not yet stated)" lines as a broken integration.
+    lines.push("Cold request — asked for an advisor directly, before searching.");
+  }
   lines.push("");
 
   lines.push("— Qualified brief —");
@@ -161,6 +171,7 @@ export async function POST(req: Request) {
     notes: clip(body.notes, 1000),
     category: body.category ?? "generic",
     action: clip(body.action, 80),
+    source: clip(body.source, 20) || "chat",
     destination: clip(body.brief?.destination, 200),
     when: clip(body.brief?.when, 120),
     party: clip(body.brief?.party, 120),
