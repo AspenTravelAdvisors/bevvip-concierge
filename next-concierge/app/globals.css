@@ -2844,6 +2844,26 @@ main.page {
   .nav-how {
     display: none;
   }
+
+  /* The menu was anchored to the Explore button (right: 0) and given a 268px
+     floor. On a phone that button sits mid-row, so the panel's left edge landed
+     off-screen and the labels were clipped. Anchor it to the full-width nav row
+     instead: the button stops being the positioning context, the row becomes
+     it, and the panel spans the viewport with the same gutters as the header. */
+  .nav-explore {
+    position: static;
+  }
+  .site-nav {
+    position: relative;
+  }
+  .nav-menu {
+    left: 0;
+    right: 0;
+    min-width: 0;
+    max-height: calc(100dvh - 160px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
 
 /* ── Advisor dialog — the conversion event ─────────────────────────────── */
