@@ -225,36 +225,49 @@ function CardBooking({
   if (!booking) return null;
 
   const kindClass = booking.kind === "deep" ? " deep" : "";
+  // The access code, always shown alongside a link that leaves for TravelWits —
+  // as secondary text beneath the CTA, never inside the button (BOOKING-SPEC:
+  // on the CTA itself it reads as a barrier at the moment of intent).
+  const code = booking.note ? <span className="card-book-code">{booking.note}</span> : null;
 
   if (booking.kind === "deep" && booking.needsDates) {
     return asking ? (
-      <BookingDates
-        result={result}
-        trip={trip}
-        onCancel={() => setAsking(false)}
-        onDone={() => setAsking(false)}
-      />
+      <>
+        <BookingDates
+          result={result}
+          trip={trip}
+          onCancel={() => setAsking(false)}
+          onDone={() => setAsking(false)}
+        />
+        {code}
+      </>
     ) : (
-      <button type="button" className={`card-book${kindClass}`} onClick={() => setAsking(true)}>
-        {booking.label} →
-      </button>
+      <>
+        <button type="button" className={`card-book${kindClass}`} onClick={() => setAsking(true)}>
+          {booking.label} →
+        </button>
+        {code}
+      </>
     );
   }
 
   const stay = booking.stay;
   return (
-    <a
-      className={`card-book${kindClass}`}
-      href={booking.url}
-      target="_blank"
-      rel="noreferrer"
-      onClick={() => bookingClicked(String(type ?? ""), !booking.needsDates)}
-    >
-      {booking.label} {booking.kind === "deep" ? "→" : "↗"}
-      {/* The dates being searched, said before the click rather than
-          discovered after it. */}
-      {stay && <span className="card-book-note">{formatStay(stay.checkIn, stay.checkOut)}</span>}
-    </a>
+    <>
+      <a
+        className={`card-book${kindClass}`}
+        href={booking.url}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() => bookingClicked(String(type ?? ""), !booking.needsDates)}
+      >
+        {booking.label} {booking.kind === "deep" ? "→" : "↗"}
+        {/* The dates being searched, said before the click rather than
+            discovered after it. */}
+        {stay && <span className="card-book-note">{formatStay(stay.checkIn, stay.checkOut)}</span>}
+      </a>
+      {code}
+    </>
   );
 }
 

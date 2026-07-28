@@ -15,6 +15,12 @@ const MODE = process.env.NEXT_PUBLIC_BOOKING_MODE || "deep";
 
 const TW_BASE = "https://aspentraveladvisors.travelwits.com/";
 
+// The access code every TravelWits search asks for. Records carry it as
+// `bookPassword`, but the code is constant for the portal, so a record that
+// arrived without one must still send the traveler across with it — landing on
+// TravelWits without the code is a dead end. Never omit it on a TravelWits link.
+export const TW_ACCESS_CODE = "VIP";
+
 // The preferred VIP rate codes, sent on every search with exactMatch so results
 // price at the VIP rate. Constant across destinations (from the reference link).
 const TW_RATE_CODES = ["X2T", "VMC", "API", "BEL", "CDH", "L72", "RQ6", "SAC", "STP", "TLC"];
@@ -255,7 +261,10 @@ export function bookingLink(hotel, trip) {
         // True when `stay` is our invented tomorrow-night default rather than
         // dates the traveler gave us. The UI asks before it links out.
         needsDates: !hasRealDates(trip),
-        ...(note ? { note } : {}),
+        // Always present on a TravelWits link — fall back to the constant code
+        // when the record carries none, rather than sending someone to a portal
+        // that will ask for a code we never showed them.
+        note: `Access code: ${password || TW_ACCESS_CODE}`,
       };
     }
     // no TravelWits identity → fall through to the portal affordance

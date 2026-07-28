@@ -666,6 +666,15 @@ main.page {
   margin-left: 2px;
   font-weight: 400;
 }
+/* The TravelWits access code. Sits under the CTA, not inside it: the traveler
+   needs to carry it across, but on the button itself it reads as a gate. */
+.card-book-code {
+  display: block;
+  padding: 4px 4px 2px;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: var(--sub);
+}
 .atlas-cta {
   display: inline-flex;
   align-items: center;

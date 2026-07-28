@@ -661,7 +661,12 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           try { sessionStorage.setItem(PLOT_STORAGE_KEY, JSON.stringify(meta)); } catch { /* storage optional */ }
           stopSpin();
           const leadDeep = tools.find((t) => t.deepLink)?.deepLink || meta.deepLink || undefined;
-          setBadge({ n: features.length, total, deepLink: toInternalAtlasHref(leadDeep) ?? leadDeep });
+          // Only offer the link when it resolves to a real in-app atlas route
+          // (or an absolute external atlas). A bare /maps/<type> path is a
+          // static asset directory, not a page — linking it was a dead click.
+          const internal = toInternalAtlasHref(leadDeep);
+          const external = leadDeep && /^https?:\/\//i.test(leadDeep) ? leadDeep : undefined;
+          setBadge({ n: features.length, total, deepLink: internal ?? external });
           paintHotel(); // re-tint ambient field dimmer
           // Flip to Satellite to reveal the plotted results on the photoreal
           // basemap. The restyle's style.load repaints every layer and re-fits
@@ -1249,25 +1254,44 @@ function pointForResult(
   return [base[0] + Math.cos(ang) * 1.4, base[1] + Math.sin(ang) * 1.4];
 }
 
-// Translate an external atlas deep link (…vercel.app/?region=&ids=) into the
-// in-app atlas route (/atlas/<type>?…), preserving its query. Returns null when
-// the URL isn't one of our atlas bases (so callers can fall back).
-function toInternalAtlasHref(url?: string | null): string | null {
-  if (!url) return null;
-  let u: URL;
+// Translate an atlas deep link into the in-app atlas route (/atlas/<type>?…),
+// preserving its query. Returns null when the URL isn't one of our atlas bases
+// (so callers can fall back).
+//
+// Deep links are usually RELATIVE ("/maps/hotel?ids=h_001") because the atlas
+// bases default to relative paths; only an external deploy makes them absolute.
+// This used to call `new URL(url)` with no base, which throws on every relative
+// path — so it returned null for the common case and the badge's "all on the
+// atlas" link fell back to the raw /maps/<type> asset path, which the app does
+// not serve as a page. Parse against a placeholder base and match on origin
+// (external bases) or pathname (relative ones).
+const PLACEHOLDER_ORIGIN = "http://internal.atlas";
+
+function parseHref(raw: string): { origin: string | null; pathname: string; search: string } | null {
   try {
-    u = new URL(url);
+    const u = new URL(raw, PLACEHOLDER_ORIGIN);
+    const absolute = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw);
+    return { origin: absolute ? u.origin : null, pathname: u.pathname, search: u.search };
   } catch {
     return null;
   }
+}
+
+const trimSlashes = (s: string) => s.replace(/\/+$/, "") || "/";
+
+function toInternalAtlasHref(url?: string | null): string | null {
+  if (!url) return null;
+  // Already an in-app atlas route — nothing to translate.
+  if (/^\/atlas\//.test(url)) return url;
+  const u = parseHref(url);
+  if (!u) return null;
   for (const t of Object.keys(ATLASES) as OfferingType[]) {
-    let baseOrigin: string;
-    try {
-      baseOrigin = new URL(ATLASES[t].base).origin;
-    } catch {
-      continue;
-    }
-    if (u.origin === baseOrigin) return internalAtlasLink(t, u.search);
+    const b = parseHref(ATLASES[t].base);
+    if (!b) continue;
+    const match = b.origin
+      ? u.origin === b.origin
+      : u.origin === null && trimSlashes(u.pathname) === trimSlashes(b.pathname);
+    if (match) return internalAtlasLink(t, u.search);
   }
   return null;
 }

@@ -317,7 +317,7 @@
     <div class="row"><div class="lk">Address</div><div class="vl" id="d-addr">&mdash;</div></div>
     <div class="row"><div class="lk">Program</div><div class="vl" id="d-prog">&mdash;</div></div>
     <!-- money-maker CTA sits right under Address/Program so it never falls below the fold -->
-    <a class="book" id="d-book" href="#" target="_blank" rel="noopener">Book VIP upgrades online &rarr;</a>
+    <a class="book" id="d-book" href="#" target="_blank" rel="noopener">Search VIP rates &rarr;</a>
     <div class="pw" id="d-pw"></div>
     <div class="klabel" style="margin:18px 0 2px">VIP Upgrades</div>
     <ul class="ups" id="d-ups"></ul>
@@ -1369,13 +1369,20 @@ async function openDetail(f){
   // Deep link when the property has a TravelWits identity; otherwise the gated
   // portal (bookUrl) — honest labels for each, never a dead-end search form.
   let url=twHotelBookingUrl(p);
+  // "Search VIP rates", not "Book VIP rate": the link runs a TravelWits search
+  // priced at the VIP codes — it is not a checkout, so it must not promise one.
+  let linked=true;
   if(url){
-    book.href=url; book.textContent="Book VIP rate →"; book.style.display="";
+    book.href=url; book.textContent="Search VIP rates →"; book.style.display="";
   } else if(p.bookUrl){
     const portal=/^https?:\/\//i.test(p.bookUrl)?p.bookUrl:`https://${p.bookUrl}`;
     book.href=portal; book.textContent="Check VIP rates ↗"; book.style.display="";
-  } else book.style.display="none";
-  document.getElementById("d-pw").innerHTML = p.password ? `Access code: <b>${p.password}</b>` : "";
+  } else { book.style.display="none"; linked=false; }
+  // The access code rides on every link that leaves for TravelWits. Records
+  // without their own code still get the constant one — arriving at the portal
+  // without it is a dead end.
+  const code = p.password || (linked ? "VIP" : "");
+  document.getElementById("d-pw").innerHTML = code ? `Access code: <b>${code}</b>` : "";
   document.getElementById("panel").classList.add("open");
   // enlarge the selected pin, reset the previously selected one
   const sel=MARKERS.find(m=>m._feat===f);

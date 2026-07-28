@@ -153,6 +153,10 @@ function bookingLink(hotel, trip) {
   `label: "Check VIP rates"` and `note: hotel.bookPassword ? "access code: " + bookPassword : undefined`
   — honest about what the link is; surfaced only on the card's expanded/detail
   view, never as the primary CTA.
+  The access code is **never optional on a TravelWits link**: when a record
+  carries no `bookPassword`, the note falls back to the constant `TW_ACCESS_CODE`
+  ("VIP"). Sending someone to the portal without the code is a dead end, so
+  every surface that links out also prints "Access code: VIP" beside the CTA.
 - `deep` (Phase 2): builds the TravelWits per-property URL from the template
   below. Returns null (falling back to portal behavior) when the hotel has no
   TravelWits mapping or `trip` lacks dates — a "Book VIP rate" button must
@@ -175,8 +179,11 @@ export from TravelWits now, before the API work begins.
 
 ResultCards hotel cards read `getTrip()` + `bookingLink(hotel, trip)`:
 
-- link returned with mode `deep` → primary CTA **"Book VIP rate →"**
+- link returned with mode `deep` → primary CTA **"Search VIP rates →"**
   (external, new tab), subtitle "{checkIn}–{checkOut} · {party summary}".
+  It is a search priced at the VIP rate codes, not a checkout — "Book VIP rate"
+  promised a confirmation the link cannot deliver. The Hotel Atlas detail panel
+  uses the identical label for the identical link.
 - link returned with mode `portal` → secondary text link "Check VIP rates"
   + access-code note. Primary CTA stays "Open in Atlas" / "Ask The Guide".
 - null → no booking UI at all.
