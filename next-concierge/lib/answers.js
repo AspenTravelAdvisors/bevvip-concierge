@@ -75,7 +75,7 @@ export function breadcrumbJsonLd(a) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Base Camp", item: SITE_URL },
+      { "@type": "ListItem", position: 1, name: "Expedition Bucket List", item: SITE_URL },
       { "@type": "ListItem", position: 2, name: "Answers", item: `${SITE_URL}/answers` },
       { "@type": "ListItem", position: 3, name: a.question, item: `${SITE_URL}/answers/${a.slug}` },
     ],

@@ -23,7 +23,7 @@ const sans = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://basecamp.aspentraveladvisors.com"),
   title: {
-    default: "Base Camp · The Guide — Aspen Travel Advisors",
+    default: "Expedition Bucket List · The Guide — Aspen Travel Advisors",
     template: "%s — Aspen Travel Advisors",
   },
   description:
@@ -51,13 +51,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preload" as="script" href={MAPBOX_JS} />
         <link rel="preload" as="style" href={MAPBOX_CSS} />
         <div className="app">
-          {/* The header used to open with five proper nouns — Expedition Bucket
-              List, Base Camp, The Guide, Aspen Travel Advisors — before saying
-              what any of it does. "Base Camp" and "Living Atlas" named things
-              the visitor was already looking at (an app, a map), so they cost a
-              decode step and returned nothing; they now live in prose only.
-              "The Guide" stays: it names an actor with a job, which is what
-              tells you to talk to it in sentences. */}
+          {/* Three proper nouns, and no more: Expedition Bucket List (the
+              product), Aspen Travel Advisors (the agency standing behind it),
+              The Guide (the concierge). A name earns capitals when it names an
+              actor with a job — "The Guide" tells you to talk to it in
+              sentences. The old "Base Camp" and "Living Atlas" named things the
+              visitor was already looking at (an app, a map), so they cost a
+              decode step and returned nothing. The map is now "the atlas",
+              lowercase, everywhere. */}
           <header className="site">
             <a
               className="mark"

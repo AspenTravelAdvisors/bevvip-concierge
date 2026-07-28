@@ -1,5 +1,5 @@
 // Answer pages — expedition cruising. Content is a snapshot grounded in the
-// Living Atlas (data/atlas/cruise/sailings.json + ships.json); counts cited
+// atlas (data/atlas/cruise/sailings.json + ships.json); counts cited
 // in copy were computed from those files on the `updated` date. When the
 // sailing data is refreshed, re-run the counts and bump `updated`.
 
@@ -16,7 +16,7 @@ export const expeditionAnswers = [
     updated: UPDATED,
     answer: [
       "For a first Antarctica trip, book a classic 10–12 day Antarctic Peninsula expedition on a ship carrying 200 guests or fewer, in December or January, with an operator whose expedition team — not just the ship — is the product: Lindblad–National Geographic, Quark, or Aurora for the adventure-forward version; Silversea, Seabourn or Ponant if you want the polar day to end with a butler and a proper wine list.",
-      "Skip the longer South Georgia + Falklands combinations the first time (magnificent, but 18–23 days), and decide early on the one question that shapes everything else: sail the Drake Passage both ways, or fly over it from Punta Arenas and board in Antarctica. The Base Camp Living Atlas currently tracks 555 Antarctic departures across eight expedition lines, so there is almost always a sailing that fits your dates.",
+      "Skip the longer South Georgia + Falklands combinations the first time (magnificent, but 18–23 days), and decide early on the one question that shapes everything else: sail the Drake Passage both ways, or fly over it from Punta Arenas and board in Antarctica. The Expedition Bucket List atlas currently tracks 555 Antarctic departures across eight expedition lines, so there is almost always a sailing that fits your dates.",
     ],
     sections: [
       {
@@ -31,7 +31,7 @@ export const expeditionAnswers = [
         h2: "Which line fits which first-timer",
         table: {
           caption:
-            "Antarctic departures tracked in the Base Camp Living Atlas, July 2026 snapshot",
+            "Antarctic departures tracked in our atlas, July 2026 snapshot",
           columns: ["Operator", "Antarctic sailings tracked", "Best first-timer fit"],
           rows: [
             ["Lindblad–National Geographic", "104", "Learning-first travelers; photo instruction on every sailing"],
@@ -78,7 +78,7 @@ export const expeditionAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/cruise", label: "Browse all 555 Antarctic sailings in the Expedition Atlas" },
+      { href: "/atlas/cruise", label: "Browse all 555 Antarctic sailings in the expedition atlas" },
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "Which expedition ships have the highest guide ratio?" },
       { href: "/answers/smallest-luxury-expedition-ships", label: "Smallest luxury expedition ships — why under 200 guests matters" },
       { href: "/answers/antarctica-kayaking-camping-submersibles", label: "Which Antarctica cruises let you kayak, camp, or dive in a submersible?" },
@@ -213,7 +213,7 @@ export const expeditionAnswers = [
     related: [
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/answers/best-arctic-expedition-svalbard-greenland-northwest-passage", label: "Svalbard vs. Greenland vs. Northwest Passage" },
-      { href: "/atlas/cruise", label: "Find a photography-season sailing in the Atlas" },
+      { href: "/atlas/cruise", label: "Find a photography-season sailing in the atlas" },
     ],
   },
 
@@ -285,7 +285,7 @@ export const expeditionAnswers = [
     related: [
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "Which ships carry the deepest expedition teams" },
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
-      { href: "/atlas/cruise", label: "Expedition Atlas — every tracked sailing" },
+      { href: "/atlas/cruise", label: "Expedition atlas — every tracked sailing" },
     ],
   },
 
@@ -305,10 +305,10 @@ export const expeditionAnswers = [
       {
         h2: "Side by side",
         table: {
-          caption: "Fleet figures from operator materials; sailing counts from the Base Camp Living Atlas, July 2026 (3,542 tracked expedition departures).",
+          caption: "Fleet figures from operator materials; sailing counts from our atlas, July 2026 (3,542 tracked expedition departures).",
           columns: ["", "Lindblad–Nat Geo", "Ponant", "Silversea Expeditions"],
           rows: [
-            ["Sailings tracked in our Atlas", "1,194", "588", "177"],
+            ["Sailings tracked in our atlas", "1,194", "588", "177"],
             ["Signature ships", "NG Endurance / Resolution (138)", "Le Commandant Charcot (245, PC2)", "Silver Endeavour (~200 polar)"],
             ["Expedition team", "~16 incl. photo instructor, undersea team", "~12–16", "~19–22"],
             ["Onboard culture", "University afloat — lectures, labs, science partners", "French maison — gastronomy, design, Blue Eye lounge", "All-suite, butler service, formal-optional"],
@@ -353,7 +353,7 @@ export const expeditionAnswers = [
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/answers/galapagos-lindblad-vs-silversea-vs-aqua", label: "Galápagos: Lindblad vs. Silversea vs. Aqua" },
       { href: "/answers/luxury-vs-classic-expedition-cruising", label: "Is luxury expedition 'real' expedition cruising?" },
-      { href: "/atlas/cruise", label: "Compare their sailings in the Expedition Atlas" },
+      { href: "/atlas/cruise", label: "Compare their sailings in the expedition atlas" },
     ],
   },
 
@@ -366,7 +366,7 @@ export const expeditionAnswers = [
       "Choosing a luxury Galápagos operator: Lindblad's three-ship program, Silversea's Silver Origin, and Aqua Mare's 16-guest superyacht — itineraries, guide ratios, and who each suits.",
     updated: UPDATED,
     answer: [
-      "The Galápagos choice is really a size choice. Lindblad–National Geographic runs the deepest program in the islands (635 departures tracked in our Atlas across ships of 48 and 96 guests) with the strongest naturalist bench and family programming. Silversea's Silver Origin (100 guests) is the plushest purpose-built ship in the archipelago — butlers, a 1:10 guide ratio, Ecuadorian fine dining. Aqua Expeditions' Aqua Mare takes 16 guests on a genuine superyacht: the closest thing to a private Galápagos.",
+      "The Galápagos choice is really a size choice. Lindblad–National Geographic runs the deepest program in the islands (635 departures tracked in our atlas across ships of 48 and 96 guests) with the strongest naturalist bench and family programming. Silversea's Silver Origin (100 guests) is the plushest purpose-built ship in the archipelago — butlers, a 1:10 guide ratio, Ecuadorian fine dining. Aqua Expeditions' Aqua Mare takes 16 guests on a genuine superyacht: the closest thing to a private Galápagos.",
       "Wildlife access is effectively identical — the national park assigns every vessel fixed itineraries and licensed naturalists, and the animals are equally indifferent to everyone. You're choosing the vessel you return to at lunch, not the islands you see.",
     ],
     sections: [
@@ -379,7 +379,7 @@ export const expeditionAnswers = [
       {
         h2: "Side by side",
         table: {
-          caption: "Sailing counts from the Base Camp Living Atlas, July 2026 (1,084 Galápagos departures tracked).",
+          caption: "Sailing counts from our atlas, July 2026 (1,084 Galápagos departures tracked).",
           columns: ["", "Lindblad–Nat Geo", "Silversea (Silver Origin)", "Aqua (Aqua Mare)"],
           rows: [
             ["Departures tracked", "635", "108", "202 (all Aqua ships)"],
@@ -415,7 +415,7 @@ export const expeditionAnswers = [
     related: [
       { href: "/answers/ponant-vs-lindblad-vs-silversea-expeditions", label: "Ponant vs. Lindblad vs. Silversea overall" },
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "Guide ratios across the expedition fleet" },
-      { href: "/atlas/cruise", label: "All 1,084 Galápagos sailings in the Atlas" },
+      { href: "/atlas/cruise", label: "All 1,084 Galápagos sailings in the atlas" },
     ],
   },
 
@@ -429,7 +429,7 @@ export const expeditionAnswers = [
     updated: UPDATED,
     answer: [
       "Book Svalbard first. It concentrates the most Arctic per day — polar bears hunting on pack ice, walrus haul-outs, bird cliffs, glacier fronts — into a 7–10 day circumnavigation from an easy gateway (Longyearbyen, three hours from Oslo). Greenland is the scenery trip: the biggest fjords, icebergs and Inuit settlements, best as a 9–14 day west-coast or east-coast run. The Northwest Passage is the expedition-of-a-lifetime tier: 17–24 days of genuine route-finding through Canadian High Arctic history, for travelers who've already done a polar trip and want the real thing.",
-      "The Base Camp Living Atlas currently tracks 416 Arctic-region departures, with the season compressed into roughly May–September — Svalbard bears peak June–July, Greenland light peaks August, and the Passage runs late August–September when the ice opens.",
+      "Our atlas currently tracks 416 Arctic-region departures, with the season compressed into roughly May–September — Svalbard bears peak June–July, Greenland light peaks August, and the Passage runs late August–September when the ice opens.",
     ],
     sections: [
       {
@@ -477,7 +477,7 @@ export const expeditionAnswers = [
     related: [
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/answers/best-expedition-cruises-for-photographers", label: "Best expedition cruises for photographers" },
-      { href: "/atlas/cruise", label: "416 Arctic sailings in the Expedition Atlas" },
+      { href: "/atlas/cruise", label: "416 Arctic sailings in the expedition atlas" },
     ],
   },
 
@@ -537,7 +537,7 @@ export const expeditionAnswers = [
     related: [
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "The teams that run these programs — guide ratios compared" },
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
-      { href: "/atlas/cruise", label: "Find sailings with the add-ons in the Atlas" },
+      { href: "/atlas/cruise", label: "Find sailings with the add-ons in the atlas" },
     ],
   },
 
@@ -603,7 +603,7 @@ export const expeditionAnswers = [
     related: [
       { href: "/answers/ponant-vs-lindblad-vs-silversea-expeditions", label: "Ponant vs. Lindblad vs. Silversea head-to-head" },
       { href: "/answers/antarctica-kayaking-camping-submersibles", label: "Who offers kayaking, camping and submersibles" },
-      { href: "/atlas/cruise", label: "Compare both tiers in the Expedition Atlas" },
+      { href: "/atlas/cruise", label: "Compare both tiers in the expedition atlas" },
     ],
   },
 ];

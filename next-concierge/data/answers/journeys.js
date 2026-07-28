@@ -14,7 +14,7 @@ export const journeyAnswers = [
       "How travel advisors are paid, when they cost nothing extra, when fees apply, and the benefit math at 2,500 luxury hotels — an honest answer to the most-asked question in luxury travel.",
     updated: UPDATED,
     answer: [
-      "For luxury hotels, cruises and villas: no — in most cases you pay the same published rate you'd find yourself, the supplier pays the advisor a commission from its marketing budget, and the advisor's programs add benefits on top. At the 2,501 hotels in our Atlas, an advisor booking layers upgrade priority, daily breakfast, and property credits (typically $100+) onto the hotel's own flexible rate — value the DIY booking simply doesn't receive. On expedition cruises and villas the rate parity works the same way.",
+      "For luxury hotels, cruises and villas: no — in most cases you pay the same published rate you'd find yourself, the supplier pays the advisor a commission from its marketing budget, and the advisor's programs add benefits on top. At the 2,501 hotels in our atlas, an advisor booking layers upgrade priority, daily breakfast, and property credits (typically $100+) onto the hotel's own flexible rate — value the DIY booking simply doesn't receive. On expedition cruises and villas the rate parity works the same way.",
       "Where fees do exist, they're for labor, not access: many advisors (ours included) charge planning fees for complex multi-stop itineraries, air-ticketing, or bespoke trip design — disclosed up front, often credited against the trip. The scenario where DIY genuinely wins is narrow: prepaid nonrefundable discount rates, points redemptions, and opaque-channel gambles, all of which trade away flexibility, benefits, or certainty.",
     ],
     sections: [
@@ -60,8 +60,8 @@ export const journeyAnswers = [
         a: "The incentive exists; program economics are fairly flat across luxury brands, which blunts it. The real protection is an advisor whose model is repeat clients — a bad recommendation costs them your next decade, not one commission.",
       },
       {
-        q: "What does Base Camp's advisor relationship look like?",
-        a: "The Guide (our AI concierge) helps you explore the Atlas — 2,501 hotels, 3,542 expedition sailings, 3,902 villas — and a human advisor takes over for pricing, program benefits, and the booking itself. Ask The Guide anything; it will tell you when a human should take the wheel.",
+        q: "How does the advisor relationship work?",
+        a: "The Guide (our AI concierge) helps you explore the atlas — 2,501 hotels, 3,542 expedition sailings, 3,902 villas — and a human advisor takes over for pricing, program benefits, and the booking itself. Ask The Guide anything; it will tell you when a human should take the wheel.",
       },
     ],
     related: [
@@ -80,14 +80,14 @@ export const journeyAnswers = [
       "The 250 world cruise and grand voyage departures we track across 13 lines — Regent, Silversea, Seabourn, Crystal, Oceania, Viking, Cunard and more — with realistic pricing and the 12–24 month booking reality.",
     updated: UPDATED,
     answer: [
-      "Our Voyage Atlas currently tracks 250 world cruises and grand voyages across 13 lines — Oceania, Azamara, Regent, Viking, Crystal, Silversea, Seabourn, Holland America, Princess, Explora, Cunard, Windstar and Lindblad. Full circumnavigations run roughly 110–180 days (the current longest in our data: Oceania Vista's 245-day Epic Global Adventure); most lines also sell them in 15–60 day segments, which is how the majority of guests actually experience them.",
+      "Our world-cruise atlas currently tracks 250 world cruises and grand voyages across 13 lines — Oceania, Azamara, Regent, Viking, Crystal, Silversea, Seabourn, Holland America, Princess, Explora, Cunard, Windstar and Lindblad. Full circumnavigations run roughly 110–180 days (the current longest in our data: Oceania Vista's 245-day Epic Global Adventure); most lines also sell them in 15–60 day segments, which is how the majority of guests actually experience them.",
       "Money, honestly: entry-level full world cruises start around $40,000–$60,000 per person (Princess, Holland America, mainstream Cunard cabins); the premium tier (Oceania, Viking, Azamara) runs roughly $60,000–$100,000; and the luxury all-inclusives (Regent, Silversea, Seabourn, Crystal, Explora) begin near $100,000 and climb past $400,000 in top suites. Book 12–24 months out — the best cabins on marquee sailings sell on opening day, with past-guest waitlists ahead of you.",
     ],
     sections: [
       {
         h2: "Which line fits which circumnavigator",
         table: {
-          caption: "From the 250 departures in the Base Camp Voyage Atlas, July 2026.",
+          caption: "From the 250 world-cruise departures in our atlas, July 2026.",
           columns: ["Tier", "Lines", "Who it's for"],
           rows: [
             ["Luxury all-inclusive", "Regent, Silversea, Seabourn, Crystal, Explora", "Everything-in fares (air, excursions, gratuities on some); suite living for four months"],
@@ -123,7 +123,7 @@ export const journeyAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/worldcruise", label: "Browse all 250 voyages in the Voyage Atlas" },
+      { href: "/atlas/worldcruise", label: "Browse all 250 voyages in the world-cruise atlas" },
       { href: "/answers/luxury-vs-classic-expedition-cruising", label: "Prefer landings to sea days? Expedition cruising compared" },
       { href: "/answers/do-travel-advisors-cost-more", label: "Why world cruises are the most advisor-shaped purchase in travel" },
     ],
@@ -139,7 +139,7 @@ export const journeyAnswers = [
     updated: UPDATED,
     answer: [
       "The canon, ranked by how often they reward the fare: the Venice Simplon-Orient-Express (Belmond) remains the definitive one-night masterpiece — Paris/London to Venice in 1920s carriages, the single best first luxury train; La Dolce Vita Orient Express is the new Italian counterpoint, running Rome-based loops in midcentury-modern style; Belmond's Royal Scotsman (Highlands, whisky, 40 guests) and Andean Explorer (Cusco–Titicaca–Arequipa, the highest luxury sleeper on earth) own their landscapes; and Rocky Mountaineer (daylight-only, hotel nights) is the right answer for the Canadian Rockies and travelers who want scenery without sleeping on rails.",
-      "Our Rail Atlas tracks 135 luxury rail journeys and rail-centered itineraries worldwide — including Japan by rail (where the ultra-exclusive Seven Stars and Shiki-shima run by ballot), the Alps by Glacier Express Excellence Class, and multi-country itineraries that thread trains into a larger trip, which is how we most often deploy them.",
+      "Our rail atlas tracks 135 luxury rail journeys and rail-centered itineraries worldwide — including Japan by rail (where the ultra-exclusive Seven Stars and Shiki-shima run by ballot), the Alps by Glacier Express Excellence Class, and multi-country itineraries that thread trains into a larger trip, which is how we most often deploy them.",
     ],
     sections: [
       {
@@ -180,7 +180,7 @@ export const journeyAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/train", label: "All 135 rail journeys in the Rail Atlas" },
+      { href: "/atlas/train", label: "All 135 rail journeys in the rail atlas" },
       { href: "/answers/world-cruises-compared", label: "The sea-going equivalent: world cruises compared" },
     ],
   },
@@ -194,7 +194,7 @@ export const journeyAnswers = [
       "Private crewed charter vs. the new hotel-brand yachts — Four Seasons Yachts, Ritz-Carlton Yacht Collection, Aman at sea, Orient Express Corinthian — costs, control and which fits your group.",
     updated: UPDATED,
     answer: [
-      "Book the yacht cruise when you want yacht life without yacht responsibility: the hotel-brand fleet — Ritz-Carlton Yacht Collection, Four Seasons Yachts, Orient Express's Corinthian, and Aman's forthcoming Amanclipper era — sells suite-level cabins from roughly $1,500–$4,000 per night for two, with restaurants, spas, marinas off the stern and zero decisions required. Our Yacht Atlas tracks 374 sailings across these four brands. Charter privately when the group is the point: a crewed 6-cabin yacht for 8–12 guests runs about $150,000–$400,000+ per week plus roughly 30–35% for fuel, food, dockage and gratuity (the APA) — which per-person, per-night lands surprisingly close to two top suites on a brand yacht, except the itinerary, the chef and the guest list answer to you.",
+      "Book the yacht cruise when you want yacht life without yacht responsibility: the hotel-brand fleet — Ritz-Carlton Yacht Collection, Four Seasons Yachts, Orient Express's Corinthian, and Aman's forthcoming Amanclipper era — sells suite-level cabins from roughly $1,500–$4,000 per night for two, with restaurants, spas, marinas off the stern and zero decisions required. Our yacht atlas tracks 374 sailings across these four brands. Charter privately when the group is the point: a crewed 6-cabin yacht for 8–12 guests runs about $150,000–$400,000+ per week plus roughly 30–35% for fuel, food, dockage and gratuity (the APA) — which per-person, per-night lands surprisingly close to two top suites on a brand yacht, except the itinerary, the chef and the guest list answer to you.",
       "Rule of thumb: fewer than 6 people or a first taste of yacht travel → the brand yachts. Eight-plus people, a milestone, or strong opinions about anchorages → charter.",
     ],
     sections: [
@@ -228,7 +228,7 @@ export const journeyAnswers = [
       },
       {
         q: "Med or Caribbean, and when?",
-        a: "Med June–September (book winter for August), Caribbean December–April (book by early fall for festive weeks). The brand yachts reposition seasonally exactly like charter fleets — our Atlas shows both seasons' sailings.",
+        a: "Med June–September (book winter for August), Caribbean December–April (book by early fall for festive weeks). The brand yachts reposition seasonally exactly like charter fleets — our atlas shows both seasons' sailings.",
       },
       {
         q: "Are the brand yachts good for non-cruise people?",
@@ -236,7 +236,7 @@ export const journeyAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/yacht", label: "All 374 brand-yacht sailings in the Yacht Atlas" },
+      { href: "/atlas/yacht", label: "All 374 brand-yacht sailings in the yacht atlas" },
       { href: "/answers/world-cruises-compared", label: "Longer at sea: world cruises compared" },
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "The land-based alternative for big groups" },
     ],

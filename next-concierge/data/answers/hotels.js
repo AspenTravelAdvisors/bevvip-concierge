@@ -11,11 +11,11 @@ export const hotelAnswers = [
     question: "What do you actually get booking Four Seasons through a Preferred Partner?",
     title: "Four Seasons Preferred Partner Benefits, Explained",
     description:
-      "What Four Seasons Preferred Partner status really gets you — upgrades, breakfast, hotel credits, VIP status — versus booking direct, across the 57 Preferred Partner properties in our Atlas.",
+      "What Four Seasons Preferred Partner status really gets you — upgrades, breakfast, hotel credits, VIP status — versus booking direct, across the 57 Preferred Partner properties in our atlas.",
     updated: UPDATED,
     answer: [
       "Booking Four Seasons through a Preferred Partner advisor gets you, at no extra cost over the hotel's own flexible rate: an upgrade at check-in when available (with Preferred Partner reservations prioritized for them), daily breakfast for two, a property credit (commonly $100–$150 for spa or dining), early check-in and late check-out priority, a welcome amenity, and — the part regulars value most — your reservation flagged in the hotel's system as a Preferred Partner VIP before you land.",
-      "The rate itself is the same as booking direct. Four Seasons runs Preferred Partner as its official top-tier advisor program precisely so the benefits ride on top of published rates rather than discounting them. Our Atlas currently tracks 57 Four Seasons Preferred Partner properties, alongside 66 Four Seasons hotels overall.",
+      "The rate itself is the same as booking direct. Four Seasons runs Preferred Partner as its official top-tier advisor program precisely so the benefits ride on top of published rates rather than discounting them. Our atlas currently tracks 57 Four Seasons Preferred Partner properties, alongside 66 Four Seasons hotels overall.",
     ],
     sections: [
       {
@@ -67,7 +67,7 @@ export const hotelAnswers = [
     related: [
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "Virtuoso perks vs. booking direct — the general case" },
       { href: "/answers/which-four-seasons-have-swimmable-beaches", label: "Which Four Seasons have swimmable beaches?" },
-      { href: "/atlas/hotel", label: "All 66 Four Seasons in the Hotel Atlas" },
+      { href: "/atlas/hotel", label: "All 66 Four Seasons in the hotel atlas" },
     ],
   },
 
@@ -80,7 +80,7 @@ export const hotelAnswers = [
       "A plain-English audit of Virtuoso benefits — upgrades, breakfast, $100 credits, VIP status — versus booking hotels direct or through points, across 1,970 Virtuoso properties.",
     updated: UPDATED,
     answer: [
-      "At the 1,970 Virtuoso properties in our Atlas, a Virtuoso booking adds — on top of the hotel's own best flexible rate — a room upgrade when available, daily breakfast for two, a property credit (typically $100), early check-in/late check-out priority, and a VIP flag on your reservation. On a typical luxury stay that's $150–$400 per night of countable value at zero rate premium, which is why the honest answer to 'is it worth it' is: it's free money unless you specifically need a prepaid discount rate or are burning points.",
+      "At the 1,970 Virtuoso properties in our atlas, a Virtuoso booking adds — on top of the hotel's own best flexible rate — a room upgrade when available, daily breakfast for two, a property credit (typically $100), early check-in/late check-out priority, and a VIP flag on your reservation. On a typical luxury stay that's $150–$400 per night of countable value at zero rate premium, which is why the honest answer to 'is it worth it' is: it's free money unless you specifically need a prepaid discount rate or are burning points.",
       "Booking direct wins in exactly two cases: non-refundable advance-purchase rates where the discount exceeds the benefit stack (do the math — breakfast for two at a resort is often $120), and loyalty-program stays where elite status plus points redemption beats cash entirely.",
     ],
     sections: [
@@ -102,7 +102,7 @@ export const hotelAnswers = [
         h2: "What the brochures undersell",
         paras: [
           "The soft benefit is the durable one: a Virtuoso reservation arrives at the hotel flagged with your advisor's name and agency relationship. Rooms are assigned before you land, and when a stay goes wrong, the fix comes from the GM's office rather than a call center queue. None of that appears in a rate comparison; all of it appears in how the stay actually goes.",
-          "Also underrated: brand sub-programs stacked by good advisors. Our Atlas tracks Marriott STARS (103 properties), Rosewood Elite (31), Belmond Bellini Club (22), Mandarin Oriental Fan Club (34), Shangri-La Luxury Circle (32), Peninsula Pen Club (14) and others — at those hotels, the brand's own advisor program often out-benefits generic Virtuoso, and the booking should go through whichever is stronger.",
+          "Also underrated: brand sub-programs stacked by good advisors. Our atlas tracks Marriott STARS (103 properties), Rosewood Elite (31), Belmond Bellini Club (22), Mandarin Oriental Fan Club (34), Shangri-La Luxury Circle (32), Peninsula Pen Club (14) and others — at those hotels, the brand's own advisor program often out-benefits generic Virtuoso, and the booking should go through whichever is stronger.",
         ],
       },
     ],
@@ -123,7 +123,7 @@ export const hotelAnswers = [
     related: [
       { href: "/answers/four-seasons-preferred-partner-benefits", label: "The Four Seasons–specific version" },
       { href: "/answers/do-travel-advisors-cost-more", label: "Do travel advisors cost more than booking yourself?" },
-      { href: "/atlas/hotel", label: "Browse the 2,501-property Hotel Atlas" },
+      { href: "/atlas/hotel", label: "Browse the 2,501-property hotel atlas" },
     ],
   },
 
@@ -172,7 +172,7 @@ export const hotelAnswers = [
         h2: "How to choose among the 'yes' list",
         paras: [
           "For small children: Ko Olina's lagoons, Nevis, and the Maldives lagoons are the safest entries. For snorkeling from the sand: the Maldives, Bora Bora and Desroches. For a beach with a scene: Anguilla and Wailea. For swim-plus-surf households where both camps must win: Punta Mita, which has gentle bay beaches and a famous break within the resort's reach.",
-          "All 66 Four Seasons in our Atlas — including all of the above — book with Preferred Partner benefits: upgrade priority, breakfast, resort credit. The beach is free either way; the breakfast shouldn't be.",
+          "All 66 Four Seasons in our atlas — including all of the above — book with Preferred Partner benefits: upgrade priority, breakfast, resort credit. The beach is free either way; the breakfast shouldn't be.",
         ],
       },
     ],
@@ -192,7 +192,7 @@ export const hotelAnswers = [
     ],
     related: [
       { href: "/answers/four-seasons-preferred-partner-benefits", label: "What Preferred Partner booking adds at these resorts" },
-      { href: "/atlas/hotel", label: "See all Four Seasons on the Atlas map" },
+      { href: "/atlas/hotel", label: "See all Four Seasons on the atlas map" },
     ],
   },
 
@@ -206,7 +206,7 @@ export const hotelAnswers = [
     updated: UPDATED,
     answer: [
       "For a first Aman, book the one where the setting does the heavy lifting: Amangiri (Utah desert theater, the most photographed Aman on earth), Amanzoe (Greek hilltop temple, beach club below), Amankila (Bali's east-coast original with the three-tier pool), or Amanpuri (the 1988 founding resort in Phuket, still the purest expression of the formula). Each delivers the Aman thesis — monastic architecture, staff ratios that feel telepathic, silence as the luxury — without asking you to already be a convert.",
-      "Skip on a first pass: the city Amans (Tokyo, New York, Venice — magnificent, but they demonstrate the brand's restraint without its landscapes, and at the highest nightly rates in the portfolio), and the remotest lodges (Amanwana's tented island, Aman-i-Khas's wilderness camp) which reward you more once you already trust the brand. Our Atlas carries 33 Aman resorts, all with advisor VIP benefits.",
+      "Skip on a first pass: the city Amans (Tokyo, New York, Venice — magnificent, but they demonstrate the brand's restraint without its landscapes, and at the highest nightly rates in the portfolio), and the remotest lodges (Amanwana's tented island, Aman-i-Khas's wilderness camp) which reward you more once you already trust the brand. Our atlas carries 33 Aman resorts, all with advisor VIP benefits.",
     ],
     sections: [
       {
@@ -242,13 +242,13 @@ export const hotelAnswers = [
       },
       {
         q: "Aman vs. Six Senses vs. Rosewood — quickly?",
-        a: "Aman: silence and architecture. Six Senses: wellness and sustainability with more playfulness. Rosewood: residential glamour and better food scenes. All three sit in our Atlas with VIP terms; the right one depends on whether the trip is a retreat, a reset, or a stage.",
+        a: "Aman: silence and architecture. Six Senses: wellness and sustainability with more playfulness. Rosewood: residential glamour and better food scenes. All three sit in our atlas with VIP terms; the right one depends on whether the trip is a retreat, a reset, or a stage.",
       },
     ],
     related: [
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "What advisor booking adds at Aman rates" },
       { href: "/answers/quietest-luxury-resorts-italy", label: "Quietest luxury resorts in Italy (fellow silence-seekers)" },
-      { href: "/atlas/hotel", label: "All 33 Amans in the Hotel Atlas" },
+      { href: "/atlas/hotel", label: "All 33 Amans in the hotel atlas" },
     ],
   },
 
@@ -262,7 +262,7 @@ export const hotelAnswers = [
     updated: UPDATED,
     answer: [
       "The caricature that holds up in practice: Four Seasons is the consistency machine — the highest floor in luxury hospitality, superb with children, almost never the wrong answer and occasionally the boring one. Ritz-Carlton is formal classicism attached to Marriott's Bonvoy engine — the only one of the three where points and status do real work, with more property-to-property variance (the Reserve tier is exceptional; some city flags are dated). Rosewood is the style pick — residential 'sense of place' design, the best bars and restaurants of the three, a younger crowd, and the most upside when the property is great.",
-      "Our Atlas tracks 79 Ritz-Carltons, 66 Four Seasons and 35 Rosewoods, each with their advisor programs (FS Preferred Partner, Marriott STARS, Rosewood Elite) layering upgrades, breakfast and credits on top of published rates.",
+      "Our atlas tracks 79 Ritz-Carltons, 66 Four Seasons and 35 Rosewoods, each with their advisor programs (FS Preferred Partner, Marriott STARS, Rosewood Elite) layering upgrades, breakfast and credits on top of published rates.",
     ],
     sections: [
       {
@@ -298,13 +298,13 @@ export const hotelAnswers = [
       },
       {
         q: "Where does Mandarin Oriental fit in this comparison?",
-        a: "Closest to Four Seasons in consistency with a stronger Asian design identity and the best spas in the segment; our Atlas carries 67 of them under the Fan Club advisor program. If the trip revolves around a spa, start there.",
+        a: "Closest to Four Seasons in consistency with a stronger Asian design identity and the best spas in the segment; our atlas carries 67 of them under the Fan Club advisor program. If the trip revolves around a spa, start there.",
       },
     ],
     related: [
       { href: "/answers/four-seasons-preferred-partner-benefits", label: "Four Seasons Preferred Partner, explained" },
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "How the advisor benefit stack works everywhere" },
-      { href: "/atlas/hotel", label: "All three brands on the Atlas map" },
+      { href: "/atlas/hotel", label: "All three brands on the atlas map" },
     ],
   },
 
@@ -314,17 +314,17 @@ export const hotelAnswers = [
     question: "What are the quietest luxury resorts in Italy?",
     title: "The Quietest Luxury Resorts in Italy",
     description:
-      "Where to find genuine quiet in Italian luxury — Tuscan estates, lake villas away from the ferry docks, Dolomites retreats and off-crowd islands — drawn from the 244 Italian properties in our Atlas.",
+      "Where to find genuine quiet in Italian luxury — Tuscan estates, lake villas away from the ferry docks, Dolomites retreats and off-crowd islands — drawn from the 244 Italian properties in our atlas.",
     updated: UPDATED,
     answer: [
       "For genuine quiet — not 'Positano but with a better pool deck' — book the countryside estates and the wrong-famous-lake shores: Borgo Santo Pietro-style Tuscan farm estates (in our files: Il Borro in the Arno valley, Borgo San Felice among the Chianti vines, Castello di Velona above the Val d'Orcia), Monastero Santa Rosa on the Amalfi Coast's cliff BEYOND the towns (a former monastery, 20 rooms, silence as architecture), Mezzatorre on Ischia (the unfashionable-island trick), San Domenico-adjacent escapes aside — Sicily's quiet is Verdura's 230 private acres near Sciacca, and the Dolomites' is Aman Rosa Alpina in San Cassiano and Lefay Dolomiti in Pinzolo.",
-      "The pattern: quiet in Italy is bought with distance from a ferry dock, a funicular, or a name that appears on tote bags. Our Atlas holds 244 Italian properties; the loudest thirty are the most requested, and the quietest thirty are the best reviewed afterward.",
+      "The pattern: quiet in Italy is bought with distance from a ferry dock, a funicular, or a name that appears on tote bags. Our atlas holds 244 Italian properties; the loudest thirty are the most requested, and the quietest thirty are the best reviewed afterward.",
     ],
     sections: [
       {
         h2: "The quiet list, by landscape",
         table: {
-          caption: "All properties below are in the Base Camp Hotel Atlas with Virtuoso or brand-program VIP benefits.",
+          caption: "All properties below are in our atlas with Virtuoso or brand-program VIP benefits.",
           columns: ["Region", "Property", "Why it's quiet"],
           rows: [
             ["Tuscany (Val d'Orcia)", "Castello di Velona", "A castle above thermal vineyards; nearest crowd is Montalcino, far below"],
@@ -366,7 +366,7 @@ export const hotelAnswers = [
     ],
     related: [
       { href: "/answers/best-aman-for-first-timers", label: "For maximum quiet: which Aman first" },
-      { href: "/atlas/hotel", label: "All 244 Italian properties in the Atlas" },
+      { href: "/atlas/hotel", label: "All 244 Italian properties in the atlas" },
       { href: "/answers/best-villas-under-2000-that-sleep-8", label: "Italian villas instead? Under $2,000/night options" },
     ],
   },
@@ -377,15 +377,15 @@ export const hotelAnswers = [
     question: "What are the best safari lodges you can book with VIP perks?",
     title: "Best Safari Lodges Bookable With VIP Perks",
     description:
-      "The standout lodges among the 61 safari and wilderness properties in our Atlas — Botswana, Kenya, South Africa and beyond — and what advisor booking adds on safari.",
+      "The standout lodges among the 61 safari and wilderness properties in our atlas — Botswana, Kenya, South Africa and beyond — and what advisor booking adds on safari.",
     updated: UPDATED,
     answer: [
-      "From the 61 safari and wilderness lodges in our Atlas, the ones we send travelers to first: Jack's Camp in Botswana's Makgadikgadi (the great eccentric — Kalahari meerkats, desert-Baroque tents), Belmond's Botswana camps in the Okavango, Bushmans Kloof in the Cederberg (rock art, no malaria, family-friendly South Africa), Elewana Loisaba Tented Camp on Kenya's Laikipia plateau, and the Fairmont pair — Mara Safari Club and Mount Kenya Safari Club — for the classic Kenya circuit with big-hotel polish.",
+      "From the 61 safari and wilderness lodges in our atlas, the ones we send travelers to first: Jack's Camp in Botswana's Makgadikgadi (the great eccentric — Kalahari meerkats, desert-Baroque tents), Belmond's Botswana camps in the Okavango, Bushmans Kloof in the Cederberg (rock art, no malaria, family-friendly South Africa), Elewana Loisaba Tented Camp on Kenya's Laikipia plateau, and the Fairmont pair — Mara Safari Club and Mount Kenya Safari Club — for the classic Kenya circuit with big-hotel polish.",
       "On safari, advisor value is less about breakfast credits (everything's included anyway) and more about the itinerary spine: which camps combine, private-vehicle guarantees, guide requests, charter logistics between airstrips, and the green-season pricing that halves rates in months that are often better game viewing than the brochure months.",
     ],
     sections: [
       {
-        h2: "Standouts from the Atlas, by trip type",
+        h2: "Standouts from the atlas, by trip type",
         table: {
           columns: ["Trip", "Lodge", "Why"],
           rows: [
@@ -426,7 +426,7 @@ export const hotelAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/hotel", label: "All 61 safari & wilderness lodges on the Atlas map" },
+      { href: "/atlas/hotel", label: "All 61 safari & wilderness lodges on the atlas map" },
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "How advisor booking works at lodges" },
     ],
   },
@@ -441,13 +441,13 @@ export const hotelAnswers = [
     updated: UPDATED,
     answer: [
       "In the Alps, the benchmark ski-in/ski-out palaces are Courchevel 1850's trio — Cheval Blanc, Airelles, and L'Apogée — where the Trois Vallées' groomers run essentially to the ski butler's door; Megève adds Four Seasons Megève (the brand's alpine flagship) and Alpaga for village charm. In North America, the honest ski-in/ski-out list is led by Stein Eriksen Residences and Goldener Hirsch in Deer Valley, Four Seasons Whistler and Fairmont Chateau Whistler at the base of North America's biggest terrain, Grand Hyatt Vail on the creek with its own lift, and in Aspen — where true ski-in/ski-out barely exists — MOLLIE and the W put you steps from the gondola rather than on the snow.",
-      "The Alps sell altitude romance, michelin density and ski butlers; the Rockies sell snow reliability, service informality and direct flights. Both are in our Atlas with VIP amenities — and in ski hotels the advisor's real work is January and March weeks that cost half of Christmas.",
+      "The Alps sell altitude romance, michelin density and ski butlers; the Rockies sell snow reliability, service informality and direct flights. Both are in our atlas with VIP amenities — and in ski hotels the advisor's real work is January and March weeks that cost half of Christmas.",
     ],
     sections: [
       {
         h2: "The list, with candor about 'ski-in/ski-out'",
         table: {
-          caption: "From the 15 mountain/ski properties in the Base Camp Atlas, July 2026.",
+          caption: "From the 15 mountain/ski properties in our atlas, July 2026.",
           columns: ["Property", "Resort", "Real verdict"],
           rows: [
             ["Cheval Blanc Courchevel", "Courchevel 1850", "True ski-in/out; LVMH polish; the segment's benchmark"],
@@ -488,7 +488,7 @@ export const hotelAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/hotel", label: "Ski properties on the Atlas map" },
+      { href: "/atlas/hotel", label: "Ski properties on the atlas map" },
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "The perk stack at ski palaces" },
       { href: "/answers/best-villas-under-2000-that-sleep-8", label: "Ski villas instead — Colorado options under $2,000" },
     ],

@@ -19,7 +19,7 @@ export default function AtlasView({
 }) {
   return (
     <div className={`atlas-view${hero ? " atlas-view--hero" : ""}`}>
-      <iframe className="atlas-frame" src={src} title={`${label} — Living Atlas`} />
+      <iframe className="atlas-frame" src={src} title={`${label} — interactive map`} />
     </div>
   );
 }

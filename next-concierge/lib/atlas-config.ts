@@ -7,9 +7,14 @@ import type { OfferingType } from "./types";
 // only if pointing at an external deploy.
 export interface AtlasConfig {
   type: OfferingType;
-  /** Formal name of the collection's own map ("Hotel Atlas"). Page titles. */
+  /**
+   * Name of the collection's own map ("Hotel atlas"). Used for page titles and
+   * the map badge, so it is sentence case, not title case: "atlas" is a common
+   * noun here, not a product. Mid-sentence, lowercase the whole thing — see
+   * AtlasShell's fallback copy.
+   */
   label: string;
-  /** Short navigation label ("Hotels"). Never "Atlas" — see `nounPlural`. */
+  /** Short navigation label ("Hotels"). Never says "atlas" — see `nounPlural`. */
   nav: string;
   /** How the collection is named in a sentence ("2,501 vetted hotels"). */
   nounPlural: string;
@@ -32,7 +37,7 @@ export interface AtlasConfig {
 export const ATLASES: Record<OfferingType, AtlasConfig> = {
   hotel: {
     type: "hotel",
-    label: "Hotel Atlas",
+    label: "Hotel atlas",
     nav: "Hotels",
     nounPlural: "vetted hotels",
     tagline: "Approved luxury hotel inventory, mapped worldwide",
@@ -47,7 +52,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // exists. base points at the in-app route itself; the /atlas/[type] iframe
     // route excludes it (app/atlas/villa is its own static route).
     type: "villa",
-    label: "Villa Atlas",
+    label: "Villa atlas",
     nav: "Villas",
     nounPlural: "private villas",
     tagline: "Private villas and vacation homes, advisor arranged worldwide",
@@ -59,7 +64,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   cruise: {
     type: "cruise",
-    label: "Expedition Cruise Atlas",
+    label: "Expedition cruise atlas",
     nav: "Expeditions",
     nounPlural: "expedition sailings",
     tagline: "Expedition cruise journeys by region and season",
@@ -71,7 +76,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   worldcruise: {
     type: "worldcruise",
-    label: "World Cruise Atlas",
+    label: "World cruise atlas",
     nav: "World Cruises",
     nounPlural: "world cruises and grand voyages",
     tagline: "World cruises and grand voyages, every port day by day",
@@ -83,7 +88,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   train: {
     type: "train",
-    label: "Rail Journeys Atlas",
+    label: "Rail journeys atlas",
     nav: "Rail Journeys",
     nounPlural: "rail journeys",
     tagline: "The legendary trains and rail journeys, drawn along the tracks",
@@ -95,7 +100,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   yacht: {
     type: "yacht",
-    label: "Luxury Hotel Yacht Atlas",
+    label: "Luxury hotel yacht atlas",
     nav: "Hotel Yachts",
     nounPlural: "hotel-brand yacht voyages",
     tagline: "Aman, Ritz-Carlton, Four Seasons and Orient Express at sea",
@@ -107,7 +112,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   jet: {
     type: "jet",
-    label: "Private Jet Atlas",
+    label: "Private jet atlas",
     nav: "Private Jets",
     nounPlural: "private jet expeditions",
     tagline: "Around-the-world and regional private jet expeditions",

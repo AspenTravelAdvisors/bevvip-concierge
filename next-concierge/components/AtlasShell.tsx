@@ -564,7 +564,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             const html =
               `<div class="iw"><div class="iwn">${escapeHtml(name)}</div>` +
               (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "") +
-              `<a href="${escapeHtml(href)}">Open VIP Hotels Atlas →</a></div>`;
+              `<a href="${escapeHtml(href)}">Open the VIP hotels atlas →</a></div>`;
             popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
           });
           map.on("mouseenter", "hotel-dots", () => {
@@ -586,7 +586,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
               const html =
                 `<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>` +
                 `<div class="iwm">${escapeHtml(overlayMeta(key, count))}</div>` +
-                `<a href="${escapeHtml(href)}">Open ${escapeHtml(cfg.label)} Atlas →</a></div>`;
+                `<a href="${escapeHtml(href)}">Open the ${escapeHtml(cfg.label.toLowerCase())} atlas →</a></div>`;
               popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
             });
             map.on("mouseenter", src + "_dot", () => { map.getCanvas().style.cursor = "pointer"; });
@@ -1016,7 +1016,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
       {token && !mapFailed && !mapReady && posterGone && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : ATLASES[type].label}</span>
-          <p>Charting the Atlas…</p>
+          <p>Charting the atlas…</p>
         </div>
       )}
 
@@ -1106,7 +1106,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           {badge.total > badge.n && badge.deepLink ? (
             <>
               Showing {badge.n} of {badge.total} ·{" "}
-              <a href={badge.deepLink}>all in Atlas →</a>
+              <a href={badge.deepLink}>all on the atlas →</a>
             </>
           ) : (
             <>{badge.n} plotted</>
@@ -1121,11 +1121,11 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
           <p>
-            Map unavailable right now. The full {ATLASES[type].label} is one click away —
-            your selection carries over.
+            Map unavailable right now. The full {ATLASES[type].label.toLowerCase()} is one
+            click away — your selection carries over.
           </p>
           <a className="atlas-cta" href={externalLink}>
-            Open {ATLASES[type].label} →
+            Open the {ATLASES[type].label.toLowerCase()} →
           </a>
           <div className="region-chips">
             {ATLASES[type].sampleRegions.map((r) => (
@@ -1281,7 +1281,7 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
     `<div class="iwm">${esc([meta, when].filter(Boolean).join("  ·  "))}</div>` +
-    `<a href="${esc(href)}">Open in Atlas →</a></div>`
+    `<a href="${esc(href)}">Open on the atlas →</a></div>`
   );
 }
 

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "purpose": "Brand-identity (fit) layer for the Base Camp concierge. Pairs with advisor-overlay.json (commercial layer).",
+    "purpose": "Brand-identity (fit) layer for the Expedition Bucket List concierge. Pairs with advisor-overlay.json (commercial layer).",
     "method": "AI-generated characterizations from general brand knowledge (cutoff Jan 2026). NOT scraped from official sites. officialUrl/sourceSnapshot left null pending the live-fetch + advisor-review step in SUPPLIER-FIT-SPEC.md section 8.",
     "schema": "positioning {tier, priceIndex 1-5, vibe[], serviceStyle, differentiators[]} for hotels; cruise/yacht add {shipScale, paxBand, expeditionDepth 1-5, cuisine}. idealGuest/notIdealFor use archetype vocabulary.",
     "independents": "lhw / slh / relais-chateaux / design-hotels / preferred-hotels / independent-virtuoso are UMBRELLA profiles. Hotel-atlas independents have an empty 'brand' field (tagged by 'program'), so to inherit an umbrella the resolver must fall back: brand -> program -> 'independent-virtuoso'. One-line change in resolveBrandId() (see note).",

@@ -456,7 +456,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     };
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Villa Atlas", url });
+        await navigator.share({ title: "Villa atlas", url });
       } catch { /* user dismissed the sheet */ }
       return;
     }
@@ -494,7 +494,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     <>
       <div className="villa-head">
         <div>
-          <h1>Villa Atlas</h1>
+          <h1>Villa atlas</h1>
           <p className="villa-tag">
             3,902 private villas and vacation homes worldwide, arranged by your Aspen
             Travel Advisor. VIP travel benefits, zero membership fees.

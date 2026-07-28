@@ -81,7 +81,7 @@ function composeMessage(body: HandoffBody): string {
   const lines: string[] = [];
   const cat = CATEGORY_LABEL[body.category ?? "generic"] ?? "Trip Planning";
 
-  lines.push(`New hand-off from Base Camp — ${cat}`);
+  lines.push(`New hand-off from Expedition Bucket List — ${cat}`);
   if (body.action) lines.push(`Traveler tapped: ${body.action}`);
   if (body.source === "header") {
     // A cold request: nobody searched, so there is no shortlist and the brief
@@ -115,9 +115,9 @@ function composeMessage(body: HandoffBody): string {
   if (body.deepLink) {
     // The data layer encodes deep links against the standalone map path
     // (/maps/<type>/...); rewrite to the in-app concierge atlas route
-    // (/atlas/<type>) so the advisor opens Base Camp, not the bare map page.
+    // (/atlas/<type>) so the advisor opens the full app, not the bare map page.
     const atlasLink = body.deepLink.replace(/\/maps\/([^/]+)\/?/, "/atlas/$1");
-    lines.push("See it on the Atlas:");
+    lines.push("See it on the atlas:");
     lines.push(atlasLink);
     lines.push("");
   }
@@ -162,7 +162,7 @@ export async function POST(req: Request) {
 
   const cat = CATEGORY_LABEL[body.category ?? "generic"] ?? "Trip Planning";
   const payload = {
-    _subject: `Base Camp hand-off — ${cat}${
+    _subject: `Expedition Bucket List hand-off — ${cat}${
       contact.name ? ` — ${clip(contact.name, 80)}` : ""
     }`,
     name: clip(contact.name, 80) || "(not given)",

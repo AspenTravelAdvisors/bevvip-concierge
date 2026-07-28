@@ -14,7 +14,7 @@ export const villaAnswers = [
       "371 Caribbean villas sleeping 12 or more, from $458/night — St. Martin, St. Lucia, Barbados, BVI and beyond, with real from-rates and how to choose an island for a big group.",
     updated: UPDATED,
     answer: [
-      "Our Villa Atlas currently holds 371 Caribbean villas that sleep 12 or more guests, with from-rates starting under $500 a night — proof that a villa for a dozen people routinely costs less per bedroom than two hotel rooms. The islands with the deepest big-group inventory are St. Martin (especially the Terres Basses estate zone), Barbados' west coast, St. Lucia's Cap Estate, the Dominican Republic's resort peninsulas, and the British Virgin Islands.",
+      "Our villa atlas currently holds 371 Caribbean villas that sleep 12 or more guests, with from-rates starting under $500 a night — proof that a villa for a dozen people routinely costs less per bedroom than two hotel rooms. The islands with the deepest big-group inventory are St. Martin (especially the Terres Basses estate zone), Barbados' west coast, St. Lucia's Cap Estate, the Dominican Republic's resort peninsulas, and the British Virgin Islands.",
       "For groups of twelve, the honest starting shortlist from the data: Tamarind Villa in St. Lucia (sleeps 14, 7 bedrooms, from $499/night), La Maison L'Ile in St. Martin (sleeps 12, from $458), Loblolly in the BVI (sleeps 14, from $728), Casabella in Barbados (sleeps 12, from $750), and Alizee in St. Martin, which stretches to 18 guests from $930. All are staffed or serviced, and all book through your advisor with the supplier's concierge included.",
     ],
     sections: [
@@ -26,7 +26,7 @@ export const villaAnswers = [
         ],
       },
       {
-        h2: "Big-group villas worth knowing, from the Atlas",
+        h2: "Big-group villas worth knowing, from the atlas",
         table: {
           caption: "Supplier from-rates (USD/night, whole villa) as of July 2026 — seasonal; holiday weeks price higher.",
           columns: ["Villa", "Island", "Sleeps", "Bedrooms", "From"],
@@ -86,14 +86,14 @@ export const villaAnswers = [
       "Running the real numbers on a 10-person family trip: five hotel rooms vs. one staffed villa, using live from-rates from 3,902 tracked villas — plus when the resort is still worth it.",
     updated: UPDATED,
     answer: [
-      "For ten people, the villa usually wins the arithmetic by a wide margin: five luxury-resort rooms at $700–$1,200 each run $3,500–$6,000 a night, while our Atlas holds 1,541 villas that sleep eight or more for under $2,000 a night total — hundreds of them under $1,000. Add a private chef (roughly $200–$300/day plus groceries) and the villa still typically lands at a third to a half of the resort bill, with a kitchen, laundry, and no one sleeping on a rollaway.",
+      "For ten people, the villa usually wins the arithmetic by a wide margin: five luxury-resort rooms at $700–$1,200 each run $3,500–$6,000 a night, while our atlas holds 1,541 villas that sleep eight or more for under $2,000 a night total — hundreds of them under $1,000. Add a private chef (roughly $200–$300/day plus groceries) and the villa still typically lands at a third to a half of the resort bill, with a kitchen, laundry, and no one sleeping on a rollaway.",
       "The resort wins on different axes: kids' clubs and instant friends for children, restaurants without decisions, service that materializes without being organized, and — non-trivially — nobody in the family is the de facto innkeeper. The honest answer is usually a split trip: villa for the together-time, two resort nights at the end for the towel-boy decompression.",
     ],
     sections: [
       {
         h2: "The worked example",
         table: {
-          caption: "Seven nights, family of 10, high-season Caribbean, real from-rates from the Atlas (July 2026).",
+          caption: "Seven nights, family of 10, high-season Caribbean, real from-rates from the atlas (July 2026).",
           columns: ["", "Five-star resort (5 rooms)", "Staffed villa (6BR)"],
           rows: [
             ["Lodging", "$3,500–6,000/night → $24,500–42,000", "$750–1,500/night → $5,250–10,500"],
@@ -124,7 +124,7 @@ export const villaAnswers = [
       },
       {
         q: "What about connecting rooms or a resort residence instead?",
-        a: "Resort residences (the 60 villas/residences properties in our Hotel Atlas — Forte Village, Rocco Forte Private Villas and kin) are exactly the hybrid: villa space with resort infrastructure. They price between the two columns and are the right answer for families who want both and will pay for it.",
+        a: "Resort residences (the 60 villas/residences properties in our hotel atlas — Forte Village, Rocco Forte Private Villas and kin) are exactly the hybrid: villa space with resort infrastructure. They price between the two columns and are the right answer for families who want both and will pay for it.",
       },
       {
         q: "Is a villa riskier — what if it's not as pictured?",
@@ -134,7 +134,7 @@ export const villaAnswers = [
     related: [
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "The Caribbean big-group shortlist with real rates" },
       { href: "/answers/best-villas-under-2000-that-sleep-8", label: "1,541 villas under $2,000 that sleep 8+" },
-      { href: "/atlas/villa", label: "Search the Villa Atlas map" },
+      { href: "/atlas/villa", label: "Search the villa atlas map" },
     ],
   },
 
@@ -147,14 +147,14 @@ export const villaAnswers = [
       "1,541 villas under $2,000 a night sleeping eight or more — where they cluster (Colorado, Hawaii, Italy, Barbados, St. Martin) and how to pick well at this price point.",
     updated: UPDATED,
     answer: [
-      "This is the sweetest spot in the villa market: our Atlas currently lists 1,541 villas that sleep eight or more with from-rates under $2,000 a night — which per-person, per-night puts a private staffed house below a mid-tier hotel room. The inventory clusters where you'd hope: Colorado ski country (200 villas — Vail, Beaver Creek, Breckenridge), Hawaii (189), Italy (112 — Tuscany and points south), Florida (108), France (93), and the Caribbean's value islands, led by Barbados (73), St. Martin (69) and — at the style end — St. Barths (54).",
+      "This is the sweetest spot in the villa market: our atlas currently lists 1,541 villas that sleep eight or more with from-rates under $2,000 a night — which per-person, per-night puts a private staffed house below a mid-tier hotel room. The inventory clusters where you'd hope: Colorado ski country (200 villas — Vail, Beaver Creek, Breckenridge), Hawaii (189), Italy (112 — Tuscany and points south), Florida (108), France (93), and the Caribbean's value islands, led by Barbados (73), St. Martin (69) and — at the style end — St. Barths (54).",
       "At this price the skill isn't finding a villa; it's filtering 1,541 of them. The three questions that do most of the work: walk-to-something or gated-privacy? staffed-daily or weekly-service? and — the one people skip — how far is the beach/lift/town in minutes, not miles.",
     ],
     sections: [
       {
         h2: "Where $2,000/night lands you, by destination",
         table: {
-          caption: "Counts of 8+-sleeper villas under $2,000/night by destination, from the Atlas, July 2026.",
+          caption: "Counts of 8+-sleeper villas under $2,000/night by destination, from the atlas, July 2026.",
           columns: ["Destination", "Villas available", "What the money buys"],
           rows: [
             ["Colorado", "200", "4–6BR ski homes; ski-in/out enters the budget outside festive weeks"],
@@ -195,7 +195,7 @@ export const villaAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/villa", label: "Filter the 1,541 on the Villa Atlas map" },
+      { href: "/atlas/villa", label: "Filter the 1,541 on the villa atlas map" },
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "Caribbean villas for 12+ guests" },
       { href: "/answers/villa-vs-resort-for-a-family-of-10", label: "Villa vs. resort cost math" },
     ],

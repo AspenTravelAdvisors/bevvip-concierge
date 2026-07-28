@@ -1,6 +1,6 @@
 // /answers — index of every question page, grouped by category. Fully
 // server-rendered: this page and its children are the crawlable, citable
-// surface of Base Camp, so no client JS is required to read any of it.
+// surface of the site, so no client JS is required to read any of it.
 
 import Link from "next/link";
 import { ALL_ANSWERS, answersByCategory, SITE_URL } from "@/lib/answers";
@@ -8,7 +8,7 @@ import { ALL_ANSWERS, answersByCategory, SITE_URL } from "@/lib/answers";
 export const metadata = {
   title: "Answers — Straight Answers to the Questions Luxury Travelers Ask",
   description:
-    "Direct, data-backed answers from Aspen Travel Advisors: expedition cruising, luxury hotel programs, villas, world cruises and more — grounded in the Base Camp Living Atlas.",
+    "Direct, data-backed answers from Aspen Travel Advisors: expedition cruising, luxury hotel programs, villas, world cruises and more — grounded in the Expedition Bucket List atlas.",
   alternates: { canonical: `${SITE_URL}/answers` },
 };
 
@@ -17,7 +17,7 @@ export default function AnswersIndex() {
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Base Camp Answers",
+    name: "Expedition Bucket List Answers",
     numberOfItems: ALL_ANSWERS.length,
     itemListElement: ALL_ANSWERS.map((a, i) => ({
       "@type": "ListItem",
@@ -37,7 +37,7 @@ export default function AnswersIndex() {
         <h1>Answers</h1>
         <p>
           The questions luxury travelers actually ask, answered directly and
-          grounded in the Base Camp Living Atlas — {""}
+          grounded in the Expedition Bucket List atlas — {""}
           <Link href="/atlas/hotel">2,501 vetted hotels</Link>,{" "}
           <Link href="/atlas/cruise">3,542 expedition sailings</Link>,{" "}
           <Link href="/atlas/villa">3,902 villas</Link>, plus world cruises,

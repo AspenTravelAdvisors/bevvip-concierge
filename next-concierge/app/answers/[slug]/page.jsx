@@ -86,7 +86,7 @@ export default async function AnswerPage({ params }) {
       <p className="answers-updated">
         By Aspen Travel Advisors · Last verified{" "}
         <time dateTime={a.updated}>{a.updated}</time> · Grounded in the{" "}
-        <Link href="/atlas/hotel">Base Camp Living Atlas</Link>
+        <Link href="/atlas/hotel">Expedition Bucket List atlas</Link>
       </p>
 
       <div className="answers-lead">
@@ -136,7 +136,7 @@ export default async function AnswerPage({ params }) {
           <Link href={`/?ask=${encodeURIComponent(a.question)}`}>
             Ask The Guide
           </Link>{" "}
-          — Base Camp&apos;s concierge — or have our advisors price it with
+          — our AI concierge — or have our advisors price it with
           VIP benefits included.
         </p>
       </aside>
