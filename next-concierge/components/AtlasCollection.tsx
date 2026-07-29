@@ -43,11 +43,27 @@ import { internalAtlasLink } from "@/lib/atlas-config";
  */
 const PLOT_CAP = 60;
 
+/** One drawable leg of a traced route, already in [lng, lat]. */
+export interface RouteLegOut {
+  mode: string;
+  coordinates: [number, number][];
+}
+
 interface Props {
   type: OfferingType;
   descriptor: AtlasFilterDescriptor;
   /** Loads and adapts this collection's raw feed. Collection-specific. */
-  load: () => Promise<{ offerings: AtlasOffering[]; ctx: ParseContext; regionLabels: Record<string, string> }>;
+  load: () => Promise<{
+    offerings: AtlasOffering[];
+    ctx: ParseContext;
+    regionLabels: Record<string, string>;
+    /**
+     * Real route geometry for one offering, when the collection has it.
+     * Rail ships actual track polylines; without this a traced route falls back
+     * to straight legs between stops, which is honest but much less useful.
+     */
+    routeFor?: (o: AtlasOffering) => RouteLegOut[] | null;
+  }>;
 }
 
 export default function AtlasCollection({ type, descriptor, load }: Props) {
@@ -57,6 +73,7 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
   const [offerings, setOfferings] = useState<AtlasOffering[] | null>(null);
   const [ctx, setCtx] = useState<ParseContext | null>(null);
   const [regionLabels, setRegionLabels] = useState<Record<string, string>>({});
+  const [routeFor, setRouteFor] = useState<{ fn?: (o: AtlasOffering) => RouteLegOut[] | null }>({});
   const [failed, setFailed] = useState(false);
 
   // Today, pinned once per mount so the past-trip cutoff can't shift mid-session.
@@ -70,6 +87,7 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
         setOfferings(r.offerings);
         setCtx(r.ctx);
         setRegionLabels(r.regionLabels);
+        setRouteFor({ fn: r.routeFor });
       })
       .catch(() => { if (!cancelled) setFailed(true); });
     return () => { cancelled = true; };
@@ -132,6 +150,29 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
     );
   }, [filtered, type]);
 
+  /**
+   * Trace one trip's route on the globe. This is the interaction the Leaflet
+   * atlases had — hover a card, its route draws — and drawing all of a
+   * collection's routes at once is not a substitute for it.
+   */
+  const traceRoute = useCallback(
+    (o: AtlasOffering | null, fit = false) => {
+      if (!o) {
+        window.dispatchEvent(new CustomEvent("bevvip:atlas-route", { detail: { legs: [] } }));
+        return;
+      }
+      const real = routeFor.fn?.(o) ?? null;
+      const legs: RouteLegOut[] = real ?? (() => {
+        // No shipped geometry: draw straight legs between located stops rather
+        // than inventing a curve the vehicle does not travel.
+        const pts = o.stops.filter((s) => s.at).map((s) => [s.at![0], s.at![1]] as [number, number]);
+        return pts.length >= 2 ? [{ mode: "arc", coordinates: pts }] : [];
+      })();
+      window.dispatchEvent(new CustomEvent("bevvip:atlas-route", { detail: { legs, fit } }));
+    },
+    [routeFor],
+  );
+
   if (failed) {
     return (
       <div className="atlas-collection">
@@ -145,9 +186,11 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
 
   return (
     <div className="atlas-collection">
-      {/* routesAlways: on a collection page the routes are the content, not a
-          zoomed-in embellishment. Without it the page opens on a bare globe. */}
-      <AtlasShell type={type} region={null} externalLink={internalAtlasLink(type)} routesAlways />
+      {/* No routesAlways for rail: an ambient layer of every route at once is
+          not what the Leaflet atlas did, and for trains it would have to be
+          drawn from arcs, which is wrong. Routes trace one at a time from real
+          geometry on card hover/click — see traceRoute. */}
+      <AtlasShell type={type} region={null} externalLink={internalAtlasLink(type)} />
 
       {state && offerings ? (
         <AtlasFilterRail
@@ -168,7 +211,14 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
 
       <div className="atlas-results">
         {filtered.slice(0, 120).map((o) => (
-          <article key={o.id} className="atlas-card">
+          <article
+            key={o.id}
+            className="atlas-card"
+            onMouseEnter={() => traceRoute(o)}
+            onMouseLeave={() => traceRoute(null)}
+            onFocus={() => traceRoute(o)}
+            onClick={() => traceRoute(o, true)}
+          >
             <h3>{o.title}</h3>
             <p className="ac-meta">
               {[o.brandLabel || o.operator, o.vessel, o.regions.map((k) => regionLabels[k] || k).join(", ")]

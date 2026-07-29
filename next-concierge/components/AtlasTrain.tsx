@@ -12,6 +12,7 @@
 import { useCallback } from "react";
 import AtlasCollection from "./AtlasCollection";
 import { adaptTrain, TRAIN_DESCRIPTOR } from "@/lib/atlas/adapters/train";
+import { loadRailGeometry, tripTrackLegs } from "@/lib/atlas/adapters/rail-geometry";
 import type { RawJourneyAtlas } from "@/lib/atlas/adapters/journey";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
@@ -21,15 +22,20 @@ export default function AtlasTrain() {
     offerings: AtlasOffering[];
     ctx: ParseContext;
     regionLabels: Record<string, string>;
+    routeFor?: (o: AtlasOffering) => { mode: string; coordinates: [number, number][] }[] | null;
   }> => {
     // Same static feed the Leaflet atlas used — cached by the CDN, so this is
     // not new traffic, it is the same bytes without the iframe around them.
-    const raw: RawJourneyAtlas = await fetch("/maps/train/itinerary.json", {
-      cache: "force-cache",
-    }).then((r) => {
-      if (!r.ok) throw new Error(`train itinerary ${r.status}`);
-      return r.json();
-    });
+    // The itinerary and the track geometry load together, as the Leaflet atlas
+    // did — it kicks loadRailGeo() alongside the map tiles rather than waiting
+    // for a hover.
+    const [raw, railGeo] = await Promise.all([
+      fetch("/maps/train/itinerary.json", { cache: "force-cache" }).then((r) => {
+        if (!r.ok) throw new Error(`train itinerary ${r.status}`);
+        return r.json() as Promise<RawJourneyAtlas>;
+      }),
+      loadRailGeometry(),
+    ]);
 
     const offerings = adaptTrain(raw);
     const regionLabels: Record<string, string> = {};
@@ -48,7 +54,20 @@ export default function AtlasTrain() {
       stopNames: [...new Set(offerings.flatMap((o) => o.stops.map((s) => s.name)))],
     };
 
-    return { offerings, ctx, regionLabels };
+    // Real track polylines: 269 legs, 23,541 points, covering 134 of 135 trips.
+    // Trains follow tracks; anything without geometry falls back to straight
+    // legs between stops rather than an invented curve.
+    const routeFor = (o: AtlasOffering) => {
+      const legs = tripTrackLegs(o.id, railGeo);
+      return legs
+        ? legs.map((l) => ({
+            mode: l.mode,
+            coordinates: l.points.map((p) => [p[0], p[1]] as [number, number]),
+          }))
+        : null;
+    };
+
+    return { offerings, ctx, regionLabels, routeFor };
   }, []);
 
   return <AtlasCollection type="train" descriptor={TRAIN_DESCRIPTOR} load={load} />;

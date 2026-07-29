@@ -341,7 +341,44 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
-**First-review fixes (2026-07-29): no routes drawn, globe too small.**
+### Rail routes follow TRACKS, not arcs — corrected 2026-07-29
+
+**`public/maps/train/data/rail-routes.json` exists and the first port missed
+it entirely.** 269 leg polylines, 47,070 points across all trips, covering 134
+of the 135 rail journeys. It is a shared leg pool keyed on an unordered station
+pair (`"lat,lng|lat,lng"`), with each trip referencing legs plus a `rev` flag
+for the direction it travels them, so trips sharing track share bytes.
+
+The first attempt assumed the itinerary stop list was all the geometry there
+was and ran `arcPts` over it — drawing the Glasgow → Fort William leg as a
+bezier over Loch Lomond instead of the West Highland Line. Rail is now excluded
+from the ambient arc path in `fetchRouteLines` outright; a rail route can only
+come from real geometry.
+
+**Legs carry a mode and it matters:** `rail` (211), `road` (57), `arc` (1).
+The original draws rail with railway symbology and renders road/ferry/transfer
+legs as an honest dashed connector rather than pretending they are track. Both
+are reproduced in the focused-route layer:
+
+| layer | colour | width | note |
+| --- | --- | --- | --- |
+| `fr_casing` | `#140b06` @ 0.5 | 7 | dark casing |
+| `fr_rail` | `#e08d5f` @ 0.98 | 3.4 | copper rail |
+| `fr_ties` | `#241007` @ 0.92 | 3.4 | sleeper hatching, dash 2.5/7 |
+| `fr_conn` | `#f2d9c4` @ 0.6 | 2 | non-rail leg, dash 2/9 |
+
+**Routes trace ONE trip at a time, on hover or click** — `drawRoute(trip)` with
+a pinned trip is what the Leaflet atlas did, and an ambient layer of all 135
+routes is not a substitute for it. `AtlasShell` gained a `bevvip:atlas-route`
+listener (sibling of the existing `bevvip:atlas-plot` contract) and collection
+cards dispatch it on hover/focus/click; click also fits the camera to the route.
+Offerings with no shipped geometry fall back to straight legs between located
+stops — honest, rather than an invented curve.
+
+`routesAlways` stays on `AtlasShell` for the collections where an ambient layer
+IS right (jet arcs, precomputed sea routes), but rail does not use it.
+
+**Other first-review fixes (2026-07-29): globe too small.**
 
 - `ROUTE_ZOOM = 5.5` is right for the home globe — seven collections' routes at
   world zoom is a ball of wool — but wrong for a collection page, where the

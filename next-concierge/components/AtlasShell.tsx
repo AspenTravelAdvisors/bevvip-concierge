@@ -264,6 +264,13 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   const shellRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
   const apiRef = useRef<AtlasApi | null>(null);
+  // Filled by the map effect so the route-trace listener below can reach the
+  // painters without re-running the whole map lifecycle.
+  const focusRouteRef = useRef<{
+    paint(legs: { mode: string; coordinates: [number, number][] }[]): void;
+    clear(): void;
+    fit(legs: { coordinates: [number, number][] }[]): void;
+  } | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   // Poster frame: a pre-rendered globe (same camera framing) painted from the
@@ -674,7 +681,70 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           map.on("mouseenter", "featured-dot", () => { map.getCanvas().style.cursor = "pointer"; });
           map.on("mouseleave", "featured-dot", () => { map.getCanvas().style.cursor = ""; });
 
-          // Progressive zoom: load route lines on first crossing above ROUTE_ZOOM,
+          /* ── Focused route ────────────────────────────────────────────────
+           One trip's route, traced on hover or click — the interaction the
+           Leaflet atlases had and the reason "I don't see routes" is the right
+           complaint about an ambient all-routes layer. Rail legs get the
+           original's railway symbology (dark casing, copper rail, sleeper
+           hatching); ferry/transfer legs get an honest dashed connector rather
+           than pretending to be track. */
+        function paintFocusRoute(legs: { mode: string; coordinates: [number, number][] }[]) {
+          const data = {
+            type: "FeatureCollection" as const,
+            features: legs
+              .filter((l) => l.coordinates.length >= 2)
+              .map((l) => ({
+                type: "Feature" as const,
+                geometry: { type: "LineString" as const, coordinates: l.coordinates },
+                properties: { rail: l.mode === "rail" ? 1 : 0 },
+              })),
+          };
+          if (!map.getSource("focus-route")) map.addSource("focus-route", { type: "geojson", data });
+          else map.getSource("focus-route")?.setData(data);
+
+          addLayer(map, {
+            id: "fr_casing", type: "line", source: "focus-route",
+            filter: ["==", ["get", "rail"], 1],
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": "#140b06", "line-width": 7, "line-opacity": 0.5 },
+          });
+          addLayer(map, {
+            id: "fr_rail", type: "line", source: "focus-route",
+            filter: ["==", ["get", "rail"], 1],
+            layout: { "line-join": "round", "line-cap": "butt" },
+            paint: { "line-color": "#e08d5f", "line-width": 3.4, "line-opacity": 0.98 },
+          });
+          addLayer(map, {
+            id: "fr_ties", type: "line", source: "focus-route",
+            filter: ["==", ["get", "rail"], 1],
+            layout: { "line-join": "round", "line-cap": "butt" },
+            paint: { "line-color": "#241007", "line-width": 3.4, "line-opacity": 0.92, "line-dasharray": [2.5, 7] },
+          });
+          addLayer(map, {
+            id: "fr_conn", type: "line", source: "focus-route",
+            filter: ["==", ["get", "rail"], 0],
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": "#f2d9c4", "line-width": 2, "line-opacity": 0.6, "line-dasharray": [2, 9] },
+          });
+        }
+
+        function clearFocusRoute() {
+          const empty = { type: "FeatureCollection" as const, features: [] };
+          if (map.getSource("focus-route")) map.getSource("focus-route")?.setData(empty);
+        }
+
+        function fitFocusRoute(legs: { coordinates: [number, number][] }[]) {
+          try {
+            const b = new (mapboxgl as MapboxModule).LngLatBounds();
+            let n = 0;
+            for (const l of legs) for (const c of l.coordinates) { b.extend(c); n++; }
+            if (n) map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
+          } catch { /* fit optional */ }
+        }
+
+        focusRouteRef.current = { paint: paintFocusRoute, clear: clearFocusRoute, fit: fitFocusRoute };
+
+        // Progressive zoom: load route lines on first crossing above ROUTE_ZOOM,
           // then toggle their visibility on subsequent zoom changes.
           map.on("zoomend", () => {
             const z = map.getZoom();
@@ -1019,10 +1089,25 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
     function onRefit() {
       apiRef.current?.refit();
     }
+    // Trace one trip's route. Collection pages dispatch this on card hover and
+    // click; an empty `legs` clears the trace.
+    const onRoute = (e: Event) => {
+      const detail = (e as CustomEvent).detail as
+        | { legs?: { mode: string; coordinates: [number, number][] }[]; fit?: boolean }
+        | undefined;
+      const api = focusRouteRef.current;
+      if (!api) return;
+      const legs = detail?.legs ?? [];
+      if (!legs.length) { api.clear(); return; }
+      api.paint(legs);
+      if (detail?.fit) api.fit(legs);
+    };
+    window.addEventListener("bevvip:atlas-route", onRoute as EventListener);
     window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
     window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
     window.addEventListener("bevvip:atlas-refit", onRefit);
     return () => {
+      window.removeEventListener("bevvip:atlas-route", onRoute as EventListener);
       window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
       window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
       window.removeEventListener("bevvip:atlas-refit", onRefit);
@@ -1454,10 +1539,17 @@ async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
         .filter((pts) => pts.length >= 2);
     }
 
-    // jet + train: not sea routes, so they stay on runtime geometry — the stop
-    // list is small and needs no land avoidance. They do need the arc (a
-    // straight line between two cities reads as a wire, not a journey) and the
-    // antimeridian unroll, which the old code gave them neither of.
+    // TRAIN IS NOT ARCED. Trains follow tracks, and the rail atlas ships the
+    // real geometry (public/maps/train/data/rail-routes.json, 269 legs and
+    // 23,541 points). Arcing a rail journey draws a bezier over Loch Lomond
+    // instead of the West Highland Line. Rail routes are traced per-trip from
+    // that file — see lib/atlas/adapters/rail-geometry.ts and the focused-route
+    // layer — so this ambient path is jet-only geometry.
+    if (key === "train") return [];
+
+    // jet: an aircraft really does fly the arc, and a straight line between two
+    // cities reads as a wire rather than a journey. It needs the antimeridian
+    // unroll too, which the old code gave it neither of.
     // itinerary.json → ROUTES: { [slug]: [{n, r, ll:[lat,lng]}] }
     const r = await fetch(`${ATLASES[key].base}/itinerary.json`);
     if (!r.ok) return [];
