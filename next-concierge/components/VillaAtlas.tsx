@@ -13,6 +13,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
+import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
 // Same public, URL-restricted token the Living Atlas ships (see AtlasShell).
 const FALLBACK_TOKEN =
   "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
@@ -146,12 +147,14 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
       .then((j: { total: number; pins: [number, number, number, number, number][] }) => {
         const m = mapRef.current;
         if (!m || q !== filterQueryRef.current) return; // stale response
+        // Each pin is [id, lat, lon, exact, featured] — the villa dataset's
+        // geo.{lat, lon} flattened by lib/villas.js, so the pair is [lat, lon].
         const features = j.pins
-          .filter((p) => Number.isFinite(p[1]) && Number.isFinite(p[2]))
+          .filter((p) => isFinitePair([p[1], p[2]]))
           .map(([id, lat, lon, exact, featured]) => ({
             type: "Feature" as const,
             properties: { id, exact, featured },
-            geometry: { type: "Point" as const, coordinates: [lon, lat] },
+            geometry: { type: "Point" as const, coordinates: fromLatLngPair([lat, lon]) },
           }));
         const src = m.getSource("villas") as MBGeoJSONSource | undefined;
         if (!src) return;

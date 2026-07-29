@@ -21,6 +21,17 @@ import { useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
 import { ATLASES, COLLECTIONS, internalAtlasLink } from "@/lib/atlas-config";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
+// Every coordinate this component touches is minted here. See lib/atlas/geo.ts
+// for why: six upstream feeds disagree about [lat,lng] vs [lng,lat], and the
+// convention used to live only in comments.
+import {
+  type LngLat,
+  fromLatLngPair,
+  fromLngLatPair,
+  fromNamed,
+  isFinitePair,
+  offset as offsetLngLat,
+} from "@/lib/atlas/geo";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
@@ -97,25 +108,35 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
 
 // Globe-only pin nudges: each atlas centers a region on its own itineraries, so
 // the same place can land ~9° apart or nearly on top of another. Shift only
-// these live-globe pins so paired regions read clearly. Keyed [lng,lat].
-const PIN_NUDGE: Partial<Record<OverlayKey, Record<string, [number, number]>>> = {
-  worldcruise: { MED: [20, 36.5] },
-  yacht: { MED: [9.36, 41.24], SEASIA: [104.7, 6.6], CENTRALAM: [-81.99, 9.67] },
+// these live-globe pins so paired regions read clearly. Authored [lng,lat].
+const PIN_NUDGE: Partial<Record<OverlayKey, Record<string, LngLat>>> = {
+  worldcruise: { MED: fromLngLatPair([20, 36.5]) },
+  yacht: {
+    MED: fromLngLatPair([9.36, 41.24]),
+    SEASIA: fromLngLatPair([104.7, 6.6]),
+    CENTRALAM: fromLngLatPair([-81.99, 9.67]),
+  },
   // Hawaii's villa volume drags the US circular mean into the Pacific; pin the
   // mainland instead.
-  villa: { "United States": [-98.5, 38.5] },
+  villa: { "United States": fromLngLatPair([-98.5, 38.5]) },
 };
 
-// Fallback region centers [lng,lat,zoom] used to focus a ?region= deep link
-// before /api/regions geometry resolves, and to place result pins that arrive
-// without coordinates.
-const REGION_FALLBACK: Record<string, [number, number, number]> = {
-  antarctica: [0, -72, 2.3], arctic: [8, 79, 2.3], galapagos: [-91, -0.4, 5],
-  amazon: [-60, -3.5, 3.8], polynesia: [-149, -17, 3.4], patagonia: [-72, -49, 3.6],
-  kimberley: [126, -16, 4.3], mediterranean: [15, 38.5, 3.4], norway: [12, 65, 3.4],
-  japan: [138, 37, 3.9], namibia: [17, -22, 4.2], alaska: [-149, 60.5, 4],
-  caribbean: [-66, 16, 4], baja: [-111.5, 24, 4.4], britishisles: [-3, 58, 4],
-  seychelles: [55.5, -4.6, 5], "northwest passage": [-95, 74, 2.8],
+// Fallback region cameras used to focus a ?region= deep link before
+// /api/regions geometry resolves, and to place result pins that arrive without
+// coordinates. Centers are authored [lng,lat]; zoom rides alongside rather
+// than as a third tuple slot, so the pair can be minted as a LngLat.
+type RegionCamera = { at: LngLat; zoom: number };
+const cam = (lng: number, lat: number, zoom: number): RegionCamera => ({
+  at: fromLngLatPair([lng, lat]),
+  zoom,
+});
+const REGION_FALLBACK: Record<string, RegionCamera> = {
+  antarctica: cam(0, -72, 2.3), arctic: cam(8, 79, 2.3), galapagos: cam(-91, -0.4, 5),
+  amazon: cam(-60, -3.5, 3.8), polynesia: cam(-149, -17, 3.4), patagonia: cam(-72, -49, 3.6),
+  kimberley: cam(126, -16, 4.3), mediterranean: cam(15, 38.5, 3.4), norway: cam(12, 65, 3.4),
+  japan: cam(138, 37, 3.9), namibia: cam(17, -22, 4.2), alaska: cam(-149, 60.5, 4),
+  caribbean: cam(-66, 16, 4), baja: cam(-111.5, 24, 4.4), britishisles: cam(-3, 58, 4),
+  seychelles: cam(55.5, -4.6, 5), "northwest passage": cam(-95, 74, 2.8),
 };
 
 // Derived from the canonical COLLECTIONS list rather than hand-maintained, so
@@ -256,10 +277,10 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let hotelFC: HotelFC | null = null;
     let hotelRevealed = false; // first paint fades the field in; repaints are instant
     const overlayFeats: Partial<Record<OverlayKey, OverlayFeature[]>> = {};
-    const routeLines: Partial<Record<OverlayKey, [number, number][][]>> = {};
+    const routeLines: Partial<Record<OverlayKey, LngLat[][]>> = {};
     let routesFetched = false;
     let featuredFC: FeaturedFC | null = null;
-    let regionsGeo: Record<string, [number, number]> = {};
+    let regionsGeo: Record<string, LngLat> = {};
 
     function escapeHtml(s: string) {
       return String(s).replace(
@@ -628,7 +649,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (!tools.length) return;
           type Feat = {
             type: "Feature";
-            geometry: { type: "Point"; coordinates: [number, number] };
+            geometry: { type: "Point"; coordinates: LngLat };
             properties: { name: string; html: string };
           };
           const features: Feat[] = [];
@@ -640,7 +661,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             // which sits in the Sahara and made Caribbean results pin over Niger.
             const chart = tool.chartRegion || meta.chartRegion || "";
             const cc = chart ? regionCenter(chart, regionsGeo, regionLookupKey) : null;
-            const fallbackCenter: [number, number] | null = cc ? [cc[0], cc[1]] : null;
+            const fallbackCenter: LngLat | null = cc ? cc.at : null;
             const recs = (tool.results ?? []).slice(0, 60);
             total += tool.total ?? recs.length;
             recs.forEach((r, i) => {
@@ -817,7 +838,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           const focus = region ? regionCenter(region, regionsGeo, regionLookupKey) : null;
           if (focus) {
             focused = true;
-            map.flyTo({ center: [focus[0], focus[1]], zoom: focus[2], speed: 0.8 });
+            map.flyTo({ center: focus.at, zoom: focus.zoom, speed: 0.8 });
           } else if (restored) {
             plotResults(restored);
           } else if (region) {
@@ -1153,12 +1174,13 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
 
 /* Region geometry (bbox + center), used to focus a ?region= deep link and to
    place result pins that arrive without coordinates. */
-async function loadRegions(): Promise<Record<string, [number, number]>> {
-  const geo: Record<string, [number, number]> = {};
+async function loadRegions(): Promise<Record<string, LngLat>> {
+  const geo: Record<string, LngLat> = {};
   try {
     const j = await (await fetch(`${HOTEL_BASE}/api/regions`)).json();
+    // lib/atlas/hotels.js emits `center: [circular-mean lng, mean lat]`.
     (j.regions || []).forEach((r: { region: string; center?: [number, number] }) => {
-      if (Array.isArray(r.center) && r.center.length === 2) geo[r.region] = r.center;
+      if (isFinitePair(r.center)) geo[r.region] = fromLngLatPair(r.center);
     });
   } catch { /* regions optional; map still usable */ }
   return geo;
@@ -1166,7 +1188,7 @@ async function loadRegions(): Promise<Record<string, [number, number]>> {
 
 interface OverlayFeature {
   type: "Feature";
-  geometry: { type: "Point"; coordinates: [number, number] };
+  geometry: { type: "Point"; coordinates: LngLat };
   properties: { type: string; key: string; name: string; count: number };
 }
 
@@ -1175,15 +1197,15 @@ async function fetchOverlay(key: OverlayKey): Promise<OverlayFeature[]> {
   const json = await (await fetch(cfg.data)).json();
   const regs = regionsFromData(json).sort((a, b) => (b.count || 0) - (a.count || 0));
   const nudge = PIN_NUDGE[key];
-  if (nudge) for (const r of regs) { const o = nudge[r.key]; if (o) { r.lng = o[0]; r.lat = o[1]; } }
+  if (nudge) for (const r of regs) { const o = nudge[r.key]; if (o) r.at = o; }
   return regs.map((r) => ({
     type: "Feature" as const,
-    geometry: { type: "Point" as const, coordinates: [r.lng, r.lat] as [number, number] },
+    geometry: { type: "Point" as const, coordinates: r.at },
     properties: { type: key, key: r.key, name: r.name, count: r.count },
   }));
 }
 
-interface Reg { key: string; name: string; lng: number; lat: number; count: number }
+interface Reg { key: string; name: string; at: LngLat; count: number }
 
 /* Normalize an atlas-meta / itinerary feed into region pins. Each app keys its
    regions the same way it tags trips (the `g` array). Counts come from the meta
@@ -1199,13 +1221,15 @@ function regionsFromData(json: {
   const out: Reg[] = [];
   for (const k of Object.keys(R)) {
     const r = R[k];
-    if (!r || !Array.isArray(r.coord) || r.coord.length < 2) continue;
+    // Every atlas feed (and the villa overlay view) writes REGIONS.coord as
+    // [lat, lng] — the one place that fact is now stated.
+    if (!r || !isFinitePair(r.coord)) continue;
     const name = r.name || k;
     if (/^other\b/i.test(k) || /^other\b/i.test(name)) continue; // skip catch-all buckets
     const count = r.count != null ? r.count : tally[k] || 0;
-    out.push({ key: k, name, lng: Number(r.coord[1]), lat: Number(r.coord[0]), count });
+    out.push({ key: k, name, at: fromLatLngPair(r.coord), count });
   }
-  return out.filter((r) => Number.isFinite(r.lng) && Number.isFinite(r.lat));
+  return out;
 }
 
 function overlayMeta(key: OverlayKey, count?: number): string {
@@ -1219,10 +1243,10 @@ function overlayMeta(key: OverlayKey, count?: number): string {
 
 function regionCenter(
   region: string,
-  geo: Record<string, [number, number]>,
+  geo: Record<string, LngLat>,
   lookupKey: (s: string) => string,
-): [number, number, number] | null {
-  if (geo[region]) return [geo[region][0], geo[region][1], 4];
+): RegionCamera | null {
+  if (geo[region]) return { at: geo[region], zoom: 4 };
   const direct = REGION_FALLBACK[region];
   if (direct) return direct;
   const k = lookupKey(region);
@@ -1236,22 +1260,24 @@ function pointForResult(
   r: OfferingResult,
   i: number,
   total: number,
-  geo: Record<string, [number, number]>,
-  fallbackCenter: [number, number] | null,
-): [number, number] | null {
-  const lng = Number((r as { lng?: number }).lng);
-  const lat = Number((r as { lat?: number }).lat);
-  if (Number.isFinite(lng) && Number.isFinite(lat)) return [lng, lat];
+  geo: Record<string, LngLat>,
+  fallbackCenter: LngLat | null,
+): LngLat | null {
+  // Search results carry named lng/lat (hotels, villas via lib/villas.js).
+  const named = r as { lng?: number; lat?: number };
+  if (Number.isFinite(Number(named.lng)) && Number.isFinite(Number(named.lat))) {
+    return fromNamed({ lat: Number(named.lat), lng: Number(named.lng) });
+  }
   const key = String(r.region || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
   const fb = REGION_FALLBACK[key];
-  const base: [number, number] | undefined =
-    geo[r.region || ""] || (fb ? [fb[0], fb[1]] : undefined) || fallbackCenter || undefined;
+  const base: LngLat | undefined =
+    geo[r.region || ""] || fb?.at || fallbackCenter || undefined;
   // No coordinates and no region we can place it in: skip the pin rather than
   // dropping it at a meaningless default location.
   if (!base) return null;
   if (total <= 1) return base;
   const ang = (i / total) * Math.PI * 2;
-  return [base[0] + Math.cos(ang) * 1.4, base[1] + Math.sin(ang) * 1.4];
+  return offsetLngLat(base, Math.cos(ang) * 1.4, Math.sin(ang) * 1.4);
 }
 
 // Translate an atlas deep link into the in-app atlas route (/atlas/<type>?…),
@@ -1320,7 +1346,7 @@ function layerIdsFor(key: string): string[] {
 // Returns arrays of [lng, lat] coordinate pairs (one array per route/trip).
 // Each atlas stores route data differently; this normalises them all.
 
-async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
+async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
   try {
     if (key === "cruise") {
       // Dedicated routes file: { [slug]: [{n, ll:[lat,lng]}] }
@@ -1329,9 +1355,7 @@ async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
       const j: Record<string, { n?: string; ll?: [number, number] }[]> = await r.json();
       return Object.values(j)
         .map((stops) =>
-          stops
-            .filter((s) => Array.isArray(s.ll))
-            .map((s) => [s.ll![1], s.ll![0]] as [number, number]),
+          stops.filter((s) => isFinitePair(s.ll)).map((s) => fromLatLngPair(s.ll!)),
         )
         .filter((pts) => pts.length >= 2);
     }
@@ -1343,9 +1367,7 @@ async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
       const ROUTES = j.ROUTES || {};
       return Object.values(ROUTES)
         .map((stops) =>
-          stops
-            .filter((s) => Array.isArray(s.ll))
-            .map((s) => [s.ll![1], s.ll![0]] as [number, number]),
+          stops.filter((s) => isFinitePair(s.ll)).map((s) => fromLatLngPair(s.ll!)),
         )
         .filter((pts) => pts.length >= 2);
     }
@@ -1363,8 +1385,8 @@ async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
     return TRIPS
       .map((trip) =>
         (trip.itin || [])
-          .filter((s) => s.n && PORTS[s.n])
-          .map((s) => { const ll = PORTS[s.n!]; return [ll[1], ll[0]] as [number, number]; }),
+          .filter((s) => s.n && isFinitePair(PORTS[s.n]))
+          .map((s) => fromLatLngPair(PORTS[s.n!])), // PORTS: { name: [lat, lng] }
       )
       .filter((pts) => pts.length >= 2);
   } catch {
@@ -1376,11 +1398,11 @@ async function fetchRouteLines(key: OverlayKey): Promise<[number, number][][]> {
 
 interface HotelFC {
   type: "FeatureCollection";
-  features: { type: "Feature"; geometry: { type: "Point"; coordinates: [number, number] }; properties: { id: string; region: string | null; name: string } }[];
+  features: { type: "Feature"; geometry: { type: "Point"; coordinates: LngLat }; properties: { id: string; region: string | null; name: string } }[];
 }
 interface FeaturedFC {
   type: "FeatureCollection";
-  features: { type: "Feature"; geometry: { type: "Point"; coordinates: [number, number] }; properties: { name: string; html: string } }[];
+  features: { type: "Feature"; geometry: { type: "Point"; coordinates: LngLat }; properties: { name: string; html: string } }[];
 }
 
 async function fetchHotelPoints(): Promise<HotelFC> {
@@ -1396,11 +1418,13 @@ async function fetchHotelPoints(): Promise<HotelFC> {
       };
       if (data && data.type === "FeatureCollection" && Array.isArray(data.features)) {
         const features: HotelFC["features"] = data.features.flatMap((f) => {
-          const lng = Number(f.geometry?.coordinates?.[0]), lat = Number(f.geometry?.coordinates?.[1]);
-          if (!Number.isFinite(lng) || !Number.isFinite(lat)) return [];
+          // hotel-points.json is GeoJSON — coordinates are already [lng, lat].
+          const c = f.geometry?.coordinates;
+          if (!isFinitePair(c)) return [];
+          const at = fromLngLatPair(c);
           return [{
             type: "Feature",
-            geometry: { type: "Point", coordinates: [lng, lat] },
+            geometry: { type: "Point", coordinates: at },
             properties: {
               id: f.properties?.id || "",
               region: f.properties?.marqueeRegion || f.properties?.region || null,
@@ -1425,11 +1449,11 @@ async function fetchHotelPoints(): Promise<HotelFC> {
   [first, ...rest].forEach((page) => {
     const results = (page.results || []) as { lng?: number; lat?: number; id?: string; region?: string; name?: string }[];
     results.forEach((h) => {
-      const lng = Number(h.lng), lat = Number(h.lat);
-      if (!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+      // The paged hotel API returns named {lng, lat}, not a pair.
+      if (!Number.isFinite(Number(h.lng)) || !Number.isFinite(Number(h.lat))) return;
       features.push({
         type: "Feature",
-        geometry: { type: "Point", coordinates: [lng, lat] },
+        geometry: { type: "Point", coordinates: fromNamed({ lat: Number(h.lat), lng: Number(h.lng) }) },
         properties: { id: h.id || "", region: h.region || null, name: h.name || "" },
       });
     });
@@ -1473,7 +1497,8 @@ interface MBPopup {
   remove(): void;
 }
 interface MBBounds {
-  extend(c: [number, number]): MBBounds;
+  // readonly, so a branded LngLat from lib/atlas/geo.ts passes without a cast.
+  extend(c: readonly [number, number]): MBBounds;
 }
 interface MBMap {
   on(type: string, layerOrCb: string | ((e: MBEvent) => void), cb?: (e: MBEvent) => void): void;
@@ -1482,7 +1507,7 @@ interface MBMap {
   getCenter(): { lng: number; lat: number };
   setCenter(c: { lng: number; lat: number }): void;
   setZoom(z: number): void;
-  flyTo(opts: { center: [number, number]; zoom: number; speed?: number }): void;
+  flyTo(opts: { center: readonly [number, number]; zoom: number; speed?: number }): void;
   fitBounds(b: MBBounds, opts: Record<string, unknown>): void;
   setPadding(p: { top: number; bottom: number; left: number; right: number }): void;
   resize(): void;

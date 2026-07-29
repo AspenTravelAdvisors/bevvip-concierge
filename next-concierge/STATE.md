@@ -60,6 +60,53 @@ takes many minutes because `resolveJsonModule` + `allowJs` makes tsc infer
 literal types for `villas-of-distinction.json` (7.3 MB) and
 `itinerary-fit.json` (7.1 MB). **Run `npm run build` locally before deploying.**
 
+## Atlas unification — Deliverable 0 SHIPPED 2026-07-29
+
+Work order: `WORKORDER-atlas-unification.md`. D0 only; D1–D5 not started.
+
+**`lib/atlas/geo.ts` is now the only place a coordinate order is decided.**
+Six upstream feeds disagree about `[lat,lng]` vs `[lng,lat]` (the table in the
+work order). The conversions in `AtlasShell` were already correct, but the
+convention lived only in comments — so the next person to add a feed had
+nothing but prose to check against. `geo.ts` exports a branded
+`LngLat = readonly [number, number] & { [brand]: true }`, which only that module
+can mint, plus one parser per input shape:
+
+- `fromLatLngPair` — jet/train `ll`, `REGIONS[*].coord`, `PORTS[name]`, villa pins
+- `fromLngLatPair` — GeoJSON, `/api/hotel/regions` centers, `PIN_NUDGE`, `REGION_FALLBACK`
+- `fromNamed` — hotels `{lat,lng}`, villas `{lat,lon}` (`lng` wins if both)
+- `isFinitePair`, `offset`, `withLng`, `unrollLine` (unrolling is unused until D1c)
+
+A bare `[number, number]` no longer type-checks where a `LngLat` is expected,
+so the order is un-mixable rather than merely documented. Migrated call sites:
+`regionsFromData`, `fetchOverlay`, `loadRegions`, `regionCenter`,
+`pointForResult`, `fetchRouteLines`, `fetchHotelPoints` (both the points-file
+path and the paged-API fallback), `plotResults`, and `VillaAtlas`'s pin decode.
+`REGION_FALLBACK` changed shape from `[lng,lat,zoom]` to `{at: LngLat, zoom}` —
+a 3-tuple can't be a pair. The Mapbox shim's `flyTo`/`LngLatBounds.extend`
+signatures were widened to `readonly [number, number]`.
+
+**Pure refactor — no visual change intended.** Verified by replaying every
+conversion the old inline code did against the same conversion through
+`geo.ts`, over the real datasets: **71,053 coordinates, 0 mismatches** (79
+region pins, 2,501 hotel pins, 58,818 route-leg points, 3,902 villa pins by
+both pair and named accessor, 22 authored constants, 1,829 spiral offsets).
+
+### Two findings for Deliverable 1 — do not lose these
+
+1. **`fetchRouteLines`'s cruise branch parses a file shape that does not
+   exist.** It expects `{ [slug]: [{n, ll:[lat,lng]}] }`; the real
+   `public/maps/cruise/data/itinerary-routes.json` is
+   `{ _meta, routes: { id: [{d, s, p: [[portName, lat, lng], …]}] } }`. The
+   branch throws, is caught, and returns `[]`. Invisible today only because
+   `ROUTES_ENABLED = false`. D1c replaces the function, so fix it there.
+2. **14,498 cruise route ports carry null coordinates** (~20% of that file).
+   The old inline guards used `Number.isFinite(Number(x))`, and `Number(null)`
+   is `0` — so nulls passed and would plot at `[0, 0]`, in the Gulf of Guinea,
+   looking like a legitimate pin. `isFinitePair` is deliberately stricter and
+   rejects `null` / `undefined` / `""` / booleans. Keep that guard on the
+   build-time router, and expect the coverage report to list these.
+
 ## Offering types (7)
 
 | Type | Surface | Data | Fulfillment |
