@@ -37,6 +37,7 @@ import {
 // rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
+import { mapStyleFallback } from "@/lib/analytics";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
@@ -168,6 +169,22 @@ const GLOBE_FOG = {
 // can switch to Dark or Dusk (Mapbox Standard vector with 3D buildings) at any
 // time.
 type StyleKey = "dark" | "satellite" | "dusk";
+
+// ── Basemap fallback ───────────────────────────────────────────────────────
+// Satellite and Dusk are both Mapbox Standard-family styles; Dark is a classic
+// style, and the two families fail independently. On 2026-07-29 both Standard
+// styles stopped completing `style.load` for our token — every dependency
+// (style JSON, all three source TileJSONs, sprite, glyphs, 32 .glb models)
+// still returned 200 in under 100ms, and GL emitted no error, it simply never
+// finished. The globe sat there for 12 seconds and then replaced itself with
+// the "Map unavailable" handoff panel, while a working basemap was one
+// setStyle away the whole time.
+//
+// So: if a style hasn't loaded in STYLE_FALLBACK_MS, drop to Dark. A degraded
+// globe beats no globe, and this is basemap-agnostic — it covers whichever
+// family breaks next, not just this incident.
+const STYLE_FALLBACK_KEY: StyleKey = "dark";
+const STYLE_FALLBACK_MS = 4000;
 const DUSK_FOG = {
   color: "rgb(58,48,62)", "high-color": "rgb(120,86,70)",
   "horizon-blend": 0.05, "space-color": "rgb(10,8,12)", "star-intensity": 0.2,
@@ -272,6 +289,11 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     let styleKeyLocal: StyleKey = "satellite";
     let ro: ResizeObserver | undefined;
     let loadTimeout = 0;
+    let styleWatchdog = 0;
+    // Basemaps that failed to load this session. plotResults flips to Satellite
+    // to reveal results, so without this every plot would re-attempt a known-
+    // broken style and stall for STYLE_FALLBACK_MS again.
+    const failedStyles = new Set<StyleKey>();
     const node = mapEl.current;
 
     // Data fetches launch immediately — in parallel with the mapbox-gl script
@@ -758,7 +780,9 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           if (msg) console.warn("[atlas] map error", msg);
         });
 
-        // Fallback to the elegant handoff panel if the globe never loads.
+        // Fallback to the elegant handoff panel if the globe never loads. This
+        // is now the LAST resort — the style watchdog below gets first refusal,
+        // and only a total Mapbox failure should reach this.
         loadTimeout = window.setTimeout(() => {
           if (!ready && !cancelled) setMapFailed(true);
         }, 12000);
@@ -772,10 +796,34 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         });
         ro.observe(node);
 
+        // Watch the style we just asked for. Armed at construction and on every
+        // setStyle; disarmed by style.load. See STYLE_FALLBACK_KEY above.
+        function armStyleWatchdog() {
+          window.clearTimeout(styleWatchdog);
+          if (styleKeyLocal === STYLE_FALLBACK_KEY) return; // nothing left to fall back to
+          const attempted = styleKeyLocal;
+          styleWatchdog = window.setTimeout(() => {
+            if (cancelled || styleKeyLocal !== attempted) return;
+            console.warn(
+              `[atlas] basemap "${attempted}" did not finish loading in ${STYLE_FALLBACK_MS}ms — falling back to "${STYLE_FALLBACK_KEY}"`,
+            );
+            mapStyleFallback(attempted, STYLE_FALLBACK_KEY);
+            failedStyles.add(attempted);
+            styleKeyLocal = STYLE_FALLBACK_KEY;
+            setStyleKey(STYLE_FALLBACK_KEY);
+            // restyling stays as-is: if this fired mid-switch the pending
+            // style.load never came, so the flag is already true and the
+            // fallback's own style.load will clear it.
+            try { map.setStyle(ATLAS_STYLES[STYLE_FALLBACK_KEY].url); } catch { restyling = false; }
+          }, STYLE_FALLBACK_MS);
+        }
+        armStyleWatchdog();
+
         // style.load fires on the first load AND after every setStyle — the one
         // place we (re)apply fog, projection and all data layers.
         map.on("style.load", () => {
           if (cancelled) return;
+          window.clearTimeout(styleWatchdog);
           const s = ATLAS_STYLES[styleKeyLocal] || ATLAS_STYLES.satellite;
           setFog(map, s.fog);
           // Some Standard-family styles carry a light preset / theme override;
@@ -864,11 +912,16 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
         // Imperative API the control buttons drive.
         const api: AtlasApi = {
           setStyle(key) {
+            // Already known bad this session — don't spend another 4s finding
+            // out. plotResults asks for Satellite on every plot.
+            if (failedStyles.has(key)) key = STYLE_FALLBACK_KEY;
             if (key === styleKeyLocal) return;
             styleKeyLocal = key;
             setStyleKey(key);
             restyling = true;
             try { map.setStyle(ATLAS_STYLES[key].url); } catch { restyling = false; }
+            // A manual switch into a broken family must degrade too, not hang.
+            armStyleWatchdog();
           },
           setProjection(globe) {
             projGlobe = globe;
@@ -912,6 +965,7 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
       cancelAnimationFrame(spinRAF);
       cancelAnimationFrame(pulseRAF);
       clearTimeout(loadTimeout);
+      clearTimeout(styleWatchdog);
       ro?.disconnect();
       apiRef.current = null;
       mapRef.current?.remove();

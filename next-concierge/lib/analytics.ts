@@ -57,6 +57,22 @@ export function atlasOpened(type: string, source: "card" | "shortlist" | "nav") 
   emit("atlas_opened", { type, source });
 }
 
+/**
+ * A basemap never finished loading and the globe fell back to a classic style.
+ *
+ * On its face this breaks the "only the lead funnel belongs here" rule above —
+ * it isn't an ask or a booking. It earns its place because the globe silently
+ * failing IS a funnel event: on 2026-07-29 both Mapbox Standard-family styles
+ * (standard-satellite and standard) stopped completing `style.load` for this
+ * token, with every dependency still returning 200 and no error event, and the
+ * home page showed "Map unavailable" instead of the thing the whole first
+ * impression rests on. Nothing measured it. If it recurs we should see it in
+ * the numbers, not by someone happening to load the page.
+ */
+export function mapStyleFallback(from: string, to: string) {
+  emit("map_style_fallback", { from, to });
+}
+
 /** Did anyone want the tour once it stopped opening itself? */
 export function tourOpened() {
   emit("tour_opened");

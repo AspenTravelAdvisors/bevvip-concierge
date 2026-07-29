@@ -193,6 +193,47 @@ cell, so the first and last segments always "hit land" by construction.
   `legGeometry` tests the straight line (not the bezier) when deciding whether
   to route. A* is correct there.
 
+## INCIDENT 2026-07-29 — Mapbox Standard styles stopped loading
+
+**Symptom.** The home globe showed "Map unavailable" on every full page load.
+Not caused by the D0 or D1 work, though it surfaced during D1 verification.
+
+**Diagnosis.** On the live page, a `new mapboxgl.Map()` built from scratch with
+no app code hangs identically, while on the same page and token:
+
+| style | family | `style.load` |
+| --- | --- | --- |
+| `dark-v11` | classic | fires |
+| `satellite-streets-v12` | classic | fires |
+| `standard` (Dusk) | Standard | never fires |
+| `standard-satellite` (Satellite, boot style) | Standard | never fires |
+
+Not a GL version issue — 3.7.0, 3.9.0 and 3.15.0 all hang. Not a missing
+resource: the style JSON (74 KB), all three source TileJSONs, the sprite, the
+glyphs and the 32 `.glb` models every returned 200 in under 100ms. GL emitted
+no `error` event; it simply never completed. Mapbox status page showed all
+systems operational. Root cause is therefore outside the app — either something
+account-scoped on Standard styles (quota / entitlement / billing) or a style
+schema change GL cannot finish. **If the globe is ever "unavailable" again,
+check the Mapbox account first, and re-run the probe above before suspecting
+app code.**
+
+**Mitigation shipped.** `AtlasShell` now arms a style watchdog
+(`STYLE_FALLBACK_MS = 4000`) at map construction and on every `setStyle`,
+disarmed by `style.load`. If a basemap doesn't finish, the globe drops to
+`dark-v11` (`STYLE_FALLBACK_KEY`) instead of sitting for 12s and replacing
+itself with the handoff panel. Failed styles go into a per-session
+`failedStyles` set, because `plotResults` flips to Satellite on every plot and
+would otherwise re-stall each time. `map_style_fallback` added to
+`lib/analytics.ts` — the globe failing silently was previously unmeasured.
+
+The 12s `loadTimeout` → `setMapFailed` path remains as the last resort, for a
+total Mapbox failure rather than one bad basemap family.
+
+**Still open:** Satellite is the house default and the most persuasive thing on
+the home page. Until Standard styles work again the globe opens on Dark. Worth
+confirming the Mapbox account state before assuming it resolved itself.
+
 ## Offering types (7)
 
 | Type | Surface | Data | Fulfillment |
