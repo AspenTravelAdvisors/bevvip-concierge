@@ -296,14 +296,32 @@ guessed:
   does not resolve and never did. Preserved deliberately so shared links land
   where they land today.
 
-**Next — the visible half:**
+**`components/AtlasFilterRail.tsx` — one rail for all five.** No
+`if (collection === …)` anywhere in it: which controls appear, what the stop
+control is called, and which role vocabulary its dropdown offers all come from
+the descriptor. Visual pattern follows `/atlas/villa` (`.villa-filters`), the
+only Mapbox-native filter UI the app already had.
 
-1. One filter rail component driven by `AtlasFilterDescriptor`, replacing five
-   bespoke ones. The three-state region pill (include / exclude / off) is
-   optional — nothing internal emits `exRegions`.
-2. Wire the adapters into `AtlasShell` so `/atlas/<type>` renders the globe
-   filtered to that collection, with every param in D3-FILTER-INVENTORY.md
-   honoured.
+Three decisions worth knowing:
+
+- **Region exclusion has no control, by choice.** `exRegions=` still parses and
+  still filters, so old Share links behave exactly as before — there is simply
+  no UI to author a new one. Nothing internal ever emitted it.
+- **The stop control is a type-ahead, not a dropdown.** cruise has 1,622
+  distinct ports and worldcruise 971; a `<select>` that size is unusable. The
+  Leaflet atlases reached the same conclusion — their only static filter markup
+  is `#portSearch` / `#locationSearch`. A `<datalist>` gives type-ahead over the
+  full list, and the filter only engages on an exact option match so half-typed
+  text never empties the map.
+- **State stays multi-value even though the controls are single-value.** A link
+  carrying `regions=MED,CARIB` filters on both; the control shows "Several (2)"
+  and leaves the set alone until the traveller actually changes it. Narrowing
+  state to what a `<select>` can express would silently drop half the meaning of
+  links already in circulation.
+
+**Next:** wire the adapters + rail into the `/atlas/<type>` route so the globe
+renders the collection, then delete `public/maps/<type>/`,
+`components/AtlasView.tsx` and the three served `landmask.bin` copies.
 3. Only then delete `public/maps/<type>/` and its vendored Leaflet, plus
    `components/AtlasView.tsx` and the iframe path — and at that point the three
    served `landmask.bin` copies can finally go too (see D1's "still open").

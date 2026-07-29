@@ -3349,3 +3349,38 @@ button.card-book {
     display: none;
   }
 }
+
+/* Atlas filter rail — shared by the five collections ported off Leaflet.
+   Reuses .villa-filters for the row itself (see AtlasFilterRail.tsx); these
+   are the two additions that row did not already have. */
+.villa-filters .atlas-count {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+.villa-filters .atlas-reset {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+.villa-filters .atlas-reset:hover {
+  border-color: var(--gold);
+}
+
+.villa-filters input.atlas-stop {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 12.5px;
+  font-family: var(--sans);
+  min-width: 150px;
+}
