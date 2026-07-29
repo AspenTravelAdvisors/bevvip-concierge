@@ -193,6 +193,38 @@ cell, so the first and last segments always "hit land" by construction.
   `legGeometry` tests the straight line (not the bezier) when deciding whether
   to route. A* is correct there.
 
+## Hotel atlas — `?ids=` deep link spun forever (fixed 2026-07-29)
+
+**Symptom.** `/atlas/hotel?ids=h_01034` flew to the right property and then
+orbited without ever settling. Clicking the same hotel from the atlas worked
+perfectly. Nothing to do with Google 3D being broken — it never was.
+
+**Cause: two competing camera flights.** A single deep-linked id issues both
+
+1. `fitToResults()` → `flyToFeatures(…, {minRange:3400, tilt:60})`, and
+2. `highlightDeepLinkIds()` → `openDetail()` → `flyTo({range:2600, tilt:67,
+   orbit:true})`
+
+Flight 2 arms its cinematic orbit on a one-shot `gmp-animationend`. But that
+event also fires when flight 1 is *interrupted* — which flight 2 does
+immediately. So `flyCameraAround` starts while flight 2's `flyCameraTo` is
+still animating, and (per the existing note by `stopIdleSpin`) the orbit
+re-sets the camera every frame. The two fight and the view never settles.
+Clicking a pin issues only flight 2, so the event fires cleanly at the end.
+
+**Fix, two layers.**
+
+- `fitToResults()` returns early when a single deep-linked id is about to be
+  opened, letting the detail cinematic own the camera. That removes the second
+  flight entirely.
+- `flyTo()`'s orbit arming now checks it is still the current flight (`seq ===
+  flySeq`) and that at least 80% of its own duration has elapsed; an early
+  event belongs to a superseded flight, so it re-arms and keeps waiting. This
+  makes any future double-flight path safe, not just this one.
+
+Relevant to Deliverable 2, which is specifically about `?ids=` / `?hotel=`
+flying straight to a property at detail range — that path now works.
+
 ## INCIDENT 2026-07-29 — Mapbox Standard styles stopped loading
 
 **Symptom.** The home globe showed "Map unavailable" on every full page load.
@@ -230,9 +262,19 @@ would otherwise re-stall each time. `map_style_fallback` added to
 The 12s `loadTimeout` → `setMapFailed` path remains as the last resort, for a
 total Mapbox failure rather than one bad basemap family.
 
-**Still open:** Satellite is the house default and the most persuasive thing on
-the home page. Until Standard styles work again the globe opens on Dark. Worth
-confirming the Mapbox account state before assuming it resolved itself.
+**Resolved the same day, on Mapbox's side.** Standard-Satellite began loading
+again roughly two hours later with no change from us; the globe opens on
+Satellite as designed and the watchdog does not fire. No account action was
+taken, so treat this as vendor-side and transient. The watchdog stays — it cost
+nothing and the next silent basemap failure degrades instead of blanking.
+
+**Lesson for the next session.** During this incident the hotel atlas *appeared*
+to be broken too, and it was not. Readings taken through an automated/CDP-driven
+Chrome tab were unreliable — a clean-room `Map3DElement` test run inside a
+`srcdoc` iframe reported zero tile requests, but a `srcdoc` iframe has an opaque
+null origin and the Google key is referrer-restricted, so that test was invalid
+by construction. **Confirm any "the map is broken" finding in a normal browser
+window before diagnosing further.**
 
 ## Offering types (7)
 

@@ -889,7 +889,21 @@ function flyTo(opts){
         // (~80s per revolution, 3 laps). Any user gesture interrupts the
         // animation natively; stopOrbit() covers panel close and re-frames.
         if(opts.orbit && typeof map3d.flyCameraAround==="function"){
-          orbitArm=()=>{ orbitArm=null;
+          // Arm the orbit on the end of THIS flight, not on any animation end.
+          // gmp-animationend also fires when an earlier flight is interrupted,
+          // so a deep link that frames a hotel and then opens it would arm the
+          // orbit while this flyCameraTo was still running — and
+          // flyCameraAround re-sets the camera every frame, so the two fight
+          // and the view never settles. If the event lands early, it belongs to
+          // the flight we just superseded: re-arm and keep waiting.
+          const flyMs=opts.duration||2200, t0=Date.now();
+          orbitArm=()=>{
+            if(seq!==flySeq) { orbitArm=null; return; }   // a newer flight owns the camera
+            if(Date.now()-t0 < flyMs*0.8){                 // stale event from the interrupted flight
+              map3d.addEventListener("gmp-animationend",orbitArm,{once:true});
+              return;
+            }
+            orbitArm=null;
             try{ map3d.flyCameraAround({camera:{center,tilt,range,heading},durationMillis:240000,rounds:3}); }catch(_){}
           };
           map3d.addEventListener("gmp-animationend",orbitArm,{once:true});
@@ -946,6 +960,15 @@ function fitToResults(){
   // Frame the deep-linked hotel(s) first — they are highlight-only now, so
   // matches() would report the whole field and skip framing otherwise.
   const focus=focusFeatures();
+  // A single deep-linked hotel is about to be opened by highlightDeepLinkIds(),
+  // and openDetail() flies to it itself with the cinematic orbit. Framing it
+  // here too issues a SECOND, competing flight: openDetail's flyTo interrupts
+  // this one mid-animation, which fires gmp-animationend early, which arms
+  // flyCameraAround while flyCameraTo is still running. The two then fight for
+  // the camera every frame (see the note in stopIdleSpin) and it orbits
+  // forever instead of settling — the "flies to the property, then spins"
+  // deep-link bug. Let the detail cinematic own the camera.
+  if(state.ids.size===1 && focus && focus.length===1) return;
   const shown=(focus&&focus.length)?focus:FEATURES.filter(matches);
   if(!shown.length || shown.length===FEATURES.length) return; // keep default world view
   // A single property has zero span, so flyToFeatures bottoms out at its default
