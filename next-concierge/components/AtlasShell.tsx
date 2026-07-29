@@ -243,9 +243,18 @@ interface Props {
   externalLink: string;
   /** "all" → the full Living Atlas (home). Omitted → only this `type`'s layer. */
   scope?: "all";
+  /**
+   * Draw route lines at every zoom instead of only above ROUTE_ZOOM.
+   *
+   * On the home globe the zoom gate is right: seven collections' routes at
+   * world zoom is a ball of wool. On a single-collection page the routes ARE
+   * the content — the rail atlas's own tagline is "drawn along the tracks" —
+   * so hiding them until zoom 5.5 means the page opens on an empty globe.
+   */
+  routesAlways?: boolean;
 }
 
-export default function AtlasShell({ type, region, externalLink, scope }: Props) {
+export default function AtlasShell({ type, region, externalLink, scope, routesAlways }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
   const overlayKeys = (Object.keys(OVERLAYS) as OverlayKey[]).filter((k) => allInventory || type === k);
@@ -309,6 +318,9 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
     const overlayFeats: Partial<Record<OverlayKey, OverlayFeature[]>> = {};
     const routeLines: Partial<Record<OverlayKey, LngLat[][]>> = {};
     let routesFetched = false;
+    // Zoom at which route lines become visible. routesAlways collapses it to 0
+    // so a collection page opens with its routes already drawn.
+    const routeGate = routesAlways ? 0 : ROUTE_ZOOM;
     let featuredFC: FeaturedFC | null = null;
     let regionsGeo: Record<string, LngLat> = {};
 
@@ -574,10 +586,20 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           addLayer(map, {
             id: src + "_line", type: "line", source: src,
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": cfg.color, "line-width": 1.6, "line-dasharray": [1, 5], "line-opacity": 0.82 },
+            paint: {
+              "line-color": cfg.color,
+              // Rail and jet journeys are SHORT — Scotland, Switzerland, the
+              // Rockies — so at world zoom a whole itinerary is a few pixels
+              // long. Thicken and solidify the line as you zoom out so the
+              // routes still read as routes; above ROUTE_ZOOM these land back
+              // on the original 1.6 / 0.82, so the home globe is unchanged.
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 2.4, ROUTE_ZOOM, 1.6],
+              "line-dasharray": [1, 5],
+              "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.95, ROUTE_ZOOM, 0.82],
+            },
           });
-          // Visibility: only above ROUTE_ZOOM and when the type is not hidden
-          const vis = map.getZoom() >= ROUTE_ZOOM && !hiddenRef.current.has(key) ? "visible" : "none";
+          // Visibility: only above the route gate and when the type is not hidden
+          const vis = map.getZoom() >= routeGate && !hiddenRef.current.has(key) ? "visible" : "none";
           [src + "_shadow", src + "_line"].forEach((id) => {
             if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
           });
@@ -656,11 +678,11 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
           // then toggle their visibility on subsequent zoom changes.
           map.on("zoomend", () => {
             const z = map.getZoom();
-            if (ROUTES_ENABLED && z >= ROUTE_ZOOM && !routesFetched) {
+            if (ROUTES_ENABLED && z >= routeGate && !routesFetched) {
               loadRoutes();
             } else if (routesFetched) {
               overlayKeys.forEach((key) => {
-                const vis = z >= ROUTE_ZOOM && !hiddenRef.current.has(key) ? "visible" : "none";
+                const vis = z >= routeGate && !hiddenRef.current.has(key) ? "visible" : "none";
                 ["r_" + key + "_shadow", "r_" + key + "_line"].forEach((id) => {
                   if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
                 });
@@ -867,6 +889,10 @@ export default function AtlasShell({ type, region, externalLink, scope }: Props)
             fitGlobe();
             spinWhenRevealed();
           }
+
+          // A collection page never crosses ROUTE_ZOOM on its own, so nothing
+          // would trigger the lazy load — start it here instead.
+          if (ROUTES_ENABLED && routesAlways && !routesFetched) loadRoutes();
 
           // Hotel field: fades in on arrival, off the critical path.
           hotelPromise.then((fc) => {

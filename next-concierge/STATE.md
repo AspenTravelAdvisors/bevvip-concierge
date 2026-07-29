@@ -341,6 +341,27 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+**First-review fixes (2026-07-29): no routes drawn, globe too small.**
+
+- `ROUTE_ZOOM = 5.5` is right for the home globe — seven collections' routes at
+  world zoom is a ball of wool — but wrong for a collection page, where the
+  routes ARE the content and nothing ever crosses that zoom. `AtlasShell` takes
+  a `routesAlways` prop that collapses the gate to 0 and kicks `loadRoutes()` at
+  boot instead of waiting for a zoom event that never comes. Home is untouched.
+- Route lines now interpolate on zoom: 2.4px / 0.95 opacity at world zoom
+  easing to the original 1.6 / 0.82 at `ROUTE_ZOOM`. Rail and jet itineraries
+  are SHORT — Scotland, Switzerland, the Rockies — so a whole journey is a few
+  pixels wide at globe zoom and the old hairline dash was invisible. Above
+  `ROUTE_ZOOM` the values are identical to before, so the home globe is
+  pixel-unchanged.
+- The globe now takes `min(72vh, 760px)` on collection routes (58vh on
+  phones). The default `.atlas-map` min-height of 380px reads as a banner, not
+  a map. Cards are demoted to a denser band beneath, and the filter rail is
+  sticky so filters stay reachable while scrolling results.
+
+This is the inverse of `/atlas/villa`, deliberately: there the map is a locator
+for a card-first browse; here the map is the browse.
+
 **Next:** review `/atlas/train` against `/maps/train/index.html`, then repeat
 for jet → yacht → worldcruise → cruise. Only once a collection is native can
 its `public/maps/<type>/` directory go — and only when all five are native can

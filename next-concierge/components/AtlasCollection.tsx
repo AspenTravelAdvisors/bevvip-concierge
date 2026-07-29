@@ -145,7 +145,9 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
 
   return (
     <div className="atlas-collection">
-      <AtlasShell type={type} region={null} externalLink={internalAtlasLink(type)} />
+      {/* routesAlways: on a collection page the routes are the content, not a
+          zoomed-in embellishment. Without it the page opens on a bare globe. */}
+      <AtlasShell type={type} region={null} externalLink={internalAtlasLink(type)} routesAlways />
 
       {state && offerings ? (
         <AtlasFilterRail
