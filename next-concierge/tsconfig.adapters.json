@@ -1,0 +1,15 @@
+{
+  "//": "Standalone compile of lib/atlas/{geo,adapters} to plain ESM so scripts/verify-adapters.mjs can run the REAL filter code in Node, rather than a second copy of it that could drift. Not part of the app build.",
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["./*"] },
+    "rootDir": "./lib/atlas",
+    "outDir": ".adapters-build"
+  },
+  "include": ["lib/atlas/geo.ts", "lib/atlas/adapters/*.ts"]
+}

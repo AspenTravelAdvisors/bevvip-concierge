@@ -193,6 +193,101 @@ cell, so the first and last segments always "hit land" by construction.
   `legGeometry` tests the straight line (not the bezier) when deciding whether
   to route. A* is correct there.
 
+## Atlas unification — Deliverable 3 IN PROGRESS (started 2026-07-29)
+
+Retiring the five Leaflet atlases onto the globe. **Nothing deleted yet.**
+
+**Inventory first.** `D3-FILTER-INVENTORY.md` records every filter predicate and
+deep-link param, read out of the five `index.html` files rather than inferred.
+Findings that would each have caused a silent wrong-results bug:
+
+- The param sets collapse into two families (journeys: train+jet; voyages:
+  yacht+worldcruise+cruise), identical within each — but **cruise is an outlier
+  inside its own family**: it filters on `operator` not brand, its region is a
+  scalar `s.region` not the `t.g` array, and it cuts off past sailings with an
+  ISO string compare instead of `isPastTrip()`.
+- **Three month models**: `t.mks` array (train), `t.mk` scalar (jet),
+  `t.monthKey` scalar (voyages) — and journeys give `onDemand` trips a free pass
+  the voyages have no equivalent for.
+- **The `*role` vocabularies differ and must not be merged**: journeys accept
+  `any|start|end|stop|visit`, yacht/worldcruise accept `call|disembark|embark`,
+  cruise accepts those plus `any`.
+- **Five different search stop-lists.** Each atlas strips its own domain words,
+  and cruise alone does not strip "luxury". `country=` is not a filter — it is
+  folded into the search terms alongside `q=`.
+- No app code emits `exRegions`, `locationrole` or `portrole`; only the atlases'
+  own Share buttons do. They must still parse, but there is no internal link
+  surface to migrate and no obligation to rebuild the three-state region pill.
+
+**All five data layers are ported and verified. The UI is not built yet, and
+nothing under `public/maps/` has been deleted.**
+
+`lib/atlas/adapters/` — `types`, `search`, `filter` (one predicate for all
+five), `journey` (train + jet), `voyage` (yacht + worldcruise), `cruise`
+(standalone), plus a config file per collection. Every per-collection
+difference lives in `AtlasFilterDescriptor`, so `matchesOffering` stays
+single-branch and one filter rail can serve all five.
+
+The families earned their split. train/jet and yacht/worldcruise share code;
+**cruise does not, and shouldn't be forced to** — columnar `{schema, rows}`
+source, operator instead of brand, a scalar region that is REWRITTEN from the
+sailing title by `correctedRegionName()`, an ISO-string past cutoff that drops
+dateless rows, and a port set built only from geocoded stops (712 of its 3,542
+sailings have routes with no geocoded ports at all, so their port filter can
+never match — that is original behaviour).
+
+worldcruise, by contrast, is genuinely config only: diffed against yacht, every
+predicate and helper is byte-identical apart from the `wc_` prefix and one
+comment word. If a future refresh makes it need real code, the two feeds have
+diverged and that is worth investigating rather than patching.
+
+**The load-time normalisation pass is part of the port.** Each atlas runs
+`TRIPS.forEach((t,i) => …)` before any filtering: it assigns `guideId`,
+populates `t.cities` from `ROUTES` (which feed the search haystack), back-fills
+`t.g` from the route, and COMPUTES the month keys. It is a no-op on train's
+current data but load-bearing for jet — 107 of 141 trips get their month from
+it, 39 get their regions, 65 resolve their route by slugged title rather than
+`t.route`. The two atlases also differ on the region rule (`regionDerivation`).
+
+**jet's `ids=` deep links are positionally unstable.** The jet feed has no `id`
+field at all, so the atlas assigns `guideId = 'jt_' + arrayIndex`. `jt_7` means
+"the eighth trip in the file" — reorder or insert upstream and every previously
+shared jet link resolves to a different journey. Reproduced as-is
+(`idStrategy: "index"`) because changing it breaks links already in the wild,
+but **this is a data problem worth fixing at the source** before jet links are
+advertised further.
+
+**Verified, not asserted.** `npm run verify:adapters` compiles the real adapter
+code to ESM and runs it head-to-head with the original predicate transcribed
+from each `index.html`/`loader.js`, over random filter states drawn from real
+dataset values: **10,742,000 predicate comparisons across all five collections
+and both date pinnings, 0 mismatches.**
+
+Two harness lessons, both learned the hard way and both encoded in the script:
+
+1. The first version fed *raw* JSON to both sides and passed cleanly — because
+   both were equally wrong. Apply the atlas's normalisation to the original
+   side or the comparison is vacuous.
+2. Past-dated trips are rejected by both implementations before any other
+   filter runs, so disagreements on them are invisible. That masked a real bug:
+   33 jet trips name their stops but ship no route geometry, and the adapter was
+   dropping those stops for want of a coordinate — silently breaking
+   `location=` for them. Every one is past-dated today. `AtlasStop.at` is now
+   nullable so named-but-unlocated stops survive, and the harness runs every
+   collection twice, against today AND an early epoch.
+
+**Next — the UI half, which is the bulk of D3:**
+
+1. One filter rail component driven by `AtlasFilterDescriptor`, replacing five
+   bespoke ones. The three-state region pill (include / exclude / off) is
+   optional — nothing internal emits `exRegions`.
+2. Wire the adapters into `AtlasShell` so `/atlas/<type>` renders the globe
+   filtered to that collection, with every param in D3-FILTER-INVENTORY.md
+   honoured.
+3. Only then delete `public/maps/<type>/` and its vendored Leaflet, plus
+   `components/AtlasView.tsx` and the iframe path — and at that point the three
+   served `landmask.bin` copies can finally go too (see D1's "still open").
+
 ## Hotel atlas — `?ids=` deep link spun forever (fixed 2026-07-29)
 
 **Symptom.** `/atlas/hotel?ids=h_01034` flew to the right property and then

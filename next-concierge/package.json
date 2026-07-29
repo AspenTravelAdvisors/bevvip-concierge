@@ -7,6 +7,7 @@
     "build:hotel-points": "node scripts/build-hotel-points.mjs",
     "build:sea-routes": "node scripts/build-sea-routes.mjs",
     "verify:sea-routes": "node scripts/verify-sea-routes.mjs",
+    "verify:adapters": "node scripts/verify-adapters.mjs",
     "harvest:expedition-ships": "node scripts/harvest-expedition-ships.mjs",
     "build:expedition-ships": "node scripts/build-expedition-ships.mjs",
     "dev": "next dev",
