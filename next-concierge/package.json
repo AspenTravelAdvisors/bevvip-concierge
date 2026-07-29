@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "npm run build:hotel-points",
+    "prebuild": "npm run build:hotel-points && npm run build:sea-routes",
     "build:hotel-points": "node scripts/build-hotel-points.mjs",
+    "build:sea-routes": "node scripts/build-sea-routes.mjs",
+    "verify:sea-routes": "node scripts/verify-sea-routes.mjs",
     "harvest:expedition-ships": "node scripts/harvest-expedition-ships.mjs",
     "build:expedition-ships": "node scripts/build-expedition-ships.mjs",
     "dev": "next dev",

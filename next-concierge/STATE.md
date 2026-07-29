@@ -107,6 +107,92 @@ both pair and named accessor, 22 authored constants, 1,829 spiral offsets).
    rejects `null` / `undefined` / `""` / booleans. Keep that guard on the
    build-time router, and expect the coverage report to list these.
 
+## Atlas unification — Deliverable 1 SHIPPED 2026-07-29
+
+**Sea routing moved from per-visitor runtime A* to a build-time precompute.**
+
+`lib/atlas/sea-router.mjs` is the ~11 KB of routing that was duplicated inside
+the cruise, yacht and worldcruise Leaflet atlases, extracted near-verbatim as
+plain ESM (no DOM, no Leaflet, injected mask buffer). `buildOcean`, `aStarSea`,
+`rdp`, `chaikin`, `arcPts` (k = 0.16, untouched) and `unroll` all came across
+line-for-line; internals stay in `[lat, lng]` so they stay comparable with the
+original, and conversion to `[lng, lat]` happens once at the public boundary.
+Leaflet's `reanchorRoutes` / `bump` were not ported — Mapbox handles world-copy
+panning itself.
+
+`scripts/build-sea-routes.mjs` (chained into `prebuild` after
+`build:hotel-points`) routes every leg once and emits one file per collection:
+
+| file | raw | gzipped | legs |
+| --- | --- | --- | --- |
+| `public/maps/shared/sea-routes-cruise.json` | 1,403 KB | 207 KB | 3,963 |
+| `public/maps/shared/sea-routes-worldcruise.json` | 969 KB | 188 KB | 3,017 |
+| `public/maps/shared/sea-routes-yacht.json` | 282 KB | 46 KB | 1,045 |
+
+Split per collection rather than the single `sea-routes.json` the work order
+named, because `AtlasShell` already fetches and paints per overlay key — so
+`/atlas/yacht` pulls 46 KB instead of 441. Canonical copies in
+`data/atlas/shared/`, byte-identical (`diff -q` in the build).
+
+45,011 raw legs collapse to 8,025 unique ones (5.6x) on the router's own
+2-decimal leg key; each surviving leg carries `tripIds` so a single voyage can
+still be picked out. Output is simplified with a final `rdp` at 0.01 deg —
+about 0.6 px at `ROUTE_ZOOM = 5.5`, so invisible — which drops 265,324 points
+to 90,627 and roughly halves the transfer.
+
+**Two changes to the algorithm, not just the port.** Both were chosen
+deliberately over shipping a faithful copy:
+
+1. **Antimeridian search.** `col()` normalizes both endpoints into `[0, W)`, so
+   a Tokyo -> Honolulu leg looked like it spanned the whole grid; the A* box got
+   drawn the long way across Eurasia, found nothing, and fell back to an arc
+   over land. `aStarSea` now shifts the western endpoint one turn east when a
+   leg spans more than half the globe. `isLandCell` / `oceanAt` already wrapped
+   their column reads, so the fix is four lines.
+2. **Cell budget is now a parameter.** 1.4M cells was the right ceiling for a
+   visitor's main thread; the build passes 12M so the longest legs get a box big
+   enough to succeed. Default stays 1.4M for any browser caller.
+
+Together these took arc-fallbacks 301 -> 208 and land crossings 358 -> 278.
+
+**The remaining 278 land crossings (3.5%) are a mask limitation, not a routing
+bug.** Tagged `crossesLand` in the output and listed by the build's coverage
+report. 60% are legs under 100 km — coastal hops between adjacent ports, below
+the mask's 0.1 deg (~11 km) resolution, and sub-pixel at globe zoom. The long
+ones are almost all **river itineraries** the ocean mask cannot represent
+(Manaus -2.4,-60.0; Santarem -2.4,-54.7; Iquitos -1.6,-74.6) plus a few
+**landlocked origin cities in the source data** (Calgary 51.1,-114.1 ->
+Greenland). Fixing these needs a finer mask or a river network, not better A*.
+
+**Rendering.** `ROUTES_ENABLED = true`. `fetchRouteLines` now fetches the
+precomputed file for cruise / yacht / worldcruise; villa still returns `[]`
+(stays, not routes). Jet and rail keep runtime geometry — small stop lists, no
+land avoidance needed — but now get `unrollLine` **and** `arcPts`, neither of
+which they had: their routes were straight polylines that read as wire, and a
+trans-Pacific jet leg swept the wrong way round the world. `paintRoutesForKey`
+and the `ROUTE_ZOOM = 5.5` gate are unchanged.
+
+`scripts/verify-sea-routes.mjs` (`npm run verify:sea-routes`) checks the six
+reference legs from the work order — Gibraltar, Central America, the
+antimeridian, the Mediterranean, the Drake Passage, and a >60N leg — asserting
+no interior segment crosses land, no longitude step exceeds 180 deg, and the
+detour stays under 4x great-circle. 6/6 pass. Note it asserts on *interior*
+segments: a route starts and ends at a port, and at 0.1 deg a port is a land
+cell, so the first and last segments always "hit land" by construction.
+
+### Still open from D1
+
+- **The three served landmask copies stay for now.** `public/maps/{cruise,
+  yacht,worldcruise}/data/landmask.bin` are still fetched by those Leaflet
+  atlases, which are live until D3 retires them. The canonical copy the build
+  reads is `data/atlas/shared/landmask.bin`. Delete the served three in D3, not
+  before — the work order's "no landmask fetched by any browser" is a D3
+  condition, and the globe already fetches none.
+- The work order's expectation that Alexandria -> Barcelona is "a clean arc" is
+  wrong: the straight line clips southern Sardinia near Cagliari, and
+  `legGeometry` tests the straight line (not the bezier) when deciding whether
+  to route. A* is correct there.
+
 ## Offering types (7)
 
 | Type | Surface | Data | Fulfillment |

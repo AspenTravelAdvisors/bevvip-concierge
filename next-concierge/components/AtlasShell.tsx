@@ -31,7 +31,12 @@ import {
   fromNamed,
   isFinitePair,
   offset as offsetLngLat,
+  unrollLine,
 } from "@/lib/atlas/geo";
+// arcPts is the only piece of the sea router the browser still needs: jet and
+// rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
+// makes an arc read as a journey rather than a ruler — see sea-router.mjs.
+import { arcPts } from "@/lib/atlas/sea-router.mjs";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
@@ -56,7 +61,10 @@ const HOTEL_BASE = ATLASES.hotel.base;
 const HOTEL_DOT_MIN_ZOOM = 2.45; // let hotels emerge before the ambient cloud fades
 const HOTEL_CLICK_MIN_ZOOM = 4; // below this dots overlap — taps stay ambient
 const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
-const ROUTES_ENABLED = false;   // set true to activate progressive route layer
+// Routes are live as of Deliverable 1: sea geometry is precomputed at build
+// time (scripts/build-sea-routes.mjs), so enabling this no longer means running
+// A* in the visitor's main thread. Lines still only paint above ROUTE_ZOOM.
+const ROUTES_ENABLED = true;
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
 // Master atlas overlays: cruise / jet / yacht / world-cruise / rail / villa
@@ -1346,48 +1354,55 @@ function layerIdsFor(key: string): string[] {
 // Returns arrays of [lng, lat] coordinate pairs (one array per route/trip).
 // Each atlas stores route data differently; this normalises them all.
 
+/** Precomputed sea geometry, one file per collection. Built by
+ *  scripts/build-sea-routes.mjs — see SEA_ROUTES_BASE consumers. */
+const SEA_ROUTE_KEYS = new Set<OverlayKey>(["cruise", "yacht", "worldcruise"]);
+
 async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
   try {
-    if (key === "cruise") {
-      // Dedicated routes file: { [slug]: [{n, ll:[lat,lng]}] }
-      const r = await fetch(`${ATLASES.cruise.base}/data/itinerary-routes.json`);
-      if (!r.ok) return [];
-      const j: Record<string, { n?: string; ll?: [number, number] }[]> = await r.json();
-      return Object.values(j)
-        .map((stops) =>
-          stops.filter((s) => isFinitePair(s.ll)).map((s) => fromLatLngPair(s.ll!)),
-        )
-        .filter((pts) => pts.length >= 2);
-    }
-    if (key === "jet" || key === "train") {
-      // itinerary.json → ROUTES: { [slug]: [{n, r, ll:[lat,lng]}] }
-      const r = await fetch(`${ATLASES[key].base}/itinerary.json`);
-      if (!r.ok) return [];
-      const j: { ROUTES?: Record<string, { ll?: [number, number] }[]> } = await r.json();
-      const ROUTES = j.ROUTES || {};
-      return Object.values(ROUTES)
-        .map((stops) =>
-          stops.filter((s) => isFinitePair(s.ll)).map((s) => fromLatLngPair(s.ll!)),
-        )
-        .filter((pts) => pts.length >= 2);
-    }
     if (key === "villa") return []; // villas are stays, not routes
-    // yacht + worldcruise: itinerary.json → TRIPS array + PORTS: {name:[lat,lng]}
-    const base = key === "yacht" ? ATLASES.yacht.base : ATLASES.worldcruise.base;
-    const r = await fetch(`${base}/itinerary.json`);
+
+    if (SEA_ROUTE_KEYS.has(key)) {
+      // Precomputed at build time: land-avoiding A* geometry, already unrolled
+      // across the antimeridian and simplified. The 765 KB land mask and the
+      // per-visitor A* it fed are both gone from the browser.
+      const r = await fetch(`/maps/shared/sea-routes-${key}.json`, { cache: "force-cache" });
+      if (!r.ok) return [];
+      const j: { features?: { geometry?: { coordinates?: [number, number][] } }[] } = await r.json();
+      return (j.features || [])
+        .map((f) => (f.geometry?.coordinates || []).filter(isFinitePair).map(fromLngLatPair))
+        .filter((pts) => pts.length >= 2);
+    }
+
+    // jet + train: not sea routes, so they stay on runtime geometry — the stop
+    // list is small and needs no land avoidance. They do need the arc (a
+    // straight line between two cities reads as a wire, not a journey) and the
+    // antimeridian unroll, which the old code gave them neither of.
+    // itinerary.json → ROUTES: { [slug]: [{n, r, ll:[lat,lng]}] }
+    const r = await fetch(`${ATLASES[key].base}/itinerary.json`);
     if (!r.ok) return [];
-    const j: {
-      TRIPS?: { itin?: { n?: string }[] }[];
-      PORTS?: Record<string, [number, number]>;
-    } = await r.json();
-    const PORTS = j.PORTS || {};
-    const TRIPS = j.TRIPS || [];
-    return TRIPS
-      .map((trip) =>
-        (trip.itin || [])
-          .filter((s) => s.n && isFinitePair(PORTS[s.n]))
-          .map((s) => fromLatLngPair(PORTS[s.n!])), // PORTS: { name: [lat, lng] }
-      )
+    const j: { ROUTES?: Record<string, { ll?: [number, number] }[]> } = await r.json();
+    const ROUTES = j.ROUTES || {};
+    return Object.values(ROUTES)
+      .map((stops) => {
+        const pts = stops.filter((s) => isFinitePair(s.ll)).map((s) => fromLatLngPair(s.ll!));
+        if (pts.length < 2) return pts;
+        // Unroll first, then arc each leg in that frame — same order the sea
+        // router uses, and for the same reason: arcing raw coordinates across
+        // the antimeridian sweeps the wrong way round the world.
+        const frame = unrollLine(pts);
+        const out: LngLat[] = [];
+        for (let i = 0; i < frame.length - 1; i++) {
+          const seg = arcPts(
+            [frame[i][1], frame[i][0]],
+            [frame[i + 1][1], frame[i + 1][0]],
+          ) as [number, number][];
+          for (let k = out.length ? 1 : 0; k < seg.length; k++) {
+            out.push(fromLatLngPair(seg[k]));
+          }
+        }
+        return out;
+      })
       .filter((pts) => pts.length >= 2);
   } catch {
     return [];
