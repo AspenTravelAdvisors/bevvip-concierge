@@ -341,6 +341,45 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Route persistence, brightness, and `?ids=` links (fixed 2026-07-29)
+
+Three faults found in one review pass, all from porting the *drawing* without
+porting the *interaction model*:
+
+**1. Click must PIN, not just draw.** The Leaflet atlas has `routeLocked` +
+`pinnedTrip`: hover previews, click locks, leaving a card restores the pinned
+route, and clicking the same card again releases it. The first port cleared on
+every mouseleave, so a clicked route vanished the moment the pointer moved —
+exactly the reported symptom. Now mirrored, including the original's 170ms
+hover debounce so dragging across the grid doesn't thrash the map. Pinned cards
+carry `data-pinned` for a visible affordance.
+
+**2. Routes read much darker than the original.** The inline stroke colours are
+faithful; the brightness came from CSS the colours don't reveal —
+`path.rrail { animation: routeGlow }`, a pulsing
+`drop-shadow(0 0 5px rgba(255,190,140,.85))`. Mapbox has no drop-shadow, so an
+`fr_glow` layer (warm `#ffbe8c`, width 9, `line-blur: 6`) sits between casing
+and rail as the filter does. **Lesson: when porting a look, read the CSS, not
+just the draw call.**
+
+**3. A traced route survives a basemap switch.** `setStyle` wipes every source
+and layer; the last traced legs are held in a ref and repainted from
+`style.load`.
+
+**4. `/atlas/train?ids=15694760` showed the whole globe.** A deep link that
+resolves to exactly one trip now pins, traces and frames it — what
+`highlightDeepLinkIds()` did in the original. Following a link to a specific
+journey and being shown the entire world is the bug.
+
+**Also removed: the `bevvip:atlas-plot` dispatch from collection pages.**
+Reusing The Guide's plot path looked economical and was wrong three ways — it
+drops a "N plotted / Reset" badge belonging to the chat, frames the camera on a
+generic pin rather than the journey, and `plotResults` writes sessionStorage
+under `bevvip:atlas:last-plot`, **which the home globe replays on boot**. So
+browsing a collection would have poisoned the home page with 60 rail journeys.
+Collections now show ambient region pins plus one traced route, as the Leaflet
+atlases did.
+
 ### Why hover did nothing at all — the scope guard (fixed 2026-07-29)
 
 `AtlasShell`'s event-listener effect began `if (!allInventory) return;`.

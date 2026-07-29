@@ -3460,3 +3460,14 @@ button.card-book {
     min-height: 58vh;
   }
 }
+
+/* A pinned card owns the map until it is clicked again — the Leaflet atlas's
+   routeLocked state, made visible so it is clear why hovering other cards no
+   longer moves anything. */
+.atlas-card[data-pinned] {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold) inset;
+}
+.atlas-card {
+  cursor: pointer;
+}

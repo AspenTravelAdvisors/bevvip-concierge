@@ -266,6 +266,9 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   const apiRef = useRef<AtlasApi | null>(null);
   // Filled by the map effect so the route-trace listener below can reach the
   // painters without re-running the whole map lifecycle.
+  // Last traced route, so a basemap switch can repaint it. setStyle wipes all
+  // sources and layers; a pinned route must outlive that.
+  const lastFocusLegs = useRef<{ mode: string; coordinates: [number, number][] }[]>([]);
   const focusRouteRef = useRef<{
     paint(legs: { mode: string; coordinates: [number, number][] }[]): void;
     clear(): void;
@@ -565,6 +568,9 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           overlayKeys.forEach(paintOverlay);
           paintFeatured();
           if (ROUTES_ENABLED && routesFetched) overlayKeys.forEach(paintRoutesForKey);
+          // A traced route is a deliberate selection — repaint it after a
+          // restyle rather than making the traveller hover again.
+          if (lastFocusLegs.current.length) focusRouteRef.current?.paint(lastFocusLegs.current);
         }
 
         function paintRoutesForKey(key: OverlayKey) {
@@ -699,6 +705,10 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
                 properties: { rail: l.mode === "rail" ? 1 : 0 },
               })),
           };
+          // Remember it so a basemap switch can repaint — setStyle wipes every
+          // source and layer, and a traced route should survive that.
+          lastFocusLegs.current = legs;
+
           if (!map.getSource("focus-route")) map.addSource("focus-route", { type: "geojson", data });
           else map.getSource("focus-route")?.setData(data);
 
@@ -707,6 +717,23 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             filter: ["==", ["get", "rail"], 1],
             layout: { "line-join": "round", "line-cap": "round" },
             paint: { "line-color": "#140b06", "line-width": 7, "line-opacity": 0.5 },
+          });
+          // Warm glow. The Leaflet original gets its brightness from a CSS
+          // `drop-shadow(0 0 5px rgba(255,190,140,.85))` filter pulsing on the
+          // rail path — invisible in the inline stroke colours, and the reason
+          // a faithful colour port still read much darker. Mapbox has no
+          // drop-shadow, but line-blur on a wide warm line is the same idea.
+          // Sits above the casing and below the rail, as the filter does.
+          addLayer(map, {
+            id: "fr_glow", type: "line", source: "focus-route",
+            filter: ["==", ["get", "rail"], 1],
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: {
+              "line-color": "#ffbe8c",
+              "line-width": 9,
+              "line-opacity": 0.5,
+              "line-blur": 6,
+            },
           });
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
@@ -729,6 +756,7 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
         }
 
         function clearFocusRoute() {
+          lastFocusLegs.current = [];
           const empty = { type: "FeatureCollection" as const, features: [] };
           if (map.getSource("focus-route")) map.getSource("focus-route")?.setData(empty);
         }

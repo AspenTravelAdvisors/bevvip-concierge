@@ -12,9 +12,9 @@
  *   params.ts         deep links in, Share links out (parity-tested)
  *   AtlasFilterRail   one rail, driven by the descriptor
  *
- * It plots through the existing `bevvip:atlas-plot` event, the same contract
- * The Guide uses, so no change to AtlasShell was needed to get results onto the
- * map.
+ * The globe shows ambient region pins plus ONE traced route — the interaction
+ * the Leaflet atlases had. It deliberately does not reuse The Guide's
+ * `bevvip:atlas-plot` path; see the note above the trace helpers for why.
  *
  * The URL is the source of truth for filter state. Every change rewrites the
  * query string, so the browser's Share/copy-URL gives a link identical in shape
@@ -22,7 +22,7 @@
  * ever produced still parses (see D3-FILTER-INVENTORY.md).
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { OfferingType } from "@/lib/types";
 import type { AtlasFilterDescriptor, AtlasOffering } from "@/lib/atlas/adapters/types";
@@ -75,6 +75,15 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
   const [regionLabels, setRegionLabels] = useState<Record<string, string>>({});
   const [routeFor, setRouteFor] = useState<{ fn?: (o: AtlasOffering) => RouteLegOut[] | null }>({});
   const [failed, setFailed] = useState(false);
+  /**
+   * The pinned trip, mirroring the Leaflet atlas's `routeLocked` + `pinnedTrip`.
+   * Hover is a PREVIEW; a click pins. While something is pinned, hovering other
+   * cards does not steal the map, and leaving a card restores the pinned route
+   * rather than clearing it — which is why "the route vanishes when I click" was
+   * the right complaint about a hover-only trace.
+   */
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+  const hoverTimer = useRef<number | null>(null);
 
   // Today, pinned once per mount so the past-trip cutoff can't shift mid-session.
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
@@ -124,38 +133,27 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
     [router, type, descriptor, parsed?.view],
   );
 
-  // Plot the filtered subset onto the globe through the event The Guide uses.
-  useEffect(() => {
-    if (!filtered.length) return;
-    const results = filtered.slice(0, PLOT_CAP).map((o) => {
-      const first = o.stops.find((s) => s.at);
-      return {
-        id: o.id,
-        name: o.title,
-        brand: o.brandLabel ?? undefined,
-        operator: o.operator ?? undefined,
-        region: o.regions[0],
-        dates: o.startDate ?? o.window ?? undefined,
-        duration: o.days ? `${o.days} days` : undefined,
-        deepLink: internalAtlasLink(type, `?ids=${encodeURIComponent(o.idAliases[0])}`),
-        // AtlasShell reads named lng/lat off each result.
-        lng: first?.at ? first.at[0] : undefined,
-        lat: first?.at ? first.at[1] : undefined,
-      };
-    });
-    window.dispatchEvent(
-      new CustomEvent("bevvip:atlas-plot", {
-        detail: { tools: [{ type, results, total: filtered.length, input: {} }] },
-      }),
-    );
-  }, [filtered, type]);
+  /**
+   * NOT plotted through `bevvip:atlas-plot`.
+   *
+   * Reusing The Guide's plot path looked economical and was wrong on three
+   * counts: it drops a "N plotted / Reset" badge that belongs to the chat, it
+   * frames the camera on a generic pin instead of the journey, and
+   * `plotResults` writes sessionStorage under `bevvip:atlas:last-plot` — which
+   * the HOME globe replays on boot, so browsing a collection would poison the
+   * home page with 60 rail journeys.
+   *
+   * The Leaflet atlas showed ambient region pins plus one traced route, and
+   * that is what this does.
+   */
+
 
   /**
    * Trace one trip's route on the globe. This is the interaction the Leaflet
    * atlases had — hover a card, its route draws — and drawing all of a
    * collection's routes at once is not a substitute for it.
    */
-  const traceRoute = useCallback(
+  const emitRoute = useCallback(
     (o: AtlasOffering | null, fit = false) => {
       if (!o) {
         window.dispatchEvent(new CustomEvent("bevvip:atlas-route", { detail: { legs: [] } }));
@@ -172,6 +170,70 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
     },
     [routeFor],
   );
+
+  const byId = useMemo(() => new Map(filtered.map((o) => [o.id, o])), [filtered]);
+
+  /** Hover previews a route — but never over a pinned one. 170ms debounce
+   *  matches the original, so dragging the pointer across the grid doesn't
+   *  thrash the map. */
+  const previewRoute = useCallback(
+    (o: AtlasOffering) => {
+      if (pinnedId) return;
+      if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+      hoverTimer.current = window.setTimeout(() => emitRoute(o), 170);
+    },
+    [pinnedId, emitRoute],
+  );
+
+  /** Leaving a card restores the pinned route, or clears when nothing is pinned. */
+  const endPreview = useCallback(() => {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+    if (pinnedId) {
+      const pinned = byId.get(pinnedId);
+      if (pinned) emitRoute(pinned);
+      return;
+    }
+    emitRoute(null);
+  }, [pinnedId, byId, emitRoute]);
+
+  /** Click pins; clicking the pinned card again releases it. */
+  const togglePin = useCallback(
+    (o: AtlasOffering) => {
+      if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+      if (pinnedId === o.id) {
+        setPinnedId(null);
+        emitRoute(null);
+        return;
+      }
+      setPinnedId(o.id);
+      emitRoute(o, true);
+    },
+    [pinnedId, emitRoute],
+  );
+
+  /**
+   * A deep link that resolves to exactly one trip opens it — pinned, traced and
+   * framed. The Leaflet atlas did this in highlightDeepLinkIds():
+   * `if (state.ids.size === 1 && hit.length === 1) openDetail(hit[0])`.
+   * Without it, /atlas/train?ids=15694760 shows the whole globe and leaves the
+   * traveller to find their own journey in the grid.
+   */
+  const autoPinned = useRef(false);
+  useEffect(() => {
+    if (autoPinned.current || !state) return;
+    if (!state.ids.size || filtered.length !== 1) return;
+    autoPinned.current = true;
+    setPinnedId(filtered[0].id);
+    emitRoute(filtered[0], true);
+  }, [state, filtered, emitRoute]);
+
+  // A pinned trip that filtering removes from the list should release its pin.
+  useEffect(() => {
+    if (pinnedId && !byId.has(pinnedId)) {
+      setPinnedId(null);
+      emitRoute(null);
+    }
+  }, [pinnedId, byId, emitRoute]);
 
   if (failed) {
     return (
@@ -214,10 +276,12 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
           <article
             key={o.id}
             className="atlas-card"
-            onMouseEnter={() => traceRoute(o)}
-            onMouseLeave={() => traceRoute(null)}
-            onFocus={() => traceRoute(o)}
-            onClick={() => traceRoute(o, true)}
+            data-pinned={pinnedId === o.id ? "" : undefined}
+            onMouseEnter={() => previewRoute(o)}
+            onMouseLeave={endPreview}
+            onFocus={() => previewRoute(o)}
+            onBlur={endPreview}
+            onClick={() => togglePin(o)}
           >
             <h3>{o.title}</h3>
             <p className="ac-meta">
