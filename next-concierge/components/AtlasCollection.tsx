@@ -32,17 +32,6 @@ import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell from "./AtlasShell";
 import { internalAtlasLink } from "@/lib/atlas-config";
 
-/**
- * How many filtered offerings to pin at once.
- *
- * AtlasShell's plotResults already caps each tool's results at 60, so this
- * mirrors that rather than fighting it. Browsing 3,542 expedition sailings as
- * 3,542 simultaneous pins is not a readable map anyway — the count in the rail
- * tells the truth about how many matched, and narrowing the filters is the
- * intended way to see specific ones.
- */
-const PLOT_CAP = 60;
-
 /** One drawable leg of a traced route, already in [lng, lat]. */
 export interface RouteLegOut {
   mode: string;
@@ -134,24 +123,17 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
   );
 
   /**
-   * NOT plotted through `bevvip:atlas-plot`.
+   * Trace one trip's route on the globe — hover previews, click pins. This is
+   * the interaction the Leaflet atlases had, and drawing a whole collection's
+   * routes at once is not a substitute for it.
    *
-   * Reusing The Guide's plot path looked economical and was wrong on three
-   * counts: it drops a "N plotted / Reset" badge that belongs to the chat, it
-   * frames the camera on a generic pin instead of the journey, and
-   * `plotResults` writes sessionStorage under `bevvip:atlas:last-plot` — which
-   * the HOME globe replays on boot, so browsing a collection would poison the
-   * home page with 60 rail journeys.
-   *
-   * The Leaflet atlas showed ambient region pins plus one traced route, and
-   * that is what this does.
-   */
-
-
-  /**
-   * Trace one trip's route on the globe. This is the interaction the Leaflet
-   * atlases had — hover a card, its route draws — and drawing all of a
-   * collection's routes at once is not a substitute for it.
+   * Note what is deliberately absent: these pages do NOT dispatch
+   * `bevvip:atlas-plot`. Reusing The Guide's plot path looked economical and
+   * was wrong three ways — it drops a "N plotted / Reset" badge belonging to
+   * the chat, it frames the camera on a generic pin rather than the journey,
+   * and `plotResults` writes sessionStorage under `bevvip:atlas:last-plot`,
+   * which the HOME globe replays on boot. Browsing a collection would have
+   * poisoned the home page with that collection's trips.
    */
   const emitRoute = useCallback(
     (o: AtlasOffering | null, fit = false) => {
@@ -166,7 +148,17 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
         const pts = o.stops.filter((s) => s.at).map((s) => [s.at![0], s.at![1]] as [number, number]);
         return pts.length >= 2 ? [{ mode: "arc", coordinates: pts }] : [];
       })();
-      window.dispatchEvent(new CustomEvent("bevvip:atlas-route", { detail: { legs, fit } }));
+      // A click always moves the camera. When a trip has no drawable geometry
+      // at all, fall back to framing its located stops so clicking a card is
+      // never a no-op.
+      const fallback = legs.length
+        ? []
+        : o.stops.filter((s) => s.at).map((s) => [s.at![0], s.at![1]] as [number, number]);
+      window.dispatchEvent(
+        new CustomEvent("bevvip:atlas-route", {
+          detail: { legs, fit, fitPoints: fallback.length ? fallback : undefined },
+        }),
+      );
     },
     [routeFor],
   );
@@ -227,6 +219,21 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
     emitRoute(filtered[0], true);
   }, [state, filtered, emitRoute]);
 
+  /**
+   * A region pin filters to that region. Toggling: clicking the pin of the
+   * region you are already in clears it, so the map is a filter control rather
+   * than a one-way trip. Writes through the URL like every other filter, so the
+   * rail's Region select follows and the link stays shareable.
+   */
+  const selectRegion = useCallback(
+    (regionKey: string) => {
+      if (!state) return;
+      const already = state.regions.size === 1 && state.regions.has(regionKey);
+      writeUrl({ ...state, regions: new Set(already ? [] : [regionKey]) }, query);
+    },
+    [state, query, writeUrl],
+  );
+
   // A pinned trip that filtering removes from the list should release its pin.
   useEffect(() => {
     if (pinnedId && !byId.has(pinnedId)) {
@@ -252,7 +259,12 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
           not what the Leaflet atlas did, and for trains it would have to be
           drawn from arcs, which is wrong. Routes trace one at a time from real
           geometry on card hover/click — see traceRoute. */}
-      <AtlasShell type={type} region={null} externalLink={internalAtlasLink(type)} />
+      <AtlasShell
+        type={type}
+        region={null}
+        externalLink={internalAtlasLink(type)}
+        onRegionSelect={selectRegion}
+      />
 
       {state && offerings ? (
         <AtlasFilterRail

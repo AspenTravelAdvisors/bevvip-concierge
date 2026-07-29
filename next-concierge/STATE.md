@@ -341,6 +341,29 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Region pins filter; jet ported (2026-07-29)
+
+**A region pin now filters to that region.** It previously opened a popup
+linking to `?region=KEY` — which is the camera *focus* param, not a filter, so
+clicking a pin "opened everything". `AtlasShell` takes an optional
+`onRegionSelect`; when a collection page supplies it the pin filters in place
+(and clicking the pin of the region you are already in clears it, so the map is
+a filter control rather than a one-way trip). Home leaves it undefined and keeps
+the popup and link. The handler is read through a ref because the map effect is
+keyed on `[token]` and never re-runs.
+
+**Clicking a card always moves the camera**, including for the one rail trip
+with no drawable geometry — the route event carries `fitPoints` so the globe
+frames its stops rather than doing nothing.
+
+**`/atlas/jet` is native** (`components/AtlasJet.tsx`). Same thin shape as rail;
+the only thing it knows that rail doesn't is its own geometry. **Jets arc,
+trains don't** — an aircraft really does fly the arc, so jet uses `arcPts`
+(k = 0.16) over unrolled stops, and draws with the dashed connector rather than
+track symbology, because a flight is not a railway. Unrolling first matters for
+the same reason it does at sea: arcing a raw Tokyo → Los Angeles pair sweeps
+west across Asia instead of east across the Pacific.
+
 ### Route persistence, brightness, and `?ids=` links (fixed 2026-07-29)
 
 Three faults found in one review pass, all from porting the *drawing* without

@@ -252,9 +252,16 @@ interface Props {
    * so hiding them until zoom 5.5 means the page opens on an empty globe.
    */
   routesAlways?: boolean;
+  /**
+   * Collection pages pass this to make a region pin FILTER to that region
+   * instead of opening a popup that links to `?region=` — which is the camera
+   * focus param, not a filter, so clicking a pin used to "open everything".
+   * Home leaves it undefined and keeps the popup + link.
+   */
+  onRegionSelect?: (regionKey: string) => void;
 }
 
-export default function AtlasShell({ type, region, externalLink, scope, routesAlways }: Props) {
+export default function AtlasShell({ type, region, externalLink, scope, routesAlways, onRegionSelect }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
   const overlayKeys = (Object.keys(OVERLAYS) as OverlayKey[]).filter((k) => allInventory || type === k);
@@ -269,6 +276,10 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   // Last traced route, so a basemap switch can repaint it. setStyle wipes all
   // sources and layers; a pinned route must outlive that.
   const lastFocusLegs = useRef<{ mode: string; coordinates: [number, number][] }[]>([]);
+  // The map effect is keyed on [token] and never re-runs, so it must read the
+  // handler through a ref rather than capturing it.
+  const onRegionSelectRef = useRef(onRegionSelect);
+  onRegionSelectRef.current = onRegionSelect;
   const focusRouteRef = useRef<{
     paint(legs: { mode: string; coordinates: [number, number][] }[]): void;
     clear(): void;
@@ -664,6 +675,9 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             map.on("click", src + "_dot", (e: MBEvent) => {
               const f = e.features?.[0];
               if (!f) return;
+              // Collection pages filter in place — no popup, no navigation.
+              const select = onRegionSelectRef.current;
+              if (select && f.properties.key) { select(f.properties.key); return; }
               const count = Number(f.properties.count) || undefined;
               const href = internalAtlasLink(
                 key,
@@ -1129,12 +1143,24 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
     // click; an empty `legs` clears the trace.
     const onRoute = (e: Event) => {
       const detail = (e as CustomEvent).detail as
-        | { legs?: { mode: string; coordinates: [number, number][] }[]; fit?: boolean }
+        | {
+            legs?: { mode: string; coordinates: [number, number][] }[];
+            fit?: boolean;
+            /** Frame these when the trip has no drawable route at all. */
+            fitPoints?: [number, number][];
+          }
         | undefined;
       const api = focusRouteRef.current;
       if (!api) return;
       const legs = detail?.legs ?? [];
-      if (!legs.length) { api.clear(); return; }
+      if (!legs.length) {
+        api.clear();
+        // Still move the camera if the caller gave us somewhere to go.
+        if (detail?.fit && detail.fitPoints?.length) {
+          api.fit([{ coordinates: detail.fitPoints }]);
+        }
+        return;
+      }
       api.paint(legs);
       if (detail?.fit) api.fit(legs);
     };
