@@ -276,7 +276,27 @@ Two harness lessons, both learned the hard way and both encoded in the script:
    nullable so named-but-unlocated stops survive, and the harness runs every
    collection twice, against today AND an early epoch.
 
-**Next — the UI half, which is the bulk of D3:**
+**Deep-link parsing is done too** — `lib/atlas/adapters/params.ts`, verified by
+`npm run verify:deeplinks` (**291 assertions, 0 failures** across all five).
+The parsing is fussier than the param list suggests, and none of this was
+guessed:
+
+- `brand=` falls back to `operator=` and back again — the atlases accept either
+  — and both are matched FUZZILY (exact on key or display name, then substring
+  in both directions).
+- `region=` goes through a **per-collection alias table** first ("scotland" →
+  BRITAIN). All five tables differ; train has 38 entries, cruise has none. Every
+  alias is asserted to resolve.
+- Unknown region keys in `regions=` are **dropped**, not passed through — a
+  typo would otherwise filter everything out.
+- `exRegions=` skips any key already in `regions=`.
+- Journeys fold role `stop` → `visit` and reject anything else; voyages pass the
+  role through verbatim.
+- **`location=` matches fuzzily; `port=` matches EXACTLY.** `port=NICE, FRANCE`
+  does not resolve and never did. Preserved deliberately so shared links land
+  where they land today.
+
+**Next — the visible half:**
 
 1. One filter rail component driven by `AtlasFilterDescriptor`, replacing five
    bespoke ones. The three-state region pill (include / exclude / off) is

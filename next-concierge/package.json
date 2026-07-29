@@ -14,7 +14,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check": "tsc -p tsconfig.check.json --noEmit"
+    "check": "tsc -p tsconfig.check.json --noEmit",
+    "verify:deeplinks": "node scripts/verify-deeplinks.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
