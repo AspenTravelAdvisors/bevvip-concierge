@@ -3384,3 +3384,54 @@ button.card-book {
   font-family: var(--sans);
   min-width: 150px;
 }
+
+/* Atlas collection browser (Deliverable 3) — the globe + rail + cards that
+   replace an iframed Leaflet atlas. Mirrors the villa grid so the collections
+   converge on one card language rather than each inventing its own. */
+.atlas-collection {
+  display: flex;
+  flex-direction: column;
+}
+.atlas-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 4px;
+}
+.atlas-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.atlas-card h3 {
+  font-family: var(--serif, var(--sans));
+  font-size: 15px;
+  line-height: 1.3;
+  margin: 0 0 6px;
+  color: var(--text);
+}
+.atlas-card .ac-meta,
+.atlas-card .ac-when {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+.atlas-card .ac-link {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--gold);
+  text-decoration: none;
+}
+.atlas-card .ac-link:hover {
+  text-decoration: underline;
+}
+.atlas-empty,
+.atlas-more {
+  grid-column: 1 / -1;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  padding: 12px 2px;
+}

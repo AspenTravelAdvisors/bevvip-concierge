@@ -1,8 +1,24 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ATLASES, isOfferingType } from "@/lib/atlas-config";
+import type { OfferingType } from "@/lib/types";
 import AtlasFrame from "@/components/AtlasFrame";
 import AtlasView from "@/components/AtlasView";
+import AtlasTrain from "@/components/AtlasTrain";
+
+/**
+ * Collections migrated off their Leaflet iframe onto the Mapbox globe
+ * (Deliverable 3). Everything not listed here still renders the iframe, so the
+ * five can be moved one at a time and each reviewed on its own — rather than a
+ * single switch that changes all of them at once.
+ *
+ * Removing a collection from its iframe is also what frees its
+ * public/maps/<type>/ directory for deletion, including the three duplicated
+ * landmask.bin copies the sea atlases still fetch.
+ */
+const NATIVE_COLLECTIONS: Partial<Record<OfferingType, () => React.ReactElement>> = {
+  train: () => <AtlasTrain />,
+};
 
 // In-app atlas view. Each of the five atlases now lives inside Base Camp as a
 // self-contained Leaflet page under public/maps/<type>/. We render it as-is in
@@ -59,8 +75,14 @@ export default async function AtlasPage({
   const hero = qs.get("hero") === "1";
 
   // Ambient hero embeds get the bare map — no chrome of ours to bleed through
-  // the lander's own headline.
+  // the lander's own headline. Still served by the iframe even for migrated
+  // collections: the landers want a bare ambient map, not a filter rail.
   if (hero) return <AtlasView label={ATLASES[type].label} src={src} hero />;
+
+  const native = NATIVE_COLLECTIONS[type];
+  if (native) {
+    return <AtlasFrame type={type}>{native()}</AtlasFrame>;
+  }
 
   return (
     <AtlasFrame type={type}>

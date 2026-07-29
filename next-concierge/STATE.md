@@ -319,9 +319,33 @@ Three decisions worth knowing:
   state to what a `<select>` can express would silently drop half the meaning of
   links already in circulation.
 
-**Next:** wire the adapters + rail into the `/atlas/<type>` route so the globe
-renders the collection, then delete `public/maps/<type>/`,
-`components/AtlasView.tsx` and the three served `landmask.bin` copies.
+**`/atlas/train` is now native — the first collection off its iframe.**
+
+`app/atlas/[type]/page.tsx` keeps a `NATIVE_COLLECTIONS` map; anything not in it
+still renders the Leaflet iframe. So the five move one at a time and each gets
+reviewed on its own, instead of one switch changing all of them at once.
+
+- `components/AtlasCollection.tsx` — globe + rail + cards, generic over the
+  descriptor. Plots through the existing `bevvip:atlas-plot` event (the same
+  contract The Guide uses), so **no change to AtlasShell was needed**.
+- `components/AtlasTrain.tsx` — fetches and adapts the one feed. Deliberately
+  thin: the other four should each be a file this size. If one isn't, the
+  descriptor is missing an axis; don't special-case the shared component.
+- **The URL is the single source of truth for filter state.** Every change
+  rewrites the query string, so browser Share produces links in the same shape
+  the old Share buttons did, and back/forward work without a second store.
+- `?hero=1` still renders the iframe even for migrated collections — the
+  marketing landers want a bare ambient map, not a filter rail.
+
+Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
+tells the truth about how many matched. Cards cap at 120 with a "narrow the
+filters" note.
+
+**Next:** review `/atlas/train` against `/maps/train/index.html`, then repeat
+for jet → yacht → worldcruise → cruise. Only once a collection is native can
+its `public/maps/<type>/` directory go — and only when all five are native can
+`components/AtlasView.tsx`, the vendored Leaflet, and the three served
+`landmask.bin` copies be deleted.
 3. Only then delete `public/maps/<type>/` and its vendored Leaflet, plus
    `components/AtlasView.tsx` and the iframe path — and at that point the three
    served `landmask.bin` copies can finally go too (see D1's "still open").
