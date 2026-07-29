@@ -341,6 +341,30 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Why hover did nothing at all — the scope guard (fixed 2026-07-29)
+
+`AtlasShell`'s event-listener effect began `if (!allInventory) return;`.
+`allInventory` is only true for `scope="all"` — the home globe — so on
+`/atlas/train` the effect returned immediately and **neither the
+`bevvip:atlas-route` listener nor the `bevvip:atlas-plot` listener was ever
+registered.** Card hover dispatched correctly and nothing was listening.
+
+That guard also explains the earlier "no routes" report: the filtered subset was
+never plotted either, so the globe only ever showed ambient region pins.
+
+The guard is gone. It is safe to widen because the events have exactly two
+dispatchers — The Guide on the home page, and `AtlasCollection` on a collection
+route — and those never mount together.
+
+**Diagnostic worth reusing:** dispatch a synthetic `mouseover` on `.atlas-card`
+and listen for `bevvip:atlas-route`. It fired with 3 legs / 183 points while the
+map did nothing, which isolated the fault to the receiving side in one step.
+Note React implements `onMouseEnter` via delegated `mouseover`/`mouseout`, so a
+raw `mouseenter` event will not reach the handler.
+
+Known limitation: switching basemap wipes the focus-route source and layers, so
+a traced route disappears until the next hover, which re-creates them.
+
 ### Rail routes follow TRACKS, not arcs — corrected 2026-07-29
 
 **`public/maps/train/data/rail-routes.json` exists and the first port missed

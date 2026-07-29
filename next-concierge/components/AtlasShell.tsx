@@ -1076,7 +1076,15 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   // over, so the globe drops any plotted results and returns to its resting,
   // idle-spinning state — the same restart, in lockstep with the cleared chat.
   useEffect(() => {
-    if (!allInventory) return;
+    // NO scope guard. This effect used to begin `if (!allInventory) return;`
+    // because plotting was a home-canvas feature and nothing else dispatched
+    // to it. Collection pages (Deliverable 3) now drive the same globe through
+    // exactly these events — plotting their filtered subset and tracing one
+    // trip's route on hover — so a scope guard here silently disabled both, and
+    // the symptom was a page where hovering a card did nothing at all.
+    //
+    // Safe to widen: the events are only dispatched by The Guide (home) and by
+    // AtlasCollection (a collection route), and the two never mount together.
     function onPlot(e: Event) {
       const meta = (e as CustomEvent<GuideMeta>).detail;
       if (meta) apiRef.current?.plot(meta);
@@ -1112,6 +1120,8 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
       window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
       window.removeEventListener("bevvip:atlas-refit", onRefit);
     };
+    // allInventory is no longer read here, but the effect stays keyed to it so
+    // a scope change re-registers cleanly.
   }, [allInventory]);
 
   // Align the poster with the ambient camera: on the home canvas the map is
