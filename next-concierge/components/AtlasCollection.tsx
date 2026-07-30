@@ -42,6 +42,12 @@ export interface RouteLegOut {
 interface Props {
   type: OfferingType;
   descriptor: AtlasFilterDescriptor;
+  /** Collection accent for routes and stop dots — the atlas's own --accent. */
+  accent?: string;
+  /** Basemap this collection opens on. */
+  initialStyle?: "dark" | "satellite" | "dusk";
+  /** false → open flat. Long-haul arcs read better in 2D. */
+  initialGlobe?: boolean;
   /** Loads and adapts this collection's raw feed. Collection-specific. */
   load: () => Promise<{
     offerings: AtlasOffering[];
@@ -66,7 +72,9 @@ const dayRange = (a: number | null, b: number | null) =>
 const fmtDay = (iso?: string | null) =>
   iso ? new Date(iso + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "";
 
-export default function AtlasCollection({ type, descriptor, load }: Props) {
+export default function AtlasCollection({
+  type, descriptor, load, accent, initialStyle, initialGlobe,
+}: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -86,6 +94,9 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
    */
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const hoverTimer = useRef<number | null>(null);
+  // Live map view, so Share can capture basemap + projection + camera.
+  const viewRef = useRef<{ style: string; globe: boolean; center: { lng: number; lat: number }; zoom: number } | null>(null);
+  const [shared, setShared] = useState(false);
 
   // Today, pinned once per mount so the past-trip cutoff can't shift mid-session.
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
@@ -254,6 +265,52 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
     [state, query, writeUrl],
   );
 
+  /**
+   * Build a link that reproduces exactly what is on screen and copy it.
+   *
+   * This is an advisor tool: the share has to carry the filters (regions,
+   * supplier, ships, month, port/location + role, free text), the pinned
+   * journey, AND the view — basemap, 2D/3D, and the exact camera. A link that
+   * only carries filters drops the client into a different-looking map.
+   */
+  const share = useCallback(async () => {
+    if (!state) return;
+    const v = viewRef.current;
+    const qs = toSearchParams(
+      state,
+      {
+        ...(parsed?.view ?? {}),
+        trip: pinnedId,
+        style: v?.style ?? initialStyle ?? null,
+        flat: v ? !v.globe : initialGlobe === false,
+        camera: v ? { lng: v.center.lng, lat: v.center.lat, zoom: v.zoom } : null,
+      },
+      descriptor,
+      { q: query.q, country: query.country },
+    );
+    const url = `${window.location.origin}/atlas/${type}${qs.toString() ? `?${qs}` : ""}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShared(true);
+      window.setTimeout(() => setShared(false), 1600);
+    } catch {
+      // Clipboard can be blocked; put it in the URL bar so it is still copyable.
+      router.replace(url.replace(window.location.origin, ""), { scroll: false });
+    }
+  }, [state, parsed?.view, pinnedId, descriptor, query, type, router, initialStyle, initialGlobe]);
+
+  // `trip=` pins a journey, the same param the Leaflet Share button emitted.
+  const autoTripped = useRef(false);
+  useEffect(() => {
+    const wanted = parsed?.view.trip;
+    if (autoTripped.current || !wanted || !filtered.length) return;
+    const hit = filtered.find((o) => o.idAliases.includes(wanted) || o.id === wanted);
+    if (!hit) return;
+    autoTripped.current = true;
+    setPinnedId(hit.id);
+    emitRoute(hit, !parsed?.view.camera); // an explicit camera wins over fitting
+  }, [parsed?.view.trip, parsed?.view.camera, filtered, emitRoute]);
+
   // A pinned trip that filtering removes from the list should release its pin.
   useEffect(() => {
     if (pinnedId && !byId.has(pinnedId)) {
@@ -284,6 +341,13 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
         region={null}
         externalLink={internalAtlasLink(type)}
         onRegionSelect={selectRegion}
+        accent={accent}
+        // A shared link's basemap/projection/camera override the collection's
+        // own defaults — the whole point of sharing a view.
+        initialStyle={(parsed?.view.style as "dark" | "satellite" | "dusk" | null) ?? initialStyle}
+        initialGlobe={parsed?.view.flat ? false : initialGlobe}
+        initialCamera={parsed?.view.camera ?? null}
+        onViewChange={(v) => { viewRef.current = v; }}
       />
 
       {state && offerings ? (
@@ -296,6 +360,8 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
           today={today}
           onStateChange={(next) => writeUrl(next, query)}
           onQueryChange={(next) => state && writeUrl(state, next)}
+          onShare={share}
+          shareLabel={shared ? "Link copied" : "Share"}
         />
       ) : (
         <div className="villa-filters" aria-busy="true">

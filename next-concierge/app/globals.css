@@ -3555,3 +3555,20 @@ button.card-book {
 .atlas-card {
   cursor: pointer;
 }
+
+/* Share: an advisor tool, so it sits beside the count rather than hidden in a
+   menu. The copied link carries filters + pinned journey + basemap + camera. */
+.villa-filters .atlas-share {
+  background: var(--gold);
+  color: #17140c;
+  border: 1px solid var(--gold);
+  border-radius: 7px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-family: var(--sans);
+  font-weight: 600;
+  cursor: pointer;
+}
+.villa-filters .atlas-share:hover {
+  filter: brightness(1.08);
+}

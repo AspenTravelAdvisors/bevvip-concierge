@@ -86,9 +86,15 @@ export function findRegionKey(
   return loose ? loose.key : null;
 }
 
-/** Non-filter params that drive the view rather than the result set. */
+/**
+ * Non-filter params that drive the view rather than the result set.
+ *
+ * These matter as much as the filters for an advisor sharing a link with a
+ * client: the point of the share is "look at THIS, like THIS", so the basemap,
+ * the projection, the camera and the pinned journey all travel with it.
+ */
 export interface AtlasViewIntent {
-  /** `trip=` — open this trip's detail panel. */
+  /** `trip=` — the pinned journey whose route is traced. */
   trip: string | null;
   /** `region=` (singular) — focus this region. */
   focusRegion: string | null;
@@ -96,6 +102,12 @@ export interface AtlasViewIntent {
   world: boolean;
   /** `hero=1` — ambient embed for the marketing landers. */
   hero: boolean;
+  /** `style=` — dark | satellite | dusk. */
+  style: string | null;
+  /** `flat=1` — mercator instead of globe. */
+  flat: boolean;
+  /** `@=lng,lat,zoom` — exact camera. */
+  camera: { lng: number; lat: number; zoom: number } | null;
 }
 
 export interface ParsedDeepLink {
@@ -188,6 +200,14 @@ export function parseDeepLink(
       focusRegion: findRegionKey(params.get("region"), ctx.regions, d.collection),
       world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()),
       hero: params.get("hero") === "1",
+      style: ["dark", "satellite", "dusk"].includes(String(params.get("style"))) ? params.get("style") : null,
+      flat: params.get("flat") === "1",
+      camera: (() => {
+        const raw = params.get("@");
+        if (!raw) return null;
+        const [lng, lat, zoom] = raw.split(",").map(Number);
+        return [lng, lat, zoom].every(Number.isFinite) ? { lng, lat, zoom } : null;
+      })(),
     },
   };
 }
@@ -224,5 +244,11 @@ export function toSearchParams(
   if (view.focusRegion) p.set("region", view.focusRegion);
   if (view.world) p.set("world", "1");
   if (view.hero) p.set("hero", "1");
+  if (view.style) p.set("style", view.style);
+  if (view.flat) p.set("flat", "1");
+  if (view.camera) {
+    const c = view.camera;
+    p.set("@", `${c.lng.toFixed(4)},${c.lat.toFixed(4)},${c.zoom.toFixed(2)}`);
+  }
   return p;
 }

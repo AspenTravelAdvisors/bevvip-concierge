@@ -46,12 +46,18 @@ const cellLng = (c) => -180 + c / RES;
 const cellLat = (r) => LAT_MAX - r / RES;
 
 /** Quadratic bezier through a control point offset perpendicular to the leg. */
-export function arcPts(a, b) {
+/**
+ * @param {number[]} a  [lat, lng]
+ * @param {number[]} b  [lat, lng]
+ * @param {number} step curve resolution; 0.04 gives the original's 26 points.
+ *        Long flight arcs need more or they render as visible chords.
+ */
+export function arcPts(a, b, step = 0.04) {
   const la1 = a[0], lo1 = a[1], la2 = b[0], lo2 = b[1];
   const mx = (lo1 + lo2) / 2, my = (la1 + la2) / 2, dx = lo2 - lo1, dy = la2 - la1;
   const cx = mx - dy * ARC_K, cy = my + dx * ARC_K;
   const p = [];
-  for (let t = 0; t <= 1.0001; t += 0.04) {
+  for (let t = 0; t <= 1.0001; t += step) {
     const x = (1 - t) * (1 - t) * lo1 + 2 * (1 - t) * t * cx + t * t * lo2;
     const y = (1 - t) * (1 - t) * la1 + 2 * (1 - t) * t * cy + t * t * la2;
     p.push([y, x]);

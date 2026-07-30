@@ -79,5 +79,6 @@ export default function AtlasTrain() {
     return { offerings, ctx, regionLabels, routeFor, brandMarks, logoBase: "/maps/train/logos" };
   }, []);
 
-  return <AtlasCollection type="train" descriptor={TRAIN_DESCRIPTOR} load={load} />;
+  // Copper, from the rail atlas's own --accent.
+  return <AtlasCollection type="train" descriptor={TRAIN_DESCRIPTOR} load={load} accent="#e08d5f" />;
 }

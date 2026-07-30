@@ -266,9 +266,29 @@ interface Props {
    * Home leaves it undefined and keeps the popup + link.
    */
   onRegionSelect?: (regionKey: string) => void;
+  /**
+   * Collection accent, from OVERLAYS — platinum for jets, copper for rail,
+   * gold for yachts. Traced routes and their stop dots use it, so a jet route
+   * stops looking like a railway.
+   */
+  accent?: string;
+  /** Basemap this collection opens on. Jets read best on Dark. */
+  initialStyle?: StyleKey;
+  /** false → open flat (mercator). Long-haul flight arcs read better in 2D. */
+  initialGlobe?: boolean;
+  /** Exact opening camera, from a shared `@lng,lat,zoom`. */
+  initialCamera?: { lng: number; lat: number; zoom: number } | null;
+  /**
+   * Reports basemap / projection / camera so a Share link can carry the view.
+   * An advisor sharing with a client means "look at THIS, like THIS".
+   */
+  onViewChange?: (v: { style: StyleKey; globe: boolean; center: { lng: number; lat: number }; zoom: number }) => void;
 }
 
-export default function AtlasShell({ type, region, externalLink, scope, routesAlways, onRegionSelect }: Props) {
+export default function AtlasShell({
+  type, region, externalLink, scope, routesAlways, onRegionSelect,
+  accent, initialStyle, initialGlobe, initialCamera, onViewChange,
+}: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
   const overlayKeys = (Object.keys(OVERLAYS) as OverlayKey[]).filter((k) => allInventory || type === k);
@@ -287,6 +307,8 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   // handler through a ref rather than capturing it.
   const onRegionSelectRef = useRef(onRegionSelect);
   onRegionSelectRef.current = onRegionSelect;
+  const onViewChangeRef = useRef(onViewChange);
+  onViewChangeRef.current = onViewChange;
   const focusRouteRef = useRef<{
     paint(legs: { mode: string; coordinates: [number, number][] }[], stops?: FocusStop[]): void;
     clear(): void;
@@ -303,8 +325,8 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   const [posterPad, setPosterPad] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [styleKey, setStyleKey] = useState<StyleKey>("satellite");
-  const [is3D, setIs3D] = useState(true);
+  const [styleKey, setStyleKey] = useState<StyleKey>(initialStyle ?? "satellite");
+  const [is3D, setIs3D] = useState(initialGlobe ?? true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
   const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
@@ -323,8 +345,10 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
     let restyling = false;
     let subsetActive = false;
     let homeZoom = 1.25;
-    let projGlobe = true;
-    let styleKeyLocal: StyleKey = "satellite";
+    let projGlobe = initialGlobe ?? true;
+    let styleKeyLocal: StyleKey = initialStyle ?? "satellite";
+    // Collection accent for traced routes; falls back to rail copper.
+    const accentLocal = accent || OVERLAYS[type as OverlayKey]?.color || "#e08d5f";
     let ro: ResizeObserver | undefined;
     let loadTimeout = 0;
     let styleWatchdog = 0;
@@ -378,8 +402,8 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
         mapboxgl.accessToken = token;
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: ATLAS_STYLES.satellite.url,
-          projection: "globe",
+          style: ATLAS_STYLES[styleKeyLocal].url,
+          projection: projGlobe ? "globe" : "mercator",
           center: [10, 20],
           zoom: 1.25,
           minZoom: 0.6,
@@ -738,15 +762,24 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
          */
         function routePalette() {
           const satellite = styleKeyLocal === "satellite";
+          // The line takes the COLLECTION's accent — platinum for jets, copper
+          // for rail, gold for yachts — matching each original atlas's --accent.
+          // Painting every collection copper made a jet route look like a
+          // railway.
+          const line = accentLocal;
           return satellite
-            ? { casing: "#0b0704", casingW: 8.5, casingO: 0.85, rail: "#ffd9a0", glowO: 0.75, tie: "#2a1408", conn: "#fff4e4", connO: 0.9 }
-            : { casing: "#140b06", casingW: 7, casingO: 0.5, rail: "#e08d5f", glowO: 0.5, tie: "#241007", conn: "#f2d9c4", connO: 0.6 };
+            ? { casing: "#07080b", casingW: 8.5, casingO: 0.85, line, glowO: 0.75, tie: "#141922", conn: line, connO: 0.9 }
+            : { casing: "#0b0d12", casingW: 7, casingO: 0.5, line, glowO: 0.5, tie: "#141922", conn: line, connO: 0.7 };
         }
 
         function paintFocusRoute(
           legs: { mode: string; coordinates: [number, number][] }[],
           stops?: FocusStop[],
         ) {
+          // Tracing a route is a deliberate act of attention — the idle spin
+          // has to yield to it, or the camera drifts off the thing you just
+          // asked to see (and fitBounds fights the rotation).
+          stopSpin();
           const data = {
             type: "FeatureCollection" as const,
             features: legs
@@ -754,7 +787,14 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
               .map((l) => ({
                 type: "Feature" as const,
                 geometry: { type: "LineString" as const, coordinates: l.coordinates },
-                properties: { rail: l.mode === "rail" ? 1 : 0 },
+                // rail  → railway symbology (casing + glow + rail + sleepers)
+                // primary→ the collection's own route line (jets, sea legs)
+                // conn   → a ferry/road hop inside another journey: faint dashes
+                properties: {
+                  rail: l.mode === "rail" ? 1 : 0,
+                  primary: l.mode === "primary" ? 1 : 0,
+                  conn: l.mode !== "rail" && l.mode !== "primary" ? 1 : 0,
+                },
               })),
           };
           // Remember it so a basemap switch can repaint — setStyle wipes every
@@ -766,9 +806,10 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           if (!map.getSource("focus-route")) map.addSource("focus-route", { type: "geojson", data });
           else map.getSource("focus-route")?.setData(data);
 
+          // Casing sits under both the railway and the primary line.
           addLayer(map, {
             id: "fr_casing", type: "line", source: "focus-route",
-            filter: ["==", ["get", "rail"], 1],
+            filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "round" },
             paint: { "line-color": p.casing, "line-width": p.casingW, "line-opacity": p.casingO },
           });
@@ -779,15 +820,15 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           // drop-shadow, but line-blur on a wide warm line is the same idea.
           addLayer(map, {
             id: "fr_glow", type: "line", source: "focus-route",
-            filter: ["==", ["get", "rail"], 1],
+            filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": "#ffbe8c", "line-width": 9, "line-opacity": p.glowO, "line-blur": 6 },
+            paint: { "line-color": p.line, "line-width": 9, "line-opacity": p.glowO, "line-blur": 6 },
           });
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
-            filter: ["==", ["get", "rail"], 1],
+            filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": p.rail, "line-width": 3.4, "line-opacity": 0.98 },
+            paint: { "line-color": p.line, "line-width": 3.4, "line-opacity": 0.98 },
           });
           addLayer(map, {
             id: "fr_ties", type: "line", source: "focus-route",
@@ -797,7 +838,7 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           });
           addLayer(map, {
             id: "fr_conn", type: "line", source: "focus-route",
-            filter: ["==", ["get", "rail"], 0],
+            filter: ["==", ["get", "conn"], 1],
             layout: { "line-join": "round", "line-cap": "round" },
             paint: { "line-color": p.conn, "line-width": 2, "line-opacity": p.connO, "line-dasharray": [2, 9] },
           });
@@ -808,7 +849,8 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             map.setPaintProperty("fr_casing", "line-width", p.casingW);
             map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
             map.setPaintProperty("fr_glow", "line-opacity", p.glowO);
-            map.setPaintProperty("fr_rail", "line-color", p.rail);
+            map.setPaintProperty("fr_rail", "line-color", p.line);
+            map.setPaintProperty("fr_glow", "line-color", p.line);
             map.setPaintProperty("fr_ties", "line-color", p.tie);
             map.setPaintProperty("fr_conn", "line-color", p.conn);
             map.setPaintProperty("fr_conn", "line-opacity", p.connO);
@@ -842,7 +884,7 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             id: "fs_dot", type: "circle", source: "focus-stops",
             paint: {
               "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 4.5, 8, 9],
-              "circle-color": p.rail,
+              "circle-color": p.line,
               "circle-stroke-color": p.casing,
               "circle-stroke-width": 1.5,
               "circle-opacity": 0.98,
@@ -857,13 +899,13 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
               "text-allow-overlap": true,
               "text-ignore-placement": true,
             },
-            paint: { "text-color": p.casing, "text-halo-color": p.rail, "text-halo-width": 0.6 },
+            paint: { "text-color": p.casing, "text-halo-color": p.line, "text-halo-width": 0.6 },
           });
           try {
-            map.setPaintProperty("fs_dot", "circle-color", p.rail);
+            map.setPaintProperty("fs_dot", "circle-color", p.line);
             map.setPaintProperty("fs_dot", "circle-stroke-color", p.casing);
             map.setPaintProperty("fs_num", "text-color", p.casing);
-            map.setPaintProperty("fs_num", "text-halo-color", p.rail);
+            map.setPaintProperty("fs_num", "text-halo-color", p.line);
           } catch { /* layer missing mid-restyle */ }
 
           if (!stopHoverWired) {
@@ -1039,6 +1081,18 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
         }, 12000);
         ["mousedown", "touchstart", "wheel", "dragstart"].forEach((ev) => map.on(ev, stopSpin));
 
+        // Publish the view so the page can build a Share link from it.
+        const reportView = () => {
+          try {
+            const c = map.getCenter();
+            onViewChangeRef.current?.({
+              style: styleKeyLocal, globe: projGlobe, center: { lng: c.lng, lat: c.lat }, zoom: map.getZoom(),
+            });
+          } catch { /* view reporting is never load-bearing */ }
+        };
+        map.on("moveend", reportView);
+        map.on("zoomend", reportView);
+
         ro = new ResizeObserver(() => {
           try {
             map.resize();
@@ -1119,6 +1173,19 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             spinWhenRevealed();
           }
 
+          // A shared link's exact camera wins over any default framing.
+          if (initialCamera) {
+            focused = true;
+            try {
+              map.flyTo({
+                center: [initialCamera.lng, initialCamera.lat],
+                zoom: initialCamera.zoom,
+                speed: 1.4,
+              });
+              stopSpin();
+            } catch { /* camera optional */ }
+          }
+
           // A collection page never crosses ROUTE_ZOOM on its own, so nothing
           // would trigger the lazy load — start it here instead.
           if (ROUTES_ENABLED && routesAlways && !routesFetched) loadRoutes();
@@ -1177,10 +1244,12 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             try { map.setStyle(ATLAS_STYLES[key].url); } catch { restyling = false; }
             // A manual switch into a broken family must degrade too, not hang.
             armStyleWatchdog();
+            reportView();
           },
           setProjection(globe) {
             projGlobe = globe;
             setIs3D(globe);
+            reportView();
             try { map.setProjection(globe ? "globe" : "mercator"); } catch { /* optional */ }
             if (globe) {
               if (!subsetActive && !focused) { fitGlobe(); startSpin(); }

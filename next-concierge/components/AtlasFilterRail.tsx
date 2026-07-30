@@ -53,6 +53,9 @@ interface Props {
   today: string;
   onStateChange(next: AtlasFilterState): void;
   onQueryChange(next: AtlasQuery): void;
+  /** Copy a link reproducing filters + pinned journey + basemap + camera. */
+  onShare?: () => void;
+  shareLabel?: string;
 }
 
 const MONTH_LABEL = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -88,6 +91,8 @@ export default function AtlasFilterRail({
   today,
   onStateChange,
   onQueryChange,
+  onShare,
+  shareLabel = "Share",
 }: Props) {
   /**
    * Facet counts. Each control counts against the results that pass every
@@ -289,6 +294,12 @@ export default function AtlasFilterRail({
       <span className="atlas-count" aria-live="polite">
         {resultCount.toLocaleString()} match{resultCount === 1 ? "" : "es"}
       </span>
+
+      {onShare && (
+        <button type="button" className="atlas-share" onClick={onShare}>
+          {shareLabel}
+        </button>
+      )}
 
       {!!active && (
         <button

@@ -65,17 +65,21 @@ export default function AtlasJet() {
       const frame = unrollLine(located);
       const coordinates: [number, number][] = [];
       for (let i = 0; i < frame.length - 1; i++) {
+        // 0.01 → ~101 points per leg rather than the default 26. A Tokyo →
+        // Los Angeles arc at 26 points renders as visible straight chords.
         const seg = arcPts(
           [frame[i][1], frame[i][0]],
           [frame[i + 1][1], frame[i + 1][0]],
+          0.01,
         ) as [number, number][];
         for (let k = coordinates.length ? 1 : 0; k < seg.length; k++) {
           coordinates.push([seg[k][1], seg[k][0]]);
         }
       }
-      // "arc" mode draws the dashed connector rather than track symbology —
-      // correct for flight, which is not a railway.
-      return coordinates.length >= 2 ? [{ mode: "arc", coordinates }] : null;
+      // "primary" — the collection's own route line in platinum, NOT the faint
+      // ferry-hop connector. That connector is dashed 2/9 and reads as sparse
+      // scaffolding when it is carrying the whole journey.
+      return coordinates.length >= 2 ? [{ mode: "primary", coordinates }] : null;
     };
 
     // Brand marks drive the card logos: bundled asset → favicon services →
@@ -88,5 +92,17 @@ export default function AtlasJet() {
     return { offerings, ctx, regionLabels, routeFor, brandMarks, logoBase: "/maps/jet/logos" };
   }, []);
 
-  return <AtlasCollection type="jet" descriptor={JET_DESCRIPTOR} load={load} />;
+  return (
+    <AtlasCollection
+      type="jet"
+      descriptor={JET_DESCRIPTOR}
+      load={load}
+      // Platinum, from the jet atlas's own --accent: #dfe5f2.
+      accent="#dfe5f2"
+      // Jets open flat and dark: long-haul arcs distort badly on a globe, and
+      // platinum on satellite terrain is close to invisible.
+      initialStyle="dark"
+      initialGlobe={false}
+    />
+  );
 }

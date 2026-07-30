@@ -67,6 +67,42 @@ Status: ✅ ported · ⚠️ partial · ❌ missing · n/a not in this collectio
 | World-trips view (`world=1`) | ❌ | parsed, no UI entry point |
 | Result count | ✅ | in the rail |
 
+## Cross-atlas affordance scan (all five `index.html` element ids)
+
+Done 2026-07-29 by enumerating every `id=` in all five atlases, so the list is
+exhaustive rather than remembered. All five share one chrome, so this applies
+to every collection.
+
+**Deliberate design changes (approved, not regressions)**
+
+| Original | Replacement | Note |
+| --- | --- | --- |
+| `panel` / `pTitle` / `pSub` / `pList` — region detail panel | Card grid under the map | The VillaAtlas pattern, chosen deliberately |
+| `bvi*` — onboarding tour/carousel | Base Camp's own tour | Already exists app-wide |
+| `helpDock` / `helpForm` / `helpOverlay` — enquiry form | `AtlasFrame`'s "Talk to an advisor" | Already exists app-wide |
+| `mapMenu*` — basemap picker | `AtlasShell` Style menu | ✅ |
+| `shareDock` / `shareToast` | Rail Share button | ✅ now carries the view too |
+
+**Genuinely missing — ranked by how much an advisor would feel it**
+
+1. **Mobile.** `rail` / `railHandle` / `railPill` / `railTab` / `railApply` /
+   `applyCount` / `panelHandle` / `sheetScrim` — the whole atlas is a drawer +
+   bottom-sheet on phones, with an "Apply (N)" commit. My rail is a flat row of
+   selects that will be cramped on a phone. **Biggest gap.**
+2. **`worldBtn` / `worldCount`** — journeys' round-the-world view. `world=1` is
+   parsed and filters correctly; there is no button.
+3. **Branded progressive loader** — `atlasVeil` / `loadBar` / `loadFill` /
+   `loadMsg` ("Rendering photorealistic 3D terrain…"). Collections currently
+   pop in.
+4. **`routeBack`** — an explicit way out of a traced route. Clicking the pinned
+   card again works but is undiscoverable.
+5. **Richer pickers.** `datePop`/`dateGrid` is a month GRID; `locationPop` and
+   `portPop` are searchable lists with role buttons; `shipList`/`shipSearch` is
+   a searchable ship list; `opList` shows suppliers **with logos**. I have
+   single selects and one type-ahead — functionally equivalent, visually much
+   plainer, and the supplier list loses its logos.
+6. **`dockCoach`**, **`hint`** (cruise), **`quiet-map`** — small coach marks.
+
 ## Still open after this pass
 
 - `world=1` has no UI affordance (the param is parsed and honoured).
