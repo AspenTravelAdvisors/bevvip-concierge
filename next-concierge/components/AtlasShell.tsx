@@ -18,7 +18,7 @@
 // external-atlas handoff, so the app still works with zero configuration.
 
 import { useEffect, useRef, useState } from "react";
-import type { OfferingType, GuideMeta, OfferingResult } from "@/lib/types";
+import type { OfferingType, GuideMeta, GuideToolMeta, OfferingResult } from "@/lib/types";
 import { ATLASES, COLLECTIONS, internalAtlasLink } from "@/lib/atlas-config";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 // Every coordinate this component touches is minted here. See lib/atlas/geo.ts
@@ -37,6 +37,8 @@ import {
 // rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
+import { loadSeaRoutes } from "@/lib/atlas/adapters/sea-geometry";
+import { loadRailGeometry, tripTrackLegs } from "@/lib/atlas/adapters/rail-geometry";
 import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
@@ -1179,6 +1181,81 @@ export default function AtlasShell({
           });
         }
 
+        /**
+         * Trace the routes of whatever the Guide just plotted.
+         *
+         * The home globe shows plotted results as pins. For a hotel that is the
+         * whole story; for a 14-night voyage a single dot is not — the itinerary
+         * IS the product, and it was the one thing the chat could not show.
+         *
+         * Deliberately on demand: the ambient all-routes underlay is off (see
+         * `ambientRoutes`), and this is the opposite of it — only the trips the
+         * traveller was actually offered, drawn in the same visual language as a
+         * traced route on a collection page. Geometry comes from D1's
+         * precomputed files, fetched per collection only when a result of that
+         * type appears, and cached by `loadSeaRoutes` thereafter.
+         *
+         * Jet is absent on purpose: it ships no precomputed geometry (its routes
+         * are arced from stops the Guide result does not carry), so it stays
+         * pins-only rather than getting an invented line.
+         */
+        let plotSeq = 0;
+        async function tracePlottedRoutes(tools: GuideToolMeta[]) {
+          const seq = ++plotSeq;
+          const byKind = new Map<string, string[]>();
+          for (const tool of tools) {
+            const kind = String(tool.type || "");
+            if (!SEA_ROUTE_KEYS.has(kind as OverlayKey) && kind !== "train") continue;
+            for (const r of (tool.results ?? []).slice(0, 60)) {
+              const id = String((r as { id?: unknown }).id ?? "");
+              if (!id) continue;
+              const list = byKind.get(kind);
+              if (list) list.push(id);
+              else byKind.set(kind, [id]);
+            }
+          }
+          if (!byKind.size) return;
+
+          const legs: { mode: string; coordinates: [number, number][] }[] = [];
+          for (const [kind, ids] of byKind) {
+            try {
+              if (kind === "train") {
+                const geo = await loadRailGeometry();
+                for (const id of ids) {
+                  for (const cand of idCandidates(id)) {
+                    const l = tripTrackLegs(cand, geo);
+                    if (l?.length) {
+                      // Rail legs carry `points` (branded) rather than
+                      // `coordinates`, and keep their own mode so the globe
+                      // draws track symbology instead of a plain line.
+                      for (const leg of l) {
+                        legs.push({
+                          mode: leg.mode,
+                          coordinates: leg.points.map((pt) => [pt[0], pt[1]] as [number, number]),
+                        });
+                      }
+                      break;
+                    }
+                  }
+                }
+              } else {
+                const index = await loadSeaRoutes(kind);
+                for (const id of ids) {
+                  for (const cand of idCandidates(id)) {
+                    const l = index.get(cand);
+                    if (l?.length) { legs.push(...l); break; }
+                  }
+                }
+              }
+            } catch { /* geometry is an enhancement; pins already plotted */ }
+          }
+          // A newer plot landed while we were fetching — its trace wins.
+          if (seq !== plotSeq || !legs.length) return;
+          // Explicit [] for stops: paintFocusRoute would otherwise reuse the
+          // last traced route's stops and label this one with someone else's.
+          focusRouteRef.current?.paint(legs, []);
+        }
+
         // ── Result plotting (fit + satellite), triggered by the Guide ─────────
         function plotResults(meta: GuideMeta) {
           // Plot EVERY tool's results, not just the lead. A hotel ask often also
@@ -1216,6 +1293,8 @@ export default function AtlasShell({
           }
           featuredFC = { type: "FeatureCollection", features };
           if (!featuredFC.features.length) return; // nothing locatable to plot
+          // Routes for the plotted trips, where the collection has geometry.
+          void tracePlottedRoutes(tools);
           subsetActive = true;
           // Remember this framing so a re-mount (Back from a full atlas) can
           // replay it instead of resetting to the idle globe.
@@ -1485,6 +1564,11 @@ export default function AtlasShell({
           resetView() {
             subsetActive = false;
             featuredFC = null;
+            // Traced plot routes belong to the plot: clearing the pins without
+            // them would leave itineraries floating over an empty globe. The
+            // bumped sequence also cancels any fetch still in flight.
+            plotSeq++;
+            focusRouteRef.current?.clear();
             try { sessionStorage.removeItem(PLOT_STORAGE_KEY); } catch { /* storage optional */ }
             setBadge(null);
             stopPulse();
@@ -2003,6 +2087,16 @@ function layerIdsFor(key: string): string[] {
 /** Precomputed sea geometry, one file per collection. Built by
  *  scripts/build-sea-routes.mjs — see SEA_ROUTES_BASE consumers. */
 const SEA_ROUTE_KEYS = new Set<OverlayKey>(["cruise", "yacht", "worldcruise"]);
+
+/**
+ * Guide results may carry either the raw source id or the atlas's prefixed
+ * alias (`yc_`, `wc_`, `cr_`, `rj_`, `jt_`). The geometry indexes are keyed on
+ * the RAW id — `seaRoutes.get(o.id)` on the collection pages — so try both.
+ */
+function idCandidates(id: string): string[] {
+  const m = /^(yc|wc|cr|rj|jt|h)_(.+)$/.exec(id);
+  return m ? [id, m[2]] : [id];
+}
 
 async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
   try {
