@@ -37,7 +37,7 @@ import {
 // rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
-import { mapStyleFallback } from "@/lib/analytics";
+import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
@@ -706,21 +706,65 @@ export default function AtlasShell({
         // ── Click wiring (once; tolerant of layers re-created on restyle) ─────
         function wireHandlers() {
           map.on("click", "hotel-dots", (e: MBEvent) => {
-            if (map.getZoom() < HOTEL_CLICK_MIN_ZOOM) return; // ambient zoom: not tappable
             const f = e.features?.[0];
             if (!f) return;
+            // Hotel dots are DRAWN from zoom 2.45 but were only CLICKABLE from
+            // 4 — a 1.55-zoom dead band where a pin looks interactive, the
+            // cursor never changes, and a tap silently does nothing. The gate
+            // is sound (dots overlap down here, so a tap can't mean one hotel);
+            // the no-op was not. Drill in toward what was tapped instead.
+            if (map.getZoom() < HOTEL_CLICK_MIN_ZOOM) {
+              map.flyTo({
+                center: [e.lngLat.lng, e.lngLat.lat],
+                zoom: HOTEL_CLICK_MIN_ZOOM + 0.6,
+                duration: 900,
+                essential: true,
+              });
+              return;
+            }
             const id = f.properties.id || "";
             const name = f.properties.name || "VIP Hotel";
             const reg = f.properties.region;
-            const href = id ? `/atlas/hotel?ids=${encodeURIComponent(id)}` : "/atlas/hotel";
+
+            /*
+             * Resolve the property HERE rather than navigating.
+             *
+             * Browsing a hotel used to cost three hops: Guide globe → the hotel
+             * atlas → "See it in 3D". The first hop was pure loss — this globe
+             * and /atlas/hotel are the SAME component (AtlasShell) with a
+             * different `scope`, so it was one map reloading itself with a
+             * filter applied, just to show a property it was already holding.
+             *
+             * So the pin now marks and frames in place, and the popup offers
+             * the two things that actually differ from where you already are:
+             * the photoreal view (a different engine — Mapbox has no equivalent)
+             * and the filtered browse surface (a different task). Neither is on
+             * the way to the other any more.
+             */
+            const at = f.geometry?.coordinates;
+            if (isFinitePair(at)) {
+              const pt = fromLngLatPair(at);
+              // FocusStop carries a plain pair; the branded value did its job at
+              // the parse boundary above (fromLngLatPair), which is the only
+              // place order can be got wrong.
+              markFocusPlace([{ name, at: [pt[0], pt[1]] }]);
+              map.flyTo({ center: pt, zoom: Math.max(map.getZoom(), 12), duration: 1100, essential: true });
+            }
+
+            const browse = id ? `/atlas/hotel?ids=${encodeURIComponent(id)}` : "/atlas/hotel";
+            const three = id ? `/maps/hotel/index.html?hotel=${encodeURIComponent(id)}` : null;
             const html =
               `<div class="iw"><div class="iwn">${escapeHtml(name)}</div>` +
               (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "") +
-              `<a href="${escapeHtml(href)}">Open the VIP hotels atlas →</a></div>`;
+              (three
+                ? `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
+                : "") +
+              `<a href="${escapeHtml(browse)}">Browse VIP hotels →</a></div>`;
             popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
           });
           map.on("mouseenter", "hotel-dots", () => {
-            if (map.getZoom() >= HOTEL_CLICK_MIN_ZOOM) map.getCanvas().style.cursor = "pointer";
+            map.getCanvas().style.cursor =
+              map.getZoom() >= HOTEL_CLICK_MIN_ZOOM ? "pointer" : "zoom-in";
           });
           map.on("mouseleave", "hotel-dots", () => { map.getCanvas().style.cursor = ""; });
 
@@ -1475,11 +1519,20 @@ export default function AtlasShell({
       api.paint(legs, detail?.stops);
       if (detail?.fit) api.fit(legs);
     };
+    // The popup's "See it in 3D" is injected HTML, so it has no React handler.
+    // Delegate once rather than re-wiring on every popup open.
+    const on3d = (e: Event) => {
+      const el = (e.target as HTMLElement | null)?.closest?.("[data-hotel3d]");
+      const id = el?.getAttribute("data-hotel3d");
+      if (id) hotel3dOpened(id, "popup");
+    };
+    document.addEventListener("click", on3d);
     window.addEventListener("bevvip:atlas-route", onRoute as EventListener);
     window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
     window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
     window.addEventListener("bevvip:atlas-refit", onRefit);
     return () => {
+      document.removeEventListener("click", on3d);
       window.removeEventListener("bevvip:atlas-route", onRoute as EventListener);
       window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
       window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
@@ -2066,7 +2119,10 @@ function setFog(map: MBMap, fog: Record<string, unknown>) {
 
 interface MBEvent {
   lngLat: { lng: number; lat: number };
-  features?: { properties: Record<string, string> }[];
+  features?: {
+    properties: Record<string, string>;
+    geometry?: { coordinates?: [number, number] };
+  }[];
 }
 interface MBPopup {
   setLngLat(c: { lng: number; lat: number }): MBPopup;

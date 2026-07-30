@@ -3765,3 +3765,19 @@ button.card-book {
 .atlas-card .ac-3d:hover {
   filter: brightness(1.08);
 }
+
+/* The photoreal handoff, promoted inside a globe popup: it is the one thing
+   this map cannot show you itself, so it reads as the primary action while
+   "Browse VIP hotels" stays a plain link below it. */
+.mapboxgl-popup .iw .iw3d {
+  display: inline-block;
+  margin: 6px 0 2px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  color: #17140c;
+  font-weight: 600;
+  text-decoration: none;
+}
+.mapboxgl-popup .iw .iw3d:hover { filter: brightness(1.08); }
