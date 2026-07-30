@@ -85,10 +85,22 @@ to every collection.
 
 **Genuinely missing — ranked by how much an advisor would feel it**
 
-1. **Mobile.** `rail` / `railHandle` / `railPill` / `railTab` / `railApply` /
-   `applyCount` / `panelHandle` / `sheetScrim` — the whole atlas is a drawer +
-   bottom-sheet on phones, with an "Apply (N)" commit. My rail is a flat row of
-   selects that will be cramped on a phone. **Biggest gap.**
+1. ~~**Mobile.**~~ ✅ **Done 2026-07-29.** Pill → drawer → "Apply · N", matching
+   `railPill` / `railApply` / `applyCount` / `sheetScrim`.
+
+   The commit step is the point, not decoration. On a phone the map is the whole
+   screen, so applying a filter per keystroke redraws the map under your thumb
+   while you are still deciding, and the count you are aiming for keeps moving.
+   The sheet edits a DRAFT; the Apply button carries the draft's count, so it
+   says what you will get rather than what you already have.
+
+   Also handled: **tapping a card scrolls the map back into view** — on a phone
+   the cards are below the fold, so tracing a route you cannot see reads as
+   nothing happening. Desktop shows both at once and deliberately does not jump.
+   16px control font in the sheet stops iOS Safari zooming the viewport on
+   focus; `env(safe-area-inset-bottom)` keeps the bar off the home indicator;
+   results go single-column with bottom padding so the last card is not trapped
+   under the fixed bar.
 2. **`worldBtn` / `worldCount`** — journeys' round-the-world view. `world=1` is
    parsed and filters correctly; there is no button.
 3. **Branded progressive loader** — `atlasVeil` / `loadBar` / `loadFill` /

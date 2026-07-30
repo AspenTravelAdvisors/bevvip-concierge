@@ -341,6 +341,48 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Mobile, Share, jet colours (2026-07-29)
+
+**Mobile: pill → drawer → "Apply · N".** Built now rather than after four more
+ports, because it is shared infrastructure every collection inherits.
+
+The commit step is the whole point. On a phone the map IS the screen, so
+applying per keystroke redraws it under your thumb while you are still
+deciding, and the count you are aiming for keeps moving. The sheet edits a
+draft; Apply carries the **draft's** count, so the button says what you will
+get, not what you have. Desktop keeps applying immediately — there the map and
+controls are visible together and a commit step would just be friction.
+
+Also: tapping a card scrolls the map back into view (on a phone the cards are
+below the fold, so tracing a route you can't see reads as nothing happening —
+desktop deliberately does not jump); 16px controls in the sheet stop iOS Safari
+zooming the viewport on focus; `env(safe-area-inset-bottom)` clears the home
+indicator; single-column results with bottom padding so the last card isn't
+trapped under the fixed bar.
+
+**Share carries the view, not just the filters.** An advisor sending a client a
+link means "look at THIS, like THIS", so `toSearchParams` now also emits
+`style=`, `flat=1`, `@lng,lat,zoom` and `trip=` (the pinned journey) alongside
+every filter. Opening one restores basemap, projection, camera and pinned route.
+Copies to clipboard; falls back to the URL bar where the clipboard is blocked.
+
+**Route colours come from the collection, not from rail.** Every traced route
+and stop dot was painted copper because the palette hardcoded rail's accent —
+so a jet route looked like a railway. They now take the collection's own
+`--accent`: platinum `#dfe5f2` for jets, copper `#e08d5f` for rail.
+
+**Jets: three separate fixes.** They rendered through `fr_conn`, the faint
+ferry-hop connector (dashed 2/9) meant for a transfer *inside* another journey
+— hence "too sparse". There is now a `primary` leg mode with casing, glow and a
+solid line. `arcPts` gained a resolution parameter: the default 26 points per
+leg renders a Tokyo → LA arc as visible straight chords, so jet passes 0.01 for
+~101. And jets open **flat + Dark**, because long-haul arcs distort badly on a
+globe and platinum on satellite terrain is nearly invisible.
+
+**The idle spin now yields to a traced route.** `paintFocusRoute` calls
+`stopSpin()`; the rotation was fighting `fitBounds`, which is why clicking a
+card only zoomed after you stopped the globe by hand.
+
 ### D3-FEATURE-INVENTORY.md — the checklist that should have existed first
 
 `D3-FILTER-INVENTORY.md` was written before porting, and the filter layer went

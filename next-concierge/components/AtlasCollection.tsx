@@ -95,6 +95,7 @@ export default function AtlasCollection({
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const hoverTimer = useRef<number | null>(null);
   // Live map view, so Share can capture basemap + projection + camera.
+  const mapWrapRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<{ style: string; globe: boolean; center: { lng: number; lat: number }; zoom: number } | null>(null);
   const [shared, setShared] = useState(false);
 
@@ -230,6 +231,13 @@ export default function AtlasCollection({
       }
       setPinnedId(o.id);
       emitRoute(o, true);
+      // On a phone the map is above the fold and the cards are below it, so
+      // tapping a card traces a route you cannot see — it reads as nothing
+      // happening. Bring the map back into view. Desktop shows both at once
+      // and must not jump.
+      if (window.matchMedia("(max-width: 680px)").matches) {
+        mapWrapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     },
     [pinnedId, emitRoute],
   );
@@ -332,6 +340,7 @@ export default function AtlasCollection({
 
   return (
     <div className="atlas-collection">
+      <div ref={mapWrapRef} className="atlas-mapwrap">
       {/* No routesAlways for rail: an ambient layer of every route at once is
           not what the Leaflet atlas did, and for trains it would have to be
           drawn from arcs, which is wrong. Routes trace one at a time from real
@@ -349,6 +358,7 @@ export default function AtlasCollection({
         initialCamera={parsed?.view.camera ?? null}
         onViewChange={(v) => { viewRef.current = v; }}
       />
+      </div>
 
       {state && offerings ? (
         <AtlasFilterRail
