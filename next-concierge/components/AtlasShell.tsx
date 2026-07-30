@@ -809,13 +809,16 @@ export default function AtlasShell({
            * rather than a thin line inside a heavy black cord.
            */
           const lineW = satellite ? 5.2 : 3.4;
-          const satLine = lighten(accentLocal, 0.5);
+          // The line keeps its TRUE brand colour on both basemaps — teal is
+          // teal, platinum is platinum. Satellite only differs in needing a
+          // dark halo, because photoreal terrain is busy where a flat dark
+          // basemap is not.
           return satellite
             ? {
-                casing: "#05060a", casingW: lineW + 2.4, casingO: 0.72,
-                line: satLine, lineW,
-                glowO: 0.7, tie: "#141922",
-                conn: satLine, connO: 0.95,
+                casing: "#05060a", casingW: lineW + 3, casingO: 0.8,
+                line: accentLocal, lineW,
+                glowO: 0, tie: "#141922",
+                conn: accentLocal, connO: 0.95,
               }
             : {
                 casing: "#0b0d12", casingW: lineW + 3.6, casingO: 0.5,
@@ -866,17 +869,6 @@ export default function AtlasShell({
             layout: { "line-join": "round", "line-cap": "round" },
             paint: { "line-color": p.casing, "line-width": p.casingW, "line-opacity": p.casingO },
           });
-          // Warm glow. The Leaflet original gets its brightness from a CSS
-          // `drop-shadow(0 0 5px rgba(255,190,140,.85))` filter pulsing on the
-          // rail path — invisible in the inline stroke colours, and the reason
-          // a faithful colour port still read much darker. Mapbox has no
-          // drop-shadow, but line-blur on a wide warm line is the same idea.
-          addLayer(map, {
-            id: "fr_glow", type: "line", source: "focus-route",
-            filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
-            layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": p.line, "line-width": p.lineW + 5, "line-opacity": p.glowO, "line-blur": 5 },
-          });
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
             filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
@@ -901,11 +893,8 @@ export default function AtlasShell({
             map.setPaintProperty("fr_casing", "line-color", p.casing);
             map.setPaintProperty("fr_casing", "line-width", p.casingW);
             map.setPaintProperty("fr_rail", "line-width", p.lineW);
-            map.setPaintProperty("fr_glow", "line-width", p.lineW + 5);
             map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
-            map.setPaintProperty("fr_glow", "line-opacity", p.glowO);
             map.setPaintProperty("fr_rail", "line-color", p.line);
-            map.setPaintProperty("fr_glow", "line-color", p.line);
             map.setPaintProperty("fr_ties", "line-color", p.tie);
             map.setPaintProperty("fr_conn", "line-color", p.conn);
             map.setPaintProperty("fr_conn", "line-opacity", p.connO);
@@ -990,7 +979,29 @@ export default function AtlasShell({
           stopPopup.remove();
         }
 
+        /**
+         * A route that wraps most of the planet cannot be seen on a globe —
+         * half of it is always on the far side. Flatten to mercator for those,
+         * and only those: a Mediterranean voyage still gets the globe.
+         *
+         * Measured from the geometry rather than a data flag, because the
+         * voyages adapter sets `world: false` for every sailing (only journeys
+         * carry the flag), so a world cruise would otherwise be missed.
+         */
+        function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]) {
+          let lo = Infinity, hi = -Infinity;
+          for (const l of legs) for (const c of l.coordinates) {
+            if (c[0] < lo) lo = c[0];
+            if (c[0] > hi) hi = c[0];
+          }
+          if (!(hi - lo > 180) || !projGlobe) return;
+          projGlobe = false;
+          setIs3D(false);
+          try { map.setProjection("mercator"); } catch { /* projection optional */ }
+        }
+
         function fitFocusRoute(legs: { coordinates: [number, number][] }[]) {
+          flattenIfCircumnavigation(legs);
           try {
             const b = new (mapboxgl as MapboxModule).LngLatBounds();
             let n = 0;
@@ -1965,12 +1976,28 @@ async function fetchHotelPage(offset: number, limit: number): Promise<{ total?: 
 
 function addLayer(map: MBMap, spec: Record<string, unknown>) {
   if (map.getLayer(spec.id as string)) return;
-  // On Standard-family styles circle layers are lit by the scene lighting model,
-  // so under a dusk/night light preset our pins darken. Force full emissive
-  // strength so they hold their color on every basemap (harmless on classic ones).
-  if (spec.type === "circle") {
+  /*
+   * Standard-family styles light OUR layers with the scene lighting model, so
+   * under a dusk/night preset they darken. Satellite sets `light: "dusk"`,
+   * which is why a route that is exactly right on Dark (a CLASSIC style, no
+   * lighting model) renders muted and dark on Satellite. Full emissive
+   * strength makes a layer hold its own colour on every basemap; it is a no-op
+   * on classic styles.
+   *
+   * This was already being done for circles. It was never done for LINES, and
+   * that — not the hex value — is why every satellite route looked dark. No
+   * amount of lightening the colour could have fixed it.
+   */
+  const kind = spec.type as string;
+  const emissive: Record<string, string> = {
+    circle: "circle-emissive-strength",
+    line: "line-emissive-strength",
+    symbol: "text-emissive-strength",
+  };
+  const prop = emissive[kind];
+  if (prop) {
     const paint = (spec.paint ?? {}) as Record<string, unknown>;
-    if (paint["circle-emissive-strength"] == null) paint["circle-emissive-strength"] = 1;
+    if (paint[prop] == null) paint[prop] = 1;
     spec.paint = paint;
   }
   try { map.addLayer(spec); } catch { /* layer skipped */ }

@@ -99,12 +99,11 @@ export default function AtlasJet() {
       load={load}
       // Platinum, from the jet atlas's own --accent: #dfe5f2.
       accent="#dfe5f2"
-      // Satellite, flat. Platinum used to disappear on photoreal terrain, which
-      // is why this was Dark — the fix belonged in the palette (lightened line
-      // over a heavy near-black casing), not in avoiding the basemap.
-      // Still flat: long-haul arcs distort badly on a globe.
+      // Satellite, and back on the GLOBE. Flat was a blanket fix for a problem
+      // only round-the-world itineraries have; those now flatten themselves
+      // when traced (see flattenIfCircumnavigation), so a Mediterranean jet
+      // tour keeps the globe it deserves.
       initialStyle="satellite"
-      initialGlobe={false}
     />
   );
 }

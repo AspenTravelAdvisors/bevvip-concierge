@@ -341,6 +341,55 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Satellite routes were dark because of SCENE LIGHTING, not colour (2026-07-29)
+
+Three rounds of colour tuning were all treating the wrong cause. The side-by-side
+made it obvious: identical routes render **exactly right on Dark and muted on
+Satellite**. If the hex were wrong it would be wrong on both.
+
+`addLayer` already carried the answer, for circles only:
+
+> "On Standard-family styles circle layers are lit by the scene lighting model,
+> so under a dusk/night light preset our pins darken. Force full emissive
+> strength…"
+
+Satellite is `standard-satellite` with `light: "dusk"`. **Dark is `dark-v11`, a
+CLASSIC style with no lighting model** — which is exactly why it looked correct.
+The emissive fix had been applied to circles and never to lines.
+
+`addLayer` now sets `line-emissive-strength` and `text-emissive-strength`
+alongside `circle-emissive-strength`, so every layer holds its own colour on
+every basemap (a no-op on classic styles). Consequences:
+
+- **The lightening is gone.** Teal is teal and platinum is platinum on both
+  basemaps, which is what was asked for. Satellite differs only in keeping a
+  dark halo, because photoreal terrain is busy where a flat basemap is not.
+- **The blurred glow layer is gone**, as requested — it was compensation for a
+  problem that no longer exists.
+
+**Lesson: when a colour is right on one basemap and wrong on another, the
+variable is the STYLE, not the colour.** Mapbox Standard-family styles light
+your layers; classic styles do not.
+
+### Circumnavigations flatten themselves (2026-07-29)
+
+Jets were forced flat as a blanket fix for a problem only round-the-world
+itineraries have. Jet is back on the **globe**; instead, tracing a route whose
+longitude span exceeds 180° switches the map to mercator, because half of such a
+route is always on the far side of a globe.
+
+Measured from the geometry, NOT from a data flag — `voyage.ts` sets
+`world: false` on every sailing (only journeys carry the flag), so a flag-based
+rule would have missed world cruises entirely. Coverage:
+
+| collection | flatten on trace |
+| --- | --- |
+| worldcruise | 119 of 250 |
+| yacht | 3 of 368 |
+| jet | the 21 flagged round-the-world tours |
+
+A Mediterranean voyage keeps its globe.
+
 ### Satellite contrast is two problems; worldcruise ported (2026-07-29)
 
 **Lightening the line only ever solved half of it.** Measured contrast ratios
