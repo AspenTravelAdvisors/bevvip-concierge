@@ -106,61 +106,52 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   );
 
   /**
-   * On a phone, tapping the map parks the Guide — the same thing "Full map ▾"
-   * does, minus having to find the button.
+   * On a phone, ANY deliberate gesture on the map parks the Guide — tap, spin,
+   * drag, pinch. Same result as "Full map ▾", minus having to find the button.
    *
-   * The map is the other half of a 390px screen. Reaching for it is already an
-   * unambiguous statement that you want to look at it, and making that mean
-   * "now go find a chevron in the sheet handle" is a step with no decision in
-   * it. Desktop is untouched: there is no sheet, and the panel sits beside the
-   * map rather than over it.
+   * It started as tap-only, which was too narrow: spinning the globe is the
+   * clearest possible statement that you want to look at the map, and it left
+   * the conversation covering half of it. Reaching for the map at all is the
+   * signal; there is no separate decision to collect.
    *
-   * A TAP, not any pointer contact. Mapbox pans and pinches start with a
-   * pointerdown on this same element, and collapsing the conversation every
-   * time someone drags the globe would be considerably worse than the problem
-   * being fixed — so movement and duration are both bounded. Listeners are
-   * passive and on the capture phase: this observes the gesture, it never
-   * intercepts it, so the map still receives everything.
+   * Fires on pointerUP, not down, and that ordering is the whole trick. Parking
+   * the sheet resizes the map, and resizing it mid-drag fights the gesture
+   * you are still making — the globe stutters under your thumb. Waiting for the
+   * gesture to finish costs nothing perceptible and keeps the spin smooth.
+   *
+   * Listeners are passive and on the capture phase: this observes the gesture,
+   * it never intercepts it, so Mapbox still receives everything. Desktop is
+   * untouched — there is no sheet, and the panel sits beside the map rather
+   * than over it.
    */
   const atlasRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const el = atlasRef.current;
     if (!el) return;
 
-    const TAP_SLOP = 10;   // px of travel still counted as a tap
-    const TAP_MS = 500;    // longer than this is a press, a drag, or a pinch
-
-    let x = 0;
-    let y = 0;
-    let started = 0;
     let armed = false;
 
     const down = (e: PointerEvent) => {
       // Re-checked per gesture rather than once on mount: a rotate or a resize
       // can cross the breakpoint without remounting this component.
+      // `isPrimary` so the second finger of a pinch doesn't arm a second time.
       armed = window.matchMedia("(max-width: 640px)").matches && e.isPrimary;
-      x = e.clientX;
-      y = e.clientY;
-      started = Date.now();
     };
-    const up = (e: PointerEvent) => {
+    const settle = () => {
       if (!armed) return;
       armed = false;
-      if (Date.now() - started > TAP_MS) return;
-      if (Math.hypot(e.clientX - x, e.clientY - y) > TAP_SLOP) return;
       // Already parked → setSheetAndRefit sees no change and skips the refit,
-      // so a tap on an already-full map costs nothing.
+      // so touching an already-full map costs nothing.
       setSheetAndRefit("pill");
     };
-    const cancel = () => { armed = false; };
 
     el.addEventListener("pointerdown", down, { capture: true, passive: true });
-    el.addEventListener("pointerup", up, { capture: true, passive: true });
-    el.addEventListener("pointercancel", cancel, { capture: true, passive: true });
+    el.addEventListener("pointerup", settle, { capture: true, passive: true });
+    el.addEventListener("pointercancel", settle, { capture: true, passive: true });
     return () => {
       el.removeEventListener("pointerdown", down, true);
-      el.removeEventListener("pointerup", up, true);
-      el.removeEventListener("pointercancel", cancel, true);
+      el.removeEventListener("pointerup", settle, true);
+      el.removeEventListener("pointercancel", settle, true);
     };
   }, [setSheetAndRefit]);
 

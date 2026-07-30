@@ -3553,27 +3553,70 @@ button.card-book {
    your thumb while you are still deciding. Draft-then-commit lets you set
    three filters and see the result once. See AtlasFilterRail. */
 @media (max-width: 680px) {
+  /*
+   * PINNED MAP, SCROLLING CARDS.
+   *
+   * The page used to scroll as one column, so tapping a card traced a route on
+   * a map that had already scrolled off the top — you had to scroll back up to
+   * see what you had just selected, then back down to pick the next one. On a
+   * collection page the map IS the answer, so it stays put and only the cards
+   * move: tap through five itineraries and watch the route change in place.
+   *
+   * `.app` is already `height: 100dvh` and `.atlas-frame-wrap` is a flex column
+   * with `min-height: 0`, so this needs no viewport arithmetic — it just has to
+   * stop growing and hand the leftover space to the results.
+   *
+   * This also retires the reason `.atlas-scrollcue` existed as a "grab handle":
+   * with its own scroll container, the card list no longer competes with Mapbox
+   * for vertical drags. The cue stays as the results count and the traced-route
+   * banner, which is now its whole job.
+   */
+  .atlas-collection {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    gap: 8px;
+  }
   .atlas-collection .atlas-map {
     /*
-     * 62vh was wrong. Mapbox swallows vertical drags, so the map is a dead
-     * zone for page scrolling — at 62vh plus a ~64px fixed bar, the only
-     * scrollable strip was a few pixels of gap. 44vh leaves a real target and
-     * still shows the route; the explicit "results" handle below gives a
-     * guaranteed grab area regardless.
+     * Fixed share of the frame, not a min-height that could push the list off
+     * screen. Clamped rather than a bare percentage: on a 667px phone a flat
+     * 42dvh leaves barely one card under the rail and the fixed bar, and on a
+     * tall phone it balloons past what the map needs. The floor keeps the map
+     * legible, the ceiling keeps the list usable.
      */
-    min-height: 44vh;
+    flex: 0 0 auto;
+    height: clamp(200px, 40dvh, 340px);
+    min-height: 0;
     border-radius: 12px;
+  }
+  /* Sticky is pointless once the page itself no longer scrolls, and it made the
+     rail a second layer over a list it now sits above. */
+  .atlas-collection .villa-filters {
+    position: static;
+    flex: 0 0 auto;
+  }
+  .atlas-collection .atlas-scrollcue {
+    flex: 0 0 auto;
   }
   .atlas-results {
     grid-template-columns: 1fr;
     gap: 10px;
+    /* The one thing on the page that scrolls. */
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Don't hand a rubber-band at the end of the list to the page behind it. */
+    overscroll-behavior: contain;
     /* Clear the fixed bar so the last card is never trapped under it. */
     padding-bottom: 96px;
   }
   /*
-   * A deliberate, generous grab handle between the map and the cards. Without
-   * it the only scrollable area is whatever gap happens to be left over, which
-   * is exactly the "very thin" strip reported. This is always at least 48px.
+   * Was a grab handle (the card list used to compete with Mapbox for vertical
+   * drags). The list has its own scroller now, so this is purely the results
+   * count and the "Tracing … / Clear route" banner — kept at 48px because it
+   * holds a tap target, not because scrolling depends on it.
    */
   .atlas-scrollcue {
     display: flex;
