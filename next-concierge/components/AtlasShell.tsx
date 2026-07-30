@@ -323,6 +323,8 @@ export default function AtlasShell({
     paint(legs: { mode: string; coordinates: [number, number][] }[], stops?: FocusStop[]): void;
     clear(): void;
     fit(legs: { coordinates: [number, number][] }[]): void;
+    /** Mark a routeless selection (a hotel) so the chosen pin is identifiable. */
+    mark(stops: FocusStop[]): void;
   } | null>(null);
   const lastFocusStops = useRef<FocusStop[]>([]);
   const [mapReady, setMapReady] = useState(false);
@@ -916,8 +918,16 @@ export default function AtlasShell({
               type: "Feature" as const,
               geometry: { type: "Point" as const, coordinates: st.at },
               properties: {
-                n: String(i + 1),
-                label: st.day ? `${i + 1}. Day ${st.day} · ${st.name}` : `${i + 1}. ${st.name}`,
+                // A lone stop is a PLACE (a hotel), not stop 1 of an itinerary.
+                // Numbering it reads as the start of a route that isn't there.
+                n: stops.length > 1 ? String(i + 1) : "",
+                label: stops.length === 1
+                  ? st.name
+                  : st.day ? `${i + 1}. Day ${st.day} · ${st.name}` : `${i + 1}. ${st.name}`,
+                // Single selections carry their name on the map permanently —
+                // the whole point of clicking is to find out WHICH pin it is,
+                // and a hover-only label can't answer that on a touch screen.
+                solo: stops.length === 1 ? 1 : 0,
               },
             })),
           };
@@ -945,6 +955,23 @@ export default function AtlasShell({
               "text-ignore-placement": true,
             },
             paint: { "text-color": p.casing, "text-halo-color": p.line, "text-halo-width": 0.6 },
+          });
+          addLayer(map, {
+            id: "fs_label", type: "symbol", source: "focus-stops",
+            filter: ["==", ["get", "solo"], 1],
+            layout: {
+              "text-field": ["get", "label"],
+              "text-size": 12,
+              "text-offset": [0, 1.1],
+              "text-anchor": "top",
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+            },
+            paint: {
+              "text-color": "#f3ead2",
+              "text-halo-color": "#0b0e14",
+              "text-halo-width": 1.4,
+            },
           });
           try {
             map.setPaintProperty("fs_dot", "circle-color", p.line);
@@ -1000,17 +1027,43 @@ export default function AtlasShell({
           try { map.setProjection("mercator"); } catch { /* projection optional */ }
         }
 
+        /**
+         * Frame a single place: stop the spin, drop its marker, fly to it.
+         *
+         * Hotels have no route, and the route path is what used to carry
+         * stopSpin(). Without this, clicking a hotel card queued a fitBounds
+         * against a still-rotating globe — which is why the map appeared to
+         * ignore the click until you grabbed it.
+         */
+        function markFocusPlace(stops: FocusStop[]) {
+          stopSpin();
+          lastFocusStops.current = stops;
+          paintFocusStops(stops, routePalette());
+        }
+
         function fitFocusRoute(legs: { coordinates: [number, number][] }[]) {
+          // Any deliberate camera move outranks the idle spin.
+          stopSpin();
           flattenIfCircumnavigation(legs);
           try {
             const b = new (mapboxgl as MapboxModule).LngLatBounds();
             let n = 0;
-            for (const l of legs) for (const c of l.coordinates) { b.extend(c); n++; }
-            if (n) map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
+            let only: [number, number] | null = null;
+            for (const l of legs) for (const c of l.coordinates) { b.extend(c); only = c; n++; }
+            // One point has no bounds. fitBounds on a degenerate box just lands
+            // at maxZoom over open country, which for a hotel is the wrong
+            // answer — you asked which building, so fly to the building.
+            if (n === 1 && only) {
+              map.flyTo({ center: only, zoom: 14, duration: 1200, essential: true });
+            } else if (n) {
+              map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
+            }
           } catch { /* fit optional */ }
         }
 
-        focusRouteRef.current = { paint: paintFocusRoute, clear: clearFocusRoute, fit: fitFocusRoute };
+        focusRouteRef.current = {
+          paint: paintFocusRoute, clear: clearFocusRoute, fit: fitFocusRoute, mark: markFocusPlace,
+        };
 
         // Progressive zoom: load route lines on first crossing above ROUTE_ZOOM,
           // then toggle their visibility on subsequent zoom changes.
@@ -1409,6 +1462,10 @@ export default function AtlasShell({
       const legs = detail?.legs ?? [];
       if (!legs.length) {
         api.clear();
+        // A collection with no routes (hotels) still has a SELECTION, and the
+        // clear above would have thrown it away — leaving 2,500 identical pins
+        // and no way to tell which one you just clicked. Re-mark it.
+        if (detail?.stops?.length) api.mark(detail.stops);
         // Still move the camera if the caller gave us somewhere to go.
         if (detail?.fit && detail.fitPoints?.length) {
           api.fit([{ coordinates: detail.fitPoints }]);
@@ -2028,7 +2085,13 @@ interface MBMap {
   getCenter(): { lng: number; lat: number };
   setCenter(c: { lng: number; lat: number }): void;
   setZoom(z: number): void;
-  flyTo(opts: { center: readonly [number, number]; zoom: number; speed?: number }): void;
+  flyTo(opts: {
+    center: readonly [number, number];
+    zoom: number;
+    speed?: number;
+    duration?: number;
+    essential?: boolean;
+  }): void;
   fitBounds(b: MBBounds, opts: Record<string, unknown>): void;
   setPadding(p: { top: number; bottom: number; left: number; right: number }): void;
   resize(): void;
