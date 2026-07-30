@@ -15,7 +15,10 @@
     "start": "next start",
     "lint": "next lint",
     "check": "tsc -p tsconfig.check.json --noEmit",
-    "verify:deeplinks": "node scripts/verify-deeplinks.mjs"
+    "verify:deeplinks": "node scripts/verify-deeplinks.mjs",
+    "verify:hotels": "node scripts/verify-hotels.mjs",
+    "verify:plot-routes": "node scripts/verify-plot-routes.mjs",
+    "verify": "npm run check && npm run verify:adapters && npm run verify:deeplinks && npm run verify:hotels && npm run verify:plot-routes && npm run verify:sea-routes"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

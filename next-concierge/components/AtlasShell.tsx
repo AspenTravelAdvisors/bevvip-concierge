@@ -37,8 +37,6 @@ import {
 // rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
-import { loadSeaRoutes } from "@/lib/atlas/adapters/sea-geometry";
-import { loadRailGeometry, tripTrackLegs } from "@/lib/atlas/adapters/rail-geometry";
 import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
@@ -1199,62 +1197,19 @@ export default function AtlasShell({
          * are arced from stops the Guide result does not carry), so it stays
          * pins-only rather than getting an invented line.
          */
-        let plotSeq = 0;
-        async function tracePlottedRoutes(tools: GuideToolMeta[]) {
-          const seq = ++plotSeq;
-          const byKind = new Map<string, string[]>();
-          for (const tool of tools) {
-            const kind = String(tool.type || "");
-            if (!SEA_ROUTE_KEYS.has(kind as OverlayKey) && kind !== "train") continue;
-            for (const r of (tool.results ?? []).slice(0, 60)) {
-              const id = String((r as { id?: unknown }).id ?? "");
-              if (!id) continue;
-              const list = byKind.get(kind);
-              if (list) list.push(id);
-              else byKind.set(kind, [id]);
-            }
-          }
-          if (!byKind.size) return;
-
-          const legs: { mode: string; coordinates: [number, number][] }[] = [];
-          for (const [kind, ids] of byKind) {
-            try {
-              if (kind === "train") {
-                const geo = await loadRailGeometry();
-                for (const id of ids) {
-                  for (const cand of idCandidates(id)) {
-                    const l = tripTrackLegs(cand, geo);
-                    if (l?.length) {
-                      // Rail legs carry `points` (branded) rather than
-                      // `coordinates`, and keep their own mode so the globe
-                      // draws track symbology instead of a plain line.
-                      for (const leg of l) {
-                        legs.push({
-                          mode: leg.mode,
-                          coordinates: leg.points.map((pt) => [pt[0], pt[1]] as [number, number]),
-                        });
-                      }
-                      break;
-                    }
-                  }
-                }
-              } else {
-                const index = await loadSeaRoutes(kind);
-                for (const id of ids) {
-                  for (const cand of idCandidates(id)) {
-                    const l = index.get(cand);
-                    if (l?.length) { legs.push(...l); break; }
-                  }
-                }
-              }
-            } catch { /* geometry is an enhancement; pins already plotted */ }
-          }
-          // A newer plot landed while we were fetching — its trace wins.
-          if (seq !== plotSeq || !legs.length) return;
-          // Explicit [] for stops: paintFocusRoute would otherwise reuse the
-          // last traced route's stops and label this one with someone else's.
-          focusRouteRef.current?.paint(legs, []);
-        }
+        /*
+         * Routes are NOT drawn for plotted results.
+         *
+         * They were, briefly. On a dense coast — Sicily, the Aeolians, the
+         * Tyrrhenian — a handful of voyages puts enough lines over the basemap
+         * that the pins you came to read stop being findable, which is the same
+         * complaint that turned the ambient underlay off. The home canvas shows
+         * WHERE; a collection page shows the itinerary.
+         *
+         * lib/atlas/adapters/plot-routes.ts is kept (and still verified by
+         * scripts/verify-plot-routes.mjs) because the lookup is correct and the
+         * decision here is about density, not correctness.
+         */
 
         // ── Result plotting (fit + satellite), triggered by the Guide ─────────
         function plotResults(meta: GuideMeta) {
@@ -1293,8 +1248,6 @@ export default function AtlasShell({
           }
           featuredFC = { type: "FeatureCollection", features };
           if (!featuredFC.features.length) return; // nothing locatable to plot
-          // Routes for the plotted trips, where the collection has geometry.
-          void tracePlottedRoutes(tools);
           subsetActive = true;
           // Remember this framing so a re-mount (Back from a full atlas) can
           // replay it instead of resetting to the idle globe.
@@ -1311,7 +1264,12 @@ export default function AtlasShell({
           // Flip to Satellite to reveal the plotted results on the photoreal
           // basemap. The restyle's style.load repaints every layer and re-fits
           // (subsetActive is set), so we only paint/fit inline if already there.
-          if (styleKeyLocal !== "satellite") {
+          // `restyling` guard: a plot restored during boot could fire setStyle
+          // while the FIRST style load was still in flight. Mapbox drops the
+          // earlier load's completion, so `restyling` never cleared and every
+          // later paint was skipped — a map that draws nothing and does not
+          // spin. If a restyle is already running, paint into the current one.
+          if (styleKeyLocal !== "satellite" && !restyling) {
             api.setStyle("satellite");
           } else {
             paintFeatured();
@@ -1524,6 +1482,15 @@ export default function AtlasShell({
               fitGlobe();
               spinWhenRevealed();
             }
+          } else {
+            // Nothing claimed the camera: no ?region=, no stored plot, no
+            // initialCamera. This branch did not exist, so the map came to rest
+            // wherever init happened to leave it with no idle motion — which is
+            // exactly what "the home map is frozen" looks like. Most reliably
+            // hit coming BACK from an atlas, where sessionStorage may hold no
+            // plot and the region param is gone.
+            fitGlobe();
+            spinWhenRevealed();
           }
         }
 
@@ -1564,10 +1531,7 @@ export default function AtlasShell({
           resetView() {
             subsetActive = false;
             featuredFC = null;
-            // Traced plot routes belong to the plot: clearing the pins without
-            // them would leave itineraries floating over an empty globe. The
-            // bumped sequence also cancels any fetch still in flight.
-            plotSeq++;
+            // Any traced route belongs to what is being cleared.
             focusRouteRef.current?.clear();
             try { sessionStorage.removeItem(PLOT_STORAGE_KEY); } catch { /* storage optional */ }
             setBadge(null);
@@ -2066,9 +2030,24 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
   const href =
     toInternalAtlasHref(r.deepLink) ||
     internalAtlasLink(kind, r.region ? `?region=${encodeURIComponent(r.region)}` : "");
+  /*
+   * A plotted HOTEL gets the photoreal handoff, same as a hotel pin.
+   *
+   * These are two different popup renderers — this one for Guide results, the
+   * hotel-dots handler for the ambient field — and only the latter had the 3D
+   * button. So the most persuasive view in the product was reachable from a
+   * hotel you found by browsing, and not from one the Guide recommended, which
+   * is backwards: the recommended one is the one being sold.
+   */
+  const id = String((r as { id?: unknown }).id ?? "");
+  const three =
+    kind === "hotel" && id
+      ? `<a class="iw3d" data-hotel3d="${esc(id)}" href="/maps/hotel/index.html?hotel=${encodeURIComponent(id)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
+      : "";
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
     `<div class="iwm">${esc([meta, when].filter(Boolean).join("  ·  "))}</div>` +
+    three +
     `<a href="${esc(href)}">Open on the atlas →</a></div>`
   );
 }
@@ -2088,15 +2067,6 @@ function layerIdsFor(key: string): string[] {
  *  scripts/build-sea-routes.mjs — see SEA_ROUTES_BASE consumers. */
 const SEA_ROUTE_KEYS = new Set<OverlayKey>(["cruise", "yacht", "worldcruise"]);
 
-/**
- * Guide results may carry either the raw source id or the atlas's prefixed
- * alias (`yc_`, `wc_`, `cr_`, `rj_`, `jt_`). The geometry indexes are keyed on
- * the RAW id — `seaRoutes.get(o.id)` on the collection pages — so try both.
- */
-function idCandidates(id: string): string[] {
-  const m = /^(yc|wc|cr|rj|jt|h)_(.+)$/.exec(id);
-  return m ? [id, m[2]] : [id];
-}
 
 async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
   try {
