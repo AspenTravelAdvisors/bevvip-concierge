@@ -32,6 +32,17 @@ export interface AtlasFilterState {
   stopRole: string;
   /** Pre-tokenised search terms from `q` + `country`. */
   terms: readonly string[];
+  /**
+   * `world=1` — only round-the-world itineraries.
+   *
+   * The Leaflet journeys atlases had a dedicated `worldBtn`; here it is the
+   * "Around the World" entry in the region control, because that is where a
+   * traveller looks for "where does this go". Deliberately NOT folded into
+   * `offering.regions`: that would change region facets and break the adapter
+   * parity harness, which compares against atlases that have no such region.
+   * Undefined means "not filtering", so existing callers are unaffected.
+   */
+  world?: boolean;
 }
 
 export function emptyFilterState(): AtlasFilterState {
@@ -131,6 +142,8 @@ export function matchesExceptRegion(
   if (!matchesTerms(o.searchText, state.terms)) return false;
 
   if (state.stop && !stopMatches(o, state.stop, state.stopRole)) return false;
+
+  if (state.world && !o.world) return false;
 
   return true;
 }

@@ -370,6 +370,7 @@ export default function AtlasCollection({
           today={today}
           onStateChange={(next) => writeUrl(next, query)}
           onQueryChange={(next) => state && writeUrl(state, next)}
+          onCommit={(nextState, nextQuery) => writeUrl(nextState, nextQuery)}
           onShare={share}
           shareLabel={shared ? "Link copied" : "Share"}
         />
@@ -378,6 +379,13 @@ export default function AtlasCollection({
           <span className="atlas-count">Loading…</span>
         </div>
       )}
+
+      {/* Guaranteed scroll target between the map and the cards. Mapbox eats
+          vertical drags, so without this the only grabbable area on a phone is
+          whatever gap is left over — which was a few pixels. */}
+      <div className="atlas-scrollcue">
+        {filtered.length.toLocaleString()} {filtered.length === 1 ? "result" : "results"}
+      </div>
 
       <div className="atlas-results">
         {filtered.slice(0, 120).map((o) => (

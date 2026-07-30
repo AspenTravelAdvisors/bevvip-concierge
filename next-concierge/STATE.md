@@ -341,6 +341,35 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Mobile follow-ups + "Around the World" (2026-07-29)
+
+**Apply did nothing — a real bug, now fixed.** The sheet committed with
+`onStateChange(draft)` then `onQueryChange(draftQuery)`. Each of those writes
+the WHOLE query string from its own argument plus the currently-committed other
+half, so the second call rebuilt the URL using the **pre-Apply** state and threw
+the draft away. There is now a single `onCommit(state, query)` that writes once.
+Desktop Reset had the same latent bug and uses it too.
+
+**The map was eating the page scroll.** Mapbox swallows vertical drags, so at
+62vh plus a ~64px fixed bar the only scrollable strip was a few pixels of
+leftover gap — hence "very thin". Two changes: the mobile map is 44vh (still
+enough to read a route), and there is now an explicit `.atlas-scrollcue`
+between map and cards — a ≥48px band showing the result count, `touch-action:
+pan-y`, guaranteed grabbable regardless of layout. Card bottom padding went to
+96px so the last card clears the bar.
+
+**"Around the World" is a region option, not a separate button.** The Leaflet
+journeys atlases had a dedicated `worldBtn`; putting it in the region control is
+better placed — round-the-world itineraries cross every region, and "where does
+this go" is where a traveller looks. It sits above the alphabetical list with a
+live count (jet: 21 of 141; rail: 75 of 135).
+
+Implementation note worth keeping: `world` is a field on `AtlasFilterState`,
+**not** a synthetic entry in `offering.regions`. Folding it into regions would
+have changed region facet counts and broken the adapter parity harness, which
+compares against atlases that have no such region. `world` is optional, so the
+harness's state objects leave it undefined and all 10.7M comparisons still pass.
+
 ### Mobile, Share, jet colours (2026-07-29)
 
 **Mobile: pill → drawer → "Apply · N".** Built now rather than after four more

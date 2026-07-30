@@ -3547,15 +3547,43 @@ button.card-book {
    three filters and see the result once. See AtlasFilterRail. */
 @media (max-width: 680px) {
   .atlas-collection .atlas-map {
-    /* The map earns the viewport; the pill floats over its bottom edge. */
-    min-height: 62vh;
+    /*
+     * 62vh was wrong. Mapbox swallows vertical drags, so the map is a dead
+     * zone for page scrolling — at 62vh plus a ~64px fixed bar, the only
+     * scrollable strip was a few pixels of gap. 44vh leaves a real target and
+     * still shows the route; the explicit "results" handle below gives a
+     * guaranteed grab area regardless.
+     */
+    min-height: 44vh;
     border-radius: 12px;
   }
   .atlas-results {
     grid-template-columns: 1fr;
     gap: 10px;
     /* Clear the fixed bar so the last card is never trapped under it. */
-    padding-bottom: 84px;
+    padding-bottom: 96px;
+  }
+  /*
+   * A deliberate, generous grab handle between the map and the cards. Without
+   * it the only scrollable area is whatever gap happens to be left over, which
+   * is exactly the "very thin" strip reported. This is always at least 48px.
+   */
+  .atlas-scrollcue {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 6px 2px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--muted);
+    touch-action: pan-y;
+  }
+  .atlas-scrollcue::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
   }
   .atlas-card {
     padding: 12px;
@@ -3714,4 +3742,8 @@ button.card-book {
 .atlas-mapwrap {
   display: block;
   scroll-margin-top: 8px;
+}
+/* Desktop shows the count in the rail; the cue is mobile-only. */
+.atlas-scrollcue {
+  display: none;
 }

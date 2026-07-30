@@ -47,6 +47,13 @@ interface Props {
   today: string;
   onStateChange(next: AtlasFilterState): void;
   onQueryChange(next: AtlasQuery): void;
+  /**
+   * Commit BOTH at once. Calling onStateChange then onQueryChange loses the
+   * state: each writes the whole query string from its own argument plus the
+   * currently-committed other half, so the second call overwrites the first
+   * with the pre-Apply state. That is why "Apply didn't change the cards".
+   */
+  onCommit?(next: AtlasFilterState, nextQuery: AtlasQuery): void;
   /** Copy a link reproducing filters + pinned journey + basemap + camera. */
   onShare?: () => void;
   shareLabel?: string;
@@ -71,7 +78,11 @@ function selectValue(set: ReadonlySet<string>): string {
 const EMPTY_STATE = (): AtlasFilterState => ({
   brands: new Set(), vessels: new Set(), months: new Set(), ids: new Set(),
   regions: new Set(), excludedRegions: new Set(), stop: null, stopRole: "any", terms: [],
+  world: undefined,
 });
+
+/** Sentinel for the "Around the World" entry in the region control. */
+const WORLD = "__world__";
 
 /** Matches the CSS breakpoint the rest of the atlas chrome uses. */
 function useIsMobile(): boolean {
@@ -88,7 +99,7 @@ function useIsMobile(): boolean {
 
 export default function AtlasFilterRail({
   descriptor: d, offerings, state, query, regionLabels, today,
-  onStateChange, onQueryChange, onShare, shareLabel = "Share",
+  onStateChange, onQueryChange, onCommit, onShare, shareLabel = "Share",
 }: Props) {
   const isMobile = useIsMobile();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -177,9 +188,15 @@ export default function AtlasFilterRail({
     [offerings, state, d, today],
   );
 
+  // How many round-the-world itineraries survive the other filters.
+  const worldCount = useMemo(
+    () => offerings.filter((o) => o.world && matchesExceptRegion(o, { ...shown, world: undefined }, d, today)).length,
+    [offerings, shown, d, today],
+  );
+
   const anyActive = (s: AtlasFilterState) =>
     s.brands.size || s.vessels.size || s.months.size || s.ids.size ||
-    s.regions.size || s.excludedRegions.size || s.stop || s.terms.length;
+    s.regions.size || s.excludedRegions.size || s.stop || s.terms.length || s.world;
 
   const set = (patch: Partial<AtlasFilterState>) => setState({ ...shown, ...patch });
 
@@ -191,19 +208,29 @@ export default function AtlasFilterRail({
   useEffect(() => { setStopText(shown.stop || ""); }, [shown.stop]);
 
   const reset = () => {
-    setState(EMPTY_STATE());
-    setQuery({ q: "", country: "" });
+    if (editing) { setDraft(EMPTY_STATE()); setDraftQuery({ q: "", country: "" }); return; }
+    // Desktop: one commit, same reason as Apply.
+    if (onCommit) onCommit(EMPTY_STATE(), { q: "", country: "" });
+    else { onStateChange(EMPTY_STATE()); onQueryChange({ q: "", country: "" }); }
   };
 
   const controls = (
     <>
       <select
-        value={selectValue(shown.regions)}
-        onChange={(e) => set({ regions: single(e.target.value === MULTI ? "" : e.target.value) })}
+        value={shown.world ? WORLD : selectValue(shown.regions)}
+        onChange={(e) => {
+          const v = e.target.value;
+          if (v === WORLD) { set({ world: true, regions: new Set() }); return; }
+          set({ world: undefined, regions: single(v === MULTI ? "" : v) });
+        }}
         aria-label="Region"
       >
         <option value="">All regions</option>
         {shown.regions.size > 1 && <option value={MULTI}>Several ({shown.regions.size})</option>}
+        {/* Round-the-world itineraries cross every region, so they belong at
+            the top of the region control rather than in the alphabet. This is
+            the old worldBtn, put where people look for "where does it go". */}
+        {worldCount > 0 && <option value={WORLD}>Around the World ({worldCount})</option>}
         {options.regions.map(([key, label]) => (
           <option key={key} value={key}>
             {label}{facets.region[key] != null ? ` (${facets.region[key]})` : ""}
@@ -349,8 +376,8 @@ export default function AtlasFilterRail({
                 type="button"
                 className="atlas-apply"
                 onClick={() => {
-                  onStateChange(draft);
-                  onQueryChange(draftQuery);
+                  if (onCommit) onCommit(draft, draftQuery);
+                  else { onStateChange(draft); onQueryChange(draftQuery); }
                   setSheetOpen(false);
                 }}
               >

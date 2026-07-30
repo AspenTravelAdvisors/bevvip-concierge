@@ -194,6 +194,9 @@ export function parseDeepLink(
       stop,
       stopRole,
       terms: searchTerms(params.get("q"), params.get("country"), d.collection),
+      // world is both a filter and a view intent: it narrows the results AND
+      // is what the old worldBtn toggled.
+      world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()) || undefined,
     },
     view: {
       trip: params.get("trip") || null,
@@ -242,7 +245,7 @@ export function toSearchParams(
   if (rawQuery?.country) p.set("country", rawQuery.country);
   if (view.trip) p.set("trip", view.trip);
   if (view.focusRegion) p.set("region", view.focusRegion);
-  if (view.world) p.set("world", "1");
+  if (view.world || state.world) p.set("world", "1");
   if (view.hero) p.set("hero", "1");
   if (view.style) p.set("style", view.style);
   if (view.flat) p.set("flat", "1");
