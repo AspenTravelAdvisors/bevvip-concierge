@@ -267,13 +267,23 @@ interface Props {
    */
   onRegionSelect?: (regionKey: string) => void;
   /**
-   * Draw the ambient all-routes layer at all.
+   * Draw the ambient all-routes layer at all. OFF by default.
    *
-   * The home globe wants it: a faint web of every collection's lanes is the
-   * "living atlas" texture. A COLLECTION page does not — there the interaction
-   * is one traced route, and painting all 1,045 yacht legs underneath it turns
-   * the Mediterranean into a cobweb that buries the route you selected.
-   * Defaults on so the home canvas is unchanged.
+   * The theory was that a faint web of every collection's lanes reads as
+   * "living atlas" texture. In practice it doesn't survive contact with the
+   * data: above the zoom gate every collection paints at a flat 0.82 opacity
+   * with no fade, so the denser the region the worse it gets — the western
+   * Mediterranean, the densest corner of the inventory, becomes an unreadable
+   * mat of dashes over the labels and pins you actually came to read.
+   *
+   * The same judgement already applied to collection pages ("all 1,045 yacht
+   * legs underneath one traced route"). It applies to the home globe for the
+   * same reason; only the threshold differed. So routes are now on demand:
+   * hover, click, or a plotted result set. Those paths draw through
+   * `focus-route`, which is independent of this flag and unaffected.
+   *
+   * The precomputed sea routes from D1 are NOT wasted — collection pages still
+   * draw every leg from them. This governs only the ambient underlay.
    */
   ambientRoutes?: boolean;
   /**
@@ -297,7 +307,7 @@ interface Props {
 
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
-  ambientRoutes = true, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
+  ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
@@ -346,6 +356,11 @@ export default function AtlasShell({
   hiddenRef.current = hidden;
   /**
    * Ambient route lines are muted while ONE thing is being looked at.
+   *
+   * Dormant while `ambientRoutes` is off (its default), but kept because it is
+   * what makes re-enabling the underlay safe: without it, flying to a hotel
+   * crosses ROUTE_ZOOM and repaints the whole web over the property you asked
+   * to see.
    *
    * Flying to a hotel crosses ROUTE_ZOOM, and every collection's itineraries
    * then paint across the view — the cobweb, arriving precisely when the user
