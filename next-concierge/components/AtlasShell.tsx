@@ -267,6 +267,16 @@ interface Props {
    */
   onRegionSelect?: (regionKey: string) => void;
   /**
+   * Draw the ambient all-routes layer at all.
+   *
+   * The home globe wants it: a faint web of every collection's lanes is the
+   * "living atlas" texture. A COLLECTION page does not — there the interaction
+   * is one traced route, and painting all 1,045 yacht legs underneath it turns
+   * the Mediterranean into a cobweb that buries the route you selected.
+   * Defaults on so the home canvas is unchanged.
+   */
+  ambientRoutes?: boolean;
+  /**
    * Collection accent, from OVERLAYS — platinum for jets, copper for rail,
    * gold for yachts. Traced routes and their stop dots use it, so a jet route
    * stops looking like a railway.
@@ -287,7 +297,7 @@ interface Props {
 
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
-  accent, initialStyle, initialGlobe, initialCamera, onViewChange,
+  ambientRoutes = true, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
@@ -619,7 +629,7 @@ export default function AtlasShell({
           paintHotel();
           overlayKeys.forEach(paintOverlay);
           paintFeatured();
-          if (ROUTES_ENABLED && routesFetched) overlayKeys.forEach(paintRoutesForKey);
+          if (ROUTES_ENABLED && ambientRoutes && routesFetched) overlayKeys.forEach(paintRoutesForKey);
           // A traced route is a deliberate selection — repaint it after a
           // restyle rather than making the traveller hover again.
           if (lastFocusLegs.current.length) {
@@ -784,16 +794,22 @@ export default function AtlasShell({
           // luminance, and lay it over a near-black casing wide enough to cut
           // it out of the terrain. The casing is doing most of the work; the
           // line alone can't win against a photograph.
+          // Casing width is LINE + 3 — a 1.5px dark halo each side, enough to
+          // cut the line out of terrain without swallowing it. The first
+          // attempt used a fixed 10px casing under a 3.4px line, which left
+          // 3.3px of black either side: the route read as a black cord with a
+          // thin coloured core, and the gold was unreadable.
+          const lineW = satellite ? 4.6 : 3.4;
           return satellite
             ? {
-                casing: "#05060a", casingW: 10, casingO: 0.95,
-                line: lighten(accentLocal, 0.34),
-                glowO: 0.9, tie: "#141922",
+                casing: "#05060a", casingW: lineW + 3, casingO: 0.9,
+                line: lighten(accentLocal, 0.34), lineW,
+                glowO: 0.55, tie: "#141922",
                 conn: lighten(accentLocal, 0.34), connO: 0.95,
               }
             : {
-                casing: "#0b0d12", casingW: 7, casingO: 0.5,
-                line: accentLocal,
+                casing: "#0b0d12", casingW: lineW + 3.6, casingO: 0.5,
+                line: accentLocal, lineW,
                 glowO: 0.5, tie: "#141922",
                 conn: accentLocal, connO: 0.7,
               };
@@ -849,19 +865,19 @@ export default function AtlasShell({
             id: "fr_glow", type: "line", source: "focus-route",
             filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": p.line, "line-width": 9, "line-opacity": p.glowO, "line-blur": 6 },
+            paint: { "line-color": p.line, "line-width": p.lineW + 4, "line-opacity": p.glowO, "line-blur": 6 },
           });
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
             filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": p.line, "line-width": 3.4, "line-opacity": 0.98 },
+            paint: { "line-color": p.line, "line-width": p.lineW, "line-opacity": 0.98 },
           });
           addLayer(map, {
             id: "fr_ties", type: "line", source: "focus-route",
             filter: ["==", ["get", "rail"], 1],
             layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": p.tie, "line-width": 3.4, "line-opacity": 0.92, "line-dasharray": [2.5, 7] },
+            paint: { "line-color": p.tie, "line-width": p.lineW, "line-opacity": 0.92, "line-dasharray": [2.5, 7] },
           });
           addLayer(map, {
             id: "fr_conn", type: "line", source: "focus-route",
@@ -874,6 +890,8 @@ export default function AtlasShell({
           try {
             map.setPaintProperty("fr_casing", "line-color", p.casing);
             map.setPaintProperty("fr_casing", "line-width", p.casingW);
+            map.setPaintProperty("fr_rail", "line-width", p.lineW);
+            map.setPaintProperty("fr_glow", "line-width", p.lineW + 4);
             map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
             map.setPaintProperty("fr_glow", "line-opacity", p.glowO);
             map.setPaintProperty("fr_rail", "line-color", p.line);
@@ -977,7 +995,7 @@ export default function AtlasShell({
           // then toggle their visibility on subsequent zoom changes.
           map.on("zoomend", () => {
             const z = map.getZoom();
-            if (ROUTES_ENABLED && z >= routeGate && !routesFetched) {
+            if (ROUTES_ENABLED && ambientRoutes && z >= routeGate && !routesFetched) {
               loadRoutes();
             } else if (routesFetched) {
               overlayKeys.forEach((key) => {
@@ -1216,7 +1234,7 @@ export default function AtlasShell({
 
           // A collection page never crosses ROUTE_ZOOM on its own, so nothing
           // would trigger the lazy load — start it here instead.
-          if (ROUTES_ENABLED && routesAlways && !routesFetched) loadRoutes();
+          if (ROUTES_ENABLED && ambientRoutes && routesAlways && !routesFetched) loadRoutes();
 
           // Hotel field: fades in on arrival, off the critical path.
           hotelPromise.then((fc) => {

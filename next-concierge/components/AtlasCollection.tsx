@@ -349,6 +349,9 @@ export default function AtlasCollection({
         type={type}
         region={null}
         externalLink={internalAtlasLink(type)}
+        // No ambient web of every route. A collection page traces ONE route;
+        // drawing all of them underneath buries it.
+        ambientRoutes={false}
         onRegionSelect={selectRegion}
         accent={accent}
         // A shared link's basemap/projection/camera override the collection's

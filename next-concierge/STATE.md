@@ -341,6 +341,42 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### The cobweb and the unreadable gold were ONE bug (2026-07-29)
+
+Reported as two things — "what are all these lines?" and "gold isn't
+readable" — and they had a single cause: **the ambient all-routes layer.**
+
+`ROUTES_ENABLED` plus the `ROUTE_ZOOM = 5.5` gate means that zooming past 5.5
+on a collection page loaded and painted **every** leg in the collection. For
+yacht that is 1,045 legs, **210 of which cross the visible western-Med box**.
+Each carries an `r_<key>_shadow` line: `#000010`, 4px, opacity **0.22**.
+
+Alpha stacks. `1 − 0.78ⁿ`:
+
+| overlapping shadows | effective alpha |
+| --- | --- |
+| 5 | 0.71 |
+| 10 | 0.92 |
+| 20 | 0.99 |
+
+So the shipping lanes converging on the Riviera painted themselves to
+**near-opaque black**, which is both the cobweb AND the thing burying the
+traced route. The gold was being drawn correctly and then covered.
+
+**Fix:** `AtlasShell` takes `ambientRoutes` (default true). The home globe keeps
+its faint web — that texture is the "living atlas". Collection pages pass false:
+there the interaction is ONE traced route, and drawing all of them underneath
+buries the thing you selected.
+
+**Second, smaller fix, same area.** The satellite casing was a fixed 10px under
+a 3.4px line, leaving 3.3px of black each side — the route read as a black cord
+with a coloured core even without the ambient layer. Casing is now `line + 3`
+(a 1.5px halo each side) and the satellite line widens to 4.6px.
+
+**Worth generalising:** a per-feature opacity that looks right for one line is
+not a per-layer opacity. Anywhere many features share a corridor, check the
+stacked alpha, not the swatch.
+
 ### Satellite legibility + yacht ported (2026-07-29)
 
 **Route colours on satellite were the wrong fix in the wrong place.** Jets had
