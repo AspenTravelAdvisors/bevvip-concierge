@@ -341,6 +341,33 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Satellite legibility + yacht ported (2026-07-29)
+
+**Route colours on satellite were the wrong fix in the wrong place.** Jets had
+been forced onto Dark because platinum vanished on photoreal terrain — that
+avoided the basemap instead of solving the contrast. Now the palette does the
+work: on satellite the line is **lightened toward white** (keeping the brand
+hue, gaining luminance) and laid over a **near-black casing at 10px / 0.95**.
+The casing is doing most of the lifting; a line alone cannot win against a
+photograph. Applies to every collection, so rail is brighter on satellite too.
+Jets are back on **satellite**, still flat — long-haul arcs distort on a globe.
+
+**`/atlas/yacht` is native** (`components/AtlasYacht.tsx`), the first of the
+voyages family. Feature-checked against the inventory BEFORE porting:
+
+- **Geometry comes from Deliverable 1's precompute**, not a live router. The
+  Leaflet atlas runs land-avoiding A* on hover behind a 765 KB mask;
+  `sea-routes-yacht.json` already holds exactly that — 1,045 deduplicated legs
+  covering 368 of 374 voyages. `lib/atlas/adapters/sea-geometry.ts` indexes it
+  by trip id (legs are shared across voyages, so the file stores each once and
+  tags it with every trip that uses it). The six voyages with no precomputed
+  geometry fall back to straight port-to-port legs.
+- **Accent `#caa44e`** — the yacht atlas's own `--accent`, which differs from
+  AtlasShell's `OVERLAYS` entry (`#e0b84a`). The atlas's own value wins; that is
+  the colour the collection is recognised by.
+- Opens on **satellite**: ocean is a calm dark backdrop, so sea routes never had
+  the contrast problem that bright terrain gave rail and jet.
+
 ### Mobile follow-ups + "Around the World" (2026-07-29)
 
 **Apply did nothing — a real bug, now fixed.** The sheet committed with

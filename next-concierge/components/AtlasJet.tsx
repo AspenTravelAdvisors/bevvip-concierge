@@ -99,9 +99,11 @@ export default function AtlasJet() {
       load={load}
       // Platinum, from the jet atlas's own --accent: #dfe5f2.
       accent="#dfe5f2"
-      // Jets open flat and dark: long-haul arcs distort badly on a globe, and
-      // platinum on satellite terrain is close to invisible.
-      initialStyle="dark"
+      // Satellite, flat. Platinum used to disappear on photoreal terrain, which
+      // is why this was Dark — the fix belonged in the palette (lightened line
+      // over a heavy near-black casing), not in avoiding the basemap.
+      // Still flat: long-haul arcs distort badly on a globe.
+      initialStyle="satellite"
       initialGlobe={false}
     />
   );

@@ -760,16 +760,43 @@ export default function AtlasShell({
          * Satellite therefore gets a hotter line and a heavier dark casing to
          * carry it; the dark styles keep the original values exactly.
          */
+        /** Mix a hex colour toward white. Keeps the brand hue, adds contrast. */
+        function lighten(hex: string, amount: number): string {
+          const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+          if (!m) return hex;
+          const n = parseInt(m[1], 16);
+          const mix = (c: number) => Math.round(c + (255 - c) * amount);
+          const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255);
+          return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+        }
+
         function routePalette() {
           const satellite = styleKeyLocal === "satellite";
           // The line takes the COLLECTION's accent — platinum for jets, copper
           // for rail, gold for yachts — matching each original atlas's --accent.
           // Painting every collection copper made a jet route look like a
           // railway.
-          const line = accentLocal;
+          //
+          // SATELLITE needs more than the same colour turned up. Photoreal
+          // terrain is bright and busy: copper lands on tan desert and platinum
+          // lands on cloud, so both vanish. Two things fix it together —
+          // lighten the line toward white so it keeps its hue but gains
+          // luminance, and lay it over a near-black casing wide enough to cut
+          // it out of the terrain. The casing is doing most of the work; the
+          // line alone can't win against a photograph.
           return satellite
-            ? { casing: "#07080b", casingW: 8.5, casingO: 0.85, line, glowO: 0.75, tie: "#141922", conn: line, connO: 0.9 }
-            : { casing: "#0b0d12", casingW: 7, casingO: 0.5, line, glowO: 0.5, tie: "#141922", conn: line, connO: 0.7 };
+            ? {
+                casing: "#05060a", casingW: 10, casingO: 0.95,
+                line: lighten(accentLocal, 0.34),
+                glowO: 0.9, tie: "#141922",
+                conn: lighten(accentLocal, 0.34), connO: 0.95,
+              }
+            : {
+                casing: "#0b0d12", casingW: 7, casingO: 0.5,
+                line: accentLocal,
+                glowO: 0.5, tie: "#141922",
+                conn: accentLocal, connO: 0.7,
+              };
         }
 
         function paintFocusRoute(
@@ -884,6 +911,7 @@ export default function AtlasShell({
             id: "fs_dot", type: "circle", source: "focus-stops",
             paint: {
               "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 4.5, 8, 9],
+              "circle-stroke-opacity": 0.95,
               "circle-color": p.line,
               "circle-stroke-color": p.casing,
               "circle-stroke-width": 1.5,
