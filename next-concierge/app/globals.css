@@ -1108,6 +1108,13 @@ main.page {
 }
 .iw a {
   font-size: 12px;
+  /* Inline anchors put "Browse VIP hotels →" alongside the 3D button and let
+     its arrow wrap onto a line of its own. Popup actions are a stack. */
+  display: block;
+  width: fit-content;
+}
+.iw a + a {
+  margin-top: 7px;
 }
 
 /* ── Landing: chat + Living Atlas, side by side ───── */
@@ -3770,8 +3777,10 @@ button.card-book {
    this map cannot show you itself, so it reads as the primary action while
    "Browse VIP hotels" stays a plain link below it. */
 .mapboxgl-popup .iw .iw3d {
-  display: inline-block;
-  margin: 6px 0 2px;
+  display: block;
+  width: fit-content;
+  margin: 8px 0 0;
+  white-space: nowrap;
   padding: 5px 10px;
   border-radius: 7px;
   background: var(--gold);

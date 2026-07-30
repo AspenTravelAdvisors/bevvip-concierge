@@ -344,6 +344,17 @@ export default function AtlasShell({
   const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
   const hiddenRef = useRef(hidden);
   hiddenRef.current = hidden;
+  /**
+   * Ambient route lines are muted while ONE thing is being looked at.
+   *
+   * Flying to a hotel crosses ROUTE_ZOOM, and every collection's itineraries
+   * then paint across the view — the cobweb, arriving precisely when the user
+   * asked to see a single property. Same principle already applied to traced
+   * routes ("a deliberate act of attention"): a selection outranks ambience.
+   * A ref rather than state because `zoomend` re-derives visibility from inside
+   * the map closure and would otherwise repaint over the mute.
+   */
+  const ambientMutedRef = useRef(false);
 
   useEffect(() => {
     if (!token || !mapEl.current) return;
@@ -677,10 +688,29 @@ export default function AtlasShell({
               "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.95, ROUTE_ZOOM, 0.82],
             },
           });
-          // Visibility: only above the route gate and when the type is not hidden
-          const vis = map.getZoom() >= routeGate && !hiddenRef.current.has(key) ? "visible" : "none";
+          // Visibility: above the route gate, type not hidden, nothing focused.
+          const vis = routeVis(map.getZoom(), key);
           [src + "_shadow", src + "_line"].forEach((id) => {
             if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+          });
+        }
+
+        /** The single source of truth for whether a collection's routes draw. */
+        function routeVis(z: number, key: string): "visible" | "none" {
+          if (ambientMutedRef.current) return "none";
+          return z >= routeGate && !hiddenRef.current.has(key) ? "visible" : "none";
+        }
+
+        /** Mute/unmute ambient routes and repaint what is already on the map. */
+        function setAmbientMuted(on: boolean) {
+          if (ambientMutedRef.current === on) return;
+          ambientMutedRef.current = on;
+          const z = map.getZoom();
+          overlayKeys.forEach((key) => {
+            const vis = routeVis(z, key);
+            ["r_" + key + "_shadow", "r_" + key + "_line"].forEach((id) => {
+              if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+            });
           });
         }
 
@@ -705,6 +735,12 @@ export default function AtlasShell({
 
         // ── Click wiring (once; tolerant of layers re-created on restyle) ─────
         function wireHandlers() {
+          // Closing the popup ends the selection: unmark the pin and let the
+          // ambient routes back in. Otherwise the mute outlives its cause and
+          // the globe stays quietly wrong until the next click.
+          popup.on("close", () => {
+            if (ambientMutedRef.current) clearFocusRoute();
+          });
           map.on("click", "hotel-dots", (e: MBEvent) => {
             const f = e.features?.[0];
             if (!f) return;
@@ -1042,6 +1078,7 @@ export default function AtlasShell({
         }
 
         function clearFocusRoute() {
+          setAmbientMuted(false);
           lastFocusLegs.current = [];
           lastFocusStops.current = [];
           const empty = { type: "FeatureCollection" as const, features: [] };
@@ -1081,6 +1118,7 @@ export default function AtlasShell({
          */
         function markFocusPlace(stops: FocusStop[]) {
           stopSpin();
+          setAmbientMuted(true);
           lastFocusStops.current = stops;
           paintFocusStops(stops, routePalette());
         }
@@ -1117,7 +1155,7 @@ export default function AtlasShell({
               loadRoutes();
             } else if (routesFetched) {
               overlayKeys.forEach((key) => {
-                const vis = z >= routeGate && !hiddenRef.current.has(key) ? "visible" : "none";
+                const vis = routeVis(z, key);
                 ["r_" + key + "_shadow", "r_" + key + "_line"].forEach((id) => {
                   if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
                 });
@@ -2125,6 +2163,7 @@ interface MBEvent {
   }[];
 }
 interface MBPopup {
+  on(type: string, cb: () => void): MBPopup;
   setLngLat(c: { lng: number; lat: number }): MBPopup;
   setHTML(html: string): MBPopup;
   addTo(map: MBMap): MBPopup;
