@@ -11,7 +11,7 @@
  */
 
 import type { AtlasFilterDescriptor, AtlasOffering } from "./types";
-import { matchesTerms } from "./search";
+import { matchesSubstring, matchesTerms } from "./search";
 
 export interface AtlasFilterState {
   /** Brand keys, or operator names for cruise — see descriptor.brandField. */
@@ -30,8 +30,10 @@ export interface AtlasFilterState {
   stop: string | null;
   /** Role string, passed through verbatim from `locationrole=` / `portrole=`. */
   stopRole: string;
-  /** Pre-tokenised search terms from `q` + `country`. */
+  /** Pre-tokenised search terms from `q` + `country`. Token mode only. */
   terms: readonly string[];
+  /** Raw `q`, for descriptors using searchMode "substring". */
+  rawQuery?: string;
   /**
    * `world=1` — only round-the-world itineraries.
    *
@@ -43,6 +45,12 @@ export interface AtlasFilterState {
    * Undefined means "not filtering", so existing callers are unaffected.
    */
   world?: boolean;
+
+  /**
+   * Values selected on the collection's extra axes, keyed by facet key.
+   * Undefined for the five retired atlases, so their parity is untouched.
+   */
+  facets?: Record<string, ReadonlySet<string>>;
 }
 
 export function emptyFilterState(): AtlasFilterState {
@@ -120,7 +128,7 @@ export function matchesExceptRegion(
 ): boolean {
   if (isPast(o, today, d)) return false;
 
-  if (state.brands.size) {
+  if (d.supportsBrandFilter !== false && state.brands.size) {
     const value = d.brandField === "operator" ? o.operator : o.brand;
     if (!value || !state.brands.has(value)) return false;
   }
@@ -131,19 +139,40 @@ export function matchesExceptRegion(
 
   // On-demand offerings pass the month filter unconditionally so they sort to
   // the bottom of every selected month. Journeys only; voyages set no flag.
-  if (state.months.size && !o.onDemand) {
+  if (d.supportsMonthFilter !== false && state.months.size && !o.onDemand) {
     if (!o.months.some((m) => state.months.has(m))) return false;
   }
 
-  if (state.ids.size) {
+  // Highlight-only collections keep the whole field visible; the shortlist is
+  // rendered as emphasis by the caller instead. See idsHighlightOnly.
+  if (!d.idsHighlightOnly && state.ids.size) {
     if (!o.idAliases.some((a) => state.ids.has(a))) return false;
   }
 
-  if (!matchesTerms(o.searchText, state.terms)) return false;
+  if (d.searchMode === "substring") {
+    if (!matchesSubstring(o.searchText, state.rawQuery || "")) return false;
+  } else if (!matchesTerms(o.searchText, state.terms)) return false;
 
-  if (state.stop && !stopMatches(o, state.stop, state.stopRole)) return false;
+  if (d.supportsStopFilter !== false && state.stop && !stopMatches(o, state.stop, state.stopRole)) return false;
 
   if (state.world && !o.world) return false;
+
+  // Collection-specific axes (hotels: category / program / country).
+  if (state.facets && d.facets?.length) {
+    for (const f of d.facets) {
+      const picked = state.facets[f.key];
+      if (!picked || !picked.size) continue;
+      const raw = o.attributes?.[f.key];
+      if (!raw) return false;
+      // A value may be plural: hotels' `region=caribbean` matches both the
+      // marquee key and the country-derived alias.
+      const values = Array.isArray(raw) ? raw : [raw];
+      const hit = f.ci
+        ? values.some((v) => [...picked].some((w) => w.toLowerCase() === v.toLowerCase()))
+        : values.some((v) => picked.has(v));
+      if (!hit) return false;
+    }
+  }
 
   return true;
 }

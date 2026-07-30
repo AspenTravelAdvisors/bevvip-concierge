@@ -73,6 +73,18 @@ export function mapStyleFallback(from: string, to: string) {
   emit("map_style_fallback", { from, to });
 }
 
+/**
+ * A traveller opened the Google Photorealistic 3D view of a specific property.
+ *
+ * The work order calls this "the single most persuasive thing the app does",
+ * and it has never been measured — so nobody knows whether anyone reaches it.
+ * If the answer turns out to be "almost no one", that is an argument about
+ * placement, not about the feature.
+ */
+export function hotel3dOpened(hotelId: string, source: "card" | "popup") {
+  emit("hotel_3d_opened", { hotelId, source });
+}
+
 /** Did anyone want the tour once it stopped opening itself? */
 export function tourOpened() {
   emit("tour_opened");

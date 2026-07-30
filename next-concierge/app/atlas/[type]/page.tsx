@@ -9,6 +9,7 @@ import AtlasJet from "@/components/AtlasJet";
 import AtlasYacht from "@/components/AtlasYacht";
 import AtlasWorldCruise from "@/components/AtlasWorldCruise";
 import AtlasCruise from "@/components/AtlasCruise";
+import AtlasHotel from "@/components/AtlasHotel";
 
 /**
  * Collections migrated off their Leaflet iframe onto the Mapbox globe
@@ -26,6 +27,8 @@ const NATIVE_COLLECTIONS: Partial<Record<OfferingType, () => React.ReactElement>
   yacht: () => <AtlasYacht />,
   worldcruise: () => <AtlasWorldCruise />,
   cruise: () => <AtlasCruise />,
+  // Deliverable 2: browse here, inspect in Google 3D via the card action.
+  hotel: () => <AtlasHotel />,
 };
 
 // In-app atlas view. Each of the five atlases now lives inside Base Camp as a

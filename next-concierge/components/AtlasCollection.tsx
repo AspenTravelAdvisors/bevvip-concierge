@@ -48,6 +48,12 @@ interface Props {
   initialStyle?: "dark" | "satellite" | "dusk";
   /** false → open flat. Long-haul arcs read better in 2D. */
   initialGlobe?: boolean;
+  /**
+   * An extra action on every card. Hotels use it for "See it in 3D", which
+   * hands off to the Google Photorealistic view — the one thing Mapbox has no
+   * answer to, and the reason that engine survives.
+   */
+  cardAction?: { label: string; onSelect: (o: AtlasOffering) => void };
   /** Loads and adapts this collection's raw feed. Collection-specific. */
   load: () => Promise<{
     offerings: AtlasOffering[];
@@ -73,7 +79,7 @@ const fmtDay = (iso?: string | null) =>
   iso ? new Date(iso + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "";
 
 export default function AtlasCollection({
-  type, descriptor, load, accent, initialStyle, initialGlobe,
+  type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -310,14 +316,21 @@ export default function AtlasCollection({
   // `trip=` pins a journey, the same param the Leaflet Share button emitted.
   const autoTripped = useRef(false);
   useEffect(() => {
-    const wanted = parsed?.view.trip;
+    // Where `ids=` HIGHLIGHTS rather than filters (hotels), the shortlist never
+    // narrows the list — so nothing would take the camera and a shared property
+    // would open somewhere over the Atlantic among 2,500 identical pins. Fall
+    // back to the first shortlisted id so the link still lands on its subject
+    // while, per the original's intent, keeping the rest of the field visible.
+    const wanted =
+      parsed?.view.trip ||
+      (descriptor.idsHighlightOnly && state?.ids.size ? [...state.ids][0] : null);
     if (autoTripped.current || !wanted || !filtered.length) return;
     const hit = filtered.find((o) => o.idAliases.includes(wanted) || o.id === wanted);
     if (!hit) return;
     autoTripped.current = true;
     setPinnedId(hit.id);
     emitRoute(hit, !parsed?.view.camera); // an explicit camera wins over fitting
-  }, [parsed?.view.trip, parsed?.view.camera, filtered, emitRoute]);
+  }, [parsed?.view.trip, parsed?.view.camera, filtered, emitRoute, descriptor, state?.ids]);
 
   // A pinned trip that filtering removes from the list should release its pin.
   useEffect(() => {
@@ -408,7 +421,7 @@ export default function AtlasCollection({
                   name — so a `o.brand`-only lookup silently dropped every
                   cruise logo. */}
               {(() => {
-                const markKey = descriptor.brandField === "operator" ? o.operator : o.brand;
+                const markKey = o.logoKey ?? (descriptor.brandField === "operator" ? o.operator : o.brand);
                 if (!markKey && !o.operator) return null;
                 return (
                   <BrandLogo
@@ -476,6 +489,15 @@ export default function AtlasCollection({
                 >
                   View details ↗
                 </a>
+              )}
+              {cardAction && (
+                <button
+                  type="button"
+                  className="ac-3d"
+                  onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
+                >
+                  {cardAction.label}
+                </button>
               )}
               {/* Same escape hatch the Leaflet cards had: ask instead of filter. */}
               <button

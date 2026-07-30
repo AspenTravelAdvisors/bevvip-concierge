@@ -94,6 +94,24 @@ export interface AtlasOffering {
   /** Ship, named train, or aircraft programme — whatever the collection's vessel is. */
   vessel: string | null;
 
+  /**
+   * Collection-specific filter axes, keyed by descriptor facet key.
+   *
+   * The five retired atlases share one grammar (brand / region / month / ship /
+   * port). Hotels do not: they filter on category, program and country, and
+   * have no month or route at all. Rather than branch the shared rail, a
+   * collection declares its extra axes in `AtlasFilterDescriptor.facets` and
+   * puts the values here.
+   */
+  attributes?: Record<string, string | string[] | null>;
+
+  /**
+   * Which key to look up in `brandMarks` for this offering's logo, when it is
+   * not `brand`. Hotels display their PROGRAM's mark — that is what the
+   * original card showed, and what a traveller recognises.
+   */
+  logoKey?: string | null;
+
   /** Ordered itinerary stops. Empty when the source has no route for this trip. */
   stops: AtlasStop[];
   /** Route geometry for drawing. Sea collections get this precomputed. */
@@ -156,6 +174,12 @@ export interface AtlasFilterDescriptor {
   supportsRegionExclusion: boolean;
   /** Voyages expose a ship filter (`ships=`); journeys do not. */
   supportsVesselFilter: boolean;
+  /**
+   * Whether the rail offers a brand control. Hotels set this false: their
+   * `brand=` is a deep-link-only axis (declared as a hidden facet), and a
+   * visible control writing the same param would fight it.
+   */
+  supportsBrandFilter?: boolean;
   /** Prefix accepted in `ids=` alongside the raw id. */
   idPrefix: string;
 
@@ -196,6 +220,70 @@ export interface AtlasFilterDescriptor {
    * way the original did rather than the way the majority rule does.
    */
   requiresStartDate?: boolean;
+
+  /**
+   * Extra filter axes beyond the shared grammar, in rail order.
+   *
+   * Hotels use this for category / program / country. `param` is the query
+   * string name, which must match what the original atlas accepted — note the
+   * hotel atlas's UI axis labelled "Brand / Program" is the `program` param,
+   * while `brand` is a separate deep-link-only axis.
+   */
+  facets?: {
+    key: string;
+    param: string;
+    label: string;
+    allLabel: string;
+    /**
+     * Deep-link-only axis with no control in the rail. The hotel atlas has two:
+     * `brand=` (the actual hotel brand, distinct from the visible `program`
+     * axis) and `region=` (marquee key). They filter, but nothing in the UI
+     * offers them — they arrive from Guide links and marketing landers.
+     */
+    hidden?: boolean;
+    /** Case-insensitive comparison. The deep-link axes lowercase both sides. */
+    ci?: boolean;
+  }[];
+
+  /**
+   * How `q` is matched.
+   *
+   *   "tokens"     the five retired atlases — a `words()` tokeniser with a
+   *                domain stop-list, folding `country` in as a search term.
+   *   "substring"  hotels — a raw lowercase `indexOf` over
+   *                `name + city + region + country`, and `country` is a FACET,
+   *                not a search term.
+   *
+   * These are not interchangeable: tokenising the hotel search would make
+   * "san" stop matching "San Sebastián", and folding country into terms would
+   * fight the country checkbox axis.
+   */
+  searchMode?: "tokens" | "substring";
+
+  /**
+   * `ids=` highlights rather than filters.
+   *
+   * Every other atlas narrows to the shortlist. The hotel atlas deliberately
+   * does not — its own comment: ids and hotel "are highlight-only — they
+   * enlarge and frame their pins but never hide the rest of the field, so a
+   * shared hotel is always seen in context." A shared property should be seen
+   * among its neighbours, which is most of the argument for sending it.
+   */
+  idsHighlightOnly?: boolean;
+
+  /**
+   * Additional params that contribute ids. The hotel atlas accepts `hotel=` for
+   * "a shared selected hotel: opens its detail panel and starts the orbit on
+   * load" — a single-property link, distinct from an `ids=` shortlist but
+   * resolving to the same thing here.
+   */
+  extraIdParams?: string[];
+
+  /** Collections without departures (hotels) hide the month control. */
+  supportsMonthFilter?: boolean;
+
+  /** Collections without itineraries (hotels) hide the stop/role controls. */
+  supportsStopFilter?: boolean;
 }
 
 export const ROLE_VALUES: Record<RoleVocabulary, readonly string[]> = {

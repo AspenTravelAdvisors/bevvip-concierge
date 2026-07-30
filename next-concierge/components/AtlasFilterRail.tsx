@@ -78,7 +78,7 @@ function selectValue(set: ReadonlySet<string>): string {
 const EMPTY_STATE = (): AtlasFilterState => ({
   brands: new Set(), vessels: new Set(), months: new Set(), ids: new Set(),
   regions: new Set(), excludedRegions: new Set(), stop: null, stopRole: "any", terms: [],
-  world: undefined,
+  world: undefined, facets: undefined,
 });
 
 /** Sentinel for the "Around the World" entry in the region control. */
@@ -178,6 +178,30 @@ export default function AtlasFilterRail({
     };
   }, [offerings, regionLabels, d.brandField]);
 
+  /**
+   * Options + counts for the collection's extra axes. Counted against every
+   * OTHER filter, same rule as the shared facets.
+   */
+  const facetOptions = useMemo(() => {
+    const out: Record<string, [string, number | null][]> = {};
+    for (const f of (d.facets || []).filter((x) => !x.hidden)) {
+      const counts = new Map<string, number>();
+      for (const o of offerings) {
+        const raw = o.attributes?.[f.key];
+        const v = Array.isArray(raw) ? raw[0] : raw;
+        if (!v) continue;
+        const others: AtlasFilterState = {
+          ...shown,
+          facets: { ...(shown.facets || {}), [f.key]: new Set<string>() },
+        };
+        if (!matchesOffering(o, others, d, today)) continue;
+        counts.set(v, (counts.get(v) || 0) + 1);
+      }
+      out[f.key] = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+    }
+    return out;
+  }, [offerings, shown, d, today]);
+
   /** What Apply will give you — computed on the DRAFT, so the button is honest. */
   const draftCount = useMemo(
     () => offerings.filter((o) => matchesOffering(o, shown, d, today)).length,
@@ -196,7 +220,8 @@ export default function AtlasFilterRail({
 
   const anyActive = (s: AtlasFilterState) =>
     s.brands.size || s.vessels.size || s.months.size || s.ids.size ||
-    s.regions.size || s.excludedRegions.size || s.stop || s.terms.length || s.world;
+    s.regions.size || s.excludedRegions.size || s.stop || s.terms.length || s.world ||
+    Object.values(s.facets || {}).some((v) => v.size);
 
   const set = (patch: Partial<AtlasFilterState>) => setState({ ...shown, ...patch });
 
@@ -238,6 +263,7 @@ export default function AtlasFilterRail({
         ))}
       </select>
 
+      {d.supportsBrandFilter !== false && (
       <select
         value={selectValue(shown.brands)}
         onChange={(e) => set({ brands: single(e.target.value === MULTI ? "" : e.target.value) })}
@@ -251,7 +277,33 @@ export default function AtlasFilterRail({
           </option>
         ))}
       </select>
+      )}
 
+      {(d.facets || []).filter((f) => !f.hidden).map((f) => {
+        const picked = shown.facets?.[f.key] ?? new Set<string>();
+        const opts = facetOptions[f.key] || [];
+        return (
+          <select
+            key={f.key}
+            value={selectValue(picked)}
+            onChange={(e) => {
+              const v = e.target.value === MULTI ? "" : e.target.value;
+              set({ facets: { ...(shown.facets || {}), [f.key]: single(v) } });
+            }}
+            aria-label={f.label}
+          >
+            <option value="">{f.allLabel}</option>
+            {picked.size > 1 && <option value={MULTI}>Several ({picked.size})</option>}
+            {opts.map(([value, count]) => (
+              <option key={value} value={value}>
+                {value}{count != null ? ` (${count})` : ""}
+              </option>
+            ))}
+          </select>
+        );
+      })}
+
+      {d.supportsMonthFilter !== false && (
       <select
         value={selectValue(shown.months)}
         onChange={(e) => set({ months: single(e.target.value === MULTI ? "" : e.target.value) })}
@@ -265,6 +317,7 @@ export default function AtlasFilterRail({
           </option>
         ))}
       </select>
+      )}
 
       {d.supportsVesselFilter && (
         <select
@@ -282,6 +335,8 @@ export default function AtlasFilterRail({
         </select>
       )}
 
+      {d.supportsStopFilter !== false && (
+      <>
       {/* Type-ahead, not a dropdown: cruise has 1,622 ports and worldcruise 971.
           The Leaflet atlases reached the same conclusion — their only static
           filter markup is #portSearch / #locationSearch. */}
@@ -319,6 +374,8 @@ export default function AtlasFilterRail({
         ))}
         {!roleOptions.includes("any") && <option value="any">Anywhere on route</option>}
       </select>
+      </>
+      )}
 
       <input
         className="villa-q"

@@ -55,6 +55,15 @@ export function searchTerms(q: unknown, country: unknown, collection: string): s
 }
 
 /** An offering matches when every active term appears in its haystack. */
+/**
+ * Hotels' matcher: raw lowercase substring, no tokenising, no stop-list.
+ * See AtlasFilterDescriptor.searchMode for why this is not unified.
+ */
+export function matchesSubstring(haystack: string, q: string): boolean {
+  if (!q) return true;
+  return haystack.indexOf(q.trim().toLowerCase()) >= 0;
+}
+
 export function matchesTerms(haystack: string, terms: readonly string[]): boolean {
   if (!terms.length) return true;
   return terms.every((t) => haystack.includes(t));

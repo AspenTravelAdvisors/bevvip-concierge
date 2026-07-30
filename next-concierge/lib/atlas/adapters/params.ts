@@ -130,6 +130,10 @@ export function parseDeepLink(
   const regionKeys = new Set(ctx.regions.map((r) => r.key));
 
   const ids = new Set(splitList(params.get("ids")));
+  // Collections may accept a second single-item param (hotels: `hotel=`).
+  for (const extra of d.extraIdParams || []) {
+    for (const v of splitList(params.get(extra))) ids.add(v);
+  }
   const months = new Set(splitList(params.get("month")));
   const vessels = new Set(d.supportsVesselFilter ? splitList(params.get("ships")) : []);
 
@@ -183,6 +187,14 @@ export function parseDeepLink(
     }
   }
 
+  // Collection-specific axes (hotels: category / program / country). Values are
+  // comma-separated, matching the originals' `tick()` which splits on commas.
+  const facets: Record<string, ReadonlySet<string>> = {};
+  for (const f of d.facets || []) {
+    const picked = new Set(splitList(params.get(f.param)));
+    if (picked.size) facets[f.key] = picked;
+  }
+
   return {
     state: {
       brands,
@@ -193,10 +205,19 @@ export function parseDeepLink(
       excludedRegions,
       stop,
       stopRole,
-      terms: searchTerms(params.get("q"), params.get("country"), d.collection),
+      // `country` folds into the search terms for the five journeys/voyages —
+      // but where a collection declares a `country` FACET (hotels), the param
+      // is that facet's value and must not also become a search term.
+      terms: searchTerms(
+        params.get("q"),
+        d.facets?.some((f) => f.param === "country") ? null : params.get("country"),
+        d.collection,
+      ),
+      rawQuery: params.get("q") || undefined,
       // world is both a filter and a view intent: it narrows the results AND
       // is what the old worldBtn toggled.
       world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()) || undefined,
+      facets: Object.keys(facets).length ? facets : undefined,
     },
     view: {
       trip: params.get("trip") || null,
@@ -236,13 +257,20 @@ export function toSearchParams(
   set(d.brandParam, state.brands);
   if (d.supportsVesselFilter) set("ships", state.vessels);
   set("regions", state.regions);
+  for (const f of d.facets || []) {
+    const picked = state.facets?.[f.key];
+    if (picked?.size) p.set(f.param, [...picked].join(","));
+  }
   if (d.supportsRegionExclusion) set("exRegions", state.excludedRegions);
   if (state.stop) {
     p.set(d.stopParam, state.stop);
     if (state.stopRole && state.stopRole !== "any") p.set(d.stopRoleParam, state.stopRole);
   }
   if (rawQuery?.q) p.set("q", rawQuery.q);
-  if (rawQuery?.country) p.set("country", rawQuery.country);
+  // Same asymmetry on the way out: a country facet already wrote this key.
+  if (rawQuery?.country && !d.facets?.some((f) => f.param === "country")) {
+    p.set("country", rawQuery.country);
+  }
   if (view.trip) p.set("trip", view.trip);
   if (view.focusRegion) p.set("region", view.focusRegion);
   if (view.world || state.world) p.set("world", "1");

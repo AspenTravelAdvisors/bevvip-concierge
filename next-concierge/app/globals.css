@@ -3747,3 +3747,21 @@ button.card-book {
 .atlas-scrollcue {
   display: none;
 }
+
+/* "See it in 3D" — the handoff to Google Photorealistic 3D. Given weight on the
+   card because it is the most persuasive thing the product does, and until now
+   it had no entry point outside the standalone atlas. */
+.atlas-card .ac-3d {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: #17140c;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 7px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.atlas-card .ac-3d:hover {
+  filter: brightness(1.08);
+}

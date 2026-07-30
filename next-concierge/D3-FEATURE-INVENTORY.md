@@ -130,3 +130,62 @@ Write this table BEFORE porting the next collection, from that atlas's own
 `index.html`, and check it off as you go. The filter inventory made the filter
 port boring and correct; the absence of a feature inventory made the feature
 port a sequence of user-reported regressions.
+
+---
+
+## D2 — VIP Hotels (written BEFORE porting, per the lesson above)
+
+Hotels are the first collection whose filter grammar genuinely differs. Writing
+this table first turned five would-be silent regressions into five descriptor
+flags.
+
+### Filter axes
+
+| UI control | param | actually filters on | notes |
+|---|---|---|---|
+| Region | `regions` | `macroRegion(country)` | **Not** the feed's `region` (604 sub-national values) and **not** `marqueeRegion` (7 keys). A curated country→region table, displayed in geographic order, not alphabetical. |
+| Category | `category` | `category` | 8 values |
+| Brand / Program | **`program`** | `program` | **The visible "Brand" axis is the `program` param.** 38 values. |
+| Country | `country` | `country` | 115 values |
+| search | `q` | `name + city + region + country` | raw lowercase **substring**, not tokenised |
+| — | `brand` | `brand` | **deep-link only**, case-insensitive, no control |
+| — | `region` | `marqueeRegion` + Caribbean country alias | **deep-link only**, case-insensitive |
+| — | `ids`, `hotel` | — | **highlight-only: they do NOT filter** |
+
+### The five divergences, and what each would have broken
+
+1. **Macro-region.** Using the feed's `region` would have put **604** region pins
+   on the globe instead of 10.
+2. **`program` vs `brand`.** Wiring the visible control to `brand=` breaks every
+   shared link. Verified distinct: `program="Virtuoso"` → 1,970 hotels;
+   `brand="Virtuoso"` → 0.
+3. **`ids=` highlights, never filters.** The original: shortlist links "enlarge
+   and frame their pins but never hide the rest of the field, so a shared hotel
+   is always seen in context." Every other atlas narrows. Shared as
+   `idsHighlightOnly`, with the shared surface still framing the first id — a
+   highlight nothing points the camera at is not a highlight.
+4. **Substring search.** Tokenising would stop "ondo" matching London (56 hits).
+   Adding brand/program to the haystack would silently widen every search.
+5. **`country` is a FACET here, a SEARCH TERM there.** The five fold `country=`
+   into `q`'s tokens; hotels use it as a checkbox axis. Both directions of the
+   collision are handled in `params.ts`.
+6. **`region=caribbean` matches by country alias.** No hotel actually carries
+   `marqueeRegion: "caribbean"` — the alias is the *only* thing making that deep
+   link return anything (92 hotels vs 0). Silently dropping it looks like
+   "no results", not like a bug.
+
+### What is deliberately NOT ported
+
+- **The Google 3D property view stays in Leaflet/Google.** Browsing moves; the
+  photoreal building does not, because Mapbox has no equivalent. `See it in 3D`
+  hands off via `?hotel=<id>`.
+- **Logos in the facet control.** The original's checkbox rows carry program
+  logos; the shared rail uses `<select>`, which cannot. The mark still appears on
+  every card via `logoKey` → the 38-entry `PROGRAM_DOMAINS` map. A richer picker
+  is already on the leftovers list.
+
+### Verification
+
+`scripts/verify-hotels.mjs` — 1,750,700 comparisons over 598 distinct filter
+states against the original `matches()`, 0 mismatches, plus 6 assertions
+covering each divergence above.
