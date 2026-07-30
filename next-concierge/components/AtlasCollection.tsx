@@ -28,6 +28,7 @@ import type { OfferingType } from "@/lib/types";
 import type { AtlasFilterDescriptor, AtlasOffering } from "@/lib/atlas/adapters/types";
 import { matchesOffering, type AtlasFilterState } from "@/lib/atlas/adapters/filter";
 import { parseDeepLink, toSearchParams, type ParseContext } from "@/lib/atlas/adapters/params";
+import { whenLabelFor } from "@/lib/atlas/dates";
 import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell from "./AtlasShell";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
@@ -75,8 +76,26 @@ interface Props {
 const dayRange = (a: number | null, b: number | null) =>
   a == null ? "" : a === b ? `Day ${a}` : `Days ${a}-${b}`;
 
+/**
+ * A single day inside an expanded itinerary — "25 Oct", no year.
+ *
+ * The year is deliberately absent HERE and only here. These rows sit under a
+ * card header that now prints the full range with years, so repeating 2026 on
+ * every one of a 245-day world cruise's day lines adds noise without adding
+ * information. Card-level dates go through formatRange, which always carries
+ * the year; see lib/atlas/dates.js.
+ *
+ * Parsed as UTC and formatted as UTC. The old implementation appended
+ * "T00:00:00" (local) and let toLocaleDateString use the local zone — west of
+ * UTC that renders midnight as the PREVIOUS day, so a traveler in Los Angeles
+ * saw every itinerary date shifted one day early.
+ */
 const fmtDay = (iso?: string | null) =>
-  iso ? new Date(iso + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "";
+  iso
+    ? new Date(iso + "T00:00:00Z").toLocaleDateString(undefined, {
+        day: "numeric", month: "short", timeZone: "UTC",
+      })
+    : "";
 
 export default function AtlasCollection({
   type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
@@ -519,14 +538,15 @@ export default function AtlasCollection({
                     (plus a departures count when the product runs many dates),
                     an on-demand window, or nothing scheduled at all. */}
                 <p className="ac-when">
-                  {o.startDate
-                    ? [
-                        `${fmtDay(o.startDate)}${o.endDate ? ` – ${fmtDay(o.endDate)}` : ""}`,
-                        o.departures && o.departures > 1 ? `${o.departures} departures` : null,
-                      ].filter(Boolean).join("  ·  ")
-                    : o.window
-                      ? `${o.window} · dates on request`
-                      : "On demand"}
+                  {[
+                    // Start, end and year for anything dated; the booking
+                    // window for on-demand journeys; "On demand" for the rest.
+                    // All three cases now live in whenLabelFor so the globe and
+                    // the Guide's result cards cannot drift apart — they used
+                    // to, and the globe was the one printing no year.
+                    whenLabelFor(o),
+                    o.departures && o.departures > 1 ? `${o.departures} departures` : null,
+                  ].filter(Boolean).join("  ·  ")}
                 </p>
               </div>
             </div>

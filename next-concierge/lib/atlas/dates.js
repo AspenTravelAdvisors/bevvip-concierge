@@ -128,4 +128,163 @@ function dropPast(list, today = todayISO()) {
   return list.filter((r) => !isPast(r, cutoff));
 }
 
-module.exports = { todayISO, normalizeStartDate, isPast, isCurrent, dropPast };
+// ─────────────────────────────────────────────────────────────────────────────
+// PRESENTATION — start, end and year, on every dated card
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// The same six feeds that disagree about date FORMAT also disagree about
+// whether they store an end date at all:
+//
+//   cruise       nights: 13                 no end date; derivable
+//   jet          endDate "8/26/2026"        on 103 of 137; days on all
+//   train        endDate "2026-10-16"       on all 36 dated; window on the 85 on-demand
+//   yacht        dates "25 Oct - 01 Nov"    end is IN the string, discarded by toIso()
+//   worldcruise  dates + days: 245          both available
+//   hotel/villa  nothing                    correctly dateless — never given a range
+//
+// Left alone, each renderer invented its own answer: the globe's `fmtDay`
+// dropped the year entirely ({day,month} only), and offering-shape's whenLabel
+// printed a lone start day for cruise, train and jet — the last of those as a
+// raw, unformatted "8/14/2026". Formatting lives here, next to the parsing it
+// depends on, so there is one answer per question.
+
+const MONTH_LABELS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** Split an ISO day into parts. Null for anything unparseable. */
+function isoParts(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));
+  if (!m) return null;
+  return { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) };
+}
+
+/**
+ * Shift an ISO day by N days.
+ *
+ * UTC throughout. Local-time arithmetic silently loses or gains an hour across
+ * a DST boundary, which is enough to slide a midnight date onto the previous
+ * day — a 7-night cruise that appears to end after 6. The cutoff above is
+ * deliberately local (a traveler's "today"), but this is calendar arithmetic on
+ * dates that carry no timezone, so UTC is correct.
+ */
+function addDays(iso, n) {
+  const p = isoParts(iso);
+  if (!p || !Number.isFinite(n)) return null;
+  const t = Date.UTC(p.y, p.m - 1, p.d) + n * 86400000;
+  return new Date(t).toISOString().slice(0, 10);
+}
+
+/**
+ * Derive an end date from a start plus a duration.
+ *
+ * The off-by-one here is real and the two units differ:
+ *
+ *   nights  end = start + nights. A 7-night cruise boarding the 1st disembarks
+ *           on the 8th.
+ *   days    end = start + days - 1, because a "13 day" journey counts its
+ *           departure day as day 1.
+ *
+ * Confirmed against the feeds that store both: jet 8/14 + 13 days -> 8/26, and
+ * train 2026-10-13 + 4 days -> 2026-10-16. Both are start + days - 1.
+ */
+function endFrom(startIso, { nights = null, days = null } = {}) {
+  const start = normalizeStartDate(startIso);
+  if (!start) return null;
+  if (Number.isFinite(nights) && nights > 0) return addDays(start, nights);
+  if (Number.isFinite(days) && days > 0) return addDays(start, days - 1);
+  return null;
+}
+
+/**
+ * The end half of a "25 Oct 2026 - 01 Nov 2026" range string.
+ *
+ * yacht and worldcruise carry the full range in `dates` but only the start in
+ * `startY/startM/startD`, so voyage.ts's toIso() had nothing to read for the
+ * end and hardcoded null. The end was never missing — just never looked at.
+ */
+function rangeEndFromString(raw) {
+  if (raw == null) return null;
+  const s = String(raw);
+  const dash = s.indexOf(" - ") >= 0 ? " - " : s.indexOf(" – ") >= 0 ? " – " : null;
+  if (!dash) return null;
+  const right = s.slice(s.indexOf(dash) + dash.length).trim();
+  return right ? normalizeStartDate(right) : null;
+}
+
+/** "25 Oct 2026", or "25 Oct" when the caller is suppressing a shared year. */
+function formatDay(iso, withYear = true) {
+  const p = isoParts(normalizeStartDate(iso));
+  if (!p) return null;
+  const label = MONTH_LABELS[p.m - 1] || String(p.m);
+  return withYear ? `${p.d} ${label} ${p.y}` : `${p.d} ${label}`;
+}
+
+/**
+ * The date line for one offering: start, end, and always a year.
+ *
+ *   same year     "25 Oct – 1 Nov 2026"
+ *   across years  "23 Dec 2026 – 2 Jan 2027"
+ *   same day      "25 Oct 2026"
+ *   no end        "25 Oct 2026"
+ *
+ * The year is printed once when both ends share it and twice when they don't,
+ * so it is never absent and never redundant. A December departure that returns
+ * in January is the case that makes this worth the branch — "23 Dec – 2 Jan"
+ * reads as ten days in the wrong order until the years appear.
+ *
+ * En-dash, matching the globe's existing date line and the rail `window`
+ * strings. The hyphen in the yacht/worldcruise source is a supplier artifact,
+ * not a house style.
+ */
+function formatRange(startIso, endIso) {
+  const start = normalizeStartDate(startIso);
+  if (!start) return null;
+  const end = normalizeStartDate(endIso);
+  if (!end || end <= start) return formatDay(start);
+
+  const a = isoParts(start);
+  const b = isoParts(end);
+  if (a && b && a.y === b.y) return `${formatDay(start, false)} – ${formatDay(end)}`;
+  return `${formatDay(start)} – ${formatDay(end)}`;
+}
+
+/**
+ * The whole "when" line for a record, whatever collection it came from.
+ *
+ * Resolution order, so each collection uses the best thing it has:
+ *   1. an explicit endDate
+ *   2. the end half of a `dates` / `startDate` range string
+ *   3. start + nights, or start + days
+ *   4. start alone
+ * and, for records with no departure at all, the on-demand booking window.
+ *
+ * Returns null for hotels and villas — they have no dates, and inventing a
+ * range for a property is worse than printing nothing.
+ */
+function whenLabelFor(record) {
+  if (!record) return null;
+  const start = normalizeStartDate(record.dates ?? record.startDate);
+
+  if (!start) {
+    // On-demand rail: a booking window rather than a departure. The globe card
+    // already said this; the Guide card said nothing.
+    const window = record.window ? String(record.window).trim() : "";
+    if (window) return `${window} · dates on request`;
+    return record.onDemand ? "On demand" : null;
+  }
+
+  const end =
+    normalizeStartDate(record.endDate) ||
+    rangeEndFromString(record.dates ?? record.startDate) ||
+    endFrom(start, { nights: record.nights, days: record.days });
+
+  return formatRange(start, end);
+}
+
+module.exports = {
+  todayISO, normalizeStartDate, isPast, isCurrent, dropPast,
+  isoParts, addDays, endFrom, rangeEndFromString,
+  formatDay, formatRange, whenLabelFor,
+};

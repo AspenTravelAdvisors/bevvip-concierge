@@ -25,6 +25,10 @@
  * and a translation layer we control is cheaper than a negotiation we don't.
  */
 
+import {
+  normalizeStartDate, rangeEndFromString, endFrom, formatRange,
+} from "@/lib/atlas/dates";
+
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -33,11 +37,19 @@ const MONTHS = [
 export interface NormalizedOffering {
   /** ISO `YYYY-MM-DD` where the source gives a real departure date. */
   startsOn: string | null;
+  /**
+   * ISO `YYYY-MM-DD` where the trip's end is known or derivable — stored on
+   * the record, printed in its range string, or implied by nights/days.
+   * Null for hotels and villas, which have no trip to end.
+   */
+  endsOn: string | null;
   /** `YYYY-MM` where only a month is known. */
   startsIn: string | null;
   /**
-   * What the card prints for "when": "12 Mar 2027", "Mar 2027", or the
-   * source's own free-text range ("12–17 Mar 2027") when it isn't parseable.
+   * What the card prints for "when": a full range with the year
+   * ("25 Oct – 1 Nov 2026", "23 Dec 2026 – 2 Jan 2027"), a lone day where
+   * there is no end ("12 Mar 2027"), a month ("Mar 2027"), an on-demand
+   * booking window, or the source's own free text when none of it parses.
    */
   whenLabel: string | null;
   /** Nights, where the source counts in nights. */
@@ -82,22 +94,54 @@ export function normalizeOffering(r: Record<string, unknown>): NormalizedOfferin
   const month = r.month;
 
   let startsOn: string | null = null;
+  let endsOn: string | null = null;
   let startsIn: string | null = null;
   let whenLabel: string | null = null;
 
-  if (typeof raw === "string" && raw.trim()) {
-    const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw);
-    if (iso) {
-      const [, y, m, d] = iso;
-      startsOn = raw;
-      startsIn = `${y}-${m}`;
-      const label = MONTHS[Number(m) - 1];
-      whenLabel = label ? `${Number(d)} ${label} ${y}` : raw;
+  // `raw.trim()` was the old guard, and it let one thing through that should
+  // never have reached a card: worldcruise ships 3 voyages whose `dates` is a
+  // bare " - " — a range with both ends missing. That trims to "-", which is
+  // truthy, so the free-text branch printed a lone dash as the departure date.
+  // Requiring an alphanumeric makes punctuation-only input behave like the
+  // empty string it actually is, falling through to the month.
+  const hasDateContent = typeof raw === "string" && /[a-z0-9]/i.test(raw);
+
+  if (hasDateContent) {
+    // Widened from an ISO-only regex to the shared parser, which is what lets
+    // three collections finally print a real date:
+    //
+    //   jet          "8/14/2026"                  used to fall through to the
+    //                                             free-text branch and print
+    //                                             the raw US string verbatim
+    //   yacht/world  "25 Oct 2026 - 01 Nov 2026"  printed verbatim; now parsed
+    //                                             into both ends and restyled
+    //   cruise       "2027-04-01"                 parsed before, but with no
+    //                                             end date to pair it with
+    const start = normalizeStartDate(raw);
+    if (start) {
+      startsOn = start;
+      startsIn = start.slice(0, 7);
+      // Best available end, in descending order of authority: what the record
+      // states, what its own range string prints, what its duration implies.
+      // The middle one outranks the last deliberately — on 5 of 240 world
+      // cruises the supplier's `days` contradicts its printed range.
+      endsOn =
+        normalizeStartDate(r.endDate) ||
+        rangeEndFromString(raw) ||
+        endFrom(start, { nights: num(r.nights), days: num(r.days) });
+      whenLabel = formatRange(start, endsOn);
     } else {
-      // Free text the source already formatted for a human. Kept verbatim —
-      // reformatting a range we didn't parse is how "12–17 Mar" becomes "12".
+      // Free text the source already formatted for a human — "12–17 Mar 2027"
+      // on a hotel, "Departs weekly". Kept verbatim: reformatting a range we
+      // didn't parse is how "12–17 Mar" becomes "12".
       whenLabel = raw;
     }
+  } else if (typeof r.window === "string" && r.window.trim()) {
+    // On-demand rail: a booking window instead of a departure. The globe card
+    // has always shown this; the Guide card showed an empty line for all 85.
+    whenLabel = `${r.window.trim()} · dates on request`;
+  } else if (r.onDemand === true) {
+    whenLabel = "On demand";
   } else if (typeof month === "string") {
     const m = /^(\d{4})-(\d{2})$/.exec(month);
     if (m) {
@@ -123,6 +167,7 @@ export function normalizeOffering(r: Record<string, unknown>): NormalizedOfferin
 
   return {
     startsOn,
+    endsOn,
     startsIn,
     whenLabel,
     nights,

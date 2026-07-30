@@ -22,6 +22,7 @@
 
 import { fromLatLngPair, isFinitePair, type LngLat } from "@/lib/atlas/geo";
 import { norm } from "./search";
+import { endFrom, rangeEndFromString } from "@/lib/atlas/dates";
 import type { AtlasFilterDescriptor, AtlasOffering, AtlasStop } from "./types";
 
 export interface RawVoyageBrand { short?: string; domain?: string; color?: string }
@@ -137,7 +138,15 @@ export function adaptVoyage(
       onDemand: false, // no voyage has an on-demand escape from the month filter
       window: null,
       startDate: toIso(trip),
-      endDate: null,
+      // The end was never missing, only unread: `startY/startM/startD` carry
+      // the departure, but `dates` ("25 Oct 2026 - 01 Nov 2026") carries both
+      // ends, and toIso() looks at the parts. Parse the string first and fall
+      // back to the duration — that order matters, because on 5 of 240 world
+      // cruises the supplier's `days` count disagrees with its own printed
+      // range, and the printed range is the one the traveler was sold.
+      endDate:
+        rangeEndFromString(trip.dates) ||
+        endFrom(toIso(trip), { days: typeof trip.days === "number" ? trip.days : null }),
       days: typeof trip.days === "number" ? trip.days : null,
       departures: null,
       country: null,

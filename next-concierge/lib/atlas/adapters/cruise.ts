@@ -28,6 +28,7 @@
 
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
 import { norm } from "./search";
+import { endFrom } from "@/lib/atlas/dates";
 import type { AtlasFilterDescriptor, AtlasOffering, AtlasStop } from "./types";
 
 export const CRUISE_DESCRIPTOR: AtlasFilterDescriptor = {
@@ -128,7 +129,12 @@ export function adaptCruise(
       onDemand: false,
       window: null,
       startDate: start,
-      endDate: null,
+      // Expedition sailings store no end date, only `nights` — so derive it,
+      // counting in NIGHTS not days: a 7-night sailing boarding the 1st
+      // disembarks on the 8th, not the 7th. `days` below is the same number
+      // under the collection's existing (looser) label; only the arithmetic
+      // here depends on the distinction.
+      endDate: endFrom(start, { nights: typeof nights === "number" ? nights : null }),
       days: typeof nights === "number" ? nights : null,
       departures: null,
       country: null,
