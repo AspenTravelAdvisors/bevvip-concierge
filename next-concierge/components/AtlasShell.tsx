@@ -794,18 +794,28 @@ export default function AtlasShell({
           // luminance, and lay it over a near-black casing wide enough to cut
           // it out of the terrain. The casing is doing most of the work; the
           // line alone can't win against a photograph.
-          // Casing width is LINE + 3 — a 1.5px dark halo each side, enough to
-          // cut the line out of terrain without swallowing it. The first
-          // attempt used a fixed 10px casing under a 3.4px line, which left
-          // 3.3px of black either side: the route read as a black cord with a
-          // thin coloured core, and the gold was unreadable.
-          const lineW = satellite ? 4.6 : 3.4;
+          /*
+           * Contrast on satellite is TWO problems, not one, and lightening the
+           * line only solves one of them. Measured against the two backdrops:
+           *
+           *   gold #caa44e   vs dark ocean 6.9:1   vs sunlit terrain 1.7:1
+           *   lightened 0.5  vs dark ocean 11:1    vs sunlit terrain 2.7:1
+           *
+           * Over OCEAN the line is already high-contrast and a heavy dark
+           * casing just eats into it. Over TERRAIN no amount of lightening
+           * helps — light-on-light tops out under 3:1 — and the dark halo is
+           * the only thing that works. So: a genuinely bright, wide line
+           * (carries the ocean) with a modest dark halo (carries the land),
+           * rather than a thin line inside a heavy black cord.
+           */
+          const lineW = satellite ? 5.2 : 3.4;
+          const satLine = lighten(accentLocal, 0.5);
           return satellite
             ? {
-                casing: "#05060a", casingW: lineW + 3, casingO: 0.9,
-                line: lighten(accentLocal, 0.34), lineW,
-                glowO: 0.55, tie: "#141922",
-                conn: lighten(accentLocal, 0.34), connO: 0.95,
+                casing: "#05060a", casingW: lineW + 2.4, casingO: 0.72,
+                line: satLine, lineW,
+                glowO: 0.7, tie: "#141922",
+                conn: satLine, connO: 0.95,
               }
             : {
                 casing: "#0b0d12", casingW: lineW + 3.6, casingO: 0.5,
@@ -865,7 +875,7 @@ export default function AtlasShell({
             id: "fr_glow", type: "line", source: "focus-route",
             filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": p.line, "line-width": p.lineW + 4, "line-opacity": p.glowO, "line-blur": 6 },
+            paint: { "line-color": p.line, "line-width": p.lineW + 5, "line-opacity": p.glowO, "line-blur": 5 },
           });
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
@@ -891,7 +901,7 @@ export default function AtlasShell({
             map.setPaintProperty("fr_casing", "line-color", p.casing);
             map.setPaintProperty("fr_casing", "line-width", p.casingW);
             map.setPaintProperty("fr_rail", "line-width", p.lineW);
-            map.setPaintProperty("fr_glow", "line-width", p.lineW + 4);
+            map.setPaintProperty("fr_glow", "line-width", p.lineW + 5);
             map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
             map.setPaintProperty("fr_glow", "line-opacity", p.glowO);
             map.setPaintProperty("fr_rail", "line-color", p.line);
@@ -928,7 +938,7 @@ export default function AtlasShell({
           addLayer(map, {
             id: "fs_dot", type: "circle", source: "focus-stops",
             paint: {
-              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 4.5, 8, 9],
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 5, 8, 10],
               "circle-stroke-opacity": 0.95,
               "circle-color": p.line,
               "circle-stroke-color": p.casing,

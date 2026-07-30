@@ -341,6 +341,40 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### Satellite contrast is two problems; worldcruise ported (2026-07-29)
+
+**Lightening the line only ever solved half of it.** Measured contrast ratios
+against the two satellite backdrops:
+
+| line | vs dark ocean | vs sunlit terrain |
+| --- | --- | --- |
+| gold `#caa44e` | 6.9:1 | 1.7:1 |
+| lightened 0.34 | 9.4:1 | 2.3:1 |
+| lightened 0.50 | 11.3:1 | 2.7:1 |
+
+Over **ocean** the line is already high-contrast, and a heavy dark casing just
+eats into it. Over **terrain** no amount of lightening helps — light-on-light
+tops out below 3:1 — and the dark halo is the only thing that works. Chasing
+one number was always going to fail on the other backdrop.
+
+So: a genuinely bright, wide line (5.2px, lightened 0.5) carrying the ocean,
+with a *modest* dark halo (line + 2.4 at 0.72) carrying the land — rather than a
+thin line inside a heavy black cord. **This is tuned from measured ratios, not
+from looking at it; confirm visually.**
+
+**`/atlas/worldcruise` is native.** Four of five. The prediction held — it is
+config: `voyage.ts` unchanged, and this file differs from AtlasYacht only in
+paths, accent, and having no bundled logos.
+
+- Deliverable 1's precompute covers **all 250 voyages** (3,017 legs — the
+  densest of the three sea files). No live A*, no land mask in the browser.
+- Accent **`#3fc1b0`**, the atlas's own. **Second collection whose real accent
+  differs from `OVERLAYS`** (which says `#45d6c2`), after yacht
+  (`#caa44e` vs `#e0b84a`). Assume the same for cruise; read the atlas, not
+  `OVERLAYS`.
+- No bundled logo assets — `BrandLogo` falls straight through to the favicon
+  services and coloured initials for all 13 lines.
+
 ### The cobweb and the unreadable gold were ONE bug (2026-07-29)
 
 Reported as two things — "what are all these lines?" and "gold isn't
