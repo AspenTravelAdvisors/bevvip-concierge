@@ -341,6 +341,54 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### ALL FIVE COLLECTIONS ARE NATIVE (2026-07-29)
+
+`/atlas/{train,jet,yacht,worldcruise,cruise}` all render the Mapbox globe.
+`NATIVE_COLLECTIONS` is full; no route renders an iframe any more except
+`?hero=1`, which the marketing landers still want bare.
+
+**cruise — the outlier, ported last.** Three source files rather than one
+(columnar `sailings.json` + `atlas-meta.json` + `data/itinerary-routes.json`),
+hence a three-argument adapter. Deliverable 1's precompute covers 2,829 of
+3,542 sailings — the gap is exactly the 712 whose route ports are all
+un-geocoded, so nothing is missing, there is simply nothing to draw.
+
+Two things the pre-port feature check caught:
+
+- **cruise's accent `#5aa9e6` MATCHES `OVERLAYS`.** I had predicted it would
+  differ, as yacht (`#caa44e` vs `#e0b84a`) and worldcruise (`#3fc1b0` vs
+  `#45d6c2`) do. It does not — so the `OVERLAYS` drift is those two only, and
+  that is what needs reconciling, not all five.
+- **Logos were about to break silently.** The card looked marks up by
+  `o.brand`, which is **null for cruise** — its marks are keyed by operator
+  name. Every cruise logo would have fallen through to coloured initials with
+  no error. The lookup now follows `descriptor.brandField`. The 10 operator
+  values in `sailings.json` match the 10 `OPERATORS` keys exactly.
+
+**Ship filter:** sourced from the sailings dataset's own `ship` column, which is
+what `WORKORDER-expedition-ship-data.md` Deliverable 4 asks for — "a true
+per-sailing filter … sourced from the sailings, not from `ships.json`". The port
+satisfies it by construction, since `AtlasFilterRail` derives ship options from
+the offerings. `ships.json` stays enrichment-only, as that work order intends.
+
+**Verification at this point:** `tsc` clean, adapter parity 0 mismatches across
+all five collections and both date pinnings, 291 deep-link assertions passing.
+
+### What remains in D3
+
+Nothing has been DELETED yet. That is the last step and it is deliberately
+separate:
+
+1. Delete `public/maps/{train,jet,yacht,worldcruise,cruise}/` and their vendored
+   Leaflet — **including the three duplicated `landmask.bin` copies**, which
+   only those atlases fetch. That finally closes D1's "still open" item.
+2. Delete `components/AtlasView.tsx` and the iframe path in
+   `app/atlas/[type]/page.tsx` — but `?hero=1` still uses it, so decide whether
+   the landers get a bare native map instead.
+3. Reconcile `OVERLAYS` colours for yacht and worldcruise (above).
+4. Feature-inventory leftovers: branded progressive loader, explicit "back" out
+   of a traced route, richer pickers (supplier list with logos, month grid).
+
 ### Satellite routes were dark because of SCENE LIGHTING, not colour (2026-07-29)
 
 Three rounds of colour tuning were all treating the wrong cause. The side-by-side

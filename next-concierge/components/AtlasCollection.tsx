@@ -403,17 +403,25 @@ export default function AtlasCollection({
             onClick={() => togglePin(o)}
           >
             <div className="ac-head">
-              {(o.brand || o.operator) && (
-                <BrandLogo
-                  brand={
-                    brandMarks[o.brand || ""] || {
-                      key: o.brand || o.operator || "",
-                      short: o.brandLabel || o.operator,
+              {/* Look the mark up by whichever field this collection filters
+                  on. cruise has NO brand — its marks are keyed by operator
+                  name — so a `o.brand`-only lookup silently dropped every
+                  cruise logo. */}
+              {(() => {
+                const markKey = descriptor.brandField === "operator" ? o.operator : o.brand;
+                if (!markKey && !o.operator) return null;
+                return (
+                  <BrandLogo
+                    brand={
+                      brandMarks[markKey || ""] || {
+                        key: markKey || o.operator || "",
+                        short: o.brandLabel || o.operator,
+                      }
                     }
-                  }
-                  assetBase={logoBase}
-                />
-              )}
+                    assetBase={logoBase}
+                  />
+                );
+              })()}
               <div className="ac-headtext">
                 <h3>{o.title}</h3>
                 {/* Date line, mirroring the original's three cases: a real range
