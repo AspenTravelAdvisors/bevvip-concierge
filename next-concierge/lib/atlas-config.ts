@@ -153,7 +153,10 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_JET_ATLAS_BASE || "/maps/jet",
     sampleRegions: ["ANTARCTICA", "AFRICA", "ASIA", "WORLD"],
     color: "#dfe5f2",
-    count: 141,
+    // 141 -> 147: the six Safrans du Monde departures added by
+    // scripts/apply-safrans-dates.mjs. Like every count here this is a hand-kept
+    // constant over the raw feed, not a live figure — see the note on `count`.
+    count: 147,
     order: 7,
     intent: "journey",
   },

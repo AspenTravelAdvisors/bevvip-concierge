@@ -16119,7 +16119,8 @@
       "u": "/safrans-du-monde.html#sdm-world-classiques-2026",
       "days": 24,
       "world": true,
-      "onDemand": true
+      "d": "10/22/2026",
+      "r": "11/14/2026"
     },
     {
       "n": "The World Tour · Grands Classiques 2027",
@@ -16128,32 +16129,36 @@
       "u": "/safrans-du-monde.html#sdm-world-classiques-2027",
       "days": 24,
       "world": true,
-      "onDemand": true
+      "d": "10/19/2027",
+      "r": "11/11/2027"
     },
     {
-      "n": "The World Tour · Special Edition 2026",
+      "n": "The World Tour · Special Edition 2027",
       "b": "safrans",
       "route": "sdm-world-special-2026",
       "u": "/safrans-du-monde.html#sdm-world-special-2026",
-      "days": 23,
+      "days": 25,
       "world": true,
-      "onDemand": true
+      "d": "3/5/2027",
+      "r": "3/29/2027"
     },
     {
-      "n": "7 Wonders of Asia by Private Jet 2026",
+      "n": "7 Wonders of Asia by Private Jet 2028",
       "b": "safrans",
       "route": "sdm-7wonders-asia",
       "u": "/safrans-du-monde.html#sdm-7wonders-asia",
-      "days": 17,
-      "onDemand": true
+      "days": 18,
+      "d": "4/21/2028",
+      "r": "5/8/2028"
     },
     {
       "n": "7 Wonders of Asia by Private Jet 2027",
       "b": "safrans",
       "route": "sdm-7wonders-asia",
       "u": "/safrans-du-monde.html#sdm-7wonders-asia",
-      "days": 17,
-      "onDemand": true
+      "days": 18,
+      "d": "4/20/2027",
+      "r": "5/7/2027"
     },
     {
       "n": "New Year's Eve Ultra Symphony",
@@ -16170,48 +16175,108 @@
       "b": "safrans",
       "route": "sdm-japan",
       "u": "/safrans-du-monde.html#sdm-japan",
-      "days": 12,
-      "onDemand": true
+      "days": 19,
+      "d": "3/21/2027",
+      "r": "4/8/2027"
     },
     {
       "n": "Japan in Grand Luxury · Autumn",
       "b": "safrans",
       "route": "sdm-japan",
       "u": "/safrans-du-monde.html#sdm-japan",
-      "days": 12,
-      "onDemand": true
+      "days": 20,
+      "d": "11/11/2026",
+      "r": "11/30/2026"
     },
     {
       "n": "South America in Grand Luxury",
       "b": "safrans",
       "route": "sdm-south-america",
       "u": "/safrans-du-monde.html#sdm-south-america",
-      "days": 14,
-      "onDemand": true
+      "days": 21,
+      "d": "2/22/2027",
+      "r": "3/14/2027"
     },
     {
       "n": "Majesty of Southern Africa",
       "b": "safrans",
       "route": "sdm-southern-africa",
       "u": "/safrans-du-monde.html#sdm-southern-africa",
-      "days": 13,
-      "onDemand": true
+      "days": 18,
+      "d": "9/2/2026",
+      "r": "9/19/2026"
     },
     {
       "n": "Rajasthan in Grand Luxury",
       "b": "safrans",
       "route": "sdm-rajasthan",
       "u": "/safrans-du-monde.html#sdm-rajasthan",
-      "days": 11,
-      "onDemand": true
+      "days": 13,
+      "d": "9/28/2026",
+      "r": "10/10/2026"
     },
     {
       "n": "Tour de France in Grand Luxury",
       "b": "safrans",
       "route": "sdm-tour-de-france",
       "u": "/safrans-du-monde.html#sdm-tour-de-france",
-      "days": 9,
-      "onDemand": true
+      "days": 18,
+      "d": "9/1/2026",
+      "r": "9/18/2026"
+    },
+    {
+      "n": "Japan in Grand Luxury · Autumn",
+      "b": "safrans",
+      "route": "sdm-japan",
+      "u": "/safrans-du-monde.html#sdm-japan",
+      "days": 20,
+      "d": "11/14/2027",
+      "r": "12/3/2027"
+    },
+    {
+      "n": "South America in Grand Luxury",
+      "b": "safrans",
+      "route": "sdm-south-america",
+      "u": "/safrans-du-monde.html#sdm-south-america",
+      "days": 21,
+      "d": "2/21/2028",
+      "r": "3/12/2028"
+    },
+    {
+      "n": "Majesty of Southern Africa",
+      "b": "safrans",
+      "route": "sdm-southern-africa",
+      "u": "/safrans-du-monde.html#sdm-southern-africa",
+      "days": 18,
+      "d": "3/10/2027",
+      "r": "3/27/2027"
+    },
+    {
+      "n": "Majesty of Southern Africa",
+      "b": "safrans",
+      "route": "sdm-southern-africa",
+      "u": "/safrans-du-monde.html#sdm-southern-africa",
+      "days": 18,
+      "d": "10/6/2027",
+      "r": "10/23/2027"
+    },
+    {
+      "n": "Rajasthan in Grand Luxury",
+      "b": "safrans",
+      "route": "sdm-rajasthan",
+      "u": "/safrans-du-monde.html#sdm-rajasthan",
+      "days": 14,
+      "d": "3/11/2027",
+      "r": "3/24/2027"
+    },
+    {
+      "n": "Rajasthan in Grand Luxury",
+      "b": "safrans",
+      "route": "sdm-rajasthan",
+      "u": "/safrans-du-monde.html#sdm-rajasthan",
+      "days": 14,
+      "d": "9/30/2027",
+      "r": "10/13/2027"
     }
   ]
 }

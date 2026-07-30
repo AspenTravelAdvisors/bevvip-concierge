@@ -99,6 +99,13 @@ const journeys = (raw.TRIPS || []).map((t, i) => {
     startDate: t.d || null,
     endDate: t.r || null,
     month: ym(t.d),
+    // Carried through to match trains.js and the globe's own journey.ts, both
+    // of which have always read these. This backend did not, so a jet journey
+    // the feed marks on-demand arrived at The Guide indistinguishable from one
+    // with missing data: blank date line, and silently dropped by the month
+    // filter below. The globe, reading the same feed, showed "On demand".
+    onDemand: !!t.onDemand,
+    window: t.win || null,
     route: t.route || null,
     days: t.days || (Array.isArray(t.itin) ? t.itin.length : null),
     itinerary: Array.isArray(t.itin) ? t.itin : null,
@@ -126,7 +133,11 @@ function filterJourneys(params = {}) {
   if (truthy(world)) list = list.filter((j) => j.world);
   if (region) { const v = ci(region); if (MARQUEE.has(v)) list = list.filter((j) => j.region === v); }
   if (brand) { const v = ci(brand); list = list.filter((j) => ci(j.brand) === v); }
-  if (month) { const v = String(month).trim(); list = list.filter((j) => j.month === v); }
+  // On-demand journeys pass the month filter unconditionally, as they do in
+  // trains.js and in the shared adapter predicate. A journey with no fixed
+  // departure is available in March by definition; excluding it because its
+  // `month` is null answered a different question than the traveler asked.
+  if (month) { const v = String(month).trim(); list = list.filter((j) => j.onDemand || j.month === v); }
 
   // Include the route slug and every itinerary stop so a place or country in
   // country/q only matches journeys that genuinely touch it; name + brand +
