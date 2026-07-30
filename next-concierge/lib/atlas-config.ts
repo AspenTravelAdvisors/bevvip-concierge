@@ -10,7 +10,10 @@ export type IntentKey = "stay" | "voyage" | "journey";
 
 export const INTENTS: { key: IntentKey; label: string; blurb: string }[] = [
   { key: "stay", label: "Places to stay", blurb: "Hotels and private villas" },
-  { key: "voyage", label: "Voyages by sea", blurb: "Expeditions, world cruises, charters" },
+  // NOT "charters". A hotel yacht is an ultra-luxury cruise — a hotel at sea,
+  // booked by the cabin exactly like an expedition or world cruise. Calling the
+  // group "charters" described the wrong product and the wrong price.
+  { key: "voyage", label: "Voyages by sea", blurb: "Expeditions, world cruises, hotel yachts" },
   { key: "journey", label: "Journeys by rail and air", blurb: "Luxury trains and private jets" },
 ];
 

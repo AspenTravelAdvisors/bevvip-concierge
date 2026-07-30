@@ -193,7 +193,13 @@ cell, so the first and last segments always "hit land" by construction.
   `legGeometry` tests the straight line (not the bezier) when deciding whether
   to route. A* is correct there.
 
-## Atlas unification — Deliverable 3 IN PROGRESS (started 2026-07-29)
+## Atlas unification — Deliverable 3 SHIPPED 2026-07-29 (cleanup cancelled)
+
+All five collections are native. The deletion step (removing
+`public/maps/{train,jet,yacht,worldcruise,cruise}/`, the vendored Leaflet, the
+three `landmask.bin` copies and `AtlasView.tsx`) was CANCELLED by decision on
+2026-07-30 — nothing is being deleted. `?hero=1` still renders the iframe, and
+the marketing landers depend on it.
 
 Retiring the five Leaflet atlases onto the globe. **Nothing deleted yet.**
 
@@ -883,6 +889,98 @@ Chrome tab were unreliable — a clean-room `Map3DElement` test run inside a
 null origin and the Google key is referrer-restricted, so that test was invalid
 by construction. **Confirm any "the map is broken" finding in a normal browser
 window before diagnosing further.**
+
+## Atlas unification — Deliverables 2, 4, 5 SHIPPED 2026-07-30
+
+The work order (`WORKORDER-atlas-unification.md`) is complete: D0–D5.
+**Nothing was deleted.** The five Leaflet atlases, `AtlasView.tsx`, the `?hero=1`
+iframe path and `public/maps/*` all remain — the D3 cleanup step was cancelled
+by decision, not forgotten. `public/maps/hotel/` in particular is now
+load-bearing rather than legacy: it IS the Google 3D property view.
+
+**D2 — hotels: browse on Mapbox, inspect in Google 3D.** `components/AtlasHotel.tsx`
++ `lib/atlas/adapters/hotel.ts`. Hotels are the first collection whose filter
+grammar genuinely differs from the five journey/voyage atlases, so the shared
+layer grew descriptor flags rather than branches: `facets`, `searchMode`,
+`idsHighlightOnly`, `extraIdParams`, `supportsMonthFilter` / `supportsStopFilter`
+/ `supportsBrandFilter`. Five divergences, each of which would have shipped
+silently — full table in `D3-FEATURE-INVENTORY.md`. The sharpest:
+
+- the visible Region axis is a **curated country→macro-region table**, not the
+  feed's 604-value `region` nor its 7-value `marqueeRegion` (604 pins vs 10)
+- the UI axis labelled "Brand / Program" is the **`program`** param; `brand` is
+  a separate deep-link-only axis (`program=Virtuoso` → 1,970; `brand=Virtuoso` → 0)
+- `ids=` **highlights, it does not filter** — a shared property is meant to be
+  seen among its neighbours
+- `q` is a raw **substring**, not tokenised, and `country` is a FACET here while
+  it is a SEARCH TERM in the other five
+- **no hotel carries `marqueeRegion: "caribbean"`** — the country alias is the
+  only thing making `region=caribbean` return anything (92 vs 0)
+
+`hotel_3d_opened` added to `lib/analytics.ts` (source: `card` | `popup`) — the
+photoreal view was previously unmeasured.
+
+**D4 — Explore is intent-shaped.** `IntentKey` + `INTENTS` + `collectionsByIntent()`
+in `lib/atlas-config.ts`; `SiteNav` renders groups. Seven collections became
+three choices: Places to stay (hotel, villa) · Voyages by sea (cruise,
+worldcruise, yacht) · Journeys by rail and air (train, jet). Derived from
+`COLLECTIONS`, so a new atlas cannot go missing from the menu —
+`scripts/verify-intents.mjs` asserts exactly that, which is the failure a
+grouped menu has and a flat one does not.
+
+**D5 — one result shape.** `lib/offering-shape.ts`. `search_offerings` passed the
+five journey/voyage collections through verbatim from their upstream APIs, each
+answering "when" and "how long" differently, so `ResultCards` re-derived it with
+`result.nights as unknown` (only compiling because `OfferingResult` has an index
+signature). Now normalised once at the seam. **Two transcription bugs caught by
+the harness, both non-obvious:**
+
+- `dates ?? startDate` is NOT a truthiness fallback — an empty-string `dates`
+  BLOCKS `startDate` and falls to `month`. Using `||` changed 28 cases.
+- `if (result.duration)` IS truthiness on the raw value — numeric `duration: 12`
+  printed `"12"`, `duration: 0` fell through. Requiring a string changed 96.
+
+The card keeps its local derivations as a FALLBACK because `GuideMeta` replays
+from `sessionStorage`; a plot stored pre-D5 would otherwise lose every date.
+
+**Home globe: ambient routes are OFF by default** (`ambientRoutes` now defaults
+false). Every call site already passed `false`; only the default kept the
+cobweb alive. Routes are on demand — hover, click, or a collection page. Plotted
+Guide results are pins only: tracing them was tried and reverted, because on a
+dense coast a handful of voyages buries the pins. D1's precomputed sea routes are
+NOT wasted — the collection pages draw every leg from them.
+
+**Fixed alongside:** the home globe could come to rest with no fit and no idle
+spin (the boot chain had no terminal `else`, hit most reliably coming BACK from
+an atlas — this was "the map is frozen"); a plot restored during boot could
+`setStyle` while the first style load was in flight, wedging `restyling` so every
+later paint was skipped; hotel pins were drawn from zoom 2.45 but only clickable
+from 4, a dead band where a tap silently did nothing.
+
+**Verification** — `npm run verify` runs all of it:
+`check` · `verify:adapters` (~10.7M comparisons) · `verify:deeplinks` (291) ·
+`verify:hotels` (1.75M) · `verify:offering-shape` (651) · `verify:intents` ·
+`verify:sea-routes`.
+
+## Product facts that have been got wrong in code (2026-07-30)
+
+Recorded because both were wrong in shipped copy, not just in someone's head.
+
+**A hotel yacht is a CRUISE, not a charter.** Ritz-Carlton Yacht Collection,
+Four Seasons Yachts, Aman at Sea, Orient Express Sailing Yachts — ultra-luxury
+hotels at sea, sold **by the cabin**, exactly like an expedition cruise or a
+world cruise. The Explore blurb said "charters" and the map badge said
+"N charters"; both described the wrong product at the wrong price. Now
+"hotel yachts" and "N sailings".
+
+**Everything can be privatized, with enough lead time.** Any itinerary — hotel
+yacht, Expedition Cruise, world cruise, private jet, rail — can be taken as a
+full charter; any property — hotel, resort, villa — as a full buyout. This is a
+distinctive capability and a real revenue path, so a traveller asking about the
+whole ship, the whole train, the whole hotel, or about a wedding / reunion /
+milestone / corporate group must never be answered with individual cabins or
+room nights alone. Encoded in `lib/guide-prompt.js`. Neither pricing nor a
+specific lead time is ever quoted by The Guide; the advisor sets both.
 
 ## Offering types (7)
 

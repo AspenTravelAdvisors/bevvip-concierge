@@ -3821,3 +3821,33 @@ button.card-book {
 @media (max-width: 640px) {
   .nav-menu-group-blurb { display: none; }
 }
+
+/* The traced-route banner, in the scroll cue between map and cards. It replaces
+   the result count rather than sitting beside it: while one route is traced,
+   "374 results" is not what you are looking at. */
+.atlas-scrollcue .atlas-tracing {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60vw;
+}
+.atlas-scrollcue .atlas-tracing strong {
+  color: var(--gold-light);
+  font-weight: 600;
+}
+.atlas-scrollcue .atlas-untrace {
+  margin-left: 10px;
+  padding: 3px 9px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--sub);
+  background: transparent;
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.16));
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.atlas-scrollcue .atlas-untrace:hover {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}

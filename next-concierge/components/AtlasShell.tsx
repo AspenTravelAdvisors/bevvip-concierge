@@ -1206,9 +1206,10 @@ export default function AtlasShell({
          * complaint that turned the ambient underlay off. The home canvas shows
          * WHERE; a collection page shows the itinerary.
          *
-         * lib/atlas/adapters/plot-routes.ts is kept (and still verified by
-         * scripts/verify-plot-routes.mjs) because the lookup is correct and the
-         * decision here is about density, not correctness.
+         * The id→geometry lookup written for this was removed with it rather
+         * than left behind as dead code with a passing test attached — the
+         * collection pages resolve their own geometry through sea-geometry.ts
+         * and rail-geometry.ts, which is where it belongs.
          */
 
         // ── Result plotting (fit + satellite), triggered by the Guide ─────────
@@ -1940,7 +1941,9 @@ function overlayMeta(key: OverlayKey, count?: number): string {
   if (key === "jet") return `Private Jet Journeys${count ? ` · ${count} journeys` : ""}`;
   if (key === "train") return `Rail Journeys${count ? ` · ${count} departures` : ""}`;
   if (key === "villa") return `Private Villas${count ? ` · ${count} villas` : ""}`;
-  return `Luxury Hotel Yachts${count ? ` · ${count} charters` : ""}`;
+  // "sailings", not "charters": these are sold by the cabin like any other
+  // cruise. See INTENTS in lib/atlas-config.ts.
+  return `Luxury Hotel Yachts${count ? ` · ${count} sailings` : ""}`;
 }
 
 function regionCenter(

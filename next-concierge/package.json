@@ -17,8 +17,7 @@
     "check": "tsc -p tsconfig.check.json --noEmit",
     "verify:deeplinks": "node scripts/verify-deeplinks.mjs",
     "verify:hotels": "node scripts/verify-hotels.mjs",
-    "verify:plot-routes": "node scripts/verify-plot-routes.mjs",
-    "verify": "npm run check && npm run verify:adapters && npm run verify:deeplinks && npm run verify:hotels && npm run verify:plot-routes && npm run verify:offering-shape && npm run verify:intents && npm run verify:sea-routes",
+    "verify": "npm run check && npm run verify:adapters && npm run verify:deeplinks && npm run verify:hotels && npm run verify:offering-shape && npm run verify:intents && npm run verify:sea-routes",
     "verify:offering-shape": "node scripts/verify-offering-shape.mjs",
     "verify:intents": "node scripts/verify-intents.mjs"
   },

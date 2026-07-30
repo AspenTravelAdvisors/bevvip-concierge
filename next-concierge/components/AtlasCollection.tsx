@@ -205,7 +205,7 @@ export default function AtlasCollection({
    * Frame a SET of offerings without tracing any one of them.
    *
    * Uses real route geometry where the collection ships it, falling back to
-   * located stops — so a shortlist of yacht charters frames the water they
+   * located stops — so a shortlist of yacht sailings frames the water they
    * actually cover, not the bounding box of their embarkation ports.
    */
   const fitOfferings = useCallback(
@@ -455,7 +455,30 @@ export default function AtlasCollection({
           vertical drags, so without this the only grabbable area on a phone is
           whatever gap is left over — which was a few pixels. */}
       <div className="atlas-scrollcue">
-        {filtered.length.toLocaleString()} {filtered.length === 1 ? "result" : "results"}
+        {/*
+          An explicit way out of a traced route.
+          Releasing a pin was only possible by finding the same card again and
+          clicking it a second time — an undo whose control is wherever you
+          happened to leave the list, and invisible if you scrolled or filtered
+          since. Naming what is traced also answers "which one is this?" without
+          hunting for the highlighted card.
+        */}
+        {pinnedId && byId.get(pinnedId) ? (
+          <>
+            <span className="atlas-tracing">
+              Tracing <strong>{byId.get(pinnedId)!.title}</strong>
+            </span>
+            <button
+              type="button"
+              className="atlas-untrace"
+              onClick={() => { setPinnedId(null); emitRoute(null); }}
+            >
+              Clear route
+            </button>
+          </>
+        ) : (
+          <>{filtered.length.toLocaleString()} {filtered.length === 1 ? "result" : "results"}</>
+        )}
       </div>
 
       <div className="atlas-results">
