@@ -201,6 +201,36 @@ export default function AtlasCollection({
     [routeFor],
   );
 
+  /**
+   * Frame a SET of offerings without tracing any one of them.
+   *
+   * Uses real route geometry where the collection ships it, falling back to
+   * located stops — so a shortlist of yacht charters frames the water they
+   * actually cover, not the bounding box of their embarkation ports.
+   */
+  const fitOfferings = useCallback(
+    (list: AtlasOffering[]) => {
+      const pts: [number, number][] = [];
+      for (const o of list) {
+        const real = routeFor.fn?.(o);
+        if (real?.length) {
+          for (const leg of real) for (const c of leg.coordinates) pts.push(c);
+        } else if (o.path.length) {
+          for (const c of o.path) pts.push([c[0], c[1]]);
+        } else {
+          for (const s of o.stops) if (s.at) pts.push([s.at[0], s.at[1]]);
+        }
+      }
+      if (!pts.length) return;
+      window.dispatchEvent(
+        new CustomEvent("bevvip:atlas-route", {
+          detail: { legs: [], fit: true, fitPoints: pts },
+        }),
+      );
+    },
+    [routeFor],
+  );
+
   const byId = useMemo(() => new Map(filtered.map((o) => [o.id, o])), [filtered]);
 
   /** Hover previews a route — but never over a pinned one. 170ms debounce
@@ -315,22 +345,47 @@ export default function AtlasCollection({
 
   // `trip=` pins a journey, the same param the Leaflet Share button emitted.
   const autoTripped = useRef(false);
+  /**
+   * Arriving from the Guide's "Open in the Atlas": frame what was sent.
+   *
+   * This used to key off `trip=` alone, which only the atlas's own Share button
+   * emits. The Guide sends `ids=` — so every chat handoff except a single
+   * hotel landed on an unmoved map with no route traced: the shortlist was
+   * correctly filtered in the card list and completely invisible on the globe.
+   * (Hotels appeared to work only because they had a bespoke `ids` fallback.)
+   *
+   * Three cases, because framing a set is not the same gesture as tracing one:
+   *   trip=            the atlas's own link — pin and trace it
+   *   one result       the same thing: pin, trace, fly
+   *   several results  fit ALL of them. Tracing one of five would be an
+   *                    arbitrary choice presented as an answer.
+   */
   useEffect(() => {
-    // Where `ids=` HIGHLIGHTS rather than filters (hotels), the shortlist never
-    // narrows the list — so nothing would take the camera and a shared property
-    // would open somewhere over the Atlantic among 2,500 identical pins. Fall
-    // back to the first shortlisted id so the link still lands on its subject
-    // while, per the original's intent, keeping the rest of the field visible.
-    const wanted =
-      parsed?.view.trip ||
-      (descriptor.idsHighlightOnly && state?.ids.size ? [...state.ids][0] : null);
-    if (autoTripped.current || !wanted || !filtered.length) return;
-    const hit = filtered.find((o) => o.idAliases.includes(wanted) || o.id === wanted);
-    if (!hit) return;
-    autoTripped.current = true;
-    setPinnedId(hit.id);
-    emitRoute(hit, !parsed?.view.camera); // an explicit camera wins over fitting
-  }, [parsed?.view.trip, parsed?.view.camera, filtered, emitRoute, descriptor, state?.ids]);
+    if (autoTripped.current || !filtered.length || !state) return;
+    const explicit = parsed?.view.trip;
+    if (!explicit && !state.ids.size) return;
+
+    // For collections where `ids` filters, `filtered` IS the shortlist; for
+    // highlight-only ones (hotels) it is the whole field, so match explicitly.
+    const shortlist = state.ids.size
+      ? filtered.filter((o) => o.idAliases.some((a) => state.ids.has(a)))
+      : [];
+
+    const wanted = explicit || (shortlist.length === 1 ? shortlist[0].id : null);
+    if (wanted) {
+      const hit = filtered.find((o) => o.idAliases.includes(wanted) || o.id === wanted);
+      if (hit) {
+        autoTripped.current = true;
+        setPinnedId(hit.id);
+        emitRoute(hit, !parsed?.view.camera); // an explicit camera wins over fitting
+        return;
+      }
+    }
+    if (shortlist.length > 1) {
+      autoTripped.current = true;
+      if (!parsed?.view.camera) fitOfferings(shortlist);
+    }
+  }, [parsed?.view.trip, parsed?.view.camera, filtered, emitRoute, fitOfferings, state]);
 
   // A pinned trip that filtering removes from the list should release its pin.
   useEffect(() => {
