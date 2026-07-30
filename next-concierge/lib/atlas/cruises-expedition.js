@@ -12,6 +12,7 @@ const raw = require("../../data/atlas/cruise/sailings.json");
 const meta = require("../../data/atlas/cruise/atlas-meta.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
+const { dropPast, isPast, todayISO } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_CRUISE_URL || "/maps/cruise";
@@ -162,7 +163,11 @@ const cruises = (() => {
 // --- filtering -------------------------------------------------------------
 function filterCruises(params = {}) {
   const { q, region, country, month, operator, ids } = params;
-  let list = cruises;
+  // Departed sailings go first — the Leaflet cruise atlas's `s.start >= today`
+  // cutoff, restored. This is the largest leak of the six: 303 of 3,542 rows
+  // were behind the cutoff, and expedition dates are all clean ISO, so the
+  // comparison here is the same one the original made.
+  let list = dropPast(cruises);
 
   if (ids != null && String(ids).trim() !== "") {
     const set = new Set(String(ids).split(",").map((s) => s.trim()).filter(Boolean));
@@ -258,7 +263,13 @@ function buildDeepLink(params = {}) {
 // --- region aggregate (marquee count + centroid) ---------------------------
 function regions() {
   const tally = {};
-  for (const c of cruises) if (c.region && MARQUEE.has(c.region)) tally[c.region] = (tally[c.region] || 0) + 1;
+  // Same cutoff as filterCruises. This is the tally the leak distorted most:
+  // 303 departed sailings were inflating the marquee pins.
+  const today = todayISO();
+  for (const c of cruises) {
+    if (isPast(c, today)) continue;
+    if (c.region && MARQUEE.has(c.region)) tally[c.region] = (tally[c.region] || 0) + 1;
+  }
   const out = Object.keys(tally).map((region) => ({
     region, count: tally[region],
     center: MARQUEE_CENTER[region] || null,

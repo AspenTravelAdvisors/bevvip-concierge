@@ -6,6 +6,7 @@
 const raw = require("../../data/atlas/train/itinerary.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
+const { dropPast, isPast, todayISO } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_TRAIN_URL || "/maps/train";
@@ -133,7 +134,11 @@ function truthy(rawV) {
 
 function filterJourneys(params = {}) {
   const { q, region, country, month, year, brand, ids, world } = params;
-  let list = journeys;
+  // Departed journeys go first. The `onDemand` exemption matters more here than
+  // anywhere else: 85 of the 135 rail journeys are on-demand departures with a
+  // booking window rather than a date, and they must survive the cutoff — the
+  // month/year filters below already special-case them for the same reason.
+  let list = dropPast(journeys);
 
   if (ids != null && String(ids).trim() !== "") {
     const set = new Set(String(ids).split(",").map((s) => s.trim()).filter(Boolean));
@@ -214,7 +219,13 @@ function buildDeepLink(params = {}) {
 
 function regions() {
   const tally = {};
-  for (const j of journeys) if (j.region && MARQUEE.has(j.region)) tally[j.region] = (tally[j.region] || 0) + 1;
+  // Same cutoff as filterJourneys; on-demand journeys still count, as they do
+  // in the results.
+  const today = todayISO();
+  for (const j of journeys) {
+    if (isPast(j, today)) continue;
+    if (j.region && MARQUEE.has(j.region)) tally[j.region] = (tally[j.region] || 0) + 1;
+  }
   const out = Object.keys(tally).map((region) => ({
     region, count: tally[region], center: MARQUEE_CENTER[region] || null,
     deepLink: buildDeepLink({ region }),

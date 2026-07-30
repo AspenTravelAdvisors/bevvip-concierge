@@ -6,6 +6,7 @@
 const raw = require("../../data/atlas/jet/itinerary.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
+const { dropPast, isPast, todayISO } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_JET_URL || "/maps/jet";
@@ -113,7 +114,10 @@ function truthy(raw) {
 
 function filterJourneys(params = {}) {
   const { q, region, country, month, brand, ids, world } = params;
-  let list = journeys;
+  // Departed journeys go first, per the Leaflet atlas's isPastTrip() guard.
+  // The 34 jet journeys with no `t.d` survive — dateless is not past, and these
+  // are real charters whose departure is arranged with the traveler.
+  let list = dropPast(journeys);
 
   if (ids != null && String(ids).trim() !== "") {
     const set = new Set(String(ids).split(",").map((s) => s.trim()).filter(Boolean));
@@ -190,7 +194,12 @@ function buildDeepLink(params = {}) {
 
 function regions() {
   const tally = {};
-  for (const j of journeys) if (j.region && MARQUEE.has(j.region)) tally[j.region] = (tally[j.region] || 0) + 1;
+  // Same cutoff as filterJourneys, so pin counts and result counts agree.
+  const today = todayISO();
+  for (const j of journeys) {
+    if (isPast(j, today)) continue;
+    if (j.region && MARQUEE.has(j.region)) tally[j.region] = (tally[j.region] || 0) + 1;
+  }
   const out = Object.keys(tally).map((region) => ({
     region, count: tally[region], center: MARQUEE_CENTER[region] || null,
     deepLink: buildDeepLink({ region }),

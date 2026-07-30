@@ -6,6 +6,7 @@
 const raw = require("../../data/atlas/yacht/itinerary.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
+const { dropPast, isPast, todayISO } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_YACHT_URL || "/maps/yacht";
@@ -125,7 +126,10 @@ const sailings = (raw.TRIPS || []).map((t) => {
 // --- filtering -------------------------------------------------------------
 function filterSailings(params = {}) {
   const { q, region, country, month, brand, ids } = params;
-  let list = sailings;
+  // Departed sailings are gone before any other filter runs, exactly as the
+  // Leaflet atlas's isPastTrip() guard did. First, not last: every count and
+  // facet derived downstream must be a count of bookable inventory.
+  let list = dropPast(sailings);
 
   if (ids != null && String(ids).trim() !== "") {
     const set = new Set(String(ids).split(",").map((s) => s.trim()).filter(Boolean));
@@ -198,7 +202,13 @@ function buildDeepLink(params = {}) {
 
 function regions() {
   const tally = {};
-  for (const s of sailings) if (s.region && MARQUEE.has(s.region)) tally[s.region] = (tally[s.region] || 0) + 1;
+  // Same cutoff as filterSailings — a pin that promises eleven Mediterranean
+  // sailings must not be counting three that have already left port.
+  const today = todayISO();
+  for (const s of sailings) {
+    if (isPast(s, today)) continue;
+    if (s.region && MARQUEE.has(s.region)) tally[s.region] = (tally[s.region] || 0) + 1;
+  }
   const out = Object.keys(tally).map((region) => ({
     region, count: tally[region], center: MARQUEE_CENTER[region] || null,
     deepLink: buildDeepLink({ region }),

@@ -7,6 +7,7 @@
 const raw = require("../../data/atlas/world/itinerary.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
+const { dropPast, isPast, todayISO } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_WORLD_CRUISE_URL || "/maps/worldcruise";
@@ -155,7 +156,11 @@ const cruises = (raw.TRIPS || []).map((t) => {
 // --- filtering -------------------------------------------------------------
 function filterCruises(params = {}) {
   const { q, region, country, month, year, brand, operator, ids, minDays, maxDays } = params;
-  let list = cruises;
+  // Sailed voyages go first. Only the departure half of `t.dates`
+  // ("25 Oct 2026 - 01 Nov 2026") is read: a world cruise that left in June is
+  // past even though it does not return until next spring. The three rows whose
+  // dates field is a bare " - " have no departure and are kept.
+  let list = dropPast(cruises);
 
   if (ids != null && String(ids).trim() !== "") {
     const set = new Set(String(ids).split(",").map((s) => s.trim()).filter(Boolean));
@@ -248,7 +253,10 @@ function buildDeepLink(params = {}) {
 // counts it once, so the pins read "world cruises calling here".
 function regions() {
   const tally = {};
-  for (const s of cruises) for (const tag of s.regionTags) tally[tag] = (tally[tag] || 0) + 1;
+  // Same cutoff as filterCruises. Bound once so the tally and the `total`
+  // below are computed over the identical set.
+  const current = dropPast(cruises);
+  for (const s of current) for (const tag of s.regionTags) tally[tag] = (tally[tag] || 0) + 1;
   const out = Object.keys(tally).map((tag) => {
     const r = REGIONS[tag] || {};
     return {
@@ -259,7 +267,10 @@ function regions() {
       deepLink: buildDeepLink({ region: tag }),
     };
   }).sort((a, b) => b.count - a.count);
-  const total = cruises.length;
+  // Unlike the other four this is a headline inventory count, not a sum of the
+  // per-region tallies (a world cruise carries several regionTags, so summing
+  // would double-count). It reports bookable voyages, hence `current`.
+  const total = current.length;
   return { total, count: out.length, regions: out };
 }
 
