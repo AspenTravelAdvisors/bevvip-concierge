@@ -42,6 +42,11 @@ function buildAdapters() {
   for (const file of walk(BUILD)) {
     writeFileSync(file, readFileSync(file, "utf8")
       .replace(/from "@\/lib\/atlas\/geo"/g, 'from "../geo.js"')
+      // dates.js is CommonJS and outside rootDir, so tsc never copies it into
+      // the build — point at the real file two levels up instead. Node's ESM
+      // loader reads its named exports through cjs-module-lexer, which handles
+      // the static `module.exports = { ... }` object it ends with.
+      .replace(/from "@\/lib\/atlas\/dates"/g, 'from "../../lib/atlas/dates.js"')
       .replace(/from "(\.\/[a-zA-Z]+)"/g, 'from "$1.js"'));
   }
 }

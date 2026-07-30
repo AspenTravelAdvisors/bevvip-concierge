@@ -1,0 +1,15 @@
+{
+  "//": "Standalone compile of lib/offering-shape.ts to plain ESM so scripts/verify-offering-shape.mjs can run the REAL normalizer in Node rather than a transcription of it. Needed since the normalizer started importing @/lib/atlas/dates — the `paths` alias below is what a bare `npx tsc <file>` cannot express, and it is the only reason this file exists. Not part of the app build; see tsconfig.adapters.json for the same pattern.",
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["./*"] },
+    "rootDir": "./lib",
+    "outDir": ".shape-build"
+  },
+  "include": ["lib/offering-shape.ts"]
+}

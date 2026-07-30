@@ -40,6 +40,10 @@ const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
 for (const file of walk(BUILD)) {
   writeFileSync(file, readFileSync(file, "utf8")
     .replace(/from "@\/lib\/atlas\/geo"/g, 'from "../geo.js"')
+    // dates.js is CommonJS and outside tsconfig.adapters.json's rootDir, so
+    // tsc never copies it here — point at the real file. Keep in step with
+    // verify-adapters.mjs and verify-deeplinks.mjs, which repeat this block.
+    .replace(/from "@\/lib\/atlas\/dates"/g, 'from "../../lib/atlas/dates.js"')
     .replace(/from "(\.\/[a-zA-Z-]+)"/g, 'from "$1.js"'));
 }
 
