@@ -98,6 +98,41 @@ function orderedStopNames(trip: RawJourneyTrip): string[] {
   return names;
 }
 
+/**
+ * Consecutive same-name itinerary entries collapsed into day ranges — verbatim
+ * from `itineraryRanges()`. Note it merges only NEIGHBOURS, so a trip returning
+ * to a city later in the trip gets two rows, correctly.
+ */
+function itineraryRanges(trip: RawJourneyTrip) {
+  const rows: {
+    name: string; startDay: number | null; endDay: number | null;
+    startDate?: string | null; endDate?: string | null;
+  }[] = [];
+  for (const e of trip.itin || []) {
+    if (!e?.n) continue;
+    const last = rows[rows.length - 1];
+    if (last && last.name === e.n) {
+      last.endDay = e.d ?? last.endDay;
+      last.endDate = e.date || last.endDate;
+    } else {
+      rows.push({
+        name: e.n, startDay: e.d ?? null, endDay: e.d ?? null,
+        startDate: e.date || null, endDate: e.date || null,
+      });
+    }
+  }
+  return rows;
+}
+
+/** First itinerary day each stop appears on, for the traced-route labels. */
+function firstDayByStop(trip: RawJourneyTrip): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const e of trip.itin || []) {
+    if (e?.n && typeof e.d === "number" && !m.has(e.n)) m.set(e.n, e.d);
+  }
+  return m;
+}
+
 export function adaptJourney(
   raw: RawJourneyAtlas,
   d: AtlasFilterDescriptor,
@@ -163,12 +198,14 @@ export function adaptJourney(
     // their stops but ship no route. Those trips are all past-dated today,
     // which is exactly why this went unnoticed until the harness pinned an
     // early date — a feed refresh would have surfaced it as missing results.
+    const dayOf = firstDayByStop(trip);
     const stops: AtlasStop[] = names.map((name) => {
       const hit = byName.get(name);
       return {
         name,
         region: hit?.r ?? null,
         at: hit && isFinitePair(hit.ll) ? fromLatLngPair(hit.ll) : null,
+        day: dayOf.get(name) ?? null,
       };
     });
 
@@ -210,6 +247,7 @@ export function adaptJourney(
       vessel: trip.train || null, // rail names its train; jet has no aircraft field
       stops,
       path,
+      itinerary: itineraryRanges(trip),
       url: trip.u || null,
       world: !!trip.world,
       searchText,

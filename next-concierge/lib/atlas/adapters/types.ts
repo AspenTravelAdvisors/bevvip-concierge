@@ -30,6 +30,12 @@ export interface AtlasStop {
   region?: string | null;
   /** null when the source names the stop but gives no coordinates. */
   at: LngLat | null;
+  /**
+   * Itinerary day number, where the source gives one. The Leaflet atlases
+   * label a traced route's stops "3. Day 4 · Inverness", so the day is part of
+   * the stop, not decoration.
+   */
+  day?: number | null;
 }
 
 export interface AtlasOffering {
@@ -92,6 +98,20 @@ export interface AtlasOffering {
   stops: AtlasStop[];
   /** Route geometry for drawing. Sea collections get this precomputed. */
   path: LngLat[];
+
+  /**
+   * Consecutive itinerary days collapsed into ranges, for the day-by-day block
+   * on a card: [{name, startDay, endDay, startDate, endDate}]. A trip that sits
+   * three nights in Edinburgh becomes one "Days 6-8 · Edinburgh" row, which is
+   * what `itineraryRanges()` produced in the originals.
+   */
+  itinerary: {
+    name: string;
+    startDay: number | null;
+    endDay: number | null;
+    startDate?: string | null;
+    endDate?: string | null;
+  }[];
 
   /** Detail/booking URL on the supplier, when present. */
   url: string | null;

@@ -237,6 +237,13 @@ interface AtlasApi {
   resetView(): void;
 }
 
+/** A stop on a traced route: where it is, what it's called, which day. */
+export interface FocusStop {
+  name: string;
+  at: [number, number];
+  day?: number | null;
+}
+
 interface Props {
   type: OfferingType;
   region: string | null;
@@ -281,10 +288,11 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
   const onRegionSelectRef = useRef(onRegionSelect);
   onRegionSelectRef.current = onRegionSelect;
   const focusRouteRef = useRef<{
-    paint(legs: { mode: string; coordinates: [number, number][] }[]): void;
+    paint(legs: { mode: string; coordinates: [number, number][] }[], stops?: FocusStop[]): void;
     clear(): void;
     fit(legs: { coordinates: [number, number][] }[]): void;
   } | null>(null);
+  const lastFocusStops = useRef<FocusStop[]>([]);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   // Poster frame: a pre-rendered globe (same camera framing) painted from the
@@ -405,6 +413,15 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           if (revealed) startSpin();
           else onRevealed = startSpin;
         }
+
+        // Separate popup for stop labels so it can't fight the pin popup.
+        const stopPopup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          offset: 10,
+          maxWidth: "260px",
+        });
+        let stopHoverWired = false;
 
         const popup = new mapboxgl.Popup({
           closeButton: true,
@@ -581,7 +598,9 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           if (ROUTES_ENABLED && routesFetched) overlayKeys.forEach(paintRoutesForKey);
           // A traced route is a deliberate selection — repaint it after a
           // restyle rather than making the traveller hover again.
-          if (lastFocusLegs.current.length) focusRouteRef.current?.paint(lastFocusLegs.current);
+          if (lastFocusLegs.current.length) {
+            focusRouteRef.current?.paint(lastFocusLegs.current, lastFocusStops.current);
+          }
         }
 
         function paintRoutesForKey(key: OverlayKey) {
@@ -708,7 +727,26 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
            original's railway symbology (dark casing, copper rail, sleeper
            hatching); ferry/transfer legs get an honest dashed connector rather
            than pretending to be track. */
-        function paintFocusRoute(legs: { mode: string; coordinates: [number, number][] }[]) {
+        /**
+         * Route colours depend on the basemap.
+         *
+         * The Leaflet atlas only ever ran over a dark tile layer, so its copper
+         * (#e08d5f) had plenty of contrast. The globe opens on SATELLITE —
+         * bright tan desert, green forest — where that same copper disappears.
+         * Satellite therefore gets a hotter line and a heavier dark casing to
+         * carry it; the dark styles keep the original values exactly.
+         */
+        function routePalette() {
+          const satellite = styleKeyLocal === "satellite";
+          return satellite
+            ? { casing: "#0b0704", casingW: 8.5, casingO: 0.85, rail: "#ffd9a0", glowO: 0.75, tie: "#2a1408", conn: "#fff4e4", connO: 0.9 }
+            : { casing: "#140b06", casingW: 7, casingO: 0.5, rail: "#e08d5f", glowO: 0.5, tie: "#241007", conn: "#f2d9c4", connO: 0.6 };
+        }
+
+        function paintFocusRoute(
+          legs: { mode: string; coordinates: [number, number][] }[],
+          stops?: FocusStop[],
+        ) {
           const data = {
             type: "FeatureCollection" as const,
             features: legs
@@ -722,6 +760,8 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
           // Remember it so a basemap switch can repaint — setStyle wipes every
           // source and layer, and a traced route should survive that.
           lastFocusLegs.current = legs;
+          if (stops) lastFocusStops.current = stops;
+          const p = routePalette();
 
           if (!map.getSource("focus-route")) map.addSource("focus-route", { type: "geojson", data });
           else map.getSource("focus-route")?.setData(data);
@@ -730,49 +770,126 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
             id: "fr_casing", type: "line", source: "focus-route",
             filter: ["==", ["get", "rail"], 1],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": "#140b06", "line-width": 7, "line-opacity": 0.5 },
+            paint: { "line-color": p.casing, "line-width": p.casingW, "line-opacity": p.casingO },
           });
           // Warm glow. The Leaflet original gets its brightness from a CSS
           // `drop-shadow(0 0 5px rgba(255,190,140,.85))` filter pulsing on the
           // rail path — invisible in the inline stroke colours, and the reason
           // a faithful colour port still read much darker. Mapbox has no
           // drop-shadow, but line-blur on a wide warm line is the same idea.
-          // Sits above the casing and below the rail, as the filter does.
           addLayer(map, {
             id: "fr_glow", type: "line", source: "focus-route",
             filter: ["==", ["get", "rail"], 1],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: {
-              "line-color": "#ffbe8c",
-              "line-width": 9,
-              "line-opacity": 0.5,
-              "line-blur": 6,
-            },
+            paint: { "line-color": "#ffbe8c", "line-width": 9, "line-opacity": p.glowO, "line-blur": 6 },
           });
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
             filter: ["==", ["get", "rail"], 1],
             layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": "#e08d5f", "line-width": 3.4, "line-opacity": 0.98 },
+            paint: { "line-color": p.rail, "line-width": 3.4, "line-opacity": 0.98 },
           });
           addLayer(map, {
             id: "fr_ties", type: "line", source: "focus-route",
             filter: ["==", ["get", "rail"], 1],
             layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": "#241007", "line-width": 3.4, "line-opacity": 0.92, "line-dasharray": [2.5, 7] },
+            paint: { "line-color": p.tie, "line-width": 3.4, "line-opacity": 0.92, "line-dasharray": [2.5, 7] },
           });
           addLayer(map, {
             id: "fr_conn", type: "line", source: "focus-route",
             filter: ["==", ["get", "rail"], 0],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": "#f2d9c4", "line-width": 2, "line-opacity": 0.6, "line-dasharray": [2, 9] },
+            paint: { "line-color": p.conn, "line-width": 2, "line-opacity": p.connO, "line-dasharray": [2, 9] },
           });
+          // Existing layers keep their old palette after a style switch unless
+          // told otherwise — addLayer() is a no-op when the id already exists.
+          try {
+            map.setPaintProperty("fr_casing", "line-color", p.casing);
+            map.setPaintProperty("fr_casing", "line-width", p.casingW);
+            map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
+            map.setPaintProperty("fr_glow", "line-opacity", p.glowO);
+            map.setPaintProperty("fr_rail", "line-color", p.rail);
+            map.setPaintProperty("fr_ties", "line-color", p.tie);
+            map.setPaintProperty("fr_conn", "line-color", p.conn);
+            map.setPaintProperty("fr_conn", "line-opacity", p.connO);
+          } catch { /* layer missing mid-restyle */ }
+
+          paintFocusStops(stops ?? lastFocusStops.current, p);
+        }
+
+        /**
+         * Numbered stop dots with a hover label — the Leaflet atlas's
+         * `.stopdot` + tooltip ("3. Day 4 · Inverness"). A traced route without
+         * its stops is a shape with no legend: you can see the line but not
+         * where it calls.
+         */
+        function paintFocusStops(stops: FocusStop[], p: ReturnType<typeof routePalette>) {
+          const data = {
+            type: "FeatureCollection" as const,
+            features: stops.map((st, i) => ({
+              type: "Feature" as const,
+              geometry: { type: "Point" as const, coordinates: st.at },
+              properties: {
+                n: String(i + 1),
+                label: st.day ? `${i + 1}. Day ${st.day} · ${st.name}` : `${i + 1}. ${st.name}`,
+              },
+            })),
+          };
+          if (!map.getSource("focus-stops")) map.addSource("focus-stops", { type: "geojson", data });
+          else map.getSource("focus-stops")?.setData(data);
+
+          addLayer(map, {
+            id: "fs_dot", type: "circle", source: "focus-stops",
+            paint: {
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 4.5, 8, 9],
+              "circle-color": p.rail,
+              "circle-stroke-color": p.casing,
+              "circle-stroke-width": 1.5,
+              "circle-opacity": 0.98,
+            },
+          });
+          addLayer(map, {
+            id: "fs_num", type: "symbol", source: "focus-stops",
+            minzoom: 4,
+            layout: {
+              "text-field": ["get", "n"],
+              "text-size": 10,
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+            },
+            paint: { "text-color": p.casing, "text-halo-color": p.rail, "text-halo-width": 0.6 },
+          });
+          try {
+            map.setPaintProperty("fs_dot", "circle-color", p.rail);
+            map.setPaintProperty("fs_dot", "circle-stroke-color", p.casing);
+            map.setPaintProperty("fs_num", "text-color", p.casing);
+            map.setPaintProperty("fs_num", "text-halo-color", p.rail);
+          } catch { /* layer missing mid-restyle */ }
+
+          if (!stopHoverWired) {
+            stopHoverWired = true;
+            map.on("mouseenter", "fs_dot", (e: MBEvent) => {
+              map.getCanvas().style.cursor = "pointer";
+              const f = e.features?.[0];
+              if (!f) return;
+              stopPopup.setLngLat(e.lngLat).setHTML(
+                `<div class="iw"><div class="iwn">${escapeHtml(f.properties.label || "")}</div></div>`,
+              ).addTo(map);
+            });
+            map.on("mouseleave", "fs_dot", () => {
+              map.getCanvas().style.cursor = "";
+              stopPopup.remove();
+            });
+          }
         }
 
         function clearFocusRoute() {
           lastFocusLegs.current = [];
+          lastFocusStops.current = [];
           const empty = { type: "FeatureCollection" as const, features: [] };
           if (map.getSource("focus-route")) map.getSource("focus-route")?.setData(empty);
+          if (map.getSource("focus-stops")) map.getSource("focus-stops")?.setData(empty);
+          stopPopup.remove();
         }
 
         function fitFocusRoute(legs: { coordinates: [number, number][] }[]) {
@@ -1145,6 +1262,7 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
       const detail = (e as CustomEvent).detail as
         | {
             legs?: { mode: string; coordinates: [number, number][] }[];
+            stops?: FocusStop[];
             fit?: boolean;
             /** Frame these when the trip has no drawable route at all. */
             fitPoints?: [number, number][];
@@ -1161,7 +1279,7 @@ export default function AtlasShell({ type, region, externalLink, scope, routesAl
         }
         return;
       }
-      api.paint(legs);
+      api.paint(legs, detail?.stops);
       if (detail?.fit) api.fit(legs);
     };
     window.addEventListener("bevvip:atlas-route", onRoute as EventListener);

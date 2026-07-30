@@ -94,12 +94,18 @@ export function adaptVoyage(
     // Every named call is kept, coordinates or not — the port filter matches on
     // names and PORTS does not cover every call. See AtlasStop.at.
     const names = voyageStopNames(trip);
+    const dayOf = new Map<string, number>();
+    for (const e of trip.itin || []) {
+      const n = String(e?.n || "").trim();
+      if (n && typeof e.d === "number" && !dayOf.has(n)) dayOf.set(n, e.d);
+    }
     const stops: AtlasStop[] = names.map((name) => {
       const ll = PORTS[name];
       return {
         name,
         region: null, // voyages don't tag calls with a region
         at: isFinitePair(ll) ? fromLatLngPair(ll) : null,
+        day: dayOf.get(name) ?? null,
       };
     });
     const path = stops
@@ -138,6 +144,17 @@ export function adaptVoyage(
       vessel: trip.ship || null,
       stops,
       path,
+      itinerary: (() => {
+        const rows: AtlasOffering["itinerary"] = [];
+        for (const e of trip.itin || []) {
+          const n = String(e?.n || "").trim();
+          if (!n) continue;
+          const last = rows[rows.length - 1];
+          if (last && last.name === n) last.endDay = e.d ?? last.endDay;
+          else rows.push({ name: n, startDay: e.d ?? null, endDay: e.d ?? null });
+        }
+        return rows;
+      })(),
       url: trip.u || null,
       world: false,
       searchText,

@@ -32,6 +32,8 @@ export default function AtlasJet() {
     ctx: ParseContext;
     regionLabels: Record<string, string>;
     routeFor?: (o: AtlasOffering) => { mode: string; coordinates: [number, number][] }[] | null;
+    brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }>;
+    logoBase?: string;
   }> => {
     const raw: RawJourneyAtlas = await fetch("/maps/jet/itinerary.json", {
       cache: "force-cache",
@@ -76,7 +78,14 @@ export default function AtlasJet() {
       return coordinates.length >= 2 ? [{ mode: "arc", coordinates }] : null;
     };
 
-    return { offerings, ctx, regionLabels, routeFor };
+    // Brand marks drive the card logos: bundled asset → favicon services →
+    // coloured initials. BRANDS carries the domain and the brand colour.
+    const brandMarks: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }> = {};
+    for (const [key, b] of Object.entries(raw.BRANDS || {})) {
+      brandMarks[key] = { key, short: b?.short, domain: b?.domain, color: b?.color };
+    }
+
+    return { offerings, ctx, regionLabels, routeFor, brandMarks, logoBase: "/maps/jet/logos" };
   }, []);
 
   return <AtlasCollection type="jet" descriptor={JET_DESCRIPTOR} load={load} />;

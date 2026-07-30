@@ -107,7 +107,7 @@ export function adaptCruise(
       for (const p of day.p || []) {
         const [pname, lat, lng] = p;
         if (lat == null || lng == null || !isFinitePair([lat, lng])) continue;
-        stops.push({ name: pname, region: null, at: fromLatLngPair([lat, lng]) });
+        stops.push({ name: pname, region: null, at: fromLatLngPair([lat, lng]), day: day.d ?? null });
       }
     }
 
@@ -135,6 +135,19 @@ export function adaptCruise(
       vessel: ship,
       stops,
       path: stops.map((s) => s.at!).filter(Boolean),
+      itinerary: (() => {
+        const rows: AtlasOffering["itinerary"] = [];
+        for (const day of days) {
+          for (const p of day.p || []) {
+            const n = String(p[0] || "").trim();
+            if (!n) continue;
+            const last = rows[rows.length - 1];
+            if (last && last.name === n) last.endDay = day.d ?? last.endDay;
+            else rows.push({ name: n, startDay: day.d ?? null, endDay: day.d ?? null });
+          }
+        }
+        return rows;
+      })(),
       url: slug ? `${urlBase}${sid}/${slug}` : null,
       world: false,
       searchText: norm([name, operator, ship, region].filter(Boolean).join(" ")),

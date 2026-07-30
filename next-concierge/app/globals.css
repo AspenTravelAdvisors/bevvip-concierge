@@ -3423,29 +3423,113 @@ button.card-book {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 12px 14px;
+  cursor: pointer;
+}
+/* Round-the-world journeys carry a quiet gold edge, as `.card.world` did. */
+.atlas-card.world {
+  border-left: 2px solid var(--gold);
+}
+.atlas-card[data-pinned] {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold) inset;
+}
+.atlas-card .ac-head {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.atlas-card .ac-headtext {
+  min-width: 0;
 }
 .atlas-card h3 {
   font-family: var(--serif, var(--sans));
   font-size: 14.5px;
   line-height: 1.3;
-  margin: 0 0 5px;
+  margin: 0 0 4px;
   color: var(--text);
 }
 .atlas-card .ac-meta,
-.atlas-card .ac-when {
+.atlas-card .ac-when,
+.atlas-card .ac-path {
   font-family: var(--sans);
   font-size: 12px;
   color: var(--muted);
   margin: 0 0 4px;
 }
-.atlas-card .ac-link {
+.atlas-card .ac-path {
+  color: var(--text);
+  opacity: 0.72;
+  line-height: 1.45;
+}
+.atlas-card .ac-itin {
+  margin: 6px 0 2px;
+}
+.atlas-card .ac-itin summary {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.atlas-card .ac-dayline {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--muted);
+  padding: 2px 0 0 2px;
+}
+.atlas-card .ac-dayline b {
+  color: var(--text);
+  opacity: 0.85;
+}
+.atlas-card .ac-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.atlas-card .ac-link,
+.atlas-card .ac-ask {
   font-family: var(--sans);
   font-size: 12px;
   color: var(--gold);
   text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
-.atlas-card .ac-link:hover {
+.atlas-card .ac-link:hover,
+.atlas-card .ac-ask:hover {
   text-decoration: underline;
+}
+
+/* Brand mark: bundled asset, then favicon services, then coloured initials.
+   See components/BrandLogo.tsx for why the fallback chain matters. */
+.brandlogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #ffffff0d;
+  border: 1px solid var(--line);
+}
+.brandlogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+}
+.brandlogo--glyph {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  border-color: transparent;
 }
 .atlas-empty,
 .atlas-more {

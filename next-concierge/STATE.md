@@ -341,6 +341,48 @@ Pin cap is 60, mirroring `plotResults`' existing per-tool cap; the rail's count
 tells the truth about how many matched. Cards cap at 120 with a "narrow the
 filters" note.
 
+### D3-FEATURE-INVENTORY.md — the checklist that should have existed first
+
+`D3-FILTER-INVENTORY.md` was written before porting, and the filter layer went
+across cleanly: 10.7M parity comparisons, no surprises. **Nothing equivalent was
+written for the features**, and rail shipped missing its track geometry, stop
+markers, route pinning, brand logos and day-by-day itinerary — each found by the
+user, one at a time, after deploy. A parity harness over predicates cannot catch
+a missing logo.
+
+`D3-FEATURE-INVENTORY.md` is now that checklist, per surface (map / cards /
+chrome), with status per feature. **Fill it in from the atlas's own index.html
+BEFORE porting the next collection.**
+
+Recovered in this pass:
+
+- **Brand logos**, with the original's fallback chain — bundled
+  `logos/<domain>.png` → Google favicon → DuckDuckGo icon → coloured initials
+  from `BRANDS[k].color`. `components/BrandLogo.tsx`. It also reproduces the
+  `naturalWidth < 8` check: both icon services answer unknown domains with a
+  1px placeholder rather than a 404, so a "successful" tiny image is a miss and
+  must fall through, or the card shows a blank square.
+- **Numbered stop dots with hover labels** ("3. Day 4 · Inverness"), from
+  `.stopdot` + `stopDaySummary`. `AtlasStop` gained `day`, populated in all
+  three adapters.
+- **Day-by-day itinerary** on the card, from `itineraryRanges()` — consecutive
+  same-name days collapse into "Days 6-8 · Edinburgh", and only NEIGHBOURS
+  merge, so a trip returning to a city later correctly gets two rows.
+  `AtlasOffering.itinerary` carries it for all five collections.
+- **Route path as text** ("A → B → C"), vessel · duration · stop count, the
+  three date cases (range + departures count / on-demand window / nothing
+  scheduled), the round-the-world edge, and the **Ask The Guide** action.
+
+**Route colours are now basemap-aware.** The Leaflet atlas only ever ran over a
+dark tile layer, so its copper `#e08d5f` had plenty of contrast. The globe opens
+on SATELLITE — bright tan desert, green forest — where the same copper
+disappears. Satellite gets a hotter line (`#ffd9a0`) and a heavier dark casing;
+the dark styles keep the original values exactly.
+
+Still open, listed in the inventory: `world=1` has no UI entry point, no
+explicit Share button (the URL is the share link — arguably better, but it is a
+removed affordance), region-pin dimming while tracing, and the data-credit line.
+
 ### Region pins filter; jet ported (2026-07-29)
 
 **A region pin now filters to that region.** It previously opened a popup

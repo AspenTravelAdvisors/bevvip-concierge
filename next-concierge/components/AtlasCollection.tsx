@@ -30,6 +30,7 @@ import { matchesOffering, type AtlasFilterState } from "@/lib/atlas/adapters/fil
 import { parseDeepLink, toSearchParams, type ParseContext } from "@/lib/atlas/adapters/params";
 import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell from "./AtlasShell";
+import BrandLogo, { type BrandMark } from "./BrandLogo";
 import { internalAtlasLink } from "@/lib/atlas-config";
 
 /** One drawable leg of a traced route, already in [lng, lat]. */
@@ -52,8 +53,18 @@ interface Props {
      * to straight legs between stops, which is honest but much less useful.
      */
     routeFor?: (o: AtlasOffering) => RouteLegOut[] | null;
+    /** Brand marks for logos — key, display name, domain, brand colour. */
+    brandMarks?: Record<string, BrandMark>;
+    /** Where bundled logo assets live, e.g. "/maps/train/logos". */
+    logoBase?: string;
   }>;
 }
+
+const dayRange = (a: number | null, b: number | null) =>
+  a == null ? "" : a === b ? `Day ${a}` : `Days ${a}-${b}`;
+
+const fmtDay = (iso?: string | null) =>
+  iso ? new Date(iso + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "";
 
 export default function AtlasCollection({ type, descriptor, load }: Props) {
   const router = useRouter();
@@ -63,6 +74,8 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
   const [ctx, setCtx] = useState<ParseContext | null>(null);
   const [regionLabels, setRegionLabels] = useState<Record<string, string>>({});
   const [routeFor, setRouteFor] = useState<{ fn?: (o: AtlasOffering) => RouteLegOut[] | null }>({});
+  const [brandMarks, setBrandMarks] = useState<Record<string, BrandMark>>({});
+  const [logoBase, setLogoBase] = useState("");
   const [failed, setFailed] = useState(false);
   /**
    * The pinned trip, mirroring the Leaflet atlas's `routeLocked` + `pinnedTrip`.
@@ -86,6 +99,8 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
         setCtx(r.ctx);
         setRegionLabels(r.regionLabels);
         setRouteFor({ fn: r.routeFor });
+        setBrandMarks(r.brandMarks || {});
+        setLogoBase(r.logoBase || "");
       })
       .catch(() => { if (!cancelled) setFailed(true); });
     return () => { cancelled = true; };
@@ -154,9 +169,14 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
       const fallback = legs.length
         ? []
         : o.stops.filter((s) => s.at).map((s) => [s.at![0], s.at![1]] as [number, number]);
+      // Stops travel with the route: the globe draws them as numbered dots with
+      // hover labels, as the Leaflet atlas did.
+      const stops = o.stops
+        .filter((s) => s.at)
+        .map((s) => ({ name: s.name, at: [s.at![0], s.at![1]] as [number, number], day: s.day ?? null }));
       window.dispatchEvent(
         new CustomEvent("bevvip:atlas-route", {
-          detail: { legs, fit, fitPoints: fallback.length ? fallback : undefined },
+          detail: { legs, stops, fit, fitPoints: fallback.length ? fallback : undefined },
         }),
       );
     },
@@ -287,7 +307,7 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
         {filtered.slice(0, 120).map((o) => (
           <article
             key={o.id}
-            className="atlas-card"
+            className={`atlas-card${o.world ? " world" : ""}`}
             data-pinned={pinnedId === o.id ? "" : undefined}
             onMouseEnter={() => previewRoute(o)}
             onMouseLeave={endPreview}
@@ -295,26 +315,86 @@ export default function AtlasCollection({ type, descriptor, load }: Props) {
             onBlur={endPreview}
             onClick={() => togglePin(o)}
           >
-            <h3>{o.title}</h3>
+            <div className="ac-head">
+              {(o.brand || o.operator) && (
+                <BrandLogo
+                  brand={
+                    brandMarks[o.brand || ""] || {
+                      key: o.brand || o.operator || "",
+                      short: o.brandLabel || o.operator,
+                    }
+                  }
+                  assetBase={logoBase}
+                />
+              )}
+              <div className="ac-headtext">
+                <h3>{o.title}</h3>
+                {/* Date line, mirroring the original's three cases: a real range
+                    (plus a departures count when the product runs many dates),
+                    an on-demand window, or nothing scheduled at all. */}
+                <p className="ac-when">
+                  {o.startDate
+                    ? [
+                        `${fmtDay(o.startDate)}${o.endDate ? ` – ${fmtDay(o.endDate)}` : ""}`,
+                        o.departures && o.departures > 1 ? `${o.departures} departures` : null,
+                      ].filter(Boolean).join("  ·  ")
+                    : o.window
+                      ? `${o.window} · dates on request`
+                      : "On demand"}
+                </p>
+              </div>
+            </div>
+
             <p className="ac-meta">
-              {[o.brandLabel || o.operator, o.vessel, o.regions.map((k) => regionLabels[k] || k).join(", ")]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
-            <p className="ac-when">
               {[
-                o.startDate ? new Date(o.startDate + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : o.window,
+                o.vessel || o.brandLabel || o.operator,
                 o.days ? `${o.days} days` : null,
-                o.departures && o.departures > 1 ? `${o.departures} departures` : null,
-              ]
-                .filter(Boolean)
-                .join("  ·  ")}
+                o.stops.length ? `${o.stops.length} stops` : null,
+              ].filter(Boolean).join("  ·  ")}
             </p>
-            {o.url && (
-              <a className="ac-link" href={o.url} target="_blank" rel="noopener noreferrer">
-                View details →
-              </a>
+
+            {/* The route as text, so a card is readable without the map. */}
+            {o.stops.length > 1 && (
+              <p className="ac-path">{o.stops.map((st) => st.name).join(" → ")}</p>
             )}
+
+            {o.itinerary.length > 0 && (
+              <details className="ac-itin" onClick={(e) => e.stopPropagation()}>
+                <summary>Day-by-day itinerary</summary>
+                {o.itinerary.map((r, i) => (
+                  <div className="ac-dayline" key={`${r.name}-${i}`}>
+                    <b>{dayRange(r.startDay, r.endDay)}</b>
+                    {r.startDate ? ` · ${fmtDay(r.startDate)}` : ""} · {r.name}
+                  </div>
+                ))}
+              </details>
+            )}
+
+            <div className="ac-actions">
+              {o.url && (
+                <a
+                  className="ac-link"
+                  href={o.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  View details ↗
+                </a>
+              )}
+              {/* Same escape hatch the Leaflet cards had: ask instead of filter. */}
+              <button
+                type="button"
+                className="ac-ask"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const ctx = `${o.title}${o.url ? ` (listing: ${o.url})` : ""}`;
+                  router.push(`/?ask=${encodeURIComponent(ctx)}&src=${type}`);
+                }}
+              >
+                ✦ Ask The Guide
+              </button>
+            </div>
           </article>
         ))}
         {!!filtered.length && filtered.length > 120 && (
