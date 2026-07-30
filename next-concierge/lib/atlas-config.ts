@@ -5,6 +5,15 @@ import type { OfferingType } from "./types";
 // (/maps/<type>) for the "Open full Atlas" handoff (same ?region= deep-link
 // contract documented in DEEPLINK-HANDOFF.md). Override with NEXT_PUBLIC_*_ATLAS_BASE
 // only if pointing at an external deploy.
+/** The three things a traveller is actually choosing between. */
+export type IntentKey = "stay" | "voyage" | "journey";
+
+export const INTENTS: { key: IntentKey; label: string; blurb: string }[] = [
+  { key: "stay", label: "Places to stay", blurb: "Hotels and private villas" },
+  { key: "voyage", label: "Voyages by sea", blurb: "Expeditions, world cruises, charters" },
+  { key: "journey", label: "Journeys by rail and air", blurb: "Luxury trains and private jets" },
+];
+
 export interface AtlasConfig {
   type: OfferingType;
   /**
@@ -26,6 +35,22 @@ export interface AtlasConfig {
   /** Records in the shipped dataset. Powers the blurb and the Explore menu. */
   count: number;
   /**
+   * What the traveller is trying to do — Deliverable 4.
+   *
+   * Explore used to list seven collections flat, which asked the visitor to
+   * know our inventory taxonomy before they could look at anything: "Hotels",
+   * "Villas", "Expeditions", "World Cruises", "Yachts", "Rail", "Jets". But
+   * nobody arrives wanting "a villa OR a hotel" as a category question — they
+   * want somewhere to stay, and the distinction is an implementation detail of
+   * how the inventory is filed.
+   *
+   * Grouping by intent puts hotels and villas together under one heading, which
+   * is also why villas converge onto the shared rail: once they sit side by
+   * side in the menu, arriving at two different-looking browse surfaces is the
+   * next thing that reads as a seam.
+   */
+  intent: IntentKey;
+  /**
    * Order everywhere the collections are listed: where-you-stay first, then
    * journeys, each group by how often travelers ask for it. Deliberately NOT
    * alphabetical and NOT raw record count — a visitor scans this list looking
@@ -46,6 +71,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#e6d488",
     count: 2501,
     order: 1,
+    intent: "stay",
   },
   villa: {
     // Villa is the first server-rendered atlas: no /maps/villa iframe page
@@ -61,6 +87,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#a8d08d",
     count: 3902,
     order: 2,
+    intent: "stay",
   },
   cruise: {
     type: "cruise",
@@ -73,6 +100,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#5aa9e6",
     count: 3542,
     order: 3,
+    intent: "voyage",
   },
   worldcruise: {
     type: "worldcruise",
@@ -85,6 +113,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#45d6c2",
     count: 250,
     order: 4,
+    intent: "voyage",
   },
   train: {
     type: "train",
@@ -97,6 +126,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#e08d5f",
     count: 135,
     order: 5,
+    intent: "journey",
   },
   yacht: {
     type: "yacht",
@@ -109,6 +139,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#e0b84a",
     count: 374,
     order: 6,
+    intent: "voyage",
   },
   jet: {
     type: "jet",
@@ -121,6 +152,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     color: "#dfe5f2",
     count: 141,
     order: 7,
+    intent: "journey",
   },
 };
 
@@ -199,6 +231,26 @@ export function externalAtlasLink(type: OfferingType, region?: string | null): s
 // rendering the copied standalone page). `query` is a pre-built search string
 // (e.g. "?region=Caribbean&ids=h_001") carried through to the embedded atlas,
 // which reads it from its own location.search inside the iframe.
+/**
+ * COLLECTIONS grouped by intent, in INTENTS order, each group in the
+ * collections' own `order`.
+ *
+ * Derived rather than hand-listed: a new collection appears in the Explore menu
+ * the moment it is added to ATLASES with an intent, and cannot be silently
+ * missing from the menu the way a second hand-maintained list would allow.
+ */
+export function collectionsByIntent(): {
+  key: IntentKey;
+  label: string;
+  blurb: string;
+  items: AtlasConfig[];
+}[] {
+  return INTENTS.map((i) => ({
+    ...i,
+    items: COLLECTIONS.filter((c) => c.intent === i.key),
+  })).filter((g) => g.items.length > 0);
+}
+
 export function internalAtlasLink(type: OfferingType, query = ""): string {
   return `/atlas/${type}${query}`;
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType, TripState } from "@/lib/types";
 import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
+import type { NormalizedOffering } from "@/lib/offering-shape";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip, setTrip as persistTrip } from "@/lib/trip-state";
 import { atlasOpened, bookingClicked } from "@/lib/analytics";
@@ -443,7 +444,23 @@ const MONTHS = [
 // world cruises) plus a `month` ("YYYY-MM") fallback — never the `dates` field
 // hotels would use. Surface whichever real value the record has so cruise cards
 // always show a date.
+/**
+ * The normalized view attached by lib/offering-shape.ts, when present.
+ *
+ * `search_offerings` attaches it to every result now. The local derivations
+ * below are kept as a FALLBACK rather than deleted, because GuideMeta is
+ * replayed from sessionStorage (`bevvip:atlas:last-plot`) — a plot stored
+ * before this shipped would otherwise come back with no dates and no duration
+ * on any card.
+ */
+function normalized(result: OfferingResult): NormalizedOffering | null {
+  const n = result.normalized;
+  return n && typeof n === "object" ? (n as NormalizedOffering) : null;
+}
+
 function cardDate(result: OfferingResult): string | null {
+  const n = normalized(result);
+  if (n) return n.whenLabel;
   const raw = result.dates ?? (result.startDate as unknown);
   if (typeof raw === "string" && raw.trim()) {
     const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -468,6 +485,8 @@ function cardDate(result: OfferingResult): string | null {
 // Trip length: hotels carry `duration`; cruises carry `nights`, world cruises
 // carry `days`.
 function cardDuration(result: OfferingResult): string | null {
+  const n = normalized(result);
+  if (n) return n.durationLabel;
   if (result.duration) return String(result.duration);
   const nights = result.nights as unknown;
   if (typeof nights === "number") return `${nights} nights`;

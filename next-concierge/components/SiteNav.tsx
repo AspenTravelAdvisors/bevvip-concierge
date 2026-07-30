@@ -17,7 +17,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { COLLECTIONS, collectionPhrase } from "@/lib/atlas-config";
+import { COLLECTIONS, collectionPhrase, collectionsByIntent } from "@/lib/atlas-config";
 import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
 import { tourOpened } from "@/lib/analytics";
 
@@ -73,22 +73,40 @@ export default function SiteNav() {
         {open && (
           <div className="nav-menu" role="menu">
             <div className="nav-menu-cap">Browse the collection on a map</div>
-            {COLLECTIONS.map((c) => (
-              <Link
-                key={c.type}
-                role="menuitem"
-                className="nav-menu-item"
-                href={`/atlas/${c.type}`}
-                data-active={c.type === activeType ? "true" : undefined}
-              >
-                <i className="nav-dot" style={{ background: c.color }} aria-hidden="true" />
-                <span className="nav-menu-label">{c.nav}</span>
-                <span className="nav-menu-count">{collectionPhrase(c).split(" ")[0]}</span>
-              </Link>
+            {/*
+              Grouped by INTENT, not by inventory type (D4). A flat list of
+              seven asked the visitor to know our taxonomy before they could
+              look at anything — and "Hotels" vs "Villas" is a distinction in
+              how the inventory is filed, not in what the traveller wants.
+              Groups come from collectionsByIntent(), which derives from
+              COLLECTIONS, so a new collection cannot go missing from here.
+            */}
+            {collectionsByIntent().map((group) => (
+              <div key={group.key} className="nav-menu-group">
+                <div className="nav-menu-group-head">
+                  <span className="nav-menu-group-label">{group.label}</span>
+                  <span className="nav-menu-group-blurb">{group.blurb}</span>
+                </div>
+                {group.items.map((c) => (
+                  <Link
+                    key={c.type}
+                    role="menuitem"
+                    className="nav-menu-item"
+                    href={`/atlas/${c.type}`}
+                    data-active={c.type === activeType ? "true" : undefined}
+                  >
+                    <i className="nav-dot" style={{ background: c.color }} aria-hidden="true" />
+                    <span className="nav-menu-label">{c.nav}</span>
+                    <span className="nav-menu-count">{collectionPhrase(c).split(" ")[0]}</span>
+                  </Link>
+                ))}
+              </div>
             ))}
             <div className="nav-menu-foot">
+              {/* Counted, not spelled out: the copy used to say "all seven"
+                  while the list beside it was generated. */}
               Not sure which? <Link href="/">Just describe the trip</Link> — The Guide searches
-              all seven.
+              all {COLLECTIONS.length}.
             </div>
           </div>
         )}

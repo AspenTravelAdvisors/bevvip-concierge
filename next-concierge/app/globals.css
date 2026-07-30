@@ -3790,3 +3790,34 @@ button.card-book {
   text-decoration: none;
 }
 .mapboxgl-popup .iw .iw3d:hover { filter: brightness(1.08); }
+
+/* ── Explore, grouped by intent (D4) ──────────────────────────────────────
+   A heading per group so the seven collections read as three choices. The
+   heading is not interactive: picking "Places to stay" without saying which
+   would just be the Guide, which the menu foot already offers. */
+.nav-menu-group + .nav-menu-group {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+}
+.nav-menu-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 7px 12px 3px;
+}
+.nav-menu-group-label {
+  font-family: var(--serif);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold-light);
+  letter-spacing: 0.01em;
+}
+.nav-menu-group-blurb {
+  font-size: 10.5px;
+  color: var(--sub);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .nav-menu-group-blurb { display: none; }
+}

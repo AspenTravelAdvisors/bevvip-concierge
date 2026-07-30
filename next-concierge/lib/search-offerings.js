@@ -12,6 +12,7 @@
 import atlasDispatch from "./atlas/index.js";
 import villaLib from "./villas.js";
 import { resolveFringeLocation } from "./location-resolver.js";
+import { withNormalized } from "./offering-shape";
 
 // next-concierge serves every atlas backend in-process (lib/atlas), so the
 // Guide no longer crosses the network for inventory. HOTEL_API_BASE is now just
@@ -953,7 +954,7 @@ function resultDeepLink(type, base, item) {
 // Trim a normalized hotel record to what the Guide renders on a card. Drops
 // coordinates/thumb/tags and anything pricing-related (there is none here).
 function hotelCard(h) {
-  return {
+  return withNormalized({
     id: h.id,
     name: h.name,
     brand: h.brand,
@@ -987,7 +988,7 @@ function hotelCard(h) {
     bookPassword: h.bookPassword,
     // TravelWits identity for the card's booking deep link (lib/atlas/booking.js).
     tw: h.tw || null,
-  };
+  });
 }
 
 // Pick the [[CHART: region]] key: an explicit marquee region wins; otherwise
@@ -1626,7 +1627,10 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     const results = brandDiverseResults(candidates, limit, type, {
       allowDuplicateBrands: !!rawBrand,
       supplierCap: rawBrand ? 0 : supplierCap,
-    }).map((r) => ({ ...r, deepLink: r.deepLink || resultDeepLink(type, cfg.base, r) }));
+      // D5: every result leaves here with a normalized view attached, so the
+      // card renders instead of re-deriving "when" and "how long" from four
+      // different upstream vocabularies. Additive — the source fields stay.
+    }).map((r) => withNormalized({ ...r, deepLink: r.deepLink || resultDeepLink(type, cfg.base, r) }));
     return {
       type,
       total: j.total ?? results.length,
@@ -1706,7 +1710,7 @@ const VILLA_REGION_FOR_MARQUEE = {
 // supplier deep link is intentionally NOT included: it is an internal
 // reference, never client-facing (guardrail).
 function villaCard(v) {
-  return {
+  return withNormalized({
     type: "villa",
     id: String(v.id),
     name: v.name,
@@ -1729,7 +1733,7 @@ function villaCard(v) {
     lng: v.lon,
     deepLink: `/atlas/villa?ids=${encodeURIComponent(v.id)}`,
     advisorLed: true,
-  };
+  });
 }
 
 // Map the tool input's geography onto the villa taxonomy: a place resolves as
