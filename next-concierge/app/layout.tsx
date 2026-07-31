@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import AdvisorRequest from "@/components/AdvisorRequest";
@@ -60,14 +61,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               decode step and returned nothing. The map is now "the atlas",
               lowercase, everywhere. */}
           <header className="site">
-            <a
-              className="mark"
-              href="https://expeditionbucketlist.com"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Expedition <b>Bucket List</b>
-            </a>
+            {/* The brand block is one target, not three: the agency's mark, the
+                product name, and the address you type to get back here. The
+                logo carries Aspen Travel Advisors; the wordmark carries the
+                product; the URL under it is the app's own home, so clicking
+                anywhere in the block returns to The Guide. */}
+            <Link className="brand" href="/" aria-label="Expedition Bucket List — The Guide, home">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className="brand-logo"
+                src="/aspen-advisors-mark.png"
+                srcSet="/aspen-advisors-mark.png 1x, /aspen-advisors-mark@2x.png 2x"
+                alt="Aspen Travel Advisors"
+                width={40}
+                height={40}
+              />
+              <span className="brand-lockup">
+                <span className="mark">
+                  Expedition <b>Bucket List</b>
+                </span>
+                <span className="brand-url">TheTravelGuideAi.com</span>
+              </span>
+            </Link>
             <span className="tag">
               Private travel, arranged by{" "}
               <a

@@ -58,6 +58,29 @@ header.site {
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, #0c0c0e, #09090b);
 }
+/* Brand lockup: logo + wordmark + address, one click target. */
+header.site .brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+}
+header.site .brand-logo {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  display: block;
+  /* The mark is a black disc on a near-black header, so it needs an edge to
+     sit on rather than dissolve into the gradient. */
+  box-shadow: 0 0 0 1px var(--line);
+}
+header.site .brand-lockup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
 header.site .mark {
   font-family: var(--serif);
   font-size: 23px;
@@ -68,11 +91,23 @@ header.site .mark {
   color: var(--text);
   text-decoration: none;
 }
-header.site a.mark:hover {
+header.site .brand-url {
+  font-size: 9.5px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+header.site .brand:hover {
   text-decoration: none;
 }
-header.site a.mark:hover b {
+header.site .brand:hover b {
   color: var(--gold-light);
+}
+header.site .brand:hover .brand-url {
+  color: var(--sub);
 }
 header.site .mark b {
   color: var(--gold);
@@ -1379,7 +1414,21 @@ main.page {
   }
 
   header.site .mark {
-    font-size: 21px;
+    font-size: 19px;
+  }
+
+  header.site .brand {
+    gap: 9px;
+  }
+
+  header.site .brand-logo {
+    width: 34px;
+    height: 34px;
+  }
+
+  header.site .brand-url {
+    font-size: 9px;
+    letter-spacing: 1.2px;
   }
 
   header.site .tag {
@@ -3379,21 +3428,8 @@ button.card-book {
   opacity: 0.45;
   cursor: default;
 }
-.afw-advisor {
-  padding: 9px 14px;
-  border: 1px solid var(--gold);
-  border-radius: 8px;
-  background: var(--gold);
-  color: var(--bg);
-  font-family: var(--sans);
-  font-size: 12.5px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.afw-advisor:hover {
-  background: var(--gold-light);
-}
+/* .afw-advisor removed with the duplicate "Talk to an advisor" button —
+   the header CTA (.nav-cta) is the single route to a human. */
 @media (max-width: 720px) {
   .afw-bar {
     padding: 9px 14px;

@@ -22,7 +22,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { OfferingType } from "@/lib/types";
 import { ATLASES, collectionPhrase } from "@/lib/atlas-config";
-import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
 
 export default function AtlasFrame({
   type,
@@ -74,13 +73,10 @@ export default function AtlasFrame({
               Ask
             </button>
           </div>
-          <button
-            type="button"
-            className="afw-advisor"
-            onClick={() => openAdvisor({ source: "atlas" })}
-          >
-            {ADVISOR_CTA_COLD}
-          </button>
+          {/* The "Talk to an advisor" button used to live here too, directly
+              under the identical one in SiteNav — two controls, same label,
+              same modal, nine inches apart. The header's is app-wide and
+              always visible, so this one only added noise. */}
         </div>
       </div>
       {children}
