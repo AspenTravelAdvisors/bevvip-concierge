@@ -26,6 +26,9 @@ export interface DatedRecord {
   /** On-demand booking window, e.g. "Jan 2026 – Dec 2027". */
   window?: string | null;
   onDemand?: boolean;
+  /** Backends call it `name`, the globe's AtlasOffering calls it `title`. */
+  name?: string | null;
+  title?: string | null;
 }
 // Deliberately NO `[key: string]: unknown` index signature. Adding one would
 // make this assignable from `Record<string, unknown>`, but it would also make
@@ -73,3 +76,23 @@ export function formatRange(
 
 /** The whole "when" line for a record, whatever collection it came from. */
 export function whenLabelFor(record: DatedRecord | null | undefined): string | null;
+
+/** Sort modes the atlas card list offers. */
+export type SortMode = "departure" | "duration-desc" | "duration-asc" | "name";
+export const SORT_MODES: readonly SortMode[];
+
+/** Sortable departure day, or null for on-demand and dateless records. */
+export function departureKey(record: DatedRecord | null | undefined): string | null;
+
+/** Nights or days, whichever the collection counts in; null if neither. */
+export function durationDays(record: DatedRecord | null | undefined): number | null;
+
+export function compareByDeparture(a: DatedRecord, b: DatedRecord): number;
+export function compareByDuration(a: DatedRecord, b: DatedRecord, direction?: "asc" | "desc"): number;
+export function compareByName(a: DatedRecord, b: DatedRecord): number;
+
+/** Comparator for a sort mode; unknown modes fall back to departure. */
+export function compareBy<T extends DatedRecord>(mode: string | null | undefined): (a: T, b: T) => number;
+
+/** Non-mutating sort by mode. */
+export function sortOfferings<T extends DatedRecord>(list: readonly T[], mode?: string): T[];

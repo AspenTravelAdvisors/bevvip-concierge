@@ -12,7 +12,7 @@ const raw = require("../../data/atlas/cruise/sailings.json");
 const meta = require("../../data/atlas/cruise/atlas-meta.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
-const { dropPast, isPast, todayISO } = require("./dates");
+const { dropPast, isPast, todayISO, sortOfferings, compareByDeparture } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_CRUISE_URL || "/maps/cruise";
@@ -241,8 +241,7 @@ function sortForIntent(list, intent) {
   if (!key) return list;
   return [...list].sort((a, b) =>
     ((fitScore(b, key) ?? -1) - (fitScore(a, key) ?? -1)) ||
-    String(a.startDate || "").localeCompare(String(b.startDate || "")) ||
-    String(a.name || "").localeCompare(String(b.name || "")));
+    compareByDeparture(a, b));
 }
 
 // --- pagination (limit default 6 for the Guide, hard cap 24) ---------------
@@ -281,7 +280,16 @@ function regions() {
 
 // --- full query: filter + paginate + deepLink ------------------------------
 function query(params = {}) {
-  const matched = rankItems(filterCruises(params), params.intent, {
+  // Departure order is the BASE ordering, established before ranking rather
+  // than after. Two reasons it has to be here:
+  //
+  //   1. `rankItems` returns its input untouched when there is no intent, and
+  //      so did four of the five sortForIntent helpers — so "no intent" meant
+  //      "whatever order the supplier's feed arrived in".
+  //   2. Array#sort is stable, so pre-sorting survives ranking: where an intent
+  //      IS set, supplier fit still leads and the soonest departure breaks ties
+  //      within an equal score, instead of feed position breaking them.
+  const matched = rankItems(sortOfferings(filterCruises(params)), params.intent, {
     getBrandLabel: (c) => c.brand || c.operator,
     getName: (c) => c.name,
     allowAvoid: params.ids != null && String(params.ids).trim() !== "",

@@ -28,7 +28,7 @@ import type { OfferingType } from "@/lib/types";
 import type { AtlasFilterDescriptor, AtlasOffering } from "@/lib/atlas/adapters/types";
 import { matchesOffering, type AtlasFilterState } from "@/lib/atlas/adapters/filter";
 import { parseDeepLink, toSearchParams, type ParseContext } from "@/lib/atlas/adapters/params";
-import { whenLabelFor } from "@/lib/atlas/dates";
+import { whenLabelFor, sortOfferings, SORT_MODES, type SortMode } from "@/lib/atlas/dates";
 import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell from "./AtlasShell";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
@@ -75,6 +75,29 @@ interface Props {
 
 const dayRange = (a: number | null, b: number | null) =>
   a == null ? "" : a === b ? `Day ${a}` : `Days ${a}-${b}`;
+
+/**
+ * Sort options, in menu order. `departure` is the default and deliberately
+ * first: the list is capped at 120 cards, so whatever leads the order is the
+ * only part of a 3,239-sailing collection most people ever see.
+ */
+const SORT_LABELS: Record<SortMode, string> = {
+  "departure": "Next departure",
+  "duration-desc": "Longest first",
+  "duration-asc": "Shortest first",
+  "name": "Name (A–Z)",
+};
+
+/**
+ * How many cards the list renders. Named rather than inlined because the sort
+ * order and this cap are one decision: the cap is only defensible if the cards
+ * it keeps are the ones worth keeping.
+ */
+const CARD_LIMIT = 120;
+
+/** Only ever trust a `sort=` the menu can actually render. */
+const readSort = (raw: string | null): SortMode =>
+  (SORT_MODES as readonly string[]).includes(raw || "") ? (raw as SortMode) : "departure";
 
 /**
  * A single day inside an expanded itinerary — "25 Oct", no year.
@@ -156,10 +179,18 @@ export default function AtlasCollection({
     [searchParams],
   );
 
+  // Sort lives in the URL alongside the filters, so a shared link reproduces
+  // the list someone was actually looking at rather than just its contents.
+  const sort = useMemo(() => readSort(searchParams.get("sort")), [searchParams]);
+
   const filtered = useMemo(() => {
     if (!offerings || !state) return [];
-    return offerings.filter((o) => matchesOffering(o, state, descriptor, today));
-  }, [offerings, state, descriptor, today]);
+    const matched = offerings.filter((o) => matchesOffering(o, state, descriptor, today));
+    // Ordering, not just filtering. Before this the list was rendered in feed
+    // order and then truncated to 120 — so an expedition-cruise browser saw
+    // 120 arbitrary sailings out of 3,239 rather than the next 120 to sail.
+    return sortOfferings(matched, sort);
+  }, [offerings, state, descriptor, today, sort]);
 
   /** Push a new filter state into the URL; the memo above picks it back up. */
   const writeUrl = useCallback(
@@ -168,10 +199,29 @@ export default function AtlasCollection({
         q: nextQuery.q,
         country: nextQuery.country,
       });
+      // Re-attached rather than threaded through toSearchParams: that function
+      // is the deep-link contract the Leaflet atlases established and
+      // verify-deeplinks round-trips 291 assertions against it. Sort is a view
+      // preference, not a filter, and adding a param there would change a
+      // shared surface to carry something no atlas ever emitted. Omitted at the
+      // default so ordinary links stay clean.
+      if (sort !== "departure") qs.set("sort", sort);
       const s = qs.toString();
       router.replace(s ? `/atlas/${type}?${s}` : `/atlas/${type}`, { scroll: false });
     },
-    [router, type, descriptor, parsed?.view],
+    [router, type, descriptor, parsed?.view, sort],
+  );
+
+  /** Change the ordering, preserving every filter currently in the URL. */
+  const setSort = useCallback(
+    (next: SortMode) => {
+      const qs = new URLSearchParams(searchParams.toString());
+      if (next === "departure") qs.delete("sort");
+      else qs.set("sort", next);
+      const s = qs.toString();
+      router.replace(s ? `/atlas/${type}?${s}` : `/atlas/${type}`, { scroll: false });
+    },
+    [router, type, searchParams],
   );
 
   /**
@@ -500,8 +550,36 @@ export default function AtlasCollection({
         )}
       </div>
 
+      {/*
+        Its own bar rather than a second item in .atlas-scrollcue, because that
+        cue is `display: none` above 680px — the desktop results count lives in
+        the filter rail. A control only half the users can see is worse than no
+        control, so this sits with the list it orders and is visible on both.
+      */}
+      <div className="atlas-sortbar">
+        {/* Say so when the list is truncated. 120 of 3,239 was silent before,
+            which made "where did the sailing I just saw go?" unanswerable. */}
+        <span className="atlas-showing">
+          {filtered.length > CARD_LIMIT
+            ? `Showing the first ${CARD_LIMIT} of ${filtered.length.toLocaleString()}`
+            : ""}
+        </span>
+        <label className="atlas-sort">
+          <span>Sort</span>
+          <select
+            value={sort}
+            onChange={(e) => setSort(readSort(e.target.value))}
+            aria-label="Sort results"
+          >
+            {SORT_MODES.map((m) => (
+              <option key={m} value={m}>{SORT_LABELS[m]}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       <div className="atlas-results">
-        {filtered.slice(0, 120).map((o) => (
+        {filtered.slice(0, CARD_LIMIT).map((o) => (
           <article
             key={o.id}
             className={`atlas-card${o.world ? " world" : ""}`}

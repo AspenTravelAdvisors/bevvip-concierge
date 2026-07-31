@@ -7,7 +7,7 @@
 const raw = require("../../data/atlas/world/itinerary.json");
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
-const { dropPast, isPast, todayISO } = require("./dates");
+const { dropPast, isPast, todayISO, sortOfferings, compareByDeparture } = require("./dates");
 
 const ATLAS_URL =
   process.env.ATLAS_WORLD_CRUISE_URL || "/maps/worldcruise";
@@ -225,15 +225,14 @@ function withFit(s, intent) {
 
 function sortForIntent(list, intent) {
   const key = intentKey(intent);
-  if (!key) {
-    return list.slice().sort((a, b) =>
-      String(a.month || "").localeCompare(String(b.month || "")) ||
-      String(a.name).localeCompare(String(b.name)));
-  }
+  // The month-string compare this replaces sorted on "2027-04", so every
+  // voyage departing in the same month landed in feed order — and world cruise
+  // months are wide. compareByDeparture reads the real day out of
+  // "06 Jan 2027 - 07 Sep 2027".
+  if (!key) return sortOfferings(list);
   return [...list].sort((a, b) =>
     ((fitScore(b, key) ?? -1) - (fitScore(a, key) ?? -1)) ||
-    String(a.month || "").localeCompare(String(b.month || "")) ||
-    String(a.name || "").localeCompare(String(b.name || "")));
+    compareByDeparture(a, b));
 }
 
 function clampLimit(rawN) { let n = parseInt(rawN, 10); if (!Number.isFinite(n) || n <= 0) n = 6; if (n > 24) n = 24; return n; }
@@ -275,7 +274,16 @@ function regions() {
 }
 
 function query(params = {}) {
-  const matched = filterCruises(params);
+  // Departure order is the BASE ordering, established before ranking rather
+  // than after. Two reasons it has to be here:
+  //
+  //   1. `rankItems` returns its input untouched when there is no intent, and
+  //      so did four of the five sortForIntent helpers — so "no intent" meant
+  //      "whatever order the supplier's feed arrived in".
+  //   2. Array#sort is stable, so pre-sorting survives ranking: where an intent
+  //      IS set, supplier fit still leads and the soonest departure breaks ties
+  //      within an equal score, instead of feed position breaking them.
+  const matched = sortOfferings(filterCruises(params));
   const total = matched.length;
   const limit = clampLimit(params.limit);
   const offset = clampOffset(params.offset);

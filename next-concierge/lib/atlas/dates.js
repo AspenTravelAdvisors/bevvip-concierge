@@ -283,8 +283,113 @@ function whenLabelFor(record) {
   return formatRange(start, end);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ORDERING — soonest departure first
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Nothing ordered by date before this. `rankItems` returns its input untouched
+// when there is no traveler intent, and four of the five `sortForIntent`
+// helpers bail out on the same condition — so the default order was whatever
+// order the supplier's feed happened to arrive in.
+//
+// That was worst exactly where it was least visible: the globe renders
+// `filtered.slice(0, 120)`, so expedition cruises showed 120 arbitrary sailings
+// out of 3,239. Not the soonest 120 — the first 120 in file order.
+//
+// Sorting on the raw `startDate` is not an option either. Only cruise and train
+// store ISO; yacht and worldcruise store "25 Oct 2026 - 01 Nov 2026" and jet
+// stores "8/14/2026", and a lexical compare on those is nonsense ("8/…" sorts
+// after "12/…"). Everything here goes through normalizeStartDate first.
+
+/** Sort modes the UI offers. `departure` is the default everywhere. */
+const SORT_MODES = ["departure", "duration-desc", "duration-asc", "name"];
+
+/**
+ * Sortable departure key: the ISO day, or null when there is no departure.
+ *
+ * Null is the interesting case. On-demand rail journeys (85 of 121) and
+ * dateless jet charters (22) have no departure to order by, and there is no
+ * honest position for them among dated ones — so they are grouped and pushed
+ * past the end rather than being silently assigned "today" or dropped.
+ */
+function departureKey(record) {
+  if (!record) return null;
+  if (record.onDemand) return null;
+  return normalizeStartDate(record.dates ?? record.startDate);
+}
+
+/** Nights or days, whichever the collection counts in. Null if neither. */
+function durationDays(record) {
+  if (!record) return null;
+  const n = Number(record.nights);
+  if (Number.isFinite(n) && n > 0) return n;
+  const d = Number(record.days);
+  if (Number.isFinite(d) && d > 0) return d;
+  // Last resort: a real range still yields a length even with no count field.
+  const start = departureKey(record);
+  const end = normalizeStartDate(record.endDate) || rangeEndFromString(record.dates ?? record.startDate);
+  if (start && end && end > start) {
+    return Math.round((Date.parse(end + "T00:00:00Z") - Date.parse(start + "T00:00:00Z")) / 86400000) + 1;
+  }
+  return null;
+}
+
+const titleOf = (r) => String((r && (r.name ?? r.title)) || "");
+
+/** Soonest first; undated last; ties broken by title so the order is stable. */
+function compareByDeparture(a, b) {
+  const x = departureKey(a);
+  const y = departureKey(b);
+  if (x && y) {
+    if (x !== y) return x < y ? -1 : 1;
+  } else if (x || y) {
+    // Exactly one has a departure — that one comes first.
+    return x ? -1 : 1;
+  }
+  return titleOf(a).localeCompare(titleOf(b));
+}
+
+/**
+ * Longest or shortest first, undated-duration last.
+ *
+ * Departure breaks ties rather than title: among a dozen 7-night sailings, the
+ * next one to leave is the useful one to see first.
+ */
+function compareByDuration(a, b, direction = "desc") {
+  const x = durationDays(a);
+  const y = durationDays(b);
+  if (x != null && y != null) {
+    if (x !== y) return direction === "asc" ? x - y : y - x;
+  } else if (x != null || y != null) {
+    return x != null ? -1 : 1;
+  }
+  return compareByDeparture(a, b);
+}
+
+/** A–Z, with departure as the tiebreaker — repeated itineraries run in order. */
+function compareByName(a, b) {
+  return titleOf(a).localeCompare(titleOf(b)) || compareByDeparture(a, b);
+}
+
+/** Comparator for a sort mode. Unknown modes fall back to departure. */
+function compareBy(mode) {
+  switch (mode) {
+    case "duration-desc": return (a, b) => compareByDuration(a, b, "desc");
+    case "duration-asc": return (a, b) => compareByDuration(a, b, "asc");
+    case "name": return compareByName;
+    default: return compareByDeparture;
+  }
+}
+
+/** Non-mutating sort by mode. */
+function sortOfferings(list, mode = "departure") {
+  return [...list].sort(compareBy(mode));
+}
+
 module.exports = {
   todayISO, normalizeStartDate, isPast, isCurrent, dropPast,
   isoParts, addDays, endFrom, rangeEndFromString,
   formatDay, formatRange, whenLabelFor,
+  SORT_MODES, departureKey, durationDays,
+  compareByDeparture, compareByDuration, compareByName, compareBy, sortOfferings,
 };
