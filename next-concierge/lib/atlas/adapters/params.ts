@@ -52,6 +52,18 @@ const splitList = (v: string | null | undefined): string[] =>
   String(v ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 
 /** Region metadata the resolvers need, supplied by the caller. */
+/**
+ * The basemaps a Share link may name, and THE canonical list of them.
+ *
+ * It lives here rather than in AtlasShell because this module is the boundary
+ * where a URL becomes state: a key the parser rejects can never reach the map,
+ * so a new basemap that is added to the style menu and not to this array is
+ * simply un-shareable — silently, and only for the person you sent the link to.
+ * AtlasShell derives its StyleKey from this.
+ */
+export const SHARE_STYLES = ["dark", "satellite", "daylight", "dusk", "city"] as const;
+export type ShareStyle = (typeof SHARE_STYLES)[number];
+
 export interface RegionInfo { key: string; name?: string | null; ab?: string | null }
 export interface BrandInfo { key: string; short?: string | null }
 
@@ -102,7 +114,7 @@ export interface AtlasViewIntent {
   world: boolean;
   /** `hero=1` — ambient embed for the marketing landers. */
   hero: boolean;
-  /** `style=` — dark | satellite | dusk. */
+  /** `style=` — one of {@link SHARE_STYLES}. */
   style: string | null;
   /** `flat=1` — mercator instead of globe. */
   flat: boolean;
@@ -224,7 +236,9 @@ export function parseDeepLink(
       focusRegion: findRegionKey(params.get("region"), ctx.regions, d.collection),
       world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()),
       hero: params.get("hero") === "1",
-      style: ["dark", "satellite", "dusk"].includes(String(params.get("style"))) ? params.get("style") : null,
+      style: (SHARE_STYLES as readonly string[]).includes(String(params.get("style")))
+        ? params.get("style")
+        : null,
       flat: params.get("flat") === "1",
       camera: (() => {
         const raw = params.get("@");

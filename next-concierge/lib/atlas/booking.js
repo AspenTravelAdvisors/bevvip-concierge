@@ -255,7 +255,7 @@ export function bookingLink(hotel, trip) {
       return {
         kind: "deep",
         url,
-        label: "Search VIP rates",
+        label: "Search VIP Rates",
         external: true,
         stay,
         // True when `stay` is our invented tomorrow-night default rather than

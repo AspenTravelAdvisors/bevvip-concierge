@@ -93,7 +93,7 @@ function requestAdvisorHref(v: Villa): string {
 // The house basemaps, same set as the Living Atlas (AtlasShell). The villa map
 // is a flat mercator inset, so fog is skipped; the Standard-family styles keep
 // their dusk light preset so the water stays deep against the brass pins.
-type StyleKey = "dark" | "satellite" | "dusk";
+type StyleKey = "dark" | "satellite" | "daylight" | "dusk" | "city";
 const VILLA_STYLES: Record<StyleKey, { label: string; url: string; sw: string; light?: string }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", sw: "#11151c" },
   satellite: {
@@ -102,7 +102,23 @@ const VILLA_STYLES: Record<StyleKey, { label: string; url: string; sw: string; l
     sw: "#3b5a3a",
     light: "dusk",
   },
+  // The same pair the Living Atlas gained: imagery you can actually read the
+  // ground from, and a daylight city view with real 3D buildings. A villa is
+  // chosen on where it sits — the beach, the ridge, the next roof over — which
+  // is precisely what a dusk preset flattens away.
+  daylight: {
+    label: "Satellite (Day)",
+    url: "mapbox://styles/mapbox/standard-satellite",
+    sw: "#7fa9c9",
+    light: "day",
+  },
   dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", sw: "#caa46a", light: "dusk" },
+  city: {
+    label: "3D Buildings (Day)",
+    url: "mapbox://styles/mapbox/standard",
+    sw: "#cfd8e3",
+    light: "day",
+  },
 };
 
 export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) {
@@ -404,11 +420,24 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   // ── map controls: basemap, fullscreen, share ─────────────────────────────
   function switchStyle(k: StyleKey) {
     if (k === styleKeyRef.current) return;
+    const from = VILLA_STYLES[styleKeyRef.current];
+    const to = VILLA_STYLES[k];
     styleKeyRef.current = k;
     setStyleKey(k);
     setMenuOpen(false);
+    // Satellite / Satellite (Day) and Dusk / 3D Buildings (Day) are the same
+    // Mapbox style under different light presets. setStyle with a URL that is
+    // already loaded does nothing — no style.load, no new preset, a menu that
+    // ticks and a map that doesn't move. Reconfigure in place for those.
+    if (to.url === from.url) {
+      try {
+        (mapRef.current as unknown as { setConfigProperty(g: string, k: string, v: string): void })
+          ?.setConfigProperty("basemap", "lightPreset", to.light || "day");
+      } catch { /* classic styles have no config */ }
+      return;
+    }
     try {
-      mapRef.current?.setStyle(VILLA_STYLES[k].url); // style.load re-adds the layers
+      mapRef.current?.setStyle(to.url); // style.load re-adds the layers
     } catch { /* keep the current basemap */ }
   }
 
@@ -495,9 +524,16 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
 
   return (
     <>
+      {/* No heading here.
+          AtlasFrame's bar already prints the collection name and count directly
+          above this, so a second "Villa atlas" title made the page open with two
+          stacked rails saying the same thing — the villa atlas was the only
+          collection doing it, because it is the only one that renders its own
+          chrome instead of the shared shell's. The description survives: it says
+          something the frame's tagline does not (advisor-arranged, VIP benefits,
+          no membership fee). */}
       <div className="villa-head">
         <div>
-          <h1>Villa atlas</h1>
           <p className="villa-tag">
             3,902 private villas and vacation homes worldwide, arranged by your Aspen
             Travel Advisor. VIP travel benefits, zero membership fees.

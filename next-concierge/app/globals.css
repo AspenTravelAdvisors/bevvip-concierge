@@ -2164,20 +2164,16 @@ main.page {
   font-size: 11.5px;
   letter-spacing: 0.04em;
 }
+/* The description + match count only — the title lives in AtlasFrame's bar
+   above, which is why this row is now a single line rather than a second rail
+   with its own headline. */
 .villa-head {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   justify-content: space-between;
   gap: 18px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.villa-head h1 {
-  font-family: var(--serif);
-  font-size: clamp(26px, 3.4vw, 36px);
-  font-weight: 600;
-  margin: 0 0 4px;
-  color: var(--text);
+  margin-bottom: 14px;
 }
 .villa-tag {
   margin: 0;
@@ -2217,6 +2213,60 @@ main.page {
 .villa-map {
   width: 100%;
   height: 100%;
+}
+/* Route-level failure panel (app/atlas/villa/error.tsx). Calm, not alarming:
+   the boundary retries by itself, so this is usually seen for a blink or not
+   at all. */
+.atlas-error {
+  max-width: 520px;
+  margin: 12vh auto;
+  padding: 0 20px;
+  text-align: center;
+}
+.atlas-error h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.atlas-error p {
+  margin: 0;
+  color: var(--sub);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.atlas-error-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.atlas-error-actions button {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: #17140c;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border: 1px solid var(--gold);
+  border-radius: 9px;
+  padding: 9px 18px;
+  cursor: pointer;
+}
+.atlas-error-actions a {
+  color: var(--gold);
+  font-size: 13px;
+  text-decoration: none;
+}
+.atlas-error-actions a:hover {
+  text-decoration: underline;
+}
+.atlas-error-digest {
+  margin-top: 14px !important;
+  font-size: 11px !important;
+  color: var(--muted) !important;
 }
 .villa-map-fallback {
   position: absolute;
@@ -3646,8 +3696,13 @@ button.card-book {
     gap: 16px;
   }
   .atlas-card .ac-link,
-  .atlas-card .ac-ask {
+  .atlas-card .ac-ask,
+  .atlas-card .ac-3d {
     padding: 6px 0; /* 44px-ish touch target without changing the look */
+  }
+  /* Already a full-width button; keep it thumb-height. */
+  .atlas-card .ac-book {
+    padding: 11px 16px;
   }
 }
 
@@ -3867,41 +3922,74 @@ button.card-book {
   }
 }
 
-/* "See it in 3D" — the handoff to Google Photorealistic 3D. Given weight on the
-   card because it is the most persuasive thing the product does, and until now
-   it had no entry point outside the standalone atlas. */
-.atlas-card .ac-3d {
+/* "Search VIP Rates" — the card's one filled button.
+   A hotel card offered three actions of roughly equal volume and none of them
+   was the price. This is the largest thing on the card because it is the only
+   one that moves a trip forward; "See it in 3D" and "Ask The Guide" sit beneath
+   it at link weight, which is what they always were. */
+.atlas-card .ac-book {
   font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: #17140c;
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--gold), var(--gold-light, #ecdfc2));
   border: 1px solid var(--gold);
-  border-radius: 7px;
-  padding: 5px 10px;
+  border-radius: 9px;
+  padding: 9px 16px;
+  text-decoration: none;
   cursor: pointer;
+  /* Own its line: the booking CTA leading a row of plain links reads as one
+     more link at a bigger size. On its own row it reads as the action. */
+  flex: 0 0 100%;
+  text-align: center;
 }
-.atlas-card .ac-3d:hover {
+.atlas-card .ac-book:hover {
   filter: brightness(1.08);
 }
 
-/* The photoreal handoff, promoted inside a globe popup: it is the one thing
-   this map cannot show you itself, so it reads as the primary action while
-   "Browse VIP hotels" stays a plain link below it. */
+/* "See it in 3D" — the handoff to Google Photorealistic 3D. Deliberately the
+   same weight as "Ask The Guide" now: it is a detour worth offering, not the
+   action the card exists for. */
+.atlas-card .ac-3d {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--gold);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.atlas-card .ac-3d:hover {
+  text-decoration: underline;
+}
+
+/* Same hierarchy inside a globe popup: the rate search is filled, the photoreal
+   handoff is a plain link below it. */
+.mapboxgl-popup .iw .iwbook {
+  display: block;
+  width: fit-content;
+  margin: 8px 0 0;
+  white-space: nowrap;
+  padding: 7px 13px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light, #ecdfc2));
+  border: 1px solid var(--gold);
+  color: #17140c;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.mapboxgl-popup .iw .iwbook:hover { filter: brightness(1.08); }
 .mapboxgl-popup .iw .iw3d {
   display: block;
   width: fit-content;
   margin: 8px 0 0;
   white-space: nowrap;
-  padding: 5px 10px;
-  border-radius: 7px;
-  background: var(--gold);
-  border: 1px solid var(--gold);
-  color: #17140c;
-  font-weight: 600;
+  color: var(--gold);
   text-decoration: none;
 }
-.mapboxgl-popup .iw .iw3d:hover { filter: brightness(1.08); }
+.mapboxgl-popup .iw .iw3d:hover { text-decoration: underline; }
 
 /* ── Explore, grouped by intent (D4) ──────────────────────────────────────
    A heading per group so the seven collections read as three choices. The

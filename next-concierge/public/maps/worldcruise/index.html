@@ -247,6 +247,22 @@
   path.rline{ animation:routeMarch 5s linear infinite, routeGlow 5.3s ease-in-out infinite; }
   @media (prefers-reduced-motion:reduce){ path.rline{ animation:none; } }
 </style>
+<style id="route-flow">
+  /* Direction of travel.
+     A traced itinerary is ordered, and a static line throws that away — a round
+     trip and a one-way crossing look identical. Sliding the dash phase forward
+     makes the breaks march from the first stop toward the last, which is the
+     direction you travel. Offsets are one full dash period, so the loop is
+     seamless. */
+  .leaflet-overlay-pane path.rline { animation: bv-route-flow 1.5s linear infinite; }
+  .leaflet-overlay-pane path.rconn { animation: bv-route-flow-conn 1.6s linear infinite; }
+  @keyframes bv-route-flow { to { stroke-dashoffset: -12; } }
+  @keyframes bv-route-flow-conn { to { stroke-dashoffset: -11; } }
+  @media (prefers-reduced-motion: reduce) {
+    .leaflet-overlay-pane path.rline,
+    .leaflet-overlay-pane path.rconn { animation: none; }
+  }
+</style>
 </head>
 <body>
 <!-- hero-embed: ?hero=1 strips the atlas chrome (nav, title, rail, dock) so the
@@ -423,7 +439,12 @@ if(window.setAtlasProgress) window.setAtlasProgress(34,'Preparing voyage routes 
 const byRegion={};
 TRIPS.forEach(t=>t.g.forEach(k=>{(byRegion[k]=byRegion[k]||[]).push(t);}));
 Object.values(byRegion).forEach(arr=>arr.sort((a,b)=>a.dates.localeCompare(b.dates)||a.title.localeCompare(b.title)));
-const map=L.map('map',{worldCopyJump:true,minZoom:2,maxZoom:8,zoomControl:false}).setView([20,-10],2.1);
+/* minZoom 1, not 2: a grand voyage can span more than 360 degrees of
+   longitude once unrolled, and at zoom 2 the viewport simply cannot hold it —
+   fitBounds clamped to the floor and the ends of the route ran off both edges.
+   The jet atlas has always used minZoom 1, which is why its round-the-world
+   itineraries framed correctly and these did not. */
+const map=L.map('map',{worldCopyJump:true,minZoom:1,maxZoom:8,zoomControl:false}).setView([20,-10],2.1);
 function stabilizeMap(){map.invalidateSize(false);}
 setTimeout(stabilizeMap,120);
 setTimeout(stabilizeMap,700);
@@ -439,8 +460,20 @@ const BASES={
   satellite:{label:'Satellite',sw:'#37503a',make:()=>L.layerGroup([
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:8,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:8})])}
+,
+  /* Daytime imagery. The Esri 'Satellite' above is a dark-leaning mosaic
+     chosen to sit under the atlas's night palette; this one is the plain
+     daylight basemap you want when the question is what the ground looks
+     like. Two different jobs, so two entries rather than one compromise. */
+  daylight:{label:'Satellite (Day)',sw:'#7fa9c9',make:()=>L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:8,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',{maxZoom:8,subdomains:'abcd',opacity:.9})])},
+  /* Daytime streets with building footprints — the flat-map counterpart to
+     the 3D building view on the Mapbox atlases. Leaflet cannot extrude, so
+     this is OSM's rendered building layer rather than real geometry. */
+  city:{label:'Daylight Streets',sw:'#e8e2d6',make:()=>L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:8,attribution:'&copy; OpenStreetMap contributors &middot; '+DATA_CREDIT})}
 };
-const BASE_ORDER=['voyager','dark','satellite'];
+const BASE_ORDER=['voyager','dark','satellite','daylight','city'];
 const DEFAULT_BASE='satellite';
 const _baseCache={}; let _baseKey=null,_baseLayer=null;
 function _mkBase(k){ return _baseCache[k]||(_baseCache[k]=BASES[k].make()); }
@@ -687,8 +720,9 @@ function drawRoute(trip,fit){
   const legArcs=[]; const segs=[];
   for(let i=0;i<lls.length-1;i++){
     const pts=legGeometry(lls[i],lls[i+1]); legArcs.push(pts);
-    const base=L.polyline(pts,{color:'#07332d',weight:6,opacity:.22,lineCap:'round',className:'rbase'}).addTo(routeLayer);
-    const line=L.polyline(pts,{color:'#7fdfd0',weight:2.2,opacity:.95,lineCap:'round',dashArray:'1 7',className:'rline'}).addTo(routeLayer);
+    /* Mostly colour, not mostly casing — see the jet atlas for the reasoning. */
+    const base=L.polyline(pts,{color:'#07332d',weight:4.4,opacity:.24,lineCap:'round',className:'rbase'}).addTo(routeLayer);
+    const line=L.polyline(pts,{color:'#7fdfd0',weight:1.8,opacity:.95,lineCap:'round',dashArray:'9 3',className:'rline'}).addTo(routeLayer);
     segs.push({base:base._path,fade:[line._path]});
   }
   revealRoute(segs);

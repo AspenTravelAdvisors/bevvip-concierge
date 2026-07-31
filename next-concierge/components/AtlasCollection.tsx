@@ -30,7 +30,7 @@ import { matchesOffering, type AtlasFilterState } from "@/lib/atlas/adapters/fil
 import { parseDeepLink, toSearchParams, type ParseContext } from "@/lib/atlas/adapters/params";
 import { whenLabelFor, sortOfferings, SORT_MODES, type SortMode } from "@/lib/atlas/dates";
 import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
-import AtlasShell from "./AtlasShell";
+import AtlasShell, { type StyleKey } from "./AtlasShell";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
 import { internalAtlasLink } from "@/lib/atlas-config";
 
@@ -46,15 +46,35 @@ interface Props {
   /** Collection accent for routes and stop dots — the atlas's own --accent. */
   accent?: string;
   /** Basemap this collection opens on. */
-  initialStyle?: "dark" | "satellite" | "dusk";
+  initialStyle?: StyleKey;
   /** false → open flat. Long-haul arcs read better in 2D. */
   initialGlobe?: boolean;
   /**
-   * An extra action on every card. Hotels use it for "See it in 3D", which
+   * A secondary action on every card. Hotels use it for "See it in 3D", which
    * hands off to the Google Photorealistic view — the one thing Mapbox has no
    * answer to, and the reason that engine survives.
+   *
+   * It used to be the loudest thing on the card (filled gold). It now sits at
+   * the same weight as "Ask The Guide": inspecting a building is a lovely
+   * detour, but it is not the action a traveller came to take.
    */
   cardAction?: { label: string; onSelect: (o: AtlasOffering) => void };
+  /**
+   * The card's PRIMARY action, rendered first and given the filled treatment.
+   *
+   * Hotels use it for the VIP rate search. The collection owns the rendering
+   * (it may need to resolve a link asynchronously) and this component only
+   * decides where it sits in the hierarchy — which is the whole point: exactly
+   * one filled button per card, and it is the one that starts a booking.
+   */
+  cardPrimary?: (o: AtlasOffering) => React.ReactNode;
+  /**
+   * The ids currently on screen, whenever that set changes.
+   *
+   * Lets a collection resolve `cardPrimary` links for the visible cards in one
+   * batch instead of per card — 120 cards, one request.
+   */
+  onVisibleIds?: (ids: string[]) => void;
   /** Loads and adapts this collection's raw feed. Collection-specific. */
   load: () => Promise<{
     offerings: AtlasOffering[];
@@ -122,6 +142,7 @@ const fmtDay = (iso?: string | null) =>
 
 export default function AtlasCollection({
   type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
+  cardPrimary, onVisibleIds,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -191,6 +212,16 @@ export default function AtlasCollection({
     // 120 arbitrary sailings out of 3,239 rather than the next 120 to sail.
     return sortOfferings(matched, sort);
   }, [offerings, state, descriptor, today, sort]);
+
+  // The cards actually rendered. Named once so the list and the batch that
+  // resolves their primary CTAs can never disagree about which those are.
+  const visible = useMemo(() => filtered.slice(0, CARD_LIMIT), [filtered]);
+  const visibleKey = useMemo(() => visible.map((o) => o.id).join(","), [visible]);
+  useEffect(() => {
+    if (!onVisibleIds) return;
+    onVisibleIds(visibleKey ? visibleKey.split(",") : []);
+    // visibleKey, not `visible`: a new array with the same ids must not refetch.
+  }, [visibleKey, onVisibleIds]);
 
   /** Push a new filter state into the URL; the memo above picks it back up. */
   const writeUrl = useCallback(
@@ -493,7 +524,7 @@ export default function AtlasCollection({
         accent={accent}
         // A shared link's basemap/projection/camera override the collection's
         // own defaults — the whole point of sharing a view.
-        initialStyle={(parsed?.view.style as "dark" | "satellite" | "dusk" | null) ?? initialStyle}
+        initialStyle={(parsed?.view.style as StyleKey | null) ?? initialStyle}
         initialGlobe={parsed?.view.flat ? false : initialGlobe}
         initialCamera={parsed?.view.camera ?? null}
         onViewChange={(v) => { viewRef.current = v; }}
@@ -579,7 +610,7 @@ export default function AtlasCollection({
       </div>
 
       <div className="atlas-results">
-        {filtered.slice(0, CARD_LIMIT).map((o) => (
+        {visible.map((o) => (
           <article
             key={o.id}
             className={`atlas-card${o.world ? " world" : ""}`}
@@ -655,6 +686,10 @@ export default function AtlasCollection({
             )}
 
             <div className="ac-actions">
+              {/* Primary first and filled — the booking search. Everything
+                  after it is a plain link, so the card has one obvious action
+                  rather than three competing ones. */}
+              {cardPrimary?.(o)}
               {o.url && (
                 <a
                   className="ac-link"

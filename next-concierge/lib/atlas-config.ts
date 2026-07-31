@@ -5,16 +5,25 @@ import type { OfferingType } from "./types";
 // (/maps/<type>) for the "Open full Atlas" handoff (same ?region= deep-link
 // contract documented in DEEPLINK-HANDOFF.md). Override with NEXT_PUBLIC_*_ATLAS_BASE
 // only if pointing at an external deploy.
-/** The three things a traveller is actually choosing between. */
-export type IntentKey = "stay" | "voyage" | "journey";
+/**
+ * The four things a traveller is actually choosing between.
+ *
+ * Grouped by how you travel, not by our inventory taxonomy: somewhere to stay,
+ * then air / sea / land. "Journeys by rail and air" used to bundle jets and
+ * trains into one heading, which put a round-the-world jet expedition and a
+ * Scottish sleeper under the same label — the same mistake, one level up, that
+ * the flat seven-item list made.
+ */
+export type IntentKey = "stay" | "air" | "sea" | "land";
 
 export const INTENTS: { key: IntentKey; label: string; blurb: string }[] = [
   { key: "stay", label: "Places to stay", blurb: "Hotels and private villas" },
+  { key: "air", label: "By Air", blurb: "Private jet expeditions" },
   // NOT "charters". A hotel yacht is an ultra-luxury cruise — a hotel at sea,
   // booked by the cabin exactly like an expedition or world cruise. Calling the
   // group "charters" described the wrong product and the wrong price.
-  { key: "voyage", label: "Voyages by sea", blurb: "Expeditions, world cruises, hotel yachts" },
-  { key: "journey", label: "Journeys by rail and air", blurb: "Luxury trains and private jets" },
+  { key: "sea", label: "By Sea", blurb: "Hotel yachts, expeditions, world cruises" },
+  { key: "land", label: "By Land", blurb: "The legendary rail journeys" },
 ];
 
 export interface AtlasConfig {
@@ -55,9 +64,14 @@ export interface AtlasConfig {
   intent: IntentKey;
   /**
    * Order everywhere the collections are listed: where-you-stay first, then
-   * journeys, each group by how often travelers ask for it. Deliberately NOT
-   * alphabetical and NOT raw record count — a visitor scans this list looking
-   * for their own intent, not our inventory table.
+   * air, sea and land, each group by how often travelers ask for it.
+   * Deliberately NOT alphabetical and NOT raw record count — a visitor scans
+   * this list looking for their own intent, not our inventory table.
+   *
+   * This is browse order, and the prose helpers no longer piggyback on it:
+   * `collectionsSummary` / `collectionsCompact` now pick the three largest
+   * collections by `count` explicitly, so reordering the menu can never
+   * quietly change which numbers the home page leads with.
    */
   order: number;
 }
@@ -95,15 +109,15 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   cruise: {
     type: "cruise",
     label: "Expedition cruise atlas",
-    nav: "Expeditions",
+    nav: "Expedition Cruises",
     nounPlural: "expedition sailings",
     tagline: "Expedition cruise journeys by region and season",
     base: process.env.NEXT_PUBLIC_CRUISE_ATLAS_BASE || "/maps/cruise",
     sampleRegions: ["Antarctica", "Galapagos", "Arctic", "Northwest Passage"],
     color: "#5aa9e6",
     count: 3542,
-    order: 3,
-    intent: "voyage",
+    order: 5,
+    intent: "sea",
   },
   worldcruise: {
     type: "worldcruise",
@@ -115,8 +129,8 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["MED", "CARIB", "AUNZ", "EASTASIA"],
     color: "#45d6c2",
     count: 250,
-    order: 4,
-    intent: "voyage",
+    order: 6,
+    intent: "sea",
   },
   train: {
     type: "train",
@@ -128,26 +142,26 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["BRITAIN", "EUROPE", "CANADA", "EASTASIA"],
     color: "#e08d5f",
     count: 135,
-    order: 5,
-    intent: "journey",
+    order: 7,
+    intent: "land",
   },
   yacht: {
     type: "yacht",
     label: "Luxury hotel yacht atlas",
-    nav: "Hotel Yachts",
+    nav: "Luxury Hotel Yachts",
     nounPlural: "hotel-brand yacht voyages",
     tagline: "Aman, Ritz-Carlton, Four Seasons and Orient Express at sea",
     base: process.env.NEXT_PUBLIC_YACHT_ATLAS_BASE || "/maps/yacht",
     sampleRegions: ["MED", "CARIB", "ASIA"],
     color: "#e0b84a",
     count: 374,
-    order: 6,
-    intent: "voyage",
+    order: 4,
+    intent: "sea",
   },
   jet: {
     type: "jet",
     label: "Private jet atlas",
-    nav: "Private Jets",
+    nav: "Private Jet Expeditions",
     nounPlural: "private jet expeditions",
     tagline: "Around-the-world and regional private jet expeditions",
     base: process.env.NEXT_PUBLIC_JET_ATLAS_BASE || "/maps/jet",
@@ -157,8 +171,8 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // scripts/apply-safrans-dates.mjs. Like every count here this is a hand-kept
     // constant over the raw feed, not a live figure — see the note on `count`.
     count: 147,
-    order: 7,
-    intent: "journey",
+    order: 3,
+    intent: "air",
   },
 };
 
@@ -177,6 +191,24 @@ export const COLLECTIONS: AtlasConfig[] = Object.values(ATLASES).sort(
 );
 
 const nf = new Intl.NumberFormat("en-US");
+
+/**
+ * The three collections whose size is worth stating, and the rest.
+ *
+ * These used to be "the first three in `order`", which silently coupled the
+ * home page's headline numbers to the Explore menu's browse order — regrouping
+ * the menu by air/sea/land would have promoted 147 jet expeditions into the
+ * counted slot and demoted 3,542 expedition sailings out of it. Picking the
+ * largest three by `count` says the same thing the copy always meant.
+ */
+function countedSplit(): { counted: AtlasConfig[]; named: AtlasConfig[] } {
+  const bySize = [...COLLECTIONS].sort((a, b) => b.count - a.count);
+  const top = new Set(bySize.slice(0, 3).map((c) => c.type));
+  return {
+    counted: COLLECTIONS.filter((c) => top.has(c.type)),
+    named: COLLECTIONS.filter((c) => !top.has(c.type)),
+  };
+}
 
 /** "2,501 vetted hotels" — one collection, counted, for prose. */
 export function collectionPhrase(c: AtlasConfig): string {
@@ -199,10 +231,10 @@ export function collectionsSentence(): string {
  * journeys should see the words "rail journeys".
  */
 export function collectionsSummary(): string {
-  const [a, b, c, ...rest] = COLLECTIONS;
-  const counted = [a, b, c].map(collectionPhrase).join(", ");
-  const named = rest.map((x) => x.nounPlural);
-  return `${counted}, ${named.slice(0, -1).join(", ")} and ${named[named.length - 1]}`;
+  const { counted, named } = countedSplit();
+  const head = counted.map(collectionPhrase).join(", ");
+  const tail = named.map((x) => x.nounPlural);
+  return `${head}, ${tail.slice(0, -1).join(", ")} and ${tail[tail.length - 1]}`;
 }
 
 /**
@@ -217,11 +249,11 @@ export function collectionsSummary(): string {
  * space — two lines at ~95 characters each.
  */
 export function collectionsCompact(): string {
-  const [a, b, c, ...rest] = COLLECTIONS;
-  const counted = [a, b, c]
+  const { counted, named } = countedSplit();
+  const head = counted
     .map((x) => `${nf.format(x.count)} ${x.nav.toLowerCase()}`)
     .join(" · ");
-  return `${counted} · ${rest.map((x) => x.nav.toLowerCase()).join(", ")}`;
+  return `${head} · ${named.map((x) => x.nav.toLowerCase()).join(", ")}`;
 }
 
 export function isOfferingType(value: string): value is OfferingType {

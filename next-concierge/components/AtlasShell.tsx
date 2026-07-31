@@ -38,6 +38,9 @@ import {
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
 import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
+import type { ShareStyle } from "@/lib/atlas/adapters/params";
+import { bookingLink } from "@/lib/atlas/booking.js";
+import { getTrip } from "@/lib/trip-state";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
@@ -168,7 +171,18 @@ const GLOBE_FOG = {
 // plots results we make sure we're on Satellite to reveal them; the traveler
 // can switch to Dark or Dusk (Mapbox Standard vector with 3D buildings) at any
 // time.
-type StyleKey = "dark" | "satellite" | "dusk";
+// Derived from the deep-link parser's list, so a basemap the menu offers is
+// always one a Share link can carry. See SHARE_STYLES for why that direction.
+export type StyleKey = ShareStyle;
+
+/**
+ * Basemaps that render photoreal imagery. `plotResults` forces one of these
+ * before revealing a result set, and the model-suppression hack below applies
+ * to all of them — so the set is named once rather than compared against the
+ * string "satellite" in three places, which is what made adding a second
+ * satellite style a three-file change instead of one line.
+ */
+const SATELLITE_KEYS = new Set<StyleKey>(["satellite", "daylight"]);
 
 // ── Basemap fallback ───────────────────────────────────────────────────────
 // Satellite and Dusk are both Mapbox Standard-family styles; Dark is a classic
@@ -189,6 +203,13 @@ const DUSK_FOG = {
   color: "rgb(58,48,62)", "high-color": "rgb(120,86,70)",
   "horizon-blend": 0.05, "space-color": "rgb(10,8,12)", "star-intensity": 0.2,
 };
+// Daytime atmosphere: a bright blue limb and no stars. Reusing the dark fog
+// under a `day` light preset is what makes a daylight globe look wrong — the
+// terrain is lit at noon and the horizon is still at midnight.
+const DAY_FOG = {
+  color: "rgb(186,210,235)", "high-color": "rgb(96,140,200)",
+  "horizon-blend": 0.08, "space-color": "rgb(18,30,54)", "star-intensity": 0,
+};
 const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string; objects3d?: boolean }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
   satellite: {
@@ -207,6 +228,36 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
   // Mapbox Standard renders 3D buildings at city zoom; the dusk light preset gives
   // a warm golden-hour cast that stays legible without the brightness of day.
   dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", fog: DUSK_FOG, sw: "#caa46a", light: "dusk" },
+  /*
+   * Daylight satellite.
+   *
+   * The house Satellite deliberately runs the `dusk` preset so the ocean stays
+   * deep and in key with the dark palette — which is right for the ambient
+   * globe and wrong for the thing people actually reach for imagery to do,
+   * which is to look at a beach, a reef or a piste and see it in daylight. Both
+   * now exist; nobody has to choose between the product's mood and being able
+   * to see the ground.
+   *
+   * Same objects3d: false as the dusk satellite — the ~40 tree and turbine .glb
+   * models are invisible above street level and cost seconds of cold load.
+   */
+  daylight: {
+    label: "Satellite (Day)", url: "mapbox://styles/mapbox/standard-satellite",
+    fog: DAY_FOG, sw: "#7fa9c9", light: "day", objects3d: false,
+  },
+  /*
+   * Daylight Standard, 3D buildings on.
+   *
+   * The one basemap meant to be flown into rather than looked down on: at city
+   * zoom Mapbox Standard extrudes real building footprints, and in daylight
+   * they read as a city rather than as the grey blocks the dusk preset makes of
+   * them. It is the closest Mapbox gets to the Google photoreal handoff, and
+   * unlike that handoff it never leaves the page.
+   */
+  city: {
+    label: "3D Buildings (Day)", url: "mapbox://styles/mapbox/standard",
+    fog: DAY_FOG, sw: "#cfd8e3", light: "day", objects3d: true,
+  },
 };
 
 // The Guide's chat is persisted per session, but a route change (opening a
@@ -333,10 +384,20 @@ export default function AtlasShell({
     paint(legs: { mode: string; coordinates: [number, number][] }[], stops?: FocusStop[]): void;
     clear(): void;
     fit(legs: { coordinates: [number, number][] }[]): void;
+    /**
+     * Drop to mercator if this geometry is too wide to frame on a globe.
+     * Returns whether it switched, so the caller can let the transform settle
+     * before fitting. Exposed because the plotted-results fit lives outside
+     * wireHandlers() and needs the same gate the traced-route fit uses.
+     */
+    flatten(legs: { coordinates: [number, number][] }[]): boolean;
     /** Mark a routeless selection (a hotel) so the chosen pin is identifiable. */
     mark(stops: FocusStop[]): void;
   } | null>(null);
   const lastFocusStops = useRef<FocusStop[]>([]);
+  // Stops the traced route's dash animation. Filled by the map effect; called
+  // from its cleanup so an unmounted map can't keep a rAF loop alive.
+  const stopFlowRef = useRef<(() => void) | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   // Poster frame: a pre-rendered globe (same camera framing) painted from the
@@ -451,7 +512,7 @@ export default function AtlasShell({
           // GL 3.7's satellite fragment ignores show3dObjects (see EMPTY_GLB);
           // stub its model catalog. Dusk keeps its real 3D buildings.
           transformRequest: (url: string) =>
-            styleKeyLocal === "satellite" && url.includes("api.mapbox.com/models/")
+            SATELLITE_KEYS.has(styleKeyLocal) && url.includes("api.mapbox.com/models/")
               ? { url: EMPTY_GLB }
               : undefined,
         }) as MBMap;
@@ -686,7 +747,7 @@ export default function AtlasShell({
           addLayer(map, {
             id: src + "_shadow", type: "line", source: src,
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": "#000010", "line-width": 4, "line-opacity": 0.22 },
+            paint: { "line-color": "#000010", "line-width": 3.2, "line-opacity": 0.22 },
           });
           addLayer(map, {
             id: src + "_line", type: "line", source: src,
@@ -696,10 +757,13 @@ export default function AtlasShell({
               // Rail and jet journeys are SHORT — Scotland, Switzerland, the
               // Rockies — so at world zoom a whole itinerary is a few pixels
               // long. Thicken and solidify the line as you zoom out so the
-              // routes still read as routes; above ROUTE_ZOOM these land back
-              // on the original 1.6 / 0.82, so the home globe is unchanged.
-              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 2.4, ROUTE_ZOOM, 1.6],
-              "line-dasharray": [1, 5],
+              // routes still read as routes.
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 2, ROUTE_ZOOM, 1.3],
+              // Was [1, 5] — one part colour to five parts the dark shadow
+              // underneath, which is a black line with a hint of colour in it,
+              // not a coloured route. Inverted: the collection's colour is the
+              // line and the dark shows through as a break.
+              "line-dasharray": [6, 1.6],
               "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.95, ROUTE_ZOOM, 0.82],
             },
           });
@@ -802,16 +866,46 @@ export default function AtlasShell({
               map.flyTo({ center: pt, zoom: Math.max(map.getZoom(), 12), duration: 1100, essential: true });
             }
 
-            const browse = id ? `/atlas/hotel?ids=${encodeURIComponent(id)}` : "/atlas/hotel";
             const three = id ? `/maps/hotel/index.html?hotel=${encodeURIComponent(id)}` : null;
-            const html =
-              `<div class="iw"><div class="iwn">${escapeHtml(name)}</div>` +
-              (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "") +
-              (three
-                ? `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
-                : "") +
-              `<a href="${escapeHtml(browse)}">Browse VIP hotels →</a></div>`;
-            popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+            const head =
+              `<div class="iwn">${escapeHtml(name)}</div>` +
+              (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "");
+            const threeLink = three
+              ? `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
+              : "";
+            /*
+             * The popup's headline action is the rate search, not another
+             * browse surface.
+             *
+             * It used to read "Browse VIP hotels →", which pointed at
+             * /atlas/hotel — the same component this popup is already running
+             * inside. Someone who had just picked one property out of 2,501 was
+             * offered, as their only forward step, a filtered list containing
+             * that one property. The link a traveller wants there is the price.
+             *
+             * The TravelWits identity lives server-side, so the link arrives a
+             * beat later (see /api/hotel/tw). We paint the popup immediately and
+             * patch the CTA in when it resolves — a popup that waits on a fetch
+             * feels broken, and a link that cannot run its search is worse than
+             * none at all.
+             */
+            popup
+              .setLngLat(e.lngLat)
+              .setHTML(`<div class="iw">${head}${threeLink}</div>`)
+              .addTo(map);
+            if (id) {
+              hotelRateLink(id, name).then((rate) => {
+                if (!popup.isOpen?.()) return;
+                popup.setHTML(
+                  `<div class="iw">${head}` +
+                    (rate
+                      ? `<a class="iwbook" href="${escapeHtml(rate.url)}" target="_blank" rel="noopener">${escapeHtml(rate.label)} ↗</a>`
+                      : "") +
+                    threeLink +
+                    `</div>`,
+                );
+              });
+            }
           });
           map.on("mouseenter", "hotel-dots", () => {
             map.getCanvas().style.cursor =
@@ -878,7 +972,9 @@ export default function AtlasShell({
         }
 
         function routePalette() {
-          const satellite = styleKeyLocal === "satellite";
+          // Any photoreal basemap needs the heavier casing, not just the dusk
+          // one — daylight imagery is if anything busier to draw a line over.
+          const satellite = SATELLITE_KEYS.has(styleKeyLocal);
           // The line takes the COLLECTION's accent — platinum for jets, copper
           // for rail, gold for yachts — matching each original atlas's --accent.
           // Painting every collection copper made a jet route look like a
@@ -905,25 +1001,73 @@ export default function AtlasShell({
            * (carries the ocean) with a modest dark halo (carries the land),
            * rather than a thin line inside a heavy black cord.
            */
-          const lineW = satellite ? 5.2 : 3.4;
+          /*
+           * Thinner than it was (5.2 / 3.4). A traced route is one line on an
+           * otherwise quiet map, so it does not need width to be found — and at
+           * the old weight a rail journey through the Highlands read as a
+           * motorway drawn over the terrain rather than a track through it. The
+           * dark casing below is what carries legibility on satellite; the line
+           * itself only has to be seen, not to shout.
+           */
+          const lineW = satellite ? 4 : 2.8;
           // The line keeps its TRUE brand colour on both basemaps — teal is
           // teal, platinum is platinum. Satellite only differs in needing a
           // dark halo, because photoreal terrain is busy where a flat dark
           // basemap is not.
           return satellite
             ? {
-                casing: "#05060a", casingW: lineW + 3, casingO: 0.8,
+                casing: "#05060a", casingW: lineW + 2.8, casingO: 0.8,
                 line: accentLocal, lineW,
                 glowO: 0, tie: "#141922",
                 conn: accentLocal, connO: 0.95,
               }
             : {
-                casing: "#0b0d12", casingW: lineW + 3.6, casingO: 0.5,
+                casing: "#0b0d12", casingW: lineW + 3.2, casingO: 0.5,
                 line: accentLocal, lineW,
                 glowO: 0.5, tie: "#141922",
                 conn: accentLocal, connO: 0.7,
               };
         }
+
+        /*
+         * Drive the dash phase.
+         *
+         * Runs ONLY while a route is traced — one line on screen, one
+         * setPaintProperty every 55ms. The ambient underlay is deliberately not
+         * animated: hundreds of lines repainting together is the kind of motion
+         * that makes a map feel cheap, and costs real frames on a phone.
+         *
+         * Honours prefers-reduced-motion: the route still reads as dashed, it
+         * just doesn't move.
+         */
+        let flowRAF = 0;
+        let flowStep = 0;
+        let flowLast = 0;
+        const reduceMotion =
+          typeof window !== "undefined" &&
+          window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+        function startRouteFlow() {
+          if (flowRAF || reduceMotion) return;
+          const tick = (now: number) => {
+            flowRAF = requestAnimationFrame(tick);
+            if (now - flowLast < FLOW_MS) return;
+            flowLast = now;
+            flowStep = (flowStep + 1) % FLOW_STEPS;
+            try {
+              if (map.getLayer("fr_ties")) {
+                map.setPaintProperty("fr_ties", "line-dasharray", dashPhase(flowStep));
+              }
+            } catch { /* layer torn down mid-restyle */ }
+          };
+          flowRAF = requestAnimationFrame(tick);
+        }
+        function stopRouteFlow() {
+          if (!flowRAF) return;
+          cancelAnimationFrame(flowRAF);
+          flowRAF = 0;
+        }
+        stopFlowRef.current = stopRouteFlow;
 
         function paintFocusRoute(
           legs: { mode: string; coordinates: [number, number][] }[],
@@ -972,18 +1116,41 @@ export default function AtlasShell({
             layout: { "line-join": "round", "line-cap": "butt" },
             paint: { "line-color": p.line, "line-width": p.lineW, "line-opacity": 0.98 },
           });
+          /*
+           * The breaks.
+           *
+           * Dark ticks laid OVER the colour line, not a colour line laid over a
+           * dark one: the route stays mostly its own colour and the black is a
+           * punctuation mark. It used to be rail-only ([2.5, 7], sleepers), so a
+           * sea or air leg was a plain solid stroke with no rhythm and no way to
+           * tell which end it started from. Now every mode carries it, at a
+           * ratio (TIE_DASH : TIE_GAP) that leaves roughly six parts colour to
+           * one part black — "dashed, mostly colour" rather than the reverse.
+           *
+           * Values are in line-width units, so the rhythm scales with the line
+           * and looks the same at every basemap weight.
+           */
           addLayer(map, {
             id: "fr_ties", type: "line", source: "focus-route",
-            filter: ["==", ["get", "rail"], 1],
+            filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
             layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": p.tie, "line-width": p.lineW, "line-opacity": 0.92, "line-dasharray": [2.5, 7] },
+            paint: {
+              "line-color": p.tie,
+              "line-width": p.lineW,
+              "line-opacity": 0.92,
+              "line-dasharray": dashPhase(0),
+            },
           });
           addLayer(map, {
             id: "fr_conn", type: "line", source: "focus-route",
             filter: ["==", ["get", "conn"], 1],
             layout: { "line-join": "round", "line-cap": "round" },
-            paint: { "line-color": p.conn, "line-width": 2, "line-opacity": p.connO, "line-dasharray": [2, 9] },
+            paint: {
+              "line-color": p.conn, "line-width": 1.6, "line-opacity": p.connO,
+              "line-dasharray": [2, 6],
+            },
           });
+          startRouteFlow();
           // Existing layers keep their old palette after a style switch unless
           // told otherwise — addLayer() is a no-op when the id already exists.
           try {
@@ -993,6 +1160,7 @@ export default function AtlasShell({
             map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
             map.setPaintProperty("fr_rail", "line-color", p.line);
             map.setPaintProperty("fr_ties", "line-color", p.tie);
+            map.setPaintProperty("fr_ties", "line-width", p.lineW);
             map.setPaintProperty("fr_conn", "line-color", p.conn);
             map.setPaintProperty("fr_conn", "line-opacity", p.connO);
           } catch { /* layer missing mid-restyle */ }
@@ -1094,6 +1262,7 @@ export default function AtlasShell({
 
         function clearFocusRoute() {
           setAmbientMuted(false);
+          stopRouteFlow(); // nothing traced → nothing to march along
           lastFocusLegs.current = [];
           lastFocusStops.current = [];
           const empty = { type: "FeatureCollection" as const, features: [] };
@@ -1103,24 +1272,45 @@ export default function AtlasShell({
         }
 
         /**
-         * A route that wraps most of the planet cannot be seen on a globe —
-         * half of it is always on the far side. Flatten to mercator for those,
-         * and only those: a Mediterranean voyage still gets the globe.
+         * A wide route cannot be seen on a globe — part of it is always on the
+         * far side, or smeared into the limb where a degree of longitude is a
+         * pixel. Flatten to mercator for those; a Mediterranean voyage still
+         * gets the globe.
          *
          * Measured from the geometry rather than a data flag, because the
          * voyages adapter sets `world: false` for every sailing (only journeys
          * carry the flag), so a world cruise would otherwise be missed.
+         *
+         * The threshold used to be 180°, i.e. "only flatten for a literal
+         * circumnavigation". That is the wrong number twice over. A sphere shows
+         * at most a hemisphere, and the outer ~30° of that hemisphere is edge-on
+         * — so a grand voyage spanning 150° stayed on the globe, fitBounds gave
+         * up trying to frame it, and the route ran off both sides of the disc.
+         * This is exactly the "routes cut off on the edges" the world cruise
+         * atlas showed and the jet atlas did not: jet expeditions are either
+         * regional (comfortably under the gate) or true round-the-world (over
+         * the old 180° gate), so they never landed in the broken middle.
+         *
+         * SPAN_FLAT_LNG is what a globe can actually frame with room to breathe.
+         * Latitude gets its own gate for the same reason — a pole-to-pole
+         * itinerary is just as unframeable on a sphere as an east-west one.
          */
-        function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]) {
-          let lo = Infinity, hi = -Infinity;
+        const SPAN_FLAT_LNG = 110;
+        const SPAN_FLAT_LAT = 100;
+        function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]): boolean {
+          let lo = Infinity, hi = -Infinity, latLo = Infinity, latHi = -Infinity;
           for (const l of legs) for (const c of l.coordinates) {
             if (c[0] < lo) lo = c[0];
             if (c[0] > hi) hi = c[0];
+            if (c[1] < latLo) latLo = c[1];
+            if (c[1] > latHi) latHi = c[1];
           }
-          if (!(hi - lo > 180) || !projGlobe) return;
+          const wide = hi - lo > SPAN_FLAT_LNG || latHi - latLo > SPAN_FLAT_LAT;
+          if (!wide || !projGlobe) return false;
           projGlobe = false;
           setIs3D(false);
           try { map.setProjection("mercator"); } catch { /* projection optional */ }
+          return true;
         }
 
         /**
@@ -1141,25 +1331,34 @@ export default function AtlasShell({
         function fitFocusRoute(legs: { coordinates: [number, number][] }[]) {
           // Any deliberate camera move outranks the idle spin.
           stopSpin();
-          flattenIfCircumnavigation(legs);
-          try {
-            const b = new (mapboxgl as MapboxModule).LngLatBounds();
-            let n = 0;
-            let only: [number, number] | null = null;
-            for (const l of legs) for (const c of l.coordinates) { b.extend(c); only = c; n++; }
-            // One point has no bounds. fitBounds on a degenerate box just lands
-            // at maxZoom over open country, which for a hotel is the wrong
-            // answer — you asked which building, so fly to the building.
-            if (n === 1 && only) {
-              map.flyTo({ center: only, zoom: 14, duration: 1200, essential: true });
-            } else if (n) {
-              map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
-            }
-          } catch { /* fit optional */ }
+          const flattened = flattenIfCircumnavigation(legs);
+          const run = () => {
+            try {
+              const b = new (mapboxgl as MapboxModule).LngLatBounds();
+              let n = 0;
+              let only: [number, number] | null = null;
+              for (const l of legs) for (const c of l.coordinates) { b.extend(c); only = c; n++; }
+              // One point has no bounds. fitBounds on a degenerate box just
+              // lands at maxZoom over open country, which for a hotel is the
+              // wrong answer — you asked which building, so fly to the building.
+              if (n === 1 && only) {
+                map.flyTo({ center: only, zoom: 14, duration: 1200, essential: true });
+              } else if (n) {
+                map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
+              }
+            } catch { /* fit optional */ }
+          };
+          // A projection swap rebuilds the transform; fitting in the same tick
+          // solves the framing for the projection we just left, which lands the
+          // camera at the wrong zoom and clips the ends of the route. One frame
+          // is enough and is invisible next to the 900ms ease that follows.
+          if (flattened) requestAnimationFrame(run);
+          else run();
         }
 
         focusRouteRef.current = {
           paint: paintFocusRoute, clear: clearFocusRoute, fit: fitFocusRoute, mark: markFocusPlace,
+          flatten: flattenIfCircumnavigation,
         };
 
         // Progressive zoom: load route lines on first crossing above ROUTE_ZOOM,
@@ -1270,7 +1469,10 @@ export default function AtlasShell({
           // earlier load's completion, so `restyling` never cleared and every
           // later paint was skipped — a map that draws nothing and does not
           // spin. If a restyle is already running, paint into the current one.
-          if (styleKeyLocal !== "satellite" && !restyling) {
+          // Reveal results over imagery — but if the traveller is already on a
+          // satellite basemap, any of them will do. Forcing the dusk one would
+          // undo a deliberate switch to daylight every time the Guide answered.
+          if (!SATELLITE_KEYS.has(styleKeyLocal) && !restyling) {
             api.setStyle("satellite");
           } else {
             paintFeatured();
@@ -1279,11 +1481,25 @@ export default function AtlasShell({
         }
         function fitFeatured() {
           if (!featuredFC || !featuredFC.features.length) return;
-          try {
-            const b = new (mapboxgl as MapboxModule).LngLatBounds();
-            featuredFC.features.forEach((f) => b.extend(f.geometry.coordinates));
-            map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
-          } catch { /* fit optional */ }
+          // A plotted shortlist spread across continents is as unframeable on a
+          // globe as a wide route is; same gate, same reason.
+          const flattened =
+            focusRouteRef.current?.flatten([
+              {
+                coordinates: featuredFC.features.map(
+                  (f) => [f.geometry.coordinates[0], f.geometry.coordinates[1]] as [number, number],
+                ),
+              },
+            ]) ?? false;
+          const run = () => {
+            try {
+              const b = new (mapboxgl as MapboxModule).LngLatBounds();
+              featuredFC?.features.forEach((f) => b.extend(f.geometry.coordinates));
+              map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
+            } catch { /* fit optional */ }
+          };
+          if (flattened) requestAnimationFrame(run);
+          else run();
         }
         // The home canvas is full-bleed with Guide chrome overlaying it — the
         // bottom sheet / card dock on phones, the floating panel on the left
@@ -1502,10 +1718,35 @@ export default function AtlasShell({
             // out. plotResults asks for Satellite on every plot.
             if (failedStyles.has(key)) key = STYLE_FALLBACK_KEY;
             if (key === styleKeyLocal) return;
+            const from = ATLAS_STYLES[styleKeyLocal];
+            const to = ATLAS_STYLES[key];
             styleKeyLocal = key;
             setStyleKey(key);
+            /*
+             * Two basemaps can share a style URL and differ only in config —
+             * Satellite / Satellite (Day) are one Mapbox style under two light
+             * presets, as are Dusk / 3D Buildings (Day). setStyle with the URL
+             * already loaded is a no-op, so style.load never fires and the new
+             * preset is never applied: the menu ticks the new entry and the map
+             * doesn't change. Reconfigure in place instead.
+             */
+            if (to.url === from.url) {
+              const cfg = map as unknown as {
+                setConfigProperty(s: string, k: string, v: string | boolean): void;
+              };
+              setFog(map, to.fog);
+              try { if (to.light) cfg.setConfigProperty("basemap", "lightPreset", to.light); } catch { /* not Standard */ }
+              try { if (to.theme) cfg.setConfigProperty("basemap", "theme", to.theme); } catch { /* unsupported */ }
+              try { cfg.setConfigProperty("basemap", "show3dObjects", to.objects3d !== false); } catch { /* not Standard */ }
+              // The route palette keys off the basemap; repaint what's traced.
+              if (lastFocusLegs.current.length) {
+                focusRouteRef.current?.paint(lastFocusLegs.current, lastFocusStops.current);
+              }
+              reportView();
+              return;
+            }
             restyling = true;
-            try { map.setStyle(ATLAS_STYLES[key].url); } catch { restyling = false; }
+            try { map.setStyle(to.url); } catch { restyling = false; }
             // A manual switch into a broken family must degrade too, not hang.
             armStyleWatchdog();
             reportView();
@@ -1554,6 +1795,8 @@ export default function AtlasShell({
       cancelled = true;
       cancelAnimationFrame(spinRAF);
       cancelAnimationFrame(pulseRAF);
+      stopFlowRef.current?.();
+      stopFlowRef.current = null;
       clearTimeout(loadTimeout);
       clearTimeout(styleWatchdog);
       ro?.disconnect();
@@ -2027,6 +2270,95 @@ function toInternalAtlasHref(url?: string | null): string | null {
   return null;
 }
 
+/* ── Route flow: the direction of travel, drawn ────────────────────────────
+ *
+ * A traced itinerary is ordered — Southampton to Sydney, not "these ports" —
+ * and a static line throws that away. It says where the voyage goes and not
+ * which way along it you travel, so a round trip and a one-way crossing look
+ * identical.
+ *
+ * Mapbox GL has no line-dash-offset, so the phase is animated the only way the
+ * renderer allows: by swapping the dash array itself for one whose pattern
+ * starts a little further along. Sliding the phase forward makes the breaks
+ * march from the first coordinate toward the last, which IS the direction of
+ * travel — the adapters emit stops in itinerary order.
+ *
+ * Units are line-width multiples, so the rhythm holds at every line weight.
+ */
+const TIE_DASH = 1.1; // the black tick
+const TIE_GAP = 6.4; // the colour between ticks — six parts colour to one black
+const FLOW_STEPS = 24; // phases per cycle; more is smoother and no cheaper
+const FLOW_MS = 55; // ms per phase → a full period every ~1.3s
+
+/**
+ * The dash array for phase `step`, as an EVEN-length array.
+ *
+ * Even length matters: Mapbox repeats the array verbatim, so an odd-length one
+ * inverts dash and gap on every other repeat and the line visibly flickers
+ * between "mostly colour" and "mostly black".
+ */
+function dashPhase(step: number): number[] {
+  const period = TIE_DASH + TIE_GAP;
+  const t = ((step % FLOW_STEPS) / FLOW_STEPS) * period;
+  if (t <= TIE_DASH) {
+    // Starting part-way through a tick: [partial tick, gap, tick, gap].
+    return [TIE_DASH - t, TIE_GAP, TIE_DASH, TIE_GAP + t];
+  }
+  // Starting part-way through the colour: lead with a zero-length dash.
+  const into = t - TIE_DASH;
+  return [0, TIE_GAP - into, TIE_DASH, TIE_GAP, TIE_DASH, into];
+}
+
+/**
+ * The VIP rate search URL for one hotel, or null.
+ *
+ * Memoised per id for the life of the page: the overlay it reads is a
+ * build-time artifact, so re-clicking a pin must not re-hit the network. In-
+ * flight promises are cached too, so double-clicking a pin makes one request.
+ *
+ * Failures resolve to null rather than rejecting — the caller's job is to
+ * decide whether to render a link, not to handle transport errors.
+ */
+const RATE_LINKS = new Map<string, Promise<{ url: string; label: string } | null>>();
+function hotelRateLink(id: string, name: string): Promise<{ url: string; label: string } | null> {
+  const cached = RATE_LINKS.get(id);
+  if (cached) return cached;
+  const pending = fetch(`/api/hotel/tw?ids=${encodeURIComponent(id)}`)
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    .then(
+      (j: {
+        tw?: Record<string, unknown>;
+        bookUrl?: Record<string, string>;
+        bookPassword?: Record<string, string>;
+      }) => {
+        const tw = j.tw?.[id];
+        const portal = j.bookUrl?.[id];
+        if (!tw && !portal) return null;
+        // bookingLink picks the rate search when there's an identity to search
+        // with, and the gated portal otherwise — and labels each honestly, so
+        // the popup never promises a price it can't reach.
+        const link = bookingLink(
+          {
+            type: "hotel",
+            id,
+            name,
+            ...(tw ? { tw } : {}),
+            ...(portal ? { bookUrl: portal } : {}),
+            ...(j.bookPassword?.[id] ? { bookPassword: j.bookPassword[id] } : {}),
+          },
+          getTrip(),
+        );
+        return link?.url ? { url: link.url, label: link.label } : null;
+      },
+    )
+    .catch(() => {
+      RATE_LINKS.delete(id); // transient — let the next click try again
+      return null;
+    });
+  RATE_LINKS.set(id, pending);
+  return pending;
+}
+
 function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) => string): string {
   const meta = [r.brand || r.operator, (r as { ship?: string }).ship, r.region].filter(Boolean).join(" · ");
   const when = [r.duration || r.country, r.dates || (r as { month?: string }).month].filter(Boolean).join("  ·  ");
@@ -2249,6 +2581,7 @@ interface MBPopup {
   setLngLat(c: { lng: number; lat: number }): MBPopup;
   setHTML(html: string): MBPopup;
   addTo(map: MBMap): MBPopup;
+  isOpen(): boolean;
   remove(): void;
 }
 interface MBBounds {

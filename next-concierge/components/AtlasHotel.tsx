@@ -32,7 +32,7 @@
  * "three things that will look like cleanup and are not".
  */
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AtlasCollection from "./AtlasCollection";
 import { adaptHotels, HOTEL_DESCRIPTOR, type RawHotelPoints } from "@/lib/atlas/adapters/hotel";
 import { REGION_ORDER } from "@/lib/atlas/adapters/hotel-regions";
@@ -40,9 +40,118 @@ import { programDomain } from "@/lib/atlas/adapters/hotel-programs";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 import type { BrandMark } from "./BrandLogo";
-import { hotel3dOpened } from "@/lib/analytics";
+import { hotel3dOpened, bookingClicked } from "@/lib/analytics";
+import { bookingLink } from "@/lib/atlas/booking.js";
+import { getTrip, onTrip } from "@/lib/trip-state";
+import type { TripState } from "@/lib/types";
+
+/** What /api/hotel/tw hands back per hotel — enough to build a rate search. */
+interface TwIdentity {
+  hotelId?: string | number;
+  lat?: number;
+  lon?: number;
+  label?: string;
+}
 
 export default function AtlasHotel() {
+  /**
+   * TravelWits identities for the hotels currently on screen.
+   *
+   * The static point feed the globe downloads carries no `tw` (it is attached
+   * server-side from the harvested overlay), so a browse card cannot build a
+   * rate search on its own. Rather than shipping the overlay to every visitor,
+   * we resolve the identities for the ~120 rendered cards in one request and
+   * cache them for the session — filtering to a new region costs one more.
+   */
+  const [tw, setTw] = useState<Record<string, TwIdentity>>({});
+  const [bookUrls, setBookUrls] = useState<Record<string, string>>({});
+  const [passwords, setPasswords] = useState<Record<string, string>>({});
+  const askedRef = useRef<Set<string>>(new Set());
+
+  // The shared trip, so a rate search prices the dates the traveller already
+  // gave The Guide. With none, lib/atlas/booking.js prices tomorrow night —
+  // the same one-night default the standalone hotel atlas uses.
+  const [trip, setTrip] = useState<TripState | null>(null);
+  useEffect(() => {
+    setTrip(getTrip());
+    return onTrip(setTrip);
+  }, []);
+
+  const onVisibleIds = useCallback((ids: string[]) => {
+    const missing = ids.filter((id) => id && !askedRef.current.has(id));
+    if (!missing.length) return;
+    for (const id of missing) askedRef.current.add(id);
+    fetch(`/api/hotel/tw?ids=${encodeURIComponent(missing.join(","))}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then(
+        (j: {
+          tw?: Record<string, TwIdentity>;
+          bookUrl?: Record<string, string>;
+          bookPassword?: Record<string, string>;
+        }) => {
+          if (j.tw && Object.keys(j.tw).length) setTw((prev) => ({ ...prev, ...j.tw }));
+          if (j.bookUrl && Object.keys(j.bookUrl).length) {
+            setBookUrls((prev) => ({ ...prev, ...j.bookUrl }));
+          }
+          if (j.bookPassword && Object.keys(j.bookPassword).length) {
+            setPasswords((prev) => ({ ...prev, ...j.bookPassword }));
+          }
+        },
+      )
+      .catch(() => {
+        // A miss just means no rate link on those cards — "See it in 3D",
+        // "View details" and "Ask The Guide" all still work. Let them be
+        // retried on the next filter change rather than sticking.
+        for (const id of missing) askedRef.current.delete(id);
+      });
+  }, []);
+
+  /**
+   * The card's primary action: a TravelWits search of THIS property at the VIP
+   * rate codes.
+   *
+   * Rendered as a real anchor with a real href — never a button that fetches
+   * and then opens a window, which browsers treat as a popup. The link simply
+   * does not exist until the identity has resolved, so no one can click through
+   * to a search that cannot run.
+   */
+  const cardPrimary = useCallback(
+    (o: AtlasOffering) => {
+      const identity = tw[o.id];
+      const portal = bookUrls[o.id];
+      // Nothing resolved yet (or nothing to resolve) — render no CTA rather
+      // than a link that lands somewhere useless.
+      if (!identity && !portal) return null;
+      const booking = bookingLink(
+        {
+          type: "hotel",
+          id: o.id,
+          name: o.title,
+          ...(identity ? { tw: identity } : {}),
+          ...(portal ? { bookUrl: portal } : {}),
+          ...(passwords[o.id] ? { bookPassword: passwords[o.id] } : {}),
+        },
+        trip,
+      );
+      if (!booking?.url) return null;
+      return (
+        <a
+          className="ac-book"
+          href={booking.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => {
+            e.stopPropagation();
+            bookingClicked("hotel", !booking.needsDates);
+          }}
+        >
+          {booking.label} ↗
+        </a>
+      );
+    },
+    [tw, bookUrls, passwords, trip],
+  );
+
   const load = useCallback(async () => {
     // The same point feed the home globe already fetches — no new payload.
     const raw: RawHotelPoints = await fetch("/maps/hotel/hotel-points.json", {
@@ -108,6 +217,8 @@ export default function AtlasHotel() {
       // The hotel atlas's own accent.
       accent="#caa44e"
       initialStyle="satellite"
+      cardPrimary={cardPrimary}
+      onVisibleIds={onVisibleIds}
       cardAction={{ label: "See it in 3D ↗", onSelect: openIn3D }}
     />
   );

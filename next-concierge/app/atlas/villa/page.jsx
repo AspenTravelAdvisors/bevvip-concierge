@@ -51,7 +51,22 @@ export default async function VillaAtlasPage({ searchParams }) {
   // records sort last). Featured villas no longer float to the top of an open
   // list — the Featured checkbox is the only thing that surfaces them now.
   if (!params.sort) params.sort = "priceDesc";
-  const initial = searchVillas(params);
+
+  // A bad deep link must not take the page down with it.
+  //
+  // searchVillas parses whatever arrived in the query string; a malformed
+  // `bbox`, `ids` or `priceMax` used to throw here, and a throw in a server
+  // component is a full-page error — the traveller lost the atlas because one
+  // param was wrong. The client can refetch through /api/villas/search the
+  // moment any filter changes, so an empty first page is fully recoverable
+  // while an error screen is not. Genuine infrastructure failures (a cold start
+  // evicted mid-render) still surface, and error.tsx retries those.
+  let initial;
+  try {
+    initial = searchVillas(params);
+  } catch {
+    initial = { total: 0, page: 1, perPage: 24, results: [], facets: { regions: {}, sleeps: {}, callForPricing: 0 } };
+  }
 
   // Filter menus come from the taxonomy tree, trimmed to names + slugs only —
   // supplier deep links stay server-side.

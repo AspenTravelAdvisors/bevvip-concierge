@@ -343,6 +343,22 @@
   path.rrail{ animation:routeGlow 5.3s ease-in-out infinite; }
   @media (prefers-reduced-motion:reduce){ path.rline,path.rrail{ animation:none; } }
 </style>
+<style id="route-flow">
+  /* Direction of travel.
+     A traced itinerary is ordered, and a static line throws that away — a round
+     trip and a one-way crossing look identical. Sliding the dash phase forward
+     makes the breaks march from the first stop toward the last, which is the
+     direction you travel. Offsets are one full dash period, so the loop is
+     seamless. */
+  .leaflet-overlay-pane path.rline { animation: bv-route-flow 1.5s linear infinite; }
+  .leaflet-overlay-pane path.rconn { animation: bv-route-flow-conn 1.6s linear infinite; }
+  @keyframes bv-route-flow { to { stroke-dashoffset: -12; } }
+  @keyframes bv-route-flow-conn { to { stroke-dashoffset: -11; } }
+  @media (prefers-reduced-motion: reduce) {
+    .leaflet-overlay-pane path.rline,
+    .leaflet-overlay-pane path.rconn { animation: none; }
+  }
+</style>
 </head>
 <body>
 <!-- hero-embed: ?hero=1 strips the atlas chrome (nav, title, rail, dock) so the
@@ -676,8 +692,20 @@ const BASES={
   satellite:{label:'Satellite',sw:'#37503a',make:()=>L.layerGroup([
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:10,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:8})])}
+,
+  /* Daytime imagery. The Esri 'Satellite' above is a dark-leaning mosaic
+     chosen to sit under the atlas's night palette; this one is the plain
+     daylight basemap you want when the question is what the ground looks
+     like. Two different jobs, so two entries rather than one compromise. */
+  daylight:{label:'Satellite (Day)',sw:'#7fa9c9',make:()=>L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:10,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',{maxZoom:10,subdomains:'abcd',opacity:.9})])},
+  /* Daytime streets with building footprints — the flat-map counterpart to
+     the 3D building view on the Mapbox atlases. Leaflet cannot extrude, so
+     this is OSM's rendered building layer rather than real geometry. */
+  city:{label:'Daylight Streets',sw:'#e8e2d6',make:()=>L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors &middot; '+DATA_CREDIT})}
 };
-const BASE_ORDER=['voyager','dark','satellite'];
+const BASE_ORDER=['voyager','dark','satellite','daylight','city'];
 const DEFAULT_BASE='satellite';
 const _baseCache={}; let _baseKey=null,_baseLayer=null;
 function _mkBase(k){ return _baseCache[k]||(_baseCache[k]=BASES[k].make()); }
@@ -875,9 +903,13 @@ function revealRoute(segs){
 }
 function trackSegment(pts,segs){
   /* railway-map symbology: dark casing, copper rail, sleeper hatching on top */
-  const casing=L.polyline(pts,{color:'#140b06',weight:7,opacity:.5,lineCap:'round',className:'rbase'}).addTo(routeLayer);
-  const rail=L.polyline(pts,{color:'#e08d5f',weight:3.4,opacity:.98,lineCap:'butt',className:'rrail'}).addTo(routeLayer);
-  const ties=L.polyline(pts,{color:'#241007',weight:3.4,opacity:.92,lineCap:'butt',dashArray:'2.5 7',className:'rline'}).addTo(routeLayer);
+  /* Copper first, black second. The track used to sit under a weight-7 casing
+     at half opacity with sleepers nearly as wide as the rail itself, so from any
+     distance the journey read as a dark smear. Now the copper is the line and
+     the black is punctuation: a 2px tie every 9px of rail. */
+  const casing=L.polyline(pts,{color:'#140b06',weight:5.4,opacity:.5,lineCap:'round',className:'rbase'}).addTo(routeLayer);
+  const rail=L.polyline(pts,{color:'#e08d5f',weight:2.8,opacity:.98,lineCap:'butt',className:'rrail'}).addTo(routeLayer);
+  const ties=L.polyline(pts,{color:'#241007',weight:2.8,opacity:.92,lineCap:'butt',dashArray:'2 10',className:'rline'}).addTo(routeLayer);
   segs.push({base:casing._path,fade:[rail._path,ties._path]});
 }
 function connSegment(pts,segs){
