@@ -28,7 +28,7 @@
  * decision — nothing in the app has ever emitted it.
  */
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import type { AtlasOffering, AtlasFilterDescriptor } from "@/lib/atlas/adapters/types";
 import { ROLE_VALUES } from "@/lib/atlas/adapters/types";
 import { matchesExceptRegion, matchesOffering, regionPass, type AtlasFilterState } from "@/lib/atlas/adapters/filter";
@@ -57,6 +57,14 @@ interface Props {
   /** Copy a link reproducing filters + pinned journey + basemap + camera. */
   onShare?: () => void;
   shareLabel?: string;
+  /**
+   * Controls that belong with the rail but are owned by the list — Sort, and
+   * the "showing the first N" note. They used to sit in their own bar directly
+   * underneath, which cost a third stacked row saying things about the same
+   * result set the rail was already describing. On desktop they join this row;
+   * on mobile the rail is a pill, so the caller keeps its own bar.
+   */
+  trailing?: ReactNode;
 }
 
 const MONTH_LABEL = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -99,7 +107,7 @@ function useIsMobile(): boolean {
 
 export default function AtlasFilterRail({
   descriptor: d, offerings, state, query, regionLabels, today,
-  onStateChange, onQueryChange, onCommit, onShare, shareLabel = "Share",
+  onStateChange, onQueryChange, onCommit, onShare, shareLabel = "Share", trailing,
 }: Props) {
   const isMobile = useIsMobile();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -393,15 +401,22 @@ export default function AtlasFilterRail({
     return (
       <div className="villa-filters" role="group" aria-label={`Filter ${d.collection}`}>
         {controls}
-        <span className="atlas-count" aria-live="polite">
-          {liveCount.toLocaleString()} match{liveCount === 1 ? "" : "es"}
-        </span>
-        {onShare && (
-          <button type="button" className="atlas-share" onClick={onShare}>{shareLabel}</button>
-        )}
-        {!!anyActive(state) && (
-          <button type="button" className="atlas-reset" onClick={reset}>Reset</button>
-        )}
+        {/* Everything from here right is ABOUT the results rather than a filter
+            on them, so it sits in one group pushed to the far end instead of
+            each item claiming its own auto-margin (which is what forced the
+            count and Share onto a line of their own). */}
+        <div className="atlas-railend">
+          <span className="atlas-count" aria-live="polite">
+            {liveCount.toLocaleString()} match{liveCount === 1 ? "" : "es"}
+          </span>
+          {trailing}
+          {onShare && (
+            <button type="button" className="atlas-share" onClick={onShare}>{shareLabel}</button>
+          )}
+          {!!anyActive(state) && (
+            <button type="button" className="atlas-reset" onClick={reset}>Reset</button>
+          )}
+        </div>
       </div>
     );
   }

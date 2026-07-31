@@ -58,8 +58,15 @@ header.site {
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, #0c0c0e, #09090b);
 }
-/* Brand lockup: logo + wordmark + address, one click target. */
+/* Brand lockup: mark + wordmark on top (→ expeditionbucketlist.com), this
+   app's address beneath (→ /), indented to sit under the wordmark. */
 header.site .brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+header.site .brand-face {
   display: flex;
   align-items: center;
   gap: 11px;
@@ -75,12 +82,6 @@ header.site .brand-logo {
      sit on rather than dissolve into the gradient. */
   box-shadow: 0 0 0 1px var(--line);
 }
-header.site .brand-lockup {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
 header.site .mark {
   font-family: var(--serif);
   font-size: 23px;
@@ -92,22 +93,26 @@ header.site .mark {
   text-decoration: none;
 }
 header.site .brand-url {
+  /* Aligns under the wordmark: logo width (40) + the face's gap (11). */
+  margin-left: 51px;
   font-size: 9.5px;
   letter-spacing: 1.6px;
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
   color: var(--muted);
+  text-decoration: none;
   transition: color 0.15s ease;
 }
-header.site .brand:hover {
+header.site .brand-face:hover {
   text-decoration: none;
 }
-header.site .brand:hover b {
+header.site .brand-face:hover b {
   color: var(--gold-light);
 }
-header.site .brand:hover .brand-url {
-  color: var(--sub);
+header.site .brand-url:hover {
+  color: var(--gold-light);
+  text-decoration: none;
 }
 header.site .mark b {
   color: var(--gold);
@@ -954,6 +959,18 @@ main.page {
   border-color: var(--gold);
   color: var(--gold);
 }
+/* Toggles that stay on (Tilt) read as filled, so the button agrees with the
+   camera without needing a second label. */
+.atlas-ctrls .actrl.on {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0c0c0e;
+}
+.atlas-ctrls .actrl.on:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  color: #0c0c0e;
+}
 /* "Search this area" cluster, bottom-left of the villa map (bottom-right holds
    the Mapbox zoom control, top-right the fullscreen/style/share stack). */
 .villa-area-ctrl {
@@ -1417,7 +1434,7 @@ main.page {
     font-size: 19px;
   }
 
-  header.site .brand {
+  header.site .brand-face {
     gap: 9px;
   }
 
@@ -1427,6 +1444,7 @@ main.page {
   }
 
   header.site .brand-url {
+    margin-left: 43px; /* 34 logo + 9 gap */
     font-size: 9px;
     letter-spacing: 1.2px;
   }
@@ -2376,12 +2394,33 @@ main.page {
   font-size: 12.5px;
   font-family: var(--sans);
 }
+/* A <select> sizes itself to its WIDEST option, so one long programme name or
+   ship name stretched the control to a third of the row and shoved everything
+   after it onto another line. Cap it: the closed control only ever shows the
+   current choice, and the open menu is drawn by the OS at whatever width it
+   needs, so nothing is actually truncated in the place people read it. */
+.villa-filters select {
+  max-width: 190px;
+  text-overflow: ellipsis;
+}
 .villa-filters select:disabled {
   opacity: 0.45;
 }
 .villa-filters input.villa-q {
-  flex: 1 1 160px;
-  min-width: 140px;
+  /*
+   * Bounded, not greedy.
+   *
+   * This was `flex: 1 1 160px` with no cap, so the search box swallowed every
+   * pixel the selects left over — on the hotel atlas it ran half the width of
+   * the page — and the count, Share and Sort it pushed past the edge wrapped
+   * onto rows of their own. Three stacked rows of chrome above the cards,
+   * caused by one input growing without limit. It now takes a fair share and
+   * stops; a search field wider than the longest journey name is not a better
+   * search field.
+   */
+  flex: 1 1 150px;
+  min-width: 130px;
+  max-width: 240px;
 }
 .villa-check {
   display: inline-flex;
@@ -3446,12 +3485,35 @@ button.card-book {
 /* Atlas filter rail — shared by the five collections ported off Leaflet.
    Reuses .villa-filters for the row itself (see AtlasFilterRail.tsx); these
    are the two additions that row did not already have. */
+/* The result-side group: count · "first 120" · Sort · Share · Reset. One
+   auto-margin on the group, rather than one on each item — the old
+   `margin-left: auto` on .atlas-count meant everything after it had to fit in
+   whatever the filters had left, and when it didn't, it wrapped. */
+.villa-filters .atlas-railend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex: none;
+}
 .villa-filters .atlas-count {
   font-family: var(--sans);
   font-size: 12.5px;
   color: var(--muted);
-  margin-left: auto;
   white-space: nowrap;
+}
+/* In the rail this is the short form — "first 120" — because the full count is
+   already one item to its left. */
+.villa-filters .atlas-showing {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--sub);
+  white-space: nowrap;
+}
+.villa-filters .atlas-showing::before {
+  content: "·";
+  margin-right: 8px;
+  color: var(--line);
 }
 .villa-filters .atlas-reset {
   background: transparent;
@@ -3475,7 +3537,9 @@ button.card-book {
   padding: 7px 10px;
   font-size: 12.5px;
   font-family: var(--sans);
-  min-width: 150px;
+  width: 140px;
+  min-width: 0;
+  flex: none;
 }
 
 /* Atlas collection browser (Deliverable 3) — the globe + rail + cards that
@@ -3906,20 +3970,24 @@ button.card-book {
      list by a row as the truncation notice appears and disappears. */
   min-height: 1em;
 }
-.atlas-sortbar .atlas-sort {
+/* Unscoped from .atlas-sortbar: the same control now also rides in the filter
+   rail's trailing slot on desktop. */
+.atlas-sort {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-left: auto;
   white-space: nowrap;
 }
-.atlas-sortbar .atlas-sort > span {
+.atlas-sortbar .atlas-sort {
+  margin-left: auto;
+}
+.atlas-sort > span {
   color: var(--sub);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   font-size: 11px;
 }
-.atlas-sortbar .atlas-sort select {
+.atlas-sort select {
   font-family: var(--sans);
   font-size: 12.5px;
   color: var(--ink, #f4efe3);
@@ -3937,16 +4005,23 @@ button.card-book {
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
 }
-.atlas-sortbar .atlas-sort select:hover,
-.atlas-sortbar .atlas-sort select:focus-visible {
+.atlas-sort select:hover,
+.atlas-sort select:focus-visible {
   color: var(--gold-light);
   border-color: var(--gold);
   outline: none;
 }
 /* The menu itself is drawn by the OS, which does not inherit the dark page. */
-.atlas-sortbar .atlas-sort option {
+.atlas-sort option {
   color: #17140c;
   background: #f4efe3;
+}
+/* Desktop: the sort control lives in the filter rail, so its standalone bar
+   would be a duplicate. Phones keep the bar (the rail is a pill down there). */
+@media (min-width: 681px) {
+  .atlas-collection .atlas-sortbar {
+    display: none;
+  }
 }
 @media (max-width: 680px) {
   .atlas-sortbar {

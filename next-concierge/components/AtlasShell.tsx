@@ -66,6 +66,21 @@ const HOTEL_BASE = ATLASES.hotel.base;
 const HOTEL_DOT_MIN_ZOOM = 2.45; // let hotels emerge before the ambient cloud fades
 const HOTEL_CLICK_MIN_ZOOM = 4; // below this dots overlap — taps stay ambient
 const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
+/*
+ * Tilt.
+ *
+ * 55° is the shallowest angle at which Mapbox Standard's extruded footprints
+ * read as buildings rather than as shaded roof polygons, and it is still flat
+ * enough that the far side of the frame doesn't dissolve into horizon.
+ *
+ * STREET_ZOOM is where those footprints actually exist in the tiles. Camera
+ * moves that land at or past it arrive pre-tilted — the pitch travels inside
+ * the same flyTo ease, so it costs no extra animation and, unlike a
+ * pitch-follows-zoom rule, it never touches the camera while the traveller is
+ * driving it.
+ */
+const TILT_PITCH = 55;
+const STREET_ZOOM = 13.5;
 // Routes are live as of Deliverable 1: sea geometry is precomputed at build
 // time (scripts/build-sea-routes.mjs), so enabling this no longer means running
 // A* in the visitor's main thread. Lines still only paint above ROUTE_ZOOM.
@@ -285,6 +300,8 @@ function readStoredPlot(): GuideMeta | null {
 interface AtlasApi {
   setStyle(key: StyleKey): void;
   setProjection(globe: boolean): void;
+  /** Tilt the camera off vertical so extruded buildings read as buildings. */
+  setTilt(on: boolean): void;
   resize(): void;
   plot(meta: GuideMeta): void;
   refit(): void;
@@ -413,6 +430,22 @@ export default function AtlasShell({
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [styleKey, setStyleKey] = useState<StyleKey>(initialStyle ?? "satellite");
   const [is3D, setIs3D] = useState(initialGlobe ?? true);
+  /**
+   * Camera pitch, as a plain on/off.
+   *
+   * The projection toggle is NOT this. It swaps globe⇄mercator, which is a
+   * choice about the shape of the world, and it was labelled "3D" — so the one
+   * control that promised perspective delivered a sphere seen from directly
+   * above, and the extruded buildings on the Standard basemaps were invisible
+   * at every zoom because you were always looking straight down at their roofs.
+   *
+   * Tilt is its own button and its own state. Crucially it is a one-shot
+   * easeTo, not a function of zoom: an earlier attempt interpolated pitch from
+   * the zoom level, which fought every wheel event and made zooming feel broken.
+   * Pitch changes only when the traveller asks for it, or on arrival at a
+   * street-level camera move (flyTo carries the pitch in the same ease).
+   */
+  const [tilted, setTilted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
   const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
@@ -562,6 +595,10 @@ export default function AtlasShell({
           const z = Math.log2((Math.min(w, h) * 0.92) / 162.97);
           homeZoom = Math.max(map.getMinZoom(), Math.min(z, 5));
           map.setZoom(homeZoom);
+          // A tilted camera at globe scale is a smeared horizon, not a view.
+          // This is the resting frame, so level it — an explicit camera command
+          // at a known moment, NOT a pitch-follows-zoom rule.
+          if (map.getPitch() > 0.5) { try { map.setPitch(0); } catch { /* optional */ } }
         }
         function stopSpin() {
           spinning = false;
@@ -866,7 +903,12 @@ export default function AtlasShell({
               // the parse boundary above (fromLngLatPair), which is the only
               // place order can be got wrong.
               markFocusPlace([{ name, at: [pt[0], pt[1]] }]);
-              map.flyTo({ center: pt, zoom: Math.max(map.getZoom(), 12), duration: 1100, essential: true });
+              const z = Math.max(map.getZoom(), 12);
+              // Only tilt if the arrival is close enough that buildings exist.
+              // Below that the angle buys nothing and costs the plan view.
+              const pitch = z >= STREET_ZOOM ? TILT_PITCH : undefined;
+              map.flyTo({ center: pt, zoom: z, duration: 1100, essential: true, pitch });
+              if (pitch) setTilted(true);
             }
 
             const three = id ? `/maps/hotel/index.html?hotel=${encodeURIComponent(id)}` : null;
@@ -1370,7 +1412,10 @@ export default function AtlasShell({
               // lands at maxZoom over open country, which for a hotel is the
               // wrong answer — you asked which building, so fly to the building.
               if (n === 1 && only) {
-                map.flyTo({ center: only, zoom: 14, duration: 1200, essential: true });
+                // Street-level arrival: land at an angle. You asked which
+                // building — a plan view of a roof does not answer that.
+                map.flyTo({ center: only, zoom: 14, duration: 1200, essential: true, pitch: TILT_PITCH });
+                setTilted(true);
               } else if (n) {
                 map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
               }
@@ -1591,6 +1636,15 @@ export default function AtlasShell({
         map.on("moveend", reportView);
         map.on("zoomend", reportView);
 
+        // The Tilt button reflects the camera, not just its own clicks: Mapbox
+        // also pitches on ctrl-drag and two-finger drag, and a toggle that
+        // disagrees with what you're looking at is worse than no toggle.
+        // pitchend cannot fire from zooming (pitch is a separate axis), so this
+        // stays clear of the zoom loop that broke the earlier attempt.
+        map.on("pitchend", () => {
+          try { setTilted(map.getPitch() > 5); } catch { /* noop */ }
+        });
+
         ro = new ResizeObserver(() => {
           try {
             map.resize();
@@ -1784,10 +1838,29 @@ export default function AtlasShell({
             reportView();
             try { map.setProjection(globe ? "globe" : "mercator"); } catch { /* optional */ }
             if (globe) {
-              if (!subsetActive && !focused) { fitGlobe(); startSpin(); }
+              /*
+               * Switching projection is not a request to go home.
+               *
+               * This used to call fitGlobe() on every switch back to the globe,
+               * so a traveller looking at a hotel in Kyoto who flipped flat and
+               * back was thrown out to the whole planet — the toggle silently
+               * doubled as a reset, and there was no way to see the same place
+               * on a sphere. Only re-fit when the camera is ALREADY at rest at
+               * world scale (nothing framed, nothing focused, still at home
+               * zoom), which is the one case where re-fitting changes nothing
+               * the traveller chose and simply restores the idle spin.
+               */
+              const atRest = !subsetActive && !focused && map.getZoom() <= homeZoom + 0.4;
+              if (atRest) { fitGlobe(); startSpin(); }
             } else {
               stopSpin();
             }
+          },
+          setTilt(on) {
+            setTilted(on);
+            try {
+              map.easeTo({ pitch: on ? TILT_PITCH : 0, duration: 550, essential: true });
+            } catch { /* pitch optional */ }
           },
           resize() {
             setTimeout(() => { try { map.resize(); } catch { /* noop */ } }, 60);
@@ -2058,13 +2131,36 @@ export default function AtlasShell({
               </div>
             )}
           </div>
+          {/*
+            Two controls, two axes, each named for what it does.
+
+            The old single button said "2D"/"3D" and toggled globe⇄flat. Both
+            halves misled: "3D" bought you a sphere seen straight down, and
+            pressing it threw the camera back out to the whole planet. Now the
+            projection button names the shape it switches TO (Globe / Flat) and
+            keeps your place, and tilt — the thing people actually mean by 3D —
+            is its own toggle that lights up while it's on.
+          */}
           <button
             type="button"
             className="actrl"
             onClick={() => apiRef.current?.setProjection(!is3D)}
-            title={is3D ? "Switch to flat 2D map" : "Switch to 3D globe"}
+            title={is3D ? "Show the world flat, keeping this view" : "Show the world as a globe, keeping this view"}
           >
-            {is3D ? "2D" : "3D"}
+            {is3D ? "▭ Flat" : "◍ Globe"}
+          </button>
+          <button
+            type="button"
+            className={`actrl${tilted ? " on" : ""}`}
+            aria-pressed={tilted}
+            onClick={() => apiRef.current?.setTilt(!tilted)}
+            title={
+              tilted
+                ? "Look straight down"
+                : "Tilt the camera — zoom into a city on a 3D basemap to see buildings"
+            }
+          >
+            ◮ Tilt
           </button>
         </div>
       )}
@@ -2637,7 +2733,11 @@ interface MBMap {
     speed?: number;
     duration?: number;
     essential?: boolean;
+    pitch?: number;
   }): void;
+  easeTo(opts: { pitch?: number; zoom?: number; duration?: number; essential?: boolean }): void;
+  getPitch(): number;
+  setPitch(p: number): void;
   fitBounds(b: MBBounds, opts: Record<string, unknown>): void;
   setPadding(p: { top: number; bottom: number; left: number; right: number }): void;
   resize(): void;

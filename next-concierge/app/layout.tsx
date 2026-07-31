@@ -61,28 +61,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               decode step and returned nothing. The map is now "the atlas",
               lowercase, everywhere. */}
           <header className="site">
-            {/* The brand block is one target, not three: the agency's mark, the
-                product name, and the address you type to get back here. The
-                logo carries Aspen Travel Advisors; the wordmark carries the
-                product; the URL under it is the app's own home, so clicking
-                anywhere in the block returns to The Guide. */}
-            <Link className="brand" href="/" aria-label="Expedition Bucket List — The Guide, home">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="brand-logo"
-                src="/aspen-advisors-mark.png"
-                srcSet="/aspen-advisors-mark.png 1x, /aspen-advisors-mark@2x.png 2x"
-                alt="Aspen Travel Advisors"
-                width={40}
-                height={40}
-              />
-              <span className="brand-lockup">
+            {/* Two destinations stacked, because they are two different places:
+                the mark and the wordmark are the BRAND and still go out to
+                expeditionbucketlist.com, while the line under them is the
+                address of this app and goes to its home. Keeping the wordmark's
+                external link is the point — the visitor who clicks a brand
+                expects the brand, and the app's own URL is the thing that
+                should bring them back here. */}
+            <div className="brand">
+              <a
+                className="brand-face"
+                href="https://expeditionbucketlist.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="brand-logo"
+                  src="/aspen-advisors-mark.png"
+                  srcSet="/aspen-advisors-mark.png 1x, /aspen-advisors-mark@2x.png 2x"
+                  alt="Aspen Travel Advisors"
+                  width={40}
+                  height={40}
+                />
                 <span className="mark">
                   Expedition <b>Bucket List</b>
                 </span>
-                <span className="brand-url">TheTravelGuideAi.com</span>
-              </span>
-            </Link>
+              </a>
+              <Link className="brand-url" href="/">
+                TheTravelGuideAi.com
+              </Link>
+            </div>
             <span className="tag">
               Private travel, arranged by{" "}
               <a

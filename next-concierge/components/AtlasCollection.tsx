@@ -544,6 +544,25 @@ export default function AtlasCollection({
           onCommit={(nextState, nextQuery) => writeUrl(nextState, nextQuery)}
           onShare={share}
           shareLabel={shared ? "Link copied" : "Share"}
+          trailing={
+            <>
+              {filtered.length > CARD_LIMIT && (
+                <span className="atlas-showing">first {CARD_LIMIT}</span>
+              )}
+              <label className="atlas-sort">
+                <span>Sort</span>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(readSort(e.target.value))}
+                  aria-label="Sort results"
+                >
+                  {SORT_MODES.map((m) => (
+                    <option key={m} value={m}>{SORT_LABELS[m]}</option>
+                  ))}
+                </select>
+              </label>
+            </>
+          }
         />
       ) : (
         <div className="villa-filters" aria-busy="true">
@@ -582,10 +601,11 @@ export default function AtlasCollection({
       </div>
 
       {/*
-        Its own bar rather than a second item in .atlas-scrollcue, because that
-        cue is `display: none` above 680px — the desktop results count lives in
-        the filter rail. A control only half the users can see is worse than no
-        control, so this sits with the list it orders and is visible on both.
+        MOBILE ONLY (CSS hides it above 680px).
+        On desktop the same two things now ride in the filter rail via its
+        `trailing` slot — one row instead of a rail, a count line and a sort
+        line all describing the same result set. On phones the rail collapses to
+        a Filters pill with no room for them, so they keep this bar.
       */}
       <div className="atlas-sortbar">
         {/* Say so when the list is truncated. 120 of 3,239 was silent before,
