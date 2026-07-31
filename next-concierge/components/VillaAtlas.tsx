@@ -93,6 +93,10 @@ function requestAdvisorHref(v: Villa): string {
 // The house basemaps, same set as the Living Atlas (AtlasShell). The villa map
 // is a flat mercator inset, so fog is skipped; the Standard-family styles keep
 // their dusk light preset so the water stays deep against the brass pins.
+// Same five basemaps as the shared atlas, same names, same order — a villa map
+// that offered a different set under different names is one more thing to learn
+// for no reason. A villa is chosen on where it sits (the beach, the ridge, the
+// next roof over), so the daylight pair matters more here than anywhere.
 type StyleKey = "dark" | "satellite" | "daylight" | "dusk" | "city";
 const VILLA_STYLES: Record<StyleKey, { label: string; url: string; sw: string; light?: string }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", sw: "#11151c" },
@@ -102,28 +106,59 @@ const VILLA_STYLES: Record<StyleKey, { label: string; url: string; sw: string; l
     sw: "#3b5a3a",
     light: "dusk",
   },
-  // The same pair the Living Atlas gained: imagery you can actually read the
-  // ground from, and a daylight city view with real 3D buildings. A villa is
-  // chosen on where it sits — the beach, the ridge, the next roof over — which
-  // is precisely what a dusk preset flattens away.
   daylight: {
-    label: "Satellite (Day)",
+    label: "Satellite (day)",
     url: "mapbox://styles/mapbox/standard-satellite",
     sw: "#7fa9c9",
     light: "day",
   },
-  dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", sw: "#caa46a", light: "dusk" },
+  dusk: { label: "3D Dusk", url: "mapbox://styles/mapbox/standard", sw: "#caa46a", light: "dusk" },
   city: {
-    label: "3D Buildings (Day)",
+    label: "3D Day",
     url: "mapbox://styles/mapbox/standard",
     sw: "#cfd8e3",
     light: "day",
   },
 };
 
+/**
+ * Coerce whatever came back into a payload the render cannot trip over.
+ *
+ * `data.results.map(...)` and `data.total.toLocaleString()` both run
+ * unconditionally during render, so a response missing either field is not a
+ * blank list — it is an uncaught TypeError, which in production is the bare
+ * "a client-side exception has occurred" page. The search API can answer with a
+ * different shape for reasons that have nothing to do with this component (a
+ * rate-limit body, an edge error page, a truncated response), and none of those
+ * are worth losing the page over: an empty grid still has working filters, and
+ * the next keystroke re-fetches.
+ */
+function safePayload(raw: unknown, fallback: SearchPayload): SearchPayload {
+  const p = raw as Partial<SearchPayload> | null;
+  if (!p || typeof p !== "object" || !Array.isArray(p.results)) return fallback;
+  return {
+    total: Number.isFinite(p.total) ? (p.total as number) : p.results.length,
+    page: Number.isFinite(p.page) ? (p.page as number) : 1,
+    perPage: Number.isFinite(p.perPage) && (p.perPage as number) > 0 ? (p.perPage as number) : 24,
+    results: p.results,
+    facets: p.facets ?? { regions: {}, sleeps: {}, callForPricing: 0 },
+  };
+}
+
+const EMPTY_PAYLOAD: SearchPayload = {
+  total: 0,
+  page: 1,
+  perPage: 24,
+  results: [],
+  facets: { regions: {}, sleeps: {}, callForPricing: 0 },
+};
+
 export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) {
   const [params, setParams] = useState<Params>(initialParams);
-  const [data, setData] = useState<SearchPayload>(initial);
+  // The server payload gets the same treatment as a fetched one: this component
+  // is also rendered from a cached RSC payload, which can outlive a change to
+  // the search's shape.
+  const [data, setData] = useState<SearchPayload>(() => safePayload(initial, EMPTY_PAYLOAD));
   const [loading, setLoading] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   const [styleKey, setStyleKey] = useState<StyleKey>("dark");
@@ -160,9 +195,10 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     const q = filterQueryRef.current;
     fetch(`/api/villas/search?view=pins${q ? `&${q}` : ""}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((j: { total: number; pins: [number, number, number, number, number][] }) => {
+      .then((j: { total?: number; pins?: [number, number, number, number, number][] }) => {
         const m = mapRef.current;
         if (!m || q !== filterQueryRef.current) return; // stale response
+        if (!Array.isArray(j?.pins)) return; // not the pin feed — leave the map be
         // Each pin is [id, lat, lon, exact, featured] — the villa dataset's
         // geo.{lat, lon} flattened by lib/villas.js, so the pair is [lat, lon].
         const features = j.pins
@@ -205,8 +241,10 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     setLoading(true);
     fetch(`/api/villas/search?${queryString(params)}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((j: SearchPayload) => {
-        if (!cancelled) setData(j);
+      .then((j: unknown) => {
+        // Keep the previous results rather than blanking the page when a
+        // response arrives in a shape we can't render.
+        if (!cancelled) setData((prev) => safePayload(j, prev));
       })
       .catch(() => {})
       .finally(() => {

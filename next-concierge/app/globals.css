@@ -3696,13 +3696,13 @@ button.card-book {
     gap: 16px;
   }
   .atlas-card .ac-link,
-  .atlas-card .ac-ask,
-  .atlas-card .ac-3d {
+  .atlas-card .ac-ask {
     padding: 6px 0; /* 44px-ish touch target without changing the look */
   }
-  /* Already a full-width button; keep it thumb-height. */
-  .atlas-card .ac-book {
-    padding: 11px 16px;
+  /* The two outlined actions keep their box; just make it thumb-height. */
+  .atlas-card .ac-book,
+  .atlas-card .ac-3d {
+    padding: 9px 13px;
   }
 }
 
@@ -3922,74 +3922,56 @@ button.card-book {
   }
 }
 
-/* "Search VIP Rates" — the card's one filled button.
-   A hotel card offered three actions of roughly equal volume and none of them
-   was the price. This is the largest thing on the card because it is the only
-   one that moves a trip forward; "See it in 3D" and "Ask The Guide" sit beneath
-   it at link weight, which is what they always were. */
-.atlas-card .ac-book {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: #17140c;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light, #ecdfc2));
-  border: 1px solid var(--gold);
-  border-radius: 9px;
-  padding: 9px 16px;
-  text-decoration: none;
-  cursor: pointer;
-  /* Own its line: the booking CTA leading a row of plain links reads as one
-     more link at a bigger size. On its own row it reads as the action. */
-  flex: 0 0 100%;
-  text-align: center;
-}
-.atlas-card .ac-book:hover {
-  filter: brightness(1.08);
-}
-
-/* "See it in 3D" — the handoff to Google Photorealistic 3D. Deliberately the
-   same weight as "Ask The Guide" now: it is a detour worth offering, not the
-   action the card exists for. */
+/* "Search VIP Rates" and "See it in 3D" — a matched pair.
+   These are the two things a hotel card can do that the card itself cannot: get
+   a price, and show you the building. Neither outranks the other (one is the
+   money, one is the reason to spend it), so they share a treatment — outlined
+   rather than filled, because a card carrying a solid gold slab reads as an
+   advert for itself. */
+.atlas-card .ac-book,
 .atlas-card .ac-3d {
   font-family: var(--sans);
   font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--gold);
-  background: none;
-  border: none;
-  padding: 0;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.45);
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
 }
+.atlas-card .ac-book:hover,
 .atlas-card .ac-3d:hover {
-  text-decoration: underline;
+  background: rgba(201, 168, 76, 0.16);
+  border-color: var(--gold);
+  text-decoration: none;
 }
 
-/* Same hierarchy inside a globe popup: the rate search is filled, the photoreal
-   handoff is a plain link below it. */
-.mapboxgl-popup .iw .iwbook {
-  display: block;
-  width: fit-content;
-  margin: 8px 0 0;
-  white-space: nowrap;
-  padding: 7px 13px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light, #ecdfc2));
-  border: 1px solid var(--gold);
-  color: #17140c;
-  font-size: 12.5px;
-  font-weight: 700;
-  text-decoration: none;
-}
-.mapboxgl-popup .iw .iwbook:hover { filter: brightness(1.08); }
+/* The same matched pair inside a globe popup, for the same reason: get a price,
+   or see the building. Equal weight, outlined, neither shouting. */
+.mapboxgl-popup .iw .iwbook,
 .mapboxgl-popup .iw .iw3d {
-  display: block;
-  width: fit-content;
-  margin: 8px 0 0;
+  display: inline-block;
+  width: auto;
+  margin: 8px 6px 0 0;
   white-space: nowrap;
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.45);
   color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
   text-decoration: none;
 }
-.mapboxgl-popup .iw .iw3d:hover { text-decoration: underline; }
+.mapboxgl-popup .iw .iwbook:hover,
+.mapboxgl-popup .iw .iw3d:hover {
+  background: rgba(201, 168, 76, 0.16);
+  border-color: var(--gold);
+}
 
 /* ── Explore, grouped by intent (D4) ──────────────────────────────────────
    A heading per group so the seven collections read as three choices. The
@@ -4012,14 +3994,6 @@ button.card-book {
   font-weight: 600;
   color: var(--gold-light);
   letter-spacing: 0.01em;
-}
-.nav-menu-group-blurb {
-  font-size: 10.5px;
-  color: var(--sub);
-  white-space: nowrap;
-}
-@media (max-width: 640px) {
-  .nav-menu-group-blurb { display: none; }
 }
 
 /* The traced-route banner, in the scroll cue between map and cards. It replaces

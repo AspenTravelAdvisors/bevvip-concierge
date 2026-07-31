@@ -39,6 +39,7 @@ import {
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
 import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
 import type { ShareStyle } from "@/lib/atlas/adapters/params";
+import { frameRoute, framePoints } from "@/lib/atlas/route-frame";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
 
@@ -83,7 +84,7 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
     data: `${ATLASES.cruise.base}/atlas-meta.json`,
   },
   jet: {
-    label: "Private Jet Journeys",
+    label: "Private Jet Expeditions",
     color: "#dfe5f2",
     url: ATLASES.jet.base,
     data: `${ATLASES.jet.base}/itinerary.json`,
@@ -157,7 +158,10 @@ const REGION_FALLBACK: Record<string, RegionCamera> = {
 // led with jets, and the blurb mentioned neither villas nor rail.)
 const LEGEND: { key: string; label: string; color: string }[] = COLLECTIONS.map((c) => ({
   key: c.type,
-  label: c.type === "hotel" ? "VIP Hotels" : OVERLAYS[c.type as OverlayKey]?.label ?? c.nav,
+  // `nav` is the canonical name now that it reads "VIP Hotels" and "Private
+  // Villas" — the hotel special-case that used to live here existed only
+  // because the registry said plain "Hotels".
+  label: OVERLAYS[c.type as OverlayKey]?.label ?? c.nav,
   color: c.color,
 }));
 
@@ -210,6 +214,13 @@ const DAY_FOG = {
   color: "rgb(186,210,235)", "high-color": "rgb(96,140,200)",
   "horizon-blend": 0.08, "space-color": "rgb(18,30,54)", "star-intensity": 0,
 };
+/*
+ * The basemaps, IN MENU ORDER — the style picker renders Object.keys(), so this
+ * object's key order is the order the traveller sees. It runs flat-to-photoreal
+ * and then into the two 3D-building views, which is also roughly the order of
+ * how far in you are looking: Dark for the whole world, imagery for a coastline,
+ * extruded buildings for a street.
+ */
 const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string; objects3d?: boolean }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
   satellite: {
@@ -222,12 +233,9 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
     light: "dusk",
     // Standard Satellite ships ~40 .glb tree/turbine models that are invisible
     // at globe zoom but cost seconds of cold-load network + parse. Off here;
-    // Dusk (Standard) keeps its 3D buildings.
+    // the 3D basemaps below keep their real buildings.
     objects3d: false,
   },
-  // Mapbox Standard renders 3D buildings at city zoom; the dusk light preset gives
-  // a warm golden-hour cast that stays legible without the brightness of day.
-  dusk: { label: "Dusk", url: "mapbox://styles/mapbox/standard", fog: DUSK_FOG, sw: "#caa46a", light: "dusk" },
   /*
    * Daylight satellite.
    *
@@ -237,25 +245,20 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
    * which is to look at a beach, a reef or a piste and see it in daylight. Both
    * now exist; nobody has to choose between the product's mood and being able
    * to see the ground.
-   *
-   * Same objects3d: false as the dusk satellite — the ~40 tree and turbine .glb
-   * models are invisible above street level and cost seconds of cold load.
    */
   daylight: {
-    label: "Satellite (Day)", url: "mapbox://styles/mapbox/standard-satellite",
+    label: "Satellite (day)", url: "mapbox://styles/mapbox/standard-satellite",
     fog: DAY_FOG, sw: "#7fa9c9", light: "day", objects3d: false,
   },
   /*
-   * Daylight Standard, 3D buildings on.
-   *
-   * The one basemap meant to be flown into rather than looked down on: at city
-   * zoom Mapbox Standard extrudes real building footprints, and in daylight
-   * they read as a city rather than as the grey blocks the dusk preset makes of
-   * them. It is the closest Mapbox gets to the Google photoreal handoff, and
-   * unlike that handoff it never leaves the page.
+   * Mapbox Standard extrudes real building footprints at city zoom. The two
+   * presets below are the same style under different light, and are named for
+   * what distinguishes them — the 3D, and the hour — rather than for the
+   * Mapbox style they happen to share.
    */
+  dusk: { label: "3D Dusk", url: "mapbox://styles/mapbox/standard", fog: DUSK_FOG, sw: "#caa46a", light: "dusk", objects3d: true },
   city: {
-    label: "3D Buildings (Day)", url: "mapbox://styles/mapbox/standard",
+    label: "3D Day", url: "mapbox://styles/mapbox/standard",
     fog: DAY_FOG, sw: "#cfd8e3", light: "day", objects3d: true,
   },
 };
@@ -1077,26 +1080,37 @@ export default function AtlasShell({
           // has to yield to it, or the camera drifts off the thing you just
           // asked to see (and fitBounds fights the rotation).
           stopSpin();
+          /*
+           * Order, orient and single-frame the geometry before anything touches
+           * it. The shipped sea legs are deduplicated across trips, so they
+           * arrive unordered, in arbitrary directions, and split across several
+           * longitude frames — see lib/atlas/route-frame.ts. Everything
+           * downstream (the dash animation's direction, the bounding box the
+           * camera fits) assumes a route that runs one way through one frame.
+           */
+          const stopPts = (stops ?? lastFocusStops.current ?? [])
+            .map((s) => s.at)
+            .filter((at): at is [number, number] => Array.isArray(at) && at.length === 2);
+          const framed = frameRoute(legs, stopPts);
           const data = {
             type: "FeatureCollection" as const,
-            features: legs
-              .filter((l) => l.coordinates.length >= 2)
-              .map((l) => ({
-                type: "Feature" as const,
-                geometry: { type: "LineString" as const, coordinates: l.coordinates },
-                // rail  → railway symbology (casing + glow + rail + sleepers)
-                // primary→ the collection's own route line (jets, sea legs)
-                // conn   → a ferry/road hop inside another journey: faint dashes
-                properties: {
-                  rail: l.mode === "rail" ? 1 : 0,
-                  primary: l.mode === "primary" ? 1 : 0,
-                  conn: l.mode !== "rail" && l.mode !== "primary" ? 1 : 0,
-                },
-              })),
+            features: framed.map((l) => ({
+              type: "Feature" as const,
+              geometry: { type: "LineString" as const, coordinates: l.coordinates },
+              // rail  → railway symbology (casing + glow + rail + sleepers)
+              // primary→ the collection's own route line (jets, sea legs)
+              // conn   → a ferry/road hop inside another journey: faint dashes
+              properties: {
+                rail: l.mode === "rail" ? 1 : 0,
+                primary: l.mode === "primary" ? 1 : 0,
+                conn: l.mode !== "rail" && l.mode !== "primary" ? 1 : 0,
+              },
+            })),
           };
-          // Remember it so a basemap switch can repaint — setStyle wipes every
-          // source and layer, and a traced route should survive that.
-          lastFocusLegs.current = legs;
+          // Remember the FRAMED legs, not the raw ones: a basemap switch
+          // repaints from here, and re-framing already-framed geometry is a
+          // no-op, where re-framing raw geometry twice is not.
+          lastFocusLegs.current = framed;
           if (stops) lastFocusStops.current = stops;
           const p = routePalette();
 
@@ -1328,9 +1342,23 @@ export default function AtlasShell({
           paintFocusStops(stops, routePalette());
         }
 
-        function fitFocusRoute(legs: { coordinates: [number, number][] }[]) {
+        function fitFocusRoute(rawLegs: { coordinates: [number, number][] }[]) {
           // Any deliberate camera move outranks the idle spin.
           stopSpin();
+          /*
+           * Frame the points before measuring them.
+           *
+           * The caller may hand us either a traced route (already framed by
+           * paintFocusRoute) or a bare cloud of fallback points. Either way the
+           * bounding box has to be computed over ONE longitude window, or a
+           * Pacific itinerary measures 540° wide and the camera obediently
+           * centres on Africa at minimum zoom. framePoints finds the tightest
+           * window by cutting at the widest empty gap.
+           */
+          const all: [number, number][] = [];
+          for (const l of rawLegs) for (const c of l.coordinates) all.push(c);
+          const window = framePoints(all);
+          const legs = [{ coordinates: window }];
           const flattened = flattenIfCircumnavigation(legs);
           const run = () => {
             try {
@@ -1481,20 +1509,19 @@ export default function AtlasShell({
         }
         function fitFeatured() {
           if (!featuredFC || !featuredFC.features.length) return;
-          // A plotted shortlist spread across continents is as unframeable on a
-          // globe as a wide route is; same gate, same reason.
-          const flattened =
-            focusRouteRef.current?.flatten([
-              {
-                coordinates: featuredFC.features.map(
-                  (f) => [f.geometry.coordinates[0], f.geometry.coordinates[1]] as [number, number],
-                ),
-              },
-            ]) ?? false;
+          // Same treatment a traced route gets: one longitude window, then
+          // decide whether a globe can hold it. A shortlist straddling the
+          // antimeridian is otherwise measured as the whole planet.
+          const window = framePoints(
+            featuredFC.features.map(
+              (f) => [f.geometry.coordinates[0], f.geometry.coordinates[1]] as [number, number],
+            ),
+          );
+          const flattened = focusRouteRef.current?.flatten([{ coordinates: window }]) ?? false;
           const run = () => {
             try {
               const b = new (mapboxgl as MapboxModule).LngLatBounds();
-              featuredFC?.features.forEach((f) => b.extend(f.geometry.coordinates));
+              window.forEach((c) => b.extend(c));
               map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
             } catch { /* fit optional */ }
           };
@@ -2296,10 +2323,19 @@ const FLOW_MS = 55; // ms per phase → a full period every ~1.3s
  * Even length matters: Mapbox repeats the array verbatim, so an odd-length one
  * inverts dash and gap on every other repeat and the line visibly flickers
  * between "mostly colour" and "mostly black".
+ *
+ * DIRECTION. `t` is how far into the pattern the line starts, and a dash then
+ * sits at every `nP - t` along the path — so as t grows the marks slide BACK
+ * toward the start. Running the phase forward therefore animates the route
+ * backwards, which is what it did. Counting t down instead sends the marks the
+ * way you travel. (The Leaflet atlases animate stroke-dashoffset negative,
+ * which is already the forward direction — the sign convention is inverted
+ * between the two, which is exactly how this went unnoticed.)
  */
 function dashPhase(step: number): number[] {
   const period = TIE_DASH + TIE_GAP;
-  const t = ((step % FLOW_STEPS) / FLOW_STEPS) * period;
+  const back = (FLOW_STEPS - (((step % FLOW_STEPS) + FLOW_STEPS) % FLOW_STEPS)) % FLOW_STEPS;
+  const t = (back / FLOW_STEPS) * period;
   if (t <= TIE_DASH) {
     // Starting part-way through a tick: [partial tick, gap, tick, gap].
     return [TIE_DASH - t, TIE_GAP, TIE_DASH, TIE_GAP + t];

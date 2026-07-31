@@ -85,7 +85,6 @@ export default function SiteNav() {
               <div key={group.key} className="nav-menu-group">
                 <div className="nav-menu-group-head">
                   <span className="nav-menu-group-label">{group.label}</span>
-                  <span className="nav-menu-group-blurb">{group.blurb}</span>
                 </div>
                 {group.items.map((c) => (
                   <Link

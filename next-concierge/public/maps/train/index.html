@@ -697,13 +697,13 @@ const BASES={
      chosen to sit under the atlas's night palette; this one is the plain
      daylight basemap you want when the question is what the ground looks
      like. Two different jobs, so two entries rather than one compromise. */
-  daylight:{label:'Satellite (Day)',sw:'#7fa9c9',make:()=>L.layerGroup([
+  daylight:{label:'Satellite (day)',sw:'#7fa9c9',make:()=>L.layerGroup([
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:10,attribution:_cr.esri+' &middot; '+DATA_CREDIT}),
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',{maxZoom:10,subdomains:'abcd',opacity:.9})])},
   /* Daytime streets with building footprints — the flat-map counterpart to
      the 3D building view on the Mapbox atlases. Leaflet cannot extrude, so
      this is OSM's rendered building layer rather than real geometry. */
-  city:{label:'Daylight Streets',sw:'#e8e2d6',make:()=>L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors &middot; '+DATA_CREDIT})}
+  city:{label:'Streets (day)',sw:'#e8e2d6',make:()=>L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors &middot; '+DATA_CREDIT})}
 };
 const BASE_ORDER=['voyager','dark','satellite','daylight','city'];
 const DEFAULT_BASE='satellite';

@@ -16,14 +16,23 @@ import type { OfferingType } from "./types";
  */
 export type IntentKey = "stay" | "air" | "sea" | "land";
 
-export const INTENTS: { key: IntentKey; label: string; blurb: string }[] = [
-  { key: "stay", label: "Places to stay", blurb: "Hotels and private villas" },
-  { key: "air", label: "By Air", blurb: "Private jet expeditions" },
-  // NOT "charters". A hotel yacht is an ultra-luxury cruise — a hotel at sea,
-  // booked by the cabin exactly like an expedition or world cruise. Calling the
-  // group "charters" described the wrong product and the wrong price.
-  { key: "sea", label: "By Sea", blurb: "Hotel yachts, expeditions, world cruises" },
-  { key: "land", label: "By Land", blurb: "The legendary rail journeys" },
+/*
+ * No blurbs. Each group used to carry a subtitle that listed the collections
+ * printed directly beneath it — "By Sea · Hotel yachts, expeditions, world
+ * cruises" sitting on top of Luxury Hotel Yachts, Expedition Cruises, World
+ * Cruises. A caption that repeats the thing it captions is noise between the
+ * reader and the list.
+ *
+ * The group labels also say NOT "charters" for the sea group: a hotel yacht is
+ * an ultra-luxury cruise — a hotel at sea, booked by the cabin exactly like an
+ * expedition or a world cruise — so "charters" named the wrong product at the
+ * wrong price.
+ */
+export const INTENTS: { key: IntentKey; label: string }[] = [
+  { key: "stay", label: "Places to stay" },
+  { key: "air", label: "By Air" },
+  { key: "sea", label: "By Sea" },
+  { key: "land", label: "By Land" },
 ];
 
 export interface AtlasConfig {
@@ -80,7 +89,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   hotel: {
     type: "hotel",
     label: "Hotel atlas",
-    nav: "Hotels",
+    nav: "VIP Hotels",
     nounPlural: "vetted hotels",
     tagline: "Approved luxury hotel inventory, mapped worldwide",
     base: process.env.NEXT_PUBLIC_HOTEL_ATLAS_BASE || "/maps/hotel",
@@ -96,7 +105,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // route excludes it (app/atlas/villa is its own static route).
     type: "villa",
     label: "Villa atlas",
-    nav: "Villas",
+    nav: "Private Villas",
     nounPlural: "private villas",
     tagline: "Private villas and vacation homes, advisor arranged worldwide",
     base: "/atlas/villa",
@@ -280,7 +289,6 @@ export function externalAtlasLink(type: OfferingType, region?: string | null): s
 export function collectionsByIntent(): {
   key: IntentKey;
   label: string;
-  blurb: string;
   items: AtlasConfig[];
 }[] {
   return INTENTS.map((i) => ({

@@ -61,7 +61,7 @@ const splitList = (v: string | null | undefined): string[] =>
  * simply un-shareable — silently, and only for the person you sent the link to.
  * AtlasShell derives its StyleKey from this.
  */
-export const SHARE_STYLES = ["dark", "satellite", "daylight", "dusk", "city"] as const;
+export const SHARE_STYLES = ["dark", "satellite", "daylight", "dusk", "city"] as const; // menu order
 export type ShareStyle = (typeof SHARE_STYLES)[number];
 
 export interface RegionInfo { key: string; name?: string | null; ab?: string | null }

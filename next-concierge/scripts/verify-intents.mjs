@@ -87,7 +87,7 @@ for (const [name, ok, detail] of checks) {
   if (!ok) bad = true;
 }
 for (const g of groups) {
-  console.log(`\n  ${g.label} — ${g.blurb}`);
+  console.log(`\n  ${g.label}`);
   for (const c of g.items) console.log(`      ${c.nav.padEnd(14)} ${c.count.toLocaleString()}`);
 }
 rmSync(OUT, { recursive: true, force: true });

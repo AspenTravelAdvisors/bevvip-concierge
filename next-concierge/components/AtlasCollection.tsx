@@ -686,10 +686,19 @@ export default function AtlasCollection({
             )}
 
             <div className="ac-actions">
-              {/* Primary first and filled — the booking search. Everything
-                  after it is a plain link, so the card has one obvious action
-                  rather than three competing ones. */}
+              {/* The two boxed actions sit together, then the plain links.
+                  Splitting them with "View details" made a matched pair read as
+                  two unrelated controls. */}
               {cardPrimary?.(o)}
+              {cardAction && (
+                <button
+                  type="button"
+                  className="ac-3d"
+                  onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
+                >
+                  {cardAction.label}
+                </button>
+              )}
               {o.url && (
                 <a
                   className="ac-link"
@@ -700,15 +709,6 @@ export default function AtlasCollection({
                 >
                   View details ↗
                 </a>
-              )}
-              {cardAction && (
-                <button
-                  type="button"
-                  className="ac-3d"
-                  onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
-                >
-                  {cardAction.label}
-                </button>
               )}
               {/* Same escape hatch the Leaflet cards had: ask instead of filter. */}
               <button
