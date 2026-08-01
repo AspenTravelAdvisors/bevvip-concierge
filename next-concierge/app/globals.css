@@ -200,6 +200,46 @@ main.page {
   border-bottom-color: var(--gold);
 }
 
+/* The tour entry. Below 720px the header's "How this works" is display:none,
+   which left the tour with no entry point at all on a phone — this is it.
+   Deliberately NOT a glow or a pulse: the header CTA is the only gold-filled
+   control in the app because it is the only one the business needs clicked, and
+   an animated secondary link would spend that hierarchy to sell a tour. A gold
+   dot is enough presence for something that only ever appears on an empty
+   transcript, i.e. only to someone who hasn't started. `display: block` so it
+   takes its own line rather than blurring into the dates toggle beside it. */
+.empty-tour {
+  display: block;
+  width: fit-content;
+  margin: 2px auto 0;
+  padding: 8px 4px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.empty-tour::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  vertical-align: 1px;
+  opacity: 0.75;
+}
+.empty-tour:hover {
+  color: var(--gold-light);
+}
+.empty-tour:hover::before {
+  opacity: 1;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -1516,6 +1556,21 @@ main.page {
     -webkit-line-clamp: unset;
     line-clamp: unset;
     overflow: visible;
+  }
+
+  /* `.empty` goes text-align:left here, but .empty-tour is a fit-content block
+     with `margin: auto` — which centres regardless of text-align, stranding it
+     mid-row against left-aligned siblings. Pin it to the left edge, and trim the
+     vertical padding: this is the breakpoint where the 46dvh sheet has to fit
+     the headline, subhead, prompts, this link and the composer together. */
+  .empty-tour {
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .empty-toggle {
+    margin-top: 12px;
   }
 
   /* A swipeable row of comfortable pills — like the header tabs. Five narrow

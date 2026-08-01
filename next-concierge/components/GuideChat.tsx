@@ -19,7 +19,7 @@ import {
   loadConversation,
   saveConversation,
 } from "@/lib/conversation-store";
-import { askSent, resultsReturned, type AskSource } from "@/lib/analytics";
+import { askSent, resultsReturned, tourOpened, type AskSource } from "@/lib/analytics";
 import { collectionsSummary } from "@/lib/atlas-config";
 import { openAdvisor, ADVISOR_CTA, ADVISOR_SLA } from "./AdvisorRequest";
 import BookingStrip from "./BookingStrip";
@@ -430,6 +430,30 @@ export default function GuideChat() {
                     </button>
                   ))}
                 </div>
+
+                {/* The tour's only other entry point is "How this works" in the
+                    header, which is display:none below 720px — so on a phone the
+                    tour was unreachable. It belongs here anyway: this is the
+                    first screen a first-timer sees, and an empty transcript is
+                    by definition the only moment "what is this?" is still the
+                    question. It disappears the instant they send anything.
+
+                    Above the dates disclosure, not below it, and that ordering
+                    is the point. The phone sheet rests at 46dvh with a budget
+                    tuned to fit "headline, subhead, prompts and composer" — a
+                    fifth block has to displace something, and a first-timer's
+                    "what is this?" outranks "I already have dates", which is
+                    the refinement of someone who has already decided. */}
+                <button
+                  type="button"
+                  className="empty-tour"
+                  onClick={() => {
+                    tourOpened();
+                    window.dispatchEvent(new Event("bevvip:start-tour"));
+                  }}
+                >
+                  New here? See how this works
+                </button>
 
                 {datesOpen ? (
                   <BookingStrip
