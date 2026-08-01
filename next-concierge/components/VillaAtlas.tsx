@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
+import { parseViewParams, setViewParams } from "@/lib/atlas/adapters/params";
 // Same public, URL-restricted token the Living Atlas ships (see AtlasShell).
 const FALLBACK_TOKEN =
   "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
@@ -172,6 +173,29 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   const styleKeyRef = useRef<StyleKey>("dark");
   const pinsFCRef = useRef<unknown>(null);
   const firstRender = useRef(true);
+  /**
+   * The live camera + basemap, for the Share link.
+   *
+   * Deliberately NOT pushed into the URL as it changes. The filter effect below
+   * rewrites the address bar via replaceState on every param change, and making
+   * the camera part of that would mean a history write on every pan of the map.
+   * The link is built from this ref at the moment Share is pressed instead.
+   */
+  const viewRef = useRef<{
+    center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
+  } | null>(null);
+  /**
+   * The view an incoming shared link asked for, read once before anything
+   * rewrites the URL — which the filter effect does on first run, so reading
+   * this later would find it already gone.
+   */
+  const arrivedView = useRef(
+    typeof window === "undefined"
+      ? { style: null, flat: false, camera: null }
+      : parseViewParams(new URLSearchParams(window.location.search)),
+  );
+  /** True only while a shared camera is still waiting to survive the first auto-fit. */
+  const skipFirstFit = useRef(!!arrivedView.current.camera);
 
   // Filter params only (no page/sort/bbox): the map pins track these. bbox is
   // excluded on purpose — it limits the *list* to the visible area, while the
@@ -213,7 +237,14 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         const fc = { type: "FeatureCollection", features };
         pinsFCRef.current = fc; // cached so a basemap switch repaints without refetching
         src.setData(fc);
-        if (q && features.length > 0 && features.length < 3600) {
+        // An explicit shared camera outranks the auto-fit, but only for the
+        // first load. Both are "frame the villas", and the link is the more
+        // specific instruction — an advisor who framed a hillside and sent it
+        // should not have the client's map jump out to the filter's bounds a
+        // beat after it opens. Any later filter change refits as normal.
+        const honourSharedCamera = skipFirstFit.current;
+        skipFirstFit.current = false;
+        if (!honourSharedCamera && q && features.length > 0 && features.length < 3600) {
           let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
           for (const f of features) {
             const [lng, lat] = f.geometry.coordinates;
@@ -295,15 +326,46 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
       .then((mapboxgl) => {
         if (cancelled || !mapEl.current || mapRef.current) return;
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || FALLBACK_TOKEN;
+        // A shared link's view wins over the villa atlas's own opening framing.
+        // Applied at construction rather than as a flyTo afterwards: the map
+        // should OPEN on what was sent, not pan there while the client watches.
+        const av = arrivedView.current;
+        const arrivedStyle = (av.style as StyleKey | null) ?? null;
+        if (arrivedStyle && VILLA_STYLES[arrivedStyle]) {
+          styleKeyRef.current = arrivedStyle;
+          setStyleKey(arrivedStyle);
+        }
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: "mapbox://styles/mapbox/dark-v11",
-          center: [-40, 25],
-          zoom: 1.6,
+          style: VILLA_STYLES[styleKeyRef.current].url,
+          center: av.camera ? [av.camera.lng, av.camera.lat] : [-40, 25],
+          zoom: av.camera ? av.camera.zoom : 1.6,
+          pitch: av.camera?.pitch ?? 0,
+          bearing: av.camera?.bearing ?? 0,
           minZoom: 1,
+          // `flat=1` is the shared param for mercator, and mercator is also this
+          // atlas's own default — so only an explicit globe request changes it.
           projection: "mercator",
         }) as MBMap;
         mapRef.current = map;
+        // Publish the camera for Share. moveend alone misses the pitch and
+        // rotate axes, which is exactly the tilt a shared view most wants.
+        const reportView = () => {
+          try {
+            const c = map.getCenter();
+            viewRef.current = {
+              center: { lng: c.lng, lat: c.lat },
+              zoom: map.getZoom(),
+              pitch: map.getPitch(),
+              bearing: map.getBearing(),
+            };
+          } catch { /* view reporting is never load-bearing */ }
+        };
+        reportView();
+        map.on("moveend", reportView);
+        map.on("zoomend", reportView);
+        map.on("pitchend", reportView);
+        map.on("rotateend", reportView);
         // bottom-right: top-right belongs to the fullscreen/style/share stack
         map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
         const popup = new mapboxgl.Popup({ closeButton: true, offset: 10, maxWidth: "250px" });
@@ -515,11 +577,29 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     return () => clearTimeout(t);
   }, [isFull]);
 
-  // Share the current view: the URL already carries every active filter
-  // (kept in sync via history.replaceState). Native share sheet where the
-  // platform has one, clipboard copy elsewhere.
+  // Share the current view.
+  //
+  // The URL already carries every active filter (kept in sync via
+  // replaceState), but it carried ONLY those — the basemap and the camera were
+  // dropped, so a link sent from a tilted satellite view of one hillside opened
+  // as the default dark world map with the same filters applied. The view is
+  // written on at send time, from the live camera rather than the address bar.
+  //
+  // Native share sheet where the platform has one, clipboard copy elsewhere.
   async function shareView() {
-    const url = window.location.href;
+    const u = new URL(window.location.href);
+    const v = viewRef.current;
+    setViewParams(u.searchParams, {
+      style: styleKeyRef.current,
+      // No `flat` here. This atlas has no projection toggle — it is mercator,
+      // always — so emitting flat=1 would be a param that says nothing and can
+      // change nothing, on every link.
+      flat: false,
+      camera: v
+        ? { lng: v.center.lng, lat: v.center.lat, zoom: v.zoom, pitch: v.pitch, bearing: v.bearing }
+        : null,
+    });
+    const url = u.toString();
     const confirmCopied = () => {
       setShared(true);
       setTimeout(() => setShared(false), 2000);

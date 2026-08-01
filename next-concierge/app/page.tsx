@@ -10,6 +10,13 @@ import { collectionsCompact, internalAtlasLink } from "@/lib/atlas-config";
 // nothing. And the blurb beneath it named four collections while the header
 // offered seven and the legend showed however many had finished loading. All
 // three now read the same canonical list.
+//
+// STAYS SYNCHRONOUS ON PURPOSE. The globe's Share button links back here, so
+// this route has to understand ?style/?flat/?@ — but reading `searchParams`
+// here would opt the landing page out of static prerendering, and this is the
+// page carrying the SSR poster frame that puts a globe on screen before any JS
+// runs. AtlasShell reads those params itself, after mount, where they cost
+// nothing. See `arrivedView` there.
 export default function Home() {
   return (
     <HomeSplit
@@ -31,7 +38,18 @@ export default function Home() {
               </span>
             </p>
           </div>
-          <AtlasShell type="hotel" region={null} externalLink={internalAtlasLink("hotel")} scope="all" />
+          <AtlasShell
+            type="hotel"
+            region={null}
+            externalLink={internalAtlasLink("hotel")}
+            scope="all"
+            // No collections panel here. The home globe plots all seven, so the
+            // legend was seven rows of key over the top-left of the world —
+            // the most valuable corner of the only thing on the page — for a
+            // surface where nobody is filtering. The collection pages, which
+            // are for browsing, keep theirs.
+            showLegend={false}
+          />
         </>
       }
     />

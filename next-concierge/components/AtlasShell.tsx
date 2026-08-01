@@ -38,7 +38,7 @@ import {
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
 import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
-import type { ShareStyle } from "@/lib/atlas/adapters/params";
+import { parseViewParams, setViewParams, type ShareStyle } from "@/lib/atlas/adapters/params";
 import { frameRoute, framePoints } from "@/lib/atlas/route-frame";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
@@ -367,18 +367,48 @@ interface Props {
   initialStyle?: StyleKey;
   /** false → open flat (mercator). Long-haul flight arcs read better in 2D. */
   initialGlobe?: boolean;
-  /** Exact opening camera, from a shared `@lng,lat,zoom`. */
-  initialCamera?: { lng: number; lat: number; zoom: number } | null;
+  /**
+   * Exact opening camera, from a shared `@lng,lat,zoom[,pitch[,bearing]]`.
+   * pitch/bearing are absent on legacy links; absent means "don't touch that
+   * axis", which is not the same as zero.
+   */
+  initialCamera?: { lng: number; lat: number; zoom: number; pitch?: number; bearing?: number } | null;
   /**
    * Reports basemap / projection / camera so a Share link can carry the view.
    * An advisor sharing with a client means "look at THIS, like THIS".
    */
-  onViewChange?: (v: { style: StyleKey; globe: boolean; center: { lng: number; lat: number }; zoom: number }) => void;
+  onViewChange?: (v: {
+    style: StyleKey;
+    globe: boolean;
+    center: { lng: number; lat: number };
+    zoom: number;
+    pitch: number;
+    bearing: number;
+  }) => void;
+  /**
+   * Page-level Share handler. Collection pages pass their own, because only the
+   * page knows the filters and the pinned journey that must travel with the
+   * view; when it is absent (the home globe) the shell falls back to sharing
+   * the current URL with the view params written onto it.
+   *
+   * Supplying this does NOT suppress the button — the button is part of the
+   * map's control stack on every surface. It only changes what the link says.
+   */
+  onShare?: () => void;
+  /** Lets the page drive the confirmation copy ("Link copied") from its own state. */
+  shareLabel?: string;
+  /**
+   * false → hide the collections legend. The home globe plots all seven
+   * collections but is not a browsing surface; the panel there was a key to a
+   * legend nobody was reading, taking the top-left corner of the world.
+   */
+  showLegend?: boolean;
 }
 
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
+  onShare, shareLabel, showLegend = true,
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
@@ -400,6 +430,37 @@ export default function AtlasShell({
   onRegionSelectRef.current = onRegionSelect;
   const onViewChangeRef = useRef(onViewChange);
   onViewChangeRef.current = onViewChange;
+  /**
+   * The most recently reported camera, kept here as well as handed upward.
+   *
+   * The map effect is keyed on [token] and never re-runs, so the built-in Share
+   * fallback cannot close over live state — and a page that passes no
+   * onViewChange (the home globe) has nowhere else for the view to live.
+   */
+  const viewRef = useRef<{
+    style: StyleKey; globe: boolean;
+    center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
+  } | null>(null);
+  /**
+   * The view an incoming shared link asked for, read straight off the URL.
+   *
+   * This is a FALLBACK, under whatever the parent passes. Collection pages run
+   * the full deep-link parse (they must — their links also carry filters) and
+   * hand the result down as initialStyle/initialGlobe/initialCamera; those win.
+   * It exists for the home globe, whose route has no filters to parse and which
+   * stays a static prerender precisely because it never touches searchParams on
+   * the server.
+   *
+   * Consumed only inside the map effect and never during render. That ordering
+   * is the point: the server has no URL to read, so any render-path dependency
+   * on this would be a hydration mismatch. The effect runs post-mount, where
+   * the two sides have already agreed.
+   */
+  const arrivedView = useRef(
+    typeof window === "undefined"
+      ? { style: null, flat: false, camera: null }
+      : parseViewParams(new URLSearchParams(window.location.search)),
+  );
   const focusRouteRef = useRef<{
     paint(legs: { mode: string; coordinates: [number, number][] }[], stops?: FocusStop[]): void;
     clear(): void;
@@ -448,6 +509,8 @@ export default function AtlasShell({
   const [tilted, setTilted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
+  /** Transient "✓ Link copied" confirmation for the built-in share path. */
+  const [shared, setShared] = useState(false);
   const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
   const hiddenRef = useRef(hidden);
   hiddenRef.current = hidden;
@@ -480,8 +543,18 @@ export default function AtlasShell({
     let restyling = false;
     let subsetActive = false;
     let homeZoom = 1.25;
-    let projGlobe = initialGlobe ?? true;
-    let styleKeyLocal: StyleKey = initialStyle ?? "satellite";
+    // Props first, then the URL, then the defaults. See `arrivedView`.
+    const arrived = arrivedView.current;
+    const arrivedStyle = (arrived.style as StyleKey | null);
+    let projGlobe = initialGlobe ?? (arrived.flat ? false : true);
+    let styleKeyLocal: StyleKey =
+      initialStyle ?? (arrivedStyle && ATLAS_STYLES[arrivedStyle] ? arrivedStyle : "satellite");
+    const arrivedCamera = initialCamera ?? arrived.camera;
+    // Reconcile the controls with what the URL just decided. Safe to call here
+    // and nowhere earlier: this is post-mount, so it re-renders the swatch and
+    // the Globe/Flat label rather than desyncing them from the server's HTML.
+    if (styleKeyLocal !== styleKey) setStyleKey(styleKeyLocal);
+    if (projGlobe !== is3D) setIs3D(projGlobe);
     // Collection accent for traced routes; falls back to rail copper.
     const accentLocal = accent || OVERLAYS[type as OverlayKey]?.color || "#e08d5f";
     let ro: ResizeObserver | undefined;
@@ -1628,13 +1701,28 @@ export default function AtlasShell({
         const reportView = () => {
           try {
             const c = map.getCenter();
-            onViewChangeRef.current?.({
-              style: styleKeyLocal, globe: projGlobe, center: { lng: c.lng, lat: c.lat }, zoom: map.getZoom(),
-            });
+            const v = {
+              style: styleKeyLocal,
+              globe: projGlobe,
+              center: { lng: c.lng, lat: c.lat },
+              zoom: map.getZoom(),
+              // Pitch and bearing ride along so the Share link can reproduce a
+              // tilted, rotated view rather than flattening it to plan north-up.
+              pitch: map.getPitch(),
+              bearing: map.getBearing(),
+            };
+            viewRef.current = v;
+            onViewChangeRef.current?.(v);
           } catch { /* view reporting is never load-bearing */ }
         };
         map.on("moveend", reportView);
         map.on("zoomend", reportView);
+        // Pitch and rotation are their own axes — neither fires moveend when
+        // changed alone (ctrl-drag, two-finger twist, the Tilt button), so
+        // without these the reported view kept a stale camera and the Share
+        // link quietly described the previous one.
+        map.on("pitchend", reportView);
+        map.on("rotateend", reportView);
 
         // The Tilt button reflects the camera, not just its own clicks: Mapbox
         // also pitches on ctrl-drag and two-finger drag, and a toggle that
@@ -1726,14 +1814,23 @@ export default function AtlasShell({
           }
 
           // A shared link's exact camera wins over any default framing.
-          if (initialCamera) {
+          if (arrivedCamera) {
             focused = true;
             try {
               map.flyTo({
-                center: [initialCamera.lng, initialCamera.lat],
-                zoom: initialCamera.zoom,
+                center: [arrivedCamera.lng, arrivedCamera.lat],
+                zoom: arrivedCamera.zoom,
                 speed: 1.4,
+                // Undefined, not 0, when the link omits them: flyTo treats an
+                // explicit 0 as "flatten and face north", which would override
+                // the collection's own opening pitch on every legacy 3-part
+                // link. Absent means "leave this axis alone".
+                pitch: arrivedCamera.pitch,
+                bearing: arrivedCamera.bearing,
               });
+              // Keep the Tilt button honest about the camera it just landed on
+              // — pitchend fires from a user gesture, not from this flyTo.
+              if (arrivedCamera.pitch != null) setTilted(arrivedCamera.pitch > 5);
               stopSpin();
             } catch { /* camera optional */ }
           }
@@ -2026,6 +2123,51 @@ export default function AtlasShell({
     }
   }
 
+  /**
+   * Share this view.
+   *
+   * Two paths, one button. A page that knows about filters passes `onShare` and
+   * owns the whole link; everywhere else the shell writes the view params onto
+   * the URL the traveller is already on. The fallback deliberately preserves
+   * the existing query string — on a collection page that means a shell-built
+   * link still carries the filters the rail put there.
+   *
+   * Native sheet where there is one (phones), clipboard otherwise, and the URL
+   * bar as the last resort when the clipboard is blocked — the same ladder
+   * VillaAtlas has always used, so the gesture matches across surfaces.
+   */
+  async function shareView() {
+    if (onShare) { onShare(); return; }
+    const url = new URL(window.location.href);
+    const v = viewRef.current;
+    if (v) {
+      setViewParams(url.searchParams, {
+        style: v.style,
+        flat: !v.globe,
+        camera: { lng: v.center.lng, lat: v.center.lat, zoom: v.zoom, pitch: v.pitch, bearing: v.bearing },
+      });
+    }
+    const href = url.toString();
+    const confirmCopied = () => {
+      setShared(true);
+      window.setTimeout(() => setShared(false), 2000);
+    };
+    if (navigator.share) {
+      try { await navigator.share({ title: document.title || "Atlas", url: href }); }
+      catch { /* user dismissed the sheet */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(href);
+      confirmCopied();
+    } catch {
+      // Clipboard blocked: put it where it can still be copied by hand, and
+      // don't push a history entry for what is not a navigation.
+      window.history.replaceState(null, "", href);
+      confirmCopied();
+    }
+  }
+
   // Keep `isFull` in sync with native fullscreen (covers Esc / browser exit).
   useEffect(() => {
     function onFsChange() { setIsFull(!!document.fullscreenElement); }
@@ -2171,6 +2313,22 @@ export default function AtlasShell({
           >
             ◮ Tilt
           </button>
+          {/*
+            Last in the stack, because it is the only control that acts on the
+            view rather than changing it — everything above rearranges what you
+            are looking at, this one sends it.
+
+            `shareLabel` is how a page reports its own copy state; the local
+            `shared` covers the built-in path, where the shell owns the link.
+          */}
+          <button
+            type="button"
+            className="actrl"
+            onClick={shareView}
+            title="Share this view — the link carries the basemap, the camera and any filters"
+          >
+            {shareLabel ?? (shared ? "✓ Link copied" : "Share")}
+          </button>
         </div>
       )}
 
@@ -2181,7 +2339,7 @@ export default function AtlasShell({
           rather than silently not existing. Caption was "Tap to hide", an
           instruction used as a heading that named one direction of a toggle;
           the pressed state carries that meaning now, for screen readers too. */}
-      {!showFallback && legendRows.length > 0 && (
+      {!showFallback && showLegend && legendRows.length > 0 && (
         <div className="atlas-legend">
           <div className="lgcap">Collections</div>
           {legendRows.map((it) => {
@@ -2743,10 +2901,12 @@ interface MBMap {
     duration?: number;
     essential?: boolean;
     pitch?: number;
+    bearing?: number;
   }): void;
   easeTo(opts: { pitch?: number; zoom?: number; duration?: number; essential?: boolean }): void;
   getPitch(): number;
   setPitch(p: number): void;
+  getBearing(): number;
   fitBounds(b: MBBounds, opts: Record<string, unknown>): void;
   setPadding(p: { top: number; bottom: number; left: number; right: number }): void;
   resize(): void;

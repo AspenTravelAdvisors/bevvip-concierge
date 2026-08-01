@@ -1689,11 +1689,6 @@ main.page {
     height: 100dvh;
     z-index: 900;
   }
-  /* The seven-row layer legend would swallow the small map — the phone home
-     leads with the world itself (full atlases keep their own layer controls). */
-  .home-atlas .atlas-legend {
-    display: none;
-  }
   /* The plotted-results badge would sit under the dock at the map's foot —
      park it below the framing line instead, where it stays tappable. */
   .home-atlas .atlas-badge {

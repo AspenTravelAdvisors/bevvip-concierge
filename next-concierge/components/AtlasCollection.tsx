@@ -165,7 +165,10 @@ export default function AtlasCollection({
   const hoverTimer = useRef<number | null>(null);
   // Live map view, so Share can capture basemap + projection + camera.
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
-  const viewRef = useRef<{ style: string; globe: boolean; center: { lng: number; lat: number }; zoom: number } | null>(null);
+  const viewRef = useRef<{
+    style: string; globe: boolean;
+    center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
+  } | null>(null);
   const [shared, setShared] = useState(false);
 
   // Today, pinned once per mount so the past-trip cutoff can't shift mid-session.
@@ -427,7 +430,9 @@ export default function AtlasCollection({
         trip: pinnedId,
         style: v?.style ?? initialStyle ?? null,
         flat: v ? !v.globe : initialGlobe === false,
-        camera: v ? { lng: v.center.lng, lat: v.center.lat, zoom: v.zoom } : null,
+        camera: v
+          ? { lng: v.center.lng, lat: v.center.lat, zoom: v.zoom, pitch: v.pitch, bearing: v.bearing }
+          : null,
       },
       descriptor,
       { q: query.q, country: query.country },
@@ -528,6 +533,11 @@ export default function AtlasCollection({
         initialGlobe={parsed?.view.flat ? false : initialGlobe}
         initialCamera={parsed?.view.camera ?? null}
         onViewChange={(v) => { viewRef.current = v; }}
+        // The same handler the rail's Share uses, so the two buttons cannot
+        // produce different links — the map's copy is the one you reach for
+        // while looking at the view, the rail's while working the filters.
+        onShare={share}
+        shareLabel={shared ? "✓ Link copied" : "Share"}
       />
       </div>
 

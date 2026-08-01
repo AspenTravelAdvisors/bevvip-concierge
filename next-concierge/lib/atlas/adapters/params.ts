@@ -118,8 +118,21 @@ export interface AtlasViewIntent {
   style: string | null;
   /** `flat=1` — mercator instead of globe. */
   flat: boolean;
-  /** `@=lng,lat,zoom` — exact camera. */
-  camera: { lng: number; lat: number; zoom: number } | null;
+  /**
+   * `@=lng,lat,zoom[,pitch[,bearing]]` — exact camera.
+   *
+   * The trailing two components are an extension, and they are optional in both
+   * directions on purpose. Reading: links already in circulation carry three
+   * numbers, so pitch/bearing parse as absent rather than as a malformed
+   * camera. Writing: they are only appended when non-zero, so a straight-down,
+   * north-up view still emits the classic three-part form and stays byte-identical
+   * to what the Leaflet atlases produced.
+   *
+   * Without these a shared view lost exactly the thing the Tilt button exists
+   * to add — the advisor sends a tilted city and the client opens a flat plan
+   * view of it.
+   */
+  camera: { lng: number; lat: number; zoom: number; pitch?: number; bearing?: number } | null;
 }
 
 export interface ParsedDeepLink {
@@ -236,17 +249,45 @@ export function parseDeepLink(
       focusRegion: findRegionKey(params.get("region"), ctx.regions, d.collection),
       world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()),
       hero: params.get("hero") === "1",
-      style: (SHARE_STYLES as readonly string[]).includes(String(params.get("style")))
-        ? params.get("style")
-        : null,
-      flat: params.get("flat") === "1",
-      camera: (() => {
-        const raw = params.get("@");
-        if (!raw) return null;
-        const [lng, lat, zoom] = raw.split(",").map(Number);
-        return [lng, lat, zoom].every(Number.isFinite) ? { lng, lat, zoom } : null;
-      })(),
+      ...parseViewParams(params),
     },
+  };
+}
+
+/**
+ * Read the view half — basemap, projection, camera — out of a query string.
+ *
+ * The mirror of {@link setViewParams}, and split out for the same reason: the
+ * home globe and the villa atlas have no filter descriptor, so they cannot run
+ * the full {@link parseDeepLink}, but a camera they receive must be understood
+ * exactly as a collection page understands it.
+ */
+export function parseViewParams(
+  params: URLSearchParams,
+): Pick<AtlasViewIntent, "style" | "flat" | "camera"> {
+  return {
+    style: (SHARE_STYLES as readonly string[]).includes(String(params.get("style")))
+      ? params.get("style")
+      : null,
+    flat: params.get("flat") === "1",
+    camera: (() => {
+      const raw = params.get("@");
+      if (!raw) return null;
+      const [lng, lat, zoom, pitch, bearing] = raw.split(",").map(Number);
+      // Only the first three are required — a legacy three-part link is a
+      // valid camera, not a truncated five-part one. Each optional component
+      // is taken on its own merit so `@a,b,c,45` (pitch, no bearing) works,
+      // and a garbage fourth field is dropped instead of poisoning the
+      // camera that parsed fine.
+      if (![lng, lat, zoom].every(Number.isFinite)) return null;
+      const cam: { lng: number; lat: number; zoom: number; pitch?: number; bearing?: number } =
+        { lng, lat, zoom };
+      // Clamp rather than reject: Mapbox throws on out-of-range pitch, and a
+      // hand-edited URL should land somewhere sane instead of nowhere.
+      if (Number.isFinite(pitch)) cam.pitch = Math.min(85, Math.max(0, pitch));
+      if (Number.isFinite(bearing)) cam.bearing = ((bearing % 360) + 360) % 360;
+      return cam;
+    })(),
   };
 }
 
@@ -289,11 +330,42 @@ export function toSearchParams(
   if (view.focusRegion) p.set("region", view.focusRegion);
   if (view.world || state.world) p.set("world", "1");
   if (view.hero) p.set("hero", "1");
+  setViewParams(p, view);
+  return p;
+}
+
+/**
+ * Write just the view half — basemap, projection, camera — onto a query string.
+ *
+ * Split out of {@link toSearchParams} so the surfaces without a filter
+ * descriptor (the home globe, the villa atlas) serialize a camera through the
+ * exact same code the collection atlases do. Two formatters would drift, and
+ * the failure mode is silent: a link that looks right and opens somewhere else.
+ *
+ * Mutates and returns `p` so it can be threaded onto an existing URL's params
+ * without clobbering the filters already there.
+ */
+export function setViewParams(p: URLSearchParams, view: Partial<AtlasViewIntent>): URLSearchParams {
+  // Deleted before the conditional set: these are written onto a URL that may
+  // already carry an older view, and "share while flat" has to be able to
+  // remove a `flat=1` the page arrived with.
+  p.delete("style");
+  p.delete("flat");
+  p.delete("@");
   if (view.style) p.set("style", view.style);
   if (view.flat) p.set("flat", "1");
   if (view.camera) {
     const c = view.camera;
-    p.set("@", `${c.lng.toFixed(4)},${c.lat.toFixed(4)},${c.zoom.toFixed(2)}`);
+    // Rounded before the zero test, not after: Mapbox rests at pitches like
+    // 0.0000001 after an ease back to flat, and an unrounded truthiness check
+    // appended a pitch component to every link that had ever been tilted.
+    const pitch = Math.round((c.pitch ?? 0) * 10) / 10;
+    const bearing = Math.round((c.bearing ?? 0) * 10) / 10;
+    const parts = [c.lng.toFixed(4), c.lat.toFixed(4), c.zoom.toFixed(2)];
+    // Bearing needs a pitch placeholder ahead of it — the format is positional.
+    if (pitch || bearing) parts.push(String(pitch));
+    if (bearing) parts.push(String(bearing));
+    p.set("@", parts.join(","));
   }
   return p;
 }
