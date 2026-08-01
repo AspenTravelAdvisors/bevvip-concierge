@@ -1067,14 +1067,33 @@ main.page {
   color: var(--gold);
 }
 
-/* Fullscreen map — lift the canvas out of the page flow to fill the viewport. */
+/* Fullscreen map — lift the canvas out of the page flow to fill the viewport.
+
+   State an explicit width/height rather than leaning on `inset: 0` alone. Two
+   reasons, both learned the hard way: iOS resolves inset-derived heights
+   against the large viewport, so the foot of the map hid under the URL bar;
+   and every per-surface rule below (.home-atlas, .atlas-collection) sets its
+   own `height`, which silently beat an inset-only box. Declaring the size here
+   means an override has to be deliberate. */
 .atlas-map.fs {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100dvh;
   z-index: 900;
   min-height: 0;
   border-radius: 0;
   border: 0;
+}
+/* Clear the notch / status bar once a map owns the whole screen — at the normal
+   12px the Exit button lands under it on a phone. Global rather than inside a
+   breakpoint: env() is 0 on hardware without insets, and the map surfaces break
+   at different widths (640 for home, 680 for collections), so scoping it to one
+   of them left the other exposed. */
+.atlas-map.fs .atlas-ctrls,
+.villa-map-wrap.fs .atlas-ctrls {
+  top: calc(12px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
 }
 
 /* Layer legend — color key, tap a row to toggle that layer. */
@@ -1669,12 +1688,6 @@ main.page {
     width: 100vw;
     height: 100dvh;
     z-index: 900;
-  }
-  /* Clear the notch / status bar once the map owns the whole screen — at the
-     normal 12px the Exit button lands under it on a phone. */
-  .atlas-map.fs .atlas-ctrls {
-    top: calc(12px + env(safe-area-inset-top));
-    right: calc(12px + env(safe-area-inset-right));
   }
   /* The seven-row layer legend would swallow the small map — the phone home
      leads with the world itself (full atlases keep their own layer controls). */
@@ -2297,10 +2310,6 @@ main.page {
   border-radius: 0;
   border: 0;
   margin: 0;
-}
-.villa-map-wrap.fs .atlas-ctrls {
-  top: calc(12px + env(safe-area-inset-top));
-  right: calc(12px + env(safe-area-inset-right));
 }
 /* Sized with height/width rather than absolute inset: mapbox-gl.css loads at
    runtime (after this sheet) and its .mapboxgl-map { position: relative } wins
@@ -3768,6 +3777,22 @@ button.card-book {
     height: clamp(200px, 40dvh, 340px);
     min-height: 0;
     border-radius: 12px;
+  }
+  /* …except in fullscreen, where that clamped height is the whole bug: `.fs`
+     sets position/inset but never a height, so this later, equal-specificity
+     rule left the fixed map 200–340px tall — a strip pinned to the top of the
+     screen instead of an edge-to-edge map. Same collision `.home-atlas` had.
+     iOS Safari won't fullscreen a <div>, so the CSS fill is the only mobile
+     fullscreen there is and it has to win. */
+  .atlas-collection .atlas-map.fs,
+  .atlas-collection .atlas-map:fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    flex: none;
+    z-index: 900;
+    border-radius: 0;
   }
   /* Sticky is pointless once the page itself no longer scrolls, and it made the
      rail a second layer over a list it now sits above. */
