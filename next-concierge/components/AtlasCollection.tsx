@@ -533,11 +533,9 @@ export default function AtlasCollection({
         initialGlobe={parsed?.view.flat ? false : initialGlobe}
         initialCamera={parsed?.view.camera ?? null}
         onViewChange={(v) => { viewRef.current = v; }}
-        // The same handler the rail's Share uses, so the two buttons cannot
-        // produce different links — the map's copy is the one you reach for
-        // while looking at the view, the rail's while working the filters.
-        onShare={share}
-        shareLabel={shared ? "✓ Link copied" : "Share"}
+        // No Share on the map here — this page's Share is in the filter rail,
+        // where the filters that make up most of the link already live. The
+        // shell reports the camera up (onViewChange) and the rail sends it.
       />
       </div>
 

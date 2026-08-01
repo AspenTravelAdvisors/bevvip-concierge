@@ -43,6 +43,11 @@ export default function Home() {
             region={null}
             externalLink={internalAtlasLink("hotel")}
             scope="all"
+            // The one surface that owns its view through the URL alone: it has
+            // no filters, so ?style/?flat/?@ is the whole of what a shared link
+            // says. Turns on both the Share button and the shell's own reading
+            // of those params on arrival.
+            selfShare
             // No collections panel here. The home globe plots all seven, so the
             // legend was seven rows of key over the top-left of the world —
             // the most valuable corner of the only thing on the page — for a

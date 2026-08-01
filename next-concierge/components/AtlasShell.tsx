@@ -386,17 +386,22 @@ interface Props {
     bearing: number;
   }) => void;
   /**
-   * Page-level Share handler. Collection pages pass their own, because only the
-   * page knows the filters and the pinned journey that must travel with the
-   * view; when it is absent (the home globe) the shell falls back to sharing
-   * the current URL with the view params written onto it.
+   * true → this surface owns its view through the URL alone: the shell reads
+   * ?style/?flat/?@ off the address bar on mount, and renders a Share button
+   * that writes them back.
    *
-   * Supplying this does NOT suppress the button — the button is part of the
-   * map's control stack on every surface. It only changes what the link says.
+   * Only the home globe sets it. Everywhere else the page is the authority —
+   * collection pages run the full deep-link parse (their links carry filters
+   * and a pinned journey too) and hand the result down as initialStyle /
+   * initialGlobe / initialCamera, and their Share lives in the filter rail
+   * where the rest of the link's meaning is assembled. A second button on the
+   * map would be a second answer to the same question.
+   *
+   * Gating the URL read on this as well as the button is deliberate: a surface
+   * whose parent already resolved the view must not have the shell second-guess
+   * it from the raw query string.
    */
-  onShare?: () => void;
-  /** Lets the page drive the confirmation copy ("Link copied") from its own state. */
-  shareLabel?: string;
+  selfShare?: boolean;
   /**
    * false → hide the collections legend. The home globe plots all seven
    * collections but is not a browsing surface; the panel there was a key to a
@@ -408,7 +413,7 @@ interface Props {
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
-  onShare, shareLabel, showLegend = true,
+  selfShare = false, showLegend = true,
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
@@ -444,12 +449,11 @@ export default function AtlasShell({
   /**
    * The view an incoming shared link asked for, read straight off the URL.
    *
-   * This is a FALLBACK, under whatever the parent passes. Collection pages run
-   * the full deep-link parse (they must — their links also carry filters) and
-   * hand the result down as initialStyle/initialGlobe/initialCamera; those win.
-   * It exists for the home globe, whose route has no filters to parse and which
-   * stays a static prerender precisely because it never touches searchParams on
-   * the server.
+   * Read ONLY under `selfShare` — the home globe, whose route has no filters to
+   * parse and which stays a static prerender precisely because it never touches
+   * searchParams on the server. Every other surface has a parent that already
+   * resolved the view, and the shell must not reinterpret the query string
+   * underneath it.
    *
    * Consumed only inside the map effect and never during render. That ordering
    * is the point: the server has no URL to read, so any render-path dependency
@@ -457,7 +461,7 @@ export default function AtlasShell({
    * the two sides have already agreed.
    */
   const arrivedView = useRef(
-    typeof window === "undefined"
+    typeof window === "undefined" || !selfShare
       ? { style: null, flat: false, camera: null }
       : parseViewParams(new URLSearchParams(window.location.search)),
   );
@@ -481,11 +485,29 @@ export default function AtlasShell({
   const stopFlowRef = useRef<(() => void) | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
-  // Poster frame: a pre-rendered globe (same camera framing) painted from the
-  // SSR HTML so the first "globe" pixel lands before any JS runs. It crossfades
-  // out when the live map has fully drawn (mapPainted), then unmounts.
+  /**
+   * Poster frame: a pre-rendered globe painted from the SSR HTML so the first
+   * "globe" pixel lands before any JS runs. Crossfades out when the live map
+   * has fully drawn (mapPainted), then unmounts.
+   *
+   * HOME ONLY. It earns its place on the landing page — a cold visit, where the
+   * globe IS the largest contentful paint. A collection page is reached by
+   * navigating inside an app that is already running, its LCP is the card list,
+   * and its map is often flat (jets open in mercator) — so the poster there was
+   * a picture of a globe laid over a map that isn't one.
+   *
+   * And it fails dangerously rather than gracefully: the poster only clears on
+   * `mapPainted`, which is set from Mapbox's `load`. Anything that stops the
+   * live map reaching `load` leaves the poster sitting on top of the failure,
+   * looking like a map that rendered. A surface with no poster shows the
+   * "Charting the atlas…" state instead, which is the truth.
+   */
+  const showPoster = allInventory;
   const [mapPainted, setMapPainted] = useState(false);
-  const [posterGone, setPosterGone] = useState(false);
+  // Starts "gone" where there is no poster, so the loading state below — gated
+  // on posterGone — is reachable on those surfaces. Left false, a poster-less
+  // map showed neither a poster nor a spinner: just an empty panel.
+  const [posterGone, setPosterGone] = useState(!showPoster);
   const [posterPad, setPosterPad] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
@@ -2124,20 +2146,16 @@ export default function AtlasShell({
   }
 
   /**
-   * Share this view.
+   * Share this view. Home globe only — see `selfShare`.
    *
-   * Two paths, one button. A page that knows about filters passes `onShare` and
-   * owns the whole link; everywhere else the shell writes the view params onto
-   * the URL the traveller is already on. The fallback deliberately preserves
-   * the existing query string — on a collection page that means a shell-built
-   * link still carries the filters the rail put there.
+   * Writes the live basemap, projection and camera onto the URL the traveller
+   * is already on, preserving anything else in the query string.
    *
    * Native sheet where there is one (phones), clipboard otherwise, and the URL
    * bar as the last resort when the clipboard is blocked — the same ladder
-   * VillaAtlas has always used, so the gesture matches across surfaces.
+   * VillaAtlas uses, so the gesture matches across surfaces.
    */
   async function shareView() {
-    if (onShare) { onShare(); return; }
     const url = new URL(window.location.href);
     const v = viewRef.current;
     if (v) {
@@ -2219,7 +2237,7 @@ export default function AtlasShell({
   return (
     <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
       {token && !mapFailed && <div ref={mapEl} className="atlas-canvas" />}
-      {token && !mapFailed && !posterGone && (
+      {showPoster && token && !mapFailed && !posterGone && (
         <div
           className={`atlas-poster${mapPainted ? " out" : ""}`}
           style={posterPad ? { paddingLeft: posterPad } : undefined}
@@ -2314,21 +2332,24 @@ export default function AtlasShell({
             ◮ Tilt
           </button>
           {/*
-            Last in the stack, because it is the only control that acts on the
-            view rather than changing it — everything above rearranges what you
-            are looking at, this one sends it.
+            Home globe only. Last in the stack, because it is the only control
+            that acts on the view rather than changing it — everything above
+            rearranges what you are looking at, this one sends it.
 
-            `shareLabel` is how a page reports its own copy state; the local
-            `shared` covers the built-in path, where the shell owns the link.
+            The collection atlases deliberately have no Share here: theirs lives
+            in the filter rail, next to the filters that make up most of what a
+            shared link means. Two buttons for one link is one too many.
           */}
-          <button
-            type="button"
-            className="actrl"
-            onClick={shareView}
-            title="Share this view — the link carries the basemap, the camera and any filters"
-          >
-            {shareLabel ?? (shared ? "✓ Link copied" : "Share")}
-          </button>
+          {selfShare && (
+            <button
+              type="button"
+              className="actrl"
+              onClick={shareView}
+              title="Share this view — the link carries the basemap and the camera"
+            >
+              {shared ? "✓ Link copied" : "Share"}
+            </button>
+          )}
         </div>
       )}
 
