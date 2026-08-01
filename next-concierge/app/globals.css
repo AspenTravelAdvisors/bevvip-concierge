@@ -1654,6 +1654,28 @@ main.page {
     border: 0;
     border-radius: 0;
   }
+  /* …but not when it's fullscreen. This rule and `.atlas-map.fs` (see the
+     Fullscreen block above) have the same specificity, and this one is later
+     in the sheet — so on phones the fullscreen button used to swap
+     `position: fixed` back to `absolute`, pinning the map inside the stage it
+     already filled and making the button look dead. iOS Safari never gets
+     native fullscreen for a <div> (only <video>), so the CSS fill IS the
+     mobile behaviour; it has to win here. Ancestor chain is transform-free,
+     so `fixed` really means the viewport. */
+  .home-atlas .atlas-map.fs,
+  .home-atlas .atlas-map:fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 900;
+  }
+  /* Clear the notch / status bar once the map owns the whole screen — at the
+     normal 12px the Exit button lands under it on a phone. */
+  .atlas-map.fs .atlas-ctrls {
+    top: calc(12px + env(safe-area-inset-top));
+    right: calc(12px + env(safe-area-inset-right));
+  }
   /* The seven-row layer legend would swallow the small map — the phone home
      leads with the world itself (full atlases keep their own layer controls). */
   .home-atlas .atlas-legend {
@@ -2268,10 +2290,17 @@ main.page {
   position: fixed;
   inset: 0;
   z-index: 900;
-  height: auto;
+  /* Explicit dvh rather than `auto`: iOS resolves inset-based height against
+     the large viewport, so the foot of the map hid behind the URL bar. */
+  width: 100vw;
+  height: 100dvh;
   border-radius: 0;
   border: 0;
   margin: 0;
+}
+.villa-map-wrap.fs .atlas-ctrls {
+  top: calc(12px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
 }
 /* Sized with height/width rather than absolute inset: mapbox-gl.css loads at
    runtime (after this sheet) and its .mapboxgl-map { position: relative } wins

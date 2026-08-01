@@ -2041,8 +2041,17 @@ export default function AtlasShell({
     return () => window.removeEventListener("keydown", onKey);
   }, [isFull]);
 
-  // Resize the globe after the panel grows/shrinks for fullscreen.
-  useEffect(() => { apiRef.current?.resize(); }, [isFull]);
+  // Resize the globe after the panel grows/shrinks for fullscreen. Two frames,
+  // not one: on iOS the CSS fill is the only fullscreen we get, and 100dvh
+  // settles a frame after the class lands (URL bar / safe areas), so a single
+  // synchronous resize measures the old box and leaves a letterboxed canvas.
+  useEffect(() => {
+    const a = requestAnimationFrame(() => {
+      apiRef.current?.resize();
+      requestAnimationFrame(() => apiRef.current?.resize());
+    });
+    return () => cancelAnimationFrame(a);
+  }, [isFull]);
 
   function toggleLayer(key: string) {
     const map = mapRef.current;
