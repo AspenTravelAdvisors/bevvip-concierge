@@ -630,6 +630,9 @@ export default function AtlasShell({
     // so the scheduled-but-not-yet-running lead-in can be cancelled too.
     let tourDismissed = false;
     let tourTimer = 0;
+    // Separate from tourTimer because the two are waiting on different things —
+    // one on the clock, one on the network — and abortTour has to cancel both.
+    let tourPaintTimer = 0;
     let tourStep = 0;
     let ready = false;
     let focused = false;
@@ -889,6 +892,7 @@ export default function AtlasShell({
           if (tourDismissed) return;
           tourDismissed = true; // one-way; nothing re-arms the tour this mount
           clearTimeout(tourTimer); // kills the lead-in as well as a leg in flight
+          clearTimeout(tourPaintTimer); // …and a leg waiting on tiles
           if (!tourActive) return; // dismissed before it ever took the camera
           tourActive = false;
           // Stop the camera where it is rather than letting the in-flight ease
@@ -898,6 +902,36 @@ export default function AtlasShell({
           try { tourCap.remove(); } catch { /* popup optional */ }
           // The pins already dropped STAY. They are evidence, not decoration,
           // and clearing them would punish the visitor for interacting.
+        }
+
+        /**
+         * Run `fn` once the map has finished painting where it just went.
+         *
+         * The tour used to pace purely on the clock, which assumed tile loading
+         * is faster than a 3.4s camera ease. On a cold cache it is not: the
+         * globe would arrive over the Caribbean with South America still an
+         * unpainted black shape, and drop a caption reading "Private villas,
+         * fully staffed" over a hole in the world. A demonstration of the
+         * inventory that runs before the inventory has drawn is an argument
+         * against the product.
+         *
+         * `idle` is Mapbox's own "camera stopped AND every requested tile is
+         * in" signal, which is exactly the question being asked. The cap is
+         * there because a slow connection must delay the tour, not strand it —
+         * past that point a partly-painted map is still better than a tour that
+         * silently never resumes.
+         */
+        function whenPainted(fn: () => void, capMs = 4000) {
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            clearTimeout(tourPaintTimer);
+            fn();
+          };
+          if (map.areTilesLoaded?.()) { finish(); return; }
+          tourPaintTimer = window.setTimeout(finish, capMs);
+          map.once("idle", finish);
         }
 
         function tourNext() {
@@ -922,23 +956,31 @@ export default function AtlasShell({
           } catch { /* camera optional */ }
           tourTimer = window.setTimeout(() => {
             if (!tourActive || cancelled) return;
-            tourPins.push({ at: stop.at, name: stop.name });
-            paintTourPins();
-            try {
-              tourCap
-                .setLngLat(stop.at)
-                .setHTML(
-                  `<b>${escapeHtml(stop.name)}</b><span>${escapeHtml(stop.hook)}</span>`,
-                )
-                .addTo(map);
-            } catch { /* caption optional */ }
-            tourTimer = window.setTimeout(tourNext, TOUR_DWELL_MS);
+            // The camera has arrived; the ground underneath it may not have.
+            // Hold the pin and the caption until it has, and start the dwell
+            // from THAT moment — a caption you read over unpainted terrain has
+            // not been shown for 2.6 seconds, it has been wasted for 2.6.
+            whenPainted(() => {
+              if (!tourActive || cancelled) return;
+              tourPins.push({ at: stop.at, name: stop.name });
+              paintTourPins();
+              try {
+                tourCap
+                  .setLngLat(stop.at)
+                  .setHTML(
+                    `<b>${escapeHtml(stop.name)}</b><span>${escapeHtml(stop.hook)}</span>`,
+                  )
+                  .addTo(map);
+              } catch { /* caption optional */ }
+              tourTimer = window.setTimeout(tourNext, TOUR_DWELL_MS);
+            });
           }, TOUR_TRAVEL_MS);
         }
 
         function finishTour() {
           tourActive = false;
           clearTimeout(tourTimer);
+          clearTimeout(tourPaintTimer);
           try { tourCap.remove(); } catch { /* popup optional */ }
           // Run to completion and the globe returns to the resting state it
           // came from. Only an interaction leaves it frozen — that stillness is
@@ -972,12 +1014,20 @@ export default function AtlasShell({
             // visitor to simply start dragging.
             if (cancelled || tourDismissed || focused || subsetActive || !projGlobe) return;
             if (map.getZoom() > homeZoom + 0.4) return;
-            // haltSpin, NOT stopSpin: the tour taking the camera is not the
-            // camera being taken FROM the tour. See haltSpin.
-            haltSpin();
-            tourActive = true;
-            tourStep = 0;
-            tourNext();
+            // Don't start over a half-drawn world. The lead-in is a fixed
+            // 1.7s and the first paint is not; on a cold cache the tour was
+            // taking the camera while whole continents were still black.
+            // Waiting on the resting globe costs nothing — it is idle-spinning
+            // and looks entirely intentional either way.
+            whenPainted(() => {
+              if (cancelled || tourDismissed || focused || subsetActive || !projGlobe) return;
+              // haltSpin, NOT stopSpin: the tour taking the camera is not the
+              // camera being taken FROM the tour. See haltSpin.
+              haltSpin();
+              tourActive = true;
+              tourStep = 0;
+              tourNext();
+            });
           }, TOUR_LEAD_MS);
         }
 
@@ -2308,6 +2358,7 @@ export default function AtlasShell({
       clearTimeout(loadTimeout);
       clearTimeout(styleWatchdog);
       clearTimeout(tourTimer);
+      clearTimeout(tourPaintTimer);
       ro?.disconnect();
       apiRef.current = null;
       mapRef.current?.remove();
@@ -3200,6 +3251,9 @@ interface MBBounds {
 }
 interface MBMap {
   on(type: string, layerOrCb: string | ((e: MBEvent) => void), cb?: (e: MBEvent) => void): void;
+  once(type: string, cb: (e?: MBEvent) => void): void;
+  /** False while any tile in the current view is still in flight. */
+  areTilesLoaded?(): boolean;
   getZoom(): number;
   getMinZoom(): number;
   getCenter(): { lng: number; lat: number };

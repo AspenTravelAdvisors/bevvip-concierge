@@ -83,7 +83,7 @@ writeFileSync(
     `export function makeTour(dep: any) {\n` +
     `  const { ${DEPS.join(", ")} } = dep;\n` +
     `  let tourArmed = false, tourActive = false, tourDismissed = false;\n` +
-    `  let tourTimer = 0, tourStep = 0;\n` +
+    `  let tourTimer = 0, tourPaintTimer = 0, tourStep = 0;\n` +
     `${tourBody}\n` +
     `  function stopSpin() { haltSpin(); abortTour(); }\n` +
     `  return { armTour, abortTour, stopSpin,\n` +
@@ -114,7 +114,14 @@ function harness(opts = {}) {
   };
   const clearTimeout_ = (id) => timers.delete(id);
 
+  // Tile state. `tilesReady` is what areTilesLoaded() reports; when tiles are
+  // slow, an "idle" listener is parked and only fires once the harness says
+  // the tiles landed — which is how Mapbox actually behaves.
+  let tilesReady = !opts.slowTiles;
+  let idleWaiters = [];
   const map = {
+    once: (type, cb) => { if (type === "idle") idleWaiters.push(cb); },
+    areTilesLoaded: () => tilesReady,
     getZoom: () => camera.zoom,
     getLayer: (id) => layers.has(id),
     addSource: (id) => sources.add(id),
@@ -161,6 +168,13 @@ function harness(opts = {}) {
 
   return {
     api, log, camera,
+    landTiles() {
+      tilesReady = true;
+      const w = idleWaiters; idleWaiters = [];
+      log.push("tiles");
+      for (const cb of w) cb();
+    },
+    tilesPending: () => idleWaiters.length,
     pins: () => log.filter((l) => l.startsWith("pin ")).map((l) => l.slice(4)),
     pending: () => timers.size,
     tick(ms) {
@@ -274,6 +288,55 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   h.api.armTour();
   h.tick(RUN);
   check("stands down if an answer landed during the lead-in", h.pins().length === 0);
+}
+
+{
+  // The reason this gate exists: a screenshot of the tour captioning "Mustique"
+  // over a South America that was still an unpainted black shape.
+  const h = harness({ slowTiles: true });
+  h.api.armTour();
+  h.tick(1700 + 200); // the lead-in has elapsed; the tiles have not arrived
+  check("will not take the camera over an unpainted map",
+    h.log.filter((l) => l.startsWith("ease")).length === 0,
+    "waits instead of flying");
+  check("…and is parked on the map's own idle signal, not abandoned",
+    h.tilesPending() === 1);
+  h.landTiles();
+  h.tick(RUN);
+  check("…then plays in full once the tiles land", h.pins().length >= 3,
+    h.pins().join(" → "));
+
+  // The backstop. A slow connection must DELAY the tour, never strand it: past
+  // the cap a partly-painted map still beats a tour that silently never runs.
+  const stalled = harness({ slowTiles: true });
+  stalled.api.armTour();
+  stalled.tick(1700 + 200);
+  const beforeCap = stalled.log.filter((l) => l.startsWith("ease")).length;
+  stalled.tick(RUN); // tiles never land
+  check("gives up waiting after the cap rather than stranding the tour",
+    beforeCap === 0 && stalled.pins().length >= 3,
+    `${stalled.pins().length} pins, tiles never landed`);
+}
+
+{
+  // Tiles present at boot, then slow again for the leg in flight.
+  const h = harness();
+  h.api.armTour();
+  h.tick(RUN);
+  const full = h.pins().length;
+  check("a fast map is not slowed down by the gate", full >= 3, `${full} pins`);
+}
+
+{
+  // Interaction while a leg is parked waiting on tiles.
+  const h = harness({ slowTiles: true });
+  h.api.armTour();
+  h.tick(3000);
+  h.api.stopSpin();
+  h.landTiles();
+  h.tick(RUN);
+  check("interaction during a tile wait still cancels it", h.pins().length === 0);
+  check("…and leaves nothing pending", h.pending() === 0);
 }
 
 rmSync(OUT, { recursive: true, force: true });
