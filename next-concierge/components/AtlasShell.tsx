@@ -408,12 +408,71 @@ interface Props {
    * legend nobody was reading, taking the top-left corner of the world.
    */
   showLegend?: boolean;
+  /**
+   * Run the ambient auto-tour: the globe keeps its idle spin, then walks
+   * westward through four places, dropping a captioned pin at each, and stops
+   * dead the moment the visitor touches anything. See TOUR_STOPS / startTour.
+   *
+   * Home only. It is a demonstration for someone who has not yet decided to
+   * engage, and every other surface is reached BY engaging.
+   */
+  ambientTour?: boolean;
 }
+
+/**
+ * The ambient tour's itinerary — four places, walked west.
+ *
+ * WHY A TOUR AT ALL, given IntroTour was just made opt-in: that one narrated
+ * the chrome ("this is the composer, this is the nav") and dimmed the product
+ * to do it. This narrates the INVENTORY, on the map, with nothing dimmed and
+ * no step to dismiss. It teaches by showing you the thing rather than by
+ * pointing at the buttons that reach the thing.
+ *
+ * FOUR, and four spanning four different collections. One pin proves nothing;
+ * a dozen is a screensaver. Four is enough to establish that the pins are
+ * unlike each other — a Greek hotel, a Caribbean villa, a polar sailing, a
+ * Canadian train — which is the claim the headline's single number can't make.
+ *
+ * The captions name a place and give one concrete reason to want it. They do
+ * NOT restate the count: the headline directly above already owns that number,
+ * and four pins each re-announcing scale would read as a spec sheet. Division
+ * of labor — the headline says how many, the pins say how good.
+ *
+ * Ordered by descending longitude so the camera only ever travels westward,
+ * matching the direction of the idle spin it interrupts. A tour that doubles
+ * back reads as a slideshow; one that keeps going reads as a planet turning.
+ */
+interface TourStop {
+  /** [lng, lat] of the place itself. */
+  at: [number, number];
+  name: string;
+  /** One line. It is a caption, not a description — no second sentence. */
+  hook: string;
+}
+
+const TOUR_STOPS: TourStop[] = [
+  { at: [23.13, 37.31], name: "Amanzoe", hook: "Hilltop pavilions above the Argolic Gulf" },
+  { at: [-61.19, 12.88], name: "Mustique", hook: "Private villas, fully staffed" },
+  { at: [-60.0, -64.5], name: "Antarctic Peninsula", hook: "Ship-based, November to March" },
+  { at: [-118.0, 51.2], name: "Rocky Mountaineer", hook: "Two days glass-domed, Banff to Vancouver" },
+];
+
+/** How long the camera takes to swing to each stop, and how long it rests there. */
+const TOUR_TRAVEL_MS = 3400;
+const TOUR_DWELL_MS = 2600;
+/**
+ * Idle spin before the first pin drops.
+ *
+ * Not zero. The globe arriving and immediately being driven somewhere reads as
+ * a canned animation; a beat of plain rotation first establishes that the map
+ * is live, so the tour reads as the map doing something rather than as a video.
+ */
+const TOUR_LEAD_MS = 1700;
 
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
-  selfShare = false, showLegend = true,
+  selfShare = false, showLegend = true, ambientTour = false,
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
@@ -560,6 +619,18 @@ export default function AtlasShell({
     let spinning = false;
     let pulseRAF = 0;
     let pulsing = false;
+    // Ambient auto-tour. `tourArmed` is one-way: the tour gets exactly one
+    // chance per mount, so a refit or a projection toggle can never restart a
+    // demonstration the visitor has already sat through (or already dismissed
+    // by touching the map).
+    let tourArmed = false;
+    let tourActive = false;
+    // Set by the first thing that outranks the tour — an interaction, a plotted
+    // answer, a traced route. One-way, and checked separately from `tourActive`
+    // so the scheduled-but-not-yet-running lead-in can be cancelled too.
+    let tourDismissed = false;
+    let tourTimer = 0;
+    let tourStep = 0;
     let ready = false;
     let focused = false;
     let restyling = false;
@@ -664,8 +735,9 @@ export default function AtlasShell({
           }, 750);
         });
         function spinWhenRevealed() {
-          if (revealed) startSpin();
-          else onRevealed = startSpin;
+          const go = () => { startSpin(); armTour(); };
+          if (revealed) go();
+          else onRevealed = go;
         }
 
         // Separate popup for stop labels so it can't fight the pin popup.
@@ -695,9 +767,29 @@ export default function AtlasShell({
           // at a known moment, NOT a pitch-follows-zoom rule.
           if (map.getPitch() > 0.5) { try { map.setPitch(0); } catch { /* optional */ } }
         }
-        function stopSpin() {
+        /**
+         * Stop the rotation and NOTHING else.
+         *
+         * Split out from stopSpin because the ambient tour has to stop the spin
+         * in order to start — it drives the camera itself — and stopSpin now
+         * means "something outranked the ambience", which is the one thing the
+         * tour taking the wheel is not. Routing the tour's own hand-off through
+         * stopSpin latched it as dismissed a moment before it began, leaving a
+         * tour that ran happily and could never afterwards be interrupted.
+         */
+        function haltSpin() {
           spinning = false;
           cancelAnimationFrame(spinRAF);
+        }
+        function stopSpin() {
+          haltSpin();
+          // Anything that outranks the idle spin outranks the ambient tour.
+          // Every such path already funnels through here — the interaction
+          // listeners below, plotResults, markFocusPlace, fitFocusRoute, the
+          // projection toggle — so the tour needs no interaction list of its
+          // own to fall out of sync with. Declaration hoisting makes the
+          // forward reference safe.
+          abortTour();
         }
         function spinStep() {
           if (!spinning) return;
@@ -711,6 +803,182 @@ export default function AtlasShell({
           if (spinning || !projGlobe) return;
           spinning = true;
           spinStep();
+        }
+
+        // ── Ambient auto-tour ────────────────────────────────────────────────
+        // Four captioned pins, dropped one at a time while the globe walks
+        // west. It answers "what is in here?" by showing four unlike things,
+        // which is the one question the headline's single number can't answer.
+        //
+        // THE WHOLE DESIGN IS THAT IT YIELDS. It runs only when nothing else
+        // has claimed the camera, and the first sign of a visitor with their
+        // own intent ends it permanently — see `abortTour`, wired into
+        // stopSpin() so that every existing path which already outranks the
+        // idle spin (a click, a drag, a wheel, a plotted answer, a traced
+        // route, a framed hotel) outranks the tour too, for free and without a
+        // second list to keep in sync.
+        const tourPins: { at: [number, number]; name: string }[] = [];
+        const tourCap = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          focusAfterOpen: false,
+          offset: 16,
+          maxWidth: "260px",
+          className: "atlas-tourcap",
+        });
+
+        function paintTourPins() {
+          const data = {
+            type: "FeatureCollection" as const,
+            features: tourPins.map((p) => ({
+              type: "Feature" as const,
+              geometry: { type: "Point" as const, coordinates: p.at },
+              properties: { label: p.name },
+            })),
+          };
+          if (!map.getSource("tour-pins")) map.addSource("tour-pins", { type: "geojson", data });
+          else map.getSource("tour-pins")?.setData(data);
+          addLayer(map, {
+            id: "tour_glow", type: "circle", source: "tour-pins",
+            paint: {
+              "circle-radius": 13,
+              "circle-color": "#e6d488",
+              "circle-opacity": 0.16,
+              "circle-blur": 0.7,
+            },
+          });
+          addLayer(map, {
+            id: "tour_dot", type: "circle", source: "tour-pins",
+            paint: {
+              "circle-radius": 5.5,
+              "circle-color": "#f3ead2",
+              "circle-stroke-color": "#0b0e14",
+              "circle-stroke-width": 1.4,
+              "circle-opacity": 0.98,
+            },
+          });
+        }
+
+        /**
+         * Latitude the camera actually centres on, which is not the stop's own.
+         *
+         * Centring on a place at 64°S puts the pole in the middle of the frame
+         * and the visible hemisphere becomes mostly ice and edge — the globe
+         * stops reading as a globe. Damping toward the equator keeps the sphere
+         * legible while still bringing the place comfortably into view; the
+         * clamp is the backstop for anywhere further out than our own stops go.
+         */
+        function tourLat(lat: number) {
+          return Math.max(-52, Math.min(52, lat * 0.72));
+        }
+
+        /**
+         * Stand down, permanently.
+         *
+         * The `tourDismissed` latch — not `tourActive` — is what this guards
+         * on, and the difference is a bug worth naming. For the first 1.7s the
+         * tour is scheduled but not yet running: `tourActive` is still false.
+         * Guarding on it meant a visitor who grabbed the globe half a second
+         * after it appeared got the camera pulled out from under them a beat
+         * later by a tour that had already been told to stop. "Until first
+         * interaction" has to include the interval before the first pin, which
+         * is precisely the interval a curious visitor is most likely to reach
+         * for the thing they just noticed moving.
+         */
+        function abortTour() {
+          if (tourDismissed) return;
+          tourDismissed = true; // one-way; nothing re-arms the tour this mount
+          clearTimeout(tourTimer); // kills the lead-in as well as a leg in flight
+          if (!tourActive) return; // dismissed before it ever took the camera
+          tourActive = false;
+          // Stop the camera where it is rather than letting the in-flight ease
+          // finish — "freezes" has to mean the frame you grabbed, not the frame
+          // the tour was heading for.
+          try { map.stop(); } catch { /* camera optional */ }
+          try { tourCap.remove(); } catch { /* popup optional */ }
+          // The pins already dropped STAY. They are evidence, not decoration,
+          // and clearing them would punish the visitor for interacting.
+        }
+
+        function tourNext() {
+          if (!tourActive || cancelled) return;
+          const stop = TOUR_STOPS[tourStep];
+          if (!stop) { finishTour(); return; }
+          tourStep++;
+          // A backgrounded tab eases nothing and burns the whole itinerary in
+          // one tick when it wakes. Hold position and re-check.
+          if (document.hidden) {
+            tourTimer = window.setTimeout(tourNext, 900);
+            tourStep--;
+            return;
+          }
+          try {
+            map.easeTo({
+              center: [stop.at[0], tourLat(stop.at[1])],
+              zoom: homeZoom,
+              duration: TOUR_TRAVEL_MS,
+              essential: true,
+            });
+          } catch { /* camera optional */ }
+          tourTimer = window.setTimeout(() => {
+            if (!tourActive || cancelled) return;
+            tourPins.push({ at: stop.at, name: stop.name });
+            paintTourPins();
+            try {
+              tourCap
+                .setLngLat(stop.at)
+                .setHTML(
+                  `<b>${escapeHtml(stop.name)}</b><span>${escapeHtml(stop.hook)}</span>`,
+                )
+                .addTo(map);
+            } catch { /* caption optional */ }
+            tourTimer = window.setTimeout(tourNext, TOUR_DWELL_MS);
+          }, TOUR_TRAVEL_MS);
+        }
+
+        function finishTour() {
+          tourActive = false;
+          clearTimeout(tourTimer);
+          try { tourCap.remove(); } catch { /* popup optional */ }
+          // Run to completion and the globe returns to the resting state it
+          // came from. Only an interaction leaves it frozen — that stillness is
+          // the map acknowledging you took the wheel.
+          fitGlobe();
+          startSpin();
+        }
+
+        /**
+         * Drop all four pins at once, no camera movement, no captions cycling.
+         *
+         * prefers-reduced-motion is a request about motion, not a request to be
+         * told less. The informational payload — these four unlike things are
+         * in here — survives intact; only the choreography goes.
+         */
+        function staticTour() {
+          for (const s of TOUR_STOPS) tourPins.push({ at: s.at, name: s.name });
+          paintTourPins();
+        }
+
+        function armTour() {
+          if (!ambientTour || tourArmed || tourDismissed || !projGlobe) return;
+          tourArmed = true;
+          if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+            staticTour();
+            return;
+          }
+          tourTimer = window.setTimeout(() => {
+            // Re-check at fire time, not at arm time: the lead-in is long
+            // enough for an answer to land, a deep link to resolve, or the
+            // visitor to simply start dragging.
+            if (cancelled || tourDismissed || focused || subsetActive || !projGlobe) return;
+            if (map.getZoom() > homeZoom + 0.4) return;
+            // haltSpin, NOT stopSpin: the tour taking the camera is not the
+            // camera being taken FROM the tour. See haltSpin.
+            haltSpin();
+            tourActive = true;
+            tourStep = 0;
+            tourNext();
+          }, TOUR_LEAD_MS);
         }
 
         // ── Result-pin pulse ─────────────────────────────────────────────────
@@ -1718,6 +1986,14 @@ export default function AtlasShell({
           if (!ready && !cancelled) setMapFailed(true);
         }, 12000);
         ["mousedown", "touchstart", "wheel", "dragstart"].forEach((ev) => map.on(ev, stopSpin));
+        // "click" gets its own line rather than joining the list above. A click
+        // that lands on nothing is not a request to stop the idle spin — the
+        // globe has always kept turning through one — but it IS unambiguously a
+        // visitor with their own intent, which is the whole trigger for the
+        // ambient tour standing down. Same reasoning for a keyboard pan: the
+        // map is focusable, and arrowing it is interaction the pointer events
+        // never see.
+        ["click", "keydown"].forEach((ev) => map.on(ev, () => abortTour()));
 
         // Publish the view so the page can build a Share link from it.
         const reportView = () => {
@@ -1758,7 +2034,12 @@ export default function AtlasShell({
         ro = new ResizeObserver(() => {
           try {
             map.resize();
-            if (ready && !focused && !subsetActive && projGlobe && map.getZoom() <= homeZoom + 0.4) fitGlobe();
+            // `!tourActive` matters more than it looks. The tour holds the
+            // camera AT homeZoom, so every other clause here passes while it
+            // runs — and this observer fires on a panel drag or a sheet
+            // detent change, which would re-frame the globe to world centre
+            // between two pins. The tour recovers its own framing on finish.
+            if (ready && !focused && !subsetActive && !tourActive && projGlobe && map.getZoom() <= homeZoom + 0.4) fitGlobe();
           } catch { /* observer noise */ }
         });
         ro.observe(node);
@@ -1823,6 +2104,21 @@ export default function AtlasShell({
         // First-load boot: the globe fits (and readies its spin) immediately —
         // the feeds were kicked off at mount and each paints the moment it
         // lands, so nothing network-bound holds the camera hostage.
+        /**
+         * The resting state: world framing plus idle spin.
+         *
+         * A no-op while the ambient tour owns the camera. bootData reaches the
+         * rest-and-idle decision TWICE — once immediately, once after the
+         * region feed resolves — and on a slow connection the second pass lands
+         * mid-tour, where re-framing would snap the globe home between pins.
+         * The tour restores this framing itself when it finishes.
+         */
+        function restAndIdle() {
+          if (tourActive) return;
+          fitGlobe();
+          spinWhenRevealed();
+        }
+
         async function bootData() {
           ambientPadding(); // camera lives right of the floating Guide panel
           // Restore the last framed subset on the home Living Atlas after a
@@ -1830,10 +2126,7 @@ export default function AtlasShell({
           // persisted chat still shows rather than the resting globe. A ?region=
           // deep link still wins — that's an explicit destination request.
           const restored = !region && allInventory ? readStoredPlot() : null;
-          if (!region && !restored) {
-            fitGlobe();
-            spinWhenRevealed();
-          }
+          if (!region && !restored) restAndIdle();
 
           // A shared link's exact camera wins over any default framing.
           if (arrivedCamera) {
@@ -1895,10 +2188,7 @@ export default function AtlasShell({
             // canvas has one (the pre-restructure behavior), else rest + spin.
             const restoredLate = allInventory ? readStoredPlot() : null;
             if (restoredLate) plotResults(restoredLate);
-            else {
-              fitGlobe();
-              spinWhenRevealed();
-            }
+            else restAndIdle();
           } else {
             // Nothing claimed the camera: no ?region=, no stored plot, no
             // initialCamera. This branch did not exist, so the map came to rest
@@ -1906,8 +2196,7 @@ export default function AtlasShell({
             // exactly what "the home map is frozen" looks like. Most reliably
             // hit coming BACK from an atlas, where sessionStorage may hold no
             // plot and the region param is gone.
-            fitGlobe();
-            spinWhenRevealed();
+            restAndIdle();
           }
         }
 
@@ -2018,6 +2307,7 @@ export default function AtlasShell({
       stopFlowRef.current = null;
       clearTimeout(loadTimeout);
       clearTimeout(styleWatchdog);
+      clearTimeout(tourTimer);
       ro?.disconnect();
       apiRef.current = null;
       mapRef.current?.remove();
@@ -2898,7 +3188,7 @@ interface MBEvent {
 }
 interface MBPopup {
   on(type: string, cb: () => void): MBPopup;
-  setLngLat(c: { lng: number; lat: number }): MBPopup;
+  setLngLat(c: { lng: number; lat: number } | readonly [number, number]): MBPopup;
   setHTML(html: string): MBPopup;
   addTo(map: MBMap): MBPopup;
   isOpen(): boolean;
@@ -2924,7 +3214,15 @@ interface MBMap {
     pitch?: number;
     bearing?: number;
   }): void;
-  easeTo(opts: { pitch?: number; zoom?: number; duration?: number; essential?: boolean }): void;
+  easeTo(opts: {
+    center?: readonly [number, number];
+    pitch?: number;
+    zoom?: number;
+    duration?: number;
+    essential?: boolean;
+  }): void;
+  /** Cancel any camera animation in flight, leaving the camera where it is. */
+  stop(): void;
   getPitch(): number;
   setPitch(p: number): void;
   getBearing(): number;

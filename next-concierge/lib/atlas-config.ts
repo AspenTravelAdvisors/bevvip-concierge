@@ -224,6 +224,36 @@ export function collectionPhrase(c: AtlasConfig): string {
   return `${nf.format(c.count)} ${c.nounPlural}`;
 }
 
+/** Every record we plot, summed. Derived — never a hand-kept second number. */
+export function totalCount(): number {
+  return COLLECTIONS.reduce((n, c) => n + c.count, 0);
+}
+
+/**
+ * The line that answers "what is this" before anything else on the page.
+ *
+ * Scale is the hook. A visitor who lands on a globe knows within a second that
+ * it's a map and does NOT know whether it's showing eleven hand-picked hotels
+ * or eleven thousand — and that difference is the entire proposition. So the
+ * first thing above the fold is the count, in plain digits, at a length you can
+ * read without moving your eyes: one clause, one number, one noun.
+ *
+ * It deliberately says nothing about how the search works. "AI-powered",
+ * "intelligent", "conversational" — every one of those describes the mechanism
+ * rather than the inventory, and a mechanism is not a reason to stay. The
+ * Guide's composer is sitting right there making the same point by existing.
+ *
+ * "stays and journeys" rather than "journeys": 6,403 of these records are
+ * hotels and villas, which nobody calls a journey. The compound is slightly
+ * baggy and it is the honest noun for what the number counts.
+ *
+ * BOTH numbers are derived from ATLASES, so this line cannot drift from what
+ * the map plots. Add a collection and the headline counts it the same day.
+ */
+export function collectionsHeadline(): string {
+  return `${nf.format(totalCount())} vetted stays and journeys across ${COLLECTIONS.length} collections`;
+}
+
 /**
  * The whole collection, as one sentence. Used by the home blurb so the promise
  * on the landing page can never drift from what the map actually plots.

@@ -1,7 +1,7 @@
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
-import { collectionsCompact, internalAtlasLink } from "@/lib/atlas-config";
+import { collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/lib/atlas-config";
 
 // The landing page: The Guide docked over a populated globe.
 //
@@ -24,7 +24,12 @@ export default function Home() {
       atlas={
         <>
           <div className="home-atlas-head">
-            <h2>The whole collection, mapped</h2>
+            {/* The heading was "The whole collection, mapped" — true, and it
+                answered a question nobody asks. A visitor looking at a globe
+                already knows it's a map; what they can't tell is whether it
+                holds eleven properties or eleven thousand, and that is the
+                whole proposition. Lead with the number. See collectionsHeadline. */}
+            <h2>{collectionsHeadline()}</h2>
             {/* One blurb, two lengths: phones swap in the short line via CSS. */}
             {/* Two lines, hard limit. This block is absolutely positioned
                 directly above the map legend; a third line lands on top of it.
@@ -48,6 +53,11 @@ export default function Home() {
             // says. Turns on both the Share button and the shell's own reading
             // of those params on arrival.
             selfShare
+            // Four captioned pins, dropped while the globe walks west, ending
+            // the instant the visitor touches the map. The old IntroTour taught
+            // the chrome and had to dim the product to do it; this teaches the
+            // inventory using the product, and asks for nothing back.
+            ambientTour
             // No collections panel here. The home globe plots all seven, so the
             // legend was seven rows of key over the top-left of the world —
             // the most valuable corner of the only thing on the page — for a
