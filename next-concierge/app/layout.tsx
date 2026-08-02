@@ -6,6 +6,7 @@ import AdvisorRequest from "@/components/AdvisorRequest";
 import IntroTour from "@/components/IntroTour";
 import SiteNav from "@/components/SiteNav";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
+import { SITE_URL, SITE_LABEL } from "@/lib/answers";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -22,7 +23,11 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://basecamp.aspentraveladvisors.com"),
+  // Imported, not retyped. The sitemap, robots.txt, the JSON-LD on every
+  // answer page and the line in the header below all resolve to this same
+  // constant — see SITE_URL. A second literal here is how the header came to
+  // advertise an address the canonical URLs disagreed with.
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Expedition Bucket List · The Guide — Aspen Travel Advisors",
     template: "%s — Aspen Travel Advisors",
@@ -88,8 +93,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Expedition <b>Bucket List</b>
                 </span>
               </a>
+              {/* Rendered from SITE_LABEL rather than typed, because typing it
+                  is exactly how this line came to read "TheTravelGuideAi.com"
+                  — the right words in the wrong order, pointing at a domain
+                  nothing else in the app used. It can no longer disagree with
+                  the canonical origin. */}
               <Link className="brand-url" href="/">
-                TheTravelGuideAi.com
+                {SITE_LABEL}
               </Link>
             </div>
             <span className="tag">
