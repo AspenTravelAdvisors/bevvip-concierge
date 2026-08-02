@@ -457,9 +457,21 @@ const TOUR_STOPS: TourStop[] = [
   { at: [-118.0, 51.2], name: "Rocky Mountaineer", hook: "Two days glass-domed, Banff to Vancouver" },
 ];
 
-/** How long the camera takes to swing to each stop, and how long it rests there. */
-const TOUR_TRAVEL_MS = 3400;
-const TOUR_DWELL_MS = 2600;
+/**
+ * How long the camera takes to swing to each stop, and how long it rests there.
+ *
+ * These are a BUDGET, not a taste. The Guide is held back until the tour ends
+ * (see the "bevvip:tour-ended" broadcast in finishTour / abortTour), so every
+ * millisecond here is a millisecond the visitor is looking at a product they
+ * cannot yet type into. At the original 3400/2600 the whole run was 25.7s,
+ * which is not a demonstration, it is a wait.
+ *
+ * 2400/1600 puts the full run at ~17.7s and the first pin at 4.1s. The dwell is
+ * short on purpose: the captions are one line each, and a line you have already
+ * read does not become more persuasive by staying on screen.
+ */
+const TOUR_TRAVEL_MS = 2400;
+const TOUR_DWELL_MS = 1600;
 /**
  * Idle spin before the first pin drops.
  *
@@ -820,6 +832,28 @@ export default function AtlasShell({
         // idle spin (a click, a drag, a wheel, a plotted answer, a traced
         // route, a framed hotel) outranks the tour too, for free and without a
         // second list to keep in sync.
+        /**
+         * Tell the page the stage is free.
+         *
+         * The Guide is held back on the home surface until this fires, which
+         * makes it the single most load-bearing line in the tour: if it can
+         * fail to fire, a visitor is left on a page with no way to type. So it
+         * is emitted from every exit the tour has — natural completion, an
+         * interruption, reduced motion, and the case where the tour was never
+         * enabled at all — and latched so the several paths that legitimately
+         * overlap can't double-fire it.
+         *
+         * HomeSplit also runs its own independent fallback timer, because "this
+         * event always fires" is a claim about code that can be edited and the
+         * cost of it being wrong is a dead page. Two mechanisms, deliberately.
+         */
+        let tourEndAnnounced = false;
+        function announceTourEnd() {
+          if (tourEndAnnounced) return;
+          tourEndAnnounced = true;
+          try { window.dispatchEvent(new Event("bevvip:tour-ended")); } catch { /* SSR/JSDOM */ }
+        }
+
         const tourPins: { at: [number, number]; name: string }[] = [];
         const tourCap = new mapboxgl.Popup({
           closeButton: false,
@@ -893,6 +927,10 @@ export default function AtlasShell({
           tourDismissed = true; // one-way; nothing re-arms the tour this mount
           clearTimeout(tourTimer); // kills the lead-in as well as a leg in flight
           clearTimeout(tourPaintTimer); // …and a leg waiting on tiles
+          // Before anything else: an interrupted tour must still free the
+          // stage. The visitor just told us they are engaged — that is the
+          // moment to hand them the composer, not to withhold it.
+          announceTourEnd();
           if (!tourActive) return; // dismissed before it ever took the camera
           tourActive = false;
           // Stop the camera where it is rather than letting the in-flight ease
@@ -987,6 +1025,9 @@ export default function AtlasShell({
           // the map acknowledging you took the wheel.
           fitGlobe();
           startSpin();
+          // The globe is turning again and nothing is being narrated — the beat
+          // the Guide slides in on.
+          announceTourEnd();
         }
 
         /**
@@ -999,28 +1040,50 @@ export default function AtlasShell({
         function staticTour() {
           for (const s of TOUR_STOPS) tourPins.push({ at: s.at, name: s.name });
           paintTourPins();
+          // No choreography to wait out, so nothing to hold the Guide behind.
+          announceTourEnd();
         }
 
         function armTour() {
-          if (!ambientTour || tourArmed || tourDismissed || !projGlobe) return;
+          // Every early return here is a case where no tour will play, and a
+          // page where no tour will play must not hide its composer waiting for
+          // one. `ambientTour` off (every surface but home), a flat projection,
+          // already dismissed — all of them free the stage immediately.
+          if (!ambientTour || !projGlobe) { announceTourEnd(); return; }
+          if (tourArmed || tourDismissed) return;
           tourArmed = true;
           if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
             staticTour();
             return;
           }
+          /*
+           * Everything below re-checks at FIRE time, not arm time: the lead-in
+           * is long enough for an answer to land, a deep link to resolve, or
+           * the visitor to simply start dragging.
+           *
+           * And every one of those bail-outs announces. This is the bug the
+           * harness caught: an answer arriving inside the first 1.7s made the
+           * tour stand down silently, so the Guide — which is waiting on that
+           * announcement — stayed hidden until the 22s dead-man's timer, on the
+           * exact visit where the traveller had already asked a question.
+           * `cancelled` is the sole exception: the component is unmounting and
+           * there is nobody left to tell.
+           */
+          const standDown = () => {
+            if (!cancelled) announceTourEnd();
+          };
           tourTimer = window.setTimeout(() => {
-            // Re-check at fire time, not at arm time: the lead-in is long
-            // enough for an answer to land, a deep link to resolve, or the
-            // visitor to simply start dragging.
-            if (cancelled || tourDismissed || focused || subsetActive || !projGlobe) return;
-            if (map.getZoom() > homeZoom + 0.4) return;
+            if (cancelled || tourDismissed) return; // abortTour already announced
+            if (focused || subsetActive || !projGlobe) { standDown(); return; }
+            if (map.getZoom() > homeZoom + 0.4) { standDown(); return; }
             // Don't start over a half-drawn world. The lead-in is a fixed
             // 1.7s and the first paint is not; on a cold cache the tour was
             // taking the camera while whole continents were still black.
             // Waiting on the resting globe costs nothing — it is idle-spinning
             // and looks entirely intentional either way.
             whenPainted(() => {
-              if (cancelled || tourDismissed || focused || subsetActive || !projGlobe) return;
+              if (cancelled || tourDismissed) return;
+              if (focused || subsetActive || !projGlobe) { standDown(); return; }
               // haltSpin, NOT stopSpin: the tour taking the camera is not the
               // camera being taken FROM the tour. See haltSpin.
               haltSpin();

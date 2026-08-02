@@ -21,6 +21,21 @@ import AtlasDock from "./AtlasDock";
 // its ambient camera) into the strip of map that remains visible.
 
 const WIDTH_KEY = "bevvip.basecamp.guideW";
+/**
+ * Longest the Guide will ever stay hidden waiting for the atlas to say it has
+ * finished its ambient tour.
+ *
+ * This is a DEAD MAN'S SWITCH, not a schedule. The atlas emits
+ * "bevvip:tour-ended" from every exit its tour has, and if that were the only
+ * mechanism then any future edit that loses one of those exits — or a Mapbox
+ * failure that means the tour never arms at all — would leave a visitor on a
+ * page with no way to type and no indication anything was wrong. The failure
+ * has to be a slightly early panel, never a missing one.
+ *
+ * Comfortably longer than the ~17.7s tour so it never pre-empts a healthy run,
+ * and short enough that a broken one costs a few seconds rather than the visit.
+ */
+const TOUR_WAIT_CAP_MS = 22000;
 const MIN_W = 420; // narrowest width where the booking strip's date windows still show a full mm/dd/yyyy
 const MAX_W = 680; // …and the map keeps the frame.
 const DEFAULT_W = 440;
@@ -35,35 +50,89 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
 
   // Desktop panel open/closed. Phones never toggle this (the tab and pill that
   // drive it are hidden there), so the sheet styles are unaffected by it.
-  const [panelOpen, setPanelOpen] = useState(true);
+  //
+  // STARTS CLOSED, and is opened by the atlas rather than by us — see the
+  // "bevvip:tour-ended" listener below. The globe runs a short ambient tour on
+  // arrival, and a panel covering a third of the stage while it plays is a
+  // caption card competing with the thing it captions.
+  const [panelOpen, setPanelOpen] = useState(false);
 
   // Mobile chat-sheet detent.
   //
-  // Opens at "half", not "pill". The phone home used to load with the map at
-  // full height and the conversation parked off-screen behind a pill — a
-  // map-first stage for a product whose entire job is to get a described trip
-  // in front of an advisor. The globe is beautiful and it is not the thing
-  // being sold; on a 390px screen the visitor should land already able to type.
-  const [sheet, setSheet] = useState<SheetState>("half");
+  // "Opens at half, not pill" is still the rule — this now says WHEN, not
+  // whether. The reasoning that put the composer on screen at load stands
+  // unchanged: on a 390px screen the visitor should land able to type, and the
+  // globe is beautiful but is not the thing being sold. What changed is that
+  // there is now a ~17.7s ambient tour narrating the inventory, and on a phone
+  // the sheet covers the half of the map the tour is drawing on.
+  //
+  // So the sheet still arrives on its own, unprompted, at "half" — it is just
+  // sequenced after the tour instead of racing it, and any interaction with the
+  // map brings it immediately (the atlas announces an interrupted tour the same
+  // way it announces a finished one). The one thing this must never become is
+  // the old behaviour, where the conversation waited behind a pill for the
+  // visitor to go find it.
+  const [sheet, setSheet] = useState<SheetState>("pill");
+  // The detent, readable from event handlers that must not re-subscribe every
+  // time it changes — see the map-gesture listener's `down`.
+  const sheetRef = useRef<SheetState>("pill");
+  sheetRef.current = sheet;
 
   const requestRefit = useCallback(() => {
     window.setTimeout(() => window.dispatchEvent(new Event("bevvip:atlas-refit")), 420);
   }, []);
 
-  // Transaction mode: an ?ask= deep link (from an atlas card or a campaign)
-  // means the traveler arrives knowing what they want — surface the chat so the
-  // auto-sent question and its streaming answer are in view. Discovery mode
-  // (no ask) keeps the world primary: pill on phones, open panel on desktop.
+  /**
+   * Reveal the Guide.
+   *
+   * Three ways in, in priority order:
+   *
+   *  1. An ?ask= deep link. The traveler arrived knowing what they want, from
+   *     an atlas card or a campaign — there is nothing to demonstrate to them
+   *     and the streaming answer needs to be in view. Skips the tour wait
+   *     entirely and cancels the fallback.
+   *  2. "bevvip:tour-ended" from the atlas — the normal path. Fires when the
+   *     tour finishes and the globe resumes its idle spin, AND when the visitor
+   *     interrupts it, AND when no tour was ever going to play (reduced motion,
+   *     a flat projection, a map that failed to boot).
+   *  3. The fallback timer. See TOUR_WAIT_CAP_MS.
+   *
+   * All three land on the same resting state — sheet at "half", desktop panel
+   * open — which is the state the home page used to load in directly. Nothing
+   * here can end with the Guide unreachable.
+   */
   useEffect(() => {
+    let done = false;
+    // The composer is never auto-focused here, including in transaction mode:
+    // raising the keyboard on a phone before the visitor has seen the answer
+    // they were sent here for hides it behind the thing they'd type into.
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      window.clearTimeout(fallback);
+      window.removeEventListener("bevvip:tour-ended", reveal);
+      setSheet("half");
+      setPanelOpen(true);
+      // The map has just resized under the panel; re-frame anything plotted.
+      requestRefit();
+    };
+
+    const fallback = window.setTimeout(reveal, TOUR_WAIT_CAP_MS);
+    window.addEventListener("bevvip:tour-ended", reveal);
+
+    let askDeepLink = false;
     try {
-      if (new URLSearchParams(window.location.search).get("ask")?.trim()) {
-        setSheet("half");
-        setPanelOpen(true);
-      }
+      askDeepLink = !!new URLSearchParams(window.location.search).get("ask")?.trim();
     } catch {
       /* no query / unavailable */
     }
-  }, []);
+    if (askDeepLink) reveal();
+
+    return () => {
+      window.clearTimeout(fallback);
+      window.removeEventListener("bevvip:tour-ended", reveal);
+    };
+  }, [requestRefit]);
 
   // Starting over returns the phone stage to the idle home — which is now the
   // composer at half height, not the map with the chat dismissed.
@@ -135,7 +204,18 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
       // Re-checked per gesture rather than once on mount: a rotate or a resize
       // can cross the breakpoint without remounting this component.
       // `isPrimary` so the second finger of a pinch doesn't arm a second time.
-      armed = window.matchMedia("(max-width: 640px)").matches && e.isPrimary;
+      //
+      // `sheetRef.current !== "pill"` is what keeps this rule from fighting the
+      // ambient tour. Parking is for a sheet that was IN THE WAY when you
+      // reached past it; a sheet already parked has nothing to get out of.
+      // Without the check, touching the map during the tour ran both responses
+      // on one gesture — the atlas announcing the interruption (which reveals
+      // the Guide) and this parking it again — and whichever landed second won.
+      // The visitor's own gesture would have decided it, at random.
+      armed =
+        window.matchMedia("(max-width: 640px)").matches &&
+        e.isPrimary &&
+        sheetRef.current !== "pill";
     };
     const settle = () => {
       if (!armed) return;

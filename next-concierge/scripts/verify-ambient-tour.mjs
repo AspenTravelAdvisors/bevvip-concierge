@@ -52,8 +52,15 @@ function between(open, close) {
   return SRC.slice(a, b);
 }
 
-const stopsDecl = between("interface TourStop {", "/** How long the camera takes");
-const tourBody = between("        const tourPins:", "        // ── Result-pin pulse");
+// Closed on the declaration itself rather than the doc comment above it. The
+// first version anchored on the comment's opening words and broke the moment
+// that comment was reworded — which is a fine way for this to fail (loudly, at
+// the top) but a silly thing to have to fix. Declarations get renamed less
+// often than prose does.
+const stopsDecl = between("interface TourStop {", "const TOUR_TRAVEL_MS");
+// Starts at the tour-ended latch, not at tourPins: the broadcast that frees the
+// Guide is part of the unit under test, and the most consequential part of it.
+const tourBody = between("        let tourEndAnnounced", "        // ── Result-pin pulse");
 
 // The three timing constants, grabbed individually. A range slice between two
 // banners was tempting and wrong: they sit at module scope, hundreds of lines
@@ -66,6 +73,19 @@ const constDecls = ["TOUR_TRAVEL_MS", "TOUR_DWELL_MS", "TOUR_LEAD_MS"]
     return m[0];
   })
   .join("\n");
+
+// The same three values as numbers, so scenarios can say "half way through the
+// second leg" instead of hard-coding 8900ms. Retuning the tour used to silently
+// move a scenario into a different phase and fail an unrelated assertion.
+const T = Object.fromEntries(
+  ["TOUR_TRAVEL_MS", "TOUR_DWELL_MS", "TOUR_LEAD_MS"].map((n) => [
+    n,
+    Number(new RegExp(`^const ${n} = (\\d+);$`, "m").exec(SRC)[1]),
+  ]),
+);
+/** The instant half way through the ease toward stop `n` (1-based). */
+const midTravel = (n) =>
+  T.TOUR_LEAD_MS + (n - 1) * (T.TOUR_TRAVEL_MS + T.TOUR_DWELL_MS) + T.TOUR_TRAVEL_MS / 2;
 
 // The slice reads a dozen names from the enclosing map effect. Bind them all
 // from the harness rather than stubbing globals, so the compiled unit is a
@@ -106,6 +126,7 @@ function harness(opts = {}) {
   let nextId = 1;
   const log = [];
   const camera = { center: [10, 20], zoom: 1.25, easing: null };
+  const ended = []; // timestamps of every "bevvip:tour-ended" broadcast
 
   const setTimeout_ = (fn, ms) => {
     const id = nextId++;
@@ -160,6 +181,8 @@ function harness(opts = {}) {
     window: {
       setTimeout: setTimeout_,
       matchMedia: (q) => ({ matches: q.includes("reduced-motion") ? !!opts.reduced : false }),
+      // The Guide is held back until this fires, so the harness counts them.
+      dispatchEvent: (e) => { if (e.type === "bevvip:tour-ended") ended.push(now); },
     },
     document: { hidden: !!opts.hidden },
     clearTimeout: clearTimeout_,
@@ -167,7 +190,7 @@ function harness(opts = {}) {
   });
 
   return {
-    api, log, camera,
+    api, log, camera, ended,
     landTiles() {
       tilesReady = true;
       const w = idleWaiters; idleWaiters = [];
@@ -226,7 +249,7 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   // The latch bug: the tour must remain interruptible after it starts.
   const h = harness();
   h.api.armTour();
-  h.tick(1700 + 3400 + 2600 + 1200); // one pin down, en route to the second
+  h.tick(midTravel(2)); // one pin down, mid-ease toward the second
   const before = h.pins().length;
   h.api.stopSpin();
   h.tick(RUN);
@@ -295,7 +318,7 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   // over a South America that was still an unpainted black shape.
   const h = harness({ slowTiles: true });
   h.api.armTour();
-  h.tick(1700 + 200); // the lead-in has elapsed; the tiles have not arrived
+  h.tick(T.TOUR_LEAD_MS + 200); // lead-in elapsed; the tiles have not arrived
   check("will not take the camera over an unpainted map",
     h.log.filter((l) => l.startsWith("ease")).length === 0,
     "waits instead of flying");
@@ -310,7 +333,7 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   // the cap a partly-painted map still beats a tour that silently never runs.
   const stalled = harness({ slowTiles: true });
   stalled.api.armTour();
-  stalled.tick(1700 + 200);
+  stalled.tick(T.TOUR_LEAD_MS + 200);
   const beforeCap = stalled.log.filter((l) => l.startsWith("ease")).length;
   stalled.tick(RUN); // tiles never land
   check("gives up waiting after the cap rather than stranding the tour",
@@ -337,6 +360,55 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   h.tick(RUN);
   check("interaction during a tile wait still cancels it", h.pins().length === 0);
   check("…and leaves nothing pending", h.pending() === 0);
+}
+
+// ── The stage hand-off ──────────────────────────────────────────────────────
+// The Guide is hidden until "bevvip:tour-ended" arrives, which makes a missed
+// broadcast a page with no way to type. Every exit must announce, exactly once.
+{
+  const cases = {
+    "runs to completion": (h) => h.tick(RUN),
+    "interrupted mid-flight": (h) => { h.tick(midTravel(2)); h.api.stopSpin(); h.tick(RUN); },
+    "interrupted during the lead-in": (h) => { h.tick(400); h.api.stopSpin(); h.tick(RUN); },
+    "dismissed before it armed": (h) => { h.api.stopSpin(); h.tick(RUN); },
+    "an answer landed first": (h) => h.tick(RUN),
+    "tiles never arrive": (h) => h.tick(RUN),
+  };
+  const opts = {
+    "an answer landed first": { subsetActive: true },
+    "tiles never arrive": { slowTiles: true },
+  };
+  for (const [name, drive] of Object.entries(cases)) {
+    const h = harness(opts[name] || {});
+    h.api.armTour();
+    drive(h);
+    check(`announces the stage is free — ${name}`, h.ended.length === 1,
+      `${h.ended.length} broadcast(s)`);
+  }
+
+  // The surfaces where no tour was ever going to play must announce too, or
+  // the Guide waits on a beat that never comes.
+  for (const [name, o] of Object.entries({
+    "ambient tour disabled": { ambientTour: false },
+    "flat projection": { projGlobe: false },
+    "prefers-reduced-motion": { reduced: true },
+  })) {
+    const h = harness(o);
+    h.api.armTour();
+    h.tick(RUN);
+    check(`announces immediately when no tour will play — ${name}`,
+      h.ended.length === 1, `${h.ended.length} broadcast(s)`);
+  }
+
+  // Ordering: on a healthy run the hand-off comes AFTER the last caption and
+  // after the spin resumes — the beat the Guide is meant to slide in on.
+  const h = harness();
+  h.api.armTour();
+  h.tick(RUN);
+  const spinIdx = h.log.lastIndexOf("startSpin");
+  const lastPin = h.log.map((l, i) => (l.startsWith("pin ") ? i : -1)).filter((i) => i >= 0).pop();
+  check("hands off after the last pin, on the resumed spin",
+    spinIdx > lastPin && h.ended.length === 1);
 }
 
 rmSync(OUT, { recursive: true, force: true });
