@@ -1420,7 +1420,9 @@ export default function AtlasShell({
                 popup.setHTML(
                   `<div class="iw">${head}` +
                     (rate
-                      ? `<a class="iwbook" href="${escapeHtml(rate.url)}" target="_blank" rel="noopener">${escapeHtml(rate.label)} ↗</a>`
+                      ? `<span class="iwbook-wrap"><a class="iwbook" href="${escapeHtml(rate.url)}" target="_blank" rel="noopener">${escapeHtml(rate.label)} ↗</a>` +
+                        (rate.note ? `<span class="iwbook-code">${escapeHtml(rate.note)}</span>` : "") +
+                        `</span>`
                       : "") +
                     threeLink +
                     `</div>`,
@@ -3043,8 +3045,11 @@ function dashPhase(step: number): number[] {
  * Failures resolve to null rather than rejecting — the caller's job is to
  * decide whether to render a link, not to handle transport errors.
  */
-const RATE_LINKS = new Map<string, Promise<{ url: string; label: string } | null>>();
-function hotelRateLink(id: string, name: string): Promise<{ url: string; label: string } | null> {
+const RATE_LINKS = new Map<string, Promise<{ url: string; label: string; note?: string } | null>>();
+function hotelRateLink(
+  id: string,
+  name: string,
+): Promise<{ url: string; label: string; note?: string } | null> {
   const cached = RATE_LINKS.get(id);
   if (cached) return cached;
   const pending = fetch(`/api/hotel/tw?ids=${encodeURIComponent(id)}`)
@@ -3072,7 +3077,9 @@ function hotelRateLink(id: string, name: string): Promise<{ url: string; label: 
           },
           getTrip(),
         );
-        return link?.url ? { url: link.url, label: link.label } : null;
+        return link?.url
+          ? { url: link.url, label: link.label, ...(link.note ? { note: link.note } : {}) }
+          : null;
       },
     )
     .catch(() => {

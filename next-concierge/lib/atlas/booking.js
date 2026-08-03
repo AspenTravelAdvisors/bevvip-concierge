@@ -231,9 +231,11 @@ export function bookingLink(hotel, trip) {
   if (MODE === "off") return null;
 
   const password = String((hotel && hotel.bookPassword) || "").trim();
-  const note = password ? `Access code: ${password}` : undefined;
   const type = String((hotel && hotel.type) || "");
   const isHotel = type === "hotel" || !type;
+  const note = isHotel
+    ? `Access code: ${password || TW_ACCESS_CODE}`
+    : (password ? `Access code: ${password}` : undefined);
 
   if (MODE === "deep" && isHotel) {
     // The TravelWits identity (hotelId + coords + canonical label) rides on the

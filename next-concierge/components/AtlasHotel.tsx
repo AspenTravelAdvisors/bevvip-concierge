@@ -135,18 +135,20 @@ export default function AtlasHotel() {
       );
       if (!booking?.url) return null;
       return (
-        <a
-          className="ac-book"
-          href={booking.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => {
-            e.stopPropagation();
-            bookingClicked("hotel", !booking.needsDates);
-          }}
-        >
-          {booking.label} ↗
-        </a>
+        <span className="ac-book-wrap" onClick={(e) => e.stopPropagation()}>
+          <a
+            className="ac-book"
+            href={booking.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => {
+              bookingClicked("hotel", !booking.needsDates);
+            }}
+          >
+            {booking.label} ↗
+          </a>
+          {booking.note && <span className="ac-book-code">{booking.note}</span>}
+        </span>
       );
     },
     [tw, bookUrls, passwords, trip],

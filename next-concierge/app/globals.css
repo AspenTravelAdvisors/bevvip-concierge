@@ -3816,6 +3816,20 @@ button.card-book {
   margin-top: 8px;
   flex-wrap: wrap;
 }
+.atlas-card .ac-book-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.atlas-card .ac-book-code {
+  padding-left: 4px;
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--sub);
+}
 .atlas-card .ac-link,
 .atlas-card .ac-ask {
   font-family: var(--sans);
@@ -4268,6 +4282,24 @@ button.card-book {
 .mapboxgl-popup .iw .iw3d:hover {
   background: rgba(201, 168, 76, 0.16);
   border-color: var(--gold);
+}
+.mapboxgl-popup .iw .iwbook-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 6px;
+  vertical-align: top;
+}
+.mapboxgl-popup .iw .iwbook-wrap .iwbook {
+  margin-right: 0;
+}
+.mapboxgl-popup .iw .iwbook-code {
+  display: block;
+  margin: 4px 0 0 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--sub);
 }
 
 /* ── Explore, grouped by intent (D4) ──────────────────────────────────────
