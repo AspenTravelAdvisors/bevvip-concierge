@@ -581,6 +581,28 @@ export default function AtlasShell({
   // map showed neither a poster nor a spinner: just an empty panel.
   const [posterGone, setPosterGone] = useState(!showPoster);
   const [posterPad, setPosterPad] = useState(0);
+
+  // The poster is only for a cold landing. Browser Back from an atlas route
+  // restores the chat transcript plus the last plotted results; in that state
+  // a static globe image is stale chrome covering the live answer.
+  useEffect(() => {
+    if (!showPoster || posterGone) return;
+    if (readStoredPlot()) {
+      setMapPainted(true);
+      setPosterGone(true);
+    }
+  }, [showPoster, posterGone]);
+
+  // Defensive release: the normal path removes the poster on transitionend
+  // after Mapbox's full `load`. Back/forward cache and interrupted navigations
+  // can miss that transition lifecycle, so never let a ready map sit behind an
+  // immortal poster.
+  useEffect(() => {
+    if (!showPoster || posterGone || !mapReady) return;
+    const id = window.setTimeout(() => setPosterGone(true), mapPainted ? 700 : 1800);
+    return () => window.clearTimeout(id);
+  }, [showPoster, posterGone, mapReady, mapPainted]);
+
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [styleKey, setStyleKey] = useState<StyleKey>(initialStyle ?? "satellite");
@@ -744,6 +766,7 @@ export default function AtlasShell({
         map.on("load", () => {
           if (cancelled) return;
           setMapPainted(true);
+          window.setTimeout(() => { if (!cancelled) setPosterGone(true); }, 700);
           window.setTimeout(() => {
             revealed = true;
             onRevealed?.();
