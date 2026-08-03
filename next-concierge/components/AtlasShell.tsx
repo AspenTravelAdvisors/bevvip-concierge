@@ -495,6 +495,7 @@ export default function AtlasShell({
   const shellRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
   const apiRef = useRef<AtlasApi | null>(null);
+  const pendingPlotRef = useRef<GuideMeta | null>(null);
   // Filled by the map effect so the route-trace listener below can reach the
   // painters without re-running the whole map lifecycle.
   // Last traced route, so a basemap switch can repaint it. setStyle wipes all
@@ -2030,6 +2031,12 @@ export default function AtlasShell({
             fitFeatured();
           }
         }
+        function flushPendingPlot() {
+          if (!ready || !pendingPlotRef.current) return;
+          const pending = pendingPlotRef.current;
+          pendingPlotRef.current = null;
+          plotResults(pending);
+        }
         function fitFeatured() {
           if (!featuredFC || !featuredFC.features.length) return;
           // Same treatment a traced route gets: one longitude window, then
@@ -2209,6 +2216,7 @@ export default function AtlasShell({
             wireHandlers();
             setMapReady(true);
             bootData();
+            flushPendingPlot();
           } else if (restyling) {
             restyling = false;
             // Keep any plotted results in view after a manual basemap switch.
@@ -2388,7 +2396,13 @@ export default function AtlasShell({
           resize() {
             setTimeout(() => { try { map.resize(); } catch { /* noop */ } }, 60);
           },
-          plot(meta) { plotResults(meta); },
+          plot(meta) {
+            if (!ready) {
+              pendingPlotRef.current = meta;
+              return;
+            }
+            plotResults(meta);
+          },
           refit() {
             ambientPadding(); // panel opened/closed/resized — recenter ambient camera
             if (subsetActive) fitFeatured();
@@ -2449,7 +2463,10 @@ export default function AtlasShell({
     // AtlasCollection (a collection route), and the two never mount together.
     function onPlot(e: Event) {
       const meta = (e as CustomEvent<GuideMeta>).detail;
-      if (meta) apiRef.current?.plot(meta);
+      if (!meta) return;
+      const api = apiRef.current;
+      if (api) api.plot(meta);
+      else pendingPlotRef.current = meta;
     }
     function onReset() {
       apiRef.current?.resetView();

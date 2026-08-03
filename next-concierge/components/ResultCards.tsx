@@ -356,6 +356,10 @@ function formatStay(checkIn: string, checkOut: string): string {
 // fall back to the result's region, then the bare atlas.
 function internalCardLink(result: OfferingResult, type: OfferingType | null): string | null {
   if (!type) return null;
+  if (type === "hotel") {
+    const id = resultId(result);
+    if (id) return `/maps/hotel/index.html?hotel=${encodeURIComponent(id)}`;
+  }
   let query = "";
   if (typeof result.deepLink === "string" && result.deepLink) {
     try {
@@ -368,6 +372,19 @@ function internalCardLink(result: OfferingResult, type: OfferingType | null): st
   }
   if (!query && result.region) query = atlasRegionQuery(result.region);
   return internalAtlasLink(type, query);
+}
+
+function resultId(result: OfferingResult): string {
+  if (typeof result.deepLink === "string" && result.deepLink) {
+    try {
+      const params = new URL(result.deepLink, "http://internal.atlas").searchParams;
+      const id = params.get("hotel") || params.get("ids") || "";
+      if (id.trim()) return id.trim();
+    } catch {
+      /* fall back to result.id below */
+    }
+  }
+  return result.id == null ? "" : String(result.id).trim();
 }
 
 // The "Open in the Atlas" CTA target: the lead tool's type, focused on the
