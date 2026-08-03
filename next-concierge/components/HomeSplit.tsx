@@ -141,11 +141,11 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   useEffect(() => {
     function onSession(e: Event) {
       const active = !!(e as CustomEvent<{ active?: boolean }>).detail?.active;
-      if (!active) setSheet("half");
+      if (!active && !tourWaiting) setSheet("half");
     }
     window.addEventListener("bevvip:guide-session", onSession as EventListener);
     return () => window.removeEventListener("bevvip:guide-session", onSession as EventListener);
-  }, []);
+  }, [tourWaiting]);
 
   const setSheetAndRefit = useCallback(
     (next: SheetState | ((s: SheetState) => SheetState)) => {
