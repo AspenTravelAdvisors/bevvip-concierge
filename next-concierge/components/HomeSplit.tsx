@@ -73,6 +73,7 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   // the old behaviour, where the conversation waited behind a pill for the
   // visitor to go find it.
   const [sheet, setSheet] = useState<SheetState>("pill");
+  const [tourWaiting, setTourWaiting] = useState(true);
   // The detent, readable from event handlers that must not re-subscribe every
   // time it changes — see the map-gesture listener's `down`.
   const sheetRef = useRef<SheetState>("pill");
@@ -111,6 +112,7 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
       done = true;
       window.clearTimeout(fallback);
       window.removeEventListener("bevvip:tour-ended", reveal);
+      setTourWaiting(false);
       setSheet("half");
       setPanelOpen(true);
       // The map has just resized under the panel; re-frame anything plotted.
@@ -338,9 +340,9 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   return (
     <div
       ref={rowRef}
-      className={`home${dragging ? " dragging" : ""} home--sheet-${sheet}${
-        panelOpen ? "" : " home--panel-closed"
-      }`}
+      className={`home${dragging ? " dragging" : ""}${
+        tourWaiting ? " home--tour-waiting" : ""
+      } home--sheet-${sheet}${panelOpen ? "" : " home--panel-closed"}`}
       style={{ "--guide-panel-w": `${guideW}px` } as CSSProperties}
     >
       <aside className="home-atlas" ref={atlasRef}>{atlas}</aside>
