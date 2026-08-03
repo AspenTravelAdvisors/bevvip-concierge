@@ -2038,8 +2038,7 @@ main.page {
   .atlas-dock > * {
     pointer-events: auto;
   }
-  .home--tour-waiting .dock-chips,
-  .home--tour-waiting .dock-results {
+  .home--tour-waiting .atlas-dock {
     display: none;
   }
   /* Sheet up: the dock stands down. */
