@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, GuideToolMeta, OfferingResult } from "@/lib/types";
-import { ATLASES, COLLECTIONS, internalAtlasLink } from "@/lib/atlas-config";
+import { ATLASES, COLLECTIONS, atlasRegionQuery, internalAtlasLink } from "@/lib/atlas-config";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 // Every coordinate this component touches is minted here. See lib/atlas/geo.ts
 // for why: six upstream feeds disagree about [lat,lng] vs [lng,lat], and the
@@ -332,8 +332,8 @@ interface Props {
   routesAlways?: boolean;
   /**
    * Collection pages pass this to make a region pin FILTER to that region
-   * instead of opening a popup that links to `?region=` — which is the camera
-   * focus param, not a filter, so clicking a pin used to "open everything".
+   * instead of opening a popup link. Home keeps the popup + link; those links
+   * carry both `region=` (legacy focus) and `regions=` (native filter).
    * Home leaves it undefined and keeps the popup + link.
    */
   onRegionSelect?: (regionKey: string) => void;
@@ -1446,7 +1446,7 @@ export default function AtlasShell({
               const count = Number(f.properties.count) || undefined;
               const href = internalAtlasLink(
                 key,
-                f.properties.key ? `?region=${encodeURIComponent(f.properties.key)}` : "",
+                atlasRegionQuery(f.properties.key),
               );
               const html =
                 `<div class="iw"><div class="iwn">${escapeHtml(f.properties.name)}</div>` +
@@ -2819,7 +2819,7 @@ export default function AtlasShell({
               <a
                 key={r}
                 className="chip"
-                href={internalAtlasLink(type, `?region=${encodeURIComponent(r)}`)}
+                href={internalAtlasLink(type, atlasRegionQuery(r))}
               >
                 {r}
               </a>
@@ -3088,7 +3088,7 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
   const when = [r.duration || r.country, r.dates || (r as { month?: string }).month].filter(Boolean).join("  ·  ");
   const href =
     toInternalAtlasHref(r.deepLink) ||
-    internalAtlasLink(kind, r.region ? `?region=${encodeURIComponent(r.region)}` : "");
+    internalAtlasLink(kind, atlasRegionQuery(r.region));
   /*
    * A plotted HOTEL gets the photoreal handoff, same as a hotel pin.
    *

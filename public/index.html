@@ -443,9 +443,15 @@ function typeFeatures(key, regs){
   }));
 }
 // Deep link into a type's Atlas, preselecting the region so it loads zoomed-in.
+// `region` opens the old standalone panel; `regions` marks the selected filter
+// in the native /atlas pages and newer standalone maps.
 function typeDeepLink(key, regionKey){
   const cfg=ATLAS_TYPES[key];
-  return regionKey ? `${cfg.url}?region=${encodeURIComponent(regionKey)}` : cfg.url;
+  if(!regionKey) return cfg.url;
+  const p=new URLSearchParams();
+  p.set("region", regionKey);
+  p.set("regions", regionKey);
+  return `${cfg.url}?${p.toString()}`;
 }
 
 async function addTypeLayer(key){

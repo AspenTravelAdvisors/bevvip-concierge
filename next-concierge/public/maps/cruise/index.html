@@ -1311,11 +1311,12 @@ function boot(a){
     if(opParam){ opParam.split(',').map(s=>s.trim()).filter(Boolean).forEach(o=>{ const op=findOperator(o); if(op){ activeOps.add(op); const row=document.querySelector('.op[data-operator="'+cssEsc(op)+'"]'); if(row)row.classList.add('active'); } }); if(activeOps.size) document.getElementById('reset').classList.add('show'); }
     const regions=sp.get('regions');
     if(regions){ regions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{ if(REGIONS[k]&&markers[k]){ activeRegions.add(k); const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]'); if(r)r.classList.add('active'); } }); if(activeRegions.size){ const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList'); if(rh)rh.classList.remove('collapsed'); if(rl)rl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); } }
+    const region=findRegionKey(sp.get('region'));
+    if(region&&!activeRegions.size){ activeRegions.add(region); const r=document.querySelector('.reg[data-region="'+cssEsc(region)+'"]'); if(r)r.classList.add('active'); const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList'); if(rh)rh.classList.remove('collapsed'); if(rl)rl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); }
     const ships=sp.get('ships');
     if(ships){ ships.split(',').map(s=>s.trim()).filter(Boolean).forEach(nm=>{ const row=document.querySelector('.ship[data-ship="'+cssEsc(nm)+'"]'); if(row){ activeShips.add(nm); row.classList.add('active'); } }); if(activeShips.size){ const sh=document.getElementById('shipHead'),sl=document.getElementById('shipList'); if(sh)sh.classList.remove('collapsed'); if(sl)sl.classList.remove('collapsed'); document.getElementById('reset').classList.add('show'); } }
     activeSearchTerms=[...words(sp.get('q')), ...words(sp.get('country'))];
     updateMarkers();
-    const region=findRegionKey(sp.get('region'));
     if(region) openRegion(region);
     else if(activeIds.size||activeOps.size||activeShips.size||activeMonths.size||activeRegions.size||activeSearchTerms.length) openSearchResults(activeIds.size?'Guide shortlist':'Filtered sailings');
   }

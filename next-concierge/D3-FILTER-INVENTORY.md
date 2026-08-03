@@ -74,8 +74,9 @@ s.start >= today                                    // ISO date string, not isPa
 | cruise | `s.region` **scalar** | include only |
 
 Region exclusion exists only in the journeys family. `regions=` is a
-comma-separated multi-select; `region=` (singular) is a separate single-region
-focus resolved through `findRegionKey()`.
+comma-separated multi-select; `region=` (singular) is a legacy single-region
+focus resolved through `findRegionKey()` and promoted into the selected filter
+when no valid `regions=` filter arrived.
 
 ### 2. Three month models
 | atlases | field | shape |

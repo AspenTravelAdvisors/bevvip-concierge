@@ -941,13 +941,15 @@ function brandDiverseResults(
 // Per-result deep link into the full standalone Atlas, focused on that one
 // record with its detail open. The Hotel Atlas consumes ?ids= today
 // (applyDeepLink preselects + zooms); the cruise/jet/yacht/world-cruise apps
-// consume ?region= now and ?ids= once their deep-link consumer ships
-// (DEEPLINK-HANDOFF.md), so we send both and they ignore what they don't read.
+// consume ?region= and ?ids=. Newer/native maps also mark the selected filter
+// from `regions=`, so send both region params with the same value.
 function resultDeepLink(type, base, item) {
   const id = item && item.id;
   if (!base || !id) return null;
   if (type === "hotel") return `${base}/?ids=${encodeURIComponent(id)}`;
-  const region = item.region ? `region=${encodeURIComponent(item.region)}&` : "";
+  const region = item.region
+    ? `region=${encodeURIComponent(item.region)}&regions=${encodeURIComponent(item.region)}&`
+    : "";
   return `${base}/?${region}ids=${encodeURIComponent(id)}`;
 }
 

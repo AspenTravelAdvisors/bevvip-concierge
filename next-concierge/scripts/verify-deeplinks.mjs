@@ -11,6 +11,7 @@
  *
  * Checks, per collection where applicable:
  *   - region alias tables resolve ("scotland" → BRITAIN), all entries
+ *   - every map pin region URL (`region` + `regions`) selects a native region
  *   - findRegionKey falls through alias → exact → substring
  *   - findBrand resolves every real brand by key AND by display name
  *   - unknown region keys are DROPPED rather than passed through
@@ -62,13 +63,20 @@ const expect = (cond, msg) => (cond ? ok() : fail(msg));
 function contextFor(collection) {
   if (collection === "cruise") {
     const sail = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/sailings.json"), "utf8"));
+    const meta = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/atlas-meta.json"), "utf8"));
     const idx = {}; (sail.schema || []).forEach((n, i) => { idx[n] = i; });
     const ops = [...new Set(sail.rows.map((r) => r[idx.operator]).filter(Boolean))];
-    const regs = [...new Set(sail.rows.map((r) => r[idx.region]).filter(Boolean))];
+    // The home map's cruise pins come from atlas-meta.json, not just the raw
+    // sailing rows. Keep these in the parse context so a pin for a corrected
+    // region such as "Northwest Passage" or "Baja California" is accepted.
+    const regs = Object.entries(meta.REGIONS || {}).map(([key, r]) => ({
+      key,
+      name: r?.name || key,
+    }));
     const routes = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/data/itinerary-routes.json"), "utf8")).routes || {};
     const ports = new Set();
     for (const days of Object.values(routes)) for (const d of days) for (const p of d.p || []) if (p[1] != null && p[2] != null) ports.add(p[0]);
-    return { brands: ops.map((o) => ({ key: o, short: o })), regions: regs.map((r) => ({ key: r, name: r })), stopNames: [...ports] };
+    return { brands: ops.map((o) => ({ key: o, short: o })), regions: regs, stopNames: [...ports] };
   }
   const raw = JSON.parse(readFileSync(join(ROOT, `public/maps/${collection}/itinerary.json`), "utf8"));
   const brands = Object.entries(raw.BRANDS || {}).map(([key, b]) => ({ key, short: b.short }));
@@ -77,6 +85,19 @@ function contextFor(collection) {
     ? Object.keys(raw.PORTS)
     : [...new Set((raw.TRIPS || []).flatMap((t) => (t.itin || []).map((e) => e.n).filter(Boolean)))];
   return { brands, regions, stopNames };
+}
+
+function pinRegionKeys(collection) {
+  if (collection === "cruise") {
+    const meta = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/atlas-meta.json"), "utf8"));
+    return Object.entries(meta.REGIONS || {})
+      .filter(([key, r]) => !/^other\b/i.test(key) && !/^other\b/i.test(r?.name || ""))
+      .map(([key]) => key);
+  }
+  const raw = JSON.parse(readFileSync(join(ROOT, `public/maps/${collection}/itinerary.json`), "utf8"));
+  return Object.entries(raw.REGIONS || {})
+    .filter(([key, r]) => !/^other\b/i.test(key) && !/^other\b/i.test(r?.name || ""))
+    .map(([key]) => key);
 }
 
 const COLLECTIONS = [
@@ -99,6 +120,25 @@ for (const [collection, d] of COLLECTIONS) {
     if (!known.has(target)) continue; // alias points at a region this feed dropped
     expect(findRegionKey(alias, ctx.regions, collection) === target,
       `${collection}: alias "${alias}" should resolve to ${target}, got ${findRegionKey(alias, ctx.regions, collection)}`);
+    const { state } = parseDeepLink(new URLSearchParams({ region: alias }), d, ctx);
+    expect(state.regions.size === 1 && state.regions.has(target),
+      `${collection}: singular region alias "${alias}" should select ${target}, got ${[...state.regions]}`);
+  }
+
+  // 1b. Every home-map region pin URL is selection-safe against the target map.
+  // The popup emits both: `region` for legacy panel focus and `regions` for the
+  // native selected filter.
+  for (const key of pinRegionKeys(collection)) {
+    const resolved = findRegionKey(key, ctx.regions, collection);
+    const { state, view } = parseDeepLink(new URLSearchParams({ region: key, regions: key }), d, ctx);
+    expect(!!resolved,
+      `${collection}: pin region "${key}" should resolve against this map's regions`);
+    if (resolved) {
+      expect(state.regions.size === 1 && state.regions.has(resolved),
+        `${collection}: pin URL for "${key}" should select ${resolved}, got ${[...state.regions]}`);
+      expect(view.focusRegion === resolved,
+        `${collection}: pin URL for "${key}" should focus ${resolved}, got ${view.focusRegion}`);
+    }
   }
 
   // 2. Every brand resolves by key and by display name.
@@ -112,9 +152,10 @@ for (const [collection, d] of COLLECTIONS) {
 
   // 3. Unknown region keys are dropped, not passed through.
   {
-    const p = new URLSearchParams({ regions: "NOT_A_REGION," + ctx.regions[0].key });
+    const knownRegion = ctx.regions.find((r) => !r.key.includes(","))?.key ?? ctx.regions[0].key;
+    const p = new URLSearchParams({ regions: "NOT_A_REGION," + knownRegion });
     const { state } = parseDeepLink(p, d, ctx);
-    expect(state.regions.size === 1 && state.regions.has(ctx.regions[0].key),
+    expect(state.regions.size === 1 && state.regions.has(knownRegion),
       `${collection}: unknown region key was not dropped (got ${[...state.regions]})`);
   }
 

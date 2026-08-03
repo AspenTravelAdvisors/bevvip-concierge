@@ -1469,6 +1469,8 @@ function applyDeepLink(){
   if(regions){ regions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{ if(REGIONS[k]&&markers[k]){ activeRegions.add(k); const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]'); if(r)r.classList.add('active'); } }); }
   const exRegions=sp.get('exRegions');
   if(exRegions){ exRegions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{ if(REGIONS[k]&&markers[k]&&!activeRegions.has(k)){ excludedRegions.add(k); const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]'); if(r)r.classList.add('excluded'); } }); }
+  const region=findRegionKey(sp.get('region'));
+  if(region&&!activeRegions.size&&!excludedRegions.has(region)){ activeRegions.add(region); const r=document.querySelector('.reg[data-region="'+cssEsc(region)+'"]'); if(r)r.classList.add('active'); }
   activeSearchTerms=[...words(sp.get('q')),...words(sp.get('country'))];
   if(activeIds.size||activeBrands.size||activeRegions.size||excludedRegions.size||activeSearchTerms.length)document.getElementById('reset').classList.add('show');
   applyFilter();
@@ -1485,7 +1487,6 @@ function applyDeepLink(){
       selectLocation(locationName); return;
     }
   }
-  const region=findRegionKey(sp.get('region'));
   const world=/^(1|true|yes|y)$/i.test(String(sp.get('world')||'').trim());
   if(world)openWorld();
   else if(region)openRegion(region);

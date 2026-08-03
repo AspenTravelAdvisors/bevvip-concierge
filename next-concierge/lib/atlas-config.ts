@@ -2,9 +2,9 @@ import type { OfferingType } from "./types";
 
 // One registry for the five atlas surfaces. The unified /atlas/[type] route
 // renders them under a single shell; `base` is the internal map root
-// (/maps/<type>) for the "Open full Atlas" handoff (same ?region= deep-link
-// contract documented in DEEPLINK-HANDOFF.md). Override with NEXT_PUBLIC_*_ATLAS_BASE
-// only if pointing at an external deploy.
+// (/maps/<type>) for the "Open full Atlas" handoff. Region handoffs carry both
+// the legacy `region=` focus key and the native `regions=` filter key; see
+// atlasRegionQuery().
 /**
  * The four things a traveller is actually choosing between.
  *
@@ -301,13 +301,25 @@ export function isOfferingType(value: string): value is OfferingType {
 
 export function externalAtlasLink(type: OfferingType, region?: string | null): string {
   const base = ATLASES[type].base;
-  return region ? `${base}/?region=${encodeURIComponent(region)}` : base;
+  const query = atlasRegionQuery(region);
+  return query ? `${base}/${query}` : base;
+}
+
+export function atlasRegionQuery(region?: string | null): string {
+  const key = String(region ?? "").trim();
+  if (!key) return "";
+  const p = new URLSearchParams();
+  // `region` opens/focuses the legacy standalone panel; `regions` marks the
+  // selected filter in the native /atlas pages and newer standalone maps.
+  p.set("region", key);
+  p.set("regions", key);
+  return `?${p.toString()}`;
 }
 
 // In-app atlas route (the atlas now lives inside Base Camp under /atlas/<type>,
 // rendering the copied standalone page). `query` is a pre-built search string
-// (e.g. "?region=Caribbean&ids=h_001") carried through to the embedded atlas,
-// which reads it from its own location.search inside the iframe.
+// (e.g. "?region=Caribbean&regions=Caribbean&ids=h_001") carried through to the
+// embedded atlas, which reads it from its own location.search inside the iframe.
 /**
  * COLLECTIONS grouped by intent, in INTENTS order, each group in the
  * collections' own `order`.

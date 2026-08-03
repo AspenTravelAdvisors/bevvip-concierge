@@ -10,10 +10,10 @@
  *   brand      falls back to `operator` (`sp.get('brand')||sp.get('operator')`)
  *              and is matched FUZZILY: exact on key or short name, then
  *              substring in either direction.
- *   region     matched through a per-collection ALIAS TABLE first
- *              ("scotland" → BRITAIN), then exact on key/name/abbreviation,
- *              then substring either way. The tables are all different and
- *              cruise has none.
+ *   region     legacy single-region handoff. Matched through a per-collection
+ *              ALIAS TABLE first ("scotland" → BRITAIN), then exact on
+ *              key/name/abbreviation, then substring either way. When no valid
+ *              `regions=` filter is present, it also seeds that filter.
  *   regions    comma-separated, and each key is only accepted if it is a real
  *              mappable region — unknown keys are dropped, not passed through.
  *   exRegions  same, and additionally skipped if already in `regions`.
@@ -50,6 +50,36 @@ export const REGION_ALIASES: Record<string, Record<string, string>> = {
 
 const splitList = (v: string | null | undefined): string[] =>
   String(v ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+
+function splitRegionList(
+  v: string | null | undefined,
+  regionKeys: ReadonlySet<string>,
+): string[] {
+  const raw = String(v ?? "").trim();
+  if (!raw) return [];
+  if (regionKeys.has(raw)) return [raw];
+  const chunks = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  const out: string[] = [];
+  let pending = "";
+  for (const chunk of chunks) {
+    if (!pending) {
+      if (regionKeys.has(chunk)) out.push(chunk);
+      else pending = chunk;
+      continue;
+    }
+    const combined = `${pending}, ${chunk}`;
+    if (regionKeys.has(combined)) {
+      out.push(combined);
+      pending = "";
+    } else if (regionKeys.has(chunk)) {
+      out.push(chunk);
+      pending = "";
+    } else {
+      pending = combined;
+    }
+  }
+  return out;
+}
 
 /** Region metadata the resolvers need, supplied by the caller. */
 /**
@@ -108,7 +138,7 @@ export function findRegionKey(
 export interface AtlasViewIntent {
   /** `trip=` — the pinned journey whose route is traced. */
   trip: string | null;
-  /** `region=` (singular) — focus this region. */
+  /** `region=` (singular) — focus this region and, absent `regions=`, select it. */
   focusRegion: string | null;
   /** `world=1` — journeys' round-the-world view. */
   world: boolean;
@@ -178,11 +208,18 @@ export function parseDeepLink(
   // Unknown region keys are DROPPED, not passed through — an unrecognised key
   // would otherwise filter everything out.
   const regions = new Set<string>();
-  for (const k of splitList(params.get("regions"))) if (regionKeys.has(k)) regions.add(k);
+  for (const k of splitRegionList(params.get("regions"), regionKeys)) regions.add(k);
+  const focusRegion = findRegionKey(params.get("region"), ctx.regions, d.collection);
+  // Legacy handoffs and region pins used singular `region=` as the selection
+  // param. Native collection pages filter on plural `regions=`, so when no
+  // valid plural selection arrived, promote the resolved singular region into
+  // the filter state as well. This keeps aliases like `region=africa` landing
+  // on train's native `AFRICA` key instead of opening an unselected map.
+  if (!regions.size && focusRegion) regions.add(focusRegion);
 
   const excludedRegions = new Set<string>();
   if (d.supportsRegionExclusion) {
-    for (const k of splitList(params.get("exRegions"))) {
+    for (const k of splitRegionList(params.get("exRegions"), regionKeys)) {
       if (regionKeys.has(k) && !regions.has(k)) excludedRegions.add(k);
     }
   }
@@ -246,7 +283,7 @@ export function parseDeepLink(
     },
     view: {
       trip: params.get("trip") || null,
-      focusRegion: findRegionKey(params.get("region"), ctx.regions, d.collection),
+      focusRegion,
       world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()),
       hero: params.get("hero") === "1",
       ...parseViewParams(params),

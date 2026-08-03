@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType, TripState } from "@/lib/types";
-import { internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
+import { atlasRegionQuery, internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
 import type { NormalizedOffering } from "@/lib/offering-shape";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip, setTrip as persistTrip } from "@/lib/trip-state";
@@ -361,12 +361,12 @@ function internalCardLink(result: OfferingResult, type: OfferingType | null): st
     try {
       // Deep links are internal paths ("/maps/hotel/?ids=h_1"), so parse
       // against a placeholder base — a bare `new URL()` throws on them.
-      query = new URL(result.deepLink, "http://internal.atlas").search; // e.g. "?region=Med&ids=y_12"
+      query = new URL(result.deepLink, "http://internal.atlas").search; // e.g. "?region=MED&regions=MED&ids=y_12"
     } catch {
       /* not a parseable URL — ignore and fall back */
     }
   }
-  if (!query && result.region) query = `?region=${encodeURIComponent(result.region)}`;
+  if (!query && result.region) query = atlasRegionQuery(result.region);
   return internalAtlasLink(type, query);
 }
 
@@ -383,7 +383,10 @@ function internalLeadLink(meta: GuideMeta, trip: TripState | null): string | nul
   if (!type) return null;
   const params = new URLSearchParams();
   const region = meta.chartRegion;
-  if (region) params.set("region", region);
+  if (region) {
+    params.set("region", region);
+    params.set("regions", region);
+  }
   const ids = leadShortlistIds(tool);
   if (ids.length) params.set("ids", ids.join(","));
   const query = params.toString();

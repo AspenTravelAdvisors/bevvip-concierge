@@ -1240,6 +1240,8 @@ function applyDeepLink(){
   if(brandParam){brandParam.split(',').map(s=>s.trim()).filter(Boolean).forEach(b=>{const brand=findBrand(b);if(brand){activeBrands.add(brand);const row=document.querySelector('.op[data-brand="'+cssEsc(brand)+'"]');if(row)row.classList.add('active');}});}
   const regions=sp.get('regions');
   if(regions){regions.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{if(REGIONS[k]&&markers[k]){activeRegions.add(k);const r=document.querySelector('.reg[data-region="'+cssEsc(k)+'"]');if(r)r.classList.add('active');}});if(activeRegions.size){const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList');if(rh)rh.classList.remove('collapsed');if(rl)rl.classList.remove('collapsed');}}
+  const region=findRegionKey(sp.get('region'));
+  if(region&&!activeRegions.size){activeRegions.add(region);const r=document.querySelector('.reg[data-region="'+cssEsc(region)+'"]');if(r)r.classList.add('active');const rh=document.getElementById('regionHead'),rl=document.getElementById('regionList');if(rh)rh.classList.remove('collapsed');if(rl)rl.classList.remove('collapsed');}
   const ships=sp.get('ships');
   if(ships){ships.split(',').map(s=>s.trim()).filter(Boolean).forEach(nm=>{const row=document.querySelector('.ship[data-ship="'+cssEsc(nm)+'"]');if(row){activeShips.add(nm);row.classList.add('active');}});if(activeShips.size){const sh=document.getElementById('shipHead'),sl=document.getElementById('shipList');if(sh)sh.classList.remove('collapsed');if(sl)sl.classList.remove('collapsed');}}
   activeSearchTerms=[...words(sp.get('q')),...words(sp.get('country'))];
@@ -1247,7 +1249,6 @@ function applyDeepLink(){
   const portParam=sp.get('port');
   if(portParam&&PORTS[portParam]){const role=sp.get('portrole');if(role)activePortRole=role;selectPort(portParam);}
   applyFilter();
-  const region=findRegionKey(sp.get('region'));
   if(region)openRegion(region);
   else if(portParam&&PORTS[portParam]){/* port panel already opened by selectPort */}
   else if(activeIds.size||activeBrands.size||activeShips.size||activeMonths.size||activeRegions.size||activeSearchTerms.length)openSearchResults(activeIds.size?'Guide shortlist':'Filtered sailings');
