@@ -216,13 +216,37 @@
   .bvnav a.is-here{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
 }
 </style>
-<style id="basecamp-embed">.bvnav{display:none!important}</style>
+<style id="basecamp-embed">
+.bvnav{display:none!important}
+html.basecamp-embed .topbar{display:none!important}
+html.basecamp-embed gmp-map-3d{top:0!important;height:100%!important}
+html.basecamp-embed .veil{inset:0!important}
+html.basecamp-embed .panel{top:0!important;height:100%!important}
+html.basecamp-embed .rail,
+html.basecamp-embed .railtab{top:76px!important}
+html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!important}
+@media(max-width:680px){
+  html.basecamp-embed .rail,
+  html.basecamp-embed .railtab{top:66px!important}
+  html.basecamp-embed body.rail-shown .rail{
+    top:calc(66px + env(safe-area-inset-top))!important;
+    max-height:calc(100dvh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important
+  }
+  html.basecamp-embed .mapmenu{top:calc(14px + env(safe-area-inset-top,0px))!important}
+}
+</style>
 </head>
 <body>
 <!-- hero-embed: ?hero=1 strips the atlas chrome (nav, title, rail, dock) so the
      marketing landers can run the live map as an ambient hero background.
      The map itself, its loading veil and the details panel stay. -->
-<script>if(new URLSearchParams(location.search).get('hero')==='1')document.documentElement.classList.add('hero-embed');</script>
+<script>
+  (function(){
+    var params=new URLSearchParams(location.search);
+    if(params.get('hero')==='1')document.documentElement.classList.add('hero-embed');
+    if(params.get('embed')==='1')document.documentElement.classList.add('basecamp-embed');
+  })();
+</script>
 <style>
   html.hero-embed .topbar,html.hero-embed .searchbar,html.hero-embed .railtab,
   html.hero-embed .rail,html.hero-embed .dock,html.hero-embed .dockcoach,
@@ -1539,10 +1563,10 @@ init();
       m.on('zoom',sync);m.on('zoomend',sync);sync();
     }else if(++tries<40){setTimeout(wait,150);}
   })();
-  /* Embedded in Base Camp the bvnav is hidden (style#basecamp-embed); flag when
-     it actually renders so offsets below the taller pill row only apply then. */
+  /* If the copied cross-atlas nav is ever allowed to render standalone, flag it
+     so offsets below the taller pill row only apply then. */
   var nav=document.querySelector('.bvnav');
-  if(nav&&getComputedStyle(nav).display!=='none')document.body.classList.add('bvnav-visible');
+  if(!document.documentElement.classList.contains('basecamp-embed')&&nav&&getComputedStyle(nav).display!=='none')document.body.classList.add('bvnav-visible');
   /* Keep the current atlas tab centered in the mobile pill nav. */
   var here=document.querySelector('.bvnav a.is-here');
   if(here&&here.scrollIntoView){try{here.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}}

@@ -75,21 +75,25 @@ export default async function AtlasPage({
     const value = Array.isArray(v) ? v[0] : v;
     if (value) qs.set(key, value);
   }
-  const query = qs.toString();
-  const src = `/maps/${type}/index.html${query ? `?${query}` : ""}`;
-
   // ?hero=1 — ambient mode for the marketing landers, which embed this route
   // as a dimmed hero background. Hides Base Camp's header here (and, since the
   // param is forwarded above, the atlas hides its own chrome) so only the map
   // shows through the blur.
   const hero = qs.get("hero") === "1";
+  const native = NATIVE_COLLECTIONS[type];
+
+  // The standalone /maps page has its own title rail. Inside Base Camp's
+  // AtlasFrame that becomes duplicate chrome, so iframe pages get an internal
+  // embed flag that strips the standalone rail while keeping filters/details.
+  if (!hero && !native) qs.set("embed", "1");
+  const query = qs.toString();
+  const src = `/maps/${type}/index.html${query ? `?${query}` : ""}`;
 
   // Ambient hero embeds get the bare map — no chrome of ours to bleed through
   // the lander's own headline. Still served by the iframe even for migrated
   // collections: the landers want a bare ambient map, not a filter rail.
   if (hero) return <AtlasView label={ATLASES[type].label} src={src} hero />;
 
-  const native = NATIVE_COLLECTIONS[type];
   if (native) {
     return <AtlasFrame type={type}>{native()}</AtlasFrame>;
   }
