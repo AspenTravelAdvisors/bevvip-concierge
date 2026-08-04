@@ -2422,7 +2422,7 @@ main.page {
 }
 .villa-map-wrap {
   position: relative;
-  height: clamp(260px, 42vh, 460px);
+  height: clamp(345px, 56vh, 610px);
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
@@ -2857,7 +2857,7 @@ main.page {
 
 @media (max-width: 700px) {
   .villa-map-wrap {
-    height: 240px;
+    height: 320px;
   }
   .villa-grid {
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -3729,6 +3729,18 @@ button.card-book {
   min-height: min(72vh, 760px);
   flex: none;
 }
+.atlas-collection--hotel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 22px clamp(16px, 4vw, 44px) 60px;
+  gap: 14px;
+}
+.atlas-collection--hotel .atlas-map {
+  height: clamp(345px, 56vh, 610px);
+  min-height: 0;
+  border-radius: 10px;
+}
 /* The rail follows the globe down the page, so filters stay reachable while
    scrolling the results without stealing height from the map. */
 .atlas-collection .villa-filters {
@@ -3745,12 +3757,22 @@ button.card-book {
   gap: 12px;
   padding-bottom: 28px;
 }
+.atlas-collection--hotel .atlas-results {
+  gap: 16px;
+}
 .atlas-card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 12px 14px;
   cursor: pointer;
+}
+.atlas-collection--hotel .atlas-card {
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.atlas-collection--hotel .atlas-card:hover {
+  border-color: var(--gold-dim);
+  background: var(--card-hover);
 }
 /* Round-the-world journeys carry a quiet gold edge, as `.card.world` did. */
 .atlas-card.world {
@@ -3774,6 +3796,10 @@ button.card-book {
   line-height: 1.3;
   margin: 0 0 4px;
   color: var(--text);
+}
+.atlas-collection--hotel .atlas-card h3 {
+  font-size: 19px;
+  line-height: 1.25;
 }
 .atlas-card .ac-meta,
 .atlas-card .ac-when,
@@ -3910,6 +3936,9 @@ button.card-book {
     min-height: 0;
     overflow: hidden;
     gap: 8px;
+  }
+  .atlas-collection--hotel {
+    padding: 14px 14px 0;
   }
   .atlas-collection .atlas-map {
     /*

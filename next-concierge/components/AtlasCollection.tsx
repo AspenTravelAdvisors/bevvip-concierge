@@ -115,9 +115,12 @@ const SORT_LABELS: Record<SortMode, string> = {
  */
 const CARD_LIMIT = 120;
 
-/** Only ever trust a `sort=` the menu can actually render. */
-const readSort = (raw: string | null): SortMode =>
-  (SORT_MODES as readonly string[]).includes(raw || "") ? (raw as SortMode) : "departure";
+/** Only ever trust a `sort=` the current menu can actually render. */
+const readSort = (
+  raw: string | null,
+  fallback: SortMode,
+  modes: readonly SortMode[],
+): SortMode => (modes as readonly string[]).includes(raw || "") ? (raw as SortMode) : fallback;
 
 /**
  * A single day inside an expanded itinerary — "25 Oct", no year.
@@ -202,10 +205,18 @@ export default function AtlasCollection({
     () => ({ q: searchParams.get("q") || "", country: searchParams.get("country") || "" }),
     [searchParams],
   );
+  const sortModes = useMemo<SortMode[]>(
+    () => (type === "hotel" ? ["name"] : [...SORT_MODES]),
+    [type],
+  );
+  const defaultSort: SortMode = type === "hotel" ? "name" : "departure";
 
   // Sort lives in the URL alongside the filters, so a shared link reproduces
   // the list someone was actually looking at rather than just its contents.
-  const sort = useMemo(() => readSort(searchParams.get("sort")), [searchParams]);
+  const sort = useMemo(
+    () => readSort(searchParams.get("sort"), defaultSort, sortModes),
+    [searchParams, defaultSort, sortModes],
+  );
 
   const filtered = useMemo(() => {
     if (!offerings || !state) return [];
@@ -239,23 +250,23 @@ export default function AtlasCollection({
       // preference, not a filter, and adding a param there would change a
       // shared surface to carry something no atlas ever emitted. Omitted at the
       // default so ordinary links stay clean.
-      if (sort !== "departure") qs.set("sort", sort);
+      if (sort !== defaultSort) qs.set("sort", sort);
       const s = qs.toString();
       router.replace(s ? `/atlas/${type}?${s}` : `/atlas/${type}`, { scroll: false });
     },
-    [router, type, descriptor, parsed?.view, sort],
+    [router, type, descriptor, parsed?.view, sort, defaultSort],
   );
 
   /** Change the ordering, preserving every filter currently in the URL. */
   const setSort = useCallback(
     (next: SortMode) => {
       const qs = new URLSearchParams(searchParams.toString());
-      if (next === "departure") qs.delete("sort");
+      if (next === defaultSort) qs.delete("sort");
       else qs.set("sort", next);
       const s = qs.toString();
       router.replace(s ? `/atlas/${type}?${s}` : `/atlas/${type}`, { scroll: false });
     },
-    [router, type, searchParams],
+    [router, type, searchParams, defaultSort],
   );
 
   /**
@@ -502,7 +513,7 @@ export default function AtlasCollection({
 
   if (failed) {
     return (
-      <div className="atlas-collection">
+      <div className={`atlas-collection atlas-collection--${type}`}>
         <p className="atlas-empty">
           This collection could not be loaded.{" "}
           <a href={`/maps/${type}/index.html`}>Open the standalone atlas →</a>
@@ -512,7 +523,7 @@ export default function AtlasCollection({
   }
 
   return (
-    <div className="atlas-collection">
+    <div className={`atlas-collection atlas-collection--${type}`}>
       <div ref={mapWrapRef} className="atlas-mapwrap">
       {/* No routesAlways for rail: an ambient layer of every route at once is
           not what the Leaflet atlas did, and for trains it would have to be
@@ -557,18 +568,20 @@ export default function AtlasCollection({
               {filtered.length > CARD_LIMIT && (
                 <span className="atlas-showing">first {CARD_LIMIT}</span>
               )}
-              <label className="atlas-sort">
-                <span>Sort</span>
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(readSort(e.target.value))}
-                  aria-label="Sort results"
-                >
-                  {SORT_MODES.map((m) => (
-                    <option key={m} value={m}>{SORT_LABELS[m]}</option>
-                  ))}
-                </select>
-              </label>
+              {sortModes.length > 1 && (
+                <label className="atlas-sort">
+                  <span>Sort</span>
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(readSort(e.target.value, defaultSort, sortModes))}
+                    aria-label="Sort results"
+                  >
+                    {sortModes.map((m) => (
+                      <option key={m} value={m}>{SORT_LABELS[m]}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
             </>
           }
         />
@@ -615,144 +628,153 @@ export default function AtlasCollection({
         line all describing the same result set. On phones the rail collapses to
         a Filters pill with no room for them, so they keep this bar.
       */}
-      <div className="atlas-sortbar">
-        {/* Say so when the list is truncated. 120 of 3,239 was silent before,
-            which made "where did the sailing I just saw go?" unanswerable. */}
-        <span className="atlas-showing">
-          {filtered.length > CARD_LIMIT
-            ? `Showing the first ${CARD_LIMIT} of ${filtered.length.toLocaleString()}`
-            : ""}
-        </span>
-        <label className="atlas-sort">
-          <span>Sort</span>
-          <select
-            value={sort}
-            onChange={(e) => setSort(readSort(e.target.value))}
-            aria-label="Sort results"
-          >
-            {SORT_MODES.map((m) => (
-              <option key={m} value={m}>{SORT_LABELS[m]}</option>
-            ))}
-          </select>
-        </label>
-      </div>
+      {sortModes.length > 1 && (
+        <div className="atlas-sortbar">
+          {/* Say so when the list is truncated. 120 of 3,239 was silent before,
+              which made "where did the sailing I just saw go?" unanswerable. */}
+          <span className="atlas-showing">
+            {filtered.length > CARD_LIMIT
+              ? `Showing the first ${CARD_LIMIT} of ${filtered.length.toLocaleString()}`
+              : ""}
+          </span>
+          <label className="atlas-sort">
+            <span>Sort</span>
+            <select
+              value={sort}
+              onChange={(e) => setSort(readSort(e.target.value, defaultSort, sortModes))}
+              aria-label="Sort results"
+            >
+              {sortModes.map((m) => (
+                <option key={m} value={m}>{SORT_LABELS[m]}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
 
       <div className="atlas-results">
-        {visible.map((o) => (
-          <article
-            key={o.id}
-            className={`atlas-card${o.world ? " world" : ""}`}
-            data-pinned={pinnedId === o.id ? "" : undefined}
-            onMouseEnter={() => previewRoute(o)}
-            onMouseLeave={endPreview}
-            onFocus={() => previewRoute(o)}
-            onBlur={endPreview}
-            onClick={() => togglePin(o)}
-          >
-            <div className="ac-head">
-              {/* Look the mark up by whichever field this collection filters
-                  on. cruise has NO brand — its marks are keyed by operator
-                  name — so a `o.brand`-only lookup silently dropped every
-                  cruise logo. */}
-              {(() => {
-                const markKey = o.logoKey ?? (descriptor.brandField === "operator" ? o.operator : o.brand);
-                if (!markKey && !o.operator) return null;
-                return (
-                  <BrandLogo
-                    brand={
-                      brandMarks[markKey || ""] || {
-                        key: markKey || o.operator || "",
-                        short: o.brandLabel || o.operator,
+        {visible.map((o) => {
+          const attr = (key: string) => {
+            const value = o.attributes?.[key];
+            return Array.isArray(value) ? value[0] : value;
+          };
+          const whenLine = [
+            // Start, end and year for anything dated; the booking window for
+            // on-demand journeys; "On demand" for the rest. Hotels have no
+            // date line, by design.
+            whenLabelFor(o),
+            o.departures && o.departures > 1 ? `${o.departures} departures` : null,
+          ].filter(Boolean).join("  ·  ");
+          const metaParts =
+            type === "hotel"
+              ? [o.brandLabel || o.operator, attr("category"), o.country]
+              : [
+                  o.vessel || o.brandLabel || o.operator,
+                  o.days ? `${o.days} days` : null,
+                  o.stops.length ? `${o.stops.length} stops` : null,
+                ];
+          return (
+            <article
+              key={o.id}
+              className={`atlas-card${o.world ? " world" : ""}`}
+              data-pinned={pinnedId === o.id ? "" : undefined}
+              onMouseEnter={() => previewRoute(o)}
+              onMouseLeave={endPreview}
+              onFocus={() => previewRoute(o)}
+              onBlur={endPreview}
+              onClick={() => togglePin(o)}
+            >
+              <div className="ac-head">
+                {/* Look the mark up by whichever field this collection filters
+                    on. cruise has NO brand — its marks are keyed by operator
+                    name — so a `o.brand`-only lookup silently dropped every
+                    cruise logo. */}
+                {(() => {
+                  const markKey = o.logoKey ?? (descriptor.brandField === "operator" ? o.operator : o.brand);
+                  if (!markKey && !o.operator) return null;
+                  return (
+                    <BrandLogo
+                      brand={
+                        brandMarks[markKey || ""] || {
+                          key: markKey || o.operator || "",
+                          short: o.brandLabel || o.operator,
+                        }
                       }
-                    }
-                    assetBase={logoBase}
-                  />
-                );
-              })()}
-              <div className="ac-headtext">
-                <h3>{o.title}</h3>
-                {/* Date line, mirroring the original's three cases: a real range
-                    (plus a departures count when the product runs many dates),
-                    an on-demand window, or nothing scheduled at all. */}
-                <p className="ac-when">
-                  {[
-                    // Start, end and year for anything dated; the booking
-                    // window for on-demand journeys; "On demand" for the rest.
-                    // All three cases now live in whenLabelFor so the globe and
-                    // the Guide's result cards cannot drift apart — they used
-                    // to, and the globe was the one printing no year.
-                    whenLabelFor(o),
-                    o.departures && o.departures > 1 ? `${o.departures} departures` : null,
-                  ].filter(Boolean).join("  ·  ")}
-                </p>
+                      assetBase={logoBase}
+                    />
+                  );
+                })()}
+                <div className="ac-headtext">
+                  <h3>{o.title}</h3>
+                  {/* Date line, mirroring the original's three non-hotel cases:
+                      a real range (plus a departures count when the product runs
+                      many dates), an on-demand window, or nothing scheduled. */}
+                  {whenLine && <p className="ac-when">{whenLine}</p>}
+                </div>
               </div>
-            </div>
 
-            <p className="ac-meta">
-              {[
-                o.vessel || o.brandLabel || o.operator,
-                o.days ? `${o.days} days` : null,
-                o.stops.length ? `${o.stops.length} stops` : null,
-              ].filter(Boolean).join("  ·  ")}
-            </p>
+              <p className="ac-meta">
+                {metaParts.filter(Boolean).join("  ·  ")}
+              </p>
 
-            {/* The route as text, so a card is readable without the map. */}
-            {o.stops.length > 1 && (
-              <p className="ac-path">{o.stops.map((st) => st.name).join(" → ")}</p>
-            )}
+              {/* The route as text, so a card is readable without the map. */}
+              {o.stops.length > 1 && (
+                <p className="ac-path">{o.stops.map((st) => st.name).join(" → ")}</p>
+              )}
 
-            {o.itinerary.length > 0 && (
-              <details className="ac-itin" onClick={(e) => e.stopPropagation()}>
-                <summary>Day-by-day itinerary</summary>
-                {o.itinerary.map((r, i) => (
-                  <div className="ac-dayline" key={`${r.name}-${i}`}>
-                    <b>{dayRange(r.startDay, r.endDay)}</b>
-                    {r.startDate ? ` · ${fmtDay(r.startDate)}` : ""} · {r.name}
-                  </div>
-                ))}
-              </details>
-            )}
+              {o.itinerary.length > 0 && (
+                <details className="ac-itin" onClick={(e) => e.stopPropagation()}>
+                  <summary>Day-by-day itinerary</summary>
+                  {o.itinerary.map((r, i) => (
+                    <div className="ac-dayline" key={`${r.name}-${i}`}>
+                      <b>{dayRange(r.startDay, r.endDay)}</b>
+                      {r.startDate ? ` · ${fmtDay(r.startDate)}` : ""} · {r.name}
+                    </div>
+                  ))}
+                </details>
+              )}
 
-            <div className="ac-actions">
-              {/* The two boxed actions sit together, then the plain links.
-                  Splitting them with "View details" made a matched pair read as
-                  two unrelated controls. */}
-              {cardPrimary?.(o)}
-              {cardAction && (
+              <div className="ac-actions">
+                {/* The two boxed actions sit together, then the plain links.
+                    Splitting them with "View details" made a matched pair read as
+                    two unrelated controls. */}
+                {cardPrimary?.(o)}
+                {cardAction && (
+                  <button
+                    type="button"
+                    className="ac-3d"
+                    onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
+                  >
+                    {cardAction.label}
+                  </button>
+                )}
+                {o.url && (
+                  <a
+                    className="ac-link"
+                    href={o.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    View details ↗
+                  </a>
+                )}
+                {/* Same escape hatch the Leaflet cards had: ask instead of filter. */}
                 <button
                   type="button"
-                  className="ac-3d"
-                  onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
+                  className="ac-ask"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const ctx = `${o.title}${o.url ? ` (listing: ${o.url})` : ""}`;
+                    router.push(`/?ask=${encodeURIComponent(ctx)}&src=${type}`);
+                  }}
                 >
-                  {cardAction.label}
+                  ✦ Ask The Guide
                 </button>
-              )}
-              {o.url && (
-                <a
-                  className="ac-link"
-                  href={o.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  View details ↗
-                </a>
-              )}
-              {/* Same escape hatch the Leaflet cards had: ask instead of filter. */}
-              <button
-                type="button"
-                className="ac-ask"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const ctx = `${o.title}${o.url ? ` (listing: ${o.url})` : ""}`;
-                  router.push(`/?ask=${encodeURIComponent(ctx)}&src=${type}`);
-                }}
-              >
-                ✦ Ask The Guide
-              </button>
-            </div>
-          </article>
-        ))}
+              </div>
+            </article>
+          );
+        })}
         {!!filtered.length && filtered.length > 120 && (
           <p className="atlas-more">
             Showing 120 of {filtered.length.toLocaleString()} — narrow the filters to see the rest.

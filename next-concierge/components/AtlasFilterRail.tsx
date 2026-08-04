@@ -236,6 +236,10 @@ export default function AtlasFilterRail({
   const stopLabel = d.stopParam === "port" ? "port" : "location";
   const roleOptions = ROLE_VALUES[d.roles];
   const stopListId = useId();
+  const searchNoun =
+    d.collection === "cruise" ? "sailings" :
+    d.collection === "hotel" ? "hotels" :
+    "journeys";
 
   const [stopText, setStopText] = useState(shown.stop || "");
   useEffect(() => { setStopText(shown.stop || ""); }, [shown.stop]);
@@ -389,7 +393,7 @@ export default function AtlasFilterRail({
         className="villa-q"
         type="search"
         value={shownQuery.q}
-        placeholder={`Search ${d.collection === "cruise" ? "sailings" : "journeys"}…`}
+        placeholder={`Search ${searchNoun}…`}
         onChange={(e) => setQuery({ ...shownQuery, q: e.target.value })}
         aria-label="Search"
       />

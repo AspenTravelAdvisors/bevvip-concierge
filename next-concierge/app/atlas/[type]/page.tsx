@@ -9,11 +9,12 @@ import AtlasJet from "@/components/AtlasJet";
 import AtlasYacht from "@/components/AtlasYacht";
 import AtlasWorldCruise from "@/components/AtlasWorldCruise";
 import AtlasCruise from "@/components/AtlasCruise";
+import AtlasHotel from "@/components/AtlasHotel";
 
 /**
- * Collections migrated off their Leaflet iframe onto the Mapbox globe
- * (Deliverable 3). Everything not listed here still renders the iframe, so the
- * five can be moved one at a time and each reviewed on its own — rather than a
+ * Collections migrated off their standalone iframe onto the shared browse
+ * surface. Everything not listed here still renders the iframe, so collections
+ * can be moved one at a time and each reviewed on its own — rather than a
  * single switch that changes all of them at once.
  *
  * Removing a collection from its iframe is also what frees its
@@ -21,18 +22,20 @@ import AtlasCruise from "@/components/AtlasCruise";
  * landmask.bin copies the sea atlases still fetch.
  */
 const NATIVE_COLLECTIONS: Partial<Record<OfferingType, () => React.ReactElement>> = {
+  hotel: () => <AtlasHotel />,
   train: () => <AtlasTrain />,
   jet: () => <AtlasJet />,
   yacht: () => <AtlasYacht />,
   worldcruise: () => <AtlasWorldCruise />,
   cruise: () => <AtlasCruise />,
-  // Hotel deliberately falls through to the iframe path below. For this one
-  // collection, Google Photorealistic 3D is the product surface.
+  // Hotel browse uses the shared shell, but ?hotel=<id> still falls through to
+  // the iframe path below so the existing Google Photorealistic 3D property
+  // view stays exactly where old share links and "See it in 3D" expect it.
 };
 
-// In-app atlas view. Each of the five atlases now lives inside Base Camp as a
-// self-contained Leaflet page under public/maps/<type>/. We render it as-is in
-// a full-bleed iframe (no Leaflet→Mapbox coordinate porting) and overlay The
+// In-app atlas view. Each standalone atlas now lives inside Base Camp as a
+// self-contained map page under public/maps/<type>/. We render it as-is in
+// a full-bleed iframe (no standalone-map coordinate porting) and overlay The
 // Guide as a minimizable bottom sheet. The header chrome comes from layout.tsx,
 // so the traveler never leaves Base Camp.
 
@@ -80,7 +83,7 @@ export default async function AtlasPage({
   // param is forwarded above, the atlas hides its own chrome) so only the map
   // shows through the blur.
   const hero = qs.get("hero") === "1";
-  const native = NATIVE_COLLECTIONS[type];
+  const native = qs.has("hotel") ? undefined : NATIVE_COLLECTIONS[type];
 
   // The standalone /maps page has its own title rail. Inside Base Camp's
   // AtlasFrame that becomes duplicate chrome, so iframe pages get an internal
