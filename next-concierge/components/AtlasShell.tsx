@@ -1402,27 +1402,12 @@ export default function AtlasShell({
              * someone who picked one property wants the photoreal property
              * view, not another list of hotels.
              *
-             * So the pin now marks and frames in place, and the popup offers
-             * the two things that actually differ from where you already are:
-             * the photoreal view (a different engine — Mapbox has no equivalent)
-             * and the filtered browse surface (a different task). Neither is on
-             * the way to the other any more.
+             * So the pin opens a real popup in place. Do not also mark, label
+             * or street-zoom the Mapbox canvas from here: in Mapbox GL 3.7 that
+             * extra single-hotel focus path can throw inside the renderer and
+             * leave the map apparently frozen while the popup remains clickable.
+             * The photoreal view is the deliberate property-level handoff.
              */
-            const at = f.geometry?.coordinates;
-            if (isFinitePair(at)) {
-              const pt = fromLngLatPair(at);
-              // FocusStop carries a plain pair; the branded value did its job at
-              // the parse boundary above (fromLngLatPair), which is the only
-              // place order can be got wrong.
-              markFocusPlace([{ name, at: [pt[0], pt[1]] }]);
-              const z = Math.max(map.getZoom(), 12);
-              // Only tilt if the arrival is close enough that buildings exist.
-              // Below that the angle buys nothing and costs the plan view.
-              const pitch = z >= STREET_ZOOM ? TILT_PITCH : undefined;
-              map.flyTo({ center: pt, zoom: z, duration: 1100, essential: true, pitch });
-              if (pitch) setTilted(true);
-            }
-
             const three = id ? `/atlas/hotel?hotel=${encodeURIComponent(id)}` : null;
             const head =
               `<div class="iwn">${escapeHtml(name)}</div>` +
