@@ -358,7 +358,7 @@ function internalCardLink(result: OfferingResult, type: OfferingType | null): st
   if (!type) return null;
   if (type === "hotel") {
     const id = resultId(result);
-    if (id) return `/maps/hotel/index.html?hotel=${encodeURIComponent(id)}`;
+    if (id) return `/atlas/hotel?hotel=${encodeURIComponent(id)}`;
   }
   let query = "";
   if (typeof result.deepLink === "string" && result.deepLink) {

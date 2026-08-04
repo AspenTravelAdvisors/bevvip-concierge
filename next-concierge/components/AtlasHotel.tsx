@@ -17,7 +17,7 @@
  *
  *   BROWSE   here — 2,501 hotels on the Mapbox globe, filtered by category,
  *            program, country and macro-region.
- *   INSPECT  "See it in 3D" opens /maps/hotel/index.html?hotel=<id>, which
+ *   INSPECT  "See it in 3D" opens /atlas/hotel?hotel=<id>, which
  *            lands on the open detail panel and flies to the building. That
  *            deep link only became reliable after the camera-race fix in
  *            STATE.md — before it, a shared property orbited forever.
@@ -208,7 +208,7 @@ export default function AtlasHotel() {
    */
   const openIn3D = useCallback((o: AtlasOffering) => {
     hotel3dOpened(o.id, "card");
-    window.open(`/maps/hotel/index.html?hotel=${encodeURIComponent(o.id)}`, "_blank", "noopener");
+    window.open(`/atlas/hotel?hotel=${encodeURIComponent(o.id)}`, "_blank", "noopener");
   }, []);
 
   return (

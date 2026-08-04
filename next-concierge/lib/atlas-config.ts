@@ -300,9 +300,7 @@ export function isOfferingType(value: string): value is OfferingType {
 }
 
 export function externalAtlasLink(type: OfferingType, region?: string | null): string {
-  const base = ATLASES[type].base;
-  const query = atlasRegionQuery(region);
-  return query ? `${base}/${query}` : base;
+  return internalAtlasLink(type, atlasRegionQuery(region));
 }
 
 export function atlasRegionQuery(region?: string | null): string {

@@ -333,7 +333,7 @@ function clampOffset(raw) {
 // Prebuilt chat-to-atlas handoff. Only the params the atlases parse on load
 // are forwarded; pagination/bbox are intentionally omitted.
 const ATLAS_URL =
-  process.env.ATLAS_HOTEL_URL || "/maps/hotel";
+  process.env.ATLAS_HOTEL_URL || "/atlas/hotel";
 
 function buildDeepLink(params = {}) {
   const keys = ["region", "brand", "program", "category", "country", "ids", "q", "intent"];

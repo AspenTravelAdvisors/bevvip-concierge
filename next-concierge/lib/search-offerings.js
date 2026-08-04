@@ -18,7 +18,7 @@ import { withNormalized } from "./offering-shape";
 // Guide no longer crosses the network for inventory. HOTEL_API_BASE is now just
 // the internal hotel map root used for the per-hotel card deep link; the fetch
 // URLs built below resolve to the same in-process backends via atlasFetch.
-const HOTEL_API_BASE = process.env.ATLAS_HOTEL_URL || "/maps/hotel";
+const HOTEL_API_BASE = process.env.ATLAS_HOTEL_URL || "/atlas/hotel";
 const DEFAULT_RECOMMENDATION_LIMIT = 3;
 const MAX_RESULTS_PER_CATEGORY = 4;
 const MAX_CANDIDATE_LIMIT = 24;
@@ -938,15 +938,16 @@ function brandDiverseResults(
   return firstByBrand.slice(0, cap);
 }
 
-// Per-result deep link into the full standalone Atlas, focused on that one
-// record with its detail open. The Hotel Atlas consumes ?ids= today
-// (applyDeepLink preselects + zooms); the cruise/jet/yacht/world-cruise apps
-// consume ?region= and ?ids=. Newer/native maps also mark the selected filter
-// from `regions=`, so send both region params with the same value.
+// Per-result deep link into the in-app Atlas, focused on that one record with
+// its detail open. Hotel uses `hotel=` because /atlas/hotel frames the Google
+// 3D map, whose shared-property contract opens the detail panel and orbit.
+// The cruise/jet/yacht/world-cruise apps consume ?region= and ?ids=. Newer
+// native maps also mark the selected filter from `regions=`, so send both
+// region params with the same value.
 function resultDeepLink(type, base, item) {
   const id = item && item.id;
   if (!base || !id) return null;
-  if (type === "hotel") return `${base}/?ids=${encodeURIComponent(id)}`;
+  if (type === "hotel") return `${base}?hotel=${encodeURIComponent(id)}`;
   const region = item.region
     ? `region=${encodeURIComponent(item.region)}&regions=${encodeURIComponent(item.region)}&`
     : "";
@@ -960,8 +961,8 @@ function hotelCard(h) {
     id: h.id,
     name: h.name,
     brand: h.brand,
-    // Card + map popup open this property's detail in the full Hotel Atlas.
-    deepLink: h.id ? `${HOTEL_API_BASE}/?ids=${encodeURIComponent(h.id)}` : null,
+    // Card + map popup open this property's Google 3D detail in /atlas/hotel.
+    deepLink: h.id ? `${HOTEL_API_BASE}?hotel=${encodeURIComponent(h.id)}` : null,
     program: h.program,
     category: h.category,
     city: h.city,

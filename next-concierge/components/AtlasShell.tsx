@@ -1384,11 +1384,10 @@ export default function AtlasShell({
             /*
              * Resolve the property HERE rather than navigating.
              *
-             * Browsing a hotel used to cost three hops: Guide globe → the hotel
-             * atlas → "See it in 3D". The first hop was pure loss — this globe
-             * and /atlas/hotel are the SAME component (AtlasShell) with a
-             * different `scope`, so it was one map reloading itself with a
-             * filter applied, just to show a property it was already holding.
+             * Browsing a hotel used to cost three hops: Guide globe → a hotel
+             * browse atlas → "See it in 3D". The browse hop was pure loss:
+             * someone who picked one property wants the photoreal property
+             * view, not another list of hotels.
              *
              * So the pin now marks and frames in place, and the popup offers
              * the two things that actually differ from where you already are:
@@ -1411,7 +1410,7 @@ export default function AtlasShell({
               if (pitch) setTilted(true);
             }
 
-            const three = id ? `/maps/hotel/index.html?hotel=${encodeURIComponent(id)}` : null;
+            const three = id ? `/atlas/hotel?hotel=${encodeURIComponent(id)}` : null;
             const head =
               `<div class="iwn">${escapeHtml(name)}</div>` +
               (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "");
@@ -1422,11 +1421,10 @@ export default function AtlasShell({
              * The popup's headline action is the rate search, not another
              * browse surface.
              *
-             * It used to read "Browse VIP hotels →", which pointed at
-             * /atlas/hotel — the same component this popup is already running
-             * inside. Someone who had just picked one property out of 2,501 was
-             * offered, as their only forward step, a filtered list containing
-             * that one property. The link a traveller wants there is the price.
+             * It used to read "Browse VIP hotels →". Someone who had just
+             * picked one property out of 2,501 was offered, as their only
+             * forward step, a filtered list containing that one property. The
+             * link a traveller wants there is the price.
              *
              * The TravelWits identity lives server-side, so the link arrives a
              * beat later (see /api/hotel/tw). We paint the popup immediately and
@@ -2989,8 +2987,9 @@ function pointForResult(
 // preserving its query. Returns null when the URL isn't one of our atlas bases
 // (so callers can fall back).
 //
-// Deep links are usually RELATIVE ("/maps/hotel?ids=h_001") because the atlas
-// bases default to relative paths; only an external deploy makes them absolute.
+// Deep links are usually RELATIVE ("/atlas/hotel?hotel=h_001") because the
+// atlas links default to in-app routes; only an external deploy makes them
+// absolute.
 // This used to call `new URL(url)` with no base, which throws on every relative
 // path — so it returned null for the common case and the badge's "all on the
 // atlas" link fell back to the raw /maps/<type> asset path, which the app does
@@ -3148,7 +3147,7 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
   const id = String((r as { id?: unknown }).id ?? "");
   const three =
     kind === "hotel" && id
-      ? `<a class="iw3d" data-hotel3d="${esc(id)}" href="/maps/hotel/index.html?hotel=${encodeURIComponent(id)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
+      ? `<a class="iw3d" data-hotel3d="${esc(id)}" href="/atlas/hotel?hotel=${encodeURIComponent(id)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
       : "";
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
