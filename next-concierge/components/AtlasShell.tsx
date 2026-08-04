@@ -920,6 +920,22 @@ export default function AtlasShell({
           });
         }
 
+        function clearTourPins() {
+          tourPins.length = 0;
+          try {
+            map.getSource("tour-pins")?.setData({ type: "FeatureCollection", features: [] });
+          } catch { /* source may not exist yet, or may be between styles */ }
+        }
+
+        function showTourPin(stop: TourStop) {
+          // Only the visible stop gets a tour pin. The previous one is removed
+          // at the same moment the next caption appears, so stale tour dots can
+          // never sit on the map as clickable-looking artifacts.
+          clearTourPins();
+          tourPins.push({ at: stop.at, name: stop.name });
+          paintTourPins();
+        }
+
         /**
          * Latitude the camera actually centres on, which is not the stop's own.
          *
@@ -955,15 +971,14 @@ export default function AtlasShell({
           // stage. The visitor just told us they are engaged — that is the
           // moment to hand them the composer, not to withhold it.
           announceTourEnd();
+          try { tourCap.remove(); } catch { /* popup optional */ }
+          clearTourPins();
           if (!tourActive) return; // dismissed before it ever took the camera
           tourActive = false;
           // Stop the camera where it is rather than letting the in-flight ease
           // finish — "freezes" has to mean the frame you grabbed, not the frame
           // the tour was heading for.
           try { map.stop(); } catch { /* camera optional */ }
-          try { tourCap.remove(); } catch { /* popup optional */ }
-          // The pins already dropped STAY. They are evidence, not decoration,
-          // and clearing them would punish the visitor for interacting.
         }
 
         /**
@@ -1024,8 +1039,7 @@ export default function AtlasShell({
             // not been shown for 2.6 seconds, it has been wasted for 2.6.
             whenPainted(() => {
               if (!tourActive || cancelled) return;
-              tourPins.push({ at: stop.at, name: stop.name });
-              paintTourPins();
+              showTourPin(stop);
               try {
                 tourCap
                   .setLngLat(stop.at)
@@ -1044,6 +1058,7 @@ export default function AtlasShell({
           clearTimeout(tourTimer);
           clearTimeout(tourPaintTimer);
           try { tourCap.remove(); } catch { /* popup optional */ }
+          clearTourPins();
           // Run to completion and the globe returns to the resting state it
           // came from. Only an interaction leaves it frozen — that stillness is
           // the map acknowledging you took the wheel.
@@ -1055,16 +1070,14 @@ export default function AtlasShell({
         }
 
         /**
-         * Drop all four pins at once, no camera movement, no captions cycling.
+         * No camera movement, no captions cycling, no tour pins.
          *
-         * prefers-reduced-motion is a request about motion, not a request to be
-         * told less. The informational payload — these four unlike things are
-         * in here — survives intact; only the choreography goes.
+         * prefers-reduced-motion turns this from a choreographed demonstration
+         * into an immediate hand-off. Temporary tour pins are deliberately not
+         * left behind as a static overlay.
          */
         function staticTour() {
-          for (const s of TOUR_STOPS) tourPins.push({ at: s.at, name: s.name });
-          paintTourPins();
-          // No choreography to wait out, so nothing to hold the Guide behind.
+          clearTourPins();
           announceTourEnd();
         }
 

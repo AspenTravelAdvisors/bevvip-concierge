@@ -224,9 +224,17 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
 {
   const h = harness();
   h.api.armTour();
+  h.tick(T.TOUR_LEAD_MS + T.TOUR_TRAVEL_MS);
+  const firstVisible = h.api.state().pins;
+  h.tick(T.TOUR_DWELL_MS + T.TOUR_TRAVEL_MS);
+  const secondVisible = h.api.state().pins;
   h.tick(RUN);
   const pins = h.pins();
   check("plays every stop, in itinerary order", pins.length >= 3, pins.join(" → "));
+  check("keeps only the current tour pin visible",
+    firstVisible === 1 && secondVisible === 1,
+    `first=${firstVisible}, second=${secondVisible}`);
+  check("clears tour pins on natural finish", h.api.state().pins === 0);
   check("resumes the idle spin on natural finish",
     h.log.filter((l) => l === "startSpin").length === 1);
   check("leaves no timer running afterwards", h.pending() === 0);
@@ -255,11 +263,11 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   h.tick(RUN);
   check("interaction mid-flight freezes it", h.pins().length === before && before >= 1,
     `${before} pin(s) shown, then stopped`);
+  check("…clears the visible tour pin immediately", h.api.state().pins === 0);
   check("…cancels the camera ease in flight rather than letting it land",
     h.log.includes("STOP"));
   check("…does NOT resume the spin — a grabbed globe stays still",
     !h.log.includes("startSpin"));
-  check("…keeps the pins already dropped", h.api.state().pins === before);
   check("…and orphans no timers", h.pending() === 0);
 }
 
@@ -285,10 +293,10 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   const h = harness({ reduced: true });
   h.api.armTour();
   h.tick(RUN);
-  check("prefers-reduced-motion: no camera motion, no cycling captions",
-    h.log.filter((l) => l.startsWith("ease")).length === 0 && h.pins().length === 0);
-  check("…but every pin is still dropped — the payload survives",
-    h.api.state().pins >= 3, `${h.api.state().pins} pins`);
+  check("prefers-reduced-motion: no camera motion, no cycling captions, no tour pins",
+    h.log.filter((l) => l.startsWith("ease")).length === 0 &&
+      h.pins().length === 0 &&
+      h.api.state().pins === 0);
 }
 
 {

@@ -1251,9 +1251,8 @@ main.page {
     transform: none;
   }
 }
-/* The tour itself already degrades to four static pins under reduced motion
-   (see staticTour), so no caption should ever animate here — but the keyframe
-   is neutralised rather than left to chance. */
+/* Reduced-motion mode skips the tour choreography and leaves no temporary pins,
+   but neutralise the caption entrance anyway in case a caption is ever shown. */
 @media (prefers-reduced-motion: reduce) {
   .atlas-tourcap .mapboxgl-popup-content {
     animation: none;
