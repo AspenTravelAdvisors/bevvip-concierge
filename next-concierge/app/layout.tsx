@@ -111,6 +111,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 rel="noreferrer"
               >
                 Aspen Travel Advisors
+              </a>{" "}
+              · powered by{" "}
+              <a
+                className="byline"
+                href="https://www.virtuoso.com/advisor/brianharris/travel"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Virtuoso
               </a>
             </span>
             <SiteNav />
