@@ -103,23 +103,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
             </div>
             <span className="tag">
-              Private travel, arranged by{" "}
+              Private travel, powered by{" "}
               <a
-                className="byline"
-                href="https://aspentraveladvisors.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Aspen Travel Advisors
-              </a>{" "}
-              · powered by{" "}
-              <a
-                className="byline"
+                 className="byline"
                 href="https://www.virtuoso.com/advisor/brianharris/travel"
                 target="_blank"
                 rel="noreferrer"
               >
                 Virtuoso
+              </a>{" "}
+              · Arranged by{" "}
+              <a
+              className="byline"
+                href="https://aspentraveladvisors.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Aspen Travel Advisors
               </a>
             </span>
             <SiteNav />
