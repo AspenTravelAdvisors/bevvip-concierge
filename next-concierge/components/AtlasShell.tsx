@@ -325,6 +325,16 @@ export interface FocusStop {
   day?: number | null;
 }
 
+/** The payload of `bevvip:atlas-route` — one trip to trace, or a clear. */
+export interface RouteDetail {
+  legs?: { mode: string; coordinates: [number, number][] }[];
+  stops?: FocusStop[];
+  /** Move the camera onto it. A click/deep link fits; a hover preview doesn't. */
+  fit?: boolean;
+  /** Frame these when the trip has no drawable route at all. */
+  fitPoints?: [number, number][];
+}
+
 interface Props {
   type: OfferingType;
   region: string | null;
@@ -508,6 +518,23 @@ export default function AtlasShell({
   const mapRef = useRef<MBMap | null>(null);
   const apiRef = useRef<AtlasApi | null>(null);
   const pendingPlotRef = useRef<GuideMeta | null>(null);
+  /**
+   * A route that arrived before the globe could draw it.
+   *
+   * `bevvip:atlas-route` used to be dropped on the floor when it landed before
+   * the map was ready — `if (!api) return`, with no queue behind it, where the
+   * sibling plot path has had one since it shipped. That is precisely the case
+   * a "See on the map" hand-off hits: the collection's feed is a small JSON
+   * file and the globe is a 900KB Mapbox chunk plus a style, so on a warm cache
+   * the trip to trace resolves FIRST. The symptom is the one deep links are
+   * for — you asked to see one voyage and got an untouched, idle-spinning
+   * planet with no route on it.
+   */
+  const pendingRouteRef = useRef<RouteDetail | null>(null);
+  /** Applies a route detail; set by the event effect, called by the flush. */
+  const applyRouteRef = useRef<((detail: RouteDetail) => void) | null>(null);
+  /** True once style.load has run: before that, painting a route throws. */
+  const routeReadyRef = useRef(false);
   // Filled by the map effect so the route-trace listener below can reach the
   // painters without re-running the whole map lifecycle.
   // Last traced route, so a basemap switch can repaint it. setStyle wipes all
@@ -667,6 +694,19 @@ export default function AtlasShell({
     let cancelled = false;
     let spinRAF = 0;
     let spinning = false;
+    /**
+     * Something outranked the ambience and owns the camera from here on.
+     *
+     * Latched by stopSpin — a traced route, a plotted answer, a framed hotel, a
+     * shared link's camera, or the visitor's own hand on the globe. Boot is the
+     * reason it exists: the resting state is reached TWICE (once at style.load,
+     * once when the region feed resolves), and both passes used to fitGlobe()
+     * and restart the spin over whatever had claimed the camera in between. A
+     * deep-linked trip therefore traced correctly and was then thrown back out
+     * to the whole planet, spinning — which is what "See on the map" looked
+     * like from the outside.
+     */
+    let cameraClaimed = false;
     let pulseRAF = 0;
     let pulsing = false;
     // Ambient auto-tour. `tourArmed` is one-way: the tour gets exactly one
@@ -792,7 +832,11 @@ export default function AtlasShell({
           }, 750);
         });
         function spinWhenRevealed() {
-          const go = () => { startSpin(); armTour(); };
+          // Re-checked at FIRE time, not at call time. The reveal is 750ms
+          // behind the first paint, which is easily long enough for a deep link
+          // to trace its route in between — and a spin started after that puts
+          // the globe back in motion under a camera someone asked to hold.
+          const go = () => { if (cameraClaimed) return; startSpin(); armTour(); };
           if (revealed) go();
           else onRevealed = go;
         }
@@ -840,6 +884,9 @@ export default function AtlasShell({
         }
         function stopSpin() {
           haltSpin();
+          // One-way for the rest of this mount: the resting state must not be
+          // restored on top of whatever just took the camera. See cameraClaimed.
+          cameraClaimed = true;
           // …and outranks the swing back to the equator that follows it. Without
           // this a visitor who grabbed the globe during the settle would be
           // fighting an ease they can't see the reason for.
@@ -2126,6 +2173,13 @@ export default function AtlasShell({
           pendingPlotRef.current = null;
           plotResults(pending);
         }
+        /** The trip that arrived while the globe was still loading. */
+        function flushPendingRoute() {
+          const pending = pendingRouteRef.current;
+          if (!ready || !pending) return;
+          pendingRouteRef.current = null;
+          applyRouteRef.current?.(pending);
+        }
         function fitFeatured() {
           if (!featuredFC || !featuredFC.features.length) return;
           // Same treatment a traced route gets: one longitude window, then
@@ -2311,11 +2365,16 @@ export default function AtlasShell({
 
           if (!ready) {
             ready = true;
+            routeReadyRef.current = true;
             clearTimeout(loadTimeout);
             wireHandlers();
             setMapReady(true);
             bootData();
             flushPendingPlot();
+            // Last, so the trip a deep link asked for is painted and framed on
+            // top of the boot framing rather than under it. bootData's own
+            // rest-and-idle stands down while this is still queued.
+            flushPendingRoute();
           } else if (restyling) {
             restyling = false;
             // Keep any plotted results in view after a manual basemap switch.
@@ -2334,9 +2393,17 @@ export default function AtlasShell({
          * region feed resolves — and on a slow connection the second pass lands
          * mid-tour, where re-framing would snap the globe home between pins.
          * The tour restores this framing itself when it finishes.
+         *
+         * Same reasoning, one beat earlier, for the other two guards. The
+         * SECOND pass runs when the region feed resolves — a second or two in,
+         * by which time a "See on the map" hand-off has usually already traced
+         * its trip — so resting there threw the camera off the route and set it
+         * spinning. And a route still sitting in the queue is a claim that has
+         * not been honoured yet, which is why it counts as one.
          */
         function restAndIdle() {
-          if (tourActive) return;
+          if (tourActive || cameraClaimed) return;
+          if (pendingRouteRef.current) return;
           fitGlobe();
           spinWhenRevealed();
         }
@@ -2520,6 +2587,10 @@ export default function AtlasShell({
             }
             paintHotel(); // restore full ambient opacity
             ambientPadding();
+            // Starting the session over hands the camera back to the ambience —
+            // the one path that releases the claim stopSpin latched.
+            cameraClaimed = false;
+            pendingRouteRef.current = null;
             if (projGlobe) { focused = false; fitGlobe(); startSpin(); }
           },
           applyLayers() {
@@ -2594,16 +2665,7 @@ export default function AtlasShell({
     }
     // Trace one trip's route. Collection pages dispatch this on card hover and
     // click; an empty `legs` clears the trace.
-    const onRoute = (e: Event) => {
-      const detail = (e as CustomEvent).detail as
-        | {
-            legs?: { mode: string; coordinates: [number, number][] }[];
-            stops?: FocusStop[];
-            fit?: boolean;
-            /** Frame these when the trip has no drawable route at all. */
-            fitPoints?: [number, number][];
-          }
-        | undefined;
+    const applyRoute = (detail: RouteDetail | undefined) => {
       const api = focusRouteRef.current;
       if (!api) return;
       const legs = detail?.legs ?? [];
@@ -2622,6 +2684,33 @@ export default function AtlasShell({
       api.paint(legs, detail?.stops);
       if (detail?.fit) api.fit(legs);
     };
+    applyRouteRef.current = applyRoute;
+    /**
+     * Hold the route until the globe can draw it, instead of losing it.
+     *
+     * "Ready" means style.load has run: `focusRouteRef` is filled the moment
+     * the Mapbox module resolves, but addSource/addLayer before the first
+     * style.load throws, so the api existing is not the same as the map being
+     * paintable. Both gates, one queue, flushed from the ready block.
+     *
+     * Later wins, with one exception: a queued fit (the deep link that opened
+     * the page) is not demoted by a hover preview that happens to land while
+     * the map is still booting. The traveller asked for this trip; a pointer
+     * crossing the card grid on the way to it did not un-ask.
+     */
+    const onRoute = (e: Event) => {
+      const detail = ((e as CustomEvent).detail ?? undefined) as RouteDetail | undefined;
+      if (routeReadyRef.current && focusRouteRef.current) {
+        applyRoute(detail);
+        return;
+      }
+      const empty =
+        !detail?.legs?.length && !detail?.stops?.length && !detail?.fitPoints?.length;
+      if (empty) return; // a clear with nothing painted yet is a no-op
+      const queued = pendingRouteRef.current;
+      if (queued?.fit && !detail?.fit) return;
+      pendingRouteRef.current = detail ?? null;
+    };
     // The popup's "See it in 3D" is injected HTML, so it has no React handler.
     // Delegate once rather than re-wiring on every popup open.
     const on3d = (e: Event) => {
@@ -2635,6 +2724,7 @@ export default function AtlasShell({
     window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
     window.addEventListener("bevvip:atlas-refit", onRefit);
     return () => {
+      applyRouteRef.current = null;
       document.removeEventListener("click", on3d);
       window.removeEventListener("bevvip:atlas-route", onRoute as EventListener);
       window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
