@@ -203,6 +203,28 @@ export type StyleKey = ShareStyle;
  */
 const SATELLITE_KEYS = new Set<StyleKey>(["satellite", "daylight"]);
 
+/**
+ * Auto daylight: the light preset follows the camera.
+ *
+ * The house Satellite runs `dusk` on purpose — it keeps the ocean deep and in
+ * key with the dark-luxe palette, which is right for an ambient globe. It is
+ * wrong for the thing people zoom in TO DO: read a coastline, a reef, a piste,
+ * or the shortlist the Guide just plotted. Past a certain altitude `dusk` stops
+ * being a mood and becomes an underexposed photograph.
+ *
+ * So the globe still opens dark, and hands over to `daylight` once the camera
+ * is close enough that the ground is the subject. Cheap: both satellite entries
+ * are one Mapbox style URL under two light presets, so the swap is a
+ * setConfigProperty, not a style reload (see AtlasApi.setStyle's same-url path).
+ *
+ * The two thresholds are deliberately apart. A single one would flip the
+ * basemap back and forth every time a wheel gesture settled a hair either side
+ * of it; the gap means you have to mean it in both directions. Roughly: IN is
+ * an island group filling the frame, OUT is back to a basin or a continent.
+ */
+const AUTO_DAYLIGHT_IN = 8.5;
+const AUTO_DAYLIGHT_OUT = 7;
+
 // ── Basemap fallback ───────────────────────────────────────────────────────
 // Satellite and Dusk are both Mapbox Standard-family styles; Dark is a classic
 // style, and the two families fail independently. On 2026-07-29 both Standard
@@ -298,7 +320,14 @@ function readStoredPlot(): GuideMeta | null {
 // Imperative handle the control buttons call into; the map lifecycle effect
 // fills it so React state (style key, projection, fullscreen) drives Mapbox.
 interface AtlasApi {
-  setStyle(key: StyleKey): void;
+  /**
+   * `source` says who asked. "user" (the default, and what the Style menu
+   * sends) is a deliberate choice and permanently disarms auto daylight for the
+   * session — having picked a basemap, you should not watch the map overrule
+   * you every time you zoom. "auto" is the shell talking to itself: the zoom
+   * watcher, and plotResults forcing imagery to reveal a result set.
+   */
+  setStyle(key: StyleKey, source?: "user" | "auto"): void;
   setProjection(globe: boolean): void;
   /** Tilt the camera off vertical so extruded buildings read as buildings. */
   setTilt(on: boolean): void;
@@ -738,6 +767,11 @@ export default function AtlasShell({
     let projGlobe = initialGlobe ?? (arrived.flat ? false : true);
     let styleKeyLocal: StyleKey =
       initialStyle ?? (arrivedStyle && ATLAS_STYLES[arrivedStyle] ? arrivedStyle : "satellite");
+    // Auto daylight is armed only when the boot style fell through to the house
+    // default. A prop or a Share link that names a basemap is someone having
+    // already chosen one — including a link captured while auto had switched to
+    // daylight, which should re-open on daylight rather than snap back to dusk.
+    let autoLight = !initialStyle && !(arrivedStyle && ATLAS_STYLES[arrivedStyle]);
     const arrivedCamera = initialCamera ?? arrived.camera;
     // Reconcile the controls with what the URL just decided. Safe to call here
     // and nowhere earlier: this is post-mount, so it re-renders the swatch and
@@ -2161,7 +2195,12 @@ export default function AtlasShell({
           // satellite basemap, any of them will do. Forcing the dusk one would
           // undo a deliberate switch to daylight every time the Guide answered.
           if (!SATELLITE_KEYS.has(styleKeyLocal) && !restyling) {
-            api.setStyle("satellite");
+            // "auto": revealing results is the shell's own doing, so it must not
+            // count as the traveller choosing a basemap. Note this lands on the
+            // dark Satellite — the fit that follows is what brings the lights up,
+            // and only if it actually flies in close (a basin-wide shortlist
+            // stays dusk, which is the right look for a basin).
+            api.setStyle("satellite", "auto");
           } else {
             paintFeatured();
             fitFeatured();
@@ -2491,7 +2530,12 @@ export default function AtlasShell({
 
         // Imperative API the control buttons drive.
         const api: AtlasApi = {
-          setStyle(key) {
+          setStyle(key, source = "user") {
+            // Picking a basemap by hand ends the automatic light switching for
+            // the session — see AtlasApi.setStyle. Recorded before the no-op
+            // returns below, so choosing the style you are already on still
+            // counts as choosing it.
+            if (source === "user") autoLight = false;
             // Already known bad this session — don't spend another 4s finding
             // out. plotResults asks for Satellite on every plot.
             if (failedStyles.has(key)) key = STYLE_FALLBACK_KEY;
@@ -2611,6 +2655,32 @@ export default function AtlasShell({
           },
         };
         apiRef.current = api;
+
+        /*
+         * Auto daylight, driven by altitude. See AUTO_DAYLIGHT_IN / _OUT.
+         *
+         * On `zoomend`, not `zoom`: the preset swap should land once, on a
+         * camera at rest, rather than strobe through the middle of a wheel
+         * gesture or a flyTo. That also makes this free for the case it was
+         * asked for — the Guide plots a shortlist, fitFeatured flies to it, and
+         * the single zoomend at the end of that ease brings the lights up.
+         *
+         * Both guards matter. `autoLight` is off once the traveller has used
+         * the Style menu. The SATELLITE_KEYS check keeps this off the vector
+         * basemaps entirely: Dark and the two 3D presets have their own
+         * identities and are nobody's idea of "satellite, but lit".
+         */
+        const syncAutoLight = () => {
+          if (!autoLight || restyling || !ready) return;
+          if (!SATELLITE_KEYS.has(styleKeyLocal)) return;
+          const z = map.getZoom();
+          if (z >= AUTO_DAYLIGHT_IN && styleKeyLocal === "satellite") {
+            api.setStyle("daylight", "auto");
+          } else if (z <= AUTO_DAYLIGHT_OUT && styleKeyLocal === "daylight") {
+            api.setStyle("satellite", "auto");
+          }
+        };
+        map.on("zoomend", syncAutoLight);
       })
       .catch(() => setMapFailed(true));
 
