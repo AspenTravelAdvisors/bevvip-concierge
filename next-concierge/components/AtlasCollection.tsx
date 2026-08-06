@@ -476,11 +476,26 @@ export default function AtlasCollection({
       }
       setPinnedId(o.id);
       emitRoute(o, true);
-      // On a phone the map is above the fold and the cards are below it, so
-      // tapping a card traces a route you cannot see — it reads as nothing
-      // happening. Bring the map back into view. Desktop shows both at once
-      // and must not jump.
-      if (window.matchMedia("(max-width: 680px)").matches) {
+      /*
+       * Bring the map back for the click — on DESKTOP only, and only when it
+       * has actually scrolled away.
+       *
+       * The phone case used to be the one that jumped, and the layout has since
+       * moved out from under that: at ≤680px the map is a fixed band at the top
+       * of the frame and `.atlas-results` is its own scroll container, so the
+       * map is never out of view and the jump only cost the traveller their
+       * place in the list. Desktop is where the problem now lives — the whole
+       * page scrolls, the map is 72vh of it, and clicking the fortieth card
+       * traces a route onto something a screen and a half above you.
+       *
+       * Only when it has scrolled away: a card clicked while the map is already
+       * on screen must not move the page under the pointer.
+       */
+      if (window.matchMedia("(max-width: 680px)").matches) return;
+      const box = mapWrapRef.current?.getBoundingClientRect();
+      if (!box) return;
+      const visible = Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0);
+      if (visible < box.height * 0.5) {
         mapWrapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
@@ -889,8 +904,17 @@ export default function AtlasCollection({
                 {metaParts.filter(Boolean).join("  ·  ")}
               </p>
 
-              {/* The route as text, so a card is readable without the map. */}
-              {o.stops.length > 1 && (
+              {/*
+                The route as text, so a card is readable without the map — but
+                ONLY where there is no day-by-day block to say the same thing
+                better. Printed above an itinerary it was pure duplication, and
+                expensive duplication: a 27-stop Alaska sailing spent 417px on
+                an arrow-separated wall of port names that the collapsed
+                itinerary below it covers in one line. Since the results are a
+                grid, that one card also set the height of every card in its
+                row — the whole list arrived looking expanded.
+              */}
+              {o.stops.length > 1 && o.itinerary.length === 0 && (
                 <p className="ac-path">{o.stops.map((st) => st.name).join(" → ")}</p>
               )}
 

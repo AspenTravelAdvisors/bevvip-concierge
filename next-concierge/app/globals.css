@@ -3893,6 +3893,12 @@ button.card-book {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 12px;
   padding-bottom: 28px;
+  /* Each card is as tall as its own contents, not as tall as the tallest card
+     beside it. Grid's default `stretch` meant one traveller expanding a
+     day-by-day itinerary inflated the two cards either side of it into tall
+     boxes of empty space — which reads as "these are expanded too" rather than
+     as one card being open. */
+  align-items: start;
 }
 .atlas-collection--hotel .atlas-results {
   gap: 16px;
