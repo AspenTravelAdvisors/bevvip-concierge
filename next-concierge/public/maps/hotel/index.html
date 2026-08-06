@@ -883,8 +883,14 @@ async function groundAltitude(lat,lng){
   return alt;
 }
 let flySeq=0;
+// Pending "the filters changed, re-frame the map" flight (see fitToFiltered).
+// Declared here because every camera command cancels it: opening a hotel,
+// picking a place from search, or any other explicit framing is a newer, more
+// specific instruction than the one the filter queued a moment ago.
+let fitTimer=0;
 function flyTo(opts){
   if(!map3d) return;
+  clearTimeout(fitTimer);
   stopIdleSpin();
   stopOrbit();
   const seq=++flySeq;
@@ -990,6 +996,24 @@ function fitToResults(){
   // minRange (9km up — too distant to read the setting). Come in close with some
   // tilt instead, just shy of the detail-open cinematic (range 2600 / tilt 67).
   flyToFeatures(shown, shown.length===1?{minRange:3400,tilt:60}:undefined);
+}
+// Re-frame the camera on whatever still matches after a filter change — the
+// Villa Atlas behaviour (components/VillaAtlas.tsx refits on every filter), and
+// the reason a rail click there feels like a search and here felt like nothing.
+// Ticking "Africa" used to update a count and dim some pins while leaving the
+// camera over Europe; the results were on the map, just off screen.
+function fitToFiltered(){
+  clearTimeout(fitTimer);
+  // Deliberately slower than applyFilters' own 90ms marker debounce: this also
+  // runs on the search field, which fires per keystroke, and a camera that
+  // flies on every character is unusable. Settle first, then move once.
+  fitTimer=setTimeout(()=>{
+    fitTimer=0;
+    const shown=FEATURES.filter(matches);
+    if(!shown.length) return;                     // nothing matched — leave the view where it is
+    if(shown.length===FEATURES.length) return;    // nothing narrowed — no reason to move
+    flyToFeatures(shown, shown.length===1?{minRange:3400,tilt:60}:undefined);
+  },420);
 }
 // A deep-linked result pin (shortlist id or shared hotel) stays visibly larger
 // than the rest of the field — even after it is selected and deselected again.
@@ -1120,10 +1144,10 @@ function buildFilters(){
   const sBar=document.getElementById("searchBar");
   const sClear=document.getElementById("searchClear");
   const syncClear=()=>sBar.classList.toggle("has-text",!!sIn.value);
-  sIn.addEventListener("input",e=>{state.q=e.target.value.toLowerCase().trim();syncClear();applyFilters();renderAC();});
+  sIn.addEventListener("input",e=>{state.q=e.target.value.toLowerCase().trim();syncClear();applyFilters(true);renderAC();});
   sIn.addEventListener("focus",renderAC);
   if(sClear) sClear.addEventListener("click",()=>{
-    sIn.value=""; state.q=""; syncClear(); applyFilters();
+    sIn.value=""; state.q=""; syncClear(); applyFilters(true);
     document.getElementById("aclist").classList.remove("open"); sIn.focus();
   });
   document.addEventListener("click",e=>{ if(!e.target.closest("#searchBar")) document.getElementById("aclist").classList.remove("open"); });
@@ -1144,7 +1168,7 @@ function buildFilters(){
 function optRow(setName,val,n,sw,program){
   const l=document.createElement("label"); l.className="opt";
   const cb=document.createElement("input"); cb.type="checkbox";
-  cb.addEventListener("change",()=>{ cb.checked?state[setName].add(val):state[setName].delete(val); applyFilters(); });
+  cb.addEventListener("change",()=>{ cb.checked?state[setName].add(val):state[setName].delete(val); applyFilters(true); });
   l.appendChild(cb);
   if(sw){ const s=document.createElement("span"); s.className="sw"; s.style.background=sw; l.appendChild(s); }
   if(program && BRAND_DOMAINS[program]){
@@ -1175,13 +1199,17 @@ function matches(f){
   return true;
 }
 let filterTimer;
-function applyFilters(){
+// `refit` is opt-in: only a filter the visitor just changed should move the
+// camera. The load path, a deep link and the external Base Camp filter all
+// frame themselves (fitToResults) and must not be flown twice.
+function applyFilters(refit){
   clearTimeout(filterTimer);
   filterTimer=setTimeout(()=>{
     let shown=0;
     for(const m of MARKERS){ const ok=matches(m._feat); m.position=ok?m._pos:null; if(ok) shown++; }
     document.getElementById("count").textContent=shown.toLocaleString();
   },90);
+  if(refit) fitToFiltered();
 }
 function resetFilters(){
   state.cats.clear();state.brands.clear();state.countries.clear();state.regions.clear();state.q="";

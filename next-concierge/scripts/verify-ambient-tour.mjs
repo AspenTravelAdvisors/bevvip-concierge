@@ -93,7 +93,8 @@ const midTravel = (n) =>
 const DEPS = [
   "map", "mapboxgl", "escapeHtml", "addLayer", "homeZoom", "cancelled",
   "focused", "subsetActive", "projGlobe", "ambientTour", "fitGlobe",
-  "startSpin", "haltSpin", "window", "document", "clearTimeout", "requestAnimationFrame",
+  "startSpin", "haltSpin", "settleToEquator", "window", "document", "clearTimeout",
+  "requestAnimationFrame",
 ];
 
 writeFileSync(
@@ -178,6 +179,10 @@ function harness(opts = {}) {
     fitGlobe: () => log.push("fitGlobe"),
     startSpin: () => log.push("startSpin"),
     haltSpin: () => log.push("haltSpin"),
+    // The swing back to the equator that a finished tour hands the globe
+    // through. Modelled with a real delay, not a synchronous pass-through, so
+    // "the spin resumes only once the globe is level again" is actually tested.
+    settleToEquator: (then) => { log.push("settle"); setTimeout_(then, 1100); },
     window: {
       setTimeout: setTimeout_,
       matchMedia: (q) => ({ matches: q.includes("reduced-motion") ? !!opts.reduced : false }),
@@ -237,6 +242,12 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   check("clears tour pins on natural finish", h.api.state().pins === 0);
   check("resumes the idle spin on natural finish",
     h.log.filter((l) => l === "startSpin").length === 1);
+  // The last stop is at 51°N and fitGlobe only restores zoom and pitch, so
+  // without the settle the globe resumed spinning tipped toward the pole —
+  // a resting state it never arrived in.
+  check("returns to the equator before the spin resumes",
+    h.log.indexOf("settle") >= 0 && h.log.indexOf("settle") < h.log.indexOf("startSpin"),
+    h.log.filter((l) => ["fitGlobe", "settle", "startSpin"].includes(l)).join(" → "));
   check("leaves no timer running afterwards", h.pending() === 0);
 }
 

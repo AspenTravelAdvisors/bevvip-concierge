@@ -135,6 +135,16 @@ const SORT_LABELS: Record<SortMode, string> = {
  */
 const CARD_LIMIT = 120;
 
+/**
+ * How many points the filter-fit is allowed to measure (see fitFilterResults).
+ *
+ * The whole expedition collection is 3,239 sailings; measuring every stop of
+ * every one of them to compute one bounding box is work the traveller pays for
+ * in dropped frames. Sampling beyond this cap changes the box by less than the
+ * padding around it.
+ */
+const FIT_POINT_CAP = 3000;
+
 /** Only ever trust a `sort=` the current menu can actually render. */
 const readSort = (
   raw: string | null,
@@ -395,6 +405,41 @@ export default function AtlasCollection({
     [routeFor],
   );
 
+  /**
+   * Frame the map on whatever the filters currently match.
+   *
+   * The villa atlas has done this since it shipped — every filter change refits
+   * — and it is the reason picking a region there feels like a search. The
+   * collection atlases only ever framed a deep-linked shortlist, so choosing
+   * "Antarctica" from the rail updated the card list and left the camera over
+   * Europe: the results were on the map, just off screen.
+   *
+   * Deliberately coarser than fitOfferings: stops (or the drawn path where a
+   * collection has no named stops), never the full route geometry. A bounding
+   * box is settled by outliers, and asking framePoints() to sort a quarter of a
+   * million coordinates on every filter click is a hitch you can feel. The
+   * stride sample caps that work for the widest filters, where the box is
+   * enormous anyway and a few dropped points cannot move it.
+   */
+  const fitFilterResults = useCallback((list: AtlasOffering[]) => {
+    const pts: [number, number][] = [];
+    for (const o of list) {
+      if (o.stops.length) {
+        for (const s of o.stops) if (s.at) pts.push([s.at[0], s.at[1]]);
+      } else {
+        for (const c of o.path) pts.push([c[0], c[1]]);
+      }
+    }
+    if (!pts.length) return;
+    const stride = Math.ceil(pts.length / FIT_POINT_CAP);
+    const sample = stride > 1 ? pts.filter((_, i) => i % stride === 0) : pts;
+    window.dispatchEvent(
+      new CustomEvent("bevvip:atlas-route", {
+        detail: { legs: [], fit: true, fitPoints: sample },
+      }),
+    );
+  }, []);
+
   const byId = useMemo(() => new Map(filtered.map((o) => [o.id, o])), [filtered]);
 
   /** Hover previews a route — but never over a pinned one. 170ms debounce
@@ -552,6 +597,51 @@ export default function AtlasCollection({
       if (!parsed?.view.camera) fitOfferings(shortlist);
     }
   }, [parsed?.view.trip, parsed?.view.camera, filtered, emitRoute, fitOfferings, state]);
+
+  /**
+   * The filters, canonicalized — and ONLY the filters.
+   *
+   * `searchParams.toString()` is the wrong key here: it also carries the
+   * basemap, the 2D/3D flag, the camera and `sort`, so panning the globe or
+   * re-sorting the cards would read as a filter change and re-fly the camera
+   * out from under whoever just moved it. Reusing toSearchParams with an empty
+   * view is exactly the filter half of the deep-link contract.
+   */
+  const filterKey = useMemo(
+    () =>
+      state
+        ? toSearchParams(state, {}, descriptor, { q: query.q, country: query.country }).toString()
+        : "",
+    [state, descriptor, query],
+  );
+
+  /**
+   * Refit the globe whenever the filters change — the villa atlas's behaviour,
+   * which is what makes its rail feel like a search rather than a legend.
+   *
+   * The FIRST key this ever sees is the one the page arrived with, and that
+   * frame belongs to someone else: an explicit camera in the link, a `trip=`
+   * being traced, or the shortlist effect above. So arrival is recorded and
+   * stood down from; only a change the traveller made moves the camera.
+   */
+  const lastFitKey = useRef<string | null>(null);
+  useEffect(() => {
+    if (!state || !offerings) return; // nothing to frame until the feed lands
+    if (lastFitKey.current === null) {
+      lastFitKey.current = filterKey; // the arriving view owns the camera
+      return;
+    }
+    if (lastFitKey.current === filterKey) return;
+    // A traced journey is the more specific intent, so it keeps the camera —
+    // and the key stays UNCONSUMED, so the moment the trace is released (by
+    // hand, or by a filter that removed it from the list) the globe catches up
+    // to the filters instead of sitting on a route that is no longer shown.
+    if (pinnedId) return;
+    lastFitKey.current = filterKey;
+    if (!filterKey) return; // filters cleared — leave the globe where it is
+    if (!filtered.length) return; // nothing matched; an empty frame says nothing
+    fitFilterResults(filtered);
+  }, [filterKey, filtered, state, offerings, pinnedId, fitFilterResults]);
 
   // A pinned trip that filtering removes from the list should release its pin.
   useEffect(() => {

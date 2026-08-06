@@ -949,8 +949,14 @@ function boot(a){
     if(had){ panel.classList.remove('open'); activeView=null; }
   });
 
+  /* Is anything narrowing the field right now? Drives both the dim/hit pin
+     classes and fitFiltered, which must agree: fitSailings frames the `hit`
+     pins, and `hit` is only set while a filter is active. */
+  function anyFilterActive(){
+    return !!activeOps.size||activeShips.size||activeMonths.size||activeIds.size||activeSearchTerms.length||activeRegions.size||!!activePort;
+  }
   function updateMarkers(){
-    const anyFilter=!!activeOps.size||activeShips.size||activeMonths.size||activeIds.size||activeSearchTerms.length||activeRegions.size||!!activePort;
+    const anyFilter=anyFilterActive();
     a.mappableRegions.forEach(key=>{
       const n=regionSailings(key).length; const o=markers[key];   // count ignores the region toggle itself
       o.el.querySelector('.ring').textContent=n;
@@ -1011,7 +1017,18 @@ function boot(a){
     row.addEventListener('click',()=>toggleOp(name,row));opList.appendChild(row);
   });
   function syncReset(){ document.getElementById('reset').classList.toggle('show',!!activeOps.size||activeShips.size||activeRegions.size||activeIds.size||activeSearchTerms.length||!!activePort); }
-  function refreshActivePanel(){ if(portView) openPortResults(portView); else if(activeView==='__search__') openSearchResults(); else if(activeView) openRegion(activeView); }
+  function refreshActivePanel(){ if(portView) openPortResults(portView); else if(activeView==='__search__') openSearchResults(); else if(activeView) openRegion(activeView); else fitFiltered(); }
+  /* A filter change with no panel open still has to move the map. Everything
+     above only re-opens a panel that was already showing, so ticking an
+     operator, a ship, a month or a region from the closed rail updated the pin
+     counts and dimmed the misses while leaving the camera exactly where it was
+     — the results were on the map, just off screen. Villa Atlas behaviour (it
+     refits on every filter change), reached through fitSailings so the framing
+     stays the "hit" region pins. */
+  function fitFiltered(){
+    if(!anyFilterActive()) return;   // clearing the last filter must not yank the camera
+    fitSailings(allMatchingSailings());
+  }
   function toggleOp(name,row){
     if(activeOps.has(name)){activeOps.delete(name);row.classList.remove('active');}
     else{activeOps.add(name);row.classList.add('active');}
@@ -1019,6 +1036,7 @@ function boot(a){
     updateMarkers();
     if(portView||activeView) refreshActivePanel();
     else if(activeOps.size) openSearchResults('Filtered sailings');
+    else refreshActivePanel();   // last operator cleared — re-frame whatever filters remain
   }
   document.getElementById('reset').addEventListener('click',()=>{
     activeOps.clear();document.querySelectorAll('.op').forEach(r=>r.classList.remove('active'));

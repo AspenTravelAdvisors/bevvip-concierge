@@ -684,6 +684,9 @@ export default function AtlasShell({
     // one on the clock, one on the network — and abortTour has to cancel both.
     let tourPaintTimer = 0;
     let tourStep = 0;
+    // The swing back to the equator after the tour finishes. Effect-scoped so
+    // an unmount mid-swing can cancel it. See settleToEquator.
+    let settleTimer = 0;
     let ready = false;
     let focused = false;
     let restyling = false;
@@ -837,6 +840,10 @@ export default function AtlasShell({
         }
         function stopSpin() {
           haltSpin();
+          // …and outranks the swing back to the equator that follows it. Without
+          // this a visitor who grabbed the globe during the settle would be
+          // fighting an ease they can't see the reason for.
+          cancelSettle();
           // Anything that outranks the idle spin outranks the ambient tour.
           // Every such path already funnels through here — the interaction
           // listeners below, plotResults, markFocusPlace, fitFocusRoute, the
@@ -857,6 +864,50 @@ export default function AtlasShell({
           if (spinning || !projGlobe) return;
           spinning = true;
           spinStep();
+        }
+
+        /**
+         * How long the globe takes to swing back to the equator after the tour.
+         *
+         * Short — this is a return to rest, not a fifth stop. Long enough to
+         * read as the planet settling rather than as a cut.
+         */
+        const SETTLE_MS = 1100;
+        /** Give up the settle and leave the camera exactly where it is. */
+        function cancelSettle() {
+          if (!settleTimer) return;
+          clearTimeout(settleTimer);
+          settleTimer = 0;
+          try { map.stop(); } catch { /* camera optional */ }
+        }
+        /**
+         * Level the globe back onto the equator, then hand it to `then`.
+         *
+         * The tour's last stop is a Canadian one, so it leaves the camera near
+         * 37°N — and fitGlobe only restores zoom and pitch, never latitude. The
+         * idle spin that resumed after it therefore turned a planet tipped
+         * toward the north pole, which is not the resting frame the globe
+         * ARRIVED in and reads as the tour having left something behind.
+         *
+         * The spin is deliberately not started until the swing lands: spinStep
+         * writes the centre every frame, so starting both at once would have
+         * the rotation and the ease overwriting each other's centre.
+         */
+        function settleToEquator(then: () => void) {
+          const c = map.getCenter();
+          if (Math.abs(c.lat) < 1) { then(); return; } // already level
+          try {
+            map.easeTo({
+              center: [c.lng, 0],
+              zoom: homeZoom,
+              duration: SETTLE_MS,
+              essential: true,
+            });
+          } catch { then(); return; }
+          settleTimer = window.setTimeout(() => {
+            settleTimer = 0;
+            then();
+          }, SETTLE_MS);
         }
 
         // ── Ambient auto-tour ────────────────────────────────────────────────
@@ -1075,10 +1126,11 @@ export default function AtlasShell({
           try { tourCap.remove(); } catch { /* popup optional */ }
           clearTourPins();
           // Run to completion and the globe returns to the resting state it
-          // came from. Only an interaction leaves it frozen — that stillness is
-          // the map acknowledging you took the wheel.
+          // came from — including the latitude it came from, which fitGlobe
+          // does not restore. Only an interaction leaves it frozen — that
+          // stillness is the map acknowledging you took the wheel.
           fitGlobe();
-          startSpin();
+          settleToEquator(startSpin);
           // The globe is turning again and nothing is being narrated — the beat
           // the Guide slides in on.
           announceTourEnd();
@@ -2498,6 +2550,7 @@ export default function AtlasShell({
       clearTimeout(styleWatchdog);
       clearTimeout(tourTimer);
       clearTimeout(tourPaintTimer);
+      clearTimeout(settleTimer);
       ro?.disconnect();
       apiRef.current = null;
       mapRef.current?.remove();

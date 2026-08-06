@@ -887,8 +887,15 @@ function updateDateSummary(){
   const labels=Array.from(activeMonths).sort().map(monthLabel);
   summary.textContent=labels.length===1?labels[0]:labels.length+' months selected';
 }
+/* Is anything narrowing the field right now? Drives both the dim/hit pin classes
+   and fitFiltered. Ships count: matchesNonRegion already filters on them, so a
+   ship-only selection that left every pin undimmed was reporting the field as
+   unfiltered when it wasn't. */
+function anyFilterActive(){
+  return !!activeBrands.size||activeShips.size||activeMonths.size||activeIds.size||activeSearchTerms.length||!!activePort||activeRegions.size;
+}
 function updateMarkerCounts(){
-  const anyFilter=!!activeBrands.size||activeMonths.size||activeIds.size||activeSearchTerms.length||!!activePort||activeRegions.size;
+  const anyFilter=anyFilterActive();
   Object.entries(markers).forEach(([key,obj])=>{
     // Dynamic count: how many qualifying voyages reach this region right now (ignores the region toggle itself)
     const count=obj.sailings.filter(matchesNonRegion).length;
@@ -1009,7 +1016,19 @@ function clearPortFilter(){
   activePort=null; portView=null; portMarkerLayer.clearLayers();
   portBtn.classList.remove('active'); portSummary.textContent='All ports';
 }
-function refreshActivePanel(){ if(portView) openPortResults(portView); else if(activeView==='__search__') openSearchResults(); else if(activeView) openRegion(activeView); }
+function refreshActivePanel(){ if(portView) openPortResults(portView); else if(activeView==='__search__') openSearchResults(); else if(activeView) openRegion(activeView); else fitFiltered(); }
+/* A filter change with no panel open still has to move the map. Everything
+   above only re-opens a panel that was already showing, so ticking a line, a
+   ship, a month or a region from the closed rail updated the pin counts and
+   dimmed the misses while leaving the camera exactly where it was — the results
+   were on the map, just off screen. Villa Atlas behaviour (it refits on every
+   filter change), reached through fitTrips so the framing stays the "hit"
+   region pins rather than the near-global union of every region a world cruise
+   passes through. */
+function fitFiltered(){
+  if(!anyFilterActive()) return;   // clearing the last filter must not yank the camera
+  fitTrips(allMatchingTrips());
+}
 portBtn.addEventListener('click',e=>{
   e.stopPropagation(); document.getElementById('datePop').classList.remove('open');
   const open=portPop.classList.toggle('open'); if(open) renderPortList();
@@ -1044,6 +1063,7 @@ function toggleBrand(key,row){
   applyFilter();syncReset();
   if(portView||activeView) refreshActivePanel();
   else if(activeBrands.size) openSearchResults('Filtered sailings');
+  else refreshActivePanel();   // last line cleared — re-frame whatever filters remain
 }
 function syncReset(){document.getElementById('reset').classList.toggle('show',!!activeBrands.size||activeShips.size||activeRegions.size||activeIds.size||activeSearchTerms.length);}
 /* ===== Region filter rows + collapsible section accordion ===== */
