@@ -37,12 +37,26 @@ const OUT = mkdtempSync(join(tmpdir(), "handoff-"));
 const SRC = readFileSync(join(ROOT, "components/AtlasShell.tsx"), "utf8");
 
 // ── Slice the real thing ────────────────────────────────────────────────────
-/** A whole declaration, matched by braces rather than by line count. */
+/**
+ * A whole declaration, matched by braces rather than by line count.
+ *
+ * The body starts at the first `{` OUTSIDE the signature's parentheses —
+ * several of these functions take an inline object type as a parameter
+ * (`legs: { mode: string; … }[]`), and counting braces from the first one found
+ * closes the block halfway through the argument list.
+ */
 function block(open) {
   const a = SRC.indexOf(open);
   if (a < 0) throw new Error(`verify-atlas-handoff: could not find "${open}" — did it get renamed?`);
+  let paren = 0;
+  let start = -1;
+  for (let i = a; i < SRC.length && start < 0; i++) {
+    if (SRC[i] === "(") paren++;
+    else if (SRC[i] === ")") paren--;
+    else if (SRC[i] === "{" && paren === 0) start = i;
+  }
   let depth = 0;
-  for (let i = SRC.indexOf("{", a); i < SRC.length; i++) {
+  for (let i = start; i < SRC.length; i++) {
     if (SRC[i] === "{") depth++;
     else if (SRC[i] === "}" && --depth === 0) return SRC.slice(a, i + 1);
   }
@@ -83,7 +97,7 @@ writeFileSync(
     `${spinWhenRevealed}\n${stopSpin}\n${restAndIdle}\n${flushPendingRoute}\n` +
     `${applyRoute};\n  applyRouteRef.current = applyRoute;\n${onRoute};\n` +
     `  return {\n` +
-    `    onRoute, restAndIdle, flushPendingRoute,\n` +
+    `    onRoute, restAndIdle, flushPendingRoute, stopSpin,\n` +
     // style.load's ready block, in its published order: mark ready, boot the
     // data (which rests the globe), then hand the camera to any queued trip.
     `    becomeReady() { ready = true; routeReadyRef.current = true; },\n` +
@@ -104,13 +118,18 @@ const { makeArrival } = await import(pathToFileURL(join(OUT, "arrival.js")).href
 // ── A fake globe ────────────────────────────────────────────────────────────
 function harness() {
   const log = [];
+  let arrival = null;
+  // The three real painters each open with stopSpin() — that call IS how the
+  // camera gets claimed, and the last assertion in this file holds the source
+  // to it. Modelled here so the latch is exercised rather than assumed.
+  const claim = () => arrival.stopSpin();
   const refs = {
     focusRouteRef: {
       current: {
-        paint: (legs) => log.push(`paint:${legs.length}`),
+        paint: (legs) => { claim(); log.push(`paint:${legs.length}`); },
         clear: () => log.push("clear"),
-        fit: () => log.push("fit"),
-        mark: (stops) => log.push(`mark:${stops.length}`),
+        fit: () => { claim(); log.push("fit"); },
+        mark: (stops) => { claim(); log.push(`mark:${stops.length}`); },
         flatten: () => false,
       },
     },
@@ -118,7 +137,7 @@ function harness() {
     pendingRouteRef: { current: null },
     routeReadyRef: { current: false },
   };
-  const api = makeArrival({
+  const api = (arrival = makeArrival({
     ...refs,
     tourActive: false,
     haltSpin: () => log.push("haltSpin"),
@@ -127,7 +146,7 @@ function harness() {
     startSpin: () => log.push("startSpin"),
     armTour: () => log.push("armTour"),
     fitGlobe: () => log.push("fitGlobe"),
-  });
+  }));
   return {
     ...api,
     log,
@@ -271,6 +290,16 @@ const check = (name, cond, detail = "") => results.push([name, !!cond, detail]);
   const bootData = block("async function bootData()");
   const rests = (bootData.match(/restAndIdle\(\)/g) ?? []).length;
   check("both of bootData's resting points go through restAndIdle", rests >= 2, `${rests} call sites`);
+
+  // The harness models "painting claims the camera" by calling stopSpin from
+  // its fake painters. That is only fair if the real ones do it — and the whole
+  // fix rests on it, since stopSpin is where cameraClaimed is latched.
+  for (const fn of ["function paintFocusRoute(", "function markFocusPlace(", "function fitFocusRoute("]) {
+    const body = block(fn);
+    check(`${fn.slice(9, -1)} claims the camera`, body.includes("stopSpin()"));
+  }
+  check("stopSpin is the one place the claim is latched",
+    block("function stopSpin()").includes("cameraClaimed = true"));
 }
 
 // ── Report ──────────────────────────────────────────────────────────────────
