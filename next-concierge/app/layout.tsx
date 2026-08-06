@@ -110,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 target="_blank"
                 rel="noreferrer"
               >
-                Virtuoso
+                Virtuoso®
               </a>{" "}
               · Arranged by{" "}
               <a
