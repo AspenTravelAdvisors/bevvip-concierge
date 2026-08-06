@@ -306,6 +306,16 @@ interface AtlasApi {
   plot(meta: GuideMeta): void;
   refit(): void;
   resetView(): void;
+  /**
+   * Repaint every collection's layers from the legend's current state.
+   *
+   * Solo is a whole-legend gesture — one click hides six collections — so the
+   * legend can no longer poke individual layer ids and hope. This is owned by
+   * the map effect because only that scope knows the route zoom gate: without
+   * it, un-hiding a collection below ROUTE_ZOOM paints its whole route web
+   * across the globe.
+   */
+  applyLayers(): void;
 }
 
 /** A stop on a traced route: where it is, what it's called, which day. */
@@ -384,6 +394,8 @@ interface Props {
     zoom: number;
     pitch: number;
     bearing: number;
+    /** [west, south, east, north] of what is on screen, when readable. */
+    bounds?: [number, number, number, number] | null;
   }) => void;
   /**
    * true → this surface owns its view through the URL alone: the shell reads
@@ -517,6 +529,7 @@ export default function AtlasShell({
   const viewRef = useRef<{
     style: StyleKey; globe: boolean;
     center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
+    bounds?: [number, number, number, number] | null;
   } | null>(null);
   /**
    * The view an incoming shared link asked for, read straight off the URL.
@@ -624,6 +637,8 @@ export default function AtlasShell({
    */
   const [tilted, setTilted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  /** Phones only: the legend sheet's open state. Desktop renders it inline. */
+  const [legendOpen, setLegendOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
   /** Transient "✓ Link copied" confirmation for the built-in share path. */
   const [shared, setShared] = useState(false);
@@ -2149,6 +2164,16 @@ export default function AtlasShell({
               // tilted, rotated view rather than flattening it to plan north-up.
               pitch: map.getPitch(),
               bearing: map.getBearing(),
+              // What is actually on screen, as [west, south, east, north].
+              // The camera alone cannot answer "which properties am I looking
+              // at?" — that depends on the viewport's aspect ratio and pitch —
+              // so "Search this area" needs the box, not the centre and zoom.
+              bounds: (() => {
+                const b = map.getBounds?.();
+                return b
+                  ? ([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] as [number, number, number, number])
+                  : null;
+              })(),
             };
             viewRef.current = v;
             onViewChangeRef.current?.(v);
@@ -2442,6 +2467,22 @@ export default function AtlasShell({
             ambientPadding();
             if (projGlobe) { focused = false; fitGlobe(); startSpin(); }
           },
+          applyLayers() {
+            const z = map.getZoom();
+            for (const { key } of LEGEND) {
+              const off = hiddenRef.current.has(key);
+              for (const id of layerIdsFor(key)) {
+                if (!map.getLayer(id)) continue;
+                // Route layers answer to the zoom gate as well as the legend;
+                // point layers answer to the legend alone.
+                const vis = id.startsWith("r_")
+                  ? routeVis(z, key)
+                  : off ? "none" : "visible";
+                try { map.setLayoutProperty(id, "visibility", vis); }
+                catch { /* mid-restyle: layers momentarily gone */ }
+              }
+            }
+          },
         };
         apiRef.current = api;
       })
@@ -2655,26 +2696,55 @@ export default function AtlasShell({
     return () => cancelAnimationFrame(a);
   }, [isFull]);
 
-  function toggleLayer(key: string) {
-    const map = mapRef.current;
-    const off = !hidden.has(key);
-    setHidden((s) => {
-      const next = new Set(s);
-      if (off) next.add(key);
-      else next.delete(key);
-      return next;
-    });
-    if (!map) return;
-    layerIdsFor(key).forEach((id) => {
-      if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", off ? "none" : "visible");
+  /**
+   * The legend is a SOLO control, not seven independent switches.
+   *
+   * Hiding one collection out of seven barely changes a globe with 2,501
+   * hotels on it — nobody browsing the home map wants "everything except the
+   * jets". What they want is "just the yachts", and reaching that through
+   * toggles cost six clicks. So a click isolates: the row you press stays, the
+   * rest go. Pressing the isolated row again (or "Show all") brings them back,
+   * which keeps the gesture reversible with the same finger that made it.
+   *
+   * `hidden` remains the single source of truth exactly as before — solo is
+   * only a different way of computing it — so every repaint path that already
+   * reads hiddenRef (style.load, the route gate, ambient muting) keeps working
+   * untouched.
+   */
+  function soloLayer(key: string) {
+    setHidden((prev) => {
+      const isSolo = !prev.has(key) && prev.size === legendKeys.length - 1;
+      return isSolo ? new Set() : new Set(legendKeys.filter((k) => k !== key));
     });
   }
+
+  function showAllLayers() {
+    setHidden(new Set());
+  }
+
+  // Push the legend's state onto the map. An effect rather than a call inside
+  // the click handler because `hidden` is set functionally above — the handler
+  // does not know what it produced, and the map must follow the state that
+  // actually landed.
+  useEffect(() => {
+    apiRef.current?.applyLayers();
+  }, [hidden]);
 
   const showFallback = !token || mapFailed;
   // Every collection, always — see the note on the legend below. On a
   // single-category atlas route only that category is plotted, so the legend
   // narrows to it; on the home globe it is the full canonical list.
   const legendRows = scope === "all" ? LEGEND : LEGEND.filter((it) => it.key === type);
+  const legendKeys = legendRows.map((it) => it.key);
+  /**
+   * The one collection currently isolated, if any — derived from `hidden`
+   * rather than stored, so there is still exactly one source of truth and no
+   * way for a "soloed" highlight to disagree with what the globe is drawing.
+   */
+  const soloKey =
+    legendKeys.length > 1 && hidden.size === legendKeys.length - 1
+      ? legendKeys.find((k) => !hidden.has(k)) ?? null
+      : null;
 
   return (
     <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
@@ -2803,27 +2873,79 @@ export default function AtlasShell({
           instruction used as a heading that named one direction of a toggle;
           the pressed state carries that meaning now, for screen readers too. */}
       {!showFallback && showLegend && legendRows.length > 0 && (
-        <div className="atlas-legend">
-          <div className="lgcap">Collections</div>
-          {legendRows.map((it) => {
-            const pending = !loaded.has(it.key);
-            const off = hidden.has(it.key);
-            return (
+        <>
+          {/* Phones only (CSS hides it above 680px). The panel itself is worth
+              the top-left corner on a desktop map and is not worth it on a
+              360px one, so there it collapses to a pill that opens the same
+              rows as a bottom sheet — the pattern the hotel atlas already
+              uses for filters and details. */}
+          {/* Only where there is a choice to make. A single-collection atlas's
+              legend is one colour swatch — turning that into a pill you have
+              to open is more chrome than the thing it hides. */}
+          {legendRows.length > 1 && (
+          <button
+            type="button"
+            className={`atlas-legend-pill${legendOpen ? " on" : ""}`}
+            aria-expanded={legendOpen}
+            onClick={() => setLegendOpen((v) => !v)}
+            title="Collections on the map"
+          >
+            <i style={{ background: (legendRows.find((it) => it.key === soloKey) ?? legendRows[0]).color }} />
+            {soloKey ? legendRows.find((it) => it.key === soloKey)!.label : "Layers"}
+          </button>
+          )}
+          {legendOpen && (
+            <div
+              className="atlas-legend-scrim"
+              onClick={() => setLegendOpen(false)}
+              aria-hidden="true"
+            />
+          )}
+          <div
+            className={`atlas-legend${legendOpen ? " open" : ""}${legendRows.length > 1 ? " sheeted" : ""}`}
+          >
+            <div className="lgsheet-handle" aria-hidden="true"><span /></div>
+            <div className="lgcap">Collections</div>
+            {legendRows.map((it) => {
+              const pending = !loaded.has(it.key);
+              const off = hidden.has(it.key);
+              const solo = soloKey === it.key;
+              return (
+                <button
+                  key={it.key}
+                  type="button"
+                  className={`lgi${off ? " off" : ""}${solo ? " solo" : ""}${pending ? " pending" : ""}`}
+                  aria-pressed={solo}
+                  disabled={pending}
+                  onClick={() => soloLayer(it.key)}
+                  title={
+                    pending
+                      ? "Still loading"
+                      : solo
+                        ? "Show every collection again"
+                        : `Show only ${it.label}`
+                  }
+                >
+                  <i style={{ background: it.color }} />
+                  <span>{it.label}</span>
+                </button>
+              );
+            })}
+            {/* The way back, always present rather than only while something is
+                isolated: a control that appears and disappears is one people
+                have to rediscover. Disabled when there is nothing to undo. */}
+            {legendRows.length > 1 && (
               <button
-                key={it.key}
                 type="button"
-                className={`lgi${off ? " off" : ""}${pending ? " pending" : ""}`}
-                aria-pressed={!off}
-                disabled={pending}
-                onClick={() => toggleLayer(it.key)}
-                title={pending ? "Still loading" : off ? "Show on the map" : "Hide from the map"}
+                className="lgall"
+                onClick={showAllLayers}
+                disabled={!hidden.size}
               >
-                <i style={{ background: it.color }} />
-                <span>{it.label}</span>
+                Show all
               </button>
-            );
-          })}
-        </div>
+            )}
+          </div>
+        </>
       )}
 
       {!showFallback && badge && (
@@ -3364,6 +3486,10 @@ interface MBMap {
   getZoom(): number;
   getMinZoom(): number;
   getCenter(): { lng: number; lat: number };
+  /** Optional: absent on the fallback stubs, so every caller guards with `?.`. */
+  getBounds?(): {
+    getWest(): number; getSouth(): number; getEast(): number; getNorth(): number;
+  } | null;
   setCenter(c: { lng: number; lat: number }): void;
   setZoom(z: number): void;
   flyTo(opts: {

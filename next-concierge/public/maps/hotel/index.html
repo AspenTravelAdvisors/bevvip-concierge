@@ -68,16 +68,10 @@
   .rail .railx{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 auto;-webkit-tap-highlight-color:transparent}
   .rail .railx:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* ---------- Collapsed filter tab (top-left) ---------- */
-  .railtab{position:absolute;z-index:1001;top:140px;left:14px;display:inline-flex;align-items:center;gap:8px;
-    height:40px;padding:0 15px;border-radius:12px;cursor:pointer;color:var(--ink);
-    background:rgba(17,21,29,.92);border:1px solid var(--line);box-shadow:var(--shadow);
-    -webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
-    font:700 12px/1 var(--sans);letter-spacing:.5px;-webkit-tap-highlight-color:transparent;transition:.15s}
-  .railtab:hover{border-color:var(--accent);color:var(--accent)}
-  .railtab .pi{font-size:16px;line-height:1}
-  body.rail-shown .railtab{opacity:0;visibility:hidden;pointer-events:none}
-  @media (max-width:640px){.railtab{display:none}}
+  /* The collapsed filter tab that used to sit at top-left is gone. It opened
+     the same rail as the toolbar's Filters button, so the map carried two
+     controls for one job — and on a phone that corner is the scarcest space
+     on the page. One Filters button, in the toolbar, is the whole story. */
   .rail .rhead h2{font-size:12px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);margin:0}
   .rail .rhead .count{font-size:11.5px;color:var(--accent);font-variant-numeric:tabular-nums;font-weight:700}
   .rail .scroller{overflow-y:auto;padding:8px 12px 12px}
@@ -222,12 +216,10 @@ html.basecamp-embed .topbar{display:none!important}
 html.basecamp-embed gmp-map-3d{top:0!important;height:100%!important}
 html.basecamp-embed .veil{inset:0!important}
 html.basecamp-embed .panel{top:0!important;height:100%!important}
-html.basecamp-embed .rail,
-html.basecamp-embed .railtab{top:76px!important}
+html.basecamp-embed .rail{top:76px!important}
 html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!important}
 @media(max-width:680px){
-  html.basecamp-embed .rail,
-  html.basecamp-embed .railtab{top:66px!important}
+  html.basecamp-embed .rail{top:66px!important}
   html.basecamp-embed body.rail-shown .rail{
     top:calc(66px + env(safe-area-inset-top))!important;
     max-height:calc(100dvh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important
@@ -248,7 +240,7 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
   })();
 </script>
 <style>
-  html.hero-embed .topbar,html.hero-embed .searchbar,html.hero-embed .railtab,
+  html.hero-embed .topbar,html.hero-embed .searchbar,html.hero-embed .detailpeek,
   html.hero-embed .rail,html.hero-embed .dock,html.hero-embed .dockcoach,
   html.hero-embed .hint,html.hero-embed .logochip,
   html.hero-embed .bvi-scrim,html.hero-embed .bvi-reopen,
@@ -302,7 +294,6 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
 <div class="sheetScrim" id="sheetScrim"></div>
 
 <!-- filter rail (hidden on load — opened from the Filters pill; bottom sheet on mobile) -->
-<button type="button" class="railtab" id="railTab" aria-label="Show filters" title="Filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
 <aside class="rail" id="rail">
   <div class="railtoggle" id="railToggle">&#9776;&nbsp; Filters &amp; results</div>
   <div class="sheetHandle" id="railHandle" aria-hidden="true"><span></span></div>
@@ -1018,14 +1009,33 @@ function syncPinScales(){
 function highlightDeepLinkIds(){
   const hit=MARKERS.filter(isResultMarker);
   for(const m of hit){ if(m._pin) try{ m._pin.scale=RESULT_SCALE; }catch(_){} }
-  if(state.ids.size===1 && hit.length===1) openDetail(hit[0]._feat);  // single shortlist -> open it
+  // Single shortlist → open it, tucked on a phone for the same reason a shared
+  // ?hotel= is: this is also a link someone arrived on, not a card they tapped.
+  if(state.ids.size===1 && hit.length===1) landDetail(hit[0]._feat);
 }
-// A shared ?hotel=<id> lands the recipient on that hotel's open detail panel
-// with the cinematic orbit already turning (openDetail flies in with orbit:true).
+/**
+ * A shared ?hotel=<id> lands the recipient on that property with the cinematic
+ * orbit already turning (openDetail flies in with orbit:true).
+ *
+ * On a phone the drawer is 54dvh of text over the building it describes — so a
+ * link that was sent to show someone a hotel arrived showing them a page about
+ * it instead, with the photoreal 3D view (the entire reason this engine exists)
+ * hidden behind the thing describing it. The card still opens — the camera
+ * flies, the content hydrates, the peek bar lights up — it just starts tucked,
+ * one tap or one swipe away. Desktop is unaffected: the panel is a 300px rail
+ * beside the map there, not on top of it.
+ */
+function landDetail(feat){
+  const tucked=window.matchMedia("(max-width:680px)").matches;
+  // Set BEFORE opening: the class observer only clears panel-collapsed when the
+  // panel closes, so a value already in place survives the open.
+  if(tucked) document.body.classList.add("panel-collapsed");
+  return openDetail(feat);
+}
 function openSharedHotel(){
   if(!state.hotel) return;
   const hit=MARKERS.find(m=>String(m._feat.properties.id)===String(state.hotel));
-  if(hit) openDetail(hit._feat);
+  if(hit) landDetail(hit._feat);
 }
 
 /* ---- markers ---- */
@@ -1505,7 +1515,7 @@ init();
   }
 </style>
 
-<div class="dockcoach" id="dockCoach" role="status"><span>Tap <b>Filters</b> to refine &middot; <b>Details</b> for results</span></div>
+<div class="dockcoach" id="dockCoach" role="status"><span>Tap <b>Filters</b> up here to refine &middot; a pin opens <b>Details</b> below</span></div>
 <div class="sharetoast" id="shareToast" role="status" aria-live="polite"></div>
 <!-- ===== Quiet-map refinements: macro pin declutter, top-right actions menu, sheet safe areas ===== -->
 <style id="quiet-map">
@@ -1576,7 +1586,18 @@ init();
   <button id="railPill" class="dockbtn" type="button" aria-label="Show or hide the filters menu" title="Show / hide filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
   <button id="resetAll" class="dockbtn" type="button" aria-label="Show all hotels" title="Show all hotels"><span class="pi">&#8634;</span><span class="pl">Show all</span></button>
   <button id="searchPill" class="dockbtn" type="button" aria-label="Show or hide search" title="Search a hotel, city or region"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="pl">Search</span></button>
+</div>
+
+<!--
+  Details lives at the BOTTOM, alone, and the rest of the controls live at the
+  top. Not an inconsistency: the drawer it opens rises from the bottom edge, so
+  its handle belongs on the edge it rises from — and a deep-linked visitor who
+  lands on the map needs exactly one obvious way into the property they were
+  sent. The note is the invitation; it retires the moment the drawer is open.
+-->
+<div class="detailpeek" id="detailPeek">
   <button id="panelPill" class="dockbtn detailbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
+  <span class="peeknote" id="peekNote">Tap or swipe up for details</span>
 </div>
 
 <script>
@@ -1599,8 +1620,6 @@ init();
   railPill.addEventListener('click',function(){ railCollapsed=!railCollapsed; syncRail(); });
   var railClose=document.getElementById('railClose');
   if(railClose) railClose.addEventListener('click',function(){ railCollapsed=true; syncRail(); });
-  var railTab=document.getElementById('railTab');
-  if(railTab) railTab.addEventListener('click',function(){ railCollapsed=false; syncRail(); });
   var resetAll=document.getElementById('resetAll');
   if(resetAll){ resetAll.addEventListener('click',function(){ if(window.__atlasShowAll) window.__atlasShowAll(); }); }
   panelPill.addEventListener('click',function(){ body.classList.toggle('panel-collapsed'); if(!body.classList.contains('panel-collapsed')) body.classList.remove('search-open'); syncPanel(); });
@@ -1848,6 +1867,125 @@ init();
   .panel .body{padding-bottom:calc(20px + env(safe-area-inset-bottom) + var(--vvb,0px))}
 }
 </style>
+
+<!-- ===== Chrome to the top: a thin toolbar on the top line, Details alone at
+     the bottom. Last style block in the document, so it wins over the earlier
+     bottom-dock rules without having to unpick them.
+
+     Why: the bottom edge of a phone was carrying the toolbar, the search bar,
+     the coach bubble, the filters sheet AND the details drawer — five things
+     competing for the one strip of screen a thumb can reach, over a map whose
+     whole job is to be looked at. The toolbar moves up to share the top line
+     with the ⋯ menu (it is a row of small, infrequent controls, which is what
+     a top line is for), and the bottom is left to the two things that actually
+     rise from it. ===== -->
+<style id="chrome-top">
+  /* ---- The toolbar, at the top and slimmer ---- */
+  .dock{
+    top:calc(84px + env(safe-area-inset-top,0px));
+    bottom:auto;left:12px;transform:none;
+    gap:2px;padding:3px;border-radius:40px;
+    max-width:calc(100vw - 84px); /* the ⋯ menu keeps its corner */
+    overflow-x:auto;scrollbar-width:none;
+  }
+  .dock::-webkit-scrollbar{display:none}
+  .dockbtn{height:34px;padding:0 13px;font-size:12px;gap:7px;flex:0 0 auto}
+  .dockbtn .pi{font-size:14px;width:14px}
+  /* The dropdown's own rows are a menu, not a toolbar — keep them tappable. */
+  .mapmenu .mm-drop .dockbtn{height:42px;font-size:13px}
+  /* Slide clear of the details panel on desktop, as the ⋯ menu already does. */
+  @media (min-width:681px){body.panel-active .dock{max-width:calc(100vw - 384px)}}
+
+  /* The search field drops from the toolbar it was opened from, rather than
+     rising from a dock that is no longer down there. */
+  .searchbar{top:calc(130px + env(safe-area-inset-top,0px));bottom:auto;
+    transform:translateX(-50%) translateY(-8px)}
+  body.search-open .searchbar{transform:translateX(-50%) translateY(0)}
+  .dockcoach,.sharetoast{top:calc(130px + env(safe-area-inset-top,0px));bottom:auto;
+    transform:translateX(-50%) translateY(-6px)}
+  .dockcoach.show,.sharetoast.show{transform:translateX(-50%) translateY(0)}
+  /* The bubble's arrow pointed down at a dock that has moved above it. */
+  .dockcoach::after{bottom:auto;top:-7px;border-top:0;border-bottom:7px solid var(--accent)}
+
+  /* ---- Details: a slim peek bar on the bottom edge ---- */
+  .detailpeek{
+    position:fixed;z-index:1200;left:50%;transform:translateX(-50%);
+    bottom:calc(14px + env(safe-area-inset-bottom,0px) + var(--vvb,0px));
+    display:none;align-items:center;gap:10px;padding:4px 14px 4px 4px;
+    border-radius:40px;background:rgba(17,21,29,.9);
+    border:1px solid rgba(255,255,255,.1);
+    -webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);
+    box-shadow:0 8px 32px rgba(0,0,0,.5);
+    max-width:calc(100vw - 24px);
+    touch-action:none; /* the swipe-up gesture is ours, not the page's */
+  }
+  /* Nothing selected means nothing to peek at — give the map its edge back
+     rather than parking a dead control on it. */
+  body.panel-active .detailpeek{display:inline-flex}
+  .detailpeek #panelPill{opacity:1;pointer-events:auto}
+  .detailpeek .peeknote{font-family:var(--sans);font-size:11.5px;letter-spacing:.3px;
+    color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Once the drawer is up, the invitation has been accepted. */
+  body:not(.panel-collapsed) .detailpeek .peeknote{display:none}
+  body:not(.panel-collapsed) .detailpeek{padding:4px}
+  /* The drawer covers the bottom edge on a phone, so the bar steps aside. */
+  @media (max-width:680px){
+    body:not(.panel-collapsed).panel-active .detailpeek{display:none}
+  }
+
+  /* ---- Per-context top offsets: the toolbar rides the same line as ⋯ ---- */
+  @media (max-width:680px){
+    .dock{position:fixed;top:calc(74px + env(safe-area-inset-top,0px));left:10px;
+      gap:2px;padding:3px;max-width:calc(100vw - 72px);
+      transition:opacity .2s ease,transform .2s ease}
+    body.bvnav-visible .dock{top:calc(112px + env(safe-area-inset-top,0px))}
+    .dockbtn{height:36px;min-width:36px;justify-content:center;padding:0 11px;font-size:11.5px}
+    .searchbar,.dockcoach,.sharetoast{top:calc(120px + env(safe-area-inset-top,0px));bottom:auto}
+    body.bvnav-visible .searchbar,
+    body.bvnav-visible .dockcoach,
+    body.bvnav-visible .sharetoast{top:calc(158px + env(safe-area-inset-top,0px))}
+    /* Typing: the keyboard is up and the field pins itself to it, so the
+       toolbar no longer needs to flee — it is at the other end of the screen. */
+    body.search-typing .searchbar{top:auto;bottom:calc(var(--kb,0px) + 10px)}
+    body.search-typing .dock{opacity:1;pointer-events:auto;transform:none}
+    /* The style picker was lifted clear of a dock that is no longer there. */
+    .leaflet-bottom.leaflet-right .stylectl{margin-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+  }
+  @media (max-width:380px){
+    .dockbtn{padding:0 9px}
+    .dockbtn .pl{display:none}
+    .detailpeek .peeknote{font-size:11px}
+  }
+  html.basecamp-embed .dock{top:calc(20px + env(safe-area-inset-top,0px))!important}
+  @media (max-width:680px){
+    html.basecamp-embed .dock{top:calc(14px + env(safe-area-inset-top,0px))!important}
+    html.basecamp-embed .searchbar,
+    html.basecamp-embed .dockcoach,
+    html.basecamp-embed .sharetoast{top:calc(62px + env(safe-area-inset-top,0px))!important}
+  }
+  html.hero-embed .detailpeek{display:none!important}
+</style>
+<script>
+/* The peek bar's gestures. The pill inside it already toggles the drawer (see
+   the dock script above); this adds the two things a bar sitting on the bottom
+   edge of a phone implicitly promises — that tapping anywhere on it works, and
+   that you can push it up. */
+(function(){
+  var peek=document.getElementById('detailPeek');
+  var pill=document.getElementById('panelPill');
+  if(!peek||!pill) return;
+  function raise(){ if(document.body.classList.contains('panel-collapsed')) pill.click(); }
+  peek.addEventListener('click',function(e){ if(e.target!==pill && !pill.contains(e.target)) pill.click(); });
+  var y0=null;
+  peek.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; },{passive:true});
+  peek.addEventListener('touchmove',function(e){
+    if(y0===null) return;
+    // 24px of travel, not 4: a bar you rest a thumb on must not open on a twitch.
+    if(y0-e.touches[0].clientY>24){ y0=null; raise(); }
+  },{passive:true});
+  peek.addEventListener('touchend',function(){ y0=null; },{passive:true});
+})();
+</script>
 <script>
 (function(){try{
   var coach=document.getElementById('dockCoach'); if(!coach) return;

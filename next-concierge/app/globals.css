@@ -976,7 +976,8 @@ main.page {
   align-items: flex-end;
 }
 .atlas-ctrls .actrl,
-.villa-area-ctrl .actrl {
+.villa-area-ctrl .actrl,
+.atlas-area-ctrl .actrl {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -995,6 +996,7 @@ main.page {
   backdrop-filter: blur(6px);
 }
 .atlas-ctrls .actrl:hover,
+.atlas-area-ctrl .actrl:hover,
 .villa-area-ctrl .actrl:hover {
   border-color: var(--gold);
   color: var(--gold);
@@ -1022,8 +1024,22 @@ main.page {
   gap: 8px;
   align-items: center;
 }
-.villa-area-ctrl .area-clear {
+.villa-area-ctrl .area-clear,
+.atlas-area-ctrl .area-clear {
   color: var(--sub);
+}
+/* Same cluster on the collection atlases (VIP Hotels and the rest). Bottom
+   LEFT, matching the villa map, because bottom-right is the plotted-count
+   badge and top-right is the fullscreen/style/tilt stack. */
+.atlas-area-ctrl {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 6;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 .atlas-ctrls .actrl .sw {
   width: 11px;
@@ -1187,6 +1203,128 @@ main.page {
 }
 .atlas-legend .lgi.off span {
   text-decoration: line-through;
+}
+/* The isolated row. Solo is a positive state — "this is what you are looking
+   at" — so it gets the emphasis and the dimmed rows carry the consequence. */
+.atlas-legend .lgi.solo {
+  background: rgba(255, 255, 255, 0.09);
+}
+.atlas-legend .lgi.solo span {
+  color: var(--text);
+  font-weight: 600;
+}
+.atlas-legend .lgall {
+  margin-top: 4px;
+  padding: 5px 4px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 6px 6px;
+  background: none;
+  color: var(--accent, #caa44e);
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  cursor: pointer;
+}
+.atlas-legend .lgall:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Mobile legend: a pill on the map that opens the rows as a bottom sheet.
+   Both the pill and the sheet chrome are desktop-invisible; above 680px the
+   panel is simply the inline block it has always been. */
+.atlas-legend-pill,
+.atlas-legend-scrim,
+.atlas-legend .lgsheet-handle {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .atlas-legend-pill {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 58vw;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background: rgba(10, 10, 12, 0.82);
+    backdrop-filter: blur(8px);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .atlas-legend-pill i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: none;
+  }
+  .atlas-legend-pill.on {
+    border-color: var(--accent, #caa44e);
+  }
+  .atlas-legend-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1250;
+    background: rgba(3, 6, 11, 0.5);
+  }
+  /* Off-screen rather than display:none so it slides, and so the rows keep
+     their layout for the transition. */
+  .atlas-legend.sheeted {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    z-index: 1260;
+    gap: 0;
+    padding: 0 12px calc(14px + env(safe-area-inset-bottom));
+    border-radius: 16px 16px 0 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    transform: translateY(101%);
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .atlas-legend.sheeted.open {
+    transform: none;
+  }
+  .atlas-legend.sheeted .lgsheet-handle {
+    display: flex;
+    justify-content: center;
+    padding: 9px 0 4px;
+  }
+  .atlas-legend.sheeted .lgsheet-handle span {
+    width: 38px;
+    height: 5px;
+    border-radius: 5px;
+    background: var(--line);
+  }
+  /* Thumb-sized rows: this is now the primary way to reach a collection on a
+     phone, not a colour key you happen to be able to press. */
+  .atlas-legend.sheeted .lgi {
+    min-height: 44px;
+    font-size: 13.5px;
+    padding: 3px 8px;
+  }
+  .atlas-legend.sheeted .lgall {
+    min-height: 44px;
+    padding: 0 8px;
+    font-size: 12.5px;
+  }
 }
 
 /* Mapbox popup → house style. */
@@ -4174,7 +4312,12 @@ button.card-book {
    keeps the map clear of the sticky page header when we jump to it. */
 .atlas-mapwrap {
   display: block;
+  position: relative; /* anchors .atlas-area-ctrl over the map */
   scroll-margin-top: 8px;
+}
+/* Why the count changed, in the same line as the count. */
+.atlas-areaflag {
+  color: var(--gold-light);
 }
 /* Desktop shows the count in the rail; the cue is mobile-only. */
 .atlas-scrollcue {

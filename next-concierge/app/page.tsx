@@ -58,12 +58,15 @@ export default function Home() {
             // the chrome and had to dim the product to do it; this teaches the
             // inventory using the product, and asks for nothing back.
             ambientTour
-            // No collections panel here. The home globe plots all seven, so the
-            // legend was seven rows of key over the top-left of the world —
-            // the most valuable corner of the only thing on the page — for a
-            // surface where nobody is filtering. The collection pages, which
-            // are for browsing, keep theirs.
-            showLegend={false}
+            // The collections panel is back, and it is a different control
+            // than the one that was removed. That one was seven independent
+            // hide/show switches over the most valuable corner of the only
+            // thing on the page — a filter offered to people who are not
+            // filtering. This one solos: a click isolates a collection, so the
+            // panel answers "show me only the yachts" in one gesture and reads
+            // as a key to the pin colours the rest of the time. On phones it
+            // collapses to a pill and gives the corner back entirely.
+            showLegend
           />
         </>
       }

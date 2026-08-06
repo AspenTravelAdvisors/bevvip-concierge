@@ -93,6 +93,26 @@ interface Props {
   }>;
 }
 
+/**
+ * Does any part of this offering fall inside the on-screen box?
+ *
+ * "Any part", not "its centre": a cruise whose route crosses the viewport is
+ * something you are looking at even when both its ports are off-screen, and a
+ * hotel has exactly one point so the two rules agree there anyway.
+ *
+ * The west > east case is a viewport straddling the antimeridian, where the box
+ * is the OUTSIDE of the interval rather than the inside — without it, panning
+ * to the date line silently empties the list.
+ */
+function touchesBox(o: AtlasOffering, box: [number, number, number, number]) {
+  const [w, s, e, n] = box;
+  const inLng = (lng: number) => (w <= e ? lng >= w && lng <= e : lng >= w || lng <= e);
+  const hit = (lng: number, lat: number) => lat >= s && lat <= n && inLng(lng);
+  for (const st of o.stops) if (st.at && hit(st.at[0], st.at[1])) return true;
+  for (const c of o.path) if (hit(c[0], c[1])) return true;
+  return false;
+}
+
 const dayRange = (a: number | null, b: number | null) =>
   a == null ? "" : a === b ? `Day ${a}` : `Days ${a}-${b}`;
 
@@ -171,8 +191,37 @@ export default function AtlasCollection({
   const viewRef = useRef<{
     style: string; globe: boolean;
     center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
+    bounds?: [number, number, number, number] | null;
   } | null>(null);
   const [shared, setShared] = useState(false);
+
+  /**
+   * "Search this area" — limit the CARD LIST to what is on screen.
+   *
+   * The villa atlas established this and the rule that makes it work is that
+   * the map is untouched: pins ignore the box entirely. Hiding the pins outside
+   * the viewport would empty the map the moment anyone panned, which reads as a
+   * broken map rather than a narrowed list. So this is "show me what's in
+   * view", not a filter on geography.
+   *
+   * Local state rather than a URL param: unlike every real filter, a viewport
+   * is not a thing worth putting in a shared link — the shared camera already
+   * carries it, and a stale bbox riding along with someone else's screen size
+   * would contradict what they see.
+   */
+  const [areaBox, setAreaBox] = useState<[number, number, number, number] | null>(null);
+
+  const searchThisArea = useCallback(() => {
+    const b = viewRef.current?.bounds;
+    if (!b) return;
+    setAreaBox(b);
+  }, []);
+
+  // Any change to the real filters drops the area limit: the map refits to the
+  // new filter, so a box drawn around the old one is describing a view that no
+  // longer exists. Same rule the villa atlas uses.
+  const searchKey = searchParams.toString();
+  useEffect(() => { setAreaBox(null); }, [searchKey]);
 
   // Today, pinned once per mount so the past-trip cutoff can't shift mid-session.
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
@@ -220,12 +269,13 @@ export default function AtlasCollection({
 
   const filtered = useMemo(() => {
     if (!offerings || !state) return [];
-    const matched = offerings.filter((o) => matchesOffering(o, state, descriptor, today));
+    let matched = offerings.filter((o) => matchesOffering(o, state, descriptor, today));
+    if (areaBox) matched = matched.filter((o) => touchesBox(o, areaBox));
     // Ordering, not just filtering. Before this the list was rendered in feed
     // order and then truncated to 120 — so an expedition-cruise browser saw
     // 120 arbitrary sailings out of 3,239 rather than the next 120 to sail.
     return sortOfferings(matched, sort);
-  }, [offerings, state, descriptor, today, sort]);
+  }, [offerings, state, descriptor, today, sort, areaBox]);
 
   // The cards actually rendered. Named once so the list and the batch that
   // resolves their primary CTAs can never disagree about which those are.
@@ -548,6 +598,32 @@ export default function AtlasCollection({
         // where the filters that make up most of the link already live. The
         // shell reports the camera up (onViewChange) and the rail sends it.
       />
+      {/*
+        Sits over the map rather than in the filter rail on purpose: it is a
+        question about the map ("what is in THIS view?"), and its answer changes
+        every time the camera moves. A control for that belongs where the
+        gesture happens.
+      */}
+      <div className="atlas-area-ctrl" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          className="actrl"
+          onClick={searchThisArea}
+          title="Limit the list below to what is in the current map view"
+        >
+          ⌖ Search this area
+        </button>
+        {areaBox && (
+          <button
+            type="button"
+            className="actrl area-clear"
+            onClick={() => setAreaBox(null)}
+            title="Show results from everywhere again"
+          >
+            ✕ Clear area
+          </button>
+        )}
+      </div>
       </div>
 
       {state && offerings ? (
@@ -617,7 +693,13 @@ export default function AtlasCollection({
             </button>
           </>
         ) : (
-          <>{filtered.length.toLocaleString()} {filtered.length === 1 ? "result" : "results"}</>
+          <>
+            {filtered.length.toLocaleString()} {filtered.length === 1 ? "result" : "results"}
+            {/* Say WHY the number is what it is. A count that silently drops
+                because the map moved is the same unanswerable question the
+                120-card cap used to pose. */}
+            {areaBox && <span className="atlas-areaflag"> in this map area</span>}
+          </>
         )}
       </div>
 
