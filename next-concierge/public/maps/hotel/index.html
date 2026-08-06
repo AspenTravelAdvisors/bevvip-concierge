@@ -1515,7 +1515,7 @@ init();
   }
 </style>
 
-<div class="dockcoach" id="dockCoach" role="status"><span>Tap <b>Filters</b> up here to refine &middot; a pin opens <b>Details</b> below</span></div>
+<div class="dockcoach" id="dockCoach" role="status"><span>Tap <b>Filters</b> to refine &middot; tap a pin, then <b>Details</b></span></div>
 <div class="sharetoast" id="shareToast" role="status" aria-live="polite"></div>
 <!-- ===== Quiet-map refinements: macro pin declutter, top-right actions menu, sheet safe areas ===== -->
 <style id="quiet-map">
@@ -1586,17 +1586,22 @@ init();
   <button id="railPill" class="dockbtn" type="button" aria-label="Show or hide the filters menu" title="Show / hide filters"><span class="pi">&#9776;</span><span class="pl">Filters</span></button>
   <button id="resetAll" class="dockbtn" type="button" aria-label="Show all hotels" title="Show all hotels"><span class="pi">&#8634;</span><span class="pl">Show all</span></button>
   <button id="searchPill" class="dockbtn" type="button" aria-label="Show or hide search" title="Search a hotel, city or region"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span><span class="pl">Search</span></button>
+  <button id="panelPill" class="dockbtn detailbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
 </div>
 
 <!--
-  Details lives at the BOTTOM, alone, and the rest of the controls live at the
-  top. Not an inconsistency: the drawer it opens rises from the bottom edge, so
-  its handle belongs on the edge it rises from — and a deep-linked visitor who
-  lands on the map needs exactly one obvious way into the property they were
-  sent. The note is the invitation; it retires the moment the drawer is open.
+  Details is a BUTTON in the toolbar and a NOTE at the bottom, and they are not
+  the same thing. The button was tried down here on its own and the bottom edge
+  of a phone turned out to be the hardest place on the screen to hit — under
+  the thumb's arc, next to the browser's own toolbar, on the one strip iOS
+  reserves for its home gesture. So the control rejoins the others up top.
+
+  What stays at the bottom is the invitation, because that is where the drawer
+  rises from: a hint you can also swipe. It appears only while a card is
+  selected and tucked, and retires the moment the drawer is up.
 -->
-<div class="detailpeek" id="detailPeek">
-  <button id="panelPill" class="dockbtn detailbtn" type="button" aria-label="Show or hide the details panel" title="Show / hide details"><span class="pi">&#8249;</span><span class="pl">Details</span></button>
+<div class="detailpeek" id="detailPeek" role="button" tabindex="0" aria-label="Show details">
+  <span class="peekgrip" aria-hidden="true"></span>
   <span class="peeknote" id="peekNote">Tap or swipe up for details</span>
 </div>
 
@@ -1907,31 +1912,29 @@ init();
   /* The bubble's arrow pointed down at a dock that has moved above it. */
   .dockcoach::after{bottom:auto;top:-7px;border-top:0;border-bottom:7px solid var(--accent)}
 
-  /* ---- Details: a slim peek bar on the bottom edge ---- */
+  /* ---- Details: the invitation at the bottom edge (the control is up top) ---- */
   .detailpeek{
     position:fixed;z-index:1200;left:50%;transform:translateX(-50%);
-    bottom:calc(14px + env(safe-area-inset-bottom,0px) + var(--vvb,0px));
-    display:none;align-items:center;gap:10px;padding:4px 14px 4px 4px;
-    border-radius:40px;background:rgba(17,21,29,.9);
+    bottom:calc(16px + env(safe-area-inset-bottom,0px) + var(--vvb,0px));
+    display:none;flex-direction:column;align-items:center;gap:6px;
+    padding:9px 18px 10px;cursor:pointer;
+    border-radius:16px;background:rgba(17,21,29,.9);
     border:1px solid rgba(255,255,255,.1);
     -webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);
     box-shadow:0 8px 32px rgba(0,0,0,.5);
     max-width:calc(100vw - 24px);
     touch-action:none; /* the swipe-up gesture is ours, not the page's */
+    -webkit-tap-highlight-color:transparent;
   }
-  /* Nothing selected means nothing to peek at — give the map its edge back
-     rather than parking a dead control on it. */
-  body.panel-active .detailpeek{display:inline-flex}
-  .detailpeek #panelPill{opacity:1;pointer-events:auto}
-  .detailpeek .peeknote{font-family:var(--sans);font-size:11.5px;letter-spacing:.3px;
+  .detailpeek:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  /* The same grip the drawer itself wears, so the thing you pull and the thing
+     that arrives are visibly one object. */
+  .detailpeek .peekgrip{width:38px;height:5px;border-radius:5px;background:var(--line);display:block}
+  .detailpeek .peeknote{font-family:var(--sans);font-size:12px;letter-spacing:.3px;
     color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  /* Once the drawer is up, the invitation has been accepted. */
-  body:not(.panel-collapsed) .detailpeek .peeknote{display:none}
-  body:not(.panel-collapsed) .detailpeek{padding:4px}
-  /* The drawer covers the bottom edge on a phone, so the bar steps aside. */
-  @media (max-width:680px){
-    body:not(.panel-collapsed).panel-active .detailpeek{display:none}
-  }
+  /* Only while there is a tucked card to raise. Nothing selected, or the
+     drawer already up, and the map gets its edge back. */
+  body.panel-active.panel-collapsed .detailpeek{display:flex}
 
   /* ---- Per-context top offsets: the toolbar rides the same line as ⋯ ---- */
   @media (max-width:680px){
@@ -1954,6 +1957,9 @@ init();
   @media (max-width:380px){
     .dockbtn{padding:0 9px}
     .dockbtn .pl{display:none}
+    /* Every other pill has a legible glyph; Details' is a chevron, which on its
+       own says nothing. It keeps its word. */
+    #panelPill .pl{display:inline}
     .detailpeek .peeknote{font-size:11px}
   }
   html.basecamp-embed .dock{top:calc(20px + env(safe-area-inset-top,0px))!important}
@@ -1964,6 +1970,49 @@ init();
     html.basecamp-embed .sharetoast{top:calc(62px + env(safe-area-inset-top,0px))!important}
   }
   html.hero-embed .detailpeek{display:none!important}
+
+  /* ---- The details drawer, actually behaving like a drawer on a phone ----
+
+     Two faults, both older than this file's top-toolbar work and both only
+     obvious once a deep link started landing with the drawer tucked:
+
+     1. It was still `position:absolute`, i.e. positioned against the BODY box,
+        while the filters sheet beside it is `position:fixed`. On a phone the
+        body's bottom edge sits below the browser's toolbar band, so "tucked
+        away" (translateY(100%)) left a ~50px sliver of the card — the handle
+        and the category line — stranded above the URL bar. That sliver is the
+        strange thing on the hotel deep link.
+
+     2. Inside Base Camp's iframe, `html.basecamp-embed .panel{top:0;height:100%}`
+        (specificity 0,2,1 + !important) outranked the mobile drawer block's
+        `.panel{top:auto;height:54dvh}` (0,1,0 + !important) that it was meant
+        to defer to. So the drawer was full-viewport height: opening it covered
+        the photoreal 3D view completely, which is the one thing this engine is
+        here for.
+
+     Both are fixed by restating the drawer geometry at a specificity that
+     beats the embed rule, in the last style block in the document. */
+  @media (max-width:680px){
+    .panel,
+    html.basecamp-embed .panel{
+      position:fixed!important;
+      top:auto!important;bottom:0!important;left:0!important;right:0!important;
+      width:100%!important;max-width:100%!important;
+      height:54dvh!important;max-height:92dvh!important;
+      border-left:0!important;border-top:1px solid var(--line)!important;
+      border-radius:18px 18px 0 0!important;
+    }
+    .panel.drawer-expanded,
+    html.basecamp-embed .panel.drawer-expanded{height:92dvh!important}
+    /* Overshoot the tuck. 100% of a dvh-sized box is not reliably the distance
+       to the bottom of what the visitor can actually see while the browser's
+       toolbar is animating; 12px of overshoot costs nothing and removes the
+       whole class of "a sliver is showing" bug. */
+    body.panel-collapsed .panel.open,
+    html.basecamp-embed body.panel-collapsed .panel.open{
+      transform:translateY(100%) translateY(12px)!important;
+    }
+  }
 </style>
 <script>
 /* The peek bar's gestures. The pill inside it already toggles the drawer (see
@@ -1975,7 +2024,8 @@ init();
   var pill=document.getElementById('panelPill');
   if(!peek||!pill) return;
   function raise(){ if(document.body.classList.contains('panel-collapsed')) pill.click(); }
-  peek.addEventListener('click',function(e){ if(e.target!==pill && !pill.contains(e.target)) pill.click(); });
+  peek.addEventListener('click',raise);
+  peek.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); raise(); } });
   var y0=null;
   peek.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; },{passive:true});
   peek.addEventListener('touchmove',function(e){
