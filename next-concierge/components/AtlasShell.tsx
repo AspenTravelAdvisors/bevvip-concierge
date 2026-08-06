@@ -38,7 +38,13 @@ import {
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
 import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
-import { parseViewParams, setViewParams, type ShareStyle } from "@/lib/atlas/adapters/params";
+import {
+  parseViewParams,
+  readStoredStyle,
+  setViewParams,
+  writeStoredStyle,
+  type ShareStyle,
+} from "@/lib/atlas/adapters/params";
 import { frameRoute, framePoints } from "@/lib/atlas/route-frame";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
@@ -300,6 +306,12 @@ const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<s
   },
 };
 
+// The traveller's remembered basemap pick lives in lib/atlas/adapters/params —
+// see readStoredStyle there for why, and for why only explicit picks are
+// written. Deliberately NOT cleared by resetView: starting the trip over clears
+// the chat, the shortlist and the camera, all of which belong to the trip.
+// Which basemap you like to read maps on does not.
+//
 // The Guide's chat is persisted per session, but a route change (opening a
 // full atlas, then Back) re-mounts the Living Atlas and would drop the framed
 // subset. We stash the last plotted meta here so boot can replay it — the map
@@ -765,13 +777,19 @@ export default function AtlasShell({
     const arrived = arrivedView.current;
     const arrivedStyle = (arrived.style as StyleKey | null);
     let projGlobe = initialGlobe ?? (arrived.flat ? false : true);
+    // Precedence: the prop, then the URL, then this session's remembered pick,
+    // then the house default. The URL outranks the preference on purpose — a
+    // Share link is the sender describing what THEY saw, and the recipient's
+    // stored basemap has no business overwriting the picture they were sent.
+    const linkedStyle = arrivedStyle && ATLAS_STYLES[arrivedStyle] ? arrivedStyle : null;
+    const storedStyle = readStoredStyle();
     let styleKeyLocal: StyleKey =
-      initialStyle ?? (arrivedStyle && ATLAS_STYLES[arrivedStyle] ? arrivedStyle : "satellite");
+      initialStyle ?? linkedStyle ?? storedStyle ?? "satellite";
     // Auto daylight is armed only when the boot style fell through to the house
-    // default. A prop or a Share link that names a basemap is someone having
-    // already chosen one — including a link captured while auto had switched to
-    // daylight, which should re-open on daylight rather than snap back to dusk.
-    let autoLight = !initialStyle && !(arrivedStyle && ATLAS_STYLES[arrivedStyle]);
+    // default. A prop, a Share link, or a pick carried in from another atlas is
+    // someone having already chosen — including a link captured while auto had
+    // switched to daylight, which re-opens on daylight rather than snapping back.
+    let autoLight = !initialStyle && !linkedStyle && !storedStyle;
     const arrivedCamera = initialCamera ?? arrived.camera;
     // Reconcile the controls with what the URL just decided. Safe to call here
     // and nowhere earlier: this is post-mount, so it re-renders the swatch and
@@ -2183,25 +2201,34 @@ export default function AtlasShell({
           const external = leadDeep && /^https?:\/\//i.test(leadDeep) ? leadDeep : undefined;
           setBadge({ n: features.length, total, deepLink: internal ?? external });
           paintHotel(); // re-tint ambient field dimmer
-          // Flip to Satellite to reveal the plotted results on the photoreal
-          // basemap. The restyle's style.load repaints every layer and re-fits
-          // (subsetActive is set), so we only paint/fit inline if already there.
-          // `restyling` guard: a plot restored during boot could fire setStyle
-          // while the FIRST style load was still in flight. Mapbox drops the
-          // earlier load's completion, so `restyling` never cleared and every
-          // later paint was skipped — a map that draws nothing and does not
-          // spin. If a restyle is already running, paint into the current one.
-          // Reveal results over imagery — but if the traveller is already on a
-          // satellite basemap, any of them will do. Forcing the dusk one would
-          // undo a deliberate switch to daylight every time the Guide answered.
-          if (!SATELLITE_KEYS.has(styleKeyLocal) && !restyling) {
-            // "auto": revealing results is the shell's own doing, so it must not
-            // count as the traveller choosing a basemap. Note this lands on the
-            // dark Satellite — the fit that follows is what brings the lights up,
-            // and only if it actually flies in close (a basin-wide shortlist
-            // stays dusk, which is the right look for a basin).
-            api.setStyle("satellite", "auto");
-          } else {
+          /*
+           * Results are revealed on DAYLIGHT imagery, at whatever altitude the
+           * shortlist happens to fit. The zoom rule that governs ordinary
+           * browsing is deliberately not consulted here: a plot is the one
+           * moment the map stops being ambience, because the traveller is being
+           * shown specific places and asked to choose between them, and `dusk`
+           * over a Caribbean basin is lit for a mood rather than for reading.
+           *
+           * Which repaint path runs depends on whether the basemap actually
+           * RELOADS. Satellite and Satellite (day) share one Mapbox style URL,
+           * so moving between them is a config change and style.load never
+           * fires; only a vector basemap (Dark, the two 3D presets) reloads and
+           * takes its repaint + re-fit from style.load. Every other case has to
+           * paint and fit inline.
+           *
+           * `restyling` guard: a plot restored during boot could fire setStyle
+           * while the FIRST style load was still in flight. Mapbox drops the
+           * earlier load's completion, so `restyling` never cleared and every
+           * later paint was skipped — a map that draws nothing and does not
+           * spin. If a restyle is already running, paint into the current one.
+           */
+          const reloads = ATLAS_STYLES[styleKeyLocal].url !== ATLAS_STYLES.daylight.url;
+          if (!restyling && styleKeyLocal !== "daylight") {
+            // "auto": revealing results is the shell's own doing, so it neither
+            // counts as the traveller choosing a basemap nor gets remembered.
+            api.setStyle("daylight", "auto");
+          }
+          if (restyling || !reloads) {
             paintFeatured();
             fitFeatured();
           }
@@ -2531,14 +2558,19 @@ export default function AtlasShell({
         // Imperative API the control buttons drive.
         const api: AtlasApi = {
           setStyle(key, source = "user") {
-            // Picking a basemap by hand ends the automatic light switching for
-            // the session — see AtlasApi.setStyle. Recorded before the no-op
-            // returns below, so choosing the style you are already on still
-            // counts as choosing it.
-            if (source === "user") autoLight = false;
             // Already known bad this session — don't spend another 4s finding
-            // out. plotResults asks for Satellite on every plot.
+            // out. plotResults asks for Satellite (day) on every plot. Resolved
+            // before the pick is recorded, so a broken style is never the thing
+            // we remember and re-break on at the next atlas.
             if (failedStyles.has(key)) key = STYLE_FALLBACK_KEY;
+            if (source === "user") {
+              // Picking a basemap by hand ends the automatic light switching for
+              // the session, and is remembered across atlases (STYLE_STORAGE_KEY).
+              // Both recorded before the no-op return below, so choosing the
+              // style you are already on still counts as choosing it.
+              autoLight = false;
+              writeStoredStyle(key);
+            }
             if (key === styleKeyLocal) return;
             const from = ATLAS_STYLES[styleKeyLocal];
             const to = ATLAS_STYLES[key];
@@ -2672,6 +2704,12 @@ export default function AtlasShell({
          */
         const syncAutoLight = () => {
           if (!autoLight || restyling || !ready) return;
+          // While a Guide shortlist is framed, the light belongs to the plot and
+          // not to the camera. plotResults puts the map on daylight at whatever
+          // altitude the results fit, so without this the zoomend at the end of
+          // its own fit would immediately drag a basin-wide shortlist back to
+          // dusk. resetView clears subsetActive and hands the camera back.
+          if (subsetActive) return;
           if (!SATELLITE_KEYS.has(styleKeyLocal)) return;
           const z = map.getZoom();
           if (z >= AUTO_DAYLIGHT_IN && styleKeyLocal === "satellite") {

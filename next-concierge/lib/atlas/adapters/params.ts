@@ -94,6 +94,52 @@ function splitRegionList(
 export const SHARE_STYLES = ["dark", "satellite", "daylight", "dusk", "city"] as const; // menu order
 export type ShareStyle = (typeof SHARE_STYLES)[number];
 
+/**
+ * The traveller's own basemap pick, carried across the atlases.
+ *
+ * Switching to Dark says something real, usually "I want less noise", and
+ * having said it once you should not have to re-say it on every atlas you open.
+ * The Living Atlas and the villa atlas are separate maps with separate style
+ * menus, so without a shared key a pick in one is invisible to the other —
+ * which is the whole complaint this answers. It lives beside SHARE_STYLES for
+ * the same reason that list does: this module is the boundary where something
+ * outside the map becomes map state, and it validates against the canonical
+ * key list, so a basemap that cannot be shared cannot be persisted either.
+ *
+ * Session, not local: a basemap is a mood attached to a visit, not an identity.
+ * Someone who went Dark at midnight should not find the atlas permanently
+ * un-cinematic three weeks later, and the dark satellite globe is the product's
+ * first impression.
+ *
+ * Write only EXPLICIT picks. Auto daylight must never persist: that the map is
+ * bright because you flew into a resort — or because the Guide just plotted a
+ * shortlist — is a fact about that moment, not a preference, and carrying it to
+ * the cruise atlas (which opens at basin scale, where dusk is the right look)
+ * would export a decision the traveller never made.
+ *
+ * Each atlas keeps its OWN default when nothing is stored: the Living Atlas
+ * opens on satellite, the villa atlas on dark. This is a memory of a choice,
+ * not a house style.
+ */
+const STYLE_STORAGE_KEY = "bevvip:atlas:style";
+
+export function readStoredStyle(): ShareStyle | null {
+  try {
+    const raw = sessionStorage.getItem(STYLE_STORAGE_KEY) ?? "";
+    return (SHARE_STYLES as readonly string[]).includes(raw) ? (raw as ShareStyle) : null;
+  } catch {
+    return null; // storage unavailable — fall through to the atlas's own default
+  }
+}
+
+export function writeStoredStyle(key: ShareStyle): void {
+  try {
+    sessionStorage.setItem(STYLE_STORAGE_KEY, key);
+  } catch {
+    /* storage optional; the pick still applies to this map, it just won't carry */
+  }
+}
+
 export interface RegionInfo { key: string; name?: string | null; ab?: string | null }
 export interface BrandInfo { key: string; short?: string | null }
 

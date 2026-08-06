@@ -14,13 +14,40 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
-import { parseViewParams, setViewParams } from "@/lib/atlas/adapters/params";
+import {
+  parseViewParams,
+  readStoredStyle,
+  setViewParams,
+  writeStoredStyle,
+} from "@/lib/atlas/adapters/params";
 // Same public, URL-restricted token the Living Atlas ships (see AtlasShell).
 const FALLBACK_TOKEN =
   "pk.eyJ1IjoiYXNwZW50cmF2ZWwiLCJhIjoiY21xNDJwcHA2MHZxMDJycTI2bm9maXNmMyJ9.xFFm4X4mqbWQVxmBhaQhBA";
 
 const BRASS = "#c9ad6a";
 const BRASS_LIGHT = "#e3c98a";
+/**
+ * Pin colours depend on the basemap — the same problem the Living Atlas solved
+ * for routes (see `routePalette` in AtlasShell), arriving here now that a
+ * basemap picked on another atlas follows the traveller into this one.
+ *
+ * Brass over a dark tile layer has plenty of contrast. Over photoreal imagery
+ * it has almost none: #c9ad6a lands on sand, dry grass and terracotta roofs,
+ * which is most of where villas are, and a 1px casing is not enough edge to cut
+ * it out of a photograph. Two things fix it together — lift the mark toward
+ * white so it keeps the brand hue but gains luminance, and widen the near-black
+ * halo, which is what actually carries over bright terrain.
+ *
+ * Clusters need the bigger change. A 24%-opacity brass disc over imagery is mud
+ * with a number in it, so on imagery the disc goes dark and keeps a brass ring:
+ * the count then reads over anything underneath it.
+ *
+ * The dark basemaps keep their original values exactly.
+ */
+const SATELLITE_STYLES = new Set<StyleKey>(["satellite", "daylight"]);
+/** Brass lifted toward white — brand hue, imagery luminance. */
+const BRASS_ON_IMAGERY = "#f2dfae";
+const HALO = "#0b0d12";
 
 interface Villa {
   id: number;
@@ -330,10 +357,17 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         // Applied at construction rather than as a flyTo afterwards: the map
         // should OPEN on what was sent, not pan there while the client watches.
         const av = arrivedView.current;
+        // Precedence: the URL, then this session's remembered pick, then the
+        // villa atlas's own default (dark — its opening look is not the Living
+        // Atlas's). The URL outranks the preference on purpose: a Share link is
+        // the sender describing what THEY saw, and the recipient's stored
+        // basemap has no business overwriting the picture they were sent.
         const arrivedStyle = (av.style as StyleKey | null) ?? null;
-        if (arrivedStyle && VILLA_STYLES[arrivedStyle]) {
-          styleKeyRef.current = arrivedStyle;
-          setStyleKey(arrivedStyle);
+        const bootStyle =
+          arrivedStyle && VILLA_STYLES[arrivedStyle] ? arrivedStyle : readStoredStyle();
+        if (bootStyle && VILLA_STYLES[bootStyle]) {
+          styleKeyRef.current = bootStyle;
+          setStyleKey(bootStyle);
         }
         const map = new mapboxgl.Map({
           container: mapEl.current,
@@ -392,15 +426,23 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
               clusterRadius: 42,
             });
           }
+          // Photoreal basemap? Pins take the imagery palette — see SATELLITE_STYLES.
+          // Read here rather than passed in: style.load re-runs on every basemap
+          // switch that changes the style URL, which is exactly when the palette
+          // needs to change. Satellite⇄Satellite (day) shares a URL and does not
+          // re-run, and does not need to — both are imagery.
+          const sat = SATELLITE_STYLES.has(styleKeyRef.current);
           map.addLayer({
             id: "villa-clusters",
             type: "circle",
             source: "villas",
             filter: ["has", "point_count"],
             paint: {
-              "circle-color": "rgba(201,173,106,0.24)",
-              "circle-stroke-color": BRASS,
-              "circle-stroke-width": 1.2,
+              // Translucent brass over imagery is mud; go dark and let the ring
+              // and the count carry it.
+              "circle-color": sat ? "rgba(11,13,18,0.74)" : "rgba(201,173,106,0.24)",
+              "circle-stroke-color": sat ? BRASS_ON_IMAGERY : BRASS,
+              "circle-stroke-width": sat ? 1.8 : 1.2,
               "circle-radius": ["step", ["get", "point_count"], 13, 25, 17, 100, 22, 400, 28],
             },
           });
@@ -414,7 +456,13 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
               "text-size": 11,
               "text-font": ["DIN Pro Medium", "Arial Unicode MS Bold"],
             },
-            paint: { "text-color": BRASS_LIGHT },
+            paint: {
+              "text-color": sat ? "#fdf3dc" : BRASS_LIGHT,
+              // Belt and braces over imagery: the dark disc already backs the
+              // count, but a cluster straddling a cliff edge still needs it.
+              "text-halo-color": HALO,
+              "text-halo-width": sat ? 1.2 : 0,
+            },
           });
           // Exact villa points: solid brass. Featured burn a touch brighter.
           map.addLayer({
@@ -423,10 +471,18 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
             source: "villas",
             filter: ["all", ["!", ["has", "point_count"]], ["==", ["get", "exact"], 1]],
             paint: {
-              "circle-color": ["case", ["==", ["get", "featured"], 1], BRASS_LIGHT, BRASS],
-              "circle-radius": ["case", ["==", ["get", "featured"], 1], 5.5, 4.5],
-              "circle-stroke-color": "#0b0d12",
-              "circle-stroke-width": 1,
+              "circle-color": sat
+                ? ["case", ["==", ["get", "featured"], 1], "#fff6e0", BRASS_ON_IMAGERY]
+                : ["case", ["==", ["get", "featured"], 1], BRASS_LIGHT, BRASS],
+              // A touch larger on imagery: the halo eats into the mark, so the
+              // same radius reads smaller than it does on a flat dark basemap.
+              "circle-radius": sat
+                ? ["case", ["==", ["get", "featured"], 1], 6.5, 5.5]
+                : ["case", ["==", ["get", "featured"], 1], 5.5, 4.5],
+              "circle-stroke-color": HALO,
+              // The halo is doing most of the work over terrain; the fill alone
+              // cannot win against a photograph.
+              "circle-stroke-width": sat ? 2.2 : 1,
             },
           });
           // Approximate points (destination/location centroids): smaller and
@@ -437,11 +493,16 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
             source: "villas",
             filter: ["all", ["!", ["has", "point_count"]], ["==", ["get", "exact"], 0]],
             paint: {
-              "circle-color": "rgba(0,0,0,0)",
-              "circle-radius": 3.5,
-              "circle-stroke-color": BRASS,
-              "circle-stroke-width": 1.4,
-              "circle-opacity": 0.001,
+              // A hollow ring has one stroke to spend, so over imagery the fill
+              // becomes the halo — a dark centre that both backs the brass ring
+              // and keeps these visibly distinct from the solid exact pins.
+              "circle-color": sat ? HALO : "rgba(0,0,0,0)",
+              "circle-radius": sat ? 4.5 : 3.5,
+              "circle-stroke-color": sat ? BRASS_ON_IMAGERY : BRASS,
+              "circle-stroke-width": sat ? 2 : 1.4,
+              // Non-zero on the dark basemaps only to keep the ring hit-testable
+              // while the centre stays empty.
+              "circle-opacity": sat ? 0.55 : 0.001,
             },
           });
 
@@ -519,6 +580,11 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
 
   // ── map controls: basemap, fullscreen, share ─────────────────────────────
   function switchStyle(k: StyleKey) {
+    // Every call here is the traveller using the Style menu — this atlas has no
+    // automatic switching — so the pick is remembered for the other atlases.
+    // Recorded before the no-op return, so re-picking the current style still
+    // counts as choosing it.
+    writeStoredStyle(k);
     if (k === styleKeyRef.current) return;
     const from = VILLA_STYLES[styleKeyRef.current];
     const to = VILLA_STYLES[k];
