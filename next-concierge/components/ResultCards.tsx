@@ -26,11 +26,28 @@ function useTrip(): TripState | null {
 // open search that surfaced several operators must show every brand, not just
 // whichever the last tool happened to fill the category bucket with.
 const GUIDE_CARD_LIMIT_PER_BRAND = 5;
-// Three, not five. Five cards plus a group CTA plus a per-card booking link
-// plus the advisor CTA gave every answer four competing next-actions; the eye
-// has to price all of them before it can act. Three examples and an honest
+// Three cards per tool call — per CHANNEL that answered, not three across the
+// whole reply.
+//
+// Three, not five: five cards plus a group CTA plus a per-card booking link
+// plus the advisor CTA gave every answer four competing next-actions, and the
+// eye has to price all of them before it can act. Three examples and an honest
 // count of the rest reads faster and says more.
-const GUIDE_CARD_LIMIT_TOTAL = 3;
+//
+// Per tool, not global: the budget used to be shared across every tool, which
+// quietly turned the newest-first walk below into an exclusion rather than a
+// preference. "Four Seasons in the Caribbean" fires two searches — hotels, then
+// Four Seasons Yachts sailings — and the sailings, being last, filled all three
+// slots before the hotel tool was ever reached. The traveler got three cruise
+// cards, three hotels named in prose only, and six pins on the map. Budgeting
+// per tool lets every channel that actually returned inventory show its own
+// examples.
+const GUIDE_CARD_LIMIT_PER_TOOL = 3;
+// A ceiling so the row stays a shortlist. A genuine cross-atlas question ("ways
+// to visit Easter Island") is answered with one search per category and can
+// legitimately fire five; at three cards each that is fifteen, which is a
+// catalog rather than a recommendation.
+const GUIDE_CARD_LIMIT_TOTAL = 9;
 
 // Inventory cards built from the Guide's meta frame.
 //
@@ -106,9 +123,14 @@ function collectResultCards(meta: GuideMeta): Array<{ result: OfferingResult; ty
   const cards: Array<{ result: OfferingResult; type: OfferingType | null }> = [];
   const seen = new Set<string>();
   const counts = new Map<string, number>();
+  // Reset at the top of each tool below. Only a card that actually lands spends
+  // budget — a duplicate or a brand-capped record is skipped without costing the
+  // tool one of its three slots.
+  let perTool = 0;
   const add = (result: OfferingResult | undefined, rawType: unknown) => {
     if (!result) return;
     if (cards.length >= GUIDE_CARD_LIMIT_TOTAL) return;
+    if (perTool >= GUIDE_CARD_LIMIT_PER_TOOL) return;
     const type = normalizeType(String(result.type ?? rawType ?? ""));
     const brandKey = String(result.brand ?? result.operator ?? "").toLowerCase().trim();
     const bucket = `${type ?? "other"}|${brandKey}`;
@@ -123,10 +145,15 @@ function collectResultCards(meta: GuideMeta): Array<{ result: OfferingResult; ty
     if (seen.has(key)) return;
     seen.add(key);
     counts.set(bucket, (counts.get(bucket) ?? 0) + 1);
+    perTool += 1;
     cards.push({ result, type });
   };
 
+  // Newest tool first: the last search is the most refined read of what the
+  // traveler asked for, so its examples lead. With the budget now per tool this
+  // only decides ORDER — every tool that returned inventory still gets its row.
   for (const tool of [...(meta.tools ?? [])].reverse()) {
+    perTool = 0;
     const toolType = tool.type ?? tool.input?.type;
     for (const result of tool.results ?? []) add(result, toolType);
     for (const rel of relatedEntries(tool.related)) {
