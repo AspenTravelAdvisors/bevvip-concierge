@@ -36,7 +36,7 @@ export default function Home() {
                 The CSS clamps it as a backstop, but keep the copy short. */}
             <p>
               <span className="blurb-full">
-                {collectionsCompact()}. Click any pin to ask about it.
+                {collectionsCompact()}. Click any pin to explore.
               </span>
               <span className="blurb-short">
                 Hotels, villas, expeditions, world cruises, rail, yachts and jets — mapped.
