@@ -22,6 +22,7 @@
 import { fromLngLatPair, isFinitePair } from "@/lib/atlas/geo";
 import { macroRegion, isCaribbeanCountry } from "./hotel-regions";
 import { PROGRAM_DOMAINS } from "./hotel-programs";
+import { hotelBrandDomain } from "./hotel-brands";
 import type { AtlasFilterDescriptor, AtlasOffering } from "./types";
 
 export const HOTEL_DESCRIPTOR: AtlasFilterDescriptor = {
@@ -122,8 +123,11 @@ export function adaptHotels(raw: RawHotelPoints): AtlasOffering[] {
         brand: p.brand || null,
         marqueeRegion: marquee.length ? marquee : null,
       },
-      // The card shows the PROGRAM's mark, as the original card did.
-      logoKey: p.program || null,
+      // The card shows the BRAND's mark where the brand has one, and falls back
+      // to the PROGRAM's mark (what the original card always showed) where it
+      // does not. Keying on the program alone put the same virtuoso.com favicon
+      // on 1,970 of 2,501 cards — see hotel-brands.ts.
+      logoKey: (hotelBrandDomain(p.brand) ? p.brand : p.program) || null,
       // A hotel IS its single stop — that is what puts it on the map and what
       // the "See it in 3D" action flies to.
       stops: [{ name: p.name || "Hotel", region: macro, at }],

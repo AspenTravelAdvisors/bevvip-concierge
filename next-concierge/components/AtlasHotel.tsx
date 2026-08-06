@@ -37,6 +37,7 @@ import AtlasCollection from "./AtlasCollection";
 import { adaptHotels, HOTEL_DESCRIPTOR, type RawHotelPoints } from "@/lib/atlas/adapters/hotel";
 import { REGION_ORDER } from "@/lib/atlas/adapters/hotel-regions";
 import { programDomain } from "@/lib/atlas/adapters/hotel-programs";
+import { hotelBrandDomain } from "@/lib/atlas/adapters/hotel-brands";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 import type { BrandMark } from "./BrandLogo";
@@ -172,13 +173,15 @@ export default function AtlasHotel() {
     const regionLabels: Record<string, string> = {};
     for (const r of ordered) regionLabels[r] = r;
 
-    // Marks are keyed by PROGRAM (see AtlasOffering.logoKey): every one of the
-    // 38 programs has a domain, so each card gets a real logo.
+    // Marks are keyed by whatever `logoKey` chose — the hotel's BRAND where it
+    // has a confirmed mark, else its PROGRAM. Both maps are consulted here in
+    // that order, so a key like "Fairmont" (which is both a brand and a
+    // program) resolves the same either way, and every card still gets a logo.
     const brandMarks: Record<string, BrandMark> = {};
     for (const o of offerings) {
       const key = o.logoKey;
       if (!key || brandMarks[key]) continue;
-      brandMarks[key] = { key, short: key, domain: programDomain(key) };
+      brandMarks[key] = { key, short: key, domain: hotelBrandDomain(key) ?? programDomain(key) };
     }
 
     const ctx: ParseContext = {
@@ -221,7 +224,20 @@ export default function AtlasHotel() {
       initialStyle="satellite"
       cardPrimary={cardPrimary}
       onVisibleIds={onVisibleIds}
-      cardAction={{ label: "See it in 3D ↗", onSelect: openIn3D }}
+      /*
+       * "See it in 3D" undersold where it goes. That panel is not a 3D toy —
+       * it is the only place the property's description, star and award
+       * ratings, address, program, VIP benefit list and rate access code
+       * exist. A traveller reading the label had no way to know the details
+       * were behind it, so the most complete page in the product was being
+       * offered as a novelty view.
+       */
+      cardAction={{
+        label: "Property details & 3D ↗",
+        title:
+          "Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view of the building",
+        onSelect: openIn3D,
+      }}
     />
   );
 }

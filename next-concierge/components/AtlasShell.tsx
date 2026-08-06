@@ -1480,7 +1480,10 @@ export default function AtlasShell({
               `<div class="iwn">${escapeHtml(name)}</div>` +
               (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "");
             const threeLink = three
-              ? `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
+              // Same destination as the card's action, so the same promise:
+              // the property's whole dossier, of which the photoreal building
+              // is one part. See AtlasHotel's cardAction.
+              ? `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" target="_blank" rel="noopener" title="Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view">Property details &amp; 3D ↗</a>`
               : "";
             /*
              * The popup's headline action is the rate search, not another
@@ -3320,7 +3323,7 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
   const id = String((r as { id?: unknown }).id ?? "");
   const three =
     kind === "hotel" && id
-      ? `<a class="iw3d" data-hotel3d="${esc(id)}" href="/atlas/hotel?hotel=${encodeURIComponent(id)}" target="_blank" rel="noopener">See it in 3D ↗</a>`
+      ? `<a class="iw3d" data-hotel3d="${esc(id)}" href="/atlas/hotel?hotel=${encodeURIComponent(id)}" target="_blank" rel="noopener" title="Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view">Property details &amp; 3D ↗</a>`
       : "";
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +

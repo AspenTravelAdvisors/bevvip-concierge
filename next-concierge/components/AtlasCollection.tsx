@@ -50,15 +50,19 @@ interface Props {
   /** false → open flat. Long-haul arcs read better in 2D. */
   initialGlobe?: boolean;
   /**
-   * A secondary action on every card. Hotels use it for "See it in 3D", which
-   * hands off to the Google Photorealistic view — the one thing Mapbox has no
-   * answer to, and the reason that engine survives.
+   * A secondary action on every card. Hotels use it to open the property view —
+   * the Google Photorealistic building AND the full dossier that sits beside it
+   * (description, ratings, address, program, VIP benefits, access code). That
+   * panel is the only place most of those live, which is why the label names
+   * the details rather than only the 3D.
    *
    * It used to be the loudest thing on the card (filled gold). It now sits at
    * the same weight as "Ask The Guide": inspecting a building is a lovely
    * detour, but it is not the action a traveller came to take.
+   *
+   * `title` is the long-form promise, for the hover the label has no room for.
    */
-  cardAction?: { label: string; onSelect: (o: AtlasOffering) => void };
+  cardAction?: { label: string; title?: string; onSelect: (o: AtlasOffering) => void };
   /**
    * The card's PRIMARY action, rendered first and given the filled treatment.
    *
@@ -939,6 +943,7 @@ export default function AtlasCollection({
                   <button
                     type="button"
                     className="ac-3d"
+                    title={cardAction.title}
                     onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
                   >
                     {cardAction.label}

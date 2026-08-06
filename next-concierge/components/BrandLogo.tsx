@@ -37,7 +37,11 @@ function initials(m: BrandMark): string {
 function sourcesFor(m: BrandMark, assetBase: string): string[] {
   if (!m.domain) return [];
   return [
-    `${assetBase}/${m.domain}.png`,
+    // Only where a collection actually ships logo assets. Hotels pass an empty
+    // base, which used to build "/aman.com.png" — a guaranteed 404 on the app's
+    // own origin, once per distinct mark, before every card fell through to the
+    // icon service it was always going to use.
+    ...(assetBase ? [`${assetBase}/${m.domain}.png`] : []),
     `https://www.google.com/s2/favicons?sz=128&domain=${m.domain}`,
     `https://icons.duckduckgo.com/ip3/${m.domain}.ico`,
   ];
