@@ -6,6 +6,7 @@
 
 import { leadTool } from "./guide-meta";
 import { leadTool } from "./guide-meta";
+import { leadTool } from "./guide-meta";
 import type { GuideMeta, GuideTurn } from "./types";
 
 /**
@@ -153,9 +154,15 @@ export function transcriptText(turns: GuideTurn[]): string {
  * the ship-vs-destination decision there warrants its own framing.
  */
 export function handoffCategory(meta: GuideMeta | undefined): string {
-  if (!meta) return "generic";
   const tool = leadTool(meta.tools);
   const type = (tool?.type || "").toLowerCase();
+  // Ordinary Luxury Cruise sailings are sourced by an advisor rather than held
+  // in live inventory, and that result is tagged type "cruise" so the rest of
+  // the pipeline can handle it. Left unchecked it inherited the expedition
+  // framing, so a Regent or Cunard enquiry — the highest-intent advisor-only
+  // lead there is — reached the inbox headed "Expedition Cruise", under a blurb
+  // about ice class and landing ratios.
+  if (tool?.advisorOnly) return "luxurycruise";
   if (type === "hotel") return "hotel";
   if (type === "jet") return "jet";
   if (type === "yacht") return "yacht";
@@ -187,6 +194,8 @@ export const HANDOFF_BLURB: Record<string, string> = {
     "An Aspen specialist will price these voyages by cabin category, including the segments you can join partway if the full sailing is too long.",
   train:
     "An Aspen specialist will confirm cabin availability and departure dates on these journeys.",
+  luxurycruise:
+    "An Aspen specialist sources these sailings directly with the line: the right departure, suite category, and the Virtuoso amenities that come with booking through us.",
   villa:
     "An Aspen specialist will confirm availability and the all-in weekly rate on these villas, including staffing and any minimum stay.",
   generic:

@@ -65,6 +65,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   yacht: "Luxury Hotel Yacht",
   worldcruise: "World Cruise / Grand Voyage",
   train: "Rail Journey",
+  luxurycruise: "Luxury Cruise (advisor-sourced)",
   villa: "Private Villa",
   generic: "Trip Planning",
 };

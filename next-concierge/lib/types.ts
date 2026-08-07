@@ -28,6 +28,12 @@ export interface GuideToolMeta {
   deepLink?: string | null;
   chartRegion?: string | null;
   unavailable?: boolean;
+  /**
+   * The search deliberately returned nothing because the category is sourced by
+   * an advisor rather than from live inventory (ordinary Luxury Cruise sailings).
+   * Distinct from `unavailable`, which means a feed could not be reached.
+   */
+  advisorOnly?: boolean;
   sources?: unknown;
   results: OfferingResult[];
   related?: unknown;
@@ -37,6 +43,7 @@ export interface GuideToolMeta {
 // Dates/party the Guide extracted from the conversation, echoed back on the
 // tool meta so the client can persist them into the shared TripState.
 export interface TripParams {
+  destination?: string;    // free text, as resolved from the search's geography
   checkIn?: string;        // "YYYY-MM-DD"
   checkOut?: string;       // "YYYY-MM-DD"
   adults?: number;
