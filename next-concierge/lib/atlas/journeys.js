@@ -120,7 +120,7 @@ function truthy(raw) {
 }
 
 function filterJourneys(params = {}) {
-  const { q, region, country, month, brand, ids, world } = params;
+  const { q, region, country, month, year, brand, ids, world } = params;
   // Departed journeys go first, per the Leaflet atlas's isPastTrip() guard.
   // The 34 jet journeys with no `t.d` survive — dateless is not past, and these
   // are real charters whose departure is arranged with the traveler.
@@ -138,6 +138,14 @@ function filterJourneys(params = {}) {
   // departure is available in March by definition; excluding it because its
   // `month` is null answered a different question than the traveler asked.
   if (month) { const v = String(month).trim(); list = list.filter((j) => j.onDemand || j.month === v); }
+  // A bare travel year, the same filter cruises-world.js and trains.js carry.
+  // Around-the-world programmes are sold a year or two ahead, so "in 2027" is a
+  // real ask that month= (YYYY-MM) cannot express. On-demand journeys pass for
+  // the same reason they pass the month filter. month wins when both are set.
+  else if (year != null && String(year).trim() !== "") {
+    const v = String(year).trim();
+    list = list.filter((j) => j.onDemand || String(j.month || "").startsWith(`${v}-`));
+  }
 
   // Include the route slug and every itinerary stop so a place or country in
   // country/q only matches journeys that genuinely touch it; name + brand +
@@ -194,7 +202,7 @@ function clampOffset(rawN) { let n = parseInt(rawN, 10); if (!Number.isFinite(n)
 
 function buildDeepLink(params = {}) {
   const usp = new URLSearchParams();
-  for (const k of ["region", "country", "brand", "month", "q", "world", "ids", "intent"]) {
+  for (const k of ["region", "country", "brand", "month", "year", "q", "world", "ids", "intent"]) {
     const val = params[k];
     if (val != null && String(val).trim() !== "") usp.set(k, String(val).trim());
   }

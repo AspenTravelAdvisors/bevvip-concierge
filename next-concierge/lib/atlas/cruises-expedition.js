@@ -208,7 +208,7 @@ const cruises = (() => {
 
 // --- filtering -------------------------------------------------------------
 function filterCruises(params = {}) {
-  const { q, region, country, month, operator, ids } = params;
+  const { q, region, country, month, year, operator, ids } = params;
   // Departed sailings go first — the Leaflet cruise atlas's `s.start >= today`
   // cutoff, restored. This is the largest leak of the six: 303 of 3,542 rows
   // were behind the cutoff, and expedition dates are all clean ISO, so the
@@ -230,6 +230,14 @@ function filterCruises(params = {}) {
   }
   if (operator) { const v = ci(operator); list = list.filter((c) => ci(c.operator) === v); }
   if (month) { const v = String(month).trim(); list = list.filter((c) => c.month === v); }
+  // A bare travel year, the same filter cruises-world.js carries. Antarctica and
+  // Arctic seasons are chosen by year as often as by month ("Antarctica in
+  // 2027"), and month= (YYYY-MM) cannot express one. month wins when both are
+  // present, being the more specific of the two.
+  else if (year != null && String(year).trim() !== "") {
+    const v = String(year).trim();
+    list = list.filter((c) => String(c.month || "").startsWith(`${v}-`));
+  }
 
   const hay = (c) => `${ci(c.name)} ${ci(c.operator)} ${ci(c.regionLabel)}`;
   if (country != null && String(country).trim() !== "") {
@@ -297,7 +305,7 @@ function clampOffset(rawN) { let n = parseInt(rawN, 10); if (!Number.isFinite(n)
 // --- deep link (chat-to-atlas handoff) -------------------------------------
 function buildDeepLink(params = {}) {
   const usp = new URLSearchParams();
-  for (const k of ["region", "country", "operator", "month", "q", "intent"]) {
+  for (const k of ["region", "country", "operator", "month", "year", "q", "intent"]) {
     const val = params[k];
     if (val != null && String(val).trim() !== "") usp.set(k, String(val).trim());
   }

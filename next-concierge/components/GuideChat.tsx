@@ -245,7 +245,18 @@ export default function GuideChat() {
           }
           if (frame.type === "meta") {
             const { type: _t, ...meta } = frame;
-            patchReply((turn) => ({ ...turn, meta }));
+            patchReply((turn) => ({
+              ...turn,
+              meta,
+              // The tool loop spent its whole budget without the model writing a
+              // reply, so the transcript would otherwise end on an empty bubble
+              // that reads as a hang. The server has always reported why on the
+              // meta frame; nothing was reading it.
+              content:
+                meta.stopReason === "max_tool_rounds" && !turn.content.trim()
+                  ? "That question reached further than I can search in one pass. Narrow it to a single destination, or one way of travelling, and I will go properly deep on it."
+                  : turn.content,
+            }));
             const lead = [...(meta.tools ?? [])]
               .reverse()
               .find((t) => (t.results ?? []).length > 0);
@@ -271,11 +282,17 @@ export default function GuideChat() {
     } catch (err) {
       // A Start over aborts the fetch on purpose — that's not an error to show.
       if (!(err instanceof DOMException && err.name === "AbortError")) {
+        const detail = err instanceof Error ? err.message : String(err);
         patchReply((turn) => ({
           ...turn,
-          content:
-            turn.content ||
-            `I hit a snag reaching the inventory — ${err instanceof Error ? err.message : err}. Please try again.`,
+          // A reply that died mid-stream used to be left exactly as it was: the
+          // fallback only fired when NOTHING had arrived, so a stream that broke
+          // after two of three recommendations read as a finished answer that
+          // simply stopped. Mark where it ended instead of substituting for it,
+          // so the part that did arrive stays useful.
+          content: turn.content.trim()
+            ? `${turn.content.trimEnd()}\n\nThat reply was cut off before I finished it (${detail}). Ask again and I will pick it back up.`
+            : `I hit a snag reaching the inventory — ${detail}. Please try again.`,
         }));
       }
     } finally {

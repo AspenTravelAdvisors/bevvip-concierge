@@ -29,7 +29,12 @@ export const maxDuration = 60;
 
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-4-6";
 const MAX_TOKENS = 1500;
-const MAX_TOOL_ROUNDS = 4;
+// A cross-atlas "ways to visit X" answer is instructed to call search_offerings
+// once per pillar (hotel, cruise, jet, worldcruise, train). Batched into one
+// assistant turn that is a single round, but the model routinely serialises
+// them, and at 4 the loop ran out of budget mid-sweep and returned no final
+// text at all. 6 covers the five-category sweep plus a refining call.
+const MAX_TOOL_ROUNDS = 6;
 // Claude occasionally returns a transient overloaded_error (HTTP 529) or a
 // 429 / 5xx, especially at peak. Those are not real failures — Anthropic asks
 // callers to back off and retry — so we do, rather than dumping the raw error

@@ -1493,11 +1493,14 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     : candidateLimitForInput(input, limit);
   const cfg = OFFERINGS_ENDPOINTS[type];
   const month = normalizeMonth(input.month) || monthFromText(input.q);
-  // A bare travel year ("2027") when no specific month resolved. World cruises
-  // span years and are booked well ahead, so honor it as a year filter; the
-  // month= (YYYY-MM) param cannot express a whole year. Only worldcruise filters
-  // it on the backend today, so it is only sent there (sending an ignored param
-  // elsewhere would silently broaden, not constrain).
+  // A bare travel year ("2027") when no specific month resolved. Departures are
+  // booked a year or two ahead across every travel channel, so honor it as a
+  // year filter; the month= (YYYY-MM) param cannot express a whole year. Every
+  // backend reached through here now filters it (expedition, yacht and jet
+  // joined worldcruise and train), so it is sent for all of them — previously it
+  // was resolved and then dropped for cruise/yacht/jet, and since
+  // stripDateFromQuery also strips the year out of `q`, the constraint the
+  // traveler stated vanished entirely rather than binding somewhere.
   const year = month ? "" : (yearFromText(input.month) || yearFromText(input.q));
   let baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
     : type === "worldcruise" ? stripWorldCruiseTerms(stripDateFromQuery(input.q))
@@ -1586,7 +1589,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     if (queryText && !dropQ) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
-    else if (year && (type === "worldcruise" || type === "train")) p.set("year", year);
+    else if (year) p.set("year", year);
     // Send intent only on a branded ask; an open search drops it so the page
     // is not sorted down to a single operator (see diversifySuppliers above).
     if (input.intent && !diversifySuppliers) p.set("intent", String(input.intent).trim());
@@ -1616,7 +1619,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     // indexed in the atlas `q` fields; combined with a real geographic anchor
     // they AND-filter the search to zero. With a region or country to keep the
     // search bounded, retry once without `q` rather than returning nothing.
-    const geoAnchor = !!(regionKey || country || worldCruiseRegion || (year && type === "worldcruise"));
+    const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
     if (geoAnchor && hadQText && !(j.results || []).length) {
       const retry = await run({ dropQ: true });
       if ((retry.results || []).length) {

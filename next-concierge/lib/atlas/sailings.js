@@ -125,7 +125,7 @@ const sailings = (raw.TRIPS || []).map((t) => {
 
 // --- filtering -------------------------------------------------------------
 function filterSailings(params = {}) {
-  const { q, region, country, month, brand, ids } = params;
+  const { q, region, country, month, year, brand, ids } = params;
   // Departed sailings are gone before any other filter runs, exactly as the
   // Leaflet atlas's isPastTrip() guard did. First, not last: every count and
   // facet derived downstream must be a count of bookable inventory.
@@ -138,6 +138,13 @@ function filterSailings(params = {}) {
   if (region) { const v = ci(region); if (MARQUEE.has(v)) list = list.filter((s) => s.region === v); }
   if (brand) { const v = ci(brand); list = list.filter((s) => ci(s.brand) === v); }
   if (month) { const v = String(month).trim(); list = list.filter((s) => s.month === v); }
+  // A bare travel year, the same filter cruises-world.js carries. Hotel yacht
+  // seasons are planned a year or two out, and month= (YYYY-MM) cannot express
+  // a whole year. month wins when both are present, being the more specific.
+  else if (year != null && String(year).trim() !== "") {
+    const v = String(year).trim();
+    list = list.filter((s) => String(s.month || "").startsWith(`${v}-`));
+  }
 
   const hay = (s) => `${ci(s.name)} ${ci(s.brand)} ${ci(s.ship)} ${ci(s.regionLabel)} ${ci(s.route)} ${ci(s.from)} ${ci(s.to)} ${(s.ports || []).map(ci).join(" ")}`;
   if (country != null && String(country).trim() !== "") {
@@ -191,7 +198,7 @@ function clampOffset(rawN) { let n = parseInt(rawN, 10); if (!Number.isFinite(n)
 
 function buildDeepLink(params = {}) {
   const usp = new URLSearchParams();
-  for (const k of ["region", "country", "brand", "month", "q", "intent"]) {
+  for (const k of ["region", "country", "brand", "month", "year", "q", "intent"]) {
     const val = params[k];
     if (val != null && String(val).trim() !== "") usp.set(k, String(val).trim());
   }
