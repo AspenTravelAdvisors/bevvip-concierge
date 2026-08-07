@@ -308,6 +308,15 @@ function loadCruise() {
   const sail = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/sailings.json"), "utf8"));
   const meta = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/atlas-meta.json"), "utf8"));
   const routes = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/data/itinerary-routes.json"), "utf8"));
+  // The region rewrite the atlas actually ships: the overlay from
+  // scripts/build-cruise-regions.mjs, with correctedRegionName as the fallback.
+  // Both sides of the comparison read it, so this stays a check of the FILTERS,
+  // not of the region policy.
+  const regionOverrides = JSON.parse(readFileSync(join(ROOT, "public/maps/cruise/region-overrides.json"), "utf8"));
+  const regionById = {};
+  for (const [region, ids] of Object.entries(regionOverrides.byRegion || {})) {
+    for (const id of ids) regionById[id] = region;
+  }
   const idx = {}; (sail.schema || []).forEach((n, i) => { idx[n] = i; });
   const ROUTES = routes.routes || {};
   const sailings = (sail.rows || []).map((row) => {
@@ -316,7 +325,7 @@ function loadCruise() {
     return {
       id: g("id"), operator: g("operator"), name, ship: g("ship") || "",
       start: g("start") || null, nights: g("nights"),
-      region: correctedRegionName(String(g("region") ?? ""), name),
+      region: regionById[String(g("id"))] || correctedRegionName(String(g("region") ?? ""), name),
       monthKey: g("start") ? String(g("start")).slice(0, 7) : null,
     };
   });
@@ -330,7 +339,7 @@ function loadCruise() {
     }
     return out;
   };
-  return { sailings, meta, sail, routes, stopsOf };
+  return { sailings, meta, sail, routes, regionOverrides, stopsOf };
 }
 
 function makeCruiseOriginal(ctx, todayIso) {
@@ -369,7 +378,7 @@ function runCruise(today) {
   const ctx = loadCruise();
   const { sailings } = ctx;
   const origMatches = makeCruiseOriginal(ctx, today.iso);
-  const offerings = adaptCruise(ctx.sail, ctx.meta, ctx.routes);
+  const offerings = adaptCruise(ctx.sail, ctx.meta, ctx.routes, ctx.regionOverrides);
 
   const OPS = [...new Set(sailings.map((s) => s.operator).filter(Boolean))];
   const REGS = [...new Set(sailings.map((s) => s.region).filter(Boolean))];

@@ -11,9 +11,13 @@
  *   brand       there is none. It filters on `operator`, and its Share button
  *               emits `operator=` where its siblings emit `brand=`.
  *   region      a SCALAR display name ("Hawaii & Tahiti"), not a key array —
- *               and it is REWRITTEN from the sailing title by
- *               correctedRegionName(). Filtering on the raw column value would
- *               put Alaska sailings in the wrong region.
+ *               and it is REWRITTEN, because the feed's region column is a
+ *               marketing bucket rather than a place. region-overrides.json
+ *               (scripts/build-cruise-regions.mjs) carries every sailing's
+ *               region, read off its own geocoded ports; the title rules in
+ *               correctedRegionName() remain as the fallback for a feed row the
+ *               overlay has not seen. Filtering on the raw column value puts
+ *               Chilean fjords under Norway.
  *   past cutoff `s.start >= today` on an ISO string, so a dateless sailing is
  *               dropped (see requiresStartDate) rather than kept.
  *   stops       ONLY geocoded ports count. 712 of 3,542 sailings have a route
@@ -58,19 +62,29 @@ export interface RawCruiseMeta {
 export interface RawCruiseRoutes {
   routes?: Record<string, { d?: number; s?: number; p?: [string, number | null, number | null][] }[]>;
 }
+/** region-overrides.json — every sailing's region, grouped by region name. */
+export interface RawCruiseRegionOverrides {
+  byRegion?: Record<string, string[]>;
+}
 
 /**
- * Region rewrite, verbatim from loader.js. The region column is unreliable for
- * five itinerary types, so the sailing NAME wins. Port this exactly: dropping
- * it silently moves Alaska, Baja, Seychelles, Caribbean and Northwest Passage
- * sailings into whatever the feed happened to say.
+ * Region rewrite from the sailing NAME, for sailings the overlay has not seen
+ * (a feed row added since the last `build-cruise-regions` run). The overlay
+ * covers these same cases and more, from the itinerary's geocoded ports; this
+ * is the floor, not the mechanism. Dropping it silently moves Alaska, Baja,
+ * Seychelles, Caribbean, Patagonia and Northwest Passage sailings into whatever
+ * the feed happened to say.
  */
 export function correctedRegionName(region: string, name: string): string {
   const t = norm(name);
+  // Antarctica boards in Patagonia, so it is settled before anything southern.
+  if (/antarctic|south georgia/.test(t)) return "Antarctica";
   if (t.includes("northwest passage")) return "Northwest Passage";
   if (t.includes("alaska")) return "Alaska & Yukon";
   if (t.includes("baja") || t.includes("sea of cortez")) return "Baja California";
   if (t.includes("seychelles")) return "Africa & Indian Ocean";
+  if (/chilean fjord|patagonia|torres del paine|strait of magellan/.test(t)) return "Patagonia & Chilean Fjords";
+  if (/iceland|greenland|svalbard|spitsbergen/.test(t) && !t.includes("norway") && !t.includes("norwegian")) return "Arctic";
   if (t.includes("caribbean")) return "Caribbean & Bermuda";
   return region;
 }
@@ -79,11 +93,17 @@ export function adaptCruise(
   sailings: RawCruiseSailings,
   _meta: RawCruiseMeta,
   routes: RawCruiseRoutes,
+  regionOverrides?: RawCruiseRegionOverrides,
 ): AtlasOffering[] {
   const schema = sailings.schema || [];
   const idx: Record<string, number> = {};
   schema.forEach((n, i) => { idx[n] = i; });
   const ROUTES = routes.routes || {};
+  // Grouped by region on the wire, inverted here into id → region.
+  const REGION_BY_ID: Record<string, string> = {};
+  for (const [region, ids] of Object.entries(regionOverrides?.byRegion || {})) {
+    for (const id of ids) REGION_BY_ID[id] = region;
+  }
   const urlBase = sailings.urlBase || "";
   const out: AtlasOffering[] = [];
 
@@ -97,7 +117,7 @@ export function adaptCruise(
     const ship = (get("ship") as string) || null;
     const start = (get("start") as string) || null;
     const nights = get("nights");
-    const region = correctedRegionName(String(get("region") ?? ""), name);
+    const region = REGION_BY_ID[sid] || correctedRegionName(String(get("region") ?? ""), name);
     const slug = get("slug") as string | undefined;
 
     // Only geocoded ports participate — sailingStops() drops p[1]/p[2] nulls,

@@ -30,6 +30,7 @@ import {
   adaptCruise,
   CRUISE_DESCRIPTOR,
   type RawCruiseMeta,
+  type RawCruiseRegionOverrides,
   type RawCruiseRoutes,
   type RawCruiseSailings,
 } from "@/lib/atlas/adapters/cruise";
@@ -46,7 +47,7 @@ export default function AtlasCruise() {
     brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }>;
     logoBase?: string;
   }> => {
-    const [sailings, meta, routes, seaRoutes] = await Promise.all([
+    const [sailings, meta, routes, regionOverrides, seaRoutes] = await Promise.all([
       fetch("/maps/cruise/sailings.json", { cache: "force-cache" }).then((r) => {
         if (!r.ok) throw new Error(`cruise sailings ${r.status}`);
         return r.json() as Promise<RawCruiseSailings>;
@@ -59,14 +60,20 @@ export default function AtlasCruise() {
         if (!r.ok) throw new Error(`cruise routes ${r.status}`);
         return r.json() as Promise<RawCruiseRoutes>;
       }),
+      // The geographic region correction (see scripts/build-cruise-regions.mjs).
+      // Non-fatal: without it the atlas falls back to the feed's own buckets and
+      // the title rules, which is worse but still a working map.
+      fetch("/maps/cruise/region-overrides.json", { cache: "force-cache" })
+        .then((r) => (r.ok ? (r.json() as Promise<RawCruiseRegionOverrides>) : {}))
+        .catch(() => ({} as RawCruiseRegionOverrides)),
       loadSeaRoutes("cruise"),
     ]);
 
-    const offerings = adaptCruise(sailings, meta, routes);
+    const offerings = adaptCruise(sailings, meta, routes, regionOverrides);
 
     // cruise's region is a SCALAR display name already ("Hawaii & Tahiti"),
-    // rewritten from the sailing title by correctedRegionName — so it is its
-    // own label and needs no key→name map.
+    // corrected from the itinerary's ports by the overlay — so it is its own
+    // label and needs no key→name map.
     const regionLabels: Record<string, string> = {};
     for (const o of offerings) for (const r of o.regions) regionLabels[r] = r;
 

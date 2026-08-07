@@ -10,6 +10,15 @@
 
 const raw = require("../../data/atlas/cruise/sailings.json");
 const meta = require("../../data/atlas/cruise/atlas-meta.json");
+// Geographic region correction — see correctedRegionName(). Stored grouped by
+// region name (an id costs 11 bytes, a repeated region name thirty), inverted
+// here into the id → region lookup the normalizer wants.
+const REGION_BY_ID = (() => {
+  const byRegion = require("../../data/atlas/cruise/region-overrides.json").byRegion || {};
+  const out = {};
+  for (const [region, ids] of Object.entries(byRegion)) for (const id of ids) out[id] = region;
+  return out;
+})();
 const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
 const { rankItems } = require("./supplier-fit");
 const { dropPast, isPast, todayISO, sortOfferings, compareByDeparture } = require("./dates");
@@ -69,6 +78,20 @@ const REGION_SEARCH_ALIASES = {
   "british isles": { labels: ["northern europe & british isles"], terms: ["british isles"], requireLabel: true },
   "northern europe": { labels: ["northern europe & british isles"], terms: ["northern europe"], requireLabel: true },
   "northern europe and british isles": { labels: ["northern europe & british isles"], terms: ["british isles"], requireLabel: true },
+  // Regions the corrected overlay introduced (see correctedRegionName).
+  "chile": { labels: ["patagonia and chilean fjords"], terms: ["chile", "chilean"] },
+  "chilean fjords": { labels: ["patagonia and chilean fjords"], terms: ["chilean fjord"] },
+  // Iceland, Greenland and Svalbard all sit inside the Arctic label, so these
+  // require the label AND the place — otherwise "iceland" would return every
+  // Svalbard sailing in the atlas.
+  "iceland": { labels: ["arctic"], terms: ["iceland"], requireLabel: true },
+  "greenland": { labels: ["arctic"], terms: ["greenland"], requireLabel: true },
+  "svalbard": { labels: ["arctic"], terms: ["svalbard", "spitsbergen"], requireLabel: true },
+  "spitsbergen": { labels: ["arctic"], terms: ["svalbard", "spitsbergen"], requireLabel: true },
+  "northwest passage": { labels: ["northwest passage"], terms: [] },
+  "western europe": { labels: ["western europe and iberia"], terms: [] },
+  "iberia": { labels: ["western europe and iberia"], terms: [] },
+  "portugal": { labels: ["western europe and iberia"], terms: ["portugal", "lisbon", "porto", "iberian"], requireLabel: true },
 };
 
 function nonMarqueeRegionMatcher(raw) {
@@ -103,32 +126,55 @@ const MARQUEE_CENTER = {
 const REGION_MARQUEE = {
   "Antarctica": "antarctica",
   "Arctic": "arctic",
+  "Northwest Passage": "arctic",
   "Galápagos": "galapagos",
   "Amazon & South America": "amazon",
+  "Patagonia & Chilean Fjords": "patagonia",
   "Hawaii & Tahiti": "polynesia",
   "Mediterranean": "mediterranean",
   "Norway, Fjords & Coast": "norway",
 };
-// Keyword override scanned from the sailing name (e.g. a Kimberley sailing filed
-// under "Australia, NZ & South Pacific", or Patagonia under "Amazon & S. America").
+// Finer-grained keyword override scanned from the sailing name, for marquee keys
+// no region name carries: Kimberley sits inside "Australia, NZ & South Pacific",
+// Namibia inside "Africa & Indian Ocean", Japan inside "Asia & Mekong".
 const KEYWORDS = [
-  ["antarctica", "antarctica"], ["galápagos", "galapagos"], ["galapagos", "galapagos"],
-  ["amazon", "amazon"], ["patagonia", "patagonia"], ["kimberley", "kimberley"],
-  ["namibia", "namibia"], ["norway", "norway"], ["svalbard", "arctic"],
-  ["tahiti", "polynesia"], ["japan", "japan"],
+  ["kimberley", "kimberley"], ["namibia", "namibia"], ["japan", "japan"],
+  ["svalbard", "arctic"], ["spitsbergen", "arctic"],
 ];
-function correctedRegionName(regionName, name) {
+/**
+ * The region names in sailings.json are the supplier's marketing buckets, and
+ * several are keyword buckets rather than places — "Norway, Fjords & Coast"
+ * collected Chilean Patagonia, Greenland and the Alaskan Inside Passage. The
+ * corrections live in region-overrides.json, derived from each itinerary's own
+ * geocoded ports by scripts/build-cruise-regions.mjs; the title rules below are
+ * the fallback for a feed row the overlay has not seen yet. Keep them in step
+ * with correctedRegionName() in lib/atlas/adapters/cruise.ts, which the native
+ * atlas uses for the same purpose.
+ */
+function correctedRegionName(regionName, name, id) {
+  const overlay = REGION_BY_ID[String(id)];
+  if (overlay) return overlay;
   const t = norm(name);
+  if (/antarctic|south georgia/.test(t)) return "Antarctica";
+  if (t.includes("northwest passage")) return "Northwest Passage";
   if (t.includes("alaska")) return "Alaska & Yukon";
   if (t.includes("baja") || t.includes("sea of cortez")) return "Baja California";
   if (t.includes("seychelles")) return "Africa & Indian Ocean";
+  if (/chilean fjord|patagonia|torres del paine|strait of magellan/.test(t)) return "Patagonia & Chilean Fjords";
+  if (/iceland|greenland|svalbard|spitsbergen/.test(t) && !t.includes("norway") && !t.includes("norwegian")) return "Arctic";
   if (t.includes("caribbean")) return "Caribbean & Bermuda";
   return regionName;
 }
 function marqueeFor(regionName, name) {
+  // The corrected region name wins: it is the label the atlas shows, and a
+  // Norway sailing that mentions Svalbard in its title should not chart as
+  // Arctic while its card reads Norway. Keywords only fill the gaps — marquee
+  // keys that sit inside a broader region name and so can't be read off it.
+  const fromRegion = REGION_MARQUEE[regionName];
+  if (fromRegion) return fromRegion;
   const t = ci(name);
   for (const [kw, key] of KEYWORDS) if (t.includes(kw)) return key;
-  return REGION_MARQUEE[regionName] || null;
+  return null;
 }
 
 // --- normalize raw rows -> records (one-time at module load) ---------------
@@ -139,7 +185,7 @@ const cruises = (() => {
   return (raw.rows || []).map((row) => {
     const id = row[idx.id];
     const name = row[idx.name];
-    const regionName = correctedRegionName(row[idx.region], name);
+    const regionName = correctedRegionName(row[idx.region], name, id);
     const regionLabel = regionName && !/^other$/i.test(regionName) ? regionName : null;
     const slug = row[idx.slug] || "";
     const start = row[idx.start] || null;

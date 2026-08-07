@@ -717,8 +717,8 @@ await test('searchOfferings cruise binds non-marquee places and suppresses chart
     assert.match(u.searchParams.get('q'), /alaska/i);
     return { ok: true, json: async () => ({ total: 26, count: 3, results: [
       { id: 'cr_1', type: 'cruise', name: "Alaska's Inside Passage", operator: 'National Geographic-Lindblad Expeditions', region: null, regionLabel: 'Alaska & Yukon' },
-      { id: 'cr_2', type: 'cruise', name: 'Alaska Fjords and Canadian Inside Passage', operator: 'Seabourn', region: 'norway', regionLabel: 'Norway, Fjords & Coast' },
-      { id: 'cr_3', type: 'cruise', name: "Alaska's Inside Passage - Fjords of The Great Land", operator: 'HX Expeditions', region: 'norway', regionLabel: 'Norway, Fjords & Coast' },
+      { id: 'cr_2', type: 'cruise', name: 'Alaska Fjords and Canadian Inside Passage', operator: 'Seabourn', region: null, regionLabel: 'Alaska & Yukon' },
+      { id: 'cr_3', type: 'cruise', name: "Alaska's Inside Passage - Fjords of The Great Land", operator: 'HX Expeditions', region: null, regionLabel: 'Alaska & Yukon' },
     ], deepLink: 'https://expedition-cruise-map.vercel.app?q=Alaska' }) };
   };
   const r = await searchOfferings({ type: 'cruise', place: 'Alaska', month: 'July' }, { fetchImpl });
