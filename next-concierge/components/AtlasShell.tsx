@@ -1714,30 +1714,53 @@ export default function AtlasShell({
            * rather than a thin line inside a heavy black cord.
            */
           /*
-           * Thinner than it was (5.2 / 3.4). A traced route is one line on an
-           * otherwise quiet map, so it does not need width to be found — and at
-           * the old weight a rail journey through the Highlands read as a
-           * motorway drawn over the terrain rather than a track through it. The
-           * dark casing below is what carries legibility on satellite; the line
-           * itself only has to be seen, not to shout.
+           * Weight. Thinner again — 4 / 2.8 before, 5.2 / 3.4 before that.
+           *
+           * Stacked up, the old values drew a 6.8px near-black cord with a 4px
+           * coloured line sitting on it. That is the weight a printed road
+           * atlas gives a motorway, and it is the single thing that made a
+           * traced itinerary look mass-market: the reference for this map is
+           * an engraved chart, where the route is a drawn line and the
+           * restraint IS the luxury. A route is the only line on an otherwise
+           * quiet collection map, so it never has to compete to be found.
+           *
+           * Everything below is expressed as a multiple of this one number, so
+           * there is exactly one knob to turn if it wants to go thinner still.
            */
-          const lineW = satellite ? 4 : 2.8;
+          const lineW = satellite ? 1.7 : 1.4;
+          /*
+           * A fixed pixel width is wrong at both ends of the zoom range: it
+           * vanishes when a whole ocean is on screen, and swells into a road
+           * once you are down among the streets. Ramping holds the line at the
+           * same DRAWN weight relative to whatever is around it.
+           *
+           * (Dash arrays are in line-width units, so the tie rhythm rides this
+           * ramp for free and reads identically at every zoom.)
+           */
+          const ramp = (w: number) =>
+            ["interpolate", ["linear"], ["zoom"], 2, w * 0.8, 6, w, 12, w * 1.55];
           // The line keeps its TRUE brand colour on both basemaps — teal is
           // teal, platinum is platinum. Satellite only differs in needing a
           // dark halo, because photoreal terrain is busy where a flat dark
           // basemap is not.
+          //
+          // `tie` is now a LIGHTENED accent rather than near-black (#141922).
+          // Black ticks chopping a gold line read as hazard tape; the same
+          // rhythm in a brighter tint of the line's own colour reads as light
+          // travelling along a wire, which is the thing the animation was
+          // always trying to say.
           return satellite
             ? {
-                casing: "#05060a", casingW: lineW + 2.8, casingO: 0.8,
-                line: accentLocal, lineW,
-                glowO: 0, tie: "#141922",
-                conn: accentLocal, connO: 0.95,
+                casing: "#05060a", casingW: ramp(lineW + 1.7), casingO: 0.62,
+                line: accentLocal, lineW: ramp(lineW), lineO: 0.95,
+                tie: lighten(accentLocal, 0.62), tieO: 0.72,
+                conn: accentLocal, connO: 0.85, connW: ramp(lineW * 0.72),
               }
             : {
-                casing: "#0b0d12", casingW: lineW + 3.2, casingO: 0.5,
-                line: accentLocal, lineW,
-                glowO: 0.5, tie: "#141922",
-                conn: accentLocal, connO: 0.7,
+                casing: "#0b0d12", casingW: ramp(lineW + 1.3), casingO: 0.34,
+                line: accentLocal, lineW: ramp(lineW), lineO: 0.92,
+                tie: lighten(accentLocal, 0.55), tieO: 0.62,
+                conn: accentLocal, connO: 0.62, connW: ramp(lineW * 0.72),
               };
         }
 
@@ -1833,25 +1856,34 @@ export default function AtlasShell({
             layout: { "line-join": "round", "line-cap": "round" },
             paint: { "line-color": p.casing, "line-width": p.casingW, "line-opacity": p.casingO },
           });
+          // Round caps here, butt on the ties below: this layer is solid, so
+          // the cap only ever shows at a leg's two ends, where a rounded
+          // terminus is softer than a guillotined one.
           addLayer(map, {
             id: "fr_rail", type: "line", source: "focus-route",
             filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
-            layout: { "line-join": "round", "line-cap": "butt" },
-            paint: { "line-color": p.line, "line-width": p.lineW, "line-opacity": 0.98 },
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": p.line, "line-width": p.lineW, "line-opacity": p.lineO },
           });
           /*
-           * The breaks.
+           * The travelling mark.
            *
-           * Dark ticks laid OVER the colour line, not a colour line laid over a
-           * dark one: the route stays mostly its own colour and the black is a
-           * punctuation mark. It used to be rail-only ([2.5, 7], sleepers), so a
-           * sea or air leg was a plain solid stroke with no rhythm and no way to
-           * tell which end it started from. Now every mode carries it, at a
-           * ratio (TIE_DASH : TIE_GAP) that leaves roughly six parts colour to
-           * one part black — "dashed, mostly colour" rather than the reverse.
+           * A tint of the line's own colour laid OVER it, not a black tick cut
+           * into it: the route stays one continuous colour and the mark is a
+           * highlight sliding along it. It used to be rail-only ([2.5, 7],
+           * sleepers), so a sea or air leg was a plain solid stroke with no
+           * rhythm and no way to tell which end it started from; then it went
+           * to every mode but in near-black, which at a heavy line weight read
+           * as hazard tape rather than motion. One long, sparse, brighter
+           * segment (TIE_DASH : TIE_GAP) says the same thing quietly.
            *
            * Values are in line-width units, so the rhythm scales with the line
-           * and looks the same at every basemap weight.
+           * and looks the same at every zoom and basemap weight.
+           *
+           * Cap stays BUTT. dashPhase() emits a zero-length lead dash for most
+           * of its cycle, and a zero-length dash under a round cap renders as a
+           * dot — a stray bead that would appear and vanish at the route's
+           * start on every pass.
            */
           addLayer(map, {
             id: "fr_ties", type: "line", source: "focus-route",
@@ -1860,17 +1892,20 @@ export default function AtlasShell({
             paint: {
               "line-color": p.tie,
               "line-width": p.lineW,
-              "line-opacity": 0.92,
+              "line-opacity": p.tieO,
               "line-dasharray": dashPhase(0),
             },
           });
+          // A connector is a hop the itinerary does not sell — a ferry, a
+          // transfer. It should be legible and clearly subordinate, so it runs
+          // thinner than the route proper and on a finer dash.
           addLayer(map, {
             id: "fr_conn", type: "line", source: "focus-route",
             filter: ["==", ["get", "conn"], 1],
             layout: { "line-join": "round", "line-cap": "round" },
             paint: {
-              "line-color": p.conn, "line-width": 1.6, "line-opacity": p.connO,
-              "line-dasharray": [2, 6],
+              "line-color": p.conn, "line-width": p.connW, "line-opacity": p.connO,
+              "line-dasharray": [1.6, 4.4],
             },
           });
           startRouteFlow();
@@ -1879,12 +1914,17 @@ export default function AtlasShell({
           try {
             map.setPaintProperty("fr_casing", "line-color", p.casing);
             map.setPaintProperty("fr_casing", "line-width", p.casingW);
-            map.setPaintProperty("fr_rail", "line-width", p.lineW);
             map.setPaintProperty("fr_casing", "line-opacity", p.casingO);
             map.setPaintProperty("fr_rail", "line-color", p.line);
+            map.setPaintProperty("fr_rail", "line-width", p.lineW);
+            map.setPaintProperty("fr_rail", "line-opacity", p.lineO);
             map.setPaintProperty("fr_ties", "line-color", p.tie);
             map.setPaintProperty("fr_ties", "line-width", p.lineW);
+            map.setPaintProperty("fr_ties", "line-opacity", p.tieO);
             map.setPaintProperty("fr_conn", "line-color", p.conn);
+            // Width too: it used to be a literal, so a restyle never had to
+            // carry it. Now it rides the basemap-dependent ramp like the rest.
+            map.setPaintProperty("fr_conn", "line-width", p.connW);
             map.setPaintProperty("fr_conn", "line-opacity", p.connO);
           } catch { /* layer missing mid-restyle */ }
 
@@ -1920,23 +1960,29 @@ export default function AtlasShell({
           if (!map.getSource("focus-stops")) map.addSource("focus-stops", { type: "geojson", data });
           else map.getSource("focus-stops")?.setData(data);
 
+          // Sized against the line, not independently of it. A 10px bead on a
+          // 1.4px thread is a pin dropped on a route; a 6px one is a call on
+          // it. Radius and stroke came down with the line weight so the two
+          // still read as one drawing.
           addLayer(map, {
             id: "fs_dot", type: "circle", source: "focus-stops",
             paint: {
-              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 5, 8, 10],
-              "circle-stroke-opacity": 0.95,
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 3.2, 8, 6.4],
+              "circle-stroke-opacity": 0.9,
               "circle-color": p.line,
               "circle-stroke-color": p.casing,
-              "circle-stroke-width": 1.5,
-              "circle-opacity": 0.98,
+              "circle-stroke-width": 1,
+              "circle-opacity": 0.95,
             },
           });
+          // Held back a zoom level: below z5 the dot is ~3.5px and a numeral
+          // inside it is illegible anyway, so it was only adding clutter.
           addLayer(map, {
             id: "fs_num", type: "symbol", source: "focus-stops",
-            minzoom: 4,
+            minzoom: 5,
             layout: {
               "text-field": ["get", "n"],
-              "text-size": 10,
+              "text-size": 9,
               "text-allow-overlap": true,
               "text-ignore-placement": true,
             },
@@ -3415,8 +3461,8 @@ function toInternalAtlasHref(url?: string | null): string | null {
  *
  * Units are line-width multiples, so the rhythm holds at every line weight.
  */
-const TIE_DASH = 1.1; // the black tick
-const TIE_GAP = 6.4; // the colour between ticks — six parts colour to one black
+const TIE_DASH = 2.2; // the brighter travelling segment
+const TIE_GAP = 11; // the line between marks — roughly five parts line to one mark
 const FLOW_STEPS = 24; // phases per cycle; more is smoother and no cheaper
 const FLOW_MS = 55; // ms per phase → a full period every ~1.3s
 
