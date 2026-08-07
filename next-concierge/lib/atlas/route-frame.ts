@@ -68,17 +68,59 @@ function near(a: Pt, b: Pt): number {
   return dLng * k * (dLng * k) + dLat * dLat;
 }
 
-/** Endpoints are "the same place" within roughly a degree. */
-const SAME_PLACE = 1;
+/**
+ * Two coordinates are the same port.
+ *
+ * Deliberately tiny (~2km). Consecutive itinerary days in the same port carry
+ * the SAME coordinate — they come from one lookup — so this only has to absorb
+ * rounding. It must stay well under the distance between two genuinely
+ * different ports, and the tightest real pairs in the corpus are close: Nice to
+ * Villefranche-sur-Mer and Valletta to St. Julian's are both about 5km.
+ */
+const SAME_PORT = 0.0004;
 
 /**
- * Order and orient legs so the route runs from the first stop onward, then
- * unroll it into a single frame.
+ * How well a leg's two ends must match a hop's two ports to be that hop.
  *
- * `stops` is the itinerary in order and is what makes the result deterministic
- * on a round trip: the first and last leg both touch the departure port, so
- * proximity to the start alone cannot tell you which way round to go. The
- * second stop breaks that tie.
+ * Legs are generated FROM the port coordinates, so a true match is near-exact
+ * and this only has to cover the 2dp rounding in the shipped file. Keeping it
+ * tight is what makes a missing leg read as a missing leg rather than as
+ * licence to grab whichever unrelated leg happens to be nearest.
+ */
+const HOP_MATCH = 0.02;
+
+/**
+ * Order and orient legs so the route runs in itinerary order, then unroll it
+ * into a single frame.
+ *
+ * ── Why this walks the itinerary rather than the geometry ──────────────────
+ *
+ * This used to chain greedily: start at the first stop, repeatedly take the
+ * nearest unused leg-end, and use the itinerary only to pick the very first
+ * leg. That reads the day-by-day out of the geometry, and it cannot do so
+ * reliably, because the two questions it has to answer with a distance
+ * threshold are in direct conflict:
+ *
+ *   - "is this leg-end AT the departure port?" wants a LOOSE threshold, to
+ *     absorb the difference between a port's listed coordinate and where the
+ *     leg actually starts;
+ *   - "is this the next distinct port, or the same one again?" wants a TIGHT
+ *     one, because consecutive ports can be 5km apart.
+ *
+ * At the old threshold (~111km) an eight-day Riviera cruise lost both: every
+ * port from Monte-Carlo to Toulon counted as "the same place", so the chain
+ * started on day 3, ran to the end, and drew days 1-2 afterwards and backwards
+ * — 46 of 362 yacht itineraries did not begin on day 1. Tightening it fixed
+ * those but broke the genuinely close pairs instead. There is no value that
+ * satisfies both.
+ *
+ * So: don't infer the order. The itinerary already IS the order. Walk it hop by
+ * hop and, for each pair of consecutive ports, claim the leg whose two ends are
+ * those two ports — oriented so it runs the way the ship sails. Day-by-day
+ * order stops being something the geometry has to imply and becomes structural.
+ *
+ * `stops` is the itinerary in order. Without it (a bare cloud of legs, no
+ * itinerary) there is nothing to walk, and the old greedy chain still runs.
  */
 export function frameRoute(legs: readonly FrameLeg[], stops?: readonly Pt[]): FrameLeg[] {
   const pool: FrameLeg[] = [];
@@ -91,69 +133,117 @@ export function frameRoute(legs: readonly FrameLeg[], stops?: readonly Pt[]): Fr
   }
   if (pool.length === 0) return [];
 
-  const anchor = stops && stops.length ? ([wrapLng(stops[0][0]), stops[0][1]] as Pt) : null;
-  // The next distinct stop — the direction the journey sets off in.
-  let second: Pt | null = null;
-  if (anchor && stops) {
-    for (let i = 1; i < stops.length; i++) {
-      const s: Pt = [wrapLng(stops[i][0]), stops[i][1]];
-      if (near(s, anchor) > SAME_PLACE) { second = s; break; }
-    }
-  }
+  const itinerary: Pt[] = (stops ?? []).map((s) => [wrapLng(s[0]), s[1]] as Pt);
+  // A route with an itinerary behind it gets walked; anything else falls back.
+  // So does an itinerary whose coordinates match no leg at all — better a
+  // geometrically continuous route in an uncertain order than every leg piled
+  // into the leftovers in source order.
+  const walked = itinerary.length >= 2 ? chainByItinerary(pool, itinerary) : null;
+  const ordered = walked && walked.placed > 0 ? walked.legs : chainGreedy(pool);
 
+  return unrollChain(ordered);
+}
+
+/**
+ * Claim one leg per itinerary hop, in order, oriented the way the ship sails.
+ *
+ * Returns how many legs the walk actually placed, so the caller can tell a
+ * successful walk from one that matched nothing.
+ */
+function chainByItinerary(pool: FrameLeg[], stops: Pt[]): { legs: FrameLeg[]; placed: number } {
   const used = new Array<boolean>(pool.length).fill(false);
   const ordered: FrameLeg[] = [];
-  let cursor: Pt | null = anchor;
+  let placed = 0;
+
+  for (let i = 1; i < stops.length; i++) {
+    const from = stops[i - 1];
+    const to = stops[i];
+    // Two nights in the same port is not a hop and has no leg.
+    if (near(from, to) <= SAME_PORT) continue;
+
+    // Prefer an unclaimed leg. Falling back to a claimed one covers the
+    // out-and-back case: the shipped geometry deduplicates legs, so a voyage
+    // that sails A→B→A has ONE stored leg for two crossings and genuinely
+    // should draw it twice.
+    const pick = bestLegFor(pool, used, from, to, true) ?? bestLegFor(pool, used, from, to, false);
+    if (!pick) continue; // no geometry for this hop — leave the gap honest
+
+    used[pick.i] = true;
+    placed++;
+    const c = pool[pick.i].coordinates;
+    ordered.push({
+      mode: pool[pick.i].mode,
+      coordinates: pick.reversed ? [...c].reverse() : c,
+    });
+  }
+
+  // A leg no hop claimed still has to be drawn — append it rather than
+  // silently dropping geometry.
+  for (let i = 0; i < pool.length; i++) if (!used[i]) ordered.push(pool[i]);
+  return { legs: ordered, placed };
+}
+
+/**
+ * The leg that best spans `from` → `to`, and which way round it runs.
+ *
+ * `unclaimedOnly` restricts the search to legs no hop has taken yet.
+ */
+function bestLegFor(
+  pool: FrameLeg[],
+  used: boolean[],
+  from: Pt,
+  to: Pt,
+  unclaimedOnly: boolean,
+): { i: number; reversed: boolean } | null {
+  let best: { i: number; reversed: boolean } | null = null;
+  let bestScore = Infinity;
+  for (let i = 0; i < pool.length; i++) {
+    if (unclaimedOnly && used[i]) continue;
+    const c = pool[i].coordinates;
+    const head = c[0];
+    const tail = c[c.length - 1];
+    const forward = near(head, from) + near(tail, to);
+    const reverse = near(tail, from) + near(head, to);
+    const score = Math.min(forward, reverse);
+    if (score < bestScore) { bestScore = score; best = { i, reversed: reverse < forward }; }
+  }
+  return bestScore <= HOP_MATCH ? best : null;
+}
+
+/**
+ * The original nearest-endpoint chain, for routes with no itinerary to walk.
+ *
+ * Order and orientation here are whatever the geometry implies, which is the
+ * best available answer when nothing states the intended sequence.
+ */
+function chainGreedy(pool: FrameLeg[]): FrameLeg[] {
+  const used = new Array<boolean>(pool.length).fill(false);
+  const ordered: FrameLeg[] = [];
+  let cursor: Pt | null = null;
 
   for (let placed = 0; placed < pool.length; placed++) {
     let pick = -1;
     let pickReversed = false;
     let best = Infinity;
-
     for (let i = 0; i < pool.length; i++) {
       if (used[i]) continue;
       const c = pool[i].coordinates;
-      if (cursor === null) { pick = i; pickReversed = false; best = 0; break; }
+      if (cursor === null) { pick = i; pickReversed = false; break; }
       const head = near(c[0], cursor);
       const tail = near(c[c.length - 1], cursor);
       const d = Math.min(head, tail);
       if (d < best) { best = d; pick = i; pickReversed = tail < head; }
     }
     if (pick < 0) break;
-
-    /*
-     * First leg only: several legs may touch the departure port (a round trip
-     * leaves from and returns to it). Among those that do, take the one heading
-     * for the second stop — otherwise the whole route can be traversed, and
-     * animated, backwards.
-     */
-    if (placed === 0 && cursor && second) {
-      let bestOnward = Infinity;
-      for (let i = 0; i < pool.length; i++) {
-        if (used[i]) continue;
-        const c = pool[i].coordinates;
-        const head = near(c[0], cursor);
-        const tail = near(c[c.length - 1], cursor);
-        if (Math.min(head, tail) > best + SAME_PLACE) continue; // not at the start
-        const reversed = tail < head;
-        const far = reversed ? c[0] : c[c.length - 1];
-        const onward = near(far, second);
-        if (onward < bestOnward) { bestOnward = onward; pick = i; pickReversed = reversed; }
-      }
-    }
-
     used[pick] = true;
-    const leg = pool[pick];
-    const coords = pickReversed ? [...leg.coordinates].reverse() : leg.coordinates;
-    ordered.push({ mode: leg.mode, coordinates: coords });
+    const coords = pickReversed
+      ? [...pool[pick].coordinates].reverse()
+      : pool[pick].coordinates;
+    ordered.push({ mode: pool[pick].mode, coordinates: coords });
     cursor = coords[coords.length - 1];
   }
-
-  // Anything the chain could not reach (a genuinely disconnected segment) still
-  // has to be drawn — append it rather than dropping geometry.
   for (let i = 0; i < pool.length; i++) if (!used[i]) ordered.push(pool[i]);
-
-  return unrollChain(ordered);
+  return ordered;
 }
 
 /**

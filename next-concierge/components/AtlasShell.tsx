@@ -1753,13 +1753,13 @@ export default function AtlasShell({
             ? {
                 casing: "#05060a", casingW: ramp(lineW + 1.7), casingO: 0.62,
                 line: accentLocal, lineW: ramp(lineW), lineO: 0.95,
-                tie: lighten(accentLocal, 0.62), tieO: 0.72,
+                tie: lighten(accentLocal, 0.68), tieO: 0.88,
                 conn: accentLocal, connO: 0.85, connW: ramp(lineW * 0.72),
               }
             : {
                 casing: "#0b0d12", casingW: ramp(lineW + 1.3), casingO: 0.34,
                 line: accentLocal, lineW: ramp(lineW), lineO: 0.92,
-                tie: lighten(accentLocal, 0.55), tieO: 0.62,
+                tie: lighten(accentLocal, 0.6), tieO: 0.8,
                 conn: accentLocal, connO: 0.62, connW: ramp(lineW * 0.72),
               };
         }
@@ -1908,6 +1908,48 @@ export default function AtlasShell({
               "line-dasharray": [1.6, 4.4],
             },
           });
+          /*
+           * Direction, stated rather than implied.
+           *
+           * The travelling highlight above says which way the voyage runs, but
+           * only if you happen to be looking when it moves — and it says
+           * nothing at all under prefers-reduced-motion, in a screenshot, or on
+           * the frame a traveller actually stops on. Sparse chevrons riding the
+           * line answer "which way round does this go?" instantly and
+           * statically, which is the ordinary cartographic idiom for it.
+           *
+           * `text-keep-upright: false` is the whole feature: left at its
+           * default, Mapbox flips glyphs that would render upside-down so they
+           * stay readable, which silently points half the chevrons back up the
+           * route. Overlap is NOT allowed, so they thin out on a tight coastal
+           * leg instead of piling into a smear.
+           *
+           * The fontstack is named explicitly with Arial Unicode MS behind it:
+           * a missing glyph renders as nothing at all, and losing the direction
+           * cue to a font fallback is not a failure that would be obvious.
+           */
+          addLayer(map, {
+            id: "fr_arrow", type: "symbol", source: "focus-route",
+            filter: ["any", ["==", ["get", "rail"], 1], ["==", ["get", "primary"], 1]],
+            minzoom: 3,
+            layout: {
+              "symbol-placement": "line",
+              "symbol-spacing": 110,
+              "text-field": "›",
+              "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+              "text-size": 15,
+              "text-keep-upright": false,
+              "text-allow-overlap": false,
+              "text-ignore-placement": false,
+              "text-padding": 4,
+            },
+            paint: {
+              "text-color": p.tie,
+              "text-halo-color": p.casing,
+              "text-halo-width": 1.1,
+              "text-opacity": 0.9,
+            },
+          });
           startRouteFlow();
           // Existing layers keep their old palette after a style switch unless
           // told otherwise — addLayer() is a no-op when the id already exists.
@@ -1926,6 +1968,8 @@ export default function AtlasShell({
             // carry it. Now it rides the basemap-dependent ramp like the rest.
             map.setPaintProperty("fr_conn", "line-width", p.connW);
             map.setPaintProperty("fr_conn", "line-opacity", p.connO);
+            map.setPaintProperty("fr_arrow", "text-color", p.tie);
+            map.setPaintProperty("fr_arrow", "text-halo-color", p.casing);
           } catch { /* layer missing mid-restyle */ }
 
           paintFocusStops(stops ?? lastFocusStops.current, p);

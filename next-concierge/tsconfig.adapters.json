@@ -11,5 +11,5 @@
     "rootDir": "./lib/atlas",
     "outDir": ".adapters-build"
   },
-  "include": ["lib/atlas/geo.ts", "lib/atlas/adapters/*.ts"]
+  "include": ["lib/atlas/geo.ts", "lib/atlas/route-frame.ts", "lib/atlas/adapters/*.ts"]
 }
