@@ -480,9 +480,16 @@ export const SEARCH_OFFERINGS_TOOL = {
     properties: {
       type: {
         type: "string",
-        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "villa", "any"],
+        // "any" used to be offered here and it was a trap: it did NOT search
+        // across the atlases, it answered from hotels alone, so an open
+        // question came back as a hotel shortlist dressed as a survey. Each
+        // call now names one channel. To span channels, make one call per
+        // channel (see OPEN WAYS TO VISIT and UHNW BREADTH in the prompt) so
+        // each category is searched on its own terms and only the ones that
+        // genuinely reach the destination are surfaced.
+        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "villa"],
         description:
-          "Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Use villa for private villa or vacation-home rentals — whole-property stays, often for larger parties. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
+          "Which channel to search. One channel per call: to cover several, call this tool once per channel. Use hotel for stays, including private-island resorts. Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Use villa for private villa or vacation-home rentals — whole-property stays, often for larger parties. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
       },
       q: {
         type: "string",
@@ -1474,6 +1481,17 @@ async function searchHotels(input, fetchImpl) {
     }
   }
 
+  // A marquee region the hotel atlas cannot filter natively (alaska, northwest
+  // passage) rode along as place text instead. That still constrains, but it
+  // matches on names and place labels rather than the region tag, so name the
+  // weaker basis instead of letting it read as a complete regional set.
+  if (regionAsText && (j.results || []).length) {
+    notes.push(
+      `"${regionLabelFor(regionAsText)}" is not yet a filterable region in the approved hotel set, ` +
+      `so it was matched as place text. Treat this as indicative rather than complete; ` +
+      `an advisor can confirm the full list.`
+    );
+  }
   const advisorCategory = advisorLedCategoryFrom(input);
   if (advisorCategory) {
     notes.push(
@@ -1654,6 +1672,21 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
           note = "Some descriptive words did not match indexed fields; broadened to the region to surface live inventory.";
         }
       }
+    }
+    // A marquee region this atlas cannot filter natively was bound as free text
+    // instead (see EXTENDED_REGION_NATIVE). That is honest recall, but it is
+    // materially weaker than a region filter — it matches names and route
+    // labels, not the region tag — so say so rather than letting a text match
+    // be read as a complete regional set. Without this, three of the fourteen
+    // marquee keys the prompt advertises behaved differently from the other
+    // eleven with nothing telling the Guide.
+    if (regionAsText && (j.results || []).length) {
+      const weak =
+        `"${regionLabelFor(regionAsText)}" is not yet a filterable region on the ` +
+        `${type === "worldcruise" ? "World Cruise" : type === "train" ? "Rail Journey" : type} ` +
+        `atlas, so it was matched as text against names and routes. Treat this as indicative ` +
+        `rather than the complete set, and an advisor can confirm what else sails there.`;
+      note = note ? `${note} ${weak}` : weak;
     }
     // Supplier diversity needs an unranked page, so `intent` is deliberately
     // kept off the query (see diversifySuppliers above). That used to mean the
@@ -1843,6 +1876,25 @@ async function searchVillasChannel(input = {}) {
         note = "Some descriptive words did not match the villa records; broadened to the area to surface live inventory.";
       }
     }
+    // The villa channel is the ONE place a stated party size really filters:
+    // villaParamsFromInput derives a sleeps floor from adults + children when
+    // the model did not pass `sleeps` outright. That is right — a party of ten
+    // cannot stay in a four-bed villa — but it is invisible, and it contradicts
+    // what the Guide is told about dates and party elsewhere, so it could thin
+    // a set with no way to explain why. Say so when it actually bit.
+    if (params.sleepsMin) {
+      const explicitSleeps = Number.isFinite(parseInt(input.sleeps, 10)) && parseInt(input.sleeps, 10) > 0;
+      const { sleepsMin: _s, ...unfloored } = params;
+      const without = villaLib.searchVillas({ ...unfloored, perPage: 1 }).total;
+      const hidden = without - r.total;
+      if (hidden > 0) {
+        const sleepsNote = explicitSleeps
+          ? `${hidden} villa${hidden === 1 ? "" : "s"} in this area sleep fewer than ${params.sleepsMin} and are excluded.`
+          : `The party of ${params.sleepsMin} sets a sleeps floor, which excludes ${hidden} smaller ` +
+            `villa${hidden === 1 ? "" : "s"} in this area. Say the shortlist is sized to the party.`;
+        note = note ? `${note} ${sleepsNote}` : sleepsNote;
+      }
+    }
     // Be honest about what a price cap hides: "Call for Pricing" villas can't
     // be verified against a budget, so they're excluded, not misrepresented.
     if (params.priceMax) {
@@ -1905,6 +1957,18 @@ async function searchCruisesAndYachts(input, fetchImpl) {
   const unavailable = sources.every((s) => s.unavailable);
   const related = await sailingRelatedHotels(results, fetchImpl);
 
+  // This channel builds its own envelope from two sub-searches, and it used to
+  // drop their notes on the floor: a brand matched only as text, a query
+  // broadened past unindexed descriptors, a region that could only bind as text
+  // — every one of those explanations was raised by the sub-search and then
+  // discarded here, for the single most-used travel type. The prompt tells the
+  // Guide to honor a note it never received. Both sub-searches answer the same
+  // ask, so identical notes are collapsed rather than said twice.
+  const subNotes = [...new Set([cruise.note, yacht.note].filter(Boolean))];
+  const note = unavailable
+    ? "Expedition Cruise and yacht inventory is momentarily unreachable. An advisor can source live options directly."
+    : (subNotes.join(" ") || null);
+
   return {
     type: "cruise",
     total: sources.reduce((n, s) => n + (s.total || 0), 0),
@@ -1914,9 +1978,7 @@ async function searchCruisesAndYachts(input, fetchImpl) {
     chartRegion: chartRegionForTravelInput(input, results),
     sources,
     unavailable,
-    note: unavailable
-      ? "Expedition Cruise and yacht inventory is momentarily unreachable. An advisor can source live options directly."
-      : null,
+    note,
     ...(related.length ? { related } : {}),
   };
 }
@@ -1953,6 +2015,10 @@ export async function searchOfferings(input = {}, opts = {}) {
 
 async function dispatchSearchOfferings(input = {}, opts = {}) {
   const fetchImpl = opts.fetchImpl || atlasFetch;
+  // "any" is no longer an offered enum value; it survives here purely as the
+  // internal default for "the model did not name a channel", which
+  // prioritizeMentionedPlace may still resolve from the traveler's own words
+  // before we get here. Unresolved, it falls through to hotels below.
   const type = String(input.type || "any").toLowerCase();
 
   // World cruises outrank the Luxury Cruise advisor guard: "Regent world

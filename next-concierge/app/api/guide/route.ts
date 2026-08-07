@@ -86,7 +86,7 @@ export async function OPTIONS(req: Request) {
 export async function POST(req: Request) {
   const cors = corsHeaders(req);
 
-  const limited = isRateLimited(req, cors);
+  const limited = await isRateLimited(req, cors);
   if (limited) return limited;
 
   let messages: ChatMessage[];

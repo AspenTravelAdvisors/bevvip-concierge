@@ -26,7 +26,7 @@ const PER_PAGE_CAP = 50;
 const RATE = { bucket: "villas", max: 120, windowMs: 60_000 };
 
 export async function GET(req) {
-  const limited = isRateLimited(req, {}, RATE);
+  const limited = await isRateLimited(req, {}, RATE);
   if (limited) return limited;
 
   const params = Object.fromEntries(new URL(req.url).searchParams.entries());
