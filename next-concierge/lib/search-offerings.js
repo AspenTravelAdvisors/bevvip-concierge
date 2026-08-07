@@ -11,7 +11,6 @@
 
 import atlasDispatch from "./atlas/index.js";
 import supplierFit from "./atlas/supplier-fit.js";
-import supplierFit from "./atlas/supplier-fit.js";
 import villaLib from "./villas.js";
 import { resolveFringeLocation } from "./location-resolver.js";
 import { withNormalized } from "./offering-shape";
@@ -21,18 +20,8 @@ import { withNormalized } from "./offering-shape";
 // the internal hotel map root used for the per-hotel card deep link; the fetch
 // URLs built below resolve to the same in-process backends via atlasFetch.
 const HOTEL_API_BASE = process.env.ATLAS_HOTEL_URL || "/atlas/hotel";
+const DEFAULT_RECOMMENDATION_LIMIT = 3;
 // The prompt lets an answer span up to five products from one atlas when it is
-// genuinely covering multiple brands or operators. Clamping to 4 made that
-// ceiling unreachable — the model could be told "up to five" and never be handed
-// a fifth record to name. The card row deliberately shows fewer (see
-// GUIDE_CARD_LIMIT_PER_TOOL); prose may name more than the row draws.
-const MAX_RESULTS_PER_CATEGORY = 5;
-// The prompt lets an answer span up to five products from one atlas when it is
-// genuinely covering multiple brands or operators. Clamping to 4 made that
-// ceiling unreachable — the model could be told "up to five" and never be handed
-// a fifth record to name. The card row deliberately shows fewer (see
-// GUIDE_CARD_LIMIT_PER_TOOL); prose may name more than the row draws.
-const MAX_RESULTS_PER_CATEGORY = 5;
 // genuinely covering multiple brands or operators. Clamping to 4 made that
 // ceiling unreachable — the model could be told "up to five" and never be handed
 // a fifth record to name. The card row deliberately shows fewer (see
@@ -339,19 +328,17 @@ const LANDMARKS = [
   [/\bcentral\s+park\b/i, "New York", "Central Park"],
   [/\bstatue\s+of\s+liberty\b/i, "New York", "the Statue of Liberty"],
   [/\bgolden\s+gate\b/i, "San Francisco", "the Golden Gate"],
-//
-// Villa rentals are deliberately NOT here any more. They were, from before the
-// villa pillar shipped, and the row matched on a hotel search's own `q` — where
-// "private villa" is one of the commonest luxury ROOM descriptors there is
-// (Bali, Phuket, the Maldives). Those searches collected a note telling the
-// Guide to route away from hotel results that were exactly right. A genuine
-// whole-property ask is retyped to `villa` by prioritizeMentionedPlace and
-// answered from live inventory instead.
   [/\bburj\s+khalifa\b/i, "Dubai", "the Burj Khalifa"],
   [/\bsydney\s+opera\s+house\b/i, "Sydney", "the Sydney Opera House"],
   [/\b(?:the\s+)?acropolis\b/i, "Athens", "the Acropolis"],
   [/\bbrandenburg\s+gate\b/i, "Berlin", "the Brandenburg Gate"],
+  [/\bgrand\s+canal\b/i, "Venice", "the Grand Canal"],
   [/\brialto\b/i, "Venice", "the Rialto"],
+];
+
+// High-nuance categories the prompt routes advisor-led. Inventory may still
+// hold adjacent stays (safari lodges, villa resorts), so the search runs and
+// the note tells the Guide to frame results as a starting point, not blocking.
 //
 // Villa rentals are deliberately NOT here any more. They were, from before the
 // villa pillar shipped, and the row matched on a hotel search's own `q` — where
@@ -360,15 +347,10 @@ const LANDMARKS = [
 // Guide to route away from hotel results that were exactly right. A genuine
 // whole-property ask is retyped to `villa` by prioritizeMentionedPlace and
 // answered from live inventory instead.
-];
-
-// High-nuance categories the prompt routes advisor-led. Inventory may still
-// hold adjacent stays (safari lodges, villa resorts), so the search runs and
 const ADVISOR_LED_CATEGORIES = [
   [/\bsafaris?\b|\bgame\s+(?:drives?|reserves?)\b/i, "Safari"],
   [/\b(?:private|exclusive)\s+islands?\b/i, "Private island"],
   [/\bbuy[\s-]?outs?\b|\bexclusive[\s-]use\b|\bfull[\s-]property\b/i, "Buyout"],
-  [/\bvilla\s+rentals?\b|\b(?:standalone|private)\s+villas?\b|\brent(?:ing)?\s+a\s+villa\b/i, "Villa rental"],
   [/\b(?:escorted|guided|group|private)\s+tours?\b|\btour\s+operators?\b/i, "Escorted tour"],
 ];
 
@@ -548,7 +530,7 @@ export const SEARCH_OFFERINGS_TOOL = {
           "Approximate geographic bounding box \"minLng,minLat,maxLng,maxLat\" for an AREA the inventory " +
           "may not name literally. Provide your best estimate alongside places/country for hotel searches " +
           "so results match by location, not spelling. French Riviera is roughly \"6.55,43.15,7.55,43.85\". " +
-        description: "Number of records to return per atlas/category. Curate around 3 by default. Max 5.",
+          "Hotels only; omit for cruise/jet/rail.",
       },
       brand: {
         type: "string",
@@ -561,7 +543,7 @@ export const SEARCH_OFFERINGS_TOOL = {
         description:
           "Travel month. Prefer YYYY-MM. If the traveler names a month with no year, " +
           "a bare month name (e.g. 'January') is fine; it is resolved to the next " +
-        description: "Number of records to return per atlas/category. Curate around 3 by default. Max 5.",
+          "occurrence of that month.",
       },
       limit: {
         type: "integer",
@@ -592,18 +574,36 @@ export const SEARCH_OFFERINGS_TOOL = {
           "Set it whenever the traveler states a party size for a villa search.",
       },
       bedrooms: {
-// Where/when/who the model extracted (BOOKING-SPEC §3), echoed back on the tool
-// result as `trip` so the client can persist it into the shared TripState the
-// booking CTAs read. Dates and party do NOT filter results — they qualify the
-// shortlist and enrich the advisor brief. (The one exception is the villa
-// channel, which derives a sleeps floor from the party; see
-// villaParamsFromInput.) Returns null when nothing usable was captured.
+        type: "integer",
+        description: "For type villa: minimum bedroom count, when the traveler asks by bedrooms.",
+      },
+      priceMax: {
+        type: "integer",
         description:
           "For type villa: maximum nightly rate in USD when the traveler states a budget cap, " +
           "e.g. 3000 for 'under $3,000 a night'. Villas with pricing on request are excluded under a cap.",
       },
       childrenAges: {
         type: "array",
+        items: { type: "integer" },
+        description: "Ages of children in the party, when stated. A bare count with no ages: use age 10 per child and note it.",
+      },
+    },
+  },
+};
+
+// Where/when/who the model extracted (BOOKING-SPEC §3), echoed back on the tool
+// result as `trip` so the client can persist it into the shared TripState the
+// booking CTAs read. Dates and party do NOT filter results — they qualify the
+// shortlist and enrich the advisor brief. (The one exception is the villa
+// channel, which derives a sleeps floor from the party; see
+// villaParamsFromInput.) Returns null when nothing usable was captured.
+function tripFromInput(input = {}) {
+  const day = (v) => {
+    const m = String(v || "").trim().match(/^\d{4}-\d{2}-\d{2}$/);
+    return m ? m[0] : "";
+  };
+  const trip = {};
   // The trip chip renders on `checkIn || destination`, and nothing here ever set
   // a destination — so a traveler who said where but not when saw no chip at
   // all, losing the one visible confirmation that the Guide understood the
@@ -616,24 +616,6 @@ export const SEARCH_OFFERINGS_TOOL = {
     || String(input.country || "").trim()
     || regionLabelFor(normalizeRegionKey(input.region) || "");
   if (destination) trip.destination = destination.slice(0, 80);
-        items: { type: "integer" },
-        description: "Ages of children in the party, when stated. A bare count with no ages: use age 10 per child and note it.",
-      },
-    },
-  },
-};
-
-// Dates/party the model extracted (BOOKING-SPEC §3). These do NOT filter
-// results yet — they qualify the shortlist and the advisor brief — but they
-// are echoed back on the tool result as `trip` so the client can persist them
-// into the shared TripState the booking CTAs read. Returns null when nothing
-// usable was captured.
-function tripFromInput(input = {}) {
-  const day = (v) => {
-    const m = String(v || "").trim().match(/^\d{4}-\d{2}-\d{2}$/);
-    return m ? m[0] : "";
-  };
-  const trip = {};
   const checkIn = day(input.checkIn);
   const checkOut = day(input.checkOut);
   if (checkIn) trip.checkIn = checkIn;
@@ -1519,14 +1501,11 @@ async function searchHotels(input, fetchImpl) {
   };
 }
 
-  // A bare travel year ("2027") when no specific month resolved. Departures are
-  // booked a year or two ahead across every travel channel, so honor it as a
-  // year filter; the month= (YYYY-MM) param cannot express a whole year. Every
-  // backend reached through here now filters it (expedition, yacht and jet
-  // joined worldcruise and train), so it is sent for all of them — previously it
-  // was resolved and then dropped for cruise/yacht/jet, and since
-  // stripDateFromQuery also strips the year out of `q`, the constraint the
-  // traveler stated vanished entirely rather than binding somewhere.
+// cruise | jet | yacht -> each type's own Atlas query API, same shape as hotels.
+// Degrades gracefully if an endpoint is unreachable so the Guide routes to an
+// advisor instead of inventing inventory.
+async function searchOfferingsByType(type, input, fetchImpl, limitOverride = null, { supplierCap = 0 } = {}) {
+  const atwJet = type === "jet" && aroundTheWorldJetIntent(input);
   const limit = limitOverride == null
     ? requestedLimit(input)
     : clampLimit(limitOverride);
@@ -1535,22 +1514,16 @@ async function searchHotels(input, fetchImpl) {
   // limit:4 it would fetch just 4 records — often two sailings each from only two
   // operators, hiding the rest. Whenever we are diversifying (supplierCap set),
   // pull the full page so every operator is in the pool to pick one each from.
+  const candidateLimit = supplierCap > 0
+    ? MAX_CANDIDATE_LIMIT
+    : candidateLimitForInput(input, limit);
+  const cfg = OFFERINGS_ENDPOINTS[type];
+  const month = normalizeMonth(input.month) || monthFromText(input.q);
   // A bare travel year ("2027") when no specific month resolved. Departures are
   // booked a year or two ahead across every travel channel, so honor it as a
   // year filter; the month= (YYYY-MM) param cannot express a whole year. Every
   // backend reached through here now filters it (expedition, yacht and jet
   // joined worldcruise and train), so it is sent for all of them — previously it
-  // was resolved and then dropped for cruise/yacht/jet, and since
-  // stripDateFromQuery also strips the year out of `q`, the constraint the
-  // traveler stated vanished entirely rather than binding somewhere.
-  // A bare travel year ("2027") when no specific month resolved. Departures are
-  // booked a year or two ahead across every travel channel, so honor it as a
-  // year filter; the month= (YYYY-MM) param cannot express a whole year. Every
-  // backend reached through here now filters it (expedition, yacht and jet
-  // joined worldcruise and train), so it is sent for all of them — previously it
-  // was resolved and then dropped for cruise/yacht/jet, and since
-  // stripDateFromQuery also strips the year out of `q`, the constraint the
-  // traveler stated vanished entirely rather than binding somewhere.
   // was resolved and then dropped for cruise/yacht/jet, and since
   // stripDateFromQuery also strips the year out of `q`, the constraint the
   // traveler stated vanished entirely rather than binding somewhere.
@@ -1615,7 +1588,7 @@ async function searchHotels(input, fetchImpl) {
     const p = new URLSearchParams();
     let queryText = [regionText, placeText, baseQ].filter(Boolean).join(" ").trim();
     if (atwJet) {
-    else if (year) p.set("year", year);
+      p.set("world", "true");
     } else if (type === "worldcruise") {
       if (worldCruiseRegion) p.set("region", worldCruiseRegion);
       if (country) p.set("country", country);
@@ -1631,7 +1604,7 @@ async function searchHotels(input, fetchImpl) {
         queryText = [rawBrand, queryText].filter(Boolean).join(" ");
       } else if (type === "cruise") {
         p.set("operator", brand);
-    else if (year) p.set("year", year);
+      } else {
         p.set("brand", brand);
       }
     }
@@ -1639,13 +1612,13 @@ async function searchHotels(input, fetchImpl) {
     if (type === "train" && (input.world === true || String(input.world || "").toLowerCase() === "true")) {
       p.set("world", "true");
     }
-    else if (year) p.set("year", year);
+    if (queryText && !dropQ) p.set("q", queryText);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
     else if (year) p.set("year", year);
     // Send intent only on a branded ask; an open search drops it so the page
     // is not sorted down to a single operator (see diversifySuppliers above).
-    const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
+    if (input.intent && !diversifySuppliers) p.set("intent", String(input.intent).trim());
     p.set("limit", String(candidateLimit));
     return `${cfg.base}${cfg.path}?${p.toString()}`;
   };
@@ -1655,29 +1628,13 @@ async function searchHotels(input, fetchImpl) {
       const r = await fetchImpl(buildUrl(opts));
       if (!r.ok) throw new Error(`${type} api ${r.status}`);
       return r.json();
-    // Supplier diversity needs an unranked page, so `intent` is deliberately
-    // kept off the query (see diversifySuppliers above). That used to mean the
-    // traveler's intent was simply discarded on every open travel search — the
-    // prompt reads the traveler carefully, inferIntentFromText recovers an
-    // intent the model forgot, and then neither reached the ranking.
-    //
-    // Rank locally instead. The page already arrived broad, so ordering it here
-    // costs none of the breadth the drop was protecting: it decides which
-    // sailing represents each operator, and which operators lead, while
-    // brandDiverseResults still takes one per supplier below. A branded search
-    // already sent intent upstream and is left alone.
-    const candidates = diversifySuppliers && input.intent
-      ? supplierFit.rankItems(j.results || [], String(input.intent).trim(), {
-          getBrandLabel: (r) => r.brand || r.operator,
-          getName: (r) => r.name,
-        })
-      : (j.results || []);
+    };
     let j = await run({});
     let note = null;
     const brandParamSet = !!brand && (type !== "yacht" || !!yachtBrand);
     if (brandParamSet && !(j.results || []).length) {
       // Exact operator/brand names are strict ("Ponant" vs "PONANT
-    const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
+      // EXPLORATIONS"); a near-miss still matches as free text.
       const retry = await run({ brandAsText: true });
       if ((retry.results || []).length) {
         j = retry;
@@ -1685,25 +1642,9 @@ async function searchHotels(input, fetchImpl) {
       }
     }
     // Descriptor words a traveler uses ("wildlife", "luxury") are not always
-    const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
+    // indexed in the atlas `q` fields; combined with a real geographic anchor
     // they AND-filter the search to zero. With a region or country to keep the
-    // Supplier diversity needs an unranked page, so `intent` is deliberately
-    // kept off the query (see diversifySuppliers above). That used to mean the
-    // traveler's intent was simply discarded on every open travel search — the
-    // prompt reads the traveler carefully, inferIntentFromText recovers an
-    // intent the model forgot, and then neither reached the ranking.
-    //
-    // Rank locally instead. The page already arrived broad, so ordering it here
-    // costs none of the breadth the drop was protecting: it decides which
-    // sailing represents each operator, and which operators lead, while
-    // brandDiverseResults still takes one per supplier below. A branded search
-    // already sent intent upstream and is left alone.
-    const candidates = diversifySuppliers && input.intent
-      ? supplierFit.rankItems(j.results || [], String(input.intent).trim(), {
-          getBrandLabel: (r) => r.brand || r.operator,
-          getName: (r) => r.name,
-        })
-      : (j.results || []);
+    // search bounded, retry once without `q` rather than returning nothing.
     const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
     if (geoAnchor && hadQText && !(j.results || []).length) {
       const retry = await run({ dropQ: true });
@@ -1714,7 +1655,23 @@ async function searchHotels(input, fetchImpl) {
         }
       }
     }
-    const candidates = j.results || [];
+    // Supplier diversity needs an unranked page, so `intent` is deliberately
+    // kept off the query (see diversifySuppliers above). That used to mean the
+    // traveler's intent was simply discarded on every open travel search — the
+    // prompt reads the traveler carefully, inferIntentFromText recovers an
+    // intent the model forgot, and then neither reached the ranking.
+    //
+    // Rank locally instead. The page already arrived broad, so ordering it here
+    // costs none of the breadth the drop was protecting: it decides which
+    // sailing represents each operator, and which operators lead, while
+    // brandDiverseResults still takes one per supplier below. A branded search
+    // already sent intent upstream and is left alone.
+    const candidates = diversifySuppliers && input.intent
+      ? supplierFit.rankItems(j.results || [], String(input.intent).trim(), {
+          getBrandLabel: (r) => r.brand || r.operator,
+          getName: (r) => r.name,
+        })
+      : (j.results || []);
     const results = brandDiverseResults(candidates, limit, type, {
       allowDuplicateBrands: !!rawBrand,
       supplierCap: rawBrand ? 0 : supplierCap,
@@ -2076,13 +2033,7 @@ const INTENT_HINTS = [
   [/\b(safari|wildlife|animals?|gorillas?|penguins?|polar\s+bears?|whales?|bears?)\b/i, "wildlife"],
   [/\b(photo|photos|photography|photographer|camera)\b/i, "photography"],
   [/\b(expedition|remote|antarctica|arctic|galapagos|amazon|patagonia|kimberley|svalbard|northwest\s+passage)\b/i, "expedition"],
-  // Only retype when the model did NOT commit to one. It used to override an
-  // explicit type:"hotel" too, so "somewhere beautiful in Venice before the
-  // cruise" — a hotel question the model reads correctly, with the whole
-  // conversation in view — was rewritten to a cruise search by a keyword scan of
-  // the last message alone. `any` still gets retyped: it is a non-choice that
-  // routes to hotels regardless.
-  if (!hasHotelIntent && type === "any") {
+  [/\b(ski(?:ing)?|hik(?:e|es|ing)|trek(?:king)?|div(?:e|ing)|surf(?:ing)?|golf(?:ing)?|adventure|active)\b/i, "active"],
   [/\b(culture|cultural|history|historic|museums?|art|architecture|temples?|unesco|food|culinary|wine)\b/i, "culture"],
   [/\b(wellness|spa|reset|recovery|detox|yoga|sleep)\b/i, "wellness"],
   [/\b(foodie|restaurant|restaurants|dining|culinary|wine)\b/i, "foodie"],
@@ -2114,13 +2065,7 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
     !/\boverwater\b/i.test(text);
   let out = input;
   if (!out.intent) {
-  // Only retype when the model did NOT commit to one. It used to override an
-  // explicit type:"hotel" too, so "somewhere beautiful in Venice before the
-  // cruise" — a hotel question the model reads correctly, with the whole
-  // conversation in view — was rewritten to a cruise search by a keyword scan of
-  // the last message alone. `any` still gets retyped: it is a non-choice that
-  // routes to hotels regardless.
-  if (!hasHotelIntent && type === "any") {
+    const intent = inferIntentFromText(`${text} ${input.q || ""}`);
     if (intent) out = { ...out, intent };
   }
 
@@ -2131,7 +2076,13 @@ function prioritizeMentionedPlace(input = {}, latestUserText = "") {
     return { ...out, type: "worldcruise" };
   }
 
-  if (!hasHotelIntent && (type === "hotel" || type === "any")) {
+  // Only retype when the model did NOT commit to one. It used to override an
+  // explicit type:"hotel" too, so "somewhere beautiful in Venice before the
+  // cruise" — a hotel question the model reads correctly, with the whole
+  // conversation in view — was rewritten to a cruise search by a keyword scan of
+  // the last message alone. `any` still gets retyped: it is a non-choice that
+  // routes to hotels regardless.
+  if (!hasHotelIntent && type === "any") {
     if (hasCruiseIntent) return { ...out, type: "cruise" };
     if (hasYachtIntent) return { ...out, type: "yacht" };
     if (hasTrainIntent) return { ...out, type: "train" };

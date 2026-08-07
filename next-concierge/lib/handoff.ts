@@ -5,8 +5,6 @@
 // visit, so the parsing moved here and both entry points share it.
 
 import { leadTool } from "./guide-meta";
-import { leadTool } from "./guide-meta";
-import { leadTool } from "./guide-meta";
 import type { GuideMeta, GuideTurn } from "./types";
 
 /**
@@ -154,6 +152,8 @@ export function transcriptText(turns: GuideTurn[]): string {
  * the ship-vs-destination decision there warrants its own framing.
  */
 export function handoffCategory(meta: GuideMeta | undefined): string {
+  if (!meta) return "generic";
+  const region = (meta.chartRegion || "").toLowerCase();
   const tool = leadTool(meta.tools);
   const type = (tool?.type || "").toLowerCase();
   // Ordinary Luxury Cruise sailings are sourced by an advisor rather than held
