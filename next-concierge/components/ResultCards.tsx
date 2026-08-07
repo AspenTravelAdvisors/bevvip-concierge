@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { GuideMeta, GuideToolMeta, OfferingResult, OfferingType, TripState } from "@/lib/types";
 import { atlasRegionQuery, internalAtlasLink, isOfferingType } from "@/lib/atlas-config";
+import { leadTool } from "@/lib/guide-meta";
 import type { NormalizedOffering } from "@/lib/offering-shape";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip, setTrip as persistTrip } from "@/lib/trip-state";
@@ -114,8 +115,7 @@ function totalResults(meta: GuideMeta): number {
 }
 
 function leadOfferingType(meta: GuideMeta): OfferingType | null {
-  const tools = [...(meta.tools ?? [])].reverse();
-  const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
+  const tool = leadTool(meta.tools);
   return normalizeType(String(tool?.type ?? tool?.input?.type ?? ""));
 }
 

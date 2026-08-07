@@ -4,6 +4,7 @@
 // business's primary conversion path, reachable from the header on a cold
 // visit, so the parsing moved here and both entry points share it.
 
+import { leadTool } from "./guide-meta";
 import type { GuideMeta, GuideTurn } from "./types";
 
 /**
@@ -153,8 +154,7 @@ export function transcriptText(turns: GuideTurn[]): string {
 export function handoffCategory(meta: GuideMeta | undefined): string {
   if (!meta) return "generic";
   const region = (meta.chartRegion || "").toLowerCase();
-  const tools = [...(meta.tools ?? [])].reverse();
-  const tool = tools.find((t) => (t.results ?? []).length > 0) ?? tools[0];
+  const tool = leadTool(meta.tools);
   const type = (tool?.type || "").toLowerCase();
   if (type === "hotel") return "hotel";
   if (type === "jet") return "jet";

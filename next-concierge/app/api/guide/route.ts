@@ -22,6 +22,7 @@ import {
 import { SEARCH_EXPERIENCES_TOOL, searchExperiences } from "@/lib/experiences.js";
 import type { ChatMessage, GuideFrame, GuideMeta, GuideToolMeta } from "@/lib/types";
 import { corsHeaders } from "@/lib/guide-cors";
+import { leadTool } from "@/lib/guide-meta";
 import { isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -30,6 +31,11 @@ export const maxDuration = 60;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-4-6";
 const MAX_TOKENS = 1500;
 // A cross-atlas "ways to visit X" answer is instructed to call search_offerings
+// once per pillar (hotel, cruise, jet, worldcruise, train). Batched into one
+// assistant turn that is a single round, but the model routinely serialises
+// them, and at 4 the loop ran out of budget mid-sweep and returned no final
+// text at all. 6 covers the five-category sweep plus a refining call.
+const MAX_TOOL_ROUNDS = 6;
 // once per pillar (hotel, cruise, jet, worldcruise, train). Batched into one
 // assistant turn that is a single round, but the model routinely serialises
 // them, and at 4 the loop ran out of budget mid-sweep and returned no final
@@ -308,9 +314,7 @@ function summarizeMeta(toolMeta: GuideToolMeta[]): GuideMeta {
     deepLink: t.deepLink ?? null,
     chartRegion: t.chartRegion ?? null,
     unavailable: !!t.unavailable,
-    sources: t.sources ?? null,
-    results: t.results || [],
-    related: t.related ?? null,
+  const lead = leadTool(tools);
     ...(t.trip ? { trip: t.trip } : {}),
   }));
   // Prefer the last tool call that actually returned inventory.

@@ -20,7 +20,12 @@ import { withNormalized } from "./offering-shape";
 // URLs built below resolve to the same in-process backends via atlasFetch.
 const HOTEL_API_BASE = process.env.ATLAS_HOTEL_URL || "/atlas/hotel";
 const DEFAULT_RECOMMENDATION_LIMIT = 3;
-const MAX_RESULTS_PER_CATEGORY = 4;
+// The prompt lets an answer span up to five products from one atlas when it is
+// genuinely covering multiple brands or operators. Clamping to 4 made that
+// ceiling unreachable — the model could be told "up to five" and never be handed
+// a fifth record to name. The card row deliberately shows fewer (see
+// GUIDE_CARD_LIMIT_PER_TOOL); prose may name more than the row draws.
+const MAX_RESULTS_PER_CATEGORY = 5;
 const MAX_CANDIDATE_LIMIT = 24;
 // Open (no-brand) cruise/yacht/jet searches surface ONE sailing per operator and
 // must cover every operator in the region/month, not crop to the small hotel-style
@@ -535,7 +540,7 @@ export const SEARCH_OFFERINGS_TOOL = {
       limit: {
         type: "integer",
         default: DEFAULT_RECOMMENDATION_LIMIT,
-        description: "Number of records to return per atlas/category. Curate around 3 by default. Max 4.",
+        description: "Number of records to return per atlas/category. Curate around 3 by default. Max 5.",
       },
       world: {
         type: "boolean",
@@ -1501,6 +1506,9 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
   // was resolved and then dropped for cruise/yacht/jet, and since
   // stripDateFromQuery also strips the year out of `q`, the constraint the
   // traveler stated vanished entirely rather than binding somewhere.
+  // was resolved and then dropped for cruise/yacht/jet, and since
+  // stripDateFromQuery also strips the year out of `q`, the constraint the
+  // traveler stated vanished entirely rather than binding somewhere.
   const year = month ? "" : (yearFromText(input.month) || yearFromText(input.q));
   let baseQ = atwJet ? stripAroundTheWorldJetTerms(stripDateFromQuery(input.q))
     : type === "worldcruise" ? stripWorldCruiseTerms(stripDateFromQuery(input.q))
@@ -1586,7 +1594,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
     if (type === "train" && (input.world === true || String(input.world || "").toLowerCase() === "true")) {
       p.set("world", "true");
     }
-    if (queryText && !dropQ) p.set("q", queryText);
+    else if (year) p.set("year", year);
     // Month without a year => next instance of that month (Base Camp rule).
     if (month) p.set("month", month);
     else if (year) p.set("year", year);
@@ -1616,7 +1624,7 @@ async function searchOfferingsByType(type, input, fetchImpl, limitOverride = nul
       }
     }
     // Descriptor words a traveler uses ("wildlife", "luxury") are not always
-    // indexed in the atlas `q` fields; combined with a real geographic anchor
+    const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
     // they AND-filter the search to zero. With a region or country to keep the
     // search bounded, retry once without `q` rather than returning nothing.
     const geoAnchor = !!(regionKey || country || worldCruiseRegion || year);
