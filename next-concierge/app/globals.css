@@ -1299,6 +1299,14 @@ main.page {
     bottom: 0;
     z-index: 1260;
     gap: 0;
+    /* Seven 44px rows, a caption, a handle and "Show all" come to ~435px,
+       which fits a modern phone and does not fit a small one in landscape.
+       Cap it and let the rows scroll rather than letting the last collection
+       run off the top of the screen — a layer you cannot reach is a layer
+       that is not in the product. */
+    max-height: 78dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 0 12px calc(14px + env(safe-area-inset-bottom));
     border-radius: 16px 16px 0 0;
     border-left: 0;
@@ -1934,11 +1942,21 @@ main.page {
     min-height: 0;
   }
 
-  /* The Living Atlas owns the whole stage. */
+  /* The Living Atlas owns the whole stage.
+
+     NO Z-INDEX HERE, deliberately. It used to carry `z-index: 1`, which bought
+     nothing — the stage is first in the DOM and everything meant to float over
+     it (the chat sheet at 6, the atlas dock at 5) is a later sibling with a
+     positive z-index, so the paint order is already right — while quietly
+     making this element a stacking context. Everything the map renders was
+     then trapped inside it and re-based at 1: the Collections sheet asks for
+     1260 and still came out under the dock's chips, which cut the seventh
+     collection and "Show all" off the bottom of the screen, and fullscreen's
+     900 came out under the chat sheet. Both are modal over the whole page, so
+     both have to be free to say so. */
   .home-atlas {
     position: absolute;
     inset: 0;
-    z-index: 1;
     flex: none !important;
     max-width: none;
     padding: 0;
