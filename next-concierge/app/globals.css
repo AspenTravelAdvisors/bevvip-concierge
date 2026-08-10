@@ -1151,6 +1151,14 @@ main.page {
   top: calc(12px + env(safe-area-inset-top));
   right: calc(12px + env(safe-area-inset-right));
 }
+/* Same for the Layers pill on the other side. It is pushed down the home
+   globe's top-left stack to clear the framing line (see the 640px block), and
+   fullscreen paints over that line — so the corner is the pill's again, minus
+   the notch. Specificity beats the home-globe offset from either direction. */
+.atlas-map.fs .atlas-legend-pill {
+  top: calc(12px + env(safe-area-inset-top));
+  left: calc(12px + env(safe-area-inset-left));
+}
 
 /* Layer legend — color key, tap a row to toggle that layer. */
 .atlas-legend {
@@ -1959,13 +1967,28 @@ main.page {
     height: 100dvh;
     z-index: 900;
   }
-  /* The plotted-results badge would sit under the dock at the map's foot —
-     park it below the framing line instead, where it stays tappable. */
+  /* THE TOP-LEFT STACK, in reading order: framing line, Layers pill, plotted
+     badge. Three things want this corner on a phone, so each one's offset is
+     derived from the height of the one above it rather than picked by eye —
+     that is how the pill ended up printed across the middle of the headline.
+
+     Framing line:  10px + at most two 15px/1.25 lines  → clears at 48px
+     Layers pill:   54px + 34px                        → clears at 88px
+     Plotted badge: 96px
+
+     The h2's two-line clamp (see the 640px block above) is what keeps the
+     first number a constant; don't unclamp it without redoing these. */
   .home-atlas .atlas-badge {
     right: auto;
     left: 12px;
-    top: 44px;
+    top: 96px;
     bottom: auto;
+  }
+  /* Below the framing line, not over it. The pill's own rules (in the 680px
+     block) put it at the map's top-left corner, which is right on every atlas
+     that has no headline floating there — the home globe is the exception. */
+  .home-atlas .atlas-legend-pill {
+    top: 54px;
   }
   /* One floating line of framing — then the world. */
   .home-atlas .home-atlas-head {
@@ -1979,6 +2002,10 @@ main.page {
   }
   .home-atlas-head h2 {
     font-size: 15px;
+    /* Tighter than the inherited 1.6 so the wrapped case stays inside the
+       48px the stack above budgets for it — and so two lines of framing read
+       as one block rather than as two captions. */
+    line-height: 1.25;
     margin: 0 0 2px;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
   }
