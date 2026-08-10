@@ -69,25 +69,22 @@ function near(a: Pt, b: Pt): number {
 }
 
 /**
- * Two coordinates are the same port.
+ * How close EACH end of a leg must sit to its port for that leg to be the hop.
  *
- * Deliberately tiny (~2km). Consecutive itinerary days in the same port carry
- * the SAME coordinate — they come from one lookup — so this only has to absorb
- * rounding. It must stay well under the distance between two genuinely
- * different ports, and the tightest real pairs in the corpus are close: Nice to
- * Villefranche-sur-Mer and Valletta to St. Julian's are both about 5km.
- */
-const SAME_PORT = 0.0004;
-
-/**
- * How well a leg's two ends must match a hop's two ports to be that hop.
+ * Per-endpoint, not a sum of the two. That distinction is load-bearing: under a
+ * summed score one perfect end masks a sloppy other end, and a hop between a
+ * port and ITSELF — two nights in Capri — scores 0 on one side and so happily
+ * claims the Sorrento→Capri leg, drawing it twice. Capped per endpoint, a leg
+ * has to genuinely reach both ports, and a same-port hop matches nothing at all
+ * (the build emits no zero-length legs), which is the correct answer without
+ * needing a same-port special case anywhere.
  *
  * Legs are generated FROM the port coordinates, so a true match is near-exact
- * and this only has to cover the 2dp rounding in the shipped file. Keeping it
- * tight is what makes a missing leg read as a missing leg rather than as
- * licence to grab whichever unrelated leg happens to be nearest.
+ * and this only has to cover the file's 3dp rounding. Keeping it tight is what
+ * makes a missing leg read as missing rather than as licence to grab whichever
+ * unrelated leg happens to be nearest.
  */
-const HOP_MATCH = 0.02;
+const HOP_MATCH = 0.01;
 
 /**
  * Order and orient legs so the route runs in itinerary order, then unroll it
@@ -158,8 +155,23 @@ function chainByItinerary(pool: FrameLeg[], stops: Pt[]): { legs: FrameLeg[]; pl
   for (let i = 1; i < stops.length; i++) {
     const from = stops[i - 1];
     const to = stops[i];
-    // Two nights in the same port is not a hop and has no leg.
-    if (near(from, to) <= SAME_PORT) continue;
+
+    /*
+     * Note there is no "are these the same port?" test here, deliberately.
+     *
+     * Two nights in one port needs no special case: the build skips
+     * zero-length legs, so nothing spans a port to itself and the search below
+     * simply finds nothing. Adding a distance guard on top would be the very
+     * mistake this rewrite removed — and it bites immediately, because some
+     * itineraries name one place twice. Westmann Islands and Heimaey are the
+     * same Icelandic harbour 1.1km apart under two spellings, as are East
+     * Greenland and Tasiilaq at 2km; the geometry carries a real (if tiny) leg
+     * between each pair. A same-port guard loose enough to fold those together
+     * orphaned that leg, which then got appended after the finished route and
+     * drew as a stray jump at the end of an otherwise clean world cruise.
+     *
+     * Letting the geometry answer the question keeps them in sequence.
+     */
 
     // Prefer an unclaimed leg. Falling back to a claimed one covers the
     // out-and-back case: the shipped geometry deduplicates legs, so a voyage
@@ -202,8 +214,9 @@ function bestLegFor(
     const c = pool[i].coordinates;
     const head = c[0];
     const tail = c[c.length - 1];
-    const forward = near(head, from) + near(tail, to);
-    const reverse = near(tail, from) + near(head, to);
+    // The WORSE of the two ends, so both have to reach — see HOP_MATCH.
+    const forward = Math.max(near(head, from), near(tail, to));
+    const reverse = Math.max(near(tail, from), near(head, to));
     const score = Math.min(forward, reverse);
     if (score < bestScore) { bestScore = score; best = { i, reversed: reverse < forward }; }
   }

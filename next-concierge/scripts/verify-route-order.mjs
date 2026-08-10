@@ -73,16 +73,6 @@ function d2(a, b) {
 }
 /** Endpoints that should coincide, allowing for the file's 2dp rounding. */
 const JOINED = 0.01;
-/**
- * Mirrors route-frame's SAME_PORT (~2km).
- *
- * Deliberately NOT reusing JOINED: adjacent ports can be 5km apart, so the
- * threshold that forgives rounding on a single point is already too coarse to
- * decide whether two stops are the same port. Conflating the two is the exact
- * mistake this verifier exists to catch, and using JOINED here made the
- * verifier skip the close-together hops it is supposed to be checking.
- */
-const SAME_PORT = 0.0004;
 
 // ── Synthetic cases: the ordering contract, independent of any shipped file ──
 
@@ -131,6 +121,37 @@ const SAME_PORT = 0.0004;
   const A = [0, 0], B = [1, 0];
   const out = frameRoute([{ mode: "primary", coordinates: [A, B] }], [A, A, B]);
   ok(out.length === 1, "two nights in one port do not invent a leg");
+}
+
+{
+  // Yacht #96, Naples to Salerno: two consecutive nights in Capri, with
+  // Sorrento only 14km away. Under a SUMMED endpoint score the Capri→Capri
+  // hop scores 0 on one side and claims the Sorrento→Capri leg, drawing it
+  // twice. Both ends have to reach.
+  const sorrento = [14.24, 40.55], capri = [14.37, 40.63], salerno = [14.76, 40.68];
+  const out = frameRoute([
+    { mode: "primary", coordinates: [sorrento, capri] },
+    { mode: "primary", coordinates: [capri, salerno] },
+  ], [sorrento, capri, capri, salerno]);
+  ok(out.length === 2, "a second night in port cannot claim the leg that arrived there",
+    out.map((l) => `${l.coordinates[0]}→${l.coordinates[l.coordinates.length - 1]}`).join("  "));
+}
+
+{
+  // The other side of that coin. Some itineraries name one place twice —
+  // "Westmann Islands" and "Heimaey" are the same Icelandic harbour 1.1km
+  // apart, as are "East Greenland" and "Tasiilaq" at 2km — and the geometry
+  // carries a real, tiny leg between the two spellings. A same-port guard
+  // loose enough to fold those together orphans that leg, which then draws as
+  // a stray jump after the route has finished.
+  const westmann = [-20.27, 63.44], heimaey = [-20.27, 63.43], reykjavik = [-21.94, 64.15];
+  const out = frameRoute([
+    { mode: "primary", coordinates: [heimaey, reykjavik] },
+    { mode: "primary", coordinates: [westmann, heimaey] },
+  ], [westmann, heimaey, reykjavik]);
+  ok(out.length === 2 && d2(out[0].coordinates[0], westmann) < JOINED,
+    "two names for one harbour keep their short leg in sequence",
+    out.map((l) => `${l.coordinates[0]}→${l.coordinates[l.coordinates.length - 1]}`).join("  "));
 }
 
 {
@@ -195,11 +216,14 @@ for (const [name, itinPath, geoPath] of [
     const expected = [];
     for (let i = 1; i < stops.length; i++) {
       const from = stops[i - 1], to = stops[i];
-      if (d2(from, to) <= SAME_PORT) continue; // two nights in one port
+      // No same-port guard, mirroring route-frame: a hop counts exactly when
+      // the geometry has a leg for it. Two nights in one port have none.
       const has = feats.some((f) => {
         const c = f.geometry.coordinates;
         const h = c[0], t = c[c.length - 1];
-        return Math.min(d2(h, from) + d2(t, to), d2(t, from) + d2(h, to)) <= 0.02;
+        // Per-endpoint, mirroring route-frame's HOP_MATCH: both ends must
+        // reach, so a same-port hop cannot claim a leg by scoring 0 on one side.
+        return Math.min(Math.max(d2(h, from), d2(t, to)), Math.max(d2(t, from), d2(h, to))) <= 0.01;
       });
       if (has) expected.push([from, to]);
     }
