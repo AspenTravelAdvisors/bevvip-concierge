@@ -785,11 +785,26 @@ export default function AtlasShell({
     const storedStyle = readStoredStyle();
     let styleKeyLocal: StyleKey =
       initialStyle ?? linkedStyle ?? storedStyle ?? "satellite";
-    // Auto daylight is armed only when the boot style fell through to the house
-    // default. A prop, a Share link, or a pick carried in from another atlas is
-    // someone having already chosen — including a link captured while auto had
-    // switched to daylight, which re-opens on daylight rather than snapping back.
-    let autoLight = !initialStyle && !linkedStyle && !storedStyle;
+    /*
+     * Auto daylight is armed unless a PERSON picked the boot basemap.
+     *
+     * A Share link, or a pick carried in from another atlas, is someone having
+     * already chosen — including a link captured while auto had switched to
+     * daylight, which re-opens on daylight rather than snapping back.
+     *
+     * `initialStyle` is NOT someone choosing. It is the PAGE's default, and
+     * every collection atlas passes "satellite" (hotel, jet, yacht, cruise,
+     * worldcruise). Treating it as a choice meant the altitude handoff ran on
+     * the home globe alone: zooming into a coastline from /atlas/yacht sat on
+     * `dusk` forever, the one place a traveller is closest to actually reading
+     * the ground. The rule the atlases wanted is the plain one — on dusk
+     * satellite, coming in close brings the lights up.
+     *
+     * Armed only from a photoreal boot style. The zoomend watcher re-checks
+     * (Dark and the 3D presets are nobody's idea of "satellite, but lit"), but
+     * arming honestly here keeps the flag meaning what it says.
+     */
+    let autoLight = !linkedStyle && !storedStyle && SATELLITE_KEYS.has(styleKeyLocal);
     const arrivedCamera = initialCamera ?? arrived.camera;
     // Reconcile the controls with what the URL just decided. Safe to call here
     // and nowhere earlier: this is post-mount, so it re-renders the swatch and
