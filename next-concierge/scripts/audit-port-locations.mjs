@@ -6,6 +6,12 @@
  *   node scripts/audit-port-locations.mjs --strict   exit 1 if anything is found
  *   node scripts/audit-port-locations.mjs --json     machine-readable findings
  *   node scripts/audit-port-locations.mjs --collection=world
+ *   node scripts/audit-port-locations.mjs --all      ignore the confirmed list
+ *
+ * Corrections live next door, in data/atlas/shared/port-overrides.json, and are
+ * applied to the feeds by scripts/fix-port-locations.mjs. That file also holds
+ * the `confirmed` list — stops this audit flags that a human has checked and
+ * found correct — which is what makes --strict usable as a build gate.
  *
  * ── The problem ────────────────────────────────────────────────────────────
  *
@@ -22,7 +28,19 @@
  *
  * So the checks here are mostly GEOMETRIC, not nominal. They ask whether a stop
  * makes sense where the journey puts it, which needs no gazetteer, no country
- * table, and no per-feed knowledge.
+ * table, and no per-feed knowledge. Six of them, each with its own blind spot,
+ * which is why there are six:
+ *
+ *   hygiene       a coordinate that cannot be a place at all
+ *   detour        a stop far off the line between its neighbours
+ *   pace          a hop no vehicle could make in the days allowed
+ *   stranded      a stop far from BOTH neighbours, by this journey's own scale
+ *   landlocked    a dry stop on a voyage that is otherwise at sea
+ *   disagreement  two feeds mapping one name hundreds of km apart
+ *
+ * Jets are exempt from most of it on purpose: a jet itinerary is a list of
+ * places chosen for not being near each other, so the geometry that convicts a
+ * ship acquits a jet. Each check below says what it gives up and why.
  *
  * ── Why it is built this way ───────────────────────────────────────────────
  *
@@ -46,7 +64,8 @@
  * Findings are grouped by STOP, not by journey, because one bad coordinate is
  * one fix however many itineraries it corrupts. Each carries the evidence that
  * flagged it, so a human can confirm before editing anything — none of this
- * rewrites data.
+ * rewrites data. Corrections are written down in the ledger and applied by
+ * fix-port-locations.mjs, so the fix survives the next feed refresh.
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -200,6 +219,117 @@ export function checkPace(journey, findings) {
   }
 }
 
+/**
+ * Flag a stop marooned from BOTH its neighbours, judged against the journey's
+ * own typical leg.
+ *
+ * This is the "one leg is longer than the rest" idea, with the correction that
+ * makes it usable: one long leg is not evidence of anything. Los Angeles to
+ * Nawiliwili is 4,222km and 12x the surrounding legs of that voyage, and it is
+ * simply the Pacific. Every ocean crossing in the feed looks like that from one
+ * side, which is why a leg-length test alone flagged 70 innocent stops.
+ *
+ * A rogue coordinate is different in kind: it is far from what comes before AND
+ * far from what comes after, because the rest of the voyage is somewhere else
+ * entirely. "Half Moon Island, Antarctica" landed at 32.5N, 80.7W — coastal
+ * South Carolina, so no land check sees it — 9,628km from Port Stanley and
+ * 9,000km from the Antarctic Peninsula. Taking the SMALLER of the two distances
+ * as the score keeps genuine crossings out by construction: their far end is
+ * always close to the stop after it.
+ *
+ * The yardstick is the journey itself, since a world cruise tolerates legs that
+ * would be absurd on a fjord itinerary. Zero-length legs (a ship staying put, or
+ * several calls in one port) are excluded from the median, or a repeat-heavy
+ * itinerary calibrates to zero and flags everything. MIN_ABS_KM then keeps the
+ * ratio honest on short-hop voyages.
+ *
+ * Terminal stops have only one neighbour, so "both sides" is unavailable and
+ * the bar doubles instead. It has to: a voyage that begins in Los Angeles and
+ * sails to Hawaii, or ends at Fort Lauderdale after the Atlantic, has exactly
+ * the shape of a stranded stop when you can only look one way. Doubling keeps
+ * the ends covered against a departure port on the wrong continent while
+ * leaving ordinary repositioning alone.
+ *
+ * Jets are exempt for the reason given above DETOUR_MIN_EXTRA_KM: a jet
+ * itinerary is a list of places, not a path.
+ */
+const STRANDED_MIN_RATIO = 6;
+const STRANDED_MIN_ABS_KM = { world: 4000, yacht: 2500, cruise: 2500, train: 1500 };
+const STRANDED_TERMINAL_FACTOR = 2;
+
+export function checkStranded(journey, findings) {
+  const minAbs = STRANDED_MIN_ABS_KM[journey.collection];
+  if (minAbs == null) return;                 // jets, and any feed not listed
+  const s = journey.stops;
+  const lens = [];
+  for (let i = 1; i < s.length; i++) lens.push(km(s[i - 1], s[i]));
+  const moved = lens.filter((d) => d > 1);
+  if (moved.length < 4) return;               // too short to calibrate against
+  const typical = median(moved);
+  const bar = Math.max(minAbs, STRANDED_MIN_RATIO * typical);
+  for (let i = 0; i < s.length; i++) {
+    const before = i > 0 ? lens[i - 1] : null;
+    const after = i < s.length - 1 ? lens[i] : null;
+    const terminal = before == null || after == null;
+    const isolation = before == null ? after : after == null ? before : Math.min(before, after);
+    if (isolation == null) continue;
+    if (isolation < bar * (terminal ? STRANDED_TERMINAL_FACTOR : 1)) continue;
+    const near = before == null ? `${Math.round(after).toLocaleString()}km from ${s[i + 1].name}`
+      : after == null ? `${Math.round(before).toLocaleString()}km from ${s[i - 1].name}`
+        : `${Math.round(before).toLocaleString()}km from ${s[i - 1].name}`
+          + ` and ${Math.round(after).toLocaleString()}km from ${s[i + 1].name}`;
+    findings.push({
+      kind: "stranded",
+      collection: journey.collection,
+      stop: s[i],
+      journey,
+      detail: `${near} — this journey's typical leg is ${Math.round(typical).toLocaleString()}km`,
+      score: isolation,
+    });
+  }
+}
+
+/**
+ * Flag a stop with no access to the sea on a journey that is otherwise afloat.
+ *
+ * The land mask the sea router already ships answers "could a ship reach this
+ * coordinate?" for free, and a surprising share of rogue ports fail it outright:
+ * Churchill's Ontario namesake, "Natal, Brazil" dropped 1,800km inland into
+ * Tocantins, "Le Port, France" high in the Pyrenees.
+ *
+ * Used naively it is useless. A quarter of the inland stops in these feeds are
+ * correct — the Amazon above Iquitos, the Rhine to Basel, the Great Lakes, the
+ * Snake River, and every Norwegian fjord (the mask is 0.1 deg, too coarse to
+ * resolve a fjord at all, so Flåm reads 111km from the sea).
+ *
+ * What separates them is the company again: a Rhine cruise is inland at every
+ * stop, while a rogue is the one dry stop on a voyage that is otherwise at sea.
+ * Hence the journey-level guard, and hence "no sea access at all" (the router
+ * gives up past ~330km) rather than a distance threshold that fjords trip.
+ */
+const LANDLOCKED_MAX_SHARE = 0.25;
+
+export function checkLandlocked(journey, findings, seaAccessKm) {
+  if (!seaAccessKm) return;
+  if (!["world", "yacht", "cruise"].includes(journey.collection)) return;
+  const dry = journey.stops.filter((p) => !Number.isFinite(seaAccessKm(p.lat, p.lng)));
+  if (!dry.length) return;
+  if (dry.length > LANDLOCKED_MAX_SHARE * journey.stops.length) return;  // a river voyage
+  for (const stop of dry) {
+    findings.push({
+      kind: "landlocked",
+      collection: journey.collection,
+      stop,
+      journey,
+      detail: "no navigable water within 330km, on a voyage whose other"
+        + ` ${journey.stops.length - dry.length} stops are reachable by sea`,
+      // Ranked below the geometric checks, whose km figures are the evidence a
+      // human wants first; this one is a yes/no.
+      score: 1,
+    });
+  }
+}
+
 /** Latitude/longitude that cannot be a place at all. */
 export function checkHygiene(journey, findings) {
   for (const stop of journey.stops) {
@@ -236,6 +366,59 @@ export function checkHygiene(journey, findings) {
  * never the problem, so no check on the label can find it.
  */
 
+/**
+ * Flag the same place given two different coordinates by two different feeds.
+ *
+ * A corpus check rather than a per-journey one, and the only one here that
+ * comes with the answer attached: when the expedition feed puts "Garibaldi
+ * Glacier, Chile" at 54.8S 70.0W and the world-cruise feed puts it at 49.7N
+ * 123.1W — Garibaldi Provincial Park, British Columbia — one of them is right
+ * and the majority is a good bet for which.
+ *
+ * The 500km floor is what stops it reporting the ordinary disagreement between
+ * two geocoders about where a large port "is" (Rotterdam's dock vs its city
+ * hall) or between a fjord's mouth and its head.
+ */
+const CROSS_FEED_MIN_KM = 500;
+
+export function checkCrossFeed(journeys, findings) {
+  /** name -> "lat,lng" -> { stop, collections:Set, journeys:Set } */
+  const byName = new Map();
+  for (const j of journeys) {
+    for (const stop of j.stops) {
+      if (!Number.isFinite(stop.lat) || !Number.isFinite(stop.lng)) continue;
+      const variants = byName.get(stop.name) || new Map();
+      const key = `${stop.lat.toFixed(2)},${stop.lng.toFixed(2)}`;
+      const v = variants.get(key) || { stop, collections: new Set(), journeys: new Set() };
+      v.collections.add(j.collection);
+      v.journeys.add(`${j.collection}:${j.id}`);
+      variants.set(key, v);
+      byName.set(stop.name, variants);
+    }
+  }
+  for (const [name, variants] of byName) {
+    if (variants.size < 2) continue;
+    const vs = [...variants.values()].sort((a, b) => b.journeys.size - a.journeys.size);
+    const [majority] = vs;
+    for (const v of vs.slice(1)) {
+      const apart = km(majority.stop, v.stop);
+      if (apart < CROSS_FEED_MIN_KM) continue;
+      findings.push({
+        kind: "disagreement",
+        collection: v.stop.collection ?? [...v.collections][0],
+        stop: v.stop,
+        // The evidence is the other feed, so any journey using this variant
+        // will do as the example.
+        journey: { collection: [...v.collections][0], id: name, title: name, stops: [] },
+        detail: `${name} is also mapped at ${majority.stop.lat}, ${majority.stop.lng}`
+          + ` (${[...majority.collections].join(", ")}, ${majority.journeys.size} journeys)`
+          + ` — ${Math.round(apart).toLocaleString()}km away`,
+        score: apart,
+      });
+    }
+  }
+}
+
 const median = (xs) => {
   const s = [...xs].sort((a, b) => a - b);
   return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
@@ -247,15 +430,30 @@ const median = (xs) => {
  * Exported so an API ingest path can validate a live response before caching
  * it, using the same rules the shipped data is held to.
  */
-export function auditJourneys(journeys) {
+export function auditJourneys(journeys, { seaAccessKm } = {}) {
   const findings = [];
   for (const journey of journeys) {
     if (!journey.stops || journey.stops.length < 2) continue;
     checkHygiene(journey, findings);
     checkDetour(journey, findings);
     checkPace(journey, findings);
+    checkStranded(journey, findings);
+    checkLandlocked(journey, findings, seaAccessKm);
   }
+  checkCrossFeed(journeys, findings);
   return findings;
+}
+
+/**
+ * The land mask, if it is on disk — 765KB and a one-second flood fill, so it
+ * is loaded once and only when the landlocked check can use it. Absent (a live
+ * API caller, a trimmed checkout) the other checks simply run without it.
+ */
+export async function loadSeaAccess() {
+  if (!has("data/atlas/shared/landmask.bin")) return null;
+  const { createSeaRouter } = await import("../lib/atlas/sea-router.mjs");
+  const router = createSeaRouter(readFileSync(join(ROOT, "data/atlas/shared/landmask.bin")));
+  return (lat, lng) => router.seaAccessKm(lat, lng);
 }
 
 // ── Sources ────────────────────────────────────────────────────────────────
@@ -329,12 +527,28 @@ const SOURCES = [
 const argv = process.argv.slice(2);
 const strict = argv.includes("--strict");
 const asJson = argv.includes("--json");
+const showAll = argv.includes("--all");
 const only = (argv.find((a) => a.startsWith("--collection=")) || "").split("=")[1];
 
 let journeys = SOURCES.flatMap((load) => load());
 if (only) journeys = journeys.filter((j) => j.collection === only);
 
-const findings = auditJourneys(journeys);
+const findings = auditJourneys(journeys, { seaAccessKm: await loadSeaAccess() });
+
+/*
+ * Stops a human has already looked at and found correct.
+ *
+ * Every one of these is a real itinerary doing something that looks wrong from
+ * geometry alone — a voyage that ends with a charter flight home, an Amazon
+ * tributary the mask cannot see. Without the list --strict can never be clean,
+ * and a check that can never be clean is a check nobody runs.
+ */
+const confirmed = new Set(
+  (has("data/atlas/shared/port-overrides.json")
+    ? read("data/atlas/shared/port-overrides.json").confirmed || []
+    : []
+  ).map((c) => `${c.collection}|${c.name}`),
+);
 
 /*
  * Collapse to one row per stop. A port shared by forty itineraries produces
@@ -343,6 +557,7 @@ const findings = auditJourneys(journeys);
  */
 const byStop = new Map();
 for (const f of findings) {
+  if (!showAll && confirmed.has(`${f.collection}|${f.stop.name}`)) continue;
   const key = `${f.collection}|${f.stop.name}|${f.stop.lat},${f.stop.lng}`;
   const row = byStop.get(key) || {
     collection: f.collection, name: f.stop.name, lat: f.stop.lat, lng: f.stop.lng,

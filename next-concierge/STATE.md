@@ -1069,3 +1069,40 @@ specific lead time is ever quoted by The Guide; the advisor sets both.
   (including ® in Cunard/Princess names) so future entity pages can join on them;
   validated zero orphans both directions at creation. Figures are operator-published
   values compiled 2026-07-21 — approximate, re-verify before quoting in bookings.
+
+## Rogue port coordinates — audit, ledger, gate (2026-08-12)
+
+The recurring failure was one stop per voyage geocoded to a namesake on another
+continent, drawing a spike across the map: "West Point, United Kingdom" in the
+Thames on a Cape Horn voyage, "Antarctic Peninsula" in the Kerguelens,
+"Christmas Island" in the Indian Ocean on a Hawaii–Tahiti crossing. Three parts
+now:
+
+- **`scripts/audit-port-locations.mjs`** (`npm run audit:ports`) — six checks
+  over a normalised `{collection, id, title, stops[]}` shape: hygiene, detour,
+  pace, **stranded** (far from BOTH neighbours, scaled to the journey's own
+  typical leg), **landlocked** (no sea access per the router's land mask, on a
+  voyage whose other stops have it), **disagreement** (two feeds mapping one
+  name >500km apart). The last three are new; a plain "longest leg" test was
+  tried and dropped — it flags every ocean crossing. Jets stay exempt: their
+  itineraries are lists, not paths.
+- **`data/atlas/shared/port-overrides.json`** — the corrections ledger, each
+  entry carrying `was` (a guard: an entry only fires within 0.25 deg of the
+  coordinate it was written against, else it reports itself stale), the fixed
+  `ll`, the evidence and the source. Plus `confirmed`: flagged-but-correct stops
+  (Amazon and Great Lakes calls, charter-flight segments, ambiguous names) which
+  is what lets `--strict` gate a build.
+- **`scripts/fix-port-locations.mjs`** (`npm run fix:ports`) — applies the
+  ledger to both copies of every feed, idempotently, and runs at the head of
+  `prebuild`. This is the part that was missing: the feeds are refreshed
+  wholesale, so a coordinate edited in place comes back wrong on the next
+  harvest. `ll: null` ships a stop with no coordinate when its true location
+  cannot be recovered; `scope: "occurrence"` handles one name meaning two real
+  places — on the PORTS-map feeds by splitting the fitting occurrences onto a
+  new name ("Miyako (Miyakojima), Japan"), on the expedition feed per stop.
+
+42 corrections applied across world / yacht / expedition (~250 stops); sea
+routes rebuilt. `npm run verify:ports` is in `verify` and passes at 0 suspects.
+Two judgment calls left alone and recorded in `confirmed`: Northeast Greenland
+National Park sits at the park centroid, 300km inland on the ice cap, and
+"Cape Peron" may be the Shark Bay one rather than the Rockingham one.

@@ -1,0 +1,443 @@
+{
+  "_meta": {
+    "purpose": "Corrections for stops the atlas feeds geocode to the wrong place, plus the list of flagged-but-correct stops that lets the audit gate a build.",
+    "appliedBy": "scripts/fix-port-locations.mjs (npm run fix:ports) — idempotent, re-run after every feed refresh",
+    "foundBy": "scripts/audit-port-locations.mjs (npm run audit:ports)",
+    "fields": {
+      "name": "the stop name exactly as the feed writes it",
+      "collections": "which feeds this entry applies to; omit for all",
+      "was": "the wrong coordinate, as a guard — an entry only fires on a stop within TOLERANCE_DEG of it, so a feed that changes its mind is reported instead of silently overwritten",
+      "ll": "the corrected [lat, lng]; null means 'true location unknown, ship it with no coordinate rather than a spike'",
+      "scope": "'occurrence' applies the fix only where it moves the stop closer to its neighbours — for names that are two real places (San Sebastián in Gipuzkoa and in La Gomera)",
+      "place": "what the stop actually is",
+      "why": "the evidence, so the next person can disagree with it",
+      "source": "where the corrected coordinate came from"
+    }
+  },
+
+  "corrections": [
+    {
+      "name": "Antarctic Peninsula, Antarctica",
+      "collections": ["world"],
+      "was": [-49.22, 70.21],
+      "ll": [-69.5, -65],
+      "place": "Antarctic Peninsula",
+      "why": "49S 70E is the Kerguelen Islands, most of the Indian Ocean away from the peninsula; voyages using it sail Ushuaia -> here -> Port Stanley",
+      "source": "the expedition feed, which maps the same name at -69.5, -65 across 60 sailings"
+    },
+    {
+      "name": "West Point, United Kingdom",
+      "collections": ["world"],
+      "was": [51.41, 0.73],
+      "ll": [-51.3535, -60.6991],
+      "place": "West Point Island, Falkland Islands",
+      "why": "the Thames Estuary, between Ushuaia and Port Stanley — the geocoder matched the hemisphere it knew",
+      "source": "OSM way/12692705"
+    },
+    {
+      "name": "Le Port, France",
+      "collections": ["world"],
+      "was": [42.87, 1.37],
+      "ll": [-20.9355, 55.2917],
+      "place": "Le Port, Réunion",
+      "why": "a commune in the Pyrenees, between Port Louis and Durban; Le Port is Réunion's commercial harbour",
+      "source": "OSM relation/278311"
+    },
+    {
+      "name": "Nightingale Island, United Kingdom",
+      "collections": ["world"],
+      "was": [51.52, 0.6],
+      "ll": [-37.4237, -12.4837],
+      "place": "Nightingale Island, Tristan da Cunha",
+      "why": "the Thames again, on a voyage whose previous stop is Tristan da Cunha",
+      "source": "OSM relation/3672300; the expedition feed independently maps it at -37.4, -12.475"
+    },
+    {
+      "name": "Half Moon Island, Antarctica",
+      "collections": ["world"],
+      "was": [32.54, -80.7],
+      "ll": [-62.59, -59.91],
+      "place": "Half Moon Island, South Shetland Islands",
+      "why": "coastal South Carolina — near enough to water that no land check sees it, 9,600km from Port Stanley on the stop before",
+      "source": "Wikipedia, Half Moon Island (62°35′24″S 59°54′36″W)"
+    },
+    {
+      "name": "Paradise Bay, Antarctica",
+      "collections": ["world"],
+      "was": [-15.56, 136.85],
+      "ll": [-64.817, -62.867],
+      "place": "Paradise Harbour, Antarctic Peninsula",
+      "why": "the Gulf of Carpentaria, Northern Territory, between Half Moon Island and Admiralty Bay",
+      "source": "Wikipedia, Paradise Harbour (64°49′S 62°52′W)"
+    },
+    {
+      "name": "Admiralty Bay, King George Island, South Shetland Islands, Antarctica, Antarctica",
+      "collections": ["world"],
+      "was": [61.13, -149.94],
+      "ll": [-62.167, -58.417],
+      "place": "Admiralty Bay, King George Island",
+      "why": "61.13N 149.94W is Anchorage, Alaska — the sign of the latitude is the whole error",
+      "source": "Wikipedia, Admiralty Bay (62°10′S 58°25′W)"
+    },
+    {
+      "name": "Garibaldi Glacier, Chile",
+      "collections": ["world"],
+      "was": [49.74, -123.11],
+      "ll": [-54.7667, -69.9667],
+      "place": "Ventisquero Garibaldi, Alberto de Agostini National Park",
+      "why": "Garibaldi Provincial Park, British Columbia; the same voyage calls at Garibaldi Fjord (-54.7, -69.95) two days later",
+      "source": "the expedition feed, which maps the same name at -54.7667, -69.9667"
+    },
+    {
+      "name": "Baker Canal, Chile, Chile",
+      "collections": ["world"],
+      "was": [-33.56, -70.78],
+      "ll": [-47.9552, -74.0776],
+      "place": "Canal Baker, Aysén",
+      "why": "Santiago, 1,600km north of the fjord it names, between Moraleda Channel and Tortel",
+      "source": "OSM way/202405773; the expedition feed maps it at -48, -74"
+    },
+    {
+      "name": "Kimberley Coast, Australia",
+      "collections": ["world"],
+      "was": [-28.11, 153.41],
+      "ll": [-15.4823, 124.5233],
+      "place": "Kuri Bay, on the Kimberley coast",
+      "why": "the Gold Coast, on the wrong side of the continent, between Broome and Darwin; a coastal anchorage stands in for the coast the name describes",
+      "source": "OSM node/3020492517"
+    },
+    {
+      "name": "Hunter River, Australia",
+      "collections": ["world"],
+      "was": [-32.55, 151.18],
+      "ll": [-15.0201, 125.359],
+      "place": "Hunter River anchorage, Naturalists Island, Kimberley",
+      "why": "the Hunter River of New South Wales, between Buccaneer Archipelago and Ashmore Reef; ships anchor off Naturalists Island at the Kimberley river's mouth",
+      "source": "OSM relation/10169615"
+    },
+    {
+      "name": "Hunter River, Australia",
+      "collections": ["cruise"],
+      "was": [-33.5761, 151.357],
+      "ll": [-15.0201, 125.359],
+      "place": "Hunter River anchorage, Naturalists Island, Kimberley",
+      "why": "the same mistake as the world-cruise feed makes, landed 130km further south near Sydney",
+      "source": "OSM relation/10169615"
+    },
+    {
+      "name": "Cascade, Australia, Norfolk Island",
+      "collections": ["world"],
+      "was": [48.48, -121.08],
+      "ll": [-29.0246, 167.9672],
+      "place": "Cascade Bay, Norfolk Island",
+      "why": "the North Cascades of Washington State, between Brisbane and Nouméa",
+      "source": "OSM node/289559370"
+    },
+    {
+      "name": "Christmas Island, Christmas Island",
+      "collections": ["world"],
+      "was": [-10.49, 105.62],
+      "ll": [1.872, -157.3842],
+      "place": "Kiritimati (Christmas Island), Kiribati",
+      "why": "the Indian Ocean Christmas Island, on a Pacific crossing between Kailua Kona and Papeete; the two islands share a name and nothing else",
+      "source": "OSM relation/3830769"
+    },
+    {
+      "name": "Miyako, Japan",
+      "collections": ["world", "yacht"],
+      "scope": "occurrence",
+      "as": "Miyako (Miyakojima), Japan",
+      "was": [39.65, 141.94],
+      "ll": [24.8032, 125.303],
+      "place": "Hirara, Miyakojima, Okinawa",
+      "why": "two ports, one name. The feed's 39.65, 141.94 is Miyako in Iwate and is right where the voyage runs Sendai–Miyako–Aomori; on the Keelung–Naha runs the call is Miyakojima, 2,300km south. Only the southern occurrences are split off",
+      "source": "OSM node/8585247474; the expedition feed maps the Okinawan one at 24.775, 125.325"
+    },
+    {
+      "name": "Aburatsu, Nichinan, Japan, Japan",
+      "collections": ["world"],
+      "was": [44.02, 144.27],
+      "ll": [31.5868, 131.3963],
+      "place": "Aburatsu, Nichinan, Miyazaki",
+      "why": "eastern Hokkaido, between Beppu and Kagoshima; the yacht feed has the Kyushu port right",
+      "source": "OSM node/265841051"
+    },
+    {
+      "name": "Sakai-Ko, Japan",
+      "collections": ["world"],
+      "was": [35.5, 139.54],
+      "ll": [35.525, 133.225],
+      "place": "Sakaiminato, Tottori",
+      "why": "Tokyo Bay, on a leg from Ulsan to Moji-ko down the Sea of Japan",
+      "source": "the expedition feed, 6 sailings"
+    },
+    {
+      "name": "Kochi, Japan",
+      "collections": ["cruise"],
+      "was": [26.2336, 127.739],
+      "ll": [33.55, 133.53],
+      "place": "Kochi, Shikoku",
+      "why": "Okinawa, 1,000km away, on the day after Osaka",
+      "source": "the world-cruise feed, 26 voyages"
+    },
+    {
+      "name": "Parati, Brazil",
+      "collections": ["world"],
+      "was": [-26.37, -48.72],
+      "ll": [-23.2194, -44.7147],
+      "place": "Paraty, Rio de Janeiro",
+      "why": "Santa Catarina, between Ilhabela and Rio de Janeiro",
+      "source": "the expedition feed, 22 sailings"
+    },
+    {
+      "name": "Ilha Grande, Brazil",
+      "collections": ["world"],
+      "was": [-2.85, -41.82],
+      "ll": [-23.1555, -44.2345],
+      "place": "Ilha Grande, Angra dos Reis",
+      "why": "the Piauí coast, 2,000km north, between Ilhabela and Búzios",
+      "source": "OSM relation/3766465"
+    },
+    {
+      "name": "Boca da Valeria, Brazil",
+      "collections": ["world"],
+      "was": [-12.87, -38.44],
+      "ll": [-2.4517, -56.4504],
+      "place": "Boca de Valéria, Amazonas",
+      "why": "Vila Valéria, a neighbourhood of Salvador — and the top OSM hit for the name, which is exactly how it got here; the village is on the Amazon by Parintins",
+      "source": "OSM node/416652624"
+    },
+    {
+      "name": "Natal, Brazil",
+      "collections": ["cruise"],
+      "was": [-5.8328, -48.0019],
+      "ll": [-5.8054, -35.2081],
+      "place": "Natal, Rio Grande do Norte",
+      "why": "1,400km inland in Tocantins, between Fortaleza and Salvador; the world-cruise feed has it on the coast",
+      "source": "OSM relation/301091"
+    },
+    {
+      "name": "San Martin, Peru",
+      "collections": ["world"],
+      "was": [-5.19, -80.67],
+      "ll": [-13.8045, -76.293],
+      "place": "Puerto General San Martín, Pisco",
+      "why": "northern Peru near Paita, on a leg from Callao south to Iquique",
+      "source": "OSM node/3629549475"
+    },
+    {
+      "name": "San Martin, Peru",
+      "collections": ["cruise"],
+      "was": [-1.5685, -74.5965],
+      "ll": [-13.8045, -76.293],
+      "place": "Puerto General San Martín, Pisco",
+      "why": "the San Martín region in the Amazon basin, 700km inland, on a leg from Callao to Valparaíso",
+      "source": "OSM node/3629549475"
+    },
+    {
+      "name": "Jamestown, United Kingdom",
+      "collections": ["world"],
+      "was": [56.02, -3.4],
+      "ll": [-15.9277, -5.7161],
+      "place": "Jamestown, Saint Helena",
+      "why": "a village near Falkirk, between Walvis Bay and Praia",
+      "source": "OSM node/293673697"
+    },
+    {
+      "name": "Jamestown, United Kingdom",
+      "collections": ["cruise"],
+      "was": [55.9833, -4.5667],
+      "ll": [-15.9277, -5.7161],
+      "place": "Jamestown, Saint Helena",
+      "why": "the same name matched to Dunbartonshire; eleven sea days follow it before Tenerife, which is a South Atlantic crossing, not a Scottish one",
+      "source": "OSM node/293673697"
+    },
+    {
+      "name": "Guernsey, United Kingdom",
+      "collections": ["world"],
+      "was": [57.17, -7.37],
+      "ll": [49.45, -2.525],
+      "place": "Guernsey, Channel Islands",
+      "why": "the Outer Hebrides, between Saint-Malo and Lorient",
+      "source": "the expedition feed"
+    },
+    {
+      "name": "Douglas, United Kingdom",
+      "collections": ["world", "cruise"],
+      "was": [55.55, -3.85],
+      "ll": [54.1498, -4.4779],
+      "place": "Douglas, Isle of Man",
+      "why": "Douglas in South Lanarkshire, on an itinerary calling at the Calf of Man on both sides",
+      "source": "OSM relation/1061138"
+    },
+    {
+      "name": "The Pitons",
+      "collections": ["world"],
+      "was": [51, -1.37],
+      "ll": [13.8101, -61.0657],
+      "place": "Gros Piton, Soufrière, Saint Lucia",
+      "why": "Hampshire, between Castries and Mayreau",
+      "source": "OSM node/1675449859"
+    },
+    {
+      "name": "Whittier, AK, United States",
+      "collections": ["world"],
+      "was": [33.98, -118.03],
+      "ll": [60.7731, -148.6839],
+      "place": "Whittier, Alaska",
+      "why": "Whittier, California, between Homer and Hubbard Glacier; the yacht feed has the Alaskan one",
+      "source": "OSM relation/16770603"
+    },
+    {
+      "name": "Hebron, NS, Canada",
+      "collections": ["world", "cruise"],
+      "was": [43.8833, -66.0833],
+      "ll": [58.1992, -62.6292],
+      "place": "Hebron, Labrador",
+      "why": "Hebron in Nova Scotia — the feed's own 'NS' is the error — between Saglek Fjord and Nain, both in Labrador",
+      "source": "OSM way/1237645600"
+    },
+    {
+      "name": "Indian Harbour, NL, Canada",
+      "collections": ["cruise"],
+      "was": [47.4833, -54.2],
+      "ll": [54.45, -57.22],
+      "place": "Indian Harbour, Labrador",
+      "why": "the Avalon Peninsula, 800km south, between Nain and Battle Harbour",
+      "source": "the world-cruise feed"
+    },
+    {
+      "name": "Churchill, ON, Canada",
+      "collections": ["cruise"],
+      "was": [44.25, -79.5833],
+      "ll": [58.7693, -94.173],
+      "place": "Churchill, Manitoba",
+      "why": "a hamlet north of Toronto with no water anywhere near it, ending a Hudson Bay voyage",
+      "source": "OSM relation/14426854"
+    },
+    {
+      "name": "Trollfjord, Norway",
+      "collections": ["cruise"],
+      "was": [70.6667, 28.6167],
+      "ll": [68.36, 14.93],
+      "place": "Trollfjord, Lofoten",
+      "why": "Finnmark, 600km northeast, on a leg from Reine to Tromsø",
+      "source": "the world-cruise feed"
+    },
+    {
+      "name": "Nordfjord, Norway",
+      "collections": ["cruise"],
+      "was": [69.3, 19.0167],
+      "ll": [61.9077, 5.9891],
+      "place": "Nordfjord, Vestland (Nordfjordeid)",
+      "why": "one of Norway's several Nordfjords, this one near Tromsø, on the day after Bergen",
+      "source": "OSM node/81350220"
+    },
+    {
+      "name": "Vigur Island, Iceland",
+      "collections": ["cruise"],
+      "was": [64.929, -18.962],
+      "ll": [66.0548, -22.8287],
+      "place": "Vigur, Ísafjarðardjúp",
+      "why": "the central highlands, 200km from the sea; Vigur is an island in the Westfjords",
+      "source": "OSM relation/9109360"
+    },
+    {
+      "name": "Santa Maria, Portugal",
+      "collections": ["cruise"],
+      "was": [41.0333, -8.2667],
+      "ll": [36.9481, -25.1454],
+      "place": "Vila do Porto, Santa Maria, Azores",
+      "why": "mainland Portugal near Porto, in the middle of an island-by-island Azores itinerary",
+      "source": "OSM relation/7540283"
+    },
+    {
+      "name": "Santa Margherita, Italy",
+      "collections": ["cruise"],
+      "was": [38.4833, 14.95],
+      "ll": [44.33, 9.21],
+      "place": "Santa Margherita Ligure",
+      "why": "the Aeolian Islands, between Nice and Porto Venere",
+      "source": "the world-cruise feed"
+    },
+    {
+      "name": "Semarang, Indonesia",
+      "collections": ["cruise"],
+      "was": [-6.7069, 107.043],
+      "ll": [-6.9904, 110.4229],
+      "place": "Semarang, Central Java",
+      "why": "inland West Java near Bandung, 400km from the port city",
+      "source": "OSM relation/8409116"
+    },
+    {
+      "name": "Pauillac, France",
+      "collections": ["cruise"],
+      "was": [44.75, 1.1833],
+      "ll": [45.1996, -0.7485],
+      "place": "Pauillac, Gironde",
+      "why": "inland Quercy, 150km east of the Gironde estuary the ship is sailing up; the world-cruise feed has it right",
+      "source": "OSM relation/398667"
+    },
+    {
+      "name": "Motu Tapu, Bora-Bora, French Polynesia, France, French Polynesia",
+      "collections": ["world"],
+      "was": [-10.54, -138.67],
+      "ll": [-16.5043, -151.7766],
+      "place": "Motu Tapu, Bora-Bora",
+      "why": "the Marquesas, 1,400km from the Bora Bora lagoon it belongs to",
+      "source": "OSM way/725239752"
+    },
+    {
+      "name": "San Sebastian, Spain",
+      "collections": ["cruise"],
+      "scope": "occurrence",
+      "was": [28.1, -17.1],
+      "ll": [43.3224, -1.9839],
+      "place": "Donostia / San Sebastián, Gipuzkoa",
+      "why": "both places are real and the feed uses one name for them. San Sebastián de La Gomera (28.1, -17.1) is right on the Canaries itineraries and wrong on the Bay of Biscay one, where the ship berths at Pasaia on either side of it — so this entry only fires where it moves the stop closer to its neighbours",
+      "source": "OSM relation/346465"
+    },
+    {
+      "name": "Mosfellsheiði, Iceland, Iceland",
+      "collections": ["cruise"],
+      "was": [64.2, -21.375],
+      "ll": null,
+      "place": "unknown",
+      "why": "a heath outside Reykjavík, sandwiched between two Disko Bay calls on Greenland itineraries that never reach Iceland. What the stop is meant to be cannot be recovered from the feed, so it ships with no coordinate — absent from the map rather than a 3,000km spike through it",
+      "source": "n/a"
+    }
+  ],
+
+  "confirmed": [
+    { "collection": "world", "name": "Manaus, Brazil", "why": "Amazon river call 1,500km upstream; the 0.1 deg land mask cannot resolve the river, so every Amazon port reads as landlocked" },
+    { "collection": "world", "name": "Parintins, Brazil", "why": "Amazon river call — see Manaus" },
+    { "collection": "world", "name": "Santarém, Brazil", "why": "Amazon river call — see Manaus" },
+    { "collection": "world", "name": "Alter do Chao, Brazil, Brazil", "why": "Amazon river call — see Manaus" },
+    { "collection": "world", "name": "Boca da Valeria, Brazil", "why": "Amazon river call — see Manaus" },
+
+    { "collection": "world", "name": "St. Lawrence Seaway, NY, United States", "why": "Great Lakes voyages reach open water through the Seaway, which the land mask does not resolve" },
+    { "collection": "world", "name": "Toronto, ON, Canada", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "world", "name": "Port Colborne, ON, Canada", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "world", "name": "Point Pelee, Ontario, Canada, ON, Canada", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "world", "name": "Detroit, MI, United States", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "world", "name": "Alpena, MI, United States", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "world", "name": "Mackinac Island, MI, United States", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "world", "name": "Milwaukee, WI, United States", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "cruise", "name": "Toronto, ON, Canada", "why": "Great Lakes call — see St. Lawrence Seaway" },
+    { "collection": "cruise", "name": "Lake Ontario, ON, Canada", "why": "Great Lakes call — see St. Lawrence Seaway" },
+
+    { "collection": "cruise", "name": "Calgary, AB, Canada", "why": "a real land segment: the itinerary flies Calgary to Kangerlussuaq before the ship is joined, and says so with an 'Air travel' stop" },
+    { "collection": "world", "name": "Ushuaia, Argentina", "why": "voyages that end Montevideo–Ushuaia–Buenos Aires are chartering guests home by air, not sailing back up the Atlantic" },
+    { "collection": "cruise", "name": "Jamestown, United Kingdom", "why": "correct at Saint Helena since the correction above; the 5,000km hop to Tenerife that follows is the South Atlantic crossing, and it is real" },
+    { "collection": "world", "name": "Northeast Greenland National Park, Denmark, Greenland", "why": "the coordinate is the park's centroid, which is 300km inland on the ice cap — right for the name, wrong for a ship. Worth relocating to a coastal anchorage upstream; left alone here because picking which one is an editorial call, not a correction" },
+
+    { "collection": "cruise", "name": "Miyako, Japan", "why": "the expedition feed's Miyakojima; the world feed's Miyako in Iwate is a different port with the same name, split above" },
+    { "collection": "world", "name": "San Sebastian, Spain", "why": "Donostia, correct; the expedition feed's 28.1, -17.1 is San Sebastián de La Gomera, also correct" },
+    { "collection": "cruise", "name": "San Sebastian, Spain", "why": "San Sebastián de La Gomera on the Canaries itineraries, Donostia on the Bay of Biscay one — see the occurrence-scoped correction above" },
+    { "collection": "world", "name": "Ellesmere Island, NU, Canada", "why": "a 200,000 km2 island; the two feeds pick different points on it and both are on it" },
+    { "collection": "world", "name": "East Greenland, Denmark, Greenland", "why": "a coastline, not a port; the feeds anchor it 850km apart and both are on that coast" },
+    { "collection": "world", "name": "Cape Peron, Australia, Australia", "why": "Cape Peron near Rockingham, a real place with a real namesake in Shark Bay (the expedition feed's -25.5, 113.5). The northbound order of the itinerary hints at Shark Bay — worth a look upstream, but not a coordinate this repo can prove wrong" },
+    { "collection": "cruise", "name": "Nordfjord, Norway", "why": "Vestland's Nordfjord since the correction above; the world feed's 67.44, 15.72 is a different Nordfjord near Bodø, correct on its own itinerary" },
+    { "collection": "jet", "name": "Borneo", "why": "two jet itineraries use the island's name for two different airports, Kota Kinabalu and Kuching" }
+  ]
+}

@@ -372,6 +372,30 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
 
     /** Escape hatch for the verifier, which compares against Leaflet's order. */
     legLatLng: legGeometryLatLng,
+
+    /**
+     * Kilometres from a coordinate to the nearest cell of the connected open
+     * ocean — 0 when the coordinate already sits on one, Infinity when nothing
+     * wet is within the 30-cell (~330 km) search radius.
+     *
+     * The mask is 0.1 deg, so a genuine sea port reads 0-15 km and anything
+     * past ~40 km is either a river port a long way upstream or a "port" the
+     * geocoder put on dry land. scripts/audit-port-locations.mjs uses it for
+     * exactly that second case; see its landlocked check for the threshold and
+     * the river-port exceptions.
+     */
+    seaAccessKm(lat, lng) {
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return Infinity;
+      const cell = nearestSeaCell(lat, lng);
+      if (!cell) return Infinity;
+      const [c, r] = cell;
+      const sLat = cellLat(r), sLng = cellLng(c);
+      const dLat = ((sLat - lat) * Math.PI) / 180;
+      const dLng = (normLng(sLng - lng) * Math.PI) / 180;
+      const h = Math.sin(dLat / 2) ** 2
+        + Math.cos((lat * Math.PI) / 180) * Math.cos((sLat * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+      return 2 * 6371 * Math.asin(Math.min(1, Math.sqrt(h)));
+    },
     isLandLL,
     lineHitsLand,
     polyHitsLand,
