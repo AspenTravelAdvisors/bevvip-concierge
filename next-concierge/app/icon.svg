@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs>
+<linearGradient id="bevvip-bg" x1="0" y1="0" x2="0.35" y2="1">
+<stop offset="0" stop-color="#1a1c23"/><stop offset="1" stop-color="#06070b"/>
+</linearGradient>
+<linearGradient id="bevvip-acc" x1="0.1" y1="0" x2="0.9" y2="1">
+<stop offset="0" stop-color="#f6d98a"/><stop offset="1" stop-color="#c08a2e"/>
+</linearGradient>
+<radialGradient id="bevvip-sheen" cx="0.28" cy="0.1" r="0.95">
+<stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+<stop offset="0.62" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<rect x="32" y="32" width="960" height="960" rx="216" fill="url(#bevvip-bg)"/>
+<rect x="32" y="32" width="960" height="960" rx="216" fill="url(#bevvip-sheen)"/>
+<rect x="46" y="46" width="932" height="932" rx="202" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="4"/>
+<path d="M512 176 Q528.56 251.44 604 268 Q528.56 284.56 512 360 Q495.44 284.56 420 268 Q495.44 251.44 512 176 Z" fill="url(#bevvip-acc)" opacity="1"/>
+<path d="M318 388h108l86 244 86-244h108L570 764h-116z" fill="url(#bevvip-acc)"/>
+<rect x="392" y="800" width="240" height="20" rx="10" fill="url(#bevvip-acc)" opacity="0.55"/>
+</svg>
