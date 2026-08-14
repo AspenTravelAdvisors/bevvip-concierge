@@ -15,6 +15,7 @@
 <rect x="32" y="32" width="960" height="960" rx="216" fill="url(#bevvip-sheen)"/>
 <rect x="46" y="46" width="932" height="932" rx="202" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="4"/>
 <path d="M512 176 Q528.56 251.44 604 268 Q528.56 284.56 512 360 Q495.44 284.56 420 268 Q495.44 251.44 512 176 Z" fill="url(#bevvip-acc)" opacity="1"/>
-<path d="M318 388h108l86 244 86-244h108L570 764h-116z" fill="url(#bevvip-acc)"/>
+<path d="M603 477A142 142 0 1 0 654 586" fill="none" stroke="url(#bevvip-acc)" stroke-width="88"/>
+<rect x="512" y="542" width="186" height="88" fill="url(#bevvip-acc)"/>
 <rect x="392" y="800" width="240" height="20" rx="10" fill="url(#bevvip-acc)" opacity="0.55"/>
 </svg>
