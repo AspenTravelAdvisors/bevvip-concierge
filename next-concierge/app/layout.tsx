@@ -103,7 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
             </div>
             <span className="tag">
-              Private travel, powered by{" "}
+              Private travel [BETA], powered by{" "}
               <a
                  className="byline"
                 href="https://www.virtuoso.com/advisor/brianharris/travel"
