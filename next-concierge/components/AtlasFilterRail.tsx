@@ -28,7 +28,7 @@
  * decision — nothing in the app has ever emitted it.
  */
 
-import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import type { AtlasOffering, AtlasFilterDescriptor } from "@/lib/atlas/adapters/types";
 import { ROLE_VALUES } from "@/lib/atlas/adapters/types";
 import { matchesExceptRegion, matchesOffering, regionPass, type AtlasFilterState } from "@/lib/atlas/adapters/filter";
@@ -88,6 +88,13 @@ const EMPTY_STATE = (): AtlasFilterState => ({
   regions: new Set(), excludedRegions: new Set(), stop: null, stopRole: "any", terms: [],
   world: undefined, facets: undefined,
 });
+
+/**
+ * How long typing has to stop before the free-text search runs. Long enough
+ * that a normal typing rhythm never triggers it mid-word, short enough that it
+ * still feels like the results are following you.
+ */
+const Q_DEBOUNCE_MS = 420;
 
 /** Sentinel for the "Around the World" entry in the region control. */
 const WORLD = "__world__";
@@ -244,7 +251,70 @@ export default function AtlasFilterRail({
   const [stopText, setStopText] = useState(shown.stop || "");
   useEffect(() => { setStopText(shown.stop || ""); }, [shown.stop]);
 
+  /**
+   * Memoised, and not for tidiness: cruise has 1,622 ports and worldcruise 971,
+   * so rebuilding this list meant React diffing ~1,600 <option> nodes on every
+   * keystroke in the port box. It only ever changes when the offerings do.
+   */
+  const stopList = useMemo(
+    () => (
+      <datalist id={stopListId}>
+        {options.stops.map((s) => <option key={s} value={s} />)}
+      </datalist>
+    ),
+    [options.stops, stopListId],
+  );
+
+  /**
+   * The free-text search is DEBOUNCED, not per-keystroke.
+   *
+   * Committing on every keystroke wrote the URL, which re-parsed the deep link,
+   * re-filtered a few thousand offerings, re-plotted the globe — and then fed
+   * the input its value back from the URL. Typing was a race against that work:
+   * characters landed late, out of order, or were swallowed when a re-render
+   * arrived mid-word. The text lives here now and a commit happens once you
+   * pause, so the search still runs itself without being typed at.
+   */
+  const [qText, setQText] = useState(shownQuery.q);
+  const qTimer = useRef<number | null>(null);
+  // What we last handed upward. External changes (Reset, a deep link, the
+  // mobile draft re-seeding) differ from it and re-seed the box; our own commit
+  // echoing back through `query` does not, so it can't interrupt typing.
+  const committedQ = useRef(shownQuery.q);
+  const queryRef = useRef(shownQuery);
+  queryRef.current = shownQuery;
+
+  useEffect(() => {
+    if (shownQuery.q === committedQ.current) return;
+    committedQ.current = shownQuery.q;
+    setQText(shownQuery.q);
+  }, [shownQuery.q]);
+
+  useEffect(() => () => { if (qTimer.current) window.clearTimeout(qTimer.current); }, []);
+
+  const commitQ = useCallback((v: string) => {
+    if (qTimer.current) window.clearTimeout(qTimer.current);
+    qTimer.current = null;
+    if (v === committedQ.current) return;
+    committedQ.current = v;
+    setQuery({ ...queryRef.current, q: v });
+  }, [setQuery]);
+
+  const typeQ = useCallback((v: string) => {
+    setQText(v);
+    if (qTimer.current) window.clearTimeout(qTimer.current);
+    // Clearing the box is not a search-in-progress — put the full list back at
+    // once rather than making someone wait out the pause for it.
+    if (!v) { commitQ(""); return; }
+    qTimer.current = window.setTimeout(() => commitQ(v), Q_DEBOUNCE_MS);
+  }, [commitQ]);
+
   const reset = () => {
+    if (qTimer.current) window.clearTimeout(qTimer.current);
+    qTimer.current = null;
+    committedQ.current = "";
+    setQText("");
+    setStopText("");
     if (editing) { setDraft(EMPTY_STATE()); setDraftQuery({ q: "", country: "" }); return; }
     // Desktop: one commit, same reason as Apply.
     if (onCommit) onCommit(EMPTY_STATE(), { q: "", country: "" });
@@ -369,9 +439,7 @@ export default function AtlasFilterRail({
         }}
         aria-label={d.stopParam === "port" ? "Port" : "Location"}
       />
-      <datalist id={stopListId}>
-        {options.stops.map((s) => <option key={s} value={s} />)}
-      </datalist>
+      {stopList}
 
       <select
         value={shown.stopRole}
@@ -392,9 +460,13 @@ export default function AtlasFilterRail({
       <input
         className="villa-q"
         type="search"
-        value={shownQuery.q}
+        value={qText}
         placeholder={`Search ${searchNoun}…`}
-        onChange={(e) => setQuery({ ...shownQuery, q: e.target.value })}
+        onChange={(e) => typeQ(e.target.value)}
+        // Enter and leaving the field are both "I'm done" — search now instead
+        // of sitting out the rest of the pause.
+        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitQ(qText); } }}
+        onBlur={() => commitQ(qText)}
         aria-label="Search"
       />
     </>
@@ -452,8 +524,16 @@ export default function AtlasFilterRail({
                 type="button"
                 className="atlas-apply"
                 onClick={() => {
-                  if (onCommit) onCommit(draft, draftQuery);
-                  else { onStateChange(draft); onQueryChange(draftQuery); }
+                  // The search box debounces, so the last word typed may still
+                  // be waiting out its pause. Apply means "use what I typed",
+                  // not "use what happened to land" — take the box's text
+                  // directly rather than relying on blur firing before this.
+                  const q = { ...draftQuery, q: qText };
+                  if (qTimer.current) window.clearTimeout(qTimer.current);
+                  qTimer.current = null;
+                  committedQ.current = qText;
+                  if (onCommit) onCommit(draft, q);
+                  else { onStateChange(draft); onQueryChange(q); }
                   setSheetOpen(false);
                 }}
               >

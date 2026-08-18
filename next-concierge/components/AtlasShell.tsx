@@ -544,6 +544,32 @@ const TOUR_DWELL_MS = 1600;
  */
 const TOUR_LEAD_MS = 1700;
 
+/**
+ * How long the globe takes to swing onto a result.
+ *
+ * These are the camera moves that ANSWER something — the Guide plotting a
+ * shortlist, a card being framed — as opposed to the housekeeping eases (a
+ * tilt toggle, a zoom-gate nudge), which stay quick because nobody is meant to
+ * watch them.
+ *
+ * Deliberately ~2.7x the old 900/1200. At that speed the globe had already
+ * arrived before you looked up from the chat, so the one moment that shows the
+ * planet turning under the answer was the moment you missed — and screen
+ * recordings of it were unusable, the rotation over in three frames. Slow
+ * enough to read as travel, short enough that nobody waits on it.
+ */
+const REVEAL_MS = 2400;
+/** Same move, but landing on a single place — further to fall, so longer. */
+const REVEAL_POINT_MS = 3000;
+/**
+ * Re-framing results that are ALREADY on screen — the Guide panel was dragged
+ * wider or collapsed, the phone sheet changed detent, the traveller switched
+ * basemap. Nothing is being revealed, so this stays quick; at reveal speed,
+ * closing the panel left the map crawling into place for the next two and a
+ * half seconds.
+ */
+const REFRAME_MS = 700;
+
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
@@ -771,6 +797,13 @@ export default function AtlasShell({
     let ready = false;
     let focused = false;
     let restyling = false;
+    /**
+     * A restyle that a PLOT started, so the fit it hands to style.load is a
+     * reveal and takes the slow camera. Without this the guide's answer landed
+     * at re-frame speed for anyone not already on daylight imagery — the one
+     * path where the reveal is handed off rather than run inline.
+     */
+    let restyleIsReveal = false;
     let subsetActive = false;
     let homeZoom = 1.25;
     // Props first, then the URL, then the defaults. See `arrivedView`.
@@ -2186,17 +2219,17 @@ export default function AtlasShell({
               if (n === 1 && only) {
                 // Street-level arrival: land at an angle. You asked which
                 // building — a plan view of a roof does not answer that.
-                map.flyTo({ center: only, zoom: 14, duration: 1200, essential: true, pitch: TILT_PITCH });
+                map.flyTo({ center: only, zoom: 14, duration: REVEAL_POINT_MS, essential: true, pitch: TILT_PITCH });
                 setTilted(true);
               } else if (n) {
-                map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: 900 });
+                map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: REVEAL_MS });
               }
             } catch { /* fit optional */ }
           };
           // A projection swap rebuilds the transform; fitting in the same tick
           // solves the framing for the projection we just left, which lands the
           // camera at the wrong zoom and clips the ends of the route. One frame
-          // is enough and is invisible next to the 900ms ease that follows.
+          // is enough and is invisible next to the long ease that follows.
           if (flattened) requestAnimationFrame(run);
           else run();
         }
@@ -2331,6 +2364,10 @@ export default function AtlasShell({
           if (!restyling && styleKeyLocal !== "daylight") {
             // "auto": revealing results is the shell's own doing, so it neither
             // counts as the traveller choosing a basemap nor gets remembered.
+            // Only when the style actually reloads: otherwise style.load never
+            // fires, the fit runs inline below, and a flag left standing would
+            // hand the reveal camera to the traveller's NEXT basemap switch.
+            restyleIsReveal = reloads;
             api.setStyle("daylight", "auto");
           }
           if (restyling || !reloads) {
@@ -2351,7 +2388,7 @@ export default function AtlasShell({
           pendingRouteRef.current = null;
           applyRouteRef.current?.(pending);
         }
-        function fitFeatured() {
+        function fitFeatured(ms: number = REVEAL_MS) {
           if (!featuredFC || !featuredFC.features.length) return;
           // Same treatment a traced route gets: one longitude window, then
           // decide whether a globe can hold it. A shortlist straddling the
@@ -2366,7 +2403,7 @@ export default function AtlasShell({
             try {
               const b = new (mapboxgl as MapboxModule).LngLatBounds();
               window.forEach((c) => b.extend(c));
-              map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: 900 });
+              map.fitBounds(b, { padding: fitPad(), maxZoom: showsHotel ? 10 : 4.8, duration: ms });
             } catch { /* fit optional */ }
           };
           if (flattened) requestAnimationFrame(run);
@@ -2549,7 +2586,9 @@ export default function AtlasShell({
           } else if (restyling) {
             restyling = false;
             // Keep any plotted results in view after a manual basemap switch.
-            if (subsetActive) fitFeatured();
+            const reveal = restyleIsReveal;
+            restyleIsReveal = false;
+            if (subsetActive) fitFeatured(reveal ? REVEAL_MS : REFRAME_MS);
           }
         });
 
@@ -2752,7 +2791,7 @@ export default function AtlasShell({
           },
           refit() {
             ambientPadding(); // panel opened/closed/resized — recenter ambient camera
-            if (subsetActive) fitFeatured();
+            if (subsetActive) fitFeatured(REFRAME_MS);
           },
           resetView() {
             subsetActive = false;
