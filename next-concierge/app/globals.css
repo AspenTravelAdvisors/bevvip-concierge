@@ -4158,48 +4158,58 @@ button.card-book {
    three filters and see the result once. See AtlasFilterRail. */
 @media (max-width: 680px) {
   /*
-   * PINNED MAP, SCROLLING CARDS.
+   * THE PAGE SCROLLS. (It used to be: PINNED MAP, SCROLLING CARDS.)
    *
-   * The page used to scroll as one column, so tapping a card traced a route on
-   * a map that had already scrolled off the top — you had to scroll back up to
-   * see what you had just selected, then back down to pick the next one. On a
-   * collection page the map IS the answer, so it stays put and only the cards
-   * move: tap through five itineraries and watch the route change in place.
+   * The map was a fixed band at the top of the frame and `.atlas-results` was
+   * the only scroller, so the map could never leave the screen. The argument
+   * for it was real — tap a card, watch the route change in place — but the
+   * cost was paid on every other gesture: a phone page that refuses to scroll
+   * fights the habit every traveller arrives with, 40dvh of permanent map left
+   * a two-card window on the list below it, and the browser's own scroll
+   * behaviour (rubber-band, scrollbar, the URL bar getting out of the way) was
+   * traded for a nested scroller that looks like a dead page until you drag it.
    *
-   * `.app` is already `height: 100dvh` and `.atlas-frame-wrap` is a flex column
-   * with `min-height: 0`, so this needs no viewport arithmetic — it just has to
-   * stop growing and hand the leftover space to the results.
+   * So the whole page scrolls again, exactly as it does on desktop: nothing
+   * here is a scroll container, the overflow reaches `body`, and the map is
+   * free to scroll away with everything else.
    *
-   * This also retires the reason `.atlas-scrollcue` existed as a "grab handle":
-   * with its own scroll container, the card list no longer competes with Mapbox
-   * for vertical drags. The cue stays as the results count and the traced-route
-   * banner, which is now its whole job.
+   * What made pinning tempting is kept, in JS rather than CSS: clicking a card
+   * pops the map back into view (togglePin in AtlasCollection, at every width
+   * now). That answers "where did that route go?" at the moment it is actually
+   * asked, instead of holding the page still for the whole session in case it
+   * is.
    */
   .atlas-collection {
-    flex: 1 1 auto;
+    /* Tall as its contents, not as the frame — the frame is what it overflows. */
+    flex: 0 0 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     gap: 8px;
+    /* Clear the fixed filter bar so the last card is never trapped under it. */
+    padding-bottom: 96px;
   }
+  /* Hotel browse scrolls inside itself at every other width; on a phone it
+     joins the page scroll like the rest of them. */
   .atlas-collection--hotel {
-    padding: 14px 14px 0;
+    overflow: visible;
+    padding: 14px 14px 96px;
   }
   .atlas-collection .atlas-map {
     /*
-     * Fixed share of the frame, not a min-height that could push the list off
-     * screen. Clamped rather than a bare percentage: on a 667px phone a flat
-     * 42dvh leaves barely one card under the rail and the fixed bar, and on a
-     * tall phone it balloons past what the map needs. The floor keeps the map
-     * legible, the ceiling keeps the list usable.
+     * A band, not the viewport: the map is what the traveller scrolls past on
+     * the way to the cards and jumps back to when they pick one, so it wants
+     * to be legible without owning the screen. Clamped rather than a bare
+     * percentage — the floor keeps it readable on a short phone, the ceiling
+     * stops it swallowing a tall one.
      */
     flex: 0 0 auto;
-    height: clamp(200px, 40dvh, 340px);
+    height: clamp(240px, 46dvh, 400px);
     min-height: 0;
     border-radius: 12px;
   }
   /* …except in fullscreen, where that clamped height is the whole bug: `.fs`
      sets position/inset but never a height, so this later, equal-specificity
-     rule left the fixed map 200–340px tall — a strip pinned to the top of the
+     rule left the map 240–400px tall — a strip pinned to the top of the
      screen instead of an edge-to-edge map. Same collision `.home-atlas` had.
      iOS Safari won't fullscreen a <div>, so the CSS fill is the only mobile
      fullscreen there is and it has to win. */
@@ -4213,33 +4223,23 @@ button.card-book {
     z-index: 900;
     border-radius: 0;
   }
-  /* Sticky is pointless once the page itself no longer scrolls, and it made the
-     rail a second layer over a list it now sits above. */
-  .atlas-collection .villa-filters {
-    position: static;
-    flex: 0 0 auto;
-  }
+  /* Nothing in the column may be squeezed to make the rest fit inside the
+     frame — overflowing it is the point now, and each row keeps its own
+     height. (The rail is a fixed bottom bar on phones; this covers the
+     `.villa-filters` skeleton shown while the feed loads.) */
+  .atlas-collection .villa-filters,
   .atlas-collection .atlas-scrollcue {
     flex: 0 0 auto;
   }
   .atlas-results {
     grid-template-columns: 1fr;
     gap: 10px;
-    /* The one thing on the page that scrolls. */
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    /* Don't hand a rubber-band at the end of the list to the page behind it. */
-    overscroll-behavior: contain;
-    /* Clear the fixed bar so the last card is never trapped under it. */
-    padding-bottom: 96px;
   }
   /*
-   * Was a grab handle (the card list used to compete with Mapbox for vertical
-   * drags). The list has its own scroller now, so this is purely the results
-   * count and the "Tracing … / Clear route" banner — kept at 48px because it
-   * holds a tap target, not because scrolling depends on it.
+   * The results count and the "Tracing … / Clear route" banner. It was once
+   * also a grab handle — a band of page you could drag without Mapbox
+   * swallowing the gesture — and `touch-action: pan-y` below keeps that,
+   * because the column scrolls again and the map still eats vertical drags.
    */
   .atlas-scrollcue {
     display: flex;
