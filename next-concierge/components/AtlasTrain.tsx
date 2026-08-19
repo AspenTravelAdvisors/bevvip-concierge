@@ -23,7 +23,7 @@ export default function AtlasTrain() {
     ctx: ParseContext;
     regionLabels: Record<string, string>;
     routeFor?: (o: AtlasOffering) => { mode: string; coordinates: [number, number][] }[] | null;
-    brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }>;
+    brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null; glyph?: string | null }>;
     logoBase?: string;
   }> => {
     // Same static feed the Leaflet atlas used — cached by the CDN, so this is
@@ -71,9 +71,9 @@ export default function AtlasTrain() {
 
     // Brand marks drive the card logos: bundled asset → favicon services →
     // coloured initials. BRANDS carries the domain and the brand colour.
-    const brandMarks: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }> = {};
+    const brandMarks: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null; glyph?: string | null }> = {};
     for (const [key, b] of Object.entries(raw.BRANDS || {})) {
-      brandMarks[key] = { key, short: b?.short, domain: b?.domain, color: b?.color };
+      brandMarks[key] = { key, short: b?.short, domain: b?.domain, color: b?.color, glyph: b?.glyph };
     }
 
     return { offerings, ctx, regionLabels, routeFor, brandMarks, logoBase: "/maps/train/logos" };

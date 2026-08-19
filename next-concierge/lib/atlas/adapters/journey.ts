@@ -19,7 +19,7 @@ import { fromLatLngPair, isFinitePair, type LngLat } from "@/lib/atlas/geo";
 import { norm } from "./search";
 import type { AtlasFilterDescriptor, AtlasOffering, AtlasStop } from "./types";
 
-export interface RawJourneyBrand { short?: string; domain?: string; color?: string }
+export interface RawJourneyBrand { short?: string; domain?: string; color?: string; glyph?: string }
 export interface RawJourneyRegion { name?: string; ab?: string; coord?: [number, number] }
 export interface RawJourneyStop { n?: string; r?: string; ll?: [number, number] }
 export interface RawJourneyTrip {

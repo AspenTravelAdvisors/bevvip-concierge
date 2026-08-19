@@ -9,7 +9,13 @@
  *   1. logos/<domain>.png        bundled asset (rail ships exactly one)
  *   2. Google favicon service    covers most real travel brands
  *   3. DuckDuckGo icon service   catches what Google misses
- *   4. coloured initials         the brand's own colour + 2-letter glyph
+ *   4. coloured initials         the brand's own colour, and its own `glyph`
+ *                                where the data names one, else two letters
+ *
+ * Rung 4 is also the deliberate choice for a brand whose favicon is a wide
+ * wordmark: contain-fitting one into a 34px chip leaves ~4px of type, which
+ * is a smudge rather than a mark. Safrans du Monde carries `glyph: "✦"` and an
+ * empty `domain` for exactly that reason — see BRANDS in the jet atlas.
  *
  * The original also treats a successfully-loaded but tiny image as a failure
  * (`naturalWidth < 8`), because both icon services return a 1px placeholder

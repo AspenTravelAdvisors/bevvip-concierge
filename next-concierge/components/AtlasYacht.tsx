@@ -31,7 +31,7 @@ export default function AtlasYacht() {
     ctx: ParseContext;
     regionLabels: Record<string, string>;
     routeFor?: (o: AtlasOffering) => { mode: string; coordinates: [number, number][] }[] | null;
-    brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }>;
+    brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null; glyph?: string | null }>;
     logoBase?: string;
   }> => {
     // Itinerary and precomputed routes together, as the Leaflet atlas loads its
@@ -63,9 +63,9 @@ export default function AtlasYacht() {
     // honest rather than an invented curve.
     const routeFor = (o: AtlasOffering) => seaRoutes.get(o.id) ?? null;
 
-    const brandMarks: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }> = {};
+    const brandMarks: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null; glyph?: string | null }> = {};
     for (const [key, b] of Object.entries(raw.BRANDS || {})) {
-      brandMarks[key] = { key, short: b?.short, domain: b?.domain, color: b?.color };
+      brandMarks[key] = { key, short: b?.short, domain: b?.domain, color: b?.color, glyph: b?.glyph };
     }
 
     return { offerings, ctx, regionLabels, routeFor, brandMarks, logoBase: "/maps/yacht/logos" };

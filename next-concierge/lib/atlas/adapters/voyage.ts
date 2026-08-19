@@ -25,7 +25,7 @@ import { norm } from "./search";
 import { endFrom, rangeEndFromString } from "@/lib/atlas/dates";
 import type { AtlasFilterDescriptor, AtlasOffering, AtlasStop } from "./types";
 
-export interface RawVoyageBrand { short?: string; domain?: string; color?: string }
+export interface RawVoyageBrand { short?: string; domain?: string; color?: string; glyph?: string }
 export interface RawVoyageRegion { name?: string; ab?: string; coord?: [number, number] }
 export interface RawVoyageTrip {
   id?: string | number;

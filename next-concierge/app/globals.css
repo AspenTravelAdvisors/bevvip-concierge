@@ -4095,7 +4095,16 @@ button.card-book {
   flex: none;
   border-radius: 7px;
   overflow: hidden;
-  background: #ffffff0d;
+  /* Light tile, not a translucent dark one. Most brand marks — bundled asset
+     or favicon alike — are dark ink on transparent, and on the old #ffffff0d
+     chip they composited to a contrast ratio of ~1.2 against the card: the
+     Ritz-Carlton Yacht lion, TCS World Travel, Belmond and Safrans du Monde
+     were invisible rather than dim. Auditing every domain the atlases ship
+     showed the light chip legible for all of them and the dark chip illegible
+     for roughly a fifth, so the default flips. The value is Aman's own tile
+     colour, which is the most common bundled backdrop — those assets now sit
+     flush with the chip instead of reading as a paler square inside it. */
+  background: #f3eee7;
   border: 1px solid var(--line);
 }
 .brandlogo img {
@@ -4103,6 +4112,14 @@ button.card-book {
   height: 100%;
   object-fit: contain;
   padding: 3px;
+  /* The mirror of the problem above: a handful of marks are pale gold on
+     transparent (National Geographic, Cunard, Seabourn, Atlas Ocean, Aqua
+     Expeditions) and would wash out on a light chip. A hairline dark halo
+     costs nothing on a dark or opaque mark — the shadow hides under the ink —
+     and gives the pale ones an edge, which is why this beats maintaining a
+     per-brand list of which chip each domain wants. */
+  filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.55))
+          drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.35));
 }
 .brandlogo--glyph {
   font-family: var(--sans);
