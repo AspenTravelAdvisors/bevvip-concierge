@@ -665,50 +665,31 @@ export default function AtlasShell({
   const [mapReady, setMapReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
   /**
-   * Poster frame: a pre-rendered globe painted from the SSR HTML so the first
-   * "globe" pixel lands before any JS runs. Crossfades out when the live map
-   * has fully drawn (mapPainted), then unmounts.
+   * Boot card: mapbox-gl has to download, evaluate and build a first frame
+   * before the canvas is anything but an empty rectangle, and this covers that
+   * gap with words instead of a picture.
    *
-   * HOME ONLY. It earns its place on the landing page — a cold visit, where the
-   * globe IS the largest contentful paint. A collection page is reached by
-   * navigating inside an app that is already running, its LCP is the card list,
-   * and its map is often flat (jets open in mercator) — so the poster there was
-   * a picture of a globe laid over a map that isn't one.
+   * It replaced a pre-rendered globe photo (/globe-poster.webp). That was a bad
+   * trade twice over. A fixed square image can never sit exactly where the live
+   * camera puts its globe across every viewport, so the handoff read as a photo
+   * being swapped for a video — worse than the map's own layered load-in
+   * (sphere → atmosphere → tiles sharpening), which is the smooth part the
+   * poster was covering up. And it failed dangerously: the poster only cleared
+   * on Mapbox's `load`, so anything that stopped the map getting there left a
+   * fake globe on screen looking like a map that worked.
    *
-   * And it fails dangerously rather than gracefully: the poster only clears on
-   * `mapPainted`, which is set from Mapbox's `load`. Anything that stops the
-   * live map reaching `load` leaves the poster sitting on top of the failure,
-   * looking like a map that rendered. A surface with no poster shows the
-   * "Charting the atlas…" state instead, which is the truth.
+   * Crossfades out at mapReady, then unmounts on transitionend.
    */
-  const showPoster = allInventory;
-  const [mapPainted, setMapPainted] = useState(false);
-  // Starts "gone" where there is no poster, so the loading state below — gated
-  // on posterGone — is reachable on those surfaces. Left false, a poster-less
-  // map showed neither a poster nor a spinner: just an empty panel.
-  const [posterGone, setPosterGone] = useState(!showPoster);
-  const [posterPad, setPosterPad] = useState(0);
+  const [bootGone, setBootGone] = useState(false);
 
-  // The poster is only for a cold landing. Browser Back from an atlas route
-  // restores the chat transcript plus the last plotted results; in that state
-  // a static globe image is stale chrome covering the live answer.
+  // Defensive release: the normal path unmounts on transitionend. Back/forward
+  // cache and interrupted navigations can miss that lifecycle, so never let a
+  // ready map sit behind an immortal card.
   useEffect(() => {
-    if (!showPoster || posterGone) return;
-    if (readStoredPlot()) {
-      setMapPainted(true);
-      setPosterGone(true);
-    }
-  }, [showPoster, posterGone]);
-
-  // Defensive release: the normal path removes the poster on transitionend
-  // after Mapbox's full `load`. Back/forward cache and interrupted navigations
-  // can miss that transition lifecycle, so never let a ready map sit behind an
-  // immortal poster.
-  useEffect(() => {
-    if (!showPoster || posterGone || !mapReady) return;
-    const id = window.setTimeout(() => setPosterGone(true), mapPainted ? 700 : 1800);
+    if (bootGone || !mapReady) return;
+    const id = window.setTimeout(() => setBootGone(true), 900);
     return () => window.clearTimeout(id);
-  }, [showPoster, posterGone, mapReady, mapPainted]);
+  }, [bootGone, mapReady]);
 
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [hidden, setHidden] = useState<Set<string>>(new Set());
@@ -916,15 +897,13 @@ export default function AtlasShell({
         }) as MBMap;
         mapRef.current = map;
 
-        // First full draw: start the poster crossfade, and only then release
-        // the idle spin (after the blend) so the poster and live globe stay
-        // aligned while both are visible.
+        // First full draw. The idle spin is held back a beat rather than started
+        // here: at `load` the satellite tiles are still resolving, and a globe
+        // that starts turning mid-sharpen reads as jitter.
         let revealed = false;
         let onRevealed: (() => void) | null = null;
         map.on("load", () => {
           if (cancelled) return;
-          setMapPainted(true);
-          window.setTimeout(() => { if (!cancelled) setPosterGone(true); }, 700);
           window.setTimeout(() => {
             revealed = true;
             onRevealed?.();
@@ -2987,21 +2966,6 @@ export default function AtlasShell({
     // a scope change re-registers cleanly.
   }, [allInventory]);
 
-  // Align the poster with the ambient camera: on the home canvas the map is
-  // padded right of the floating Guide panel (ambientPadding), so offset the
-  // poster's contained globe by the same panel width. Mount-time measurement is
-  // enough — the poster only lives for the first seconds of the session.
-  useEffect(() => {
-    if (!allInventory || posterGone) return;
-    if (window.matchMedia("(max-width: 640px)").matches) return;
-    const panel = document.querySelector(".home:not(.home--panel-closed) .home-chat");
-    const canvasW = mapEl.current?.clientWidth || 0;
-    if (panel && canvasW) {
-      setPosterPad(Math.min(Math.round(panel.getBoundingClientRect().width), Math.round(canvasW * 0.55)));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allInventory]);
-
   // Close the style menu on an outside click.
   useEffect(() => {
     if (!menuOpen) return;
@@ -3147,27 +3111,20 @@ export default function AtlasShell({
   return (
     <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
       {token && !mapFailed && <div ref={mapEl} className="atlas-canvas" />}
-      {showPoster && token && !mapFailed && !posterGone && (
+      {token && !mapFailed && !bootGone && (
         <div
-          className={`atlas-poster${mapPainted ? " out" : ""}`}
-          style={posterPad ? { paddingLeft: posterPad } : undefined}
-          aria-hidden="true"
-          onTransitionEnd={() => setPosterGone(true)}
+          className={`atlas-boot${mapReady ? " out" : ""}`}
+          onTransitionEnd={() => setBootGone(true)}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/globe-poster.webp"
-            alt=""
-            fetchPriority="high"
-            draggable={false}
-            onError={() => setPosterGone(true)}
-          />
-        </div>
-      )}
-      {token && !mapFailed && !mapReady && posterGone && (
-        <div className="fallback">
-          <span className="badge">{region ? `Region · ${region}` : ATLASES[type].label}</span>
-          <p>Charting the atlas…</p>
+          <span className="badge">
+            {region ? `Region · ${region}` : allInventory ? "The Atlas" : ATLASES[type].label}
+          </span>
+          {/* The Guide is a guide, and every guide worth carrying says this on
+              the cover — in large friendly letters. */}
+          <p className="atlas-boot-hail">Don&rsquo;t Panic</p>
+          {/* "atlas", not "globe": the jets and some regions open in mercator, and
+              a line that promises a globe over a flat map is a small lie. */}
+          <p>The Guide is spinning up the atlas. Your tour begins in a moment.</p>
         </div>
       )}
 

@@ -938,30 +938,42 @@ main.page {
   outline: none;
 }
 
-/* Poster frame: a pre-rendered globe painted over the canvas from the SSR HTML,
-   so a "globe" pixel lands well before mapbox-gl boots. Sits above the canvas,
-   ignores the pointer (the live map is interactive beneath it), and crossfades
-   out (.out) once the live globe has fully drawn. The square poster is
-   object-fit contained, which reproduces the live camera's min(w,h) globe
-   sizing at any aspect ratio; padding-left mirrors the ambient camera's Guide
-   panel offset on the home canvas. */
-.atlas-poster {
+/* Boot card: the honest stand-in for the second or two mapbox-gl spends
+   downloading, evaluating and building its first frame. It sits over the empty
+   canvas, ignores the pointer (the map is live beneath it as soon as it exists)
+   and crossfades out at mapReady, handing over to the map's own layered
+   load-in. Its ground matches .atlas-map's so the fade has nothing to reveal
+   but the globe. */
+.atlas-boot {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: rgb(6, 8, 12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: radial-gradient(ellipse at 30% 20%, #14130e, var(--panel));
   pointer-events: none;
-  transition: opacity 0.6s ease;
-  box-sizing: border-box;
+  transition: opacity 0.5s ease;
 }
-.atlas-poster img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.atlas-poster.out {
+.atlas-boot.out {
   opacity: 0;
+}
+.atlas-boot-hail {
+  font-family: var(--serif);
+  font-size: clamp(26px, 5.5vw, 40px);
+  line-height: 1.1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin: 0 0 10px;
+}
+.atlas-boot p:not(.atlas-boot-hail) {
+  color: var(--sub);
+  font-size: 13.5px;
+  max-width: 34ch;
 }
 
 /* Map controls (top-right): fullscreen, 2D/3D, basemap switcher. */
@@ -1674,7 +1686,8 @@ main.page {
   max-width: 420px;
   padding: 24px;
 }
-.atlas-map .fallback .badge {
+.atlas-map .fallback .badge,
+.atlas-map .atlas-boot .badge {
   display: inline-block;
   border: 1px solid var(--gold-dim);
   color: var(--gold-light);

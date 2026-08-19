@@ -13,10 +13,11 @@ import { collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/li
 //
 // STAYS SYNCHRONOUS ON PURPOSE. The globe's Share button links back here, so
 // this route has to understand ?style/?flat/?@ — but reading `searchParams`
-// here would opt the landing page out of static prerendering, and this is the
-// page carrying the SSR poster frame that puts a globe on screen before any JS
-// runs. AtlasShell reads those params itself, after mount, where they cost
-// nothing. See `arrivedView` there.
+// here would opt the landing page out of static prerendering, and a cold
+// landing is exactly where that prerender is worth the most: the shell, the
+// Guide panel and the atlas boot card all paint before any JS runs. AtlasShell
+// reads those params itself, after mount, where they cost nothing. See
+// `arrivedView` there.
 export default function Home() {
   return (
     <HomeSplit
