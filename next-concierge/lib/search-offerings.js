@@ -582,7 +582,10 @@ export const SEARCH_OFFERINGS_TOOL = {
       },
       bedrooms: {
         type: "integer",
-        description: "For type villa: minimum bedroom count, when the traveler asks by bedrooms.",
+        description:
+          "For type villa: minimum bedroom count, when the traveler asks by bedrooms. " +
+          "Matched against the largest bedroom count the supplier will rent, which is not " +
+          "always the villa's headline size.",
       },
       priceMax: {
         type: "integer",
@@ -1801,9 +1804,15 @@ function villaCard(v) {
     region: v.region,
     sleeps: v.sleeps,
     bedrooms: v.bedrooms,
+    // The counts the supplier will actually rent — [6,7,8,9,10] on an estate
+    // that also goes as a six. The Guide reads this when sizing a party.
+    bedroomOptions: v.bedroomOptions,
     bathrooms: v.bathrooms,
-    price: v.priceDisplay,          // "From $X/nt" or "Call for Pricing" — never $0
+    // "From $X/nt" — the supplier's own published rate — or "Call for Pricing".
+    // Never $0, and never a rate for a villa the supplier prices on request.
+    price: v.priceDisplay,
     nightlyFromUsd: v.nightlyFromUsd, // null => pricing on request
+    exactLocation: v.exactLocation,
     featured: v.featured,
     hasSpecials: v.hasSpecials,
     specialCategory: v.specialCategory,

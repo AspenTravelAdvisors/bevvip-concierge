@@ -54,10 +54,76 @@ const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
 
 // --- normalization -----------------------------------------------------------
 
+// The supplier's own "we do not publish a rate for this villa" marker. It is a
+// display string, not a flag, so match it the way the feed writes it.
+const CALL_FOR_PRICING = "call for pricing";
+const isCallForPricing = (priceString) =>
+  ci(priceString) === CALL_FOR_PRICING;
+
+/**
+ * The nightly rate a card may show, and the number a price cap may filter on —
+ * always the same value, which is the point.
+ *
+ * The feed carries two rates. `rate_from_usd` is a base rate; `price_low` (and
+ * the `price_string` built from it) is what VillaInfo actually publishes on the
+ * villa's own page. They agree for 2,519 records and diverge for 798, by a
+ * median of 6% and a 90th-percentile 37% — always with the published price
+ * higher. Formatting from `rate_from_usd`, as this did, quoted the traveller
+ * $1,700/nt for a villa the supplier lists at $2,258, and the gap surfaced
+ * either on click-through or in the advisor's quote.
+ *
+ * `price_string: "Call for Pricing"` overrides both. 425 records pair it with a
+ * positive `rate_from_usd` — the supplier is deliberately withholding a rate,
+ * and printing one anyway is the same error as the $0 the old rule guarded
+ * against, pointed the other way.
+ */
+function normalizePricing(pricing) {
+  const p = pricing || {};
+  const rate = Number(p.rate_from_usd) || 0;
+  const published = Number(p.price_low) || 0;
+  if (isCallForPricing(p.price_string)) {
+    return { nightlyFromUsd: null, priceDisplay: "Call for Pricing", baseRateUsd: rate || null };
+  }
+  const nightly = published > 0 ? published : rate > 0 ? rate : null;
+  return {
+    nightlyFromUsd: nightly,
+    // Never $0, and never a bare rate where the supplier publishes none.
+    priceDisplay: nightly
+      ? `From ${money(nightly)}/nt`
+      : String(p.price_string || "Call for Pricing"),
+    baseRateUsd: rate || null,
+  };
+}
+
+/**
+ * Bookable bedroom counts, ascending and de-duplicated.
+ *
+ * `capacity.bedrooms` is the villa's size; `capacity.available_bedrooms` is what
+ * the supplier will actually rent, and for 698 records that is a menu — Àni
+ * Thailand is [6,7,8,9,10], Vista Villa is [1,2,3,4]. A 10-bedroom estate that
+ * also goes as a 6 is a different product than a card headlining "10 bd", and
+ * for the traveller sizing a party it is the more useful number.
+ *
+ * It also disagrees with `bedrooms` in 45 records — 28 rent more rooms than the
+ * size field claims, 17 rent fewer — which is why the bedrooms filter reads the
+ * max of these options rather than `bedrooms` alone.
+ */
+function normalizeBedroomOptions(available, bedrooms) {
+  const raw = Array.isArray(available) ? available : [];
+  const options = [...new Set(raw.map((n) => Number(n)).filter((n) => Number.isFinite(n) && n > 0))];
+  options.sort((a, b) => a - b);
+  return options.length ? options : bedrooms > 0 ? [bedrooms] : [];
+}
+
 function normalizeVilla(v) {
-  const rate = Number(v.pricing && v.pricing.rate_from_usd) || 0;
-  const nightlyFromUsd = rate > 0 ? rate : null;
+  const { nightlyFromUsd, priceDisplay, baseRateUsd } = normalizePricing(v.pricing);
   const sleepsRaw = Number(v.capacity && v.capacity.sleeps) || 0;
+  const bedrooms = Number(v.capacity && v.capacity.bedrooms) || 0;
+  const bedroomOptions = normalizeBedroomOptions(
+    v.capacity && v.capacity.available_bedrooms,
+    bedrooms,
+  );
+  const geoPrecision = (v.geo && v.geo.precision) || "unknown";
   return {
     offeringType: "villa",
     id: v.id,
@@ -71,15 +137,30 @@ function normalizeVilla(v) {
     locationSlug: v.location && v.location.slug,
     lat: v.geo && v.geo.lat,
     lon: v.geo && v.geo.lon,
-    geoPrecision: (v.geo && v.geo.precision) || "unknown",
+    geoPrecision,
+    // 236 villas sit on a location or destination centroid rather than their own
+    // address. The map already renders those hollow; this is the same fact in a
+    // form a card can say out loud.
+    exactLocation: geoPrecision === "villa",
     sleeps: sleepsRaw > 0 ? sleepsRaw : null, // one record sleeps 0 — a data hole, so unknown
-    bedrooms: Number(v.capacity && v.capacity.bedrooms) || 0,
+    bedrooms,
+    bedroomOptions,
+    // What the bedrooms filter compares against: the largest count the supplier
+    // will rent, which is not always the villa's own size.
+    bedroomsMax: bedroomOptions.length ? bedroomOptions[bedroomOptions.length - 1] : bedrooms,
     bathrooms: Number(v.capacity && v.capacity.bathrooms) || 0,
     nightlyFromUsd,
-    // Never $0: a zero rate renders the supplier's own "Call for Pricing".
-    priceDisplay: nightlyFromUsd
-      ? `From ${money(nightlyFromUsd)}/nt`
-      : String((v.pricing && v.pricing.price_string) || "Call for Pricing"),
+    priceDisplay,
+    // The base rate behind a published price, kept for the advisor-facing side
+    // only (it is what the supplier quotes the agency, not the traveller).
+    baseRateUsd,
+    // Carried, deliberately not rendered: the feed's only freshness signal
+    // (713 records at 0, 3,187 at 1) with no documented meaning. Surfacing it as
+    // an availability claim needs confirmation from WTH first — see STATE.md.
+    liveAvailability:
+      v.availability && v.availability.true_availability != null
+        ? Number(v.availability.true_availability) === 1
+        : null,
     featured: !!v.featured,
     hasSpecials: Array.isArray(v.specials) && v.specials.length > 0,
     specialCategory: v.ranked_special_category || null,
@@ -193,8 +274,12 @@ function filterVillas(params = {}) {
   const sleepsMin = int(params.sleepsMin != null ? params.sleepsMin : params.sleeps);
   if (sleepsMin) list = list.filter((v) => v.sleeps != null && v.sleeps >= sleepsMin);
 
+  // Bedrooms match against the largest count the supplier will actually rent,
+  // not the villa's size field. They differ in 45 records — a "5 bedroom" villa
+  // bookable as [5,7] used to be hidden from a 7-bedroom search, and one
+  // bookable only as [3] used to be returned for a 5-bedroom one.
   const bedroomsMin = int(params.bedroomsMin != null ? params.bedroomsMin : params.bedrooms);
-  if (bedroomsMin) list = list.filter((v) => v.bedrooms >= bedroomsMin);
+  if (bedroomsMin) list = list.filter((v) => v.bedroomsMax >= bedroomsMin);
 
   const priceMax = int(params.priceMax);
   // Under a price cap, "Call for Pricing" records (null rate) are excluded —
@@ -292,6 +377,34 @@ function buildVillaDeepLink(params = {}) {
   return qs ? `${ATLAS_URL}?${qs}` : ATLAS_URL;
 }
 
+/**
+ * The client-facing projection of a villa record.
+ *
+ * Every consumer of searchVillas — the search API, the atlas's SSR first page,
+ * and the Guide's card builder — sends its output to a browser, so this is the
+ * one place that decides what a browser may see. Three internal fields stop
+ * here: `supplierDeepLink` (an advisor reference the guardrail says is never
+ * client-facing, but which until now shipped inside every card payload and the
+ * atlas's server-rendered HTML), `baseRateUsd` (the agency-side rate), and
+ * `liveAvailability` (undocumented, so not something to hand a client that
+ * might render it). The taxonomy slugs and `geoPrecision` go too — nothing on
+ * the client reads them, and `exactLocation` carries the part a card uses.
+ */
+function toClientVilla(v) {
+  const {
+    offeringType: _t,
+    regionSlug: _rs,
+    locationSlug: _ls,
+    geoPrecision: _gp,
+    bedroomsMax: _bm,
+    baseRateUsd: _br,
+    liveAvailability: _la,
+    supplierDeepLink: _dl,
+    ...client
+  } = v;
+  return client;
+}
+
 // Main search: filter + sort + paginate + facets.
 // Returns { results, total, page, perPage, facets, deepLink }.
 function searchVillas(params = {}) {
@@ -305,7 +418,7 @@ function searchVillas(params = {}) {
     total: matched.length,
     page,
     perPage,
-    results: sorted.slice(start, start + perPage),
+    results: sorted.slice(start, start + perPage).map(toClientVilla),
     facets: computeFacets(matched, params),
     deepLink: buildVillaDeepLink(params),
   };

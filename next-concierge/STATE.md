@@ -1010,12 +1010,44 @@ specific lead time is ever quoted by The Guide; the advisor sets both.
 - Guide: `type: "villa"` in search_offerings (fields sleeps / bedrooms / priceMax),
   advisor-handled rules in guide-prompt.js. CTA is always advisor request; villas
   never enter the TravelWits pipeline or the Hotel Atlas.
-- Pricing rule: `rate_from_usd: 0` (211 records) renders the supplier's
-  `price_string` ("Call for Pricing"), never $0. Some records carry
-  "Call for Pricing" as price_string with a positive rate; the display price is
-  always formatted from `rate_from_usd`.
+- Pricing rule (revised 2026-08-19): the displayed nightly rate is the supplier's
+  own published price — `pricing.price_low` when present, falling back to
+  `rate_from_usd`. `price_string: "Call for Pricing"` overrides both and renders
+  as price-on-request regardless of the rate behind it. Never $0, and never a
+  rate for a villa the supplier prices on request.
+  - Why: `rate_from_usd` is a base rate, not the published one. They diverge in
+    798 records by a median 6% / p90 37%, always with the published price higher
+    (Zanzibar Beachfront One-Bedroom: base $1,700, supplier page $2,258), and 425
+    records pair "Call for Pricing" with a positive rate. 789 villas now show the
+    corrected rate; 425 moved to price-on-request.
+  - `nightlyFromUsd` is both the displayed number and the number `priceMax`
+    filters on — keep those the same value. Facet `callForPricing` is now 636
+    (was 211), so a budget cap legitimately excludes more; the Guide's channel
+    note reports the real count.
+  - `baseRateUsd` keeps the agency-side rate server-side. Never client-facing.
+- Capacity: `capacity.available_bedrooms` is normalized to `bedroomOptions`
+  (ascending, de-duplicated) and `bedroomsMax`. 698 villas rent a menu of counts
+  (Àni Thailand: 6–10); cards show the range, the detail page names every option.
+  The bedrooms filter compares `bedroomsMax`, not `bedrooms` — they disagree in 45
+  records (28 rent more rooms than the size field, 17 fewer), which used to both
+  hide and falsely surface villas.
+- Availability: `availability.true_availability` is normalized to
+  `liveAvailability` (713 false / 3,187 true / 2 null) and deliberately NOT
+  rendered or shipped to a client. The feed does not document what it means, and
+  it is the only field that would read as an availability claim. Confirm the
+  semantics with WTH before surfacing it. `availability.min_night_stay` is null
+  in all 3,902 records.
 - Geo: `geo.precision === "villa"` (3,666) renders as solid pins; centroid/locality
   precision renders smaller and hollow, and clustering keeps stacked centroids readable.
+  The same fact reaches cards as `exactLocation`: the 236 centroid villas carry an
+  "approx. location" marker on the card and a sentence on the detail page.
+- Client projection: `searchVillas` results go through `toClientVilla`, the one
+  place that decides what a browser may see. It strips `supplierDeepLink` (which
+  had been shipping inside every card payload and the atlas's SSR HTML despite
+  the guardrail), `baseRateUsd`, `liveAvailability`, `geoPrecision`, `bedroomsMax`
+  and the unused taxonomy slugs. `getVillaById` / `getVillaBySlug` still return the
+  full record for server-side callers — the detail page's internal supplier
+  reference is rendered from there.
 - Supplier overlay: `villas-of-distinction` added to
   `data/atlas/shared/advisor-overlay.json` (the copy lib/atlas/supplier-fit.js reads)
   and the `data/advisor-overlay.json` sibling. `commissionPct` intentionally null:
@@ -1028,7 +1060,10 @@ specific lead time is ever quoted by The Guide; the advisor sets both.
 1. Re-run the VOD scrape (produces `living_atlas.villas_of_distinction.v1` JSON).
 2. Replace `data/villas-of-distinction.json` with the new file.
 3. `npm run dev`, spot-check `GET /api/villas/search?region=Caribbean&sleeps=10`
-   and `/atlas/villa` (map pins + pagination + no $0 anywhere).
+   and `/atlas/villa` (map pins + pagination + no $0 anywhere). Confirm the API
+   response carries no `supplierDeepLink` / `baseRateUsd` / `liveAvailability`,
+   and that a villa whose `price_string` is "Call for Pricing" shows no rate even
+   when `rate_from_usd` is positive.
 4. Deploy. CDN cache on the search API is s-maxage=86400, so stale results age out
    within a day of the deploy.
 

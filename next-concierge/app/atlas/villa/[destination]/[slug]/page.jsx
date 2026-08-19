@@ -44,9 +44,24 @@ export default async function VillaDetailPage({ params }) {
   const requestHref = `/?ask=${encodeURIComponent(
     `I'd like to request the villa ${v.name} in ${where} through my advisor. Can you set that up?`,
   )}`;
+  // The supplier's bookable bedroom counts, which are not always the villa's
+  // size: 698 villas rent a menu of counts, and 45 rent a count the `bedrooms`
+  // field does not list at all. The detail page has room to say it exactly.
+  const options = v.bedroomOptions && v.bedroomOptions.length ? v.bedroomOptions : [];
+  const bedroomStat = options.length
+    ? options.length === 1
+      ? `${options[0]} bedrooms`
+      : `${options[0]}–${options[options.length - 1]} bedrooms`
+    : v.bedrooms
+      ? `${v.bedrooms} bedrooms`
+      : null;
+  const bedroomOptionsNote =
+    options.length > 1
+      ? `Bookable as ${options.slice(0, -1).join(", ")} or ${options[options.length - 1]} bedrooms.`
+      : null;
   const stats = [
     v.sleeps != null ? `Sleeps ${v.sleeps}` : "Capacity on request",
-    v.bedrooms ? `${v.bedrooms} bedrooms` : null,
+    bedroomStat,
     v.bathrooms ? `${v.bathrooms} bathrooms` : null,
   ].filter(Boolean);
 
@@ -91,10 +106,18 @@ export default async function VillaDetailPage({ params }) {
         <p className="villa-detail-stats mono">
           {stats.join(" · ")} · <b>{v.priceDisplay}</b>
         </p>
+        {bedroomOptionsNote && <p className="villa-detail-note">{bedroomOptionsNote}</p>}
         {v.nightlyFromUsd == null && (
           <p className="villa-detail-cfp">
             Pricing for this villa is on request. Your advisor confirms the rate for your
             dates and party.
+          </p>
+        )}
+        {!v.exactLocation && (
+          <p className="villa-detail-note">
+            Location is approximate: this villa is placed at the centre of{" "}
+            {v.location || v.destination} rather than its own address, which the supplier does
+            not publish. Your advisor confirms exactly where it sits.
           </p>
         )}
         {v.summary && <p className="villa-detail-summary">{v.summary}</p>}

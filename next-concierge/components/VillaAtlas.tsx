@@ -59,12 +59,17 @@ interface Villa {
   location: string;
   sleeps: number | null;
   bedrooms: number;
+  /** Bookable bedroom counts, ascending. Often [bedrooms]; 698 villas rent a menu. */
+  bedroomOptions: number[];
   bathrooms: number;
   nightlyFromUsd: number | null;
   priceDisplay: string;
+  /** False when the pin is a location/destination centroid, not the villa's address. */
+  exactLocation: boolean;
   featured: boolean;
   hasSpecials: boolean;
   specialCategory: string | null;
+  specials: string[];
   summary: string;
   imageUrl: string | null;
 }
@@ -950,15 +955,36 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   );
 }
 
+/**
+ * What the traveller can actually rent, which is not always the villa's size.
+ *
+ * `bedroomOptions` is the supplier's own list of bookable counts. A single
+ * option reads as before; a menu reads as a range, because "10 bd" on an estate
+ * that also goes as a 6 hides the version most parties would book. The exact
+ * list stays in the tooltip and on the detail page rather than crowding a card.
+ */
+function bedroomLabel(v: Villa): string | null {
+  const opts = v.bedroomOptions?.length ? v.bedroomOptions : v.bedrooms ? [v.bedrooms] : [];
+  if (!opts.length) return null;
+  const min = opts[0];
+  const max = opts[opts.length - 1];
+  return min === max ? `${max} bd` : `${min}–${max} bd`;
+}
+
 function VillaCard({ v }: { v: Villa }) {
   const crumb = [v.region, v.destination, v.location].filter(Boolean).join(" › ");
+  const bedrooms = bedroomLabel(v);
+  const multiBedroom = (v.bedroomOptions?.length ?? 0) > 1;
   const stats = [
     v.sleeps != null ? `Sleeps ${v.sleeps}` : null,
-    v.bedrooms ? `${v.bedrooms} bd` : null,
+    bedrooms,
     v.bathrooms ? `${v.bathrooms} ba` : null,
   ]
     .filter(Boolean)
     .join(" · ");
+  // The offer itself, not just its category. The badge over the photo says
+  // "Free Night(s)"; this says which nights, on which stay.
+  const offer = v.specials?.[0] || null;
   return (
     <div className="villa-card">
       <Link className="villa-card-media" href={`/atlas/villa/${v.destinationSlug}/${v.slug}`}>
@@ -974,15 +1000,26 @@ function VillaCard({ v }: { v: Villa }) {
         )}
       </Link>
       <div className="villa-card-body">
-        <span className="villa-crumb mono">{crumb}</span>
+        <span className="villa-crumb mono">
+          {crumb}
+          {/* 236 villas are pinned to a location or destination centroid. The map
+              already draws those hollow; saying so here keeps the card honest
+              for anyone reading the list without the map. */}
+          {!v.exactLocation && <em className="villa-approx"> · approx. location</em>}
+        </span>
         <Link className="villa-name" href={`/atlas/villa/${v.destinationSlug}/${v.slug}`}>
           {v.name}
         </Link>
-        <span className="villa-stats mono">
+        <span
+          className="villa-stats mono"
+          title={multiBedroom ? `Bookable as ${v.bedroomOptions.join(", ")} bedrooms` : undefined}
+        >
           {stats}
           {stats && " · "}
           <b>{v.priceDisplay}</b>
         </span>
+        {offer && <span className="villa-offer">{offer}</span>}
+        {v.summary && <p className="villa-card-summary">{v.summary}</p>}
         <div className="villa-card-ctas">
           <Link href={askGuideHref(v)}>Ask the Guide about this villa</Link>
           <Link href={requestAdvisorHref(v)} className="villa-advisor">
