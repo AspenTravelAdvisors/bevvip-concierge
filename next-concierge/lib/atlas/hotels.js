@@ -10,11 +10,18 @@
 // cold filesystem read. Clean seam for a later Supabase swap: replace the
 // `hotels` source and keep these signatures intact.
 
-const hotels = require("../../data/atlas/hotel/luxury-hotels.json");
+const rawHotels = require("../../data/atlas/hotel/luxury-hotels.json");
 const hotelFit = require("../../data/atlas/hotel/hotel-fit.json");
 const { rankItems } = require("./supplier-fit");
 const { preferredScore, preferredTier } = require("./preferred-overlay");
 const { travelWitsFor } = require("./travelwits-overlay");
+const { applyProgramOverrides } = require("./program-overrides");
+
+// Program membership is corrected once, at load, so `program=` filtering, the
+// `q` haystack, the cards and the preferred-partner ranking all see the same
+// value the map does. See lib/atlas/program-overrides.js for why this is an
+// overlay rather than an edit to the feed.
+const hotels = applyProgramOverrides(rawHotels);
 
 const ci = (s) => String(s == null ? "" : s).toLowerCase().trim();
 const fold = (s) => ci(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "");

@@ -46,6 +46,11 @@ export const PROGRAM_DOMAINS: Record<string, string> = {
   "Al Zorah":"alzorah.ae",
   "Taj Hotels":"tajhotels.com",
   "Corinthia":"corinthia.com",
+  // IHG's luxury & lifestyle program. Not a raw feed value: assigned by
+  // data/atlas/hotel/program-overrides.json, which gathers the Six Senses,
+  // Regent, InterContinental, Kimpton, Hotel Indigo and Vignette Collection
+  // properties the feed had filed under their import channel.
+  "IHG Destined":"ihg.com",
 };
 
 /** Domain for a program, or null when it has no known mark. */

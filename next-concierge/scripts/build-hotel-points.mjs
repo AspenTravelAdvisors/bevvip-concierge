@@ -1,12 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
+const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE = path.join(ROOT, "data", "atlas", "hotel", "luxury-hotels.json");
 const OUT = path.join(ROOT, "public", "maps", "hotel", "hotel-points.json");
 
-const hotels = JSON.parse(fs.readFileSync(SOURCE, "utf8"));
+// Same program overlay the query layer applies (lib/atlas/hotels.js), so the
+// map's "Brand / Program" facet and the API cannot disagree about which program
+// a property belongs to.
+const { applyProgramOverrides } = require("../lib/atlas/program-overrides.js");
+
+const hotels = applyProgramOverrides(JSON.parse(fs.readFileSync(SOURCE, "utf8")));
 
 const features = hotels
   .map((h) => {

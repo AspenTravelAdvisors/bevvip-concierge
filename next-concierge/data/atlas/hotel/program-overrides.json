@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "purpose": "Program-membership overrides for data/atlas/hotel/luxury-hotels.json. The feed carries the channel a property was imported under (nearly always 'Virtuoso'), which collapses whole hotel-company programs into one bucket. Each rule here promotes a family of properties onto the program that actually governs them, so the atlas's 'Brand / Program' axis and the preferred-partner ranking see the real relationship.",
+    "created": "2026-08-20",
+    "appliedBy": [
+      "lib/atlas/program-overrides.js (query layer: lib/atlas/hotels.js)",
+      "scripts/build-hotel-points.mjs (map/facet feed: public/maps/hotel/hotel-points.json)"
+    ],
+    "editingRule": "Never hand-edit program/brand in luxury-hotels.json — a re-import would silently drop it. Add a rule here instead; both consumers apply this file at load, so the override survives a feed refresh.",
+    "matching": "A hotel joins a rule when its `brand` equals a brandRule's `brand` (case/accent-insensitive) OR its `name` matches that rule's `namePattern`. Patterns are anchored on word boundaries so they cannot match mid-word ('Regent' never matches 'Regency'). `excludeIds` wins over everything.",
+    "fieldsWritten": {
+      "program": "set to the rule's program name",
+      "brand": "set to the brandRule's brand — fills the many IHG records the feed left null, and corrects a mislabelled one (see notes)",
+      "programSource": "the feed's original program value, preserved so nothing is lost"
+    }
+  },
+  "rules": [
+    {
+      "program": "IHG Destined",
+      "preferredOverlayProgramId": "ihg-destined",
+      "notes": [
+        "IHG's luxury & lifestyle agency program. Membership is by IHG brand, so the rule set below IS the definition of the category.",
+        "The Virtuoso amenities these properties carry (vipUpgrades) are unchanged — they are delivered through this program; only the program label moves.",
+        "h_00983 InterContinental Danang Sun Peninsula Resort was labelled brand 'The Peninsula' / program 'The Peninsula Pen Club' in the feed. The 'Peninsula' in its name is the Son Tra peninsula, not The Peninsula Hotels — it is an IHG InterContinental, so this rule corrects both fields."
+      ],
+      "brandRules": [
+        { "brand": "Six Senses", "namePattern": "\\bsix senses\\b" },
+        { "brand": "Regent", "namePattern": "\\bregent\\b" },
+        { "brand": "InterContinental", "namePattern": "\\binter\\s*continental\\b" },
+        { "brand": "Kimpton", "namePattern": "\\bkimpton\\b" },
+        { "brand": "Hotel Indigo", "namePattern": "\\bhotel indigo\\b" },
+        { "brand": "Vignette Collection", "namePattern": "\\bvignette collection\\b" }
+      ],
+      "excludeIds": []
+    }
+  ]
+}

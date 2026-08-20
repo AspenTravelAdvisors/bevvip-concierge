@@ -87,6 +87,13 @@ export const HOTEL_BRAND_DOMAINS: Record<string, string> = {
   "The Mark": "themarkhotel.com",
   "The Setai": "thesetaihotel.com",
   "Wynn": "wynnresorts.com",
+  // The IHG Destined brands (see hotel-programs.ts). The feed left `brand` null
+  // on most of these; program-overrides.json fills it, so each family shows its
+  // own mark instead of falling back to the program's.
+  "InterContinental": "ihg.com",
+  "Kimpton": "kimptonhotels.com",
+  "Hotel Indigo": "ihg.com",
+  "Vignette Collection": "ihg.com",
 };
 
 /** Domain for a hotel brand, or null when it has no confirmed mark. */
