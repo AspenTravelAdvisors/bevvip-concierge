@@ -3933,60 +3933,223 @@ button.card-book {
   flex: none;
 }
 
-/* Trip length — "Days [min] – [max]".
-   One bordered group rather than two loose boxes: the pair is a single filter,
-   and two unlabelled number fields sitting between a month menu and a port box
-   read as two unrelated questions. The label lives inside the group so the row
-   still wraps as one unit. */
+/* Trip length — a closed control that opens two picker wheels.
+   The rail is a row of menus, so the closed state is menu-shaped: a label, the
+   current reading, a caret. Everything expensive to draw lives in the popover,
+   which most people never open. */
 .villa-filters .atlas-days {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 3px 8px 3px 10px;
+  position: relative;
   flex: none;
 }
-.villa-filters .atlas-dayslabel {
+.villa-filters .atlas-daysbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 26px 7px 10px;
+  font-size: 12.5px;
   font-family: var(--sans);
+  cursor: pointer;
+  /* Our own caret, matching .atlas-sort — the native one belongs to a <select>
+     and this is a button, so drawing it keeps the row reading as one kind of
+     control rather than two. */
+  background-image: linear-gradient(45deg, transparent 50%, var(--sub) 50%),
+                    linear-gradient(135deg, var(--sub) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 51%, calc(100% - 9px) 51%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.villa-filters .atlas-daysbtn:hover,
+.villa-filters .atlas-days.open .atlas-daysbtn {
+  border-color: var(--gold);
+}
+.atlas-dayslabel {
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--sub);
 }
-.villa-filters .atlas-daysdash {
-  color: var(--sub);
-  font-size: 12.5px;
+.atlas-daysvalue {
+  white-space: nowrap;
 }
-/* The fields are transparent and borderless: the group already draws the
-   control, and boxes inside a box make a two-number filter look like a form. */
-.villa-filters input.atlas-daysfield {
-  width: 48px;
-  min-width: 0;
-  background: transparent;
-  color: var(--text);
+
+/* The popover. Anchored to the control, above the map's own chrome. */
+.atlas-dayspop {
+  /* Row height is shared with AtlasFilterRail.tsx (WHEEL_ROW): the pick is
+     derived from scrollTop / row, so these two numbers must not drift apart.
+     Five rows visible, odd so exactly one of them sits under the band. */
+  --wheel-row: 34px;
+  --wheel-h: calc(var(--wheel-row) * 5);
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--card, #12100c);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 12px 10px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+/* Opened upward when the rail is sitting low on the screen — see daysUp. */
+.atlas-dayspop.up {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+/* In the phone drawer the wheels are the control, so they sit in the flow. */
+.atlas-dayspop.inline {
+  position: static;
+  width: 100%;
+  padding: 4px 0 0;
   border: 0;
-  border-radius: 5px;
-  padding: 4px 2px;
-  font-size: 12.5px;
+  background: none;
+  box-shadow: none;
+}
+.atlas-wheels {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+}
+.atlas-wheelsdash,
+.atlas-wheelsunit {
   font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  padding-bottom: calc(var(--wheel-h) / 2 - 8px);
+}
+.atlas-wheel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.atlas-wheelhead {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sub);
   text-align: center;
 }
-.villa-filters input.atlas-daysfield:focus-visible {
-  outline: 1px solid var(--gold);
-  outline-offset: 1px;
+.atlas-wheelbox {
+  position: relative;
+  height: var(--wheel-h);
+  width: 92px;
+  /* A face for the dial. Without it the rows either side of the band fade into
+     the page and the wheel reads as loose numbers floating in a gap — most
+     visible in the drawer, where the control has a whole row to itself. */
+  background: rgba(255, 255, 255, 0.022);
+  border-radius: 10px;
 }
-/* Spinners are 20-odd pixels of chrome on a 48px field, and they invite
-   clicking through 245 values one at a time. Type the number. */
-.villa-filters input.atlas-daysfield::-webkit-outer-spin-button,
-.villa-filters input.atlas-daysfield::-webkit-inner-spin-button {
-  appearance: none;
-  margin: 0;
+/* The selection band — the wheel's only piece of chrome, and what makes a
+   scrolling list read as a dial rather than as a short scrollbar-less list. */
+.atlas-wheelband {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - var(--wheel-row) / 2);
+  height: var(--wheel-row);
+  border-top: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+  background: rgba(198, 164, 92, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
 }
-.villa-filters input.atlas-daysfield {
-  appearance: textfield;
-  -moz-appearance: textfield;
+.atlas-wheellist {
+  height: 100%;
+  overflow-y: auto;
+  /* Momentum, snapping and touch physics come from the browser. Half a wheel
+     of padding at each end so the first and last rows can reach the band. */
+  scroll-snap-type: y mandatory;
+  padding: calc((var(--wheel-h) - var(--wheel-row)) / 2) 0;
+  scrollbar-width: none;
+  /* Fade to nothing at both ends. This is the curvature of a physical wheel,
+     done with one mask instead of a per-row transform on every scroll frame. */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 17%, #000 83%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 17%, #000 83%, transparent);
+  outline: none;
+}
+.atlas-wheellist::-webkit-scrollbar { width: 0; height: 0; }
+/* Focus lives on the list — one tab stop for the whole wheel — but an outline
+   around a masked scroller fades out at exactly the corners that would show
+   it, so the band carries the focus instead (below). */
+.atlas-wheellist:focus-visible {
+  outline: none;
+}
+.atlas-wheelbox:focus-within .atlas-wheelband {
+  background: rgba(198, 164, 92, 0.2);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+.atlas-wheelrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  height: var(--wheel-row);
+  scroll-snap-align: center;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--sub);
+  cursor: pointer;
+  /* Rows fade and shrink away from the band; the centred one is full size.
+     Transitioned so a flick reads as a dial turning rather than as text
+     popping between two states. */
+  opacity: 0.62;
+  transform: scale(0.9);
+  transition: opacity 0.14s ease, transform 0.14s ease, color 0.14s ease;
+  user-select: none;
+}
+.atlas-wheelrow[aria-selected="true"] {
+  opacity: 1;
+  transform: none;
+  color: var(--text);
+}
+.atlas-wheelnum {
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+}
+/* How many trips are that long — the same promise the region and brand menus
+   make with their counts, kept quiet enough not to compete with the number. */
+.atlas-wheelcount {
+  font-size: 10.5px;
+  color: var(--sub);
+  opacity: 0.8;
+}
+.atlas-daysfoot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.atlas-daysread {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-right: auto;
+}
+.atlas-daysany,
+.atlas-daysdone {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--sub);
+  cursor: pointer;
+}
+.atlas-daysany:hover {
+  color: var(--gold-light, var(--gold));
+  border-color: var(--gold);
+}
+.atlas-daysdone {
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 /* Atlas collection browser (Deliverable 3) — the globe + rail + cards that
@@ -4419,31 +4582,33 @@ button.card-book {
   font-family: var(--sans);
   padding: 11px 12px;
 }
-/* Trip length in the drawer: one full-width row, the two fields sharing it.
-   Everything else in here is a single full-width control, so the group has to
-   behave like one rather than letting two 48px boxes float at the left edge. */
+/* Trip length in the drawer: the wheels themselves, inline. Everything else in
+   here is one full-width control, so the group behaves like one — and the
+   wheels are wider down here because there is room for them. */
 .atlas-sheetbody .atlas-days {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   width: 100%;
 }
-.atlas-sheetbody .atlas-dayslabel {
+.atlas-sheetbody .atlas-wheels {
+  gap: 10px;
+}
+.atlas-dayscaption {
+  display: block;
   font-family: var(--sans);
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--sub);
-  flex: none;
+  margin-bottom: 6px;
 }
-.atlas-sheetbody .atlas-daysdash {
-  color: var(--sub);
-  flex: none;
+.atlas-sheetbody .atlas-wheelbox {
+  width: 34vw;
+  max-width: 150px;
 }
-.atlas-sheetbody input.atlas-daysfield {
-  flex: 1 1 0;
-  min-width: 0;
-  text-align: center;
+/* The generic sheet rule gives every input a bordered box; the wheel rows are
+   not inputs, and the band is already the control's edge. */
+.atlas-sheetbody .atlas-daysfoot {
+  border-top: 0;
+  padding-top: 2px;
 }
 
 .atlas-sheetfoot {

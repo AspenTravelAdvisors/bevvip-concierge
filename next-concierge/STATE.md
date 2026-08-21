@@ -1154,11 +1154,23 @@ collection whose offerings have a length (all five journey/voyage atlases;
 hotels opt out via `supportsDurationFilter: false`, because a stay's length is
 the traveller's choice and not a property of the hotel).
 
-- **A pair of numbers, not a menu of buckets.** The collections disagree too
+- **Two picker wheels, not a menu of buckets.** The collections disagree too
   much for one set of buckets — rail runs 2–19 days, jet 4–29, yacht 3–19,
   cruise 3–96, world cruises 50–245 — and a "15+ days" bucket is the wrong tool
-  for someone with exactly nine free days. The group's tooltip names the
-  collection's own range so the boxes aren't a guess.
+  for someone with exactly nine free days. On desktop a closed control
+  ("LENGTH · 10–14 days") drops a popover holding a Min and a Max wheel; in the
+  phone drawer the wheels are inline, because a popover inside a scrolling
+  sheet is a clipping problem with no good answer. Scroll-snap does the
+  physics, so the feel is native on touch; the pick commits when the wheel
+  SETTLES, not per scroll event. Each wheel is one tab stop with arrow-key
+  support, and only offers lengths that EXIST in the collection, each row
+  carrying how many trips are that long (the counting rule the region and brand
+  menus already use).
+- **An impossible window cannot be expressed.** Max starts at the chosen Min
+  and Min stops at the chosen Max. Offering everything and dragging the other
+  end along when they cross was tried and is worse: spinning Max down from Any
+  passes THROUGH the short lengths, so each row it crossed pulled Min down with
+  it — three presses of Down silently rewrote a 7-day Min to 3.
 - **The unit is whatever the card prints.** `durationDays()` counts nights for
   cruise and days for the journeys, which is what the card beside the filter
   says; normalising one family into the other's unit would make the filter

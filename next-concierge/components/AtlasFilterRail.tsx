@@ -91,16 +91,121 @@ const EMPTY_STATE = (): AtlasFilterState => ({
 });
 
 /**
- * A typed trip-length bound, or null for "this end is open".
+ * The trip-length wheels.
  *
- * Rejects 0 and anything unparseable rather than treating it as a bound: a
- * half-typed "0" is someone on their way to "10", and filtering to trips of at
- * most no days would empty the list under them mid-keystroke.
+ * Row height must match `--wheel-row` in globals.css: the picked value comes
+ * from `scrollTop / ROW`, so a stylesheet that disagreed with this number
+ * would quietly select the row above or below the one under the band.
  */
-const dayBound = (raw: string): number | null => {
-  const n = Number(raw.trim());
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : null;
-};
+const WHEEL_ROW = 34;
+
+/** One row on a wheel. `value: null` is the "Any" row that opens that end. */
+interface DayRow { value: number | null; label: string; count: number | null }
+
+/**
+ * An iOS-style picker wheel over one end of the trip-length range.
+ *
+ * Scroll-snap does the physics — momentum, the snap itself, touch and
+ * trackpad — so there is no drag maths here and it behaves natively on a
+ * phone. This only translates between a scroll position and a value:
+ *
+ *   scrolling      the centred row lights up live, and the pick commits once
+ *                  the wheel SETTLES. Committing per scroll event would write
+ *                  the URL a dozen times on one flick.
+ *   clicking a row scrolls it under the band and commits.
+ *   arrow keys     the same, a row at a time. The container is the listbox and
+ *                  carries the focus, so a 90-row wheel is one tab stop rather
+ *                  than ninety.
+ */
+function DayWheel({ id, label, rows, value, onPick }: {
+  id: string;
+  label: string;
+  rows: readonly DayRow[];
+  value: number | null;
+  onPick(next: number | null): void;
+}) {
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const settle = useRef<number | null>(null);
+  const index = Math.max(0, rows.findIndex((r) => r.value === value));
+  const [centre, setCentre] = useState(index);
+
+  // Centre the pick when the wheel appears, and when the value moves under it
+  // (Reset, a deep link, the other wheel carrying this one). The half-row
+  // threshold keeps this from fighting a snap still settling — after a scroll
+  // the wheel is already where it belongs, give or take a pixel.
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    const target = index * WHEEL_ROW;
+    if (Math.abs(el.scrollTop - target) > WHEEL_ROW / 2) el.scrollTop = target;
+    setCentre(index);
+    // rows.length as well as index: the other wheel narrowing this one's
+    // options moves the selected row without changing what is selected.
+  }, [index, rows.length]);
+
+  useEffect(() => () => { if (settle.current) window.clearTimeout(settle.current); }, []);
+
+  const rowAt = (i: number) => Math.min(rows.length - 1, Math.max(0, i));
+
+  const onScroll = () => {
+    const el = listRef.current;
+    if (!el) return;
+    const i = rowAt(Math.round(el.scrollTop / WHEEL_ROW));
+    setCentre(i);
+    if (settle.current) window.clearTimeout(settle.current);
+    settle.current = window.setTimeout(() => {
+      settle.current = null;
+      onPick(rows[i]?.value ?? null);
+    }, 140);
+  };
+
+  const move = (to: number) => {
+    const i = rowAt(to);
+    listRef.current?.scrollTo({ top: i * WHEEL_ROW, behavior: "smooth" });
+    setCentre(i);
+    onPick(rows[i].value);
+  };
+
+  return (
+    <div className="atlas-wheel">
+      <span className="atlas-wheelhead">{label}</span>
+      <div className="atlas-wheelbox">
+        <div className="atlas-wheelband" aria-hidden />
+        <div
+          ref={listRef}
+          className="atlas-wheellist"
+          role="listbox"
+          aria-label={label}
+          tabIndex={0}
+          aria-activedescendant={`${id}-${centre}`}
+          onScroll={onScroll}
+          onKeyDown={(e) => {
+            const jump =
+              e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 :
+              e.key === "PageDown" ? 5 : e.key === "PageUp" ? -5 : 0;
+            if (jump) { e.preventDefault(); move(centre + jump); return; }
+            if (e.key === "Home") { e.preventDefault(); move(0); }
+            if (e.key === "End") { e.preventDefault(); move(rows.length - 1); }
+          }}
+        >
+          {rows.map((r, i) => (
+            <div
+              key={r.value ?? "any"}
+              id={`${id}-${i}`}
+              className="atlas-wheelrow"
+              role="option"
+              aria-selected={i === centre}
+              onClick={() => move(i)}
+            >
+              <span className="atlas-wheelnum">{r.label}</span>
+              {r.count != null && <span className="atlas-wheelcount">{r.count.toLocaleString()}</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * How long typing has to stop before the free-text search runs. Long enough
@@ -266,50 +371,106 @@ export default function AtlasFilterRail({
   useEffect(() => { setStopText(shown.stop || ""); }, [shown.stop]);
 
   /**
-   * The shortest and longest trip in the collection, for the number inputs'
-   * own bounds and for the hint on the group.
+   * The lengths this collection actually offers, each with how many trips are
+   * that long once every OTHER filter is applied — the counting rule the
+   * region and brand menus already use, so a row says what picking it would
+   * give you. The trip-length bounds themselves are excluded from that count,
+   * or picking 10 days would leave the wheel offering nothing but 10.
    *
-   * Worth showing rather than leaving the fields blank and unhelpful: "3 to
-   * 245" is the difference between a weekend at sea and a world cruise, and
-   * nobody guesses that range from an empty box marked Max.
+   * Only lengths that EXIST get a row. Running 3…96 by integer would put 40
+   * dead rows in the cruise wheel, and spinning past a number no sailing is
+   * long enough to have is the wheel lying about the collection.
    */
-  const durationExtent = useMemo(() => {
-    if (d.supportsDurationFilter === false) return null;
-    let lo = Infinity;
-    let hi = -Infinity;
+  const dayRows = useMemo<DayRow[]>(() => {
+    if (d.supportsDurationFilter === false) return [];
+    const counts = new Map<number, number>();
+    const open: AtlasFilterState = { ...shown, minDays: null, maxDays: null };
+    let total = 0;
     for (const o of offerings) {
       const n = durationDays(o);
       if (n == null) continue;
-      if (n < lo) lo = n;
-      if (n > hi) hi = n;
+      if (!matchesOffering(o, open, d, today)) continue;
+      total++;
+      counts.set(n, (counts.get(n) || 0) + 1);
     }
-    return Number.isFinite(lo) ? { lo, hi } : null;
-  }, [offerings, d.supportsDurationFilter]);
+    return [
+      { value: null, label: "Any", count: total || null },
+      ...[...counts.entries()].sort((a, b) => a[0] - b[0]).map(([n, c]) => ({
+        value: n, label: String(n), count: c,
+      })),
+    ];
+  }, [offerings, shown, d, today]);
 
   /**
-   * The day boxes hold their own text, for the same reason the stop box does:
-   * bound straight to state, a keystroke that does not (yet) parse — "0" on
-   * the way to "10", a cleared field mid-edit — would be erased under the
-   * cursor. State follows every keystroke that DOES parse, so the list still
-   * responds as you type; the text is only what the field shows.
+   * On desktop the wheels live in a popover under the control; in the phone
+   * drawer they are inline and always open. A popover inside a scrolling sheet
+   * is a clipping problem with no good answer, and the drawer is where a wheel
+   * is the natural control anyway — there is room for it there.
    */
-  const [minText, setMinText] = useState(shown.minDays == null ? "" : String(shown.minDays));
-  const [maxText, setMaxText] = useState(shown.maxDays == null ? "" : String(shown.maxDays));
+  const [daysOpen, setDaysOpen] = useState(false);
   /**
-   * Re-seed from state ONLY when state disagrees with what the box already
-   * means — Reset, a deep link, the mobile draft re-seeding. Text that parses
-   * to the bound now in force is our own edit echoing back, and overwriting it
-   * would swallow a keystroke: a "0" typed ahead of "9" parses to no bound,
-   * which is the state we are already in, so a blind re-seed would erase the
-   * zero the moment it was typed. Functional updates, so the comparison always
-   * sees the text as it stands rather than as it was when the effect closed.
+   * Which way the popover opens, decided when it opens.
+   *
+   * The rail is sticky, so where it sits on screen depends on how far the page
+   * has been scrolled: at the top of a collection page it is below the map and
+   * near the bottom of the viewport, and a wheel that dropped downward from
+   * there would open off-screen. Measured rather than assumed, and only on
+   * open — a popover that re-flipped while being scrolled past would be worse
+   * than one that opens in the wrong direction.
    */
+  const [daysUp, setDaysUp] = useState(false);
+  const daysRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    setMinText((t) => (dayBound(t) === (shown.minDays ?? null) ? t : shown.minDays == null ? "" : String(shown.minDays)));
-  }, [shown.minDays]);
-  useEffect(() => {
-    setMaxText((t) => (dayBound(t) === (shown.maxDays ?? null) ? t : shown.maxDays == null ? "" : String(shown.maxDays)));
-  }, [shown.maxDays]);
+    if (!daysOpen) return;
+    const box = daysRef.current?.getBoundingClientRect();
+    // The popover's own height, near enough: five rows, heads, and the footer.
+    if (box) setDaysUp(box.bottom + 270 > window.innerHeight && box.top > 270);
+    const away = (e: MouseEvent) => {
+      if (daysRef.current && !daysRef.current.contains(e.target as Node)) setDaysOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setDaysOpen(false); };
+    document.addEventListener("mousedown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [daysOpen]);
+
+  /**
+   * Each wheel offers only what the other end allows: Max starts at the chosen
+   * Min, Min stops at the chosen Max. An impossible window is therefore not
+   * something the control can express.
+   *
+   * The alternative — offer everything and drag the other end along when they
+   * cross — was tried and is worse. Spinning Max down from Any passes THROUGH
+   * the short lengths on its way, so each row it crosses pulls Min down with
+   * it: three presses of Down on the Max wheel silently rewrote a 7-day Min to
+   * 3. A wheel that cannot reach an invalid value never has to correct one.
+   */
+  const minRows = useMemo(
+    () => dayRows.filter((r) => r.value == null || shown.maxDays == null || r.value <= shown.maxDays),
+    [dayRows, shown.maxDays],
+  );
+  const maxRows = useMemo(
+    () => dayRows.filter((r) => r.value == null || shown.minDays == null || r.value >= shown.minDays),
+    [dayRows, shown.minDays],
+  );
+
+  const pickMin = (v: number | null) => {
+    if (v !== (shown.minDays ?? null)) set({ minDays: v });
+  };
+  const pickMax = (v: number | null) => {
+    if (v !== (shown.maxDays ?? null)) set({ maxDays: v });
+  };
+
+  /** What the closed control says. The unit is spelled out; the numbers aren't. */
+  const lengthLabel =
+    shown.minDays == null && shown.maxDays == null ? "Any length"
+    : shown.maxDays == null ? `${shown.minDays}+ days`
+    : shown.minDays == null ? `Up to ${shown.maxDays} days`
+    : shown.minDays === shown.maxDays ? `${shown.minDays} days`
+    : `${shown.minDays}–${shown.maxDays} days`;
 
   /**
    * Memoised, and not for tidiness: cruise has 1,622 ports and worldcruise 971,
@@ -375,8 +536,6 @@ export default function AtlasFilterRail({
     committedQ.current = "";
     setQText("");
     setStopText("");
-    setMinText("");
-    setMaxText("");
     if (editing) { setDraft(EMPTY_STATE()); setDraftQuery({ q: "", country: "" }); return; }
     // Desktop: one commit, same reason as Apply.
     if (onCommit) onCommit(EMPTY_STATE(), { q: "", country: "" });
@@ -479,49 +638,64 @@ export default function AtlasFilterRail({
         </select>
       )}
 
-      {/* Trip length, as a min/max pair rather than a menu of buckets.
-          The collections disagree too much for one set of buckets to serve
-          them — rail runs 2 to 19 days, world cruises 50 to 245 — and a
-          "15+ days" bucket is the wrong tool for someone with exactly nine
-          free days. Two numbers say the same thing at every scale, and either
-          may stand alone. */}
-      {d.supportsDurationFilter !== false && (
-        <div
-          className="atlas-days"
-          role="group"
-          aria-label="Trip length in days"
-          title={
-            durationExtent
-              ? `Trip length in days — this collection runs ${durationExtent.lo} to ${durationExtent.hi}`
-              : "Trip length in days"
-          }
-        >
-          <span className="atlas-dayslabel" aria-hidden>Days</span>
-          <input
-            className="atlas-daysfield"
-            type="number"
-            inputMode="numeric"
-            min={durationExtent?.lo ?? 1}
-            max={durationExtent?.hi}
-            step={1}
-            value={minText}
-            placeholder="Min"
-            onChange={(e) => { setMinText(e.target.value); set({ minDays: dayBound(e.target.value) }); }}
-            aria-label="Shortest trip length in days"
-          />
-          <span className="atlas-daysdash" aria-hidden>–</span>
-          <input
-            className="atlas-daysfield"
-            type="number"
-            inputMode="numeric"
-            min={durationExtent?.lo ?? 1}
-            max={durationExtent?.hi}
-            step={1}
-            value={maxText}
-            placeholder="Max"
-            onChange={(e) => { setMaxText(e.target.value); set({ maxDays: dayBound(e.target.value) }); }}
-            aria-label="Longest trip length in days"
-          />
+      {/* Trip length — two wheels over a min and a max.
+          A pair of wheels rather than one menu of buckets: the collections
+          disagree too much for one set of buckets to serve them (rail runs 2
+          to 19 days, world cruises 50 to 245), and "15+ days" is the wrong
+          tool for someone with exactly nine free days. Two ends say the same
+          thing at every scale, and either may stay open. */}
+      {d.supportsDurationFilter !== false && dayRows.length > 1 && (
+        <div className={`atlas-days${daysOpen ? " open" : ""}`} ref={daysRef}>
+          {/* In the drawer the wheels are the control; on desktop this button
+              is, and the wheels drop out of it. */}
+          {!editing && (
+            <button
+              type="button"
+              className="atlas-daysbtn"
+              aria-haspopup="dialog"
+              aria-expanded={daysOpen}
+              onClick={() => setDaysOpen((o) => !o)}
+            >
+              <span className="atlas-dayslabel">Length</span>
+              <span className="atlas-daysvalue">{lengthLabel}</span>
+            </button>
+          )}
+          {(editing || daysOpen) && (
+            <div
+              className={`atlas-dayspop${editing ? " inline" : daysUp ? " up" : ""}`}
+              role={editing ? undefined : "dialog"}
+              aria-label="Trip length in days"
+            >
+              {/* The drawer has no trigger button to name the control, so the
+                  wheels carry their own caption there. */}
+              {editing && <span className="atlas-dayscaption">Trip length</span>}
+              <div className="atlas-wheels">
+                <DayWheel id="atlas-minday" label="Min" rows={minRows} value={shown.minDays ?? null} onPick={pickMin} />
+                <span className="atlas-wheelsdash" aria-hidden>–</span>
+                <DayWheel id="atlas-maxday" label="Max" rows={maxRows} value={shown.maxDays ?? null} onPick={pickMax} />
+                <span className="atlas-wheelsunit" aria-hidden>days</span>
+              </div>
+              {/* Says what the two wheels currently add up to, so the reading
+                  of the range is never left to the person doing the spinning. */}
+              <div className="atlas-daysfoot">
+                <span className="atlas-daysread">{lengthLabel}</span>
+                {(shown.minDays != null || shown.maxDays != null) && (
+                  <button
+                    type="button"
+                    className="atlas-daysany"
+                    onClick={() => set({ minDays: null, maxDays: null })}
+                  >
+                    Any length
+                  </button>
+                )}
+                {!editing && (
+                  <button type="button" className="atlas-daysdone" onClick={() => setDaysOpen(false)}>
+                    Done
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
