@@ -1141,3 +1141,40 @@ routes rebuilt. `npm run verify:ports` is in `verify` and passes at 0 suspects.
 Two judgment calls left alone and recorded in `confirmed`: Northeast Greenland
 National Park sits at the park centroid, 300km inland on the ice cap, and
 "Cape Peron" may be the Shark Bay one rather than the Rockingham one.
+
+## Trip length filter on the atlas rail (2026-08-21)
+
+The rail could say *where* and *when* but not *how long*. "I have nine days" is
+the constraint most travellers actually arrive with, and the only way to browse
+by it was to sort by duration and scroll — which on a 3,542-sailing collection
+capped at 120 cards means the middle of the range is unreachable.
+
+`AtlasFilterRail` now carries a **Days [min] – [max]** group, on every
+collection whose offerings have a length (all five journey/voyage atlases;
+hotels opt out via `supportsDurationFilter: false`, because a stay's length is
+the traveller's choice and not a property of the hotel).
+
+- **A pair of numbers, not a menu of buckets.** The collections disagree too
+  much for one set of buckets — rail runs 2–19 days, jet 4–29, yacht 3–19,
+  cruise 3–96, world cruises 50–245 — and a "15+ days" bucket is the wrong tool
+  for someone with exactly nine free days. The group's tooltip names the
+  collection's own range so the boxes aren't a guess.
+- **The unit is whatever the card prints.** `durationDays()` counts nights for
+  cruise and days for the journeys, which is what the card beside the filter
+  says; normalising one family into the other's unit would make the filter
+  disagree with the number the traveller is reading.
+- **`minDays=` / `maxDays=` are new deep-link params**, inclusive, and either
+  end stands alone. A junk, zero or negative bound leaves that end OPEN rather
+  than filtering everything out, and unset bounds are never serialised — so
+  every link already in circulation means exactly what it meant. An offering
+  whose length is unknown drops out once a bound is set (today that is none of
+  them: all 3,955 current offerings across the five collections have a length).
+- Sort by duration (`duration-asc` / `duration-desc`) was already there and is
+  unchanged; the filter narrows, the sort orders.
+
+Verified: `verify:adapters` gains a trip-length property section (bounds are
+inclusive, either end alone, the collection's own range keeps every dated trip,
+an inverted window keeps nothing, no bound changes nothing) on top of its
+unchanged 8.8M-comparison parity run; `verify:deeplinks` gains round-trip and
+bad-input assertions (627 → 687); `verify:hotels` asserts the bounds are inert
+there.

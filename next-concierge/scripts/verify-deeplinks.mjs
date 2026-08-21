@@ -19,6 +19,7 @@
  *   - journeys map role `stop` → `visit`; voyages pass roles through verbatim
  *   - `location` resolves fuzzily, `port` only exactly (existing asymmetry)
  *   - toSearchParams → parseDeepLink round-trips to the same state
+ *   - minDays/maxDays round-trip, and a junk or zero bound leaves that end open
  */
 
 import { readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
@@ -58,6 +59,13 @@ let checks = 0, failures = 0;
 const fail = (msg) => { failures++; console.log("    FAIL  " + msg); };
 const ok = () => { checks++; };
 const expect = (cond, msg) => (cond ? ok() : fail(msg));
+
+/** An all-open filter state, for the checks that serialise one. */
+const emptyState = () => ({
+  brands: new Set(), vessels: new Set(), months: new Set(), ids: new Set(),
+  regions: new Set(), excludedRegions: new Set(), stop: null, stopRole: "any", terms: [],
+  minDays: null, maxDays: null,
+});
 
 /** Build a ParseContext from each atlas's real data. */
 function contextFor(collection) {
@@ -209,6 +217,8 @@ for (const [collection, d] of COLLECTIONS) {
       stop: ctx.stopNames[0],
       stopRole: d.roles === "journey" ? "start" : "embark",
       terms: [],
+      minDays: 7,
+      maxDays: 21,
     };
     const qs = toSearchParams(state, {}, d);
     const back = parseDeepLink(new URLSearchParams(qs.toString()), d, ctx).state;
@@ -220,6 +230,35 @@ for (const [collection, d] of COLLECTIONS) {
     expect(same(state.excludedRegions, back.excludedRegions), `${collection}: exRegions did not round-trip`);
     expect(back.stop === state.stop, `${collection}: stop did not round-trip`);
     expect(back.stopRole === state.stopRole, `${collection}: stopRole did not round-trip`);
+    expect(back.minDays === state.minDays, `${collection}: minDays did not round-trip`);
+    expect(back.maxDays === state.maxDays, `${collection}: maxDays did not round-trip`);
+  }
+
+  // 7b. Trip length: a bound only filters when it is a positive number, and a
+  // link that carries neither leaves both ends open — which is every link the
+  // Leaflet atlases ever emitted.
+  {
+    const parse = (params) => parseDeepLink(new URLSearchParams(params), d, ctx).state;
+    const none = parse({});
+    expect(none.minDays === null && none.maxDays === null,
+      `${collection}: a link with no bounds must leave both ends open`);
+    const both = parse({ minDays: "7", maxDays: "14" });
+    expect(both.minDays === 7 && both.maxDays === 14, `${collection}: minDays/maxDays should parse`);
+    const one = parse({ minDays: "10" });
+    expect(one.minDays === 10 && one.maxDays === null, `${collection}: either bound must stand alone`);
+    for (const junk of ["", "soon", "0", "-4", "NaN"]) {
+      const st = parse({ minDays: junk, maxDays: junk });
+      expect(st.minDays === null && st.maxDays === null,
+        `${collection}: minDays=${JSON.stringify(junk)} should leave the bound open, not filter`);
+    }
+    // A fractional bound floors rather than being rejected: "10.5 days" is a
+    // typed number with an obvious reading, and the field only ever offers
+    // whole days.
+    expect(parse({ minDays: "10.5" }).minDays === 10, `${collection}: a fractional bound should floor`);
+    // Nothing emits the params unless they are set, so ordinary links stay clean.
+    const clean = toSearchParams({ ...emptyState(d), stop: null }, {}, d).toString();
+    expect(!clean.includes("minDays") && !clean.includes("maxDays"),
+      `${collection}: unset bounds must not appear in a shared link`);
   }
 
   // 8. brand= / operator= interchangeability.

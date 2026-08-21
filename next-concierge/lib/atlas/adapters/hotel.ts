@@ -38,9 +38,10 @@ export const HOTEL_DESCRIPTOR: AtlasFilterDescriptor = {
   // `brand=` is deep-link-only (a hidden facet); no control writes it.
   supportsBrandFilter: false,
   idPrefix: "h_",
-  // A hotel has no departure and no itinerary.
+  // A hotel has no departure, no itinerary and no length of its own.
   supportsMonthFilter: false,
   supportsStopFilter: false,
+  supportsDurationFilter: false,
   // `ids=` frames the shortlist without hiding the rest of the field, and `q`
   // is a raw substring over name/city/region/country. Both differ from the five.
   idsHighlightOnly: true,

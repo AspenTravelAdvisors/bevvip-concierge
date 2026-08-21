@@ -200,7 +200,19 @@ const base = () => ({
   checks.push(["region=caribbean includes the country alias", n > marqueed,
     `${n} vs ${marqueed} by marquee alone`]);
 }
-// 6. every hotel is placeable and none were dropped
+// 6. trip length is not a hotel axis
+{
+  // A stay's length is the traveller's choice, not a property of the hotel, so
+  // HOTEL_DESCRIPTOR turns the filter off — a `minDays=` arriving on a link
+  // (from a journeys atlas, or by hand) must be inert here rather than
+  // emptying the map. See supportsDurationFilter.
+  const st = base();
+  st.minDays = 7;
+  st.maxDays = 10;
+  const kept = offerings.filter((o) => matchesOffering(o, st, HOTEL_DESCRIPTOR, TODAY)).length;
+  checks.push(["trip-length bounds are inert for hotels", kept === offerings.length, `kept ${kept}`]);
+}
+// 7. every hotel is placeable and none were dropped
 {
   const located = offerings.filter((o) => o.stops[0]?.at).length;
   checks.push(["every hotel has a coordinate", located === offerings.length, `${located}`]);

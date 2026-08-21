@@ -12,6 +12,7 @@
 
 import type { AtlasFilterDescriptor, AtlasOffering } from "./types";
 import { matchesSubstring, matchesTerms } from "./search";
+import { durationDays } from "@/lib/atlas/dates";
 
 export interface AtlasFilterState {
   /** Brand keys, or operator names for cruise — see descriptor.brandField. */
@@ -34,6 +35,23 @@ export interface AtlasFilterState {
   terms: readonly string[];
   /** Raw `q`, for descriptors using searchMode "substring". */
   rawQuery?: string;
+  /**
+   * Trip length in days, inclusive bounds — `minDays=` / `maxDays=`.
+   *
+   * Either end may stand alone: "at least a fortnight" is a bound with no
+   * upper limit, and asking for both is not the common case. null/undefined
+   * means that end is open, which is why these are numbers-or-null rather
+   * than a range object with sentinel values.
+   *
+   * The unit is whatever the collection counts in — see durationDays(). cruise
+   * counts NIGHTS and stores them in `days`, so "7" means a 7-night sailing
+   * there and a 7-day journey on rail. Both are what the card prints, and a
+   * traveller filtering on the number they can see is the behaviour that
+   * matches; converting one family to the other's unit would make the filter
+   * disagree with the card beside it.
+   */
+  minDays?: number | null;
+  maxDays?: number | null;
   /**
    * `world=1` — only round-the-world itineraries.
    *
@@ -64,6 +82,8 @@ export function emptyFilterState(): AtlasFilterState {
     stop: null,
     stopRole: "any",
     terms: [],
+    minDays: null,
+    maxDays: null,
   };
 }
 
@@ -154,6 +174,20 @@ export function matchesExceptRegion(
   } else if (!matchesTerms(o.searchText, state.terms)) return false;
 
   if (d.supportsStopFilter !== false && state.stop && !stopMatches(o, state.stop, state.stopRole)) return false;
+
+  /**
+   * Trip length. Inclusive at both ends, and an offering whose length is
+   * UNKNOWN is excluded once either bound is set — asking for "7 to 10 days"
+   * is asking about a length, so a trip that cannot answer is not a match.
+   * (With no bound set nothing is touched, which is why every existing link
+   * and the adapter parity harness are unaffected.)
+   */
+  if (d.supportsDurationFilter !== false && (state.minDays != null || state.maxDays != null)) {
+    const days = durationDays(o);
+    if (days == null) return false;
+    if (state.minDays != null && days < state.minDays) return false;
+    if (state.maxDays != null && days > state.maxDays) return false;
+  }
 
   if (state.world && !o.world) return false;
 

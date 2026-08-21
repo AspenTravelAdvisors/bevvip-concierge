@@ -284,6 +284,17 @@ export interface AtlasFilterDescriptor {
 
   /** Collections without itineraries (hotels) hide the stop/role controls. */
   supportsStopFilter?: boolean;
+
+  /**
+   * Whether the rail offers the trip-length (min/max days) filter.
+   *
+   * Defaults to on, because every journey and voyage has a length and "how
+   * long am I away for" is the axis a traveller brings to the page before
+   * they know where they want to go. Hotels turn it off: a stay's length is
+   * the traveller's choice, not a property of the offering, so a control for
+   * it there would filter on a number the feed does not have.
+   */
+  supportsDurationFilter?: boolean;
 }
 
 export const ROLE_VALUES: Record<RoleVocabulary, readonly string[]> = {

@@ -24,6 +24,10 @@
  *              voyages accept whatever string arrives.
  *   q, country tokenised together into search terms (country is not a filter).
  *   world      /^(1|true|yes|y)$/i
+ *   minDays    NEW — trip length in days, inclusive. Not a Leaflet param; no
+ *   maxDays    link in circulation carries it, and an absent or unparseable
+ *              value leaves that end open, so nothing that parses today
+ *              changes meaning.
  *
  * The asymmetry between fuzzy `location` and exact `port` is real, existing
  * behaviour. It is preserved rather than "fixed" so shared links resolve to
@@ -236,6 +240,16 @@ export function parseDeepLink(
     for (const v of splitList(params.get(extra))) ids.add(v);
   }
   const months = new Set(splitList(params.get("month")));
+
+  // Trip length. A bound is only honoured if it is a positive finite number —
+  // `minDays=soon` leaves that end open rather than filtering everything out,
+  // the same forgiveness unknown region keys get.
+  const dayBound = (raw: string | null): number | null => {
+    const n = Number(String(raw ?? "").trim());
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : null;
+  };
+  const minDays = d.supportsDurationFilter === false ? null : dayBound(params.get("minDays"));
+  const maxDays = d.supportsDurationFilter === false ? null : dayBound(params.get("maxDays"));
   const vessels = new Set(d.supportsVesselFilter ? splitList(params.get("ships")) : []);
 
   // brand falls back to operator (and vice versa for cruise, whose Share button
@@ -313,6 +327,8 @@ export function parseDeepLink(
       excludedRegions,
       stop,
       stopRole,
+      minDays,
+      maxDays,
       // `country` folds into the search terms for the five journeys/voyages —
       // but where a collection declares a `country` FACET (hotels), the param
       // is that facet's value and must not also become a search term.
@@ -403,6 +419,10 @@ export function toSearchParams(
   if (state.stop) {
     p.set(d.stopParam, state.stop);
     if (state.stopRole && state.stopRole !== "any") p.set(d.stopRoleParam, state.stopRole);
+  }
+  if (d.supportsDurationFilter !== false) {
+    if (state.minDays != null) p.set("minDays", String(state.minDays));
+    if (state.maxDays != null) p.set("maxDays", String(state.maxDays));
   }
   if (rawQuery?.q) p.set("q", rawQuery.q);
   // Same asymmetry on the way out: a country facet already wrote this key.

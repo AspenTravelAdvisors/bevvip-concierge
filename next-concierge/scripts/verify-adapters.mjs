@@ -60,6 +60,9 @@ const { adaptWorldCruise, WORLDCRUISE_DESCRIPTOR } = await mod("worldcruise.js")
 const { adaptCruise, CRUISE_DESCRIPTOR, correctedRegionName } = await mod("cruise.js");
 const { matchesOffering } = await mod("filter.js");
 const { searchTerms } = await mod("search.js");
+// dates.js is CommonJS and lives outside the adapters build; Node's ESM loader
+// reads its named exports through cjs-module-lexer, same as the adapters do.
+const { durationDays } = await import(pathToFileURL(join(ROOT, "lib/atlas/dates.js")).href);
 
 /**
  * Every collection is checked twice, against two "today" values.
@@ -430,6 +433,98 @@ for (const today of TODAYS) {
   run("worldcruise", adaptWorldCruise, WORLDCRUISE_DESCRIPTOR, ["", "world", "cunard", "oceania", "vista", "miami", "sydney", "grand", "2027", "zzzz"], today, "voyage");
   runCruise(today);
 }
+/* ─────────────────── trip length (minDays / maxDays) ─────────────────── */
+
+/**
+ * NOT a parity check — no Leaflet atlas had a trip-length filter, so there is
+ * no original to disagree with. It is a PROPERTY check, and the properties are
+ * the ones a shared link depends on:
+ *
+ *   - no bound set leaves the result set byte-identical to before the filter
+ *     existed (which is what keeps every link in circulation meaning what it
+ *     meant);
+ *   - the bounds are inclusive, and either end stands alone;
+ *   - an offering whose length is unknown drops out once a bound is set.
+ */
+function durationChecks() {
+  const today = TODAYS[0].iso;
+  const base = {
+    brands: new Set(), vessels: new Set(), months: new Set(), ids: new Set(),
+    regions: new Set(), excludedRegions: new Set(), stop: null, stopRole: "any", terms: [],
+  };
+  const sets = [
+    ["train", adaptTrain(JSON.parse(readFileSync(join(ROOT, "public/maps/train/itinerary.json"), "utf8"))), TRAIN_DESCRIPTOR],
+    ["jet", adaptJet(JSON.parse(readFileSync(join(ROOT, "public/maps/jet/itinerary.json"), "utf8"))), JET_DESCRIPTOR],
+    ["yacht", adaptYacht(JSON.parse(readFileSync(join(ROOT, "public/maps/yacht/itinerary.json"), "utf8"))), YACHT_DESCRIPTOR],
+    ["worldcruise", adaptWorldCruise(JSON.parse(readFileSync(join(ROOT, "public/maps/worldcruise/itinerary.json"), "utf8"))), WORLDCRUISE_DESCRIPTOR],
+    (() => { const c = loadCruise(); return ["cruise", adaptCruise(c.sail, c.meta, c.routes, c.regionOverrides), CRUISE_DESCRIPTOR]; })(),
+  ];
+
+  console.log("");
+  console.log("Trip length — minDays / maxDays");
+  console.log("=".repeat(78));
+
+  let bad = 0;
+  const check = (cond, msg) => { if (!cond) { bad++; console.log("    FAIL  " + msg); } };
+
+  for (const [name, offerings, d] of sets) {
+    const keep = (st) => offerings.filter((o) => matchesOffering(o, { ...base, ...st }, d, today));
+    const current = keep({});
+    const lengths = current.map((o) => durationDays(o));
+    const known = lengths.filter((n) => n != null).sort((a, b) => a - b);
+    if (!known.length) { console.log(`  ${name.padEnd(11)} no dated durations — skipped`); continue; }
+    const lo = known[0];
+    const hi = known[known.length - 1];
+    const mid = known[Math.floor(known.length / 2)];
+
+    // 1. Unset bounds change nothing. Both spellings — absent and explicit null.
+    check(keep({ minDays: null, maxDays: null }).length === current.length,
+      `${name}: explicit null bounds changed the result set`);
+
+    // 2. Each bound keeps exactly what it says, inclusively, and drops the rest.
+    for (const [label, st] of [
+      ["minDays", { minDays: mid }],
+      ["maxDays", { maxDays: mid }],
+      ["both", { minDays: lo, maxDays: mid }],
+    ]) {
+      const kept = keep(st);
+      const expected = current.filter((o) => {
+        const n = durationDays(o);
+        if (n == null) return false;
+        if (st.minDays != null && n < st.minDays) return false;
+        if (st.maxDays != null && n > st.maxDays) return false;
+        return true;
+      });
+      check(kept.length === expected.length,
+        `${name}: ${label} kept ${kept.length}, expected ${expected.length}`);
+      check(kept.every((o) => {
+        const n = durationDays(o);
+        return n != null && (st.minDays == null || n >= st.minDays) && (st.maxDays == null || n <= st.maxDays);
+      }), `${name}: ${label} kept a trip outside the bound`);
+    }
+
+    // 3. The full range is the whole (dated) field, and an impossible window is empty.
+    check(keep({ minDays: lo, maxDays: hi }).length === known.length,
+      `${name}: the collection's own range should keep every dated trip`);
+    check(keep({ minDays: hi + 1 }).length === 0, `${name}: minDays past the longest trip should keep nothing`);
+    check(keep({ maxDays: lo, minDays: hi }).length === 0, `${name}: an inverted window should keep nothing`);
+
+    // 4. Trips of unknown length survive with no bound and drop with one.
+    const unknown = current.length - known.length;
+    check(keep({ minDays: 1 }).length === known.length,
+      `${name}: minDays=1 should drop exactly the ${unknown} trips of unknown length`);
+
+    console.log(`  ${name.padEnd(11)} ${String(current.length).padStart(4)} trips  ` +
+      `${String(known.length).padStart(4)} with a length (${lo}–${hi} days)  ` +
+      `${String(unknown).padStart(3)} unknown`);
+  }
+
+  console.log("");
+  console.log(bad ? `  ${bad} TRIP-LENGTH FAILURES` : "  Trip-length bounds behave on every collection.");
+  totalMismatch += bad;
+}
+durationChecks();
+
 console.log("");
 console.log(totalMismatch ? `  ${totalMismatch.toLocaleString()} TOTAL MISMATCHES` : "  All collections agree with the Leaflet originals.");
 console.log("");

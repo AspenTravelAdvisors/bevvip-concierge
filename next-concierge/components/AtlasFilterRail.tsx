@@ -32,6 +32,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNod
 import type { AtlasOffering, AtlasFilterDescriptor } from "@/lib/atlas/adapters/types";
 import { ROLE_VALUES } from "@/lib/atlas/adapters/types";
 import { matchesExceptRegion, matchesOffering, regionPass, type AtlasFilterState } from "@/lib/atlas/adapters/filter";
+import { durationDays } from "@/lib/atlas/dates";
 
 export interface AtlasQuery {
   q: string;
@@ -86,8 +87,20 @@ function selectValue(set: ReadonlySet<string>): string {
 const EMPTY_STATE = (): AtlasFilterState => ({
   brands: new Set(), vessels: new Set(), months: new Set(), ids: new Set(),
   regions: new Set(), excludedRegions: new Set(), stop: null, stopRole: "any", terms: [],
-  world: undefined, facets: undefined,
+  minDays: null, maxDays: null, world: undefined, facets: undefined,
 });
+
+/**
+ * A typed trip-length bound, or null for "this end is open".
+ *
+ * Rejects 0 and anything unparseable rather than treating it as a bound: a
+ * half-typed "0" is someone on their way to "10", and filtering to trips of at
+ * most no days would empty the list under them mid-keystroke.
+ */
+const dayBound = (raw: string): number | null => {
+  const n = Number(raw.trim());
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : null;
+};
 
 /**
  * How long typing has to stop before the free-text search runs. Long enough
@@ -236,6 +249,7 @@ export default function AtlasFilterRail({
   const anyActive = (s: AtlasFilterState) =>
     s.brands.size || s.vessels.size || s.months.size || s.ids.size ||
     s.regions.size || s.excludedRegions.size || s.stop || s.terms.length || s.world ||
+    s.minDays != null || s.maxDays != null ||
     Object.values(s.facets || {}).some((v) => v.size);
 
   const set = (patch: Partial<AtlasFilterState>) => setState({ ...shown, ...patch });
@@ -250,6 +264,52 @@ export default function AtlasFilterRail({
 
   const [stopText, setStopText] = useState(shown.stop || "");
   useEffect(() => { setStopText(shown.stop || ""); }, [shown.stop]);
+
+  /**
+   * The shortest and longest trip in the collection, for the number inputs'
+   * own bounds and for the hint on the group.
+   *
+   * Worth showing rather than leaving the fields blank and unhelpful: "3 to
+   * 245" is the difference between a weekend at sea and a world cruise, and
+   * nobody guesses that range from an empty box marked Max.
+   */
+  const durationExtent = useMemo(() => {
+    if (d.supportsDurationFilter === false) return null;
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const o of offerings) {
+      const n = durationDays(o);
+      if (n == null) continue;
+      if (n < lo) lo = n;
+      if (n > hi) hi = n;
+    }
+    return Number.isFinite(lo) ? { lo, hi } : null;
+  }, [offerings, d.supportsDurationFilter]);
+
+  /**
+   * The day boxes hold their own text, for the same reason the stop box does:
+   * bound straight to state, a keystroke that does not (yet) parse — "0" on
+   * the way to "10", a cleared field mid-edit — would be erased under the
+   * cursor. State follows every keystroke that DOES parse, so the list still
+   * responds as you type; the text is only what the field shows.
+   */
+  const [minText, setMinText] = useState(shown.minDays == null ? "" : String(shown.minDays));
+  const [maxText, setMaxText] = useState(shown.maxDays == null ? "" : String(shown.maxDays));
+  /**
+   * Re-seed from state ONLY when state disagrees with what the box already
+   * means — Reset, a deep link, the mobile draft re-seeding. Text that parses
+   * to the bound now in force is our own edit echoing back, and overwriting it
+   * would swallow a keystroke: a "0" typed ahead of "9" parses to no bound,
+   * which is the state we are already in, so a blind re-seed would erase the
+   * zero the moment it was typed. Functional updates, so the comparison always
+   * sees the text as it stands rather than as it was when the effect closed.
+   */
+  useEffect(() => {
+    setMinText((t) => (dayBound(t) === (shown.minDays ?? null) ? t : shown.minDays == null ? "" : String(shown.minDays)));
+  }, [shown.minDays]);
+  useEffect(() => {
+    setMaxText((t) => (dayBound(t) === (shown.maxDays ?? null) ? t : shown.maxDays == null ? "" : String(shown.maxDays)));
+  }, [shown.maxDays]);
 
   /**
    * Memoised, and not for tidiness: cruise has 1,622 ports and worldcruise 971,
@@ -315,6 +375,8 @@ export default function AtlasFilterRail({
     committedQ.current = "";
     setQText("");
     setStopText("");
+    setMinText("");
+    setMaxText("");
     if (editing) { setDraft(EMPTY_STATE()); setDraftQuery({ q: "", country: "" }); return; }
     // Desktop: one commit, same reason as Apply.
     if (onCommit) onCommit(EMPTY_STATE(), { q: "", country: "" });
@@ -415,6 +477,52 @@ export default function AtlasFilterRail({
             </option>
           ))}
         </select>
+      )}
+
+      {/* Trip length, as a min/max pair rather than a menu of buckets.
+          The collections disagree too much for one set of buckets to serve
+          them — rail runs 2 to 19 days, world cruises 50 to 245 — and a
+          "15+ days" bucket is the wrong tool for someone with exactly nine
+          free days. Two numbers say the same thing at every scale, and either
+          may stand alone. */}
+      {d.supportsDurationFilter !== false && (
+        <div
+          className="atlas-days"
+          role="group"
+          aria-label="Trip length in days"
+          title={
+            durationExtent
+              ? `Trip length in days — this collection runs ${durationExtent.lo} to ${durationExtent.hi}`
+              : "Trip length in days"
+          }
+        >
+          <span className="atlas-dayslabel" aria-hidden>Days</span>
+          <input
+            className="atlas-daysfield"
+            type="number"
+            inputMode="numeric"
+            min={durationExtent?.lo ?? 1}
+            max={durationExtent?.hi}
+            step={1}
+            value={minText}
+            placeholder="Min"
+            onChange={(e) => { setMinText(e.target.value); set({ minDays: dayBound(e.target.value) }); }}
+            aria-label="Shortest trip length in days"
+          />
+          <span className="atlas-daysdash" aria-hidden>–</span>
+          <input
+            className="atlas-daysfield"
+            type="number"
+            inputMode="numeric"
+            min={durationExtent?.lo ?? 1}
+            max={durationExtent?.hi}
+            step={1}
+            value={maxText}
+            placeholder="Max"
+            onChange={(e) => { setMaxText(e.target.value); set({ maxDays: dayBound(e.target.value) }); }}
+            aria-label="Longest trip length in days"
+          />
+        </div>
       )}
 
       {d.supportsStopFilter !== false && (

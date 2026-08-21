@@ -3933,6 +3933,62 @@ button.card-book {
   flex: none;
 }
 
+/* Trip length — "Days [min] – [max]".
+   One bordered group rather than two loose boxes: the pair is a single filter,
+   and two unlabelled number fields sitting between a month menu and a port box
+   read as two unrelated questions. The label lives inside the group so the row
+   still wraps as one unit. */
+.villa-filters .atlas-days {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 3px 8px 3px 10px;
+  flex: none;
+}
+.villa-filters .atlas-dayslabel {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sub);
+}
+.villa-filters .atlas-daysdash {
+  color: var(--sub);
+  font-size: 12.5px;
+}
+/* The fields are transparent and borderless: the group already draws the
+   control, and boxes inside a box make a two-number filter look like a form. */
+.villa-filters input.atlas-daysfield {
+  width: 48px;
+  min-width: 0;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-radius: 5px;
+  padding: 4px 2px;
+  font-size: 12.5px;
+  font-family: var(--sans);
+  text-align: center;
+}
+.villa-filters input.atlas-daysfield:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 1px;
+}
+/* Spinners are 20-odd pixels of chrome on a 48px field, and they invite
+   clicking through 245 values one at a time. Type the number. */
+.villa-filters input.atlas-daysfield::-webkit-outer-spin-button,
+.villa-filters input.atlas-daysfield::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.villa-filters input.atlas-daysfield {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
 /* Atlas collection browser (Deliverable 3) — the globe + rail + cards that
    replace an iframed Leaflet atlas.
 
@@ -4363,6 +4419,33 @@ button.card-book {
   font-family: var(--sans);
   padding: 11px 12px;
 }
+/* Trip length in the drawer: one full-width row, the two fields sharing it.
+   Everything else in here is a single full-width control, so the group has to
+   behave like one rather than letting two 48px boxes float at the left edge. */
+.atlas-sheetbody .atlas-days {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.atlas-sheetbody .atlas-dayslabel {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sub);
+  flex: none;
+}
+.atlas-sheetbody .atlas-daysdash {
+  color: var(--sub);
+  flex: none;
+}
+.atlas-sheetbody input.atlas-daysfield {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+
 .atlas-sheetfoot {
   display: flex;
   gap: 10px;
