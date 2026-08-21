@@ -70,6 +70,8 @@ interface RawHotelFeature {
     city?: string | null;
     region?: string | null;
     marqueeRegion?: string | null;
+    /** Umbrella-resort search names from data/atlas/hotel/place-aliases.json. */
+    alias?: string | null;
   };
 }
 export interface RawHotelPoints {
@@ -136,11 +138,14 @@ export function adaptHotels(raw: RawHotelPoints): AtlasOffering[] {
       itinerary: [],
       url: null,
       world: false,
-      // EXACTLY the original haystack: name + city + region + country,
-      // lowercased, matched by substring. Note `region` here IS the feed's
-      // sub-national value — adding brand or program would silently widen
-      // every search relative to the atlas being replaced.
-      searchText: `${p.name || ""} ${p.city || ""} ${p.region || ""} ${p.country || ""}`.toLowerCase(),
+      // The original haystack — name + city + region + country, lowercased and
+      // matched by substring — plus the point's `alias`, the only addition.
+      // `region` here IS the feed's sub-national value; adding brand or program
+      // would silently widen every search relative to the atlas replaced.
+      // `alias` widens it on purpose, for six properties whose postal town is
+      // not what anyone searches (Snowmass Village -> "aspen").
+      searchText: `${p.name || ""} ${p.city || ""} ${p.region || ""} ${p.country || ""} ${p.alias || ""}`
+        .toLowerCase(),
     });
   }
   return out;

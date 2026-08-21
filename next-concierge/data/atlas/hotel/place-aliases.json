@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "purpose": "Search aliases for properties whose town is not the name people search. The feed stores the postal town — 'Snowmass Village', 'Teton Village' — while every guest, brochure and ski map calls the place Aspen or Jackson Hole. Without an alias a search for 'aspen' returns five of the six Aspen-area houses and silently drops Viceroy Snowmass.",
+    "created": "2026-08-21",
+    "appliedBy": [
+      "lib/atlas/place-aliases.js (query layer: lib/atlas/hotels.js — Guide search, cards, API)",
+      "scripts/build-hotel-points.mjs (map/facet feed: public/maps/hotel/hotel-points.json)",
+      "lib/atlas/adapters/hotel.ts + public/maps/hotel/index.html (the atlas's own q haystack)"
+    ],
+    "editingRule": "Never rewrite `city` in luxury-hotels.json to the umbrella name — the town is correct, and a feed re-import would drop the edit anyway. Add a rule here; every consumer reads this file at load.",
+    "matching": "A hotel joins a rule when its city equals `city` (case/accent-insensitive) and, where given, its adminRegion and country match too. The aliases are appended to the search haystack only — they never change the displayed city, the country facet, or the map's own city grouping.",
+    "scope": "Umbrella-resort names only: the alias must be a name the property itself markets under. 'Beaver Creek -> Vail' is deliberately absent — those are separate mountains, and folding them together would mislead a client reading the map."
+  },
+  "rules": [
+    {
+      "city": "Snowmass Village",
+      "adminRegion": "Colorado",
+      "country": "United States",
+      "aliases": ["Aspen", "Aspen Snowmass", "Snowmass"],
+      "note": "Snowmass is one of the four Aspen Snowmass mountains, 12 miles from Aspen town; Viceroy Snowmass is sold as an Aspen stay."
+    },
+    {
+      "city": "Teton Village",
+      "adminRegion": "Wyoming",
+      "country": "United States",
+      "aliases": ["Jackson Hole", "Jackson"],
+      "note": "Teton Village is the base of Jackson Hole Mountain Resort — Four Seasons Resort Jackson Hole and Caldera House both sit there."
+    },
+    {
+      "city": "Jackson",
+      "adminRegion": "Wyoming",
+      "country": "United States",
+      "aliases": ["Jackson Hole"],
+      "note": "The town of Jackson is the valley's other address; guests search the valley name."
+    }
+  ]
+}

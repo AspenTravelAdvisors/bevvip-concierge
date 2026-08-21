@@ -16,6 +16,7 @@ const { rankItems } = require("./supplier-fit");
 const { preferredScore, preferredTier } = require("./preferred-overlay");
 const { travelWitsFor } = require("./travelwits-overlay");
 const { applyProgramOverrides } = require("./program-overrides");
+const { aliasText } = require("./place-aliases");
 
 // Program membership is corrected once, at load, so `program=` filtering, the
 // `q` haystack, the cards and the preferred-partner ranking all see the same
@@ -250,7 +251,8 @@ function filterHotels(params = {}) {
       .map((w) => new RegExp("\\b" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b"));
     if (res.length) {
       list = list.filter((h) => {
-        const hay = [h.city, h.adminRegion, h.country, h.name].map(fold).join(" ");
+        // aliasText: "Jackson Hole" must find the Teton Village houses.
+        const hay = [h.city, h.adminRegion, h.country, h.name].map(fold).join(" ") + " " + fold(aliasText(h));
         return res.some((re) => re.test(hay));
       });
     }
@@ -281,11 +283,13 @@ function filterHotels(params = {}) {
           ...(fit.ratingBadges || []).map((r) => r && r.label),
           ...(fit.searchKeywords || []), ...(Array.isArray(h.tags) ? h.tags : []),
           isCaribbeanHotel(h) ? "caribbean" : null,
+          aliasText(h),
         ].map(fold).join(" ");
         if (!tokenRes.every((re) => re.test(hay))) return false;
         const coreHay = [
           h.name, h.brand, h.city, h.country, h.adminRegion,
           isCaribbeanHotel(h) ? "caribbean" : null,
+          aliasText(h),
         ].map(fold).join(" ");
         coreMatch.set(h, tokenRes.every((re) => re.test(coreHay)) ? 1 : 0);
         return true;

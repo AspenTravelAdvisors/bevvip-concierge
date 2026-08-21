@@ -1195,7 +1195,10 @@ function matches(f){
   if(state.region && (p.marqueeRegion||"").toLowerCase()!==state.region.toLowerCase() && !matchesRegionAlias(state.region,p)) return false;
   // memoized lowercase haystack: built once per feature (covers both load
   // paths — the paged API and the geojson fallback)
-  if(state.q){ const hay=p._hay||(p._hay=(p.name+" "+p.city+" "+p.region+" "+p.country).toLowerCase()); if(hay.indexOf(state.q)<0) return false; }
+  // `alias` carries umbrella-resort search names (Snowmass Village -> "aspen");
+  // see data/atlas/hotel/place-aliases.json. Search only — the card still says
+  // Snowmass Village.
+  if(state.q){ const hay=p._hay||(p._hay=(p.name+" "+p.city+" "+p.region+" "+p.country+" "+(p.alias||"")).toLowerCase()); if(hay.indexOf(state.q)<0) return false; }
   return true;
 }
 let filterTimer;
