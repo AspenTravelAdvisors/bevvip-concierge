@@ -4417,8 +4417,8 @@ button.card-book {
     /*
      * The map band's height, named once.
      *
-     * Two other rules have to agree with it: the sticky band an open property
-     * creates, and the scroll offset that keeps the open card from landing
+     * Two other rules have to agree with it: the sticky band a selection
+     * creates, and the scroll offset that keeps the selected card from landing
      * underneath that band. A literal in three places is a layout that drifts
      * apart the first time one of them is tuned.
      */
@@ -4438,15 +4438,22 @@ button.card-book {
     border-radius: 12px;
   }
   /*
-   * An open property sticks the band to the top of the viewport.
+   * A selection sticks the band to the top of the viewport.
    *
    * This is the half of pinning worth having, and it is worth having for
-   * exactly as long as a property is open: the dossier below runs several
-   * screens, so without it the building scrolls away at the first paragraph
-   * and "study the building" becomes "remember the building". The page still
-   * scrolls — this is `sticky`, not the fixed band with a nested card scroller
-   * that THE PAGE SCROLLS above got rid of, and it releases the moment the
-   * card is closed.
+   * exactly as long as something is selected: the list below runs several
+   * screens, so without it the building — or the traced route — scrolls away at
+   * the first card and "watch the map answer" becomes "remember the map". The
+   * page still scrolls — this is `sticky`, not the fixed band with a nested
+   * card scroller that THE PAGE SCROLLS above got rid of, and it releases the
+   * moment the selection is dropped.
+   *
+   * Every collection, not just hotels. It shipped with the property dossier
+   * because that is what made it unmissable, but nothing in it is about
+   * dossiers: clicking down a list of sailings, flights or rail journeys while
+   * the route redraws above them is the same gesture, and it was equally broken
+   * by a map that scrolled away. The class is applied by AtlasCollection
+   * (`stickyBand && pinned`).
    */
   .atlas-collection .atlas-mapwrap.stuck {
     position: sticky;
@@ -4457,11 +4464,13 @@ button.card-book {
     padding-bottom: 8px;
   }
   /*
-   * …and the open card clears it on the way in.
+   * …and the selected card clears it on the way in.
    *
    * `scrollIntoView` measures against the viewport, which the stuck band is
    * sitting on top of. Only the pinned card needs the offset, and `data-pinned`
-   * is already on it — the same attribute the pinned styling reads.
+   * is already on it — the same attribute the pinned styling reads. The band is
+   * `--atlas-map-h` tall on every collection at this width, so one offset is
+   * right for all of them.
    */
   .atlas-collection .atlas-card[data-pinned] {
     scroll-margin-top: calc(var(--atlas-map-h) + 14px);

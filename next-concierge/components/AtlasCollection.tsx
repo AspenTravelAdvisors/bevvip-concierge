@@ -302,16 +302,23 @@ export default function AtlasCollection({
    */
   const cardRefs = useRef<Map<string, HTMLElement>>(new Map());
   /**
-   * Whether this page CAN open a property inside its card — the viewport and
-   * the collection, not the selection.
+   * Whether the map band WILL stick to the top when something is selected —
+   * the viewport, not the selection.
    *
-   * Deliberately the capability rather than `inlineDetail` below: nothing is
-   * open at the moment the traveller opens something, so a ref that tracked the
-   * rendered state would be false on every first press and the scroll would go
-   * to the map instead of the card. Whether the property HAS a card on screen
-   * is answered separately, by whether it has a ref in `cardRefs`.
+   * Deliberately the capability rather than the rendered `stuck` state: nothing
+   * is selected at the moment the traveller selects something, so a ref that
+   * tracked the rendered class would be false on every first press and the
+   * scroll would go to the map instead of the card. Whether the offering HAS a
+   * card on screen is answered separately, by whether it has a ref in
+   * `cardRefs`.
+   *
+   * This used to be `inlineCapable` — phone AND a collection with a dossier,
+   * i.e. hotels alone — because the sticky band arrived with the property file
+   * that needed it. The band is worth having wherever there is a selection to
+   * watch, so the gate is now the viewport by itself and all six collections
+   * behave the same way.
    */
-  const inlineOkRef = useRef(false);
+  const stickyOkRef = useRef(false);
   const phone = useIsMobile();
   const viewRef = useRef<{
     style: string; engine?: "mapbox" | "photoreal"; globe: boolean;
@@ -615,20 +622,21 @@ export default function AtlasCollection({
        * PUT THE TWO THINGS TOGETHER.
        *
        * On a phone the selected card and the map band belong on screen at the
-       * same time — the whole answer to "where is this?" is the pin moving on a
-       * map you can see. So the CARD is what gets scrolled to, and the band
-       * above it stays put because it is sticky while anything is selected.
-       * `scroll-margin-top` on the selected card (globals.css) is what keeps
-       * the landing clear of the stuck band; without it the card would arrive
-       * underneath it. Same landing whether or not the details came with it —
-       * disclosure only changes the card's height.
+       * same time — the whole answer to "where is this?" is the pin or the
+       * route moving on a map you can see. So the CARD is what gets scrolled
+       * to, and the band above it stays put because it is sticky while anything
+       * is selected. `scroll-margin-top` on the selected card (globals.css) is
+       * what keeps the landing clear of the stuck band; without it the card
+       * would arrive underneath it. Same landing whether or not the details
+       * came with it — disclosure only changes the card's height.
        *
-       * Refs rather than deps: `detailFor` is an inline arrow in every caller,
-       * so reading it from the closure would rebuild this callback — and with
-       * it every card's handler — on each render.
+       * Refs rather than deps: `phone` changes on rotation and `detailFor` is
+       * an inline arrow in every caller, so reading either from the closure
+       * would rebuild this callback — and with it every card's handler — on
+       * each render.
        */
       const card = cardRefs.current.get(o.id);
-      if (inlineOkRef.current && card) {
+      if (stickyOkRef.current && card) {
         // After the commit: the card is only offset from the band once
         // `data-pinned` is on it, and only its final height once expanded.
         requestAnimationFrame(() => card.scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -916,11 +924,22 @@ export default function AtlasCollection({
    * no longer the common case.
    */
   const inlineCapable = phone && !!detailFor;
+  /**
+   * Whether the map band sticks to the top of the viewport while something is
+   * selected.
+   *
+   * Phone-width, every collection. The dossier decides where a property FILE
+   * opens (`inlineCapable` above); it has no business deciding whether the map
+   * stays on screen — a traced cruise route is exactly as worth watching as a
+   * hotel is, and a card list you scroll while the map answers it is the same
+   * gesture on all six.
+   */
+  const stickyBand = phone;
   /** The offering whose dossier is open, if it is still in the field. */
   const detailed = detailId ? byId.get(detailId) ?? null : null;
   const inlineDetail =
     inlineCapable && !!detailed && visible.some((o) => o.id === detailed.id);
-  inlineOkRef.current = inlineCapable;
+  stickyOkRef.current = stickyBand;
 
   /**
    * Close the dossier — from the panel's ✕ or the card's "Hide details".
@@ -943,15 +962,17 @@ export default function AtlasCollection({
 
   return (
     <div className={`atlas-collection atlas-collection--${type}`}>
-      {/* `stuck`: on a phone, the band sticks to the top of the viewport while a
-          property is SELECTED — so the pin the traveller just moved to stays on
-          screen with its card beneath it, and stays there while the details are
-          read. Scoped to an open selection on purpose: the permanent pinned map
-          this page used to have is not coming back (see THE PAGE SCROLLS in
-          globals.css), the page still scrolls, and one tap on the selected card
-          gives the whole screen back. Only where a collection HAS a panel to
-          open — on the six route atlases nothing about this changes. */}
-      <div ref={mapWrapRef} className={`atlas-mapwrap${inlineCapable && pinned ? " stuck" : ""}`}>
+      {/* `stuck`: on a phone, the band sticks to the top of the viewport while
+          something is SELECTED — so the pin or route the traveller just moved
+          to stays on screen with its card beneath it, and stays there while the
+          card is read. Scoped to an open selection on purpose: the permanent
+          pinned map this page used to have is not coming back (see THE PAGE
+          SCROLLS in globals.css), the page still scrolls, and one tap on the
+          selected card gives the whole screen back. Every collection, not just
+          the one with a dossier: clicking down a list of sailings while the
+          route redraws above them is the same act as clicking down a list of
+          hotels while the building changes. */}
+      <div ref={mapWrapRef} className={`atlas-mapwrap${stickyBand && pinned ? " stuck" : ""}`}>
       {/* No routesAlways for rail: an ambient layer of every route at once is
           not what the Leaflet atlas did, and for trains it would have to be
           drawn from arcs, which is wrong. Routes trace one at a time from real
