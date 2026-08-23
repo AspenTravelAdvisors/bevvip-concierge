@@ -72,6 +72,19 @@ export interface AtlasConfig {
    */
   intent: IntentKey;
   /**
+   * A second way to look at this same collection.
+   *
+   * The registry has always been keyed by inventory TYPE, which is why the
+   * Google Photorealistic 3D hotel view could never appear in the Explore menu:
+   * it is not a type, it is a view of one, and there was no slot for that. The
+   * absence of the slot is most of why the best thing in the product read as
+   * buried — it lived behind a query param nothing could link to by name.
+   *
+   * `query` is appended to `/atlas/<type>`, so a view is an ordinary deep link
+   * and nothing new has to be routed.
+   */
+  views?: { key: string; label: string; query: string; blurb: string }[];
+  /**
    * Order everywhere the collections are listed: where-you-stay first, then
    * air, sea and land, each group by how often travelers ask for it.
    * Deliberately NOT alphabetical and NOT raw record count — a visitor scans
@@ -98,6 +111,16 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     count: 2501,
     order: 1,
     intent: "stay",
+    views: [
+      {
+        key: "3d",
+        label: "In photoreal 3D",
+        query: "engine=3d",
+        // Says what it IS, not what it looks like. "3D" alone reads as a toy;
+        // the persuasive fact is that it is the actual building.
+        blurb: "The real buildings, in photogrammetry",
+      },
+    ],
   },
   villa: {
     // Villa is the first server-rendered atlas: no /maps/villa iframe page

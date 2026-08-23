@@ -21,6 +21,7 @@ import {
 } from "@/lib/conversation-store";
 import { askSent, resultsReturned, tourOpened, type AskSource } from "@/lib/analytics";
 import { collectionsSummary } from "@/lib/atlas-config";
+import { registerGuideHost } from "@/lib/atlas/ask";
 import { openAdvisor, ADVISOR_CTA, ADVISOR_SLA } from "./AdvisorRequest";
 import BookingStrip from "./BookingStrip";
 import ResultCards from "./ResultCards";
@@ -170,6 +171,17 @@ export default function GuideChat() {
   // fresh state.
   const sendRef = useRef<(text: string, source?: AskSource) => void>(() => {});
   sendRef.current = send;
+  /*
+   * Claim asks for this page.
+   *
+   * Any surface can now ask The Guide about a specific thing (lib/atlas/ask),
+   * and the question is delivered in place wherever a chat is mounted — here.
+   * Registering from the chat itself rather than from a particular dock is what
+   * makes that true on the home globe as well as on the atlases: a pin's "Ask
+   * The Guide" beside an already-open chat must not reload the page to reach it.
+   */
+  useEffect(() => registerGuideHost(), []);
+
   useEffect(() => {
     function onAsk(e: Event) {
       const detail = (e as CustomEvent<{ text?: string; source?: AskSource }>).detail;

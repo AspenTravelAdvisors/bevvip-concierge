@@ -1,26 +1,32 @@
 "use client";
 
 /**
- * VIP Hotels — browse on the shared surface, inspect in Google Photorealistic 3D.
+ * VIP Hotels — one surface, two engines.
  *
- * Deliverable 2, and a SPLIT rather than a port. The work order is emphatic
- * that the Google 3D view stays:
+ * Deliverable 2 shipped this as a SPLIT: browse on the Mapbox globe here,
+ * inspect in Google Photorealistic 3D over in `public/maps/hotel/index.html`,
+ * reached by opening a new tab. The engineering was right and the placement was
+ * wrong. The work order's own words are why:
  *
  *   > Mapbox has no equivalent (its "3D buildings" are extruded footprints — a
  *   > grey block where the hotel is). For a luxury travel product this is the
  *   > single most persuasive thing the app does. It stays.
  *
- * So each engine gets the job it is good at, split along the hotel atlas's own
- * camera logic (DETAIL_TILT engages at DETAIL_RANGE = 2,600 m and eases flat by
- * 220 km): photoreal 3D is worthless at globe zoom and unbeatable at property
- * zoom.
+ * A thing that persuasive should not be three clicks and a tab away. So the
+ * split is now along the camera, not along the page: photoreal is an ENGINE
+ * CHOICE on this map (see AtlasShell's `photoreal` prop and Atlas3DLayer),
+ * carrying the filters, the selection and the camera across the switch. The
+ * hotel atlas's own numbers still define where each engine earns its keep —
+ * DETAIL_TILT engages at DETAIL_RANGE = 2,600 m and eases flat by 220 km —
+ * they just no longer imply two destinations.
  *
- *   BROWSE   here — 2,501 hotels on the Mapbox globe, filtered by category,
- *            program, country and macro-region.
- *   INSPECT  "See it in 3D" opens /atlas/hotel?hotel=<id>, which
- *            lands on the open detail panel and flies to the building. That
- *            deep link only became reliable after the camera-race fix in
- *            STATE.md — before it, a shared property orbited forever.
+ *   BROWSE   2,501 hotels, filtered by category, program, country and
+ *            macro-region, on whichever engine is drawing.
+ *   INSPECT  a card or a pin opens the property dossier and flies to the
+ *            building; on the photoreal engine that is the real building, in
+ *            photogrammetry mesh. The `?hotel=<id>` deep link lands there
+ *            directly — reliable since the camera-race fix in STATE.md, which
+ *            Atlas3DLayer ports along with the rest of the camera.
  *
  * Hotels are the first collection whose filter grammar genuinely differs from
  * the five retired atlases; every divergence is documented in
@@ -42,6 +48,7 @@ import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 import type { BrandMark } from "./BrandLogo";
 import { hotel3dOpened, bookingClicked } from "@/lib/analytics";
+import HotelDossier from "./HotelDossier";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip } from "@/lib/trip-state";
 import type { TripState } from "@/lib/types";
@@ -204,15 +211,25 @@ export default function AtlasHotel() {
   }, []);
 
   /**
-   * Hand off to the photoreal view. `hotel=` is the param the original uses for
-   * "a shared selected hotel: opens its detail panel and starts the orbit on
-   * load" — which is exactly this gesture, so the same link a Share button
-   * produces is the one this button opens.
+   * Open the property here.
+   *
+   * This used to be `window.open("/atlas/hotel?hotel=…", "_blank")` — the
+   * dossier and the photoreal building lived in an iframe on another tab, so
+   * the card's most interesting action was also the one that left the app,
+   * abandoning the filters and the camera on the way out.
+   *
+   * Now it selects: the shared selection drives the card list, the map pin and
+   * the dossier panel at once, and if the photoreal engine is drawing, the
+   * camera flies to the building. Same gesture, same destination, no tab.
    */
-  const openIn3D = useCallback((o: AtlasOffering) => {
-    hotel3dOpened(o.id, "card");
-    window.open(`/atlas/hotel?hotel=${encodeURIComponent(o.id)}`, "_blank", "noopener");
-  }, []);
+  const openProperty = useCallback(
+    (o: AtlasOffering, api: { select: () => void; showPhotoreal: () => void }) => {
+      hotel3dOpened(o.id, "card");
+      api.showPhotoreal();
+      api.select();
+    },
+    [],
+  );
 
   return (
     <AtlasCollection
@@ -231,13 +248,24 @@ export default function AtlasHotel() {
        * exist. A traveller reading the label had no way to know the details
        * were behind it, so the most complete page in the product was being
        * offered as a novelty view.
+       *
+       * Both halves now live on this page: `detailFor` renders that dossier
+       * beside the map (components/HotelDossier), and `photoreal` puts the
+       * actual building under it.
        */
       cardAction={{
-        label: "Property details & 3D ↗",
+        // No arrow any more: this no longer leaves the page. It opens the
+        // dossier beside the map and puts the real building under it.
+        label: "Property details & 3D",
         title:
           "Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view of the building",
-        onSelect: openIn3D,
+        onSelect: openProperty,
       }}
+      // The engine, and the panel that makes it worth reaching.
+      photoreal
+      detailFor={(o, { close }) => (
+        <HotelDossier id={o.id} fallbackName={o.title} onClose={close} />
+      )}
     />
   );
 }

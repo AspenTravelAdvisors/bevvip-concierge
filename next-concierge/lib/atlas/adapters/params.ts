@@ -199,6 +199,18 @@ export interface AtlasViewIntent {
   /** `flat=1` — mercator instead of globe. */
   flat: boolean;
   /**
+   * `engine=3d` — open on Google Photorealistic 3D rather than Mapbox.
+   *
+   * A separate axis from `style`, because it is a separate question. `style`
+   * picks what the Mapbox renderer paints; this picks which renderer is on
+   * screen. Folding photoreal into SHARE_STYLES would have made "the basemap I
+   * like" and "the engine I want" one setting, so returning from 3D would have
+   * forgotten the traveller's basemap — and every code path that reasons about
+   * satellite imagery (auto-daylight, the plot-reveal flip, the load watchdog)
+   * would have had to learn about an entry that has no Mapbox style URL at all.
+   */
+  engine: "photoreal" | null;
+  /**
    * `@=lng,lat,zoom[,pitch[,bearing]]` — exact camera.
    *
    * The trailing two components are an extension, and they are optional in both
@@ -363,12 +375,17 @@ export function parseDeepLink(
  */
 export function parseViewParams(
   params: URLSearchParams,
-): Pick<AtlasViewIntent, "style" | "flat" | "camera"> {
+): Pick<AtlasViewIntent, "style" | "flat" | "camera" | "engine"> {
   return {
     style: (SHARE_STYLES as readonly string[]).includes(String(params.get("style")))
       ? params.get("style")
       : null,
     flat: params.get("flat") === "1",
+    // `3d` is the spelling in links; "photoreal" is the spelling in code. Both
+    // accepted on the way in so a hand-typed URL works either way.
+    engine: ["3d", "photoreal"].includes(String(params.get("engine")).toLowerCase())
+      ? "photoreal"
+      : null,
     camera: (() => {
       const raw = params.get("@");
       if (!raw) return null;
@@ -455,8 +472,10 @@ export function setViewParams(p: URLSearchParams, view: Partial<AtlasViewIntent>
   p.delete("style");
   p.delete("flat");
   p.delete("@");
+  p.delete("engine");
   if (view.style) p.set("style", view.style);
   if (view.flat) p.set("flat", "1");
+  if (view.engine === "photoreal") p.set("engine", "3d");
   if (view.camera) {
     const c = view.camera;
     // Rounded before the zero test, not after: Mapbox rests at pitches like

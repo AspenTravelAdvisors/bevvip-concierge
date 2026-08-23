@@ -4880,3 +4880,509 @@ button.card-book {
   color: var(--gold-light);
   border-color: var(--gold);
 }
+
+/* ── Photoreal 3D engine ────────────────────────────────────────────────────
+   The Google engine draws in the same box as the Mapbox canvas. Mapbox stays
+   mounted underneath — rebuilding a GL map costs a style load, a source refetch
+   and every layer the shell adds, while hiding it costs nothing and makes the
+   return to it instant — so the canvas is hidden rather than unmounted. */
+.atlas-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+.atlas-3d gmp-map-3d {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.atlas-map.photoreal .atlas-canvas {
+  visibility: hidden;
+}
+/* Photoreal tiles arrive over the network and the element paints nothing until
+   they do. Same contract as .atlas-boot: say what is happening rather than show
+   an empty rectangle. */
+.atlas-3d-boot {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+  background: radial-gradient(ellipse at 30% 20%, #14130e, var(--panel));
+  pointer-events: none;
+}
+.atlas-3d-boot p {
+  color: var(--sub);
+  font-size: 13px;
+  max-width: 34ch;
+  margin: 0;
+}
+/* The engine failed and the shell fell back. Quiet, dismissible, and NOT a
+   dialog: the map behind it is working, which is the whole point of falling
+   back rather than blanking. */
+.atlas-3d-note {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(420px, calc(100% - 32px));
+  padding: 9px 12px 9px 15px;
+  border-radius: 30px;
+  background: rgba(12, 12, 14, 0.94);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-light);
+  font-size: 12.5px;
+  line-height: 1.35;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+.atlas-3d-note button {
+  border: 0;
+  background: transparent;
+  color: var(--sub);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+}
+.atlas-3d-note button:hover {
+  color: var(--gold-light);
+}
+/* The engine sits under its own heading in the style menu: the entries above it
+   change what Mapbox paints, this changes which renderer is painting. */
+.atlas-ctrls .actrl-menu-cap {
+  padding: 8px 12px 4px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sub);
+}
+
+/* ── Property dossier ───────────────────────────────────────────────────────
+   Everything the atlas knows about one hotel, beside the map on desktop and as
+   a bottom sheet on phones — the pattern the standalone hotel atlas already
+   used for its own detail drawer. */
+.atlas-detail {
+  position: absolute;
+  z-index: 8;
+  top: 12px;
+  left: 12px;
+  bottom: 12px;
+  width: min(340px, calc(100% - 24px));
+  pointer-events: none;
+}
+.atlas-detail > * {
+  pointer-events: auto;
+}
+.hotel-dossier {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: rgba(12, 12, 14, 0.95);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--gold-dim);
+  border-radius: 14px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+.hotel-dossier header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.hotel-dossier .hd-head {
+  flex: 1;
+  min-width: 0;
+}
+.hotel-dossier .hd-cat {
+  margin: 0 0 4px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.hotel-dossier h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.2;
+  color: var(--gold-light);
+}
+.hotel-dossier .hd-where {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--sub);
+}
+.hotel-dossier .hd-close {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--sub);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.hotel-dossier .hd-close:hover {
+  color: var(--gold-light);
+}
+.hotel-dossier .hd-body {
+  padding: 14px 16px 4px;
+}
+.hotel-dossier .hd-empty {
+  padding: 16px;
+  margin: 0;
+  color: var(--sub);
+  font-size: 12.5px;
+}
+.hotel-dossier .hd-desc {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--gold-light);
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 11px;
+  margin: 0 0 14px;
+}
+.hotel-dossier .hd-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 13px;
+}
+.hotel-dossier .hd-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(201, 168, 76, 0.5);
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--gold-light);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.hotel-dossier .hd-rows {
+  margin: 0;
+}
+.hotel-dossier .hd-rows > div {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+.hotel-dossier dt {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sub);
+  padding-top: 2px;
+}
+.hotel-dossier dd {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--ink, #eae4d8);
+}
+.hotel-dossier .hd-prog {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hotel-dossier .hd-prog img {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  object-fit: contain;
+  background: #fff;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+/* The money-maker, directly under Address/Program so it never falls below the
+   fold — the standalone panel's placement, for the standalone panel's reason. */
+.hotel-dossier .hd-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 11px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #caa44e, #ffe9b0);
+  color: #3a2c0d;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+.hotel-dossier .hd-book:hover {
+  filter: brightness(1.05);
+}
+.hotel-dossier .hd-code {
+  margin: 7px 0 0;
+  font-size: 11px;
+  text-align: center;
+  color: var(--sub);
+}
+.hotel-dossier .hd-label {
+  margin: 16px 0 2px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.hotel-dossier .hd-ups {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+}
+.hotel-dossier .hd-ups li {
+  position: relative;
+  font-size: 12.5px;
+  line-height: 1.35;
+  padding: 7px 0 7px 19px;
+  border-bottom: 1px solid var(--line);
+}
+.hotel-dossier .hd-ups li::before {
+  content: "\2726";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  color: var(--gold);
+}
+.hotel-dossier .hd-ups li em {
+  margin-right: 4px;
+}
+.hotel-dossier .hd-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  margin-top: auto;
+  background: rgba(12, 12, 14, 0.97);
+  border-top: 1px solid var(--line);
+}
+.hotel-dossier .hd-ask,
+.hotel-dossier .hd-advisor {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.hotel-dossier .hd-ask {
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.45);
+  color: var(--gold-light);
+}
+.hotel-dossier .hd-ask:hover {
+  background: rgba(201, 168, 76, 0.18);
+  border-color: var(--gold);
+}
+.hotel-dossier .hd-advisor {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--sub);
+}
+.hotel-dossier .hd-advisor:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
+
+/* ── Ask The Guide, in a map popup ──────────────────────────────────────────
+   Same weight as the other popup actions: a question is not a lesser move than
+   a rate search, and on the home globe it is the likelier one. */
+.mapboxgl-popup .iw .iwask {
+  display: inline-block;
+  width: auto;
+  margin: 8px 6px 0 0;
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--sub);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.mapboxgl-popup .iw .iwask:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
+/* The 3D action is a <button> where the engine is on this page and an <a> where
+   it is not; both must look identical, because they make the same promise. */
+.mapboxgl-popup .iw button.iw3d {
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+/* ── The Guide, docked on an atlas page ─────────────────────────────────────
+   The chat used to live only on the home route, so asking about a collection
+   meant navigating away from it. */
+.atlas-guide-pill {
+  position: fixed;
+  z-index: 40;
+  right: 18px;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 46px;
+  padding: 0 18px 0 8px;
+  border-radius: 40px;
+  background: rgba(12, 12, 14, 0.94);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-light);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.atlas-guide-pill:hover {
+  border-color: var(--gold);
+}
+.atlas-guide-pill .agp-av {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #caa44e, #ffe9b0);
+  color: #3a2c0d;
+  font-family: var(--serif);
+  font-weight: 700;
+}
+.atlas-guide-sheet {
+  position: fixed;
+  z-index: 41;
+  right: 18px;
+  bottom: 74px;
+  width: min(420px, calc(100vw - 36px));
+  height: min(620px, calc(100vh - 130px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgba(10, 10, 12, 0.97);
+  border: 1px solid var(--gold-dim);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  /* Hidden rather than unmounted: a reply still streaming when the sheet is
+     closed should still be there when it comes back. */
+  opacity: 0;
+  transform: translateY(10px) scale(0.99);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.atlas-guide-sheet.open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.atlas-guide-sheet .ags-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sub);
+}
+.atlas-guide-sheet .ags-head button {
+  border: 0;
+  background: transparent;
+  color: var(--sub);
+  font-size: 14px;
+  cursor: pointer;
+}
+.atlas-guide-sheet .ags-head button:hover {
+  color: var(--gold-light);
+}
+.atlas-guide-sheet .ags-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* A collection's second view, hung off its own entry in Explore. */
+.nav-menu-view {
+  display: block;
+  padding: 6px 12px 8px 34px;
+  text-decoration: none;
+}
+.nav-menu-view:hover {
+  background: rgba(201, 168, 76, 0.07);
+}
+.nav-menu-view-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+}
+.nav-menu-view-blurb {
+  display: block;
+  font-size: 11px;
+  color: var(--sub);
+}
+
+@media (max-width: 680px) {
+  /* Phones: the dossier is a bottom sheet over the map, not a rail beside it —
+     340px of panel on a 360px screen IS the screen. */
+  .atlas-detail {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 62%;
+  }
+  .hotel-dossier {
+    border-radius: 16px 16px 0 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+  .atlas-guide-sheet {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 82vh;
+    border-radius: 16px 16px 0 0;
+  }
+  .atlas-guide-pill {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+/* The fallback panel's actions are a link and (where the photoreal engine is
+   available) a button; they must not read as two different kinds of control. */
+button.atlas-cta {
+  font-family: var(--sans);
+  cursor: pointer;
+}

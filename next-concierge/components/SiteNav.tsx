@@ -87,17 +87,36 @@ export default function SiteNav() {
                   <span className="nav-menu-group-label">{group.label}</span>
                 </div>
                 {group.items.map((c) => (
-                  <Link
-                    key={c.type}
-                    role="menuitem"
-                    className="nav-menu-item"
-                    href={`/atlas/${c.type}`}
-                    data-active={c.type === activeType ? "true" : undefined}
-                  >
-                    <i className="nav-dot" style={{ background: c.color }} aria-hidden="true" />
-                    <span className="nav-menu-label">{c.nav}</span>
-                    <span className="nav-menu-count">{collectionPhrase(c).split(" ")[0]}</span>
-                  </Link>
+                  <div key={c.type} className="nav-menu-entry">
+                    <Link
+                      role="menuitem"
+                      className="nav-menu-item"
+                      href={`/atlas/${c.type}`}
+                      data-active={c.type === activeType ? "true" : undefined}
+                    >
+                      <i className="nav-dot" style={{ background: c.color }} aria-hidden="true" />
+                      <span className="nav-menu-label">{c.nav}</span>
+                      <span className="nav-menu-count">{collectionPhrase(c).split(" ")[0]}</span>
+                    </Link>
+                    {/*
+                      A collection's second view, where it has one (hotels: the
+                      Google Photorealistic 3D engine). It hangs off its
+                      collection rather than sitting in the list as a peer,
+                      because it is not another thing to browse — it is another
+                      way to look at the same 2,501 hotels.
+                    */}
+                    {(c.views ?? []).map((v) => (
+                      <Link
+                        key={v.key}
+                        role="menuitem"
+                        className="nav-menu-view"
+                        href={`/atlas/${c.type}?${v.query}`}
+                      >
+                        <span className="nav-menu-view-label">{v.label}</span>
+                        <span className="nav-menu-view-blurb">{v.blurb}</span>
+                      </Link>
+                    ))}
+                  </div>
                 ))}
               </div>
             ))}

@@ -16,12 +16,19 @@
 // operating a filter. That last part matters most: these maps are browse
 // surfaces, and a visitor who is lost in one has, until now, had no route out
 // except the browser's back button (unreliable across an iframe).
+//
+// The ask no longer costs the page. The Guide is mounted here as a dock, so a
+// question is answered beside the map rather than by navigating away from it —
+// which also gives every per-card, per-pin and per-property ask somewhere local
+// to land. See components/AtlasGuideDock and lib/atlas/ask.
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { OfferingType } from "@/lib/types";
 import { ATLASES, collectionPhrase } from "@/lib/atlas-config";
+import AtlasGuideDock from "./AtlasGuideDock";
+import { askGuide, askGuideHref } from "@/lib/atlas/ask";
 
 export default function AtlasFrame({
   type,
@@ -34,12 +41,20 @@ export default function AtlasFrame({
   const router = useRouter();
   const [ask, setAsk] = useState("");
 
-  // Hand the question to The Guide on the home page, which owns the chat and
-  // the plotting. ?ask= is the existing deep-link contract.
+  /**
+   * Ask without leaving.
+   *
+   * This used to be `router.push("/?ask=…")` unconditionally — a question about
+   * this collection, answered by throwing this collection away. The Guide is
+   * mounted on this page now (AtlasGuideDock below), so the ask goes straight
+   * into it and its results plot onto the map that is already open. The
+   * navigation survives as the fallback for any surface without a chat.
+   */
   const submit = () => {
     const q = ask.trim();
     if (!q) return;
-    router.push(`/?ask=${encodeURIComponent(q)}&src=atlas-${type}`);
+    setAsk("");
+    if (!askGuide(q, "strip")) router.push(askGuideHref(q, `atlas-${type}`));
   };
 
   return (
@@ -80,6 +95,14 @@ export default function AtlasFrame({
         </div>
       </div>
       {children}
+      {/*
+        The Guide itself, as a dock over the collection.
+
+        It is the same chat, the same session and the same plotting as the home
+        page — so a shortlist asked for here appears on this map, and the
+        per-card and per-pin asks stop being links out of the product.
+      */}
+      <AtlasGuideDock />
     </div>
   );
 }

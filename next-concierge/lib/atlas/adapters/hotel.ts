@@ -125,6 +125,12 @@ export function adaptHotels(raw: RawHotelPoints): AtlasOffering[] {
         country: p.country || null,
         brand: p.brand || null,
         marqueeRegion: marquee.length ? marquee : null,
+        // Not a filter axis — nothing in the descriptor's `facets` names it.
+        // It rides along so an "Ask The Guide" from a card can say WHERE the
+        // property is, which is the first thing anyone asking about a hotel
+        // means. The filter layer only reads attributes a facet declares, so an
+        // extra key here cannot widen or narrow anything.
+        city: p.city || null,
       },
       // The card shows the BRAND's mark where the brand has one, and falls back
       // to the PROGRAM's mark (what the original card always showed) where it

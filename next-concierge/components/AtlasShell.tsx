@@ -17,7 +17,7 @@
 // Without a Mapbox token it degrades to an elegant fallback panel with the
 // external-atlas handoff, so the app still works with zero configuration.
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, GuideToolMeta, OfferingResult } from "@/lib/types";
 import { ATLASES, COLLECTIONS, atlasRegionQuery, internalAtlasLink } from "@/lib/atlas-config";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
@@ -37,7 +37,14 @@ import {
 // rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
 // makes an arc read as a journey rather than a ruler — see sea-router.mjs.
 import { arcPts } from "@/lib/atlas/sea-router.mjs";
-import { mapStyleFallback, hotel3dOpened } from "@/lib/analytics";
+import { mapStyleFallback, hotel3dOpened, mapEngineChosen } from "@/lib/analytics";
+import { askAboutPin, askGuide, askGuideHref } from "@/lib/atlas/ask";
+import Atlas3DLayer, {
+  type Atlas3DHandle,
+  type Camera3DState,
+  type Point3D,
+} from "./Atlas3DLayer";
+import { rangeFromZoom, tiltFromPitch, zoomFromRange } from "@/lib/atlas/google3d";
 import {
   parseViewParams,
   readStoredStyle,
@@ -424,6 +431,34 @@ interface Props {
    * stops looking like a railway.
    */
   accent?: string;
+  /**
+   * Offer the Google Photorealistic 3D engine as a choice on this surface.
+   *
+   * An ENGINE, not a basemap: the shell keeps its Mapbox map alive underneath
+   * and swaps which one is drawing, carrying the camera across in both
+   * directions. Only surfaces with something worth looking at up close pass it
+   * — photoreal tiles are worthless at globe zoom and cost real money to load,
+   * so offering them on the world-cruise atlas would be an expensive way to
+   * show someone a blurry ocean.
+   *
+   * `points` is the FILTERED set, so switching engines keeps the rail's
+   * meaning; `selectedId` / `onSelect` are the open property, shared with the
+   * card list so a click means the same thing on either engine.
+   */
+  photoreal?: {
+    points: Point3D[];
+    selectedId: string | null;
+    onSelect: (id: string) => void;
+    /**
+     * Which engine is drawing, and how to change it. CONTROLLED by the page,
+     * not held here: the page's Share link, its deep-link parse and its card
+     * actions all need to know and to set it, and an engine that lived in the
+     * shell would have been a second answer to a question the page already
+     * has to answer. The shell renders the choice and reports changes.
+     */
+    engine: "mapbox" | "photoreal";
+    onEngineChange: (engine: "mapbox" | "photoreal") => void;
+  };
   /** Basemap this collection opens on. Jets read best on Dark. */
   initialStyle?: StyleKey;
   /** false → open flat (mercator). Long-haul flight arcs read better in 2D. */
@@ -573,7 +608,7 @@ const REFRAME_MS = 700;
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
-  selfShare = false, showLegend = true, ambientTour = false,
+  selfShare = false, showLegend = true, ambientTour = false, photoreal,
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
@@ -712,6 +747,130 @@ export default function AtlasShell({
    */
   const [tilted, setTilted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  /* ── Engine ───────────────────────────────────────────────────────────
+   *
+   * Which map is drawing: Mapbox, or Google Photorealistic 3D.
+   *
+   * This is a different axis from the basemap. A basemap changes what the
+   * Mapbox renderer paints; an engine changes which renderer is on screen. The
+   * two are kept apart because the traveller's basemap pick has to survive a
+   * trip through photoreal and back — going to 3D and returning should land you
+   * on the Satellite you were on, not reset you to the house default.
+   *
+   * Mapbox stays mounted underneath rather than being torn down. Rebuilding a
+   * GL map costs a style load, a source refetch and every layer this shell
+   * adds; hiding it costs nothing and makes the return instant.
+   */
+  const engine = photoreal?.engine ?? "mapbox";
+  const setEngine = useCallback(
+    (next: "mapbox" | "photoreal") => photoreal?.onEngineChange(next),
+    [photoreal],
+  );
+  const [engineNote, setEngineNote] = useState<string | null>(null);
+  const [threeReady, setThreeReady] = useState(false);
+  const threeRef = useRef<Atlas3DHandle | null>(null);
+  /**
+   * The camera the photoreal engine opens on, captured at the moment of the
+   * switch. A ref, not state: it is a handover value read once on mount, and
+   * making it reactive would rebuild the engine every time the camera moved.
+   */
+  const threeCameraRef = useRef<Camera3DState>({
+    lat: 20, lng: 0, range: 12_000_000, tilt: 0, heading: 0,
+  });
+  const photorealOn = engine === "photoreal" && !!photoreal;
+  /*
+   * The map effect is keyed on [token] and never re-runs, so the popup builders
+   * inside it cannot close over the photoreal wiring. Same pattern as
+   * onRegionSelectRef.
+   */
+  const photorealRef = useRef(photoreal);
+  photorealRef.current = photoreal;
+
+  /** The Mapbox camera, expressed the way the photoreal engine wants it. */
+  const cameraToPhotoreal = useCallback((): Camera3DState => {
+    const map = mapRef.current;
+    const height = shellRef.current?.clientHeight || 640;
+    const view = viewRef.current;
+    const center = map ? map.getCenter() : { lng: view?.center.lng ?? 0, lat: view?.center.lat ?? 20 };
+    const zoom = map ? map.getZoom() : view?.zoom ?? 2;
+    const pitch = map ? map.getPitch() : view?.pitch ?? 0;
+    const bearing = map ? map.getBearing() : view?.bearing ?? 0;
+    const range = rangeFromZoom(zoom, center.lat, height);
+    return {
+      lat: center.lat,
+      lng: center.lng,
+      range,
+      tilt: tiltFromPitch(pitch, range),
+      heading: bearing,
+    };
+  }, []);
+
+  /**
+   * Switch engines, carrying the camera.
+   *
+   * A switch that teleports you is a switch nobody uses twice, so each
+   * direction hands its camera to the other: zoom ⇄ range through the field-of-
+   * view conversion in lib/atlas/google3d, pitch ⇄ tilt through the same tilt
+   * ceiling the photoreal camera enforces on itself.
+   */
+  const setEngineChoice = useCallback(
+    (next: "mapbox" | "photoreal") => {
+      setMenuOpen(false);
+      setEngineNote(null);
+      if (next === engine) return;
+      if (next === "photoreal") {
+        if (!photoreal) return;
+        threeCameraRef.current = cameraToPhotoreal();
+        setThreeReady(false);
+        setEngine("photoreal");
+        return;
+      }
+      mapEngineChosen(type, "mapbox", true);
+      // Photoreal → Mapbox: land where the 3D camera was left.
+      const cam = threeRef.current?.getCamera();
+      setEngine("mapbox");
+      const map = mapRef.current;
+      if (cam && map) {
+        const height = shellRef.current?.clientHeight || 640;
+        try {
+          map.jumpTo({
+            center: [cam.lng, cam.lat],
+            zoom: zoomFromRange(cam.range, cam.lat, height),
+            pitch: Math.min(cam.tilt, 85),
+            bearing: cam.heading,
+          });
+          setTilted(cam.tilt > 1);
+        } catch {
+          /* a camera we cannot apply is not worth blocking the switch for */
+        }
+      }
+      // The canvas was hidden while photoreal drew; GL needs to be told its box
+      // is visible again or the first frame back is stretched.
+      window.setTimeout(() => {
+        try { mapRef.current?.resize(); } catch { /* unmounted */ }
+      }, 0);
+    },
+    [engine, photoreal, cameraToPhotoreal, setEngine, type],
+  );
+
+  /**
+   * The engine could not start. Fall back rather than showing an empty box —
+   * the same judgement as the basemap watchdog: a degraded map beats no map.
+   */
+  const onThreeUnavailable = useCallback((reason: "nokey" | "load") => {
+    mapEngineChosen(type, "photoreal", false);
+    setEngine("mapbox");
+    setEngineNote(
+      reason === "nokey"
+        ? "Photoreal 3D isn't configured for this deployment."
+        : "Photoreal 3D couldn't load — showing the Mapbox view.",
+    );
+    window.setTimeout(() => {
+      try { mapRef.current?.resize(); } catch { /* unmounted */ }
+    }, 0);
+  }, [setEngine, type]);
+
   /** Phones only: the legend sheet's open state. Desktop renders it inline. */
   const [legendOpen, setLegendOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
@@ -1605,12 +1764,32 @@ export default function AtlasShell({
             const head =
               `<div class="iwn">${escapeHtml(name)}</div>` +
               (reg ? `<div class="iwm">${escapeHtml(reg)}</div>` : "");
-            const threeLink = three
-              // Same destination as the card's action, so the same promise:
-              // the property's whole dossier, of which the photoreal building
-              // is one part. See AtlasHotel's cardAction.
-              ? `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" target="_blank" rel="noopener" title="Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view">Property details &amp; 3D ↗</a>`
-              : "";
+            /*
+             * Two shapes for one promise.
+             *
+             * Where this page HAS the photoreal engine (the hotel atlas), the
+             * button opens the property right here — dossier beside the map,
+             * camera down onto the building. Where it does not (the home
+             * globe), it is still a link to the collection page, which will do
+             * exactly that on arrival. What must never differ is the promise:
+             * the property's whole dossier, of which the photoreal building is
+             * one part.
+             */
+            const threeLink = !three
+              ? ""
+              : photorealRef.current
+                ? `<button type="button" class="iw3d" data-hotel-open="${escapeHtml(id)}" data-hotel3d="${escapeHtml(id)}" title="Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view">Property details &amp; 3D</button>`
+                : `<a class="iw3d" data-hotel3d="${escapeHtml(id)}" href="${escapeHtml(three)}" title="Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view">Property details &amp; 3D →</a>`;
+            /*
+             * And the question.
+             *
+             * A hotel pin used to offer a rate search and a 3D view and no way
+             * to ask about the property — on the home globe, the single most
+             * common thing someone does with a pin they just found. The text is
+             * built here so it carries what the pin knows.
+             */
+            const askLink =
+              `<button type="button" class="iwask" data-ask="${escapeHtml(askAboutPin({ name, region: reg }))}">✦ Ask The Guide</button>`;
             /*
              * The popup's headline action is the rate search, not another
              * browse surface.
@@ -1628,7 +1807,7 @@ export default function AtlasShell({
              */
             popup
               .setLngLat(e.lngLat)
-              .setHTML(`<div class="iw">${head}${threeLink}</div>`)
+              .setHTML(`<div class="iw">${head}${threeLink}${askLink}</div>`)
               .addTo(map);
             if (id) {
               hotelRateLink(id, name).then((rate) => {
@@ -1641,6 +1820,7 @@ export default function AtlasShell({
                         `</span>`
                       : "") +
                     threeLink +
+                    askLink +
                     `</div>`,
                 );
               });
@@ -2949,7 +3129,41 @@ export default function AtlasShell({
       const id = el?.getAttribute("data-hotel3d");
       if (id) hotel3dOpened(id, "popup");
     };
+    /*
+     * "Ask The Guide" in a popup, by the same delegation.
+     *
+     * Popups are injected HTML, so the question is carried on the element as
+     * `data-ask` and sent from here. It goes to the chat mounted on this page
+     * when there is one, and falls back to the home page's `?ask=` otherwise —
+     * so the same markup works on the atlas (chat present) and on the home
+     * globe (chat present in the split) without either knowing which it is.
+     */
+    /*
+     * A popup's "Property details & 3D" where the engine is on this page.
+     *
+     * Selecting rather than navigating is the whole point: the pin, the card
+     * list and the dossier share one selection, so opening a property from the
+     * map lands in the same state as opening it from a card.
+     */
+    const onOpenProperty = (e: Event) => {
+      const el = (e.target as HTMLElement | null)?.closest?.("[data-hotel-open]");
+      const id = el?.getAttribute("data-hotel-open");
+      const wiring = photorealRef.current;
+      if (!id || !wiring) return;
+      e.preventDefault();
+      wiring.onEngineChange("photoreal");
+      wiring.onSelect(id);
+    };
+    const onAsk = (e: Event) => {
+      const el = (e.target as HTMLElement | null)?.closest?.("[data-ask]");
+      const text = el?.getAttribute("data-ask");
+      if (!text) return;
+      e.preventDefault();
+      if (!askGuide(text, "pin")) window.location.assign(askGuideHref(text, `${type}-pin`));
+    };
     document.addEventListener("click", on3d);
+    document.addEventListener("click", onOpenProperty);
+    document.addEventListener("click", onAsk);
     window.addEventListener("bevvip:atlas-route", onRoute as EventListener);
     window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
     window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
@@ -2957,6 +3171,8 @@ export default function AtlasShell({
     return () => {
       applyRouteRef.current = null;
       document.removeEventListener("click", on3d);
+      document.removeEventListener("click", onOpenProperty);
+      document.removeEventListener("click", onAsk);
       window.removeEventListener("bevvip:atlas-route", onRoute as EventListener);
       window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
       window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
@@ -2964,7 +3180,7 @@ export default function AtlasShell({
     };
     // allInventory is no longer read here, but the effect stays keyed to it so
     // a scope change re-registers cleanly.
-  }, [allInventory]);
+  }, [allInventory, type]);
 
   // Close the style menu on an outside click.
   useEffect(() => {
@@ -3109,8 +3325,49 @@ export default function AtlasShell({
       : null;
 
   return (
-    <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}`}>
+    <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}${photorealOn ? " photoreal" : ""}`}>
       {token && !mapFailed && <div ref={mapEl} className="atlas-canvas" />}
+      {/*
+        The photoreal engine draws in the same box as the Mapbox canvas, which
+        stays mounted (and hidden by .atlas-map.photoreal) underneath. Keyed on
+        nothing: this mounts and unmounts with the engine choice, and the Google
+        element owns its own tiles either way.
+      */}
+      {photorealOn && photoreal && (
+        <Atlas3DLayer
+          ref={threeRef}
+          points={photoreal.points}
+          selectedId={photoreal.selectedId}
+          onSelect={photoreal.onSelect}
+          initialCamera={threeCameraRef.current}
+          onUnavailable={onThreeUnavailable}
+          onReady={() => {
+            setThreeReady(true);
+            mapEngineChosen(type, "photoreal", true);
+            /*
+             * With no Mapbox map there was no camera to carry across, so the
+             * engine opened on the default whole-earth view — which is the one
+             * altitude photoreal tiles are worth nothing at. Frame what the
+             * filters actually match instead.
+             */
+            if (!mapRef.current) threeRef.current?.fit(photoreal.points);
+          }}
+        />
+      )}
+      {photorealOn && !threeReady && (
+        <div className="atlas-3d-boot">
+          <span className="badge">Photoreal 3D</span>
+          <p>Rendering the buildings themselves — a moment while the tiles arrive.</p>
+        </div>
+      )}
+      {engineNote && (
+        <div className="atlas-3d-note" role="status">
+          {engineNote}
+          <button type="button" onClick={() => setEngineNote(null)} aria-label="Dismiss">
+            ✕
+          </button>
+        </div>
+      )}
       {token && !mapFailed && !bootGone && (
         <div
           className={`atlas-boot${mapReady ? " out" : ""}`}
@@ -3128,6 +3385,21 @@ export default function AtlasShell({
         </div>
       )}
 
+      {showFallback && photorealOn && (
+        <div className="atlas-ctrls" onClick={(e) => e.stopPropagation()}>
+          {/* Mapbox is unavailable, so the only honest control is the one that
+              leaves this engine — and it goes back to the fallback panel, not
+              to a map that is not there. */}
+          <button
+            type="button"
+            className="actrl on"
+            onClick={() => setEngineChoice("mapbox")}
+            title="Leave the photoreal view"
+          >
+            ✕ Exit 3D
+          </button>
+        </div>
+      )}
       {!showFallback && (
         <div className="atlas-ctrls" onClick={(e) => e.stopPropagation()}>
           <button
@@ -3148,7 +3420,8 @@ export default function AtlasShell({
               aria-expanded={menuOpen}
               title="Map style"
             >
-              <i className="sw" style={{ background: ATLAS_STYLES[styleKey].sw }} /> Style
+              <i className="sw" style={{ background: photorealOn ? "#caa44e" : ATLAS_STYLES[styleKey].sw }} />{" "}
+              {photorealOn ? "3D" : "Style"}
             </button>
             {menuOpen && (
               <div className="actrl-menu" role="menu">
@@ -3157,13 +3430,46 @@ export default function AtlasShell({
                     key={k}
                     type="button"
                     role="menuitem"
-                    className={k === styleKey ? "active" : ""}
-                    onClick={() => { apiRef.current?.setStyle(k); setMenuOpen(false); }}
+                    className={!photorealOn && k === styleKey ? "active" : ""}
+                    onClick={() => {
+                      // Picking a basemap while photoreal is drawing means
+                      // "show me that basemap" — so it comes back to Mapbox
+                      // rather than silently restyling a hidden canvas.
+                      if (photorealOn) setEngineChoice("mapbox");
+                      apiRef.current?.setStyle(k);
+                      setMenuOpen(false);
+                    }}
                   >
                     <i className="sw" style={{ background: ATLAS_STYLES[k].sw }} />
                     {ATLAS_STYLES[k].label}
                   </button>
                 ))}
+                {/*
+                  The engine, under its own heading.
+
+                  It sits in the style menu because that is where someone looks
+                  for "make the map look different", and it is separated because
+                  it is not one of the choices above: the entries above change
+                  what Mapbox paints, this changes which renderer is painting.
+                  Real photogrammetry of the actual building is a different kind
+                  of thing from a basemap, and the menu should not imply
+                  otherwise.
+                */}
+                {photoreal && (
+                  <>
+                    <div className="actrl-menu-cap">Engine</div>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className={photorealOn ? "active" : ""}
+                      onClick={() => setEngineChoice("photoreal")}
+                      title="Google Photorealistic 3D — the real building, in photogrammetry mesh"
+                    >
+                      <i className="sw" style={{ background: "#caa44e" }} />
+                      Photoreal 3D
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -3177,27 +3483,46 @@ export default function AtlasShell({
             keeps your place, and tilt — the thing people actually mean by 3D —
             is its own toggle that lights up while it's on.
           */}
-          <button
-            type="button"
-            className="actrl"
-            onClick={() => apiRef.current?.setProjection(!is3D)}
-            title={is3D ? "Show the world flat, keeping this view" : "Show the world as a globe, keeping this view"}
-          >
-            {is3D ? "▭ Flat" : "◍ Globe"}
-          </button>
-          <button
-            type="button"
-            className={`actrl${tilted ? " on" : ""}`}
-            aria-pressed={tilted}
-            onClick={() => apiRef.current?.setTilt(!tilted)}
-            title={
-              tilted
-                ? "Look straight down"
-                : "Tilt the camera — zoom into a city on a 3D basemap to see buildings"
-            }
-          >
-            ◮ Tilt
-          </button>
+          {/*
+            Projection and tilt act on the Mapbox camera, so they are hidden
+            while photoreal is drawing — a globe⇄flat toggle over an engine
+            that has neither projection is a control that lies. Photoreal gets
+            the one control it needs instead: a way back.
+          */}
+          {photorealOn ? (
+            <button
+              type="button"
+              className="actrl on"
+              onClick={() => setEngineChoice("mapbox")}
+              title="Back to the Mapbox map, keeping this view"
+            >
+              ◍ Exit 3D
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="actrl"
+                onClick={() => apiRef.current?.setProjection(!is3D)}
+                title={is3D ? "Show the world flat, keeping this view" : "Show the world as a globe, keeping this view"}
+              >
+                {is3D ? "▭ Flat" : "◍ Globe"}
+              </button>
+              <button
+                type="button"
+                className={`actrl${tilted ? " on" : ""}`}
+                aria-pressed={tilted}
+                onClick={() => apiRef.current?.setTilt(!tilted)}
+                title={
+                  tilted
+                    ? "Look straight down"
+                    : "Tilt the camera — zoom into a city on a 3D basemap to see buildings"
+                }
+              >
+                ◮ Tilt
+              </button>
+            </>
+          )}
           {/*
             Home globe only. Last in the stack, because it is the only control
             that acts on the view rather than changing it — everything above
@@ -3319,13 +3644,29 @@ export default function AtlasShell({
         </div>
       )}
 
-      {showFallback && (
+      {showFallback && !photorealOn && (
         <div className="fallback">
           <span className="badge">{region ? `Region · ${region}` : "All inventory"}</span>
           <p>
             Map unavailable right now. The full {ATLASES[type].label.toLowerCase()} is one
             click away — your selection carries over.
           </p>
+          {/*
+            The two engines fail independently — Mapbox being down says nothing
+            about Google's photoreal tiles — and this panel is the one place the
+            map is actually missing. Hiding the working engine here because the
+            broken one owns the toolbar would be the same mistake, one level
+            down, that put photoreal behind an iframe in the first place.
+          */}
+          {photoreal && (
+            <button
+              type="button"
+              className="atlas-cta"
+              onClick={() => setEngineChoice("photoreal")}
+            >
+              Show it in photoreal 3D →
+            </button>
+          )}
           <a className="atlas-cta" href={externalLink}>
             Open the {ATLASES[type].label.toLowerCase()} →
           </a>
@@ -3624,11 +3965,28 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
     kind === "hotel" && id
       ? `<a class="iw3d" data-hotel3d="${esc(id)}" href="/atlas/hotel?hotel=${encodeURIComponent(id)}" target="_blank" rel="noopener" title="Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view">Property details &amp; 3D ↗</a>`
       : "";
+  /*
+   * And a way to ask about it.
+   *
+   * This popup is a property The Guide just recommended, and until now the only
+   * things you could do with it were open an atlas or (for hotels) the photoreal
+   * view. Not "tell me more about this one" — on the pin for the thing being
+   * SOLD, which is the likeliest question in the product.
+   */
+  const ask = esc(
+    askAboutPin({
+      name: r.name || "this",
+      region: r.region,
+      country: (r as { country?: string | null }).country ?? null,
+      brand: r.brand || r.operator,
+    }),
+  );
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
     `<div class="iwm">${esc([meta, when].filter(Boolean).join("  ·  "))}</div>` +
     three +
-    `<a href="${esc(href)}">Open on the atlas →</a></div>`
+    `<a href="${esc(href)}">Open on the atlas →</a>` +
+    `<button type="button" class="iwask" data-ask="${ask}">✦ Ask The Guide</button></div>`
   );
 }
 
@@ -3862,6 +4220,17 @@ interface MBMap {
     zoom?: number;
     duration?: number;
     essential?: boolean;
+  }): void;
+  /**
+   * Move the camera with no animation. Used by the engine switch, where the
+   * traveller has already been flown somewhere by the other renderer and a
+   * second flight to the same place would read as a bug.
+   */
+  jumpTo(opts: {
+    center?: readonly [number, number];
+    zoom?: number;
+    pitch?: number;
+    bearing?: number;
   }): void;
   /** Cancel any camera animation in flight, leaving the camera where it is. */
   stop(): void;

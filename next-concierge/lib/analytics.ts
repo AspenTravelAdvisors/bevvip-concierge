@@ -19,7 +19,19 @@ import { track } from "@vercel/analytics";
 type Props = Record<string, string | number | boolean | null>;
 
 /** Where an ask entered the pipeline. Tells us which opening move actually works. */
-export type AskSource = "composer" | "chip" | "strip" | "deeplink" | "dock" | "quickreply";
+export type AskSource =
+  | "composer"
+  | "chip"
+  | "strip"
+  | "deeplink"
+  | "dock"
+  | "quickreply"
+  /** A map pin's popup — hotel field, or a plotted recommendation. */
+  | "pin"
+  /** A card in a collection's result list. */
+  | "card"
+  /** The property dossier, including the one beside the photoreal view. */
+  | "dossier";
 
 /** Where the advisor form was opened from. */
 export type AdvisorSource = "chat" | "header" | "atlas";
@@ -81,8 +93,21 @@ export function mapStyleFallback(from: string, to: string) {
  * If the answer turns out to be "almost no one", that is an argument about
  * placement, not about the feature.
  */
-export function hotel3dOpened(hotelId: string, source: "card" | "popup") {
+export function hotel3dOpened(hotelId: string, source: "card" | "popup" | "engine") {
   emit("hotel_3d_opened", { hotelId, source });
+}
+
+/**
+ * The photoreal engine was chosen on a map that offers it.
+ *
+ * `hotel_3d_opened` counts arrivals at ONE property's view; this counts someone
+ * choosing to browse in 3D at all, which is a different question and the one
+ * that says whether the engine earns its place in the menu. `ok` separates
+ * "chose it and got it" from "chose it and the tiles never came" — the second
+ * used to be indistinguishable from the first, because both showed a map.
+ */
+export function mapEngineChosen(type: string, engine: "mapbox" | "photoreal", ok: boolean) {
+  emit("map_engine_chosen", { type, engine, ok });
 }
 
 /** Did anyone want the tour once it stopped opening itself? */

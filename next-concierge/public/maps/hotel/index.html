@@ -127,6 +127,11 @@
   .ups li em{margin-right:4px} /* italic overhang eats the space before "Upgrade" */
   .book{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px;border-radius:11px;background:linear-gradient(135deg,#caa44e,#ffe9b0);color:#3a2c0d;font-weight:800;font-size:13.5px;text-decoration:none;letter-spacing:.3px}
   .book:hover{filter:brightness(1.05)}
+  .askguide{display:block;width:100%;margin-top:10px;padding:11px 14px;border-radius:10px;
+    border:1px solid rgba(230,212,136,.45);background:rgba(230,212,136,.08);color:var(--accent);
+    font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.2px;cursor:pointer;
+    text-align:center;transition:.15s}
+  .askguide:hover{background:rgba(230,212,136,.16);border-color:var(--accent)}
   .pw{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
   .pw b{color:var(--accent2);letter-spacing:1px}
   .prog-logo{display:flex;align-items:center;gap:9px}
@@ -334,6 +339,11 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
     <!-- money-maker CTA sits right under Address/Program so it never falls below the fold -->
     <a class="book" id="d-book" href="#" target="_blank" rel="noopener">Search VIP rates &rarr;</a>
     <div class="pw" id="d-pw"></div>
+    <!-- The intro tour has always promised "Send any hotel to The Guide for a
+         tailored shortlist" and this panel has never had the control. It does
+         now: in Base Camp it hands the question to the chat on the page; opened
+         standalone it navigates to The Guide with the question attached. -->
+    <button type="button" class="askguide" id="d-ask">&#10022; Ask The Guide about this hotel</button>
     <div class="klabel" style="margin:18px 0 2px">VIP Upgrades</div>
     <ul class="ups" id="d-ups"></ul>
   </div>
@@ -1471,6 +1481,7 @@ async function openDetail(f){
   // without it is a dead end.
   const code = p.password || (linked ? "VIP" : "");
   document.getElementById("d-pw").innerHTML = code ? `Access code: <b>${code}</b>` : "";
+  wireAskGuide(p);
   document.getElementById("panel").classList.add("open");
   // enlarge the selected pin, reset the previously selected one
   const sel=MARKERS.find(m=>m._feat===f);
@@ -1481,6 +1492,35 @@ async function openDetail(f){
   flyTo({lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],range:DETAIL_RANGE,tilt:DETAIL_TILT,duration:1800,orbit:true});
 }
 
+/* Send this property to The Guide.
+   Embedded in Base Camp (the /atlas/hotel legacy path, or a hero embed) the
+   question is posted up to the parent, which hands it to the chat mounted on
+   that page — no navigation, the map stays where it is. Opened standalone
+   there is no parent to ask, so it navigates to The Guide with the question
+   attached, which is the contract ?ask= has always had. */
+function askText(p){
+  const where=[p.city,p.region,p.country].filter(Boolean).join(", ");
+  let t="Tell me about "+p.name+(where?" in "+where:"")+".";
+  const facts=[];
+  if(p.category) facts.push("It's listed as "+String(p.category).toLowerCase());
+  if(p.program) facts.push("booked through "+p.program);
+  if(facts.length) t+=" "+facts.join(", ")+".";
+  return t+" Is it a good fit for my trip, what should I know about the rooms and the setting, and what would you compare it with nearby?";
+}
+function wireAskGuide(p){
+  const btn=document.getElementById("d-ask");
+  if(!btn) return;
+  btn.onclick=function(){
+    const text=askText(p);
+    try{
+      if(window.parent && window.parent!==window){
+        window.parent.postMessage({type:"ATLAS_ASK",text:text},"*");
+        return;
+      }
+    }catch(_){}
+    window.location.href="/?ask="+encodeURIComponent(text)+"&src=hotel-3d";
+  };
+}
 function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function formatVipBenefit(raw){
   const text=String(raw==null?"":raw).trim();

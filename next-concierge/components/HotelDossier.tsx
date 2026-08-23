@@ -1,0 +1,312 @@
+"use client";
+
+/**
+ * The property dossier — everything the atlas knows about one hotel.
+ *
+ * This content existed in exactly one place: the detail panel inside
+ * `public/maps/hotel/index.html`. That is why "See it in 3D" undersold itself
+ * and why the card action had to be renamed "Property details & 3D" — the
+ * photoreal building was the advertised half of a panel whose real value is the
+ * description, the ratings, the address, the program, the VIP benefit list and
+ * the rate access code.
+ *
+ * Porting the engine into the shell without porting this would have moved the
+ * picture and left the substance in the iframe. So: the same fields, in the
+ * same order, from the same endpoint (`/api/hotel/luxury-hotels/:id`), rendered
+ * beside either engine.
+ *
+ * One thing is deliberately NOT the same. The original panel's only forward
+ * steps were "Search VIP rates" and a mailto to the concierge — no way to ask
+ * about the property you were looking at, on the screen where you had the most
+ * questions. The intro tour promised that ask; the panel never had it. It does
+ * now.
+ */
+
+import { useEffect, useState } from "react";
+import { bookingLink } from "@/lib/atlas/booking.js";
+import { getTrip, onTrip } from "@/lib/trip-state";
+import { programDomain } from "@/lib/atlas/adapters/hotel-programs";
+import { hotelBrandDomain } from "@/lib/atlas/adapters/hotel-brands";
+import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
+import { bookingClicked } from "@/lib/analytics";
+import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
+import type { TripState } from "@/lib/types";
+
+/** The subset of a hotel record this panel renders. */
+interface HotelRecord {
+  id: string;
+  name?: string;
+  brand?: string | null;
+  program?: string | null;
+  category?: string | null;
+  country?: string | null;
+  city?: string | null;
+  address?: string | null;
+  adminRegion?: string | null;
+  vipUpgrades?: string[] | null;
+  bookUrl?: string | null;
+  bookPassword?: string | null;
+  tw?: { hotelId?: string | number; lat?: number; lon?: number; label?: string } | null;
+  fit?: {
+    description?: string | null;
+    forbesRating?: number | string | null;
+    aaaDiamondRating?: number | string | null;
+  } | null;
+}
+
+/**
+ * The dataset prefixes every blurb with the property's own name ("The Little
+ * Nell: a city stay…"). Drop it — it is already the panel's title — and
+ * recapitalize what remains so it still reads as a sentence.
+ */
+function cleanDescription(raw: string | null | undefined): string {
+  let text = String(raw || "").trim();
+  const colon = text.indexOf(": ");
+  if (colon > 0 && colon < 90) {
+    text = text.slice(colon + 2).replace(/^./, (c) => c.toUpperCase());
+  }
+  return text;
+}
+
+/**
+ * Year headers ("For 2026:") are labels in the source data, not benefits.
+ * The original filtered them out of the list; so does this.
+ */
+const YEAR_HEADER = /^for\s+20\d{2}(\s*&\s*20\d{2})?\s*:?\s*$/i;
+
+function benefitList(raw: string[] | null | undefined): string[] {
+  return (raw || []).map((u) => String(u ?? "").trim()).filter((u) => u && !YEAR_HEADER.test(u));
+}
+
+/**
+ * "First Priority" is italic; "Room Upgrade" stays upright. Source lines start
+ * with a bare "Upgrade…", so "Room" is inserted when it isn't already there —
+ * verbatim from the original's formatVipBenefit.
+ */
+function renderBenefit(raw: string): React.ReactNode {
+  const text = raw.trim();
+  const stripped = text.replace(/^["']?first priority["']?\s*/i, "");
+  if (/^room\s+upgrades?\b/i.test(stripped)) {
+    return (
+      <>
+        <em>First Priority</em> {stripped}
+      </>
+    );
+  }
+  if (/^upgrades?\b/i.test(stripped)) {
+    return (
+      <>
+        <em>First Priority</em> Room {stripped}
+      </>
+    );
+  }
+  return text;
+}
+
+function logoFor(record: HotelRecord): string | null {
+  const domain =
+    hotelBrandDomain(record.brand || "") || programDomain(record.program || "") || null;
+  // Google's favicon service — Clearbit's logo API was sunset after the HubSpot
+  // acquisition, and this is the same source the standalone atlas uses.
+  return domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null;
+}
+
+export default function HotelDossier({
+  id,
+  fallbackName,
+  onClose,
+}: {
+  id: string;
+  /** Shown while the record loads, so the panel never opens empty. */
+  fallbackName?: string;
+  onClose: () => void;
+}) {
+  const [record, setRecord] = useState<HotelRecord | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [trip, setTripState] = useState<TripState | null>(null);
+
+  useEffect(() => {
+    setTripState(getTrip());
+    return onTrip(setTripState);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setRecord(null);
+    setFailed(false);
+    fetch(`/api/hotel/luxury-hotels/${encodeURIComponent(id)}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((j: HotelRecord) => {
+        if (!cancelled) setRecord(j);
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  const name = record?.name || fallbackName || "Property";
+  const where = [record?.city, record?.adminRegion, record?.country].filter(Boolean).join(", ");
+  const benefits = benefitList(record?.vipUpgrades);
+  const description = cleanDescription(record?.fit?.description);
+  const forbes = record?.fit?.forbesRating;
+  const aaa = record?.fit?.aaaDiamondRating;
+  const logo = record ? logoFor(record) : null;
+
+  const booking = record
+    ? bookingLink(
+        {
+          type: "hotel",
+          id: record.id,
+          name: record.name,
+          ...(record.tw ? { tw: record.tw } : {}),
+          ...(record.bookUrl ? { bookUrl: record.bookUrl } : {}),
+          ...(record.bookPassword ? { bookPassword: record.bookPassword } : {}),
+        },
+        trip,
+      )
+    : null;
+
+  const askText = askAboutProperty({
+    name,
+    city: record?.city,
+    country: record?.country,
+    region: record?.adminRegion,
+    category: record?.category,
+    program: record?.program,
+    brand: record?.brand,
+    benefits,
+  });
+
+  return (
+    <aside className="hotel-dossier" aria-label={`${name} — property details`}>
+      <header>
+        <div className="hd-head">
+          {record?.category && <p className="hd-cat">{record.category}</p>}
+          <h2>{name}</h2>
+          {where && <p className="hd-where">{where}</p>}
+        </div>
+        <button type="button" className="hd-close" onClick={onClose} aria-label="Close details">
+          ✕
+        </button>
+      </header>
+
+      {failed && (
+        <p className="hd-empty">
+          The full profile could not be loaded just now. The property is still on the map, and The
+          Guide can tell you about it.
+        </p>
+      )}
+
+      {!record && !failed && <p className="hd-empty">Opening the property file…</p>}
+
+      {record && (
+        <div className="hd-body">
+          {description && <p className="hd-desc">{description}</p>}
+
+          {(forbes || aaa) && (
+            <div className="hd-ratings">
+              {forbes && (
+                <span className="hd-rating">
+                  <span aria-hidden="true">★</span> Forbes {forbes} Star
+                </span>
+              )}
+              {aaa && (
+                <span className="hd-rating">
+                  <span aria-hidden="true">◆</span> AAA {aaa} Diamond
+                </span>
+              )}
+            </div>
+          )}
+
+          <dl className="hd-rows">
+            <div>
+              <dt>Address</dt>
+              <dd>{record.address || "—"}</dd>
+            </div>
+            <div>
+              <dt>Program</dt>
+              <dd>
+                {record.program ? (
+                  <span className="hd-prog">
+                    {logo && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={logo}
+                        alt=""
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    )}
+                    {record.program}
+                  </span>
+                ) : (
+                  "—"
+                )}
+              </dd>
+            </div>
+          </dl>
+
+          {/* The money-maker sits directly under Address/Program so it never
+              falls below the fold — the original's placement, for the original's
+              reason. */}
+          {booking?.url && (
+            <a
+              className="hd-book"
+              href={booking.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => bookingClicked("hotel", !booking.needsDates)}
+            >
+              {booking.label} ↗
+            </a>
+          )}
+          {booking?.note && <p className="hd-code">{booking.note}</p>}
+
+          {benefits.length > 0 && (
+            <>
+              <p className="hd-label">VIP Upgrades</p>
+              <ul className="hd-ups">
+                {benefits.map((b, i) => (
+                  <li key={i}>{renderBenefit(b)}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
+
+      {/*
+        The two human paths out, which this panel has never had.
+
+        Ask goes to The Guide with the property's own facts attached (see
+        lib/atlas/ask) — in place when a chat is mounted on this page, and by
+        navigation when one is not. Talk to an advisor is the same door the
+        header offers, put where the questions actually occur.
+      */}
+      <footer className="hd-actions">
+        <button
+          type="button"
+          className="hd-ask"
+          onClick={() => {
+            if (!askGuide(askText, "dossier")) {
+              window.location.assign(askGuideHref(askText, "hotel-dossier"));
+            }
+          }}
+        >
+          ✦ Ask The Guide about this hotel
+        </button>
+        <button
+          type="button"
+          className="hd-advisor"
+          onClick={() => openAdvisor({ source: "atlas" })}
+        >
+          {ADVISOR_CTA_COLD}
+        </button>
+      </footer>
+    </aside>
+  );
+}

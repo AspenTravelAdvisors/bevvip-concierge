@@ -28,9 +28,6 @@ const NATIVE_COLLECTIONS: Partial<Record<OfferingType, () => React.ReactElement>
   yacht: () => <AtlasYacht />,
   worldcruise: () => <AtlasWorldCruise />,
   cruise: () => <AtlasCruise />,
-  // Hotel browse uses the shared shell, but ?hotel=<id> still falls through to
-  // the iframe path below so the existing Google Photorealistic 3D property
-  // view stays exactly where old share links and "See it in 3D" expect it.
 };
 
 // In-app atlas view. Each standalone atlas now lives inside Base Camp as a
@@ -83,7 +80,28 @@ export default async function AtlasPage({
   // param is forwarded above, the atlas hides its own chrome) so only the map
   // shows through the blur.
   const hero = qs.get("hero") === "1";
-  const native = qs.has("hotel") ? undefined : NATIVE_COLLECTIONS[type];
+  /*
+   * `?hotel=<id>` used to force the iframe.
+   *
+   * That was the routing half of the split: the Google Photorealistic 3D
+   * property view existed only inside public/maps/hotel/index.html, so a link
+   * to one property had to leave the shared surface to reach it — which is
+   * exactly why the best thing in the product read as buried. The engine now
+   * lives on the collection page itself (components/Atlas3DLayer), so the same
+   * link lands on the same building with the filters, the rail and the dossier
+   * around it, and every share link already in circulation keeps working.
+   *
+   * A property deep link opens ON the photoreal engine — decided client-side
+   * in AtlasCollection, which is the only place that can see the URL the
+   * browser actually has (this route's native branch renders a client
+   * component that reads its own search params).
+   *
+   * `?legacy=1` still opens the standalone page. It stays reachable on purpose:
+   * it is the fallback if the Maps key or the tiles are ever unavailable, and
+   * it is what the `?hero=1` marketing embeds render.
+   */
+  const legacy = qs.get("legacy") === "1";
+  const native = legacy ? undefined : NATIVE_COLLECTIONS[type];
 
   // The standalone /maps page has its own title rail. Inside Base Camp's
   // AtlasFrame that becomes duplicate chrome, so iframe pages get an internal

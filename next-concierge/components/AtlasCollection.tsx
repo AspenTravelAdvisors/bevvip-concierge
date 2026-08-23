@@ -31,6 +31,8 @@ import { parseDeepLink, toSearchParams, type ParseContext } from "@/lib/atlas/ad
 import { whenLabelFor, sortOfferings, SORT_MODES, type SortMode } from "@/lib/atlas/dates";
 import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell, { type StyleKey } from "./AtlasShell";
+import type { Point3D } from "./Atlas3DLayer";
+import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
 import { internalAtlasLink } from "@/lib/atlas-config";
 
@@ -62,7 +64,19 @@ interface Props {
    *
    * `title` is the long-form promise, for the hover the label has no room for.
    */
-  cardAction?: { label: string; title?: string; onSelect: (o: AtlasOffering) => void };
+  cardAction?: {
+    label: string;
+    title?: string;
+    /**
+     * `api` is what the action can do to this page. Hotels use it to open a
+     * property AND put the photoreal engine on screen in one gesture — which
+     * is the whole action, and used to be a new browser tab.
+     */
+    onSelect: (
+      o: AtlasOffering,
+      api: { select: () => void; showPhotoreal: () => void },
+    ) => void;
+  };
   /**
    * The card's PRIMARY action, rendered first and given the filled treatment.
    *
@@ -79,6 +93,27 @@ interface Props {
    * batch instead of per card — 120 cards, one request.
    */
   onVisibleIds?: (ids: string[]) => void;
+  /**
+   * Offer the Google Photorealistic 3D engine on this collection's map.
+   *
+   * Collections whose offerings ARE a single place — hotels, and villas when
+   * they converge — pass this. A collection of routes does not: photoreal 3D of
+   * a shipping lane is an expensive picture of water.
+   *
+   * The engine draws whatever the rail has filtered, and shares the pinned
+   * selection with the card list, so the switch keeps every decision the
+   * traveller has already made.
+   */
+  photoreal?: boolean;
+  /**
+   * A panel for the selected offering, rendered over the map.
+   *
+   * Hotels use it for the property dossier — description, ratings, address,
+   * program, VIP benefits, rates — which until now existed ONLY inside the
+   * standalone 3D page. Bringing the engine into the shell without bringing
+   * this would have moved the picture and left the substance behind.
+   */
+  detailFor?: (o: AtlasOffering, opts: { close: () => void }) => React.ReactNode;
   /** Loads and adapts this collection's raw feed. Collection-specific. */
   load: () => Promise<{
     offerings: AtlasOffering[];
@@ -179,7 +214,7 @@ const fmtDay = (iso?: string | null) =>
 
 export default function AtlasCollection({
   type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
-  cardPrimary, onVisibleIds,
+  cardPrimary, onVisibleIds, photoreal = false, detailFor,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -199,11 +234,20 @@ export default function AtlasCollection({
    * the right complaint about a hover-only trace.
    */
   const [pinnedId, setPinnedId] = useState<string | null>(null);
+  /**
+   * Which map engine is drawing.
+   *
+   * Owned here rather than in the shell because everything that needs it lives
+   * at this level: the deep-link parse that may arrive asking for `engine=3d`,
+   * the Share link that has to carry it, and the card action that switches to
+   * photoreal while opening a property.
+   */
+  const [engine, setEngine] = useState<"mapbox" | "photoreal">("mapbox");
   const hoverTimer = useRef<number | null>(null);
   // Live map view, so Share can capture basemap + projection + camera.
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<{
-    style: string; globe: boolean;
+    style: string; engine?: "mapbox" | "photoreal"; globe: boolean;
     center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
     bounds?: [number, number, number, number] | null;
   } | null>(null);
@@ -505,6 +549,34 @@ export default function AtlasCollection({
   );
 
   /**
+   * An arriving `engine=3d` opens on photoreal.
+   *
+   * Applied once, like every other arrival intent on this page: after that the
+   * engine belongs to whoever is looking at the map, and re-applying it would
+   * yank someone back to 3D every time the URL changed under a filter.
+   */
+  const arrivedEngine = useRef(false);
+  useEffect(() => {
+    if (arrivedEngine.current || !photoreal) return;
+    arrivedEngine.current = true;
+    if (parsed?.view.engine === "photoreal") {
+      setEngine("photoreal");
+      return;
+    }
+    /*
+     * A single-property deep link (`?hotel=<id>`) opens on the building.
+     *
+     * Someone following a link to ONE property is not browsing — they were sent
+     * a place to look at. That link used to route to the standalone 3D page for
+     * exactly this reason, and it must keep meaning the same thing now the
+     * engine lives here. A `trip=`/`ids=` share is different: those carry their
+     * own engine, so an absent one there means Mapbox.
+     */
+    const propertyLink = (descriptor.extraIdParams || []).some((p) => searchParams.get(p));
+    if (propertyLink) setEngine("photoreal");
+  }, [parsed?.view.engine, photoreal, descriptor, searchParams]);
+
+  /**
    * A deep link that resolves to exactly one trip opens it — pinned, traced and
    * framed. The Leaflet atlas did this in highlightDeepLinkIds():
    * `if (state.ids.size === 1 && hit.length === 1) openDetail(hit[0])`.
@@ -553,6 +625,9 @@ export default function AtlasCollection({
         trip: pinnedId,
         style: v?.style ?? initialStyle ?? null,
         flat: v ? !v.globe : initialGlobe === false,
+        // A link shared from the photoreal view opens on it. "Look at THIS,
+        // like THIS" has to say which engine was drawing.
+        engine: engine === "photoreal" ? "photoreal" : null,
         camera: v
           ? { lng: v.center.lng, lat: v.center.lat, zoom: v.zoom, pitch: v.pitch, bearing: v.bearing }
           : null,
@@ -569,7 +644,7 @@ export default function AtlasCollection({
       // Clipboard can be blocked; put it in the URL bar so it is still copyable.
       router.replace(url.replace(window.location.origin, ""), { scroll: false });
     }
-  }, [state, parsed?.view, pinnedId, descriptor, query, type, router, initialStyle, initialGlobe]);
+  }, [state, parsed?.view, pinnedId, descriptor, query, type, router, initialStyle, initialGlobe, engine]);
 
   // `trip=` pins a journey, the same param the Leaflet Share button emitted.
   const autoTripped = useRef(false);
@@ -668,6 +743,34 @@ export default function AtlasCollection({
     }
   }, [pinnedId, byId, emitRoute]);
 
+  /**
+   * The filtered set, as points the photoreal engine can draw.
+   *
+   * Built from `filtered` rather than from every offering, so switching engines
+   * preserves the rail: someone who narrowed to Alpine ski properties and
+   * flipped to 3D should see those, not all 2,501 again. Offerings without a
+   * located stop are simply absent — a hotel with no coordinate cannot be a
+   * building you look at.
+   */
+  const photorealPoints = useMemo<Point3D[]>(() => {
+    if (!photoreal) return [];
+    const out: Point3D[] = [];
+    for (const o of filtered) {
+      const at = o.stops.find((st) => st.at)?.at;
+      if (!at) continue;
+      out.push({
+        id: o.id,
+        lng: at[0],
+        lat: at[1],
+        name: o.title,
+        category: (o.attributes?.category as string | null) ?? null,
+      });
+    }
+    return out;
+  }, [photoreal, filtered]);
+
+  const pinned = pinnedId ? byId.get(pinnedId) ?? null : null;
+
   if (failed) {
     return (
       <div className={`atlas-collection atlas-collection--${type}`}>
@@ -701,10 +804,46 @@ export default function AtlasCollection({
         initialGlobe={parsed?.view.flat ? false : initialGlobe}
         initialCamera={parsed?.view.camera ?? null}
         onViewChange={(v) => { viewRef.current = v; }}
+        // The engine choice. Points are the filtered set and the selection is
+        // the pinned card, so 3D is a view OF this browse rather than a
+        // separate browse — the whole reason it stopped being a second page.
+        photoreal={
+          photoreal
+            ? {
+                points: photorealPoints,
+                selectedId: pinnedId,
+                onSelect: (id: string) => {
+                  const hit = byId.get(id);
+                  if (hit) togglePin(hit);
+                },
+                engine,
+                onEngineChange: setEngine,
+              }
+            : undefined
+        }
         // No Share on the map here — this page's Share is in the filter rail,
         // where the filters that make up most of the link already live. The
         // shell reports the camera up (onViewChange) and the rail sends it.
       />
+      {/*
+        The selected offering's own panel, over the map.
+
+        Hotels put the property dossier here — the description, ratings,
+        address, program, VIP benefits and rate access code that used to exist
+        only inside the standalone 3D page. It rides the SAME selection as the
+        card list and the map pin, so clicking a card, clicking a pin and
+        arriving on a ?hotel= link all end in the same place.
+      */}
+      {detailFor && pinned && (
+        <div className="atlas-detail" onClick={(e) => e.stopPropagation()}>
+          {detailFor(pinned, {
+            close: () => {
+              setPinnedId(null);
+              emitRoute(null);
+            },
+          })}
+        </div>
+      )}
       {/*
         Sits over the map rather than in the filter rail on purpose: it is a
         question about the map ("what is in THIS view?"), and its answer changes
@@ -942,7 +1081,17 @@ export default function AtlasCollection({
                     type="button"
                     className="ac-3d"
                     title={cardAction.title}
-                    onClick={(e) => { e.stopPropagation(); cardAction.onSelect(o); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      cardAction.onSelect(o, {
+                        select: () => {
+                          if (pinnedId !== o.id) togglePin(o);
+                        },
+                        showPhotoreal: () => {
+                          if (photoreal) setEngine("photoreal");
+                        },
+                      });
+                    }}
                   >
                     {cardAction.label}
                   </button>
@@ -958,14 +1107,33 @@ export default function AtlasCollection({
                     View details ↗
                   </a>
                 )}
-                {/* Same escape hatch the Leaflet cards had: ask instead of filter. */}
+                {/*
+                  Same escape hatch the Leaflet cards had: ask instead of filter.
+
+                  What it SENDS changed. It used to be the title and a listing
+                  URL — "Hotel Name (listing: …)" — so The Guide had to
+                  re-derive the city, the country, the program and the category
+                  it had just been shown, or ask the traveller to repeat what
+                  was on screen. Now the question carries them (lib/atlas/ask),
+                  and it is delivered into the chat mounted on this page rather
+                  than navigating to the home one.
+                */}
                 <button
                   type="button"
                   className="ac-ask"
                   onClick={(e) => {
                     e.stopPropagation();
-                    const ctx = `${o.title}${o.url ? ` (listing: ${o.url})` : ""}`;
-                    router.push(`/?ask=${encodeURIComponent(ctx)}&src=${type}`);
+                    const text = askAboutProperty({
+                      name: o.title,
+                      city: (o.attributes?.city as string | null) ?? null,
+                      country: o.country,
+                      region: regionLabels[o.regions[0]] ?? o.regions[0] ?? null,
+                      category: (o.attributes?.category as string | null) ?? null,
+                      program: (o.attributes?.program as string | null) ?? null,
+                      brand: o.brandLabel,
+                      url: o.url,
+                    });
+                    if (!askGuide(text, "card")) router.push(askGuideHref(text, type));
                   }}
                 >
                   ✦ Ask The Guide

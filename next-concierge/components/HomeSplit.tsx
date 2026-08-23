@@ -176,6 +176,20 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
     [setSheetAndRefit, focusComposer],
   );
 
+  /*
+   * An ask from the map raises the sheet.
+   *
+   * On a phone the chat is a bottom sheet resting at "pill", so a question sent
+   * from a pin popup would stream its answer into something the traveller
+   * cannot see. Same event the atlas dock opens on, so every surface that can
+   * ask gets the same behaviour without knowing where it is.
+   */
+  useEffect(() => {
+    const onOpen = () => openChat(false);
+    window.addEventListener("bevvip:guide-open", onOpen);
+    return () => window.removeEventListener("bevvip:guide-open", onOpen);
+  }, [openChat]);
+
   /**
    * On a phone, ANY deliberate gesture on the map parks the Guide — tap, spin,
    * drag, pinch. Same result as "Full map ▾", minus having to find the button.

@@ -1190,3 +1190,91 @@ an inverted window keeps nothing, no bound changes nothing) on top of its
 unchanged 8.8M-comparison parity run; `verify:deeplinks` gains round-trip and
 bad-input assertions (627 → 687); `verify:hotels` asserts the bounds are inert
 there.
+
+## Photoreal 3D is an engine, not a destination (2026-08-23)
+
+The Google Photorealistic 3D hotel view stopped being a place you go and became
+a way the map draws. Three things were wrong with where D2 left it, and only the
+first was visible:
+
+1. **It was a page, not a view.** `/atlas/hotel?hotel=<id>` fell through to the
+   iframe at `public/maps/hotel/index.html`, and the card's action opened it in
+   a NEW TAB — so the single most persuasive thing the app does cost the
+   traveller their filters, their camera and their place in the list. The work
+   order called photoreal irreplaceable and then put it three clicks and a tab
+   away.
+2. **Nothing could link to it by name.** `ATLASES` is keyed by `OfferingType`,
+   and 3D is not a type — it is a view OF one. With no slot for that in the
+   registry, the Explore menu could never mention it, and it survived only as a
+   query param.
+3. **The property view had no way to ask.** Its own intro tour promises "Send
+   any hotel to The Guide for a tailored shortlist"; the panel offered a rate
+   search and a mailto. The hotel pin popups and the Guide's own recommendation
+   popups had no ask either, and the one that existed (the collection card) sent
+   the title and a URL — so The Guide had to re-derive the city, country,
+   program and category it had just been shown.
+
+**The engine.** `components/Atlas3DLayer.tsx` mounts `Map3DElement` inside
+`AtlasShell`'s own box, over the Mapbox canvas, which stays MOUNTED and hidden
+(`.atlas-map.photoreal .atlas-canvas { visibility: hidden }`) — rebuilding a GL
+map costs a style load, a source refetch and every layer the shell adds, while
+hiding it makes the return instant. `lib/atlas/google3d.ts` holds the loader
+(key from the untouched `/api/hotel/config`), the ported camera constants
+(`DETAIL_RANGE` 2600 / `DETAIL_TILT` 67 and the log-eased tilt ceiling), and the
+zoom⇄range conversion that carries the camera across the switch. Two things to
+know about that conversion: `VERTICAL_FOV_DEG = 45` is EMPIRICAL — Google does
+not document the 3D camera's field of view — and the wide end is deliberately
+clamped, because a whole-planet Mapbox view converts to a camera ~130,000 km out.
+
+The orbit race fixed on 2026-07-29 is ported with it: `gmp-animationend` also
+fires when a flight is INTERRUPTED, so the orbit is armed only when its own
+sequence still owns the camera and 80% of its duration has elapsed.
+
+**The engine is NOT a basemap.** `engine` is its own axis (`?engine=3d`), not a
+sixth entry in `SHARE_STYLES`. Folding it in would have made "the basemap I
+like" and "the renderer I want" one setting — so a trip through 3D would forget
+the traveller's basemap — and every path that reasons about satellite imagery
+(auto-daylight, the plot-reveal flip, the style watchdog) would have had to
+learn about an entry with no Mapbox style URL. It is CONTROLLED by the page,
+because the page owns the deep-link parse, the Share link and the card actions.
+
+**Failure is per-engine.** No key or no tiles → `mapEngineChosen(type, "photoreal",
+false)`, fall back to Mapbox, say so in a dismissible notice. And because the two
+engines fail independently, the Mapbox "Map unavailable" panel now OFFERS the
+photoreal engine: hiding a working renderer because the broken one owns the
+toolbar would be the same mistake one level down.
+
+**What else moved.** `?hotel=` opens the native shell with the engine on and the
+property selected (`?legacy=1` still reaches the standalone page, and `?hero=1`
+still renders it for the marketing landers). `components/HotelDossier.tsx` ports
+the property file — description, ratings, address, program, VIP benefits, rate
+link, access code — beside either engine, so the engine did not arrive without
+its substance. `AtlasConfig.views` gives a collection a second view, and Explore
+lists it.
+
+**The Guide is now mounted on atlas pages** (`components/AtlasGuideDock.tsx`),
+so an ask is answered beside the map instead of navigating to the home page.
+`lib/atlas/ask.ts` is the one door: `registerGuideHost()` (called by GuideChat
+itself, so the home globe counts too) decides delivery-in-place vs. the `?ask=`
+fallback, and the question carries the property's own facts. Asks now exist on
+the card, the hotel pin popup, the Guide's recommendation popups, the dossier,
+and the standalone panel (which posts `ATLAS_ASK` up to `AtlasView`).
+
+**One bug this shipped and then fixed, found by driving a browser:** the first
+ask on an atlas page arrived while `GuideChat` was still unmounted, so nothing
+was listening and the question vanished into an opening, empty sheet. The dock
+buffers a question that arrives before the chat exists and replays it once
+mounted — child effects run before parent effects, so the chat is subscribed by
+then.
+
+**Verified.** `verify:photoreal` (new, in `npm run verify`) proves the camera
+round-trip is lossless over the 176 unclamped combinations and clamps the other
+40, that the tilt easing matches the original's shape exactly, that every
+category colour still equals `CAT_COLORS` read out of the standalone atlas, that
+the ask carries place/category/program, and that `?hotel=` cannot quietly route
+back to the iframe. Browser-driven: the dossier, the in-place ask, the deep
+link, the legacy escape hatch, and the no-key fallback.
+
+**Not verified here, and worth doing once with a key:** the photoreal render
+itself. This sandbox's network policy denies `api.mapbox.com` and
+`www.google.com`, so neither engine can paint a tile in it.
