@@ -132,9 +132,75 @@ generalising `world` and the trip-length wheels pays off for the other six too.
   add clustering to `AtlasShell` — where it would also improve hotels. Decide before
   Phase 3, not during it.
 - **Photo cards.** `AtlasCollection` cards are text rows. Villas are browsed by
-  photograph and should stay that way, so this is a card variant on the shared list,
-  not a downgrade to text. It is the one place where "make villas match" should be
-  resisted: matching the *gestures* is the goal, not flattening the merchandising.
+  photograph and stay that way — see Phase 3b, which is now the destination for both
+  villas and hotels rather than a villa concession.
+
+## Phase 3b — one stay card, two collections
+
+**Decided:** villas keep their photographs, and hotels get them too once the supplier
+API lands. Hotels and villas are the same kind of thing to a traveller — a place to
+stay, chosen substantially by how it looks — and they should be browsed on the same
+card. Sailings, flights and rail journeys are not that kind of thing (a card there
+leads with a route and a date) and keep the text row.
+
+### The data contract already exists
+
+- `lib/search-offerings.js` **already** normalizes both into one shape carrying `thumb`
+  and `photos[]` — hotels at `hotelCard()`, villas at the villa mapper
+  (`thumb: v.imageUrl`). The Guide has been speaking this dialect the whole time; no
+  component renders the images yet.
+- `data/atlas/hotel/luxury-hotels.json` carries a **`thumb` field on all 2,475
+  records, empty on every one**. The slot is cut and waiting for a source.
+- `Master Documents/BeVvip_API_Integration_Strategy.md` §5 defines the normalized
+  supplier response with `"photos": ["https://…"]`, so the incoming feed is expected to
+  fill it.
+- Villas: **3,896 of 3,902 have an image URL** (avg 76 chars, supplier CDN). The six
+  without already fall back to `.villa-card-noimg`.
+
+So the work is a media slot on the shared card, not a data project.
+
+### The card
+
+`AtlasCollection` already takes per-collection card slots — `cardPrimary` (hotels' rate
+link), `cardAction` (Property details & 3D), `detailFor` (the dossier). Add one more,
+`cardMedia`, and the anatomy is shared:
+
+```
+[ media ]              photo, with the collection's badges over it
+crumb                  hotel: City · Country     villa: Region · Destination · Location
+Name
+stats · price          hotel: category · rating  villa: sleeps · bedrooms · from-rate
+[ primary ] [ ask ]    hotel: VIP rate search    villa: request through your advisor
+```
+
+The differences that remain are the ones that must remain: a hotel card may carry a
+rate search and the photoreal 3D; **a villa card may never grow a booking link** —
+villas are advisor-arranged, and that rule outranks card symmetry.
+
+### Photo-capable, not photo-required
+
+Hotels have zero photos today. A photo-led card shipped before the API lands would
+turn 2,475 hotel cards into grey rectangles, which is worse than the clean text row
+they have now — and a grid where some cards have images and some do not reads as
+broken, not as mixed.
+
+So media is a **per-collection switch, thrown when that collection's feed actually
+carries images**: villas on (99.8% coverage), hotels off until the supplier feed fills
+`thumb`, then a one-line change in `scripts/build-hotel-points.mjs` (`thumb: h.thumb ||
+null`) and the switch flips. Cost of carrying it in the client feed, at villa's average
+URL length: roughly +25–40 KB gzipped for 2,475 hotels. Not a consideration.
+
+### Open questions before the hotel half
+
+1. **Rights.** Villa images are hotlinked from the supplier's CDN. Whatever fills
+   hotels' `thumb` — Virtuoso, TravelWits, or a harvest — needs its redistribution terms
+   confirmed, and a decision on hotlinking vs. proxying/caching through our own origin.
+2. **Delivery.** Cards use plain `<img loading="lazy">` with the Next image optimizer
+   opted out (supplier hosts are not in `next.config` `remotePatterns`). Moving villas
+   to the shared list means up to 120 cards rather than a page of 24 — lazy loading
+   covers it, but the decision to keep or drop the optimizer should be deliberate.
+3. **Aspect ratio and crop.** One ratio for both collections, chosen for hotel
+   exteriors and villa pools alike; supplier images arrive in neither.
 
 ## Phase 4 — what must still be true afterwards
 
