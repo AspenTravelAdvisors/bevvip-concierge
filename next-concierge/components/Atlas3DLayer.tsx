@@ -36,6 +36,7 @@ import {
   DETAIL_TILT,
   INSPECT_RANGE,
   categoryColor,
+  flightDuration,
   groundAltitude,
   loadGoogle3D,
   tiltForRange,
@@ -276,13 +277,25 @@ export default function Atlas3DLayer({
        * the neighbourhood. The orbit inherits this range, so the property turns
        * at inspection distance rather than circling a block — which is the whole
        * argument for photogrammetry over extruded footprints.
+       *
+       * The flight is timed from where the camera actually IS (see
+       * flightDuration): at 450 m the move between two properties is a journey
+       * across the ground, and a fixed 1.8s made it a cut. Measured live rather
+       * than from the previous selection, so a second click mid-flight measures
+       * from wherever the camera has got to and stays proportionate.
        */
+      const here = mapRef.current?.center;
       flyTo({
         lat: p.lat,
         lng: p.lng,
         range: INSPECT_RANGE,
         tilt: DETAIL_TILT,
-        duration: 1800,
+        duration: flightDuration(
+          Number(here?.lat),
+          Number(here?.lng),
+          p.lat,
+          p.lng,
+        ),
         orbit: opts?.orbit ?? true,
       });
     },

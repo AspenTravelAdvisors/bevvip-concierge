@@ -483,7 +483,16 @@ export default function AtlasCollection({
         .map((s) => ({ name: s.name, at: [s.at![0], s.at![1]] as [number, number], day: s.day ?? null }));
       window.dispatchEvent(
         new CustomEvent("bevvip:atlas-route", {
-          detail: { legs, stops, fit, fitPoints: fallback.length ? fallback : undefined },
+          detail: {
+            legs,
+            stops,
+            fit,
+            fitPoints: fallback.length ? fallback : undefined,
+            // A fitting emit is a selection; a hover preview is not. The
+            // photoreal engine stands down for the former, because the
+            // selection's own arrival flight is already on its way.
+            selecting: fit,
+          },
         }),
       );
     },

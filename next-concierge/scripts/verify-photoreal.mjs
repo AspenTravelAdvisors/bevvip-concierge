@@ -184,6 +184,34 @@ check(
 const atGlobe = g3d.rangeFromZoom(1, 0, 640);
 check(atGlobe > 1_000_000, `globe zoom stays a globe (${Math.round(atGlobe / 1000)} km out)`);
 
+console.log("\nFlight timing — a move between properties, not a cut");
+// Aspen → Vail is a hop; Aspen → Dubai is a journey. Both are one click, and
+// the difference between them has to be visible in the camera.
+const nearby = g3d.flightDuration(39.19, -106.82, 39.64, -106.37); // ~60 km
+const across = g3d.flightDuration(39.19, -106.82, 25.19, 55.23);   // ~12,000 km
+check(g3d.flightDuration(39.19, -106.82, 39.19, -106.82) === g3d.FLIGHT_MS_NEAR,
+  `standing still is the short end (${g3d.FLIGHT_MS_NEAR} ms)`);
+check(nearby > g3d.FLIGHT_MS_NEAR && nearby < across,
+  `a hop to the next valley sits between (${nearby} ms)`);
+check(across === g3d.FLIGHT_MS_FAR, `the far side of the world is the long end (${across} ms)`);
+check(g3d.FLIGHT_MS_NEAR > 1800,
+  "…and even the shortest move is slower than the flat 1.8s it replaced");
+let flightMonotonic = true;
+let prevMs = 0;
+for (let km = 0; km <= 12000; km += 25) {
+  // Walk east along the equator, where degrees of longitude are ~111 km.
+  const ms = g3d.flightDuration(0, 0, 0, km / 111.195);
+  if (ms < prevMs - 1e-9) flightMonotonic = false;
+  prevMs = ms;
+}
+check(flightMonotonic, "further is never quicker, at any distance");
+check(
+  g3d.flightDuration(NaN, NaN, 25.19, 55.23) === g3d.FLIGHT_MS_FAR,
+  "an unknown camera (mount, first frame) takes the long descent, not NaN",
+);
+const km = g3d.greatCircleKm(39.19, -106.82, 25.19, 55.23);
+check(Math.abs(km - 12500) < 400, `the distance itself is right (${Math.round(km)} km Aspen→Dubai)`);
+
 console.log("\nTilt easing — ported from the standalone atlas");
 check(g3d.tiltForRange(90, 2600) === g3d.DETAIL_TILT, "full tilt at detail range");
 check(g3d.maxTiltForRange(4200) === g3d.DETAIL_TILT, "…and right up to where the easing starts");

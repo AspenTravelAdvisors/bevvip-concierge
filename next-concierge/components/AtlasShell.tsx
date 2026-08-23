@@ -381,6 +381,17 @@ export interface RouteDetail {
   fit?: boolean;
   /** Frame these when the trip has no drawable route at all. */
   fitPoints?: [number, number][];
+  /**
+   * This framing belongs to an offering the page is SELECTING.
+   *
+   * Only the photoreal engine reads it, and only to stand down: selecting a
+   * property emits this route and then flies the engine to the building, so
+   * framing it here first would land the camera on top of the property and
+   * leave the arrival with nowhere to fly from. Mapbox has no second flight and
+   * ignores it. A framing with no `selecting` (a filter that narrows to one
+   * property, a search) is nobody else's job and is flown here.
+   */
+  selecting?: boolean;
 }
 
 interface Props {
@@ -3168,7 +3179,28 @@ export default function AtlasShell({
           for (const [lng, lat] of leg.coordinates ?? []) add(lng, lat);
         }
       }
-      if (pts.length) three.fit(pts);
+      if (!pts.length) return;
+      /*
+       * A framing for something being SELECTED is not ours to fly.
+       *
+       * Selecting a hotel emits this route and then flies the engine to the
+       * building, in that order — so framing here first teleported the camera
+       * onto the property at 3.4 km and left the arrival flight with nowhere to
+       * come from. Two flights the traveller reads as one clipped move, and the
+       * arrival, which times itself by how far it has to travel, measured zero
+       * distance every time and so always took the shortest flight there is.
+       *
+       * The page says which it is, rather than this inferring it from
+       * `selectedId`: the route is dispatched in the same tick as the selection
+       * state is set, so the ref still holds the PREVIOUS selection when this
+       * runs, and every comparison against it misses.
+       *
+       * Still framed when nothing is being selected: a filter that narrows to
+       * one property (searching a hotel by name) has no arrival flight coming,
+       * and that is the case the traveller reported.
+       */
+      if (detail.selecting) return;
+      three.fit(pts);
     };
 
     const onRoute = (e: Event) => {

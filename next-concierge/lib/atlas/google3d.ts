@@ -293,6 +293,71 @@ export function tiltForRange(tilt: number, range: number): number {
   return Math.min(t, maxTiltForRange(range));
 }
 
+/* ── Flight timing ─────────────────────────────────────────────────────────
+ *
+ * How long the camera takes to move from one property to the next.
+ *
+ * It was a flat 1,800 ms, inherited from the standalone atlas, where nearly
+ * every flight started from a wide framing and ended at one hotel — a single
+ * descent, and 1.8s is a fine descent. Here the common move is a different
+ * one: the traveller is at 450 m over one building and clicks the next card, so
+ * the camera TRAVELS. At a flat 1.8s that reads as a cut, not a move — the
+ * building is replaced rather than left behind.
+ *
+ * So the duration follows the distance, and it is linear in the LOG of it,
+ * because that is how the move reads rather than how far it is: crossing a city
+ * and crossing an ocean are both one gesture, and an ocean is not two thousand
+ * times as much of one. A hop across town lands at ~2.6s, a hop across the
+ * country around 4.5s, and the far side of the world at 5.2s — slow enough to
+ * be a journey, short enough that nobody clicking through a shortlist is
+ * waiting on the camera to finish before they can click again (they can: a new
+ * flight supersedes the one in the air, and measures its own distance from
+ * wherever the camera has got to).
+ */
+
+export const FLIGHT_MS_NEAR = 2600;
+export const FLIGHT_MS_FAR = 5200;
+/** Where the curve tops out: 10,000 km, near enough the far side of the earth. */
+const FLIGHT_FAR_KM = 10000;
+
+const EARTH_RADIUS_KM = 6371;
+const rad = (deg: number) => (deg * Math.PI) / 180;
+
+/** Great-circle distance in kilometres. */
+export function greatCircleKm(
+  aLat: number,
+  aLng: number,
+  bLat: number,
+  bLng: number,
+): number {
+  if (![aLat, aLng, bLat, bLng].every((n) => Number.isFinite(n))) return NaN;
+  const dLat = rad(bLat - aLat);
+  const dLng = rad(bLng - aLng);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(aLat)) * Math.cos(rad(bLat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/**
+ * The flight time for a move between two points on the globe.
+ *
+ * An unknown origin — no camera yet, at mount or before the first frame —
+ * takes the long end deliberately: the only camera the engine can be at then is
+ * the wide one it opened on, which is the longest descent there is.
+ */
+export function flightDuration(
+  fromLat: number,
+  fromLng: number,
+  toLat: number,
+  toLng: number,
+): number {
+  const km = greatCircleKm(fromLat, fromLng, toLat, toLng);
+  if (!Number.isFinite(km)) return FLIGHT_MS_FAR;
+  const t = clamp(Math.log10(1 + km) / Math.log10(1 + FLIGHT_FAR_KM), 0, 1);
+  return Math.round(FLIGHT_MS_NEAR + (FLIGHT_MS_FAR - FLIGHT_MS_NEAR) * t);
+}
+
 /* ── Mapbox ⇄ photoreal handoff ────────────────────────────────────────────
  *
  * The two engines describe a camera differently: Mapbox by zoom level over a

@@ -186,8 +186,15 @@ const TRIP = {
   fit: true,
 };
 const HOVER = { ...TRIP, fit: false };
-// A hotel: nothing to trace, but a selection to mark and a place to fly to.
+// A hotel framed by the RESULTS — a rail filter or a search that narrows to one
+// property. Nothing to trace, nobody selected, so this framing is the only
+// thing that will move the camera.
 const PLACE = { legs: [], stops: [{ name: "Hotel de Russie", at: [12.48, 41.91] }], fit: true, fitPoints: [[12.48, 41.91]] };
+// The same hotel, framed because it is being SELECTED. The page carries
+// `selecting` on exactly these, and the photoreal engine stands down for them:
+// the selection's own arrival flight is already on its way, and it flies closer
+// and times itself by the distance it has to cover.
+const PICK = { ...PLACE, selecting: true };
 
 // ── Scenarios ───────────────────────────────────────────────────────────────
 const results = [];
@@ -227,6 +234,26 @@ const check = (name, cond, detail = "") => results.push([name, !!cond, detail]);
   // A hover is a preview, not an instruction: it must not fly the camera.
   h.send(HOVER);
   check("a hover preview does not move the photoreal camera", frames.length === 2);
+
+  /*
+   * A SELECTION is a framing this engine must leave alone.
+   *
+   * Opening a property emits this event and then flies the engine to the
+   * building. Framing it here first put the camera on the property at 3.4 km
+   * and left the arrival flight with nowhere to come from — the traveller saw
+   * one clipped move instead of one journey, and the arrival, which times
+   * itself by how far it has to travel, measured zero distance every time.
+   */
+  h.send(PICK);
+  check("a selection does not frame the photoreal camera — its arrival will",
+    frames.length === 2, `frames=${frames.length}`);
+  check("…and Mapbox still gets it, since it has no second flight coming",
+    !!h.queued());
+  // The distinction is the flag, not the shape: the same points without it are
+  // a results framing again, and those are still this engine's job.
+  h.send(PLACE);
+  check("…while the same framing without it still moves the photoreal camera",
+    frames.length === 3, `frames=${frames.length}`);
 }
 
 {

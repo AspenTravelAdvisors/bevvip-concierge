@@ -1432,3 +1432,45 @@ the screen back. `npm run verify` clean.
 
 The gap below is unchanged and now narrower: only the pin-popup button and
 `?hotel=` can disclose a property with no card on screen.
+
+### The move between properties is a flight, not a cut (2026-08-23)
+
+Two things were making a hotel-to-hotel move read as a jump cut.
+
+**The duration was flat.** 1,800 ms, inherited from the standalone atlas, where
+almost every flight was a single descent from a wide framing onto one hotel —
+and 1.8s is a fine descent. The common move here is different: at 450 m over one
+building, clicking the next card makes the camera TRAVEL. `flightDuration` in
+lib/atlas/google3d.ts now times it from the live camera position, linear in the
+LOG of the great-circle distance, because that is how the move reads rather than
+how far it is: across town ~2.6s, the next valley ~3.6s, across the country
+~4.5s, the far side of the world 5.2s (`FLIGHT_MS_NEAR` / `FLIGHT_MS_FAR`).
+Measured live rather than from the previous selection, so a second click
+mid-flight measures from wherever the camera has got to and stays proportionate.
+
+**And there were two flights, not one.** Selecting a hotel emits
+`bevvip:atlas-route` and THEN flies the engine to the building, in that order.
+`applyRouteTo3D` was framing the single point first — so the camera teleported
+onto the property at 3.4 km in 2s, and the arrival flight then had nowhere to
+come from. It also meant the new distance-timed arrival measured zero distance
+every time and always took the shortest flight there is, which is how this was
+found: the stub recorded `[{ms:2000},{ms:2600}]` for a 17,802 km move.
+
+`RouteDetail.selecting` marks a framing that belongs to something being
+selected, and the photoreal engine stands down for those. The page says which it
+is rather than the shell inferring it from `selectedId`, because the route is
+dispatched in the same tick the selection state is set — the ref still holds the
+PREVIOUS selection when the handler runs, so every comparison against it misses
+(the first fix attempt did exactly that and changed nothing). Framings with no
+`selecting` — a rail filter, a search, "Search this area", a plotted Guide
+shortlist — are unchanged and still flown here.
+
+**Verified.** `verify:photoreal` gains seven checks on the curve (standing still
+is the short end, further is never quicker at any distance, an unknown camera
+takes the long descent rather than NaN, and the Aspen→Dubai distance itself).
+`verify:atlas-handoff` gains three on the stand-down, and its `PLACE` fixture is
+now honestly named: it is a RESULTS framing, and `PICK` is the selection one —
+the old fixture claimed to be a hotel selection while carrying no `selecting`,
+which would have quietly asserted the opposite of what ships. Driven in a
+browser against the stubbed engine: one flight per selection, 3,648 ms for a
+40 km hop and 5,200 ms for 17,802 km. `npm run verify` clean.
