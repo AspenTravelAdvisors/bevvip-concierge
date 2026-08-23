@@ -1278,3 +1278,34 @@ link, the legacy escape hatch, and the no-key fallback.
 **Not verified here, and worth doing once with a key:** the photoreal render
 itself. This sandbox's network policy denies `api.mapbox.com` and
 `www.google.com`, so neither engine can paint a tile in it.
+
+### Two follow-ups from live use (2026-08-23)
+
+Both reported from production the same day, both invisible in review because the
+symptom is "the map just sits there".
+
+**A search or filter did not move the photoreal camera.** Every re-framing on a
+collection page — a rail filter, the search field, "Search this area", a deep
+link — travels as one `bevvip:atlas-route` event, and `applyRoute` consumed it
+for Mapbox only. So in 3D the pins updated underneath a camera that never went
+to them, and the hidden Mapbox map was the thing being flown. `applyRouteTo3D`
+now runs on the same event, deliberately AHEAD of the `routeReadyRef` gate:
+that gate waits for Mapbox's style.load, and the photoreal engine can be on
+screen while Mapbox is still loading or has failed outright. Plotted Guide
+shortlists frame it too, from inside `plotResults`.
+
+**`?engine=3d` opened on Mapbox.** The arriving-engine effect latched
+`arrivedEngine` on its first run — but `parsed` is null until the collection's
+feed resolves, so that first run had nothing to read and consumed the one chance
+to act. Both the Explore menu's "In photoreal 3D" entry and `?hotel=` were
+inert. It now waits for the parse before latching.
+
+Verified behaviourally, not just by inspection: `verify:atlas-handoff` gained a
+photoreal scenario (extracting the real `applyRouteTo3D`, so it cannot drift)
+proving a framing reaches the 3D camera before Mapbox is ready, carries the
+right points, works from route geometry, and that a HOVER preview still does
+not move it. Driven in a browser against a stubbed Google Maps API — the real
+`Atlas3DLayer` against a fake `Map3DElement` recording every `flyCameraTo` —
+`?engine=3d` mounts the engine with 1,200 markers and no clicking, typing
+"Aspen" flies to 39.20/-106.88, a region filter flies to the Caribbean, and
+`?hotel=h_01034` lands on the Burj Al Arab at range 2600 m, tilt 67°.

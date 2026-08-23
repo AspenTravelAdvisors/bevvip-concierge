@@ -262,6 +262,31 @@ check(
    call is a check that fails for being well documented. */
 const decomment = (src) =>
   src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+/*
+ * Two regressions that shipped once and were invisible in review, because both
+ * failure modes look exactly like "the map just sits there".
+ */
+const collection = decomment(readFileSync(join(ROOT, "components/AtlasCollection.tsx"), "utf8"));
+const engineEffect = collection.slice(collection.indexOf("const arrivedEngine"));
+check(
+  /if \(!parsed\) return;[\s\S]{0,120}arrivedEngine\.current = true/.test(engineEffect),
+  "the arriving engine is not latched before the deep link has been parsed",
+  "`parsed` is null until the collection's feed resolves; latching on that first" +
+    " render silently drops ?engine=3d and ?hotel=",
+);
+
+const shellSrc = decomment(readFileSync(join(ROOT, "components/AtlasShell.tsx"), "utf8"));
+check(
+  /applyRouteTo3D\(detail\);[\s\S]{0,200}routeReadyRef\.current/.test(shellSrc),
+  "a re-framing reaches the photoreal camera, ahead of the Mapbox readiness gate",
+  "filters, searches and deep links dispatch bevvip:atlas-route; if only the" +
+    " Mapbox path consumes it, the 3D camera never follows the results",
+);
+check(
+  /threeRef\.current\?\.fit\(\s*features\.map/.test(shellSrc),
+  "a plotted Guide shortlist frames the photoreal camera too",
+);
+
 const hotel = decomment(readFileSync(join(ROOT, "components/AtlasHotel.tsx"), "utf8"));
 check(
   !/window\.open\(/.test(hotel),

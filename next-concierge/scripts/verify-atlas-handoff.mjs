@@ -70,6 +70,12 @@ const stopSpin = block("function stopSpin()");
 const restAndIdle = block("function restAndIdle()");
 const flushPendingRoute = block("function flushPendingRoute()");
 const applyRoute = block("const applyRoute = (detail: RouteDetail | undefined) =>");
+// The photoreal engine's half of the same instruction. Extracted for the same
+// reason as everything else here: the decision about WHEN it runs (ahead of the
+// Mapbox readiness gate, because the 3D engine can be on screen while Mapbox is
+// still loading or has failed) is the thing worth testing, and a transcription
+// of it would be free to drift.
+const applyRouteTo3D = block("const applyRouteTo3D = (detail: RouteDetail | undefined) =>");
 const onRoute = block("const onRoute = (e: Event) =>");
 
 // The listener half and the boot half live in two different effects of the same
@@ -78,11 +84,15 @@ const onRoute = block("const onRoute = (e: Event) =>");
 const DEPS = [
   "haltSpin", "cancelSettle", "abortTour", "startSpin", "armTour", "fitGlobe",
   "tourActive", "focusRouteRef", "applyRouteRef", "pendingRouteRef", "routeReadyRef",
+  "threeRef",
 ];
 
 writeFileSync(
   join(OUT, "arrival.ts"),
   `/* eslint-disable */\n` +
+    // Atlas3DLayer's point shape, declared rather than imported: this module is
+    // compiled standalone and only needs the field names.
+    `type Point3D = { id: string; name: string; lng: number; lat: number };\n` +
     `${focusStop}\n${routeDetail}\n` +
     `export function makeArrival(dep: any) {\n` +
     `  const { ${DEPS.join(", ")} } = dep;\n` +
@@ -95,7 +105,8 @@ writeFileSync(
     `  let revealed = false;\n` +
     `  let onRevealed: (() => void) | null = null;\n` +
     `${spinWhenRevealed}\n${stopSpin}\n${restAndIdle}\n${flushPendingRoute}\n` +
-    `${applyRoute};\n  applyRouteRef.current = applyRoute;\n${onRoute};\n` +
+    `${applyRoute};\n  applyRouteRef.current = applyRoute;\n` +
+    `${applyRouteTo3D};\n${onRoute};\n` +
     `  return {\n` +
     `    onRoute, restAndIdle, flushPendingRoute, stopSpin,\n` +
     // style.load's ready block, in its published order: mark ready, boot the
@@ -136,6 +147,9 @@ function harness() {
     applyRouteRef: { current: null },
     pendingRouteRef: { current: null },
     routeReadyRef: { current: false },
+    // No photoreal engine by default — these scenarios are about the Mapbox
+    // arrival race. The 3D scenario below supplies one.
+    threeRef: { current: null },
   };
   const api = (arrival = makeArrival({
     ...refs,
@@ -155,6 +169,14 @@ function harness() {
     send: (detail) => api.onRoute({ detail }),
     saw: (...steps) => steps.every((s) => log.includes(s)),
     at: (s) => log.indexOf(s),
+    /** Put the photoreal engine on screen, recording every framing it is given. */
+    mount3D(frames) {
+      refs.threeRef.current = {
+        fit: (pts) => frames.push(pts),
+        focus: () => {},
+        getCamera: () => null,
+      };
+    },
   };
 }
 
@@ -170,6 +192,42 @@ const PLACE = { legs: [], stops: [{ name: "Hotel de Russie", at: [12.48, 41.91] 
 // ── Scenarios ───────────────────────────────────────────────────────────────
 const results = [];
 const check = (name, cond, detail = "") => results.push([name, !!cond, detail]);
+
+{
+  /*
+   * The photoreal engine follows the results.
+   *
+   * Reported from production: switch to 3D, type a location into the rail
+   * search, and the camera stays put. Every re-framing on this page — a filter,
+   * a search, "Search this area", a deep link — arrives as this same event, and
+   * the handler consumed it for Mapbox only, so the pins moved underneath a
+   * camera that never went to them.
+   *
+   * Crucially it must NOT sit behind the Mapbox readiness gate: the 3D engine
+   * can be the one on screen while Mapbox is still loading, or has failed
+   * outright (the fallback panel offers photoreal for exactly that reason).
+   */
+  const h = harness();
+  const frames = [];
+  h.mount3D(frames);
+
+  h.send(PLACE); // Mapbox is NOT ready: routeReadyRef is still false
+  check("a re-framing reaches the photoreal camera before Mapbox is ready",
+    frames.length === 1, `frames=${frames.length}`);
+  check("…and carries the points it was asked to frame",
+    frames[0]?.[0]?.lng === 12.48 && frames[0]?.[0]?.lat === 41.91,
+    JSON.stringify(frames[0]));
+  check("…while the Mapbox half is still correctly queued", !!h.queued());
+
+  // A route-shaped framing (a traced journey) works off the legs instead.
+  h.send(TRIP);
+  check("a traced route frames the photoreal camera from its geometry",
+    frames.length === 2 && frames[1].length === 3, `frames=${JSON.stringify(frames[1])}`);
+
+  // A hover is a preview, not an instruction: it must not fly the camera.
+  h.send(HOVER);
+  check("a hover preview does not move the photoreal camera", frames.length === 2);
+}
 
 {
   // The race this whole file exists for: the trip arrives BEFORE the globe can

@@ -2485,6 +2485,23 @@ export default function AtlasShell({
           }
           featuredFC = { type: "FeatureCollection", features };
           if (!featuredFC.features.length) return; // nothing locatable to plot
+          /*
+           * Frame the shortlist on the photoreal engine too.
+           *
+           * Everything below this line moves the MAPBOX camera. A plot arriving
+           * while photoreal is drawing would otherwise pin the results on a
+           * hidden map and leave the visible one where it was — the same fault
+           * the rail filters had, on the path that matters most, since a plot
+           * is the Guide answering a question with specific places.
+           */
+          threeRef.current?.fit(
+            features.map((f) => ({
+              id: "",
+              name: f.properties.name,
+              lng: f.geometry.coordinates[0],
+              lat: f.geometry.coordinates[1],
+            })),
+          );
           subsetActive = true;
           // Remember this framing so a re-mount (Back from a full atlas) can
           // replay it instead of resetting to the idle globe.
@@ -3109,8 +3126,49 @@ export default function AtlasShell({
      * the map is still booting. The traveller asked for this trip; a pointer
      * crossing the card grid on the way to it did not un-ask.
      */
+    /**
+     * The same camera instruction, for the photoreal engine.
+     *
+     * `applyRoute` above moves the MAPBOX camera, and it is gated on
+     * `focusRouteRef` — which needs style.load. Neither fact is true of the
+     * photoreal engine, so while it was drawing, every re-framing the page
+     * asked for (a rail filter, a search, "Search this area", a deep link)
+     * moved a hidden map and left the visible one exactly where it was: pins
+     * updated underneath a camera that never went to them.
+     *
+     * Self-gating: `threeRef.current` is non-null only while Atlas3DLayer is
+     * mounted, which is precisely when photoreal is on.
+     *
+     * A single point is NOT special-cased away. It is tempting, because a
+     * selection also flies the camera and would override this — but a filter
+     * that narrows to one property (searching a hotel by name) has no
+     * selection, and that is the case the traveller reported.
+     */
+    const applyRouteTo3D = (detail: RouteDetail | undefined) => {
+      const three = threeRef.current;
+      if (!three || !detail?.fit) return;
+      const pts: Point3D[] = [];
+      const add = (lng: number, lat: number) => {
+        if (Number.isFinite(lng) && Number.isFinite(lat)) {
+          pts.push({ id: "", name: "", lng, lat });
+        }
+      };
+      if (detail.fitPoints?.length) {
+        for (const [lng, lat] of detail.fitPoints) add(lng, lat);
+      } else {
+        for (const leg of detail.legs ?? []) {
+          for (const [lng, lat] of leg.coordinates ?? []) add(lng, lat);
+        }
+      }
+      if (pts.length) three.fit(pts);
+    };
+
     const onRoute = (e: Event) => {
       const detail = ((e as CustomEvent).detail ?? undefined) as RouteDetail | undefined;
+      // Independent of the Mapbox path and of its readiness gate: the photoreal
+      // engine can be the one on screen while Mapbox has not finished (or has
+      // failed) loading at all.
+      applyRouteTo3D(detail);
       if (routeReadyRef.current && focusRouteRef.current) {
         applyRoute(detail);
         return;

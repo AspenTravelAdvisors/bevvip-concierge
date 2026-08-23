@@ -558,6 +558,16 @@ export default function AtlasCollection({
   const arrivedEngine = useRef(false);
   useEffect(() => {
     if (arrivedEngine.current || !photoreal) return;
+    /*
+     * Wait for the deep link to have been PARSED before latching.
+     *
+     * `parsed` is null until the collection's feed resolves (it needs `ctx` to
+     * know this atlas's regions and stop names), so this effect's first run
+     * happens with nothing to read. Latching there consumed the one chance to
+     * act and left `?engine=3d` and `?hotel=` opening on Mapbox — the arriving
+     * intent was dropped a beat before it existed.
+     */
+    if (!parsed) return;
     arrivedEngine.current = true;
     if (parsed?.view.engine === "photoreal") {
       setEngine("photoreal");
@@ -574,7 +584,7 @@ export default function AtlasCollection({
      */
     const propertyLink = (descriptor.extraIdParams || []).some((p) => searchParams.get(p));
     if (propertyLink) setEngine("photoreal");
-  }, [parsed?.view.engine, photoreal, descriptor, searchParams]);
+  }, [parsed, photoreal, descriptor, searchParams]);
 
   /**
    * A deep link that resolves to exactly one trip opens it — pinned, traced and
