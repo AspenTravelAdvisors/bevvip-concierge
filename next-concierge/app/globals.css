@@ -4589,16 +4589,35 @@ button.card-book {
   }
 }
 
-/* Fixed bar: filters + share, always reachable while scrolling results. */
+/*
+ * Fixed bar: filters + share, always reachable while scrolling results.
+ *
+ * ONE ROW AT THE BOTTOM, NOT THREE CONTROLS IN THE SAME PLACE.
+ *
+ * The Guide's launcher is `position: fixed; right; bottom` too (it predates
+ * this bar and belongs to AtlasFrame, not to the rail), so on a phone the two
+ * were laid out independently over the same 60 pixels: the gold pill sat on
+ * top of the right half of the Filters pill and covered Share completely, and
+ * Share — un-themed, see `.atlas-share` above — showed as a white sliver
+ * peeking out from under it. Three controls, one strip, nobody's whole.
+ *
+ * The strip is now shared. This bar reserves the Guide's corner in its own
+ * padding (`--atlas-guidedock`, matched by the rules that shrink the pill to a
+ * disc down there), so the row reads left to right — filters, share, ask — and
+ * every control is fully visible and fully tappable.
+ */
 .atlas-mobilebar {
+  /* The Guide's disc: its diameter plus the gap the bar keeps from it. */
+  --atlas-guidedock: 55px;
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 40;
   display: flex;
+  align-items: center;
   gap: 10px;
-  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  padding: 10px calc(12px + var(--atlas-guidedock)) calc(10px + env(safe-area-inset-bottom)) 12px;
   background: linear-gradient(to top, var(--bg) 68%, transparent);
 }
 .atlas-pill {
@@ -4738,8 +4757,15 @@ button.card-book {
 }
 
 /* Share: an advisor tool, so it sits beside the count rather than hidden in a
-   menu. The copied link carries filters + pinned journey + basemap + camera. */
-.villa-filters .atlas-share {
+   menu. The copied link carries filters + pinned journey + basemap + camera.
+
+   Unscoped from `.villa-filters` on purpose. Share has TWO homes — the desktop
+   rail and the phone's fixed bottom bar (AtlasFilterRail renders one or the
+   other) — and only the rail is inside `.villa-filters`, so the phone's copy
+   was rendering as a raw <button>: light grey, black text, black border, the
+   one un-themed control in the app. Styling the class rather than the place it
+   first appeared is what keeps the two homes identical. */
+.atlas-share {
   background: var(--gold);
   color: #17140c;
   border: 1px solid var(--gold);
@@ -4750,7 +4776,7 @@ button.card-book {
   font-weight: 600;
   cursor: pointer;
 }
-.villa-filters .atlas-share:hover {
+.atlas-share:hover {
   filter: brightness(1.08);
 }
 
@@ -5473,6 +5499,40 @@ button.card-book {
   .atlas-guide-pill {
     right: 12px;
     bottom: 12px;
+  }
+  /*
+   * …and where the collection's filter bar is down there with it, the launcher
+   * becomes a disc and joins the row instead of landing on top of it.
+   *
+   * `:has()` rather than a prop because the two are cousins, not relatives:
+   * the bar is rendered by AtlasFilterRail (only on a phone, only for a
+   * collection that HAS a rail — /atlas/villa has none), and the launcher by
+   * AtlasFrame, several components up. What the layout actually depends on is
+   * whether the bar is on the page, and that is the thing the selector asks.
+   *
+   * The geometry is the bar's: the same 43px height as the Filters pill and the
+   * same distance off the bottom, so the three controls sit on one line. The
+   * bar keeps its side of the bargain in `--atlas-guidedock`.
+   */
+  .atlas-frame-wrap:has(.atlas-mobilebar) .atlas-guide-pill {
+    right: 12px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    width: 43px;
+    height: 43px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  /* The label is what does not fit; the accessible name is not. Clipped rather
+     than `display: none`, so the button is still "Ask The Guide…" to a screen
+     reader and to voice control. */
+  .atlas-frame-wrap:has(.atlas-mobilebar) .atlas-guide-pill .agp-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
   }
 }
 
