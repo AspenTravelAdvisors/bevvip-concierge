@@ -243,6 +243,27 @@ export interface AtlasFilterDescriptor {
     hidden?: boolean;
     /** Case-insensitive comparison. The deep-link axes lowercase both sides. */
     ci?: boolean;
+    /**
+     * The most options this axis is willing to be a menu for.
+     *
+     * Above it — and with nothing picked on the axis yet — the rail offers no
+     * control at all. A <select> is a menu, and a menu of 1,044 cities is a
+     * scrollbar with a hint of type-ahead: the traveller cannot see what is in
+     * it and cannot tell which entries have anything behind them. The axis is
+     * not useless there, it is just not answerable at that altitude — one
+     * country narrows hotels' 1,044 cities to at most 189.
+     *
+     * Facet options are already counted against every OTHER filter (see
+     * `facetOptions` in AtlasFilterRail), so the list — and this test with it —
+     * shrinks as region, country or search narrow the field, and the control
+     * appears beside whichever one narrowed it. Omit for an axis whose full
+     * list is always a reasonable menu.
+     *
+     * It gates the CONTROL, never the filter: `?city=` filters whether or not
+     * a menu would have been offered, and a picked value always keeps its
+     * control on the rail so it can be cleared.
+     */
+    menuLimit?: number;
   }[];
 
   /**

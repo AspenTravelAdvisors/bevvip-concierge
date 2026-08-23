@@ -573,6 +573,27 @@ export default function AtlasFilterRail({
       {(d.facets || []).filter((f) => !f.hidden).map((f) => {
         const picked = shown.facets?.[f.key] ?? new Set<string>();
         const opts = facetOptions[f.key] || [];
+        /*
+         * An axis too wide to be a menu yet.
+         *
+         * City is the case this exists for: 1,044 of them across the hotel
+         * atlas, at most 189 once a country is chosen. A thousand-row dropdown
+         * is not a filter anyone can read, so the control waits — and because
+         * facet options are counted against every other filter, what it waits
+         * for is any narrowing at all: a country, a region small enough, a
+         * search. It then appears next to the control that revealed it, which
+         * is where "…and now which city?" is actually asked.
+         *
+         * Waiting rather than sitting there disabled is a decision about the
+         * rail, not about the axis: an inert control still costs a slot, and
+         * the hotel rail at 1280px is already full — a permanent "pick a
+         * country first" would wrap the count, Share and Sort onto a second row
+         * for every visitor, including the ones who never filter by city.
+         *
+         * Anything already picked on the axis keeps the control open, so a
+         * `?city=` deep link is never left with no way to clear itself.
+         */
+        if (f.menuLimit != null && opts.length > f.menuLimit && !picked.size) return null;
         return (
           <select
             key={f.key}

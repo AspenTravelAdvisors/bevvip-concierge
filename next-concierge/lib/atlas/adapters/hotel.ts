@@ -52,6 +52,26 @@ export const HOTEL_DESCRIPTOR: AtlasFilterDescriptor = {
     // `program`, NOT `brand` — see the header note.
     { key: "program", param: "program", label: "Program", allLabel: "All programs" },
     { key: "country", param: "country", label: "Country", allLabel: "All countries" },
+    /*
+     * City — the axis a traveller actually arrives with ("somewhere in Rome"),
+     * and the one the rail could not offer because 2,475 hotels sit in 1,044
+     * cities. `menuLimit` is what makes it offerable: the control waits until
+     * the field is narrow enough for a menu to be readable, which one country
+     * always achieves (the largest, the United States, has 189 cities).
+     *
+     * The adapter has written `city` into `attributes` since it was ported —
+     * "the filter layer only reads attributes a facet declares" — so this line
+     * is the whole feature: rail control, phone drawer, live counts, `?city=`
+     * deep link, and its place in a shared link all come from the descriptor.
+     */
+    {
+      key: "city",
+      param: "city",
+      label: "City",
+      allLabel: "All cities",
+      // One country is always enough: the widest, the United States, has 189.
+      menuLimit: 200,
+    },
     // Deep-link-only, case-insensitive: no control offers these.
     { key: "brand", param: "brand", label: "Brand", allLabel: "All brands", hidden: true, ci: true },
     { key: "marqueeRegion", param: "region", label: "Collection", allLabel: "All", hidden: true, ci: true },

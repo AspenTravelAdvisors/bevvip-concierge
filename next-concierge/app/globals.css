@@ -3906,7 +3906,10 @@ button.card-book {
   margin-right: 8px;
   color: var(--line);
 }
-.villa-filters .atlas-reset {
+/* Unscoped for the same reason as `.atlas-share`: Reset has two homes — the
+   desktop rail and the phone drawer's footer — and only one of them is inside
+   `.villa-filters`, so the drawer's copy was rendering as a raw <button>. */
+.atlas-reset {
   background: transparent;
   color: var(--gold);
   border: 1px solid var(--line);
@@ -3916,7 +3919,7 @@ button.card-book {
   font-family: var(--sans);
   cursor: pointer;
 }
-.villa-filters .atlas-reset:hover {
+.atlas-reset:hover {
   border-color: var(--gold);
 }
 
