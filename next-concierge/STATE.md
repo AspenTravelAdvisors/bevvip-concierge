@@ -1392,3 +1392,43 @@ or driving page scroll has to go through `document.body`.
 rendered cards has no card to expand, so it keeps the sheet — which is also where
 a `?hotel=` deep link lands, since that selects without filtering the list. The
 fix, if wanted, is to carry the pinned offering into the rendered slice.
+
+### Selecting a property and opening its file are two acts (2026-08-23)
+
+They were one. Clicking a card set `pinnedId`, and the dossier read the pin — so
+"show me where this is" and "tell me everything about this" were the same
+gesture. Browsing a list of 120 hotels fired the property file 120 times, and on
+a phone each one buried the map the tap had just flown.
+
+`AtlasCollection` now holds `detailId` beside `pinnedId`, always either null or
+equal to it. **Selecting** flies the camera to the property, highlights its pin
+and traces it. **Disclosing** happens on exactly three paths, all of them an
+explicit request for the file:
+
+  - the card's details button (`togglePin(o, { detail: true })`),
+  - a map pin's own "Property details & 3D" — which is why the shell's photoreal
+    wiring gained `onOpenDetail` beside `onSelect`; a tap on the pin itself is
+    the light gesture, the button on its popup is not,
+  - a `?hotel=` deep link, because somebody sent that link and it used to open a
+    page whose whole content was this file.
+
+Changing the selection closes the panel; closing the panel ("Hide details", the
+✕) does NOT clear the selection — the camera is already there and closing a file
+is not the same as being done looking. `CardActionState.open` now means
+disclosed, not selected, and the card action api's `select` became `openDetail`.
+
+**The sticky band follows selection, not disclosure.** A pin tap and a card tap
+both bring the selected card up under the band, where its details button is;
+whether the file came with it only changes the card's height. Gated on
+`inlineCapable` (a phone, on a collection that HAS a panel), so nothing about the
+six route atlases changes.
+
+**Verified** in a browser at 390×844, 30 checks: a card tap opens no panel at
+either width, selects, holds the band and does not switch engines; the details
+button opens the file in the card; a card tap once in 3D flies the building in at
+range 450 and still opens nothing; a pin tap matches a card tap while a pin's own
+button discloses; Hide details keeps the selection and a second card tap gives
+the screen back. `npm run verify` clean.
+
+The gap below is unchanged and now narrower: only the pin-popup button and
+`?hotel=` can disclose a property with no card on screen.

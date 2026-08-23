@@ -442,13 +442,21 @@ interface Props {
    * show someone a blurry ocean.
    *
    * `points` is the FILTERED set, so switching engines keeps the rail's
-   * meaning; `selectedId` / `onSelect` are the open property, shared with the
-   * card list so a click means the same thing on either engine.
+   * meaning; `selectedId` / `onSelect` are the selected property, shared with
+   * the card list so a click means the same thing on either engine.
    */
   photoreal?: {
     points: Point3D[];
     selectedId: string | null;
+    /** A pin was tapped: select it. The light gesture, same as a card tap. */
     onSelect: (id: string) => void;
+    /**
+     * A pin's own "Property details & 3D" was pressed: select it AND open its
+     * panel. Separate from `onSelect` since selecting stopped disclosing —
+     * the popup button is an explicit request for the file, a tap on the pin
+     * behind it is not.
+     */
+    onOpenDetail: (id: string) => void;
     /**
      * Which engine is drawing, and how to change it. CONTROLLED by the page,
      * not held here: the page's Share link, its deep-link parse and its card
@@ -3201,7 +3209,8 @@ export default function AtlasShell({
      *
      * Selecting rather than navigating is the whole point: the pin, the card
      * list and the dossier share one selection, so opening a property from the
-     * map lands in the same state as opening it from a card.
+     * map lands in the same state as pressing details on its card. This is the
+     * disclosing path — a tap on the pin itself only selects.
      */
     const onOpenProperty = (e: Event) => {
       const el = (e.target as HTMLElement | null)?.closest?.("[data-hotel-open]");
@@ -3210,7 +3219,7 @@ export default function AtlasShell({
       if (!id || !wiring) return;
       e.preventDefault();
       wiring.onEngineChange("photoreal");
-      wiring.onSelect(id);
+      wiring.onOpenDetail(id);
     };
     const onAsk = (e: Event) => {
       const el = (e.target as HTMLElement | null)?.closest?.("[data-ask]");

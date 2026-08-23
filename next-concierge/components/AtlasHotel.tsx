@@ -218,15 +218,21 @@ export default function AtlasHotel() {
    * the card's most interesting action was also the one that left the app,
    * abandoning the filters and the camera on the way out.
    *
-   * Now it selects: the shared selection drives the card list, the map pin and
-   * the dossier panel at once, and if the photoreal engine is drawing, the
-   * camera flies to the building. Same gesture, same destination, no tab.
+   * Now it selects AND discloses: the shared selection drives the card list and
+   * the map pin, the dossier opens beside the map (or inside the card, on a
+   * phone), and if the photoreal engine is drawing, the camera flies to the
+   * building. Same gesture, same destination, no tab.
+   *
+   * This is the ONLY thing on a card that opens the dossier. Clicking the card
+   * itself selects the property — flies to it, highlights its pin — and stops
+   * there: browsing a list of 120 hotels should not fire the property file 120
+   * times, and on a phone every one of those buried the map under a panel.
    */
   const openProperty = useCallback(
     (
       o: AtlasOffering,
       api: {
-        select: () => void;
+        openDetail: () => void;
         showPhotoreal: () => void;
         close: () => void;
         open: boolean;
@@ -241,7 +247,7 @@ export default function AtlasHotel() {
       }
       hotel3dOpened(o.id, "card");
       api.showPhotoreal();
-      api.select();
+      api.openDetail();
     },
     [],
   );

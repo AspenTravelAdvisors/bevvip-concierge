@@ -47,7 +47,10 @@ export interface RouteLegOut {
 export interface CardActionState {
   /** Which renderer is on screen, for collections that offer photoreal. */
   engine: "mapbox" | "photoreal";
-  /** Whether THIS card is the open one. */
+  /**
+   * Whether THIS card's panel is open — disclosure, not selection. A selected
+   * card whose details have never been asked for reads `false`.
+   */
   open: boolean;
 }
 
@@ -90,13 +93,13 @@ interface Props {
      * is the whole action, and used to be a new browser tab.
      *
      * `close` exists because the label can say "Hide details": a button whose
-     * label promises to close something has to actually close it, and `select`
-     * deliberately does nothing when the card is already open.
+     * label promises to close something has to actually close it.
      */
     onSelect: (
       o: AtlasOffering,
       api: {
-        select: () => void;
+        /** Select this offering AND open its panel — what the button is for. */
+        openDetail: () => void;
         showPhotoreal: () => void;
         close: () => void;
       } & CardActionState,
@@ -264,6 +267,21 @@ export default function AtlasCollection({
    * the right complaint about a hover-only trace.
    */
   const [pinnedId, setPinnedId] = useState<string | null>(null);
+  /**
+   * Whose dossier is open — which is NOT the same as what is selected.
+   *
+   * It used to be. Clicking a card pinned it, and the pin was what the panel
+   * read, so "show me where this is" and "tell me everything about this" were
+   * one gesture: browsing the list fired the heavy panel over and over, and on
+   * a phone every tap buried the map under it. They are separate acts now.
+   * Selecting flies the camera to the property and highlights its pin;
+   * DISCLOSING is the card's details button, the map popup's, or a `?hotel=`
+   * link, and nothing else.
+   *
+   * Always either null or equal to `pinnedId` — opening details selects, and
+   * changing the selection closes them.
+   */
+  const [detailId, setDetailId] = useState<string | null>(null);
   /**
    * Which map engine is drawing.
    *
@@ -562,38 +580,39 @@ export default function AtlasCollection({
     emitRoute(null);
   }, [pinnedId, byId, emitRoute]);
 
-  /** Click pins; clicking the pinned card again releases it. */
+  /**
+   * Select an offering: fly to it, highlight its pin, trace it. Clicking the
+   * selected card again releases it.
+   *
+   * `detail` opens the dossier with it — the one path that does. Everything
+   * else here (a card tap, a photoreal marker tap) is the light gesture: the
+   * traveller asked where this is, not for its file.
+   */
   const togglePin = useCallback(
-    (o: AtlasOffering) => {
+    (o: AtlasOffering, opts?: { detail?: boolean }) => {
       if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
-      if (pinnedId === o.id) {
+      // A second tap on the selected card releases it — but a details request
+      // for it is a request to OPEN, not to toggle the selection away.
+      if (pinnedId === o.id && !opts?.detail) {
         setPinnedId(null);
+        setDetailId(null);
         emitRoute(null);
         return;
       }
       setPinnedId(o.id);
+      setDetailId(opts?.detail ? o.id : null);
       emitRoute(o, true);
       /*
-       * Bring the map back for the click — at every width, and only when it has
-       * actually scrolled away.
+       * PUT THE TWO THINGS TOGETHER.
        *
-       * Phones used to be excluded because the map was pinned to the top of the
-       * frame and could never be off screen. Pinning is gone (see THE PAGE
-       * SCROLLS in globals.css): a phone scrolls the whole page like desktop
-       * does, so it has exactly the desktop problem — you click the fortieth
-       * card and trace a route onto a map a screen and a half above you. One
-       * layout, one rule, and this is the piece of pinning worth keeping.
-       *
-       * Only when it has scrolled away: a card clicked while the map is already
-       * on screen must not move the page under the pointer.
-       */
-      /*
-       * On a phone, where the dossier opens INSIDE the card, the two things the
-       * traveller now needs on screen are the building and the card under it —
-       * so the card is what gets scrolled to, and the map band above it stays
-       * put because it is sticky while a property is open. `scroll-margin-top`
-       * on the pinned card (globals.css) is what keeps the landing clear of the
-       * stuck map; without it the card would arrive underneath it.
+       * On a phone the selected card and the map band belong on screen at the
+       * same time — the whole answer to "where is this?" is the pin moving on a
+       * map you can see. So the CARD is what gets scrolled to, and the band
+       * above it stays put because it is sticky while anything is selected.
+       * `scroll-margin-top` on the selected card (globals.css) is what keeps
+       * the landing clear of the stuck band; without it the card would arrive
+       * underneath it. Same landing whether or not the details came with it —
+       * disclosure only changes the card's height.
        *
        * Refs rather than deps: `detailFor` is an inline arrow in every caller,
        * so reading it from the closure would rebuild this callback — and with
@@ -601,11 +620,24 @@ export default function AtlasCollection({
        */
       const card = cardRefs.current.get(o.id);
       if (inlineOkRef.current && card) {
-        // After the commit: the card is only offset from the stuck map once
-        // `data-pinned` is on it, and it only expands once the panel is in it.
+        // After the commit: the card is only offset from the band once
+        // `data-pinned` is on it, and only its final height once expanded.
         requestAnimationFrame(() => card.scrollIntoView({ behavior: "smooth", block: "start" }));
         return;
       }
+      /*
+       * Everywhere else, bring the map back for the click — and only when it
+       * has actually scrolled away.
+       *
+       * Phones used to be excluded because the map was pinned to the top of the
+       * frame and could never be off screen. Pinning is gone (see THE PAGE
+       * SCROLLS in globals.css): a phone scrolls the whole page like desktop
+       * does, so it has exactly the desktop problem — you click the fortieth
+       * card and trace a route onto a map a screen and a half above you.
+       *
+       * Only when it has scrolled away: a card clicked while the map is already
+       * on screen must not move the page under the pointer.
+       */
       const box = mapWrapRef.current?.getBoundingClientRect();
       if (!box) return;
       const visible = Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0);
@@ -758,6 +790,13 @@ export default function AtlasCollection({
       if (hit) {
         autoTripped.current = true;
         setPinnedId(hit.id);
+        /*
+         * …and OPEN it. A card tap deliberately no longer discloses, but a link
+         * to one property is not browsing: somebody sent this, and `?hotel=`
+         * used to open the standalone page whose whole content was this file.
+         * It has to keep meaning that.
+         */
+        setDetailId(hit.id);
         emitRoute(hit, !parsed?.view.camera); // an explicit camera wins over fitting
         return;
       }
@@ -813,10 +852,12 @@ export default function AtlasCollection({
     fitFilterResults(filtered);
   }, [filterKey, filtered, state, offerings, pinnedId, fitFilterResults]);
 
-  // A pinned trip that filtering removes from the list should release its pin.
+  // A pinned trip that filtering removes from the list should release its pin,
+  // and its dossier with it — a panel about something no longer in the field.
   useEffect(() => {
     if (pinnedId && !byId.has(pinnedId)) {
       setPinnedId(null);
+      setDetailId(null);
       emitRoute(null);
     }
   }, [pinnedId, byId, emitRoute]);
@@ -866,14 +907,19 @@ export default function AtlasCollection({
    * no longer the common case.
    */
   const inlineCapable = phone && !!detailFor;
-  const inlineDetail = inlineCapable && !!pinned && visible.some((o) => o.id === pinned.id);
+  /** The offering whose dossier is open, if it is still in the field. */
+  const detailed = detailId ? byId.get(detailId) ?? null : null;
+  const inlineDetail =
+    inlineCapable && !!detailed && visible.some((o) => o.id === detailed.id);
   inlineOkRef.current = inlineCapable;
 
-  /** Closing is the same act from the panel's ✕, the card button and the pin. */
-  const closeDetail = useCallback(() => {
-    setPinnedId(null);
-    emitRoute(null);
-  }, [emitRoute]);
+  /**
+   * Close the dossier — from the panel's ✕ or the card's "Hide details".
+   *
+   * The property stays SELECTED. Closing its file is not the same as saying
+   * you are done looking at it, and the camera is already there.
+   */
+  const closeDetail = useCallback(() => setDetailId(null), []);
 
   if (failed) {
     return (
@@ -888,12 +934,15 @@ export default function AtlasCollection({
 
   return (
     <div className={`atlas-collection atlas-collection--${type}`}>
-      {/* `stuck`: on a phone with the dossier in the card, the map band sticks
-          to the top of the viewport so the building stays on screen while the
-          details are read beneath it. Scoped to an open property on purpose —
-          the permanent pinned map this page used to have is not coming back
-          (see THE PAGE SCROLLS in globals.css); the page still scrolls. */}
-      <div ref={mapWrapRef} className={`atlas-mapwrap${inlineDetail ? " stuck" : ""}`}>
+      {/* `stuck`: on a phone, the band sticks to the top of the viewport while a
+          property is SELECTED — so the pin the traveller just moved to stays on
+          screen with its card beneath it, and stays there while the details are
+          read. Scoped to an open selection on purpose: the permanent pinned map
+          this page used to have is not coming back (see THE PAGE SCROLLS in
+          globals.css), the page still scrolls, and one tap on the selected card
+          gives the whole screen back. Only where a collection HAS a panel to
+          open — on the six route atlases nothing about this changes. */}
+      <div ref={mapWrapRef} className={`atlas-mapwrap${inlineCapable && pinned ? " stuck" : ""}`}>
       {/* No routesAlways for rail: an ambient layer of every route at once is
           not what the Leaflet atlas did, and for trains it would have to be
           drawn from arcs, which is wrong. Routes trace one at a time from real
@@ -921,9 +970,16 @@ export default function AtlasCollection({
             ? {
                 points: photorealPoints,
                 selectedId: pinnedId,
+                // A marker tap is the same light gesture as a card tap: fly
+                // there, highlight it, leave the file closed.
                 onSelect: (id: string) => {
                   const hit = byId.get(id);
                   if (hit) togglePin(hit);
+                },
+                // The Mapbox popup's "Property details & 3D" IS the request.
+                onOpenDetail: (id: string) => {
+                  const hit = byId.get(id);
+                  if (hit) togglePin(hit, { detail: true });
                 },
                 engine,
                 onEngineChange: setEngine,
@@ -943,9 +999,9 @@ export default function AtlasCollection({
         card list and the map pin, so clicking a card, clicking a pin and
         arriving on a ?hotel= link all end in the same place.
       */}
-      {detailFor && pinned && !inlineDetail && (
+      {detailFor && detailed && !inlineDetail && (
         <div className="atlas-detail" onClick={(e) => e.stopPropagation()}>
-          {detailFor(pinned, { close: closeDetail })}
+          {detailFor(detailed, { close: closeDetail })}
         </div>
       )}
       {/*
@@ -1037,7 +1093,7 @@ export default function AtlasCollection({
             <button
               type="button"
               className="atlas-untrace"
-              onClick={() => { setPinnedId(null); emitRoute(null); }}
+              onClick={() => { setPinnedId(null); setDetailId(null); emitRoute(null); }}
             >
               Clear route
             </button>
@@ -1115,6 +1171,7 @@ export default function AtlasCollection({
               className={`atlas-card${o.world ? " world" : ""}`}
               data-id={o.id}
               data-pinned={pinnedId === o.id ? "" : undefined}
+              data-open={detailId === o.id ? "" : undefined}
               onMouseEnter={() => previewRoute(o)}
               onMouseLeave={endPreview}
               onFocus={() => previewRoute(o)}
@@ -1188,7 +1245,7 @@ export default function AtlasCollection({
                 {cardAction && (() => {
                   // What the label is being drawn against: which renderer is
                   // painting, and whether this card is the open one.
-                  const st: CardActionState = { engine, open: pinnedId === o.id };
+                  const st: CardActionState = { engine, open: detailId === o.id };
                   const text = (v: string | ((s: CardActionState) => string)) =>
                     typeof v === "function" ? v(st) : v;
                   return (
@@ -1201,9 +1258,7 @@ export default function AtlasCollection({
                         e.stopPropagation();
                         cardAction.onSelect(o, {
                           ...st,
-                          select: () => {
-                            if (pinnedId !== o.id) togglePin(o);
-                          },
+                          openDetail: () => togglePin(o, { detail: true }),
                           showPhotoreal: () => {
                             if (photoreal) setEngine("photoreal");
                           },
@@ -1261,7 +1316,7 @@ export default function AtlasCollection({
 
               {/* The dossier, on a phone: under this card's own actions, with
                   the building held above it by the stuck map band. */}
-              {inlineDetail && pinnedId === o.id && detailFor && (
+              {inlineDetail && detailId === o.id && detailFor && (
                 <div className="ac-detail" onClick={(e) => e.stopPropagation()}>
                   {detailFor(o, { close: closeDetail })}
                 </div>
