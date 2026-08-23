@@ -1339,3 +1339,56 @@ building, and survives `tiltForRange` at full tilt (a range low enough to trip
 the easing would have flattened the fly-in on arrival). `npm run check` clean.
 The render itself still cannot be seen here — this sandbox's network policy
 denies `www.google.com`, so no tile paints in it.
+
+### The property opens in the card on a phone (2026-08-23)
+
+The dossier was a bottom sheet at every width. On a phone that meant it covered
+62% of a map band already clamped to 240–400px, so opening the details left
+about 150px of building: the photoreal engine's whole argument, reduced to a
+strip, at exactly the moment the traveller asked to look at the property.
+
+It now has two homes, and the viewport picks (`inlineDetail` in
+AtlasCollection). Beside the map on desktop, unchanged — a 340px panel costs
+nothing there. **Inside the open card on phones**, where the page's own order
+already wanted it: the filter rail is a fixed bottom bar down there, so the card
+list sits directly under the map with nothing in between. Building above,
+details in the card beneath.
+
+Rendered in ONE of the two at a time, never both. `HotelDossier` fetches the
+property record on mount, so a second copy hidden by CSS is a second request per
+property. `lib/use-is-mobile.ts` is the shared 680px hook that decides (extracted
+from AtlasFilterRail, which had the same query inline).
+
+**The map band goes sticky while a property is open.** Without it the premise
+fails: the inline dossier runs several screens, so the building would scroll away
+at the first paragraph. This is not the pinned map THE PAGE SCROLLS removed —
+that was a fixed band plus a nested card scroller, permanently. This is `sticky`,
+scoped to an open property, and it releases the moment the card closes. The open
+card clears it via `scroll-margin-top` keyed to `--atlas-map-h`, so the band's
+height and the card's landing offset cannot drift apart.
+
+**The card's button now says what the press will add.** "Property details & 3D"
+from the Mapbox globe; just "Details" once the photoreal engine is already
+drawing the building (promising 3D to someone looking at it is not an offer);
+"Hide details" on the open card — and it closes, which is why `cardAction` gained
+`close` alongside `select`. `label`/`title` may now be functions of
+`{ engine, open }` (`CardActionState`).
+
+**Pins behave like cards**, at no cost: both engines' pins already land in
+`togglePin` (AtlasShell's popup action and the photoreal marker's `onSelect`),
+so a pin tap expands that property's card and scrolls it under the same band.
+
+**Verified** in a browser at 390×844 against a stubbed Google Maps 3D API (this
+sandbox denies www.google.com and api.mapbox.com), 21 checks: the dossier mounts
+in the card and not in a sheet, the band pins to the top of the viewport and is
+still there 900px into the details, the open card lands directly beneath it, the
+labels change with the engine, a pin tap behaves like a card tap, and desktop is
+untouched. `npm run verify` clean. One thing the drive found that is worth
+knowing: **the scroll container on these pages is `body`, not the viewport**
+(`body { height: 100%; overflow-x: hidden }` makes it one), so anything measuring
+or driving page scroll has to go through `document.body`.
+
+**Known gap, deliberately left:** a pin for a property outside the first 120
+rendered cards has no card to expand, so it keeps the sheet — which is also where
+a `?hotel=` deep link lands, since that selects without filtering the list. The
+fix, if wanted, is to carry the pinned offering into the rendered slice.

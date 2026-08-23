@@ -32,6 +32,7 @@ import { whenLabelFor, sortOfferings, SORT_MODES, type SortMode } from "@/lib/at
 import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell, { type StyleKey } from "./AtlasShell";
 import type { Point3D } from "./Atlas3DLayer";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
 import { internalAtlasLink } from "@/lib/atlas-config";
@@ -40,6 +41,14 @@ import { internalAtlasLink } from "@/lib/atlas-config";
 export interface RouteLegOut {
   mode: string;
   coordinates: [number, number][];
+}
+
+/** What a card's secondary action is being drawn against right now. */
+export interface CardActionState {
+  /** Which renderer is on screen, for collections that offer photoreal. */
+  engine: "mapbox" | "photoreal";
+  /** Whether THIS card is the open one. */
+  open: boolean;
 }
 
 interface Props {
@@ -65,16 +74,32 @@ interface Props {
    * `title` is the long-form promise, for the hover the label has no room for.
    */
   cardAction?: {
-    label: string;
-    title?: string;
+    /**
+     * A plain string, or a function of what the page is currently showing.
+     *
+     * Hotels need the function: "Property details & 3D" is an honest promise
+     * from the Mapbox globe and a redundant one once the photoreal engine is
+     * already drawing the building — at that point the only half of the label
+     * still worth offering is the details. See AtlasHotel.
+     */
+    label: string | ((state: CardActionState) => string);
+    title?: string | ((state: CardActionState) => string);
     /**
      * `api` is what the action can do to this page. Hotels use it to open a
      * property AND put the photoreal engine on screen in one gesture — which
      * is the whole action, and used to be a new browser tab.
+     *
+     * `close` exists because the label can say "Hide details": a button whose
+     * label promises to close something has to actually close it, and `select`
+     * deliberately does nothing when the card is already open.
      */
     onSelect: (
       o: AtlasOffering,
-      api: { select: () => void; showPhotoreal: () => void },
+      api: {
+        select: () => void;
+        showPhotoreal: () => void;
+        close: () => void;
+      } & CardActionState,
     ) => void;
   };
   /**
@@ -106,12 +131,17 @@ interface Props {
    */
   photoreal?: boolean;
   /**
-   * A panel for the selected offering, rendered over the map.
+   * The selected offering's own panel — the property dossier, for hotels.
    *
-   * Hotels use it for the property dossier — description, ratings, address,
-   * program, VIP benefits, rates — which until now existed ONLY inside the
-   * standalone 3D page. Bringing the engine into the shell without bringing
-   * this would have moved the picture and left the substance behind.
+   * Description, ratings, address, program, VIP benefits and rates, which
+   * until now existed ONLY inside the standalone 3D page. Bringing the engine
+   * into the shell without bringing this would have moved the picture and left
+   * the substance behind.
+   *
+   * It has TWO homes, and the viewport picks (see `inlineDetail` below): beside
+   * the map on desktop, and inside the open card on phones. Rendered in one of
+   * them at a time, never both — this mounts a component that fetches the
+   * property record, so a second copy hidden by CSS is a second request.
    */
   detailFor?: (o: AtlasOffering, opts: { close: () => void }) => React.ReactNode;
   /** Loads and adapts this collection's raw feed. Collection-specific. */
@@ -246,6 +276,25 @@ export default function AtlasCollection({
   const hoverTimer = useRef<number | null>(null);
   // Live map view, so Share can capture basemap + projection + camera.
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
+  /*
+   * The rendered cards, by id — so opening a property can scroll to its card
+   * on a phone, whether the gesture was on the card or on a map pin. Both
+   * engines' pins already land in `togglePin` (AtlasShell's popup action and
+   * the photoreal marker's `onSelect`), so a pin behaves like a card for free.
+   */
+  const cardRefs = useRef<Map<string, HTMLElement>>(new Map());
+  /**
+   * Whether this page CAN open a property inside its card — the viewport and
+   * the collection, not the selection.
+   *
+   * Deliberately the capability rather than `inlineDetail` below: nothing is
+   * open at the moment the traveller opens something, so a ref that tracked the
+   * rendered state would be false on every first press and the scroll would go
+   * to the map instead of the card. Whether the property HAS a card on screen
+   * is answered separately, by whether it has a ref in `cardRefs`.
+   */
+  const inlineOkRef = useRef(false);
+  const phone = useIsMobile();
   const viewRef = useRef<{
     style: string; engine?: "mapbox" | "photoreal"; globe: boolean;
     center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
@@ -538,6 +587,25 @@ export default function AtlasCollection({
        * Only when it has scrolled away: a card clicked while the map is already
        * on screen must not move the page under the pointer.
        */
+      /*
+       * On a phone, where the dossier opens INSIDE the card, the two things the
+       * traveller now needs on screen are the building and the card under it —
+       * so the card is what gets scrolled to, and the map band above it stays
+       * put because it is sticky while a property is open. `scroll-margin-top`
+       * on the pinned card (globals.css) is what keeps the landing clear of the
+       * stuck map; without it the card would arrive underneath it.
+       *
+       * Refs rather than deps: `detailFor` is an inline arrow in every caller,
+       * so reading it from the closure would rebuild this callback — and with
+       * it every card's handler — on each render.
+       */
+      const card = cardRefs.current.get(o.id);
+      if (inlineOkRef.current && card) {
+        // After the commit: the card is only offset from the stuck map once
+        // `data-pinned` is on it, and it only expands once the panel is in it.
+        requestAnimationFrame(() => card.scrollIntoView({ behavior: "smooth", block: "start" }));
+        return;
+      }
       const box = mapWrapRef.current?.getBoundingClientRect();
       if (!box) return;
       const visible = Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0);
@@ -781,6 +849,32 @@ export default function AtlasCollection({
 
   const pinned = pinnedId ? byId.get(pinnedId) ?? null : null;
 
+  /*
+   * THE DOSSIER'S TWO HOMES.
+   *
+   * Beside the map on desktop, where a 340px panel costs nothing. Inside the
+   * open card on a phone, where it cost everything: the panel was a bottom
+   * sheet over a map band already clamped to 240-400px, so opening the details
+   * left about 150px of building — the photoreal engine's whole argument,
+   * reduced to a strip. The card list sits directly under the map on a phone
+   * (the filter rail is a fixed bottom bar there, not a block in the flow), so
+   * "building above, details in the card beneath" is the page's own order.
+   *
+   * Only when the property HAS a card on screen. A `?hotel=` deep link or a pin
+   * tap can select something outside the first CARD_LIMIT cards, and there is
+   * nothing to expand then — those keep the sheet, which is still correct, just
+   * no longer the common case.
+   */
+  const inlineCapable = phone && !!detailFor;
+  const inlineDetail = inlineCapable && !!pinned && visible.some((o) => o.id === pinned.id);
+  inlineOkRef.current = inlineCapable;
+
+  /** Closing is the same act from the panel's ✕, the card button and the pin. */
+  const closeDetail = useCallback(() => {
+    setPinnedId(null);
+    emitRoute(null);
+  }, [emitRoute]);
+
   if (failed) {
     return (
       <div className={`atlas-collection atlas-collection--${type}`}>
@@ -794,7 +888,12 @@ export default function AtlasCollection({
 
   return (
     <div className={`atlas-collection atlas-collection--${type}`}>
-      <div ref={mapWrapRef} className="atlas-mapwrap">
+      {/* `stuck`: on a phone with the dossier in the card, the map band sticks
+          to the top of the viewport so the building stays on screen while the
+          details are read beneath it. Scoped to an open property on purpose —
+          the permanent pinned map this page used to have is not coming back
+          (see THE PAGE SCROLLS in globals.css); the page still scrolls. */}
+      <div ref={mapWrapRef} className={`atlas-mapwrap${inlineDetail ? " stuck" : ""}`}>
       {/* No routesAlways for rail: an ambient layer of every route at once is
           not what the Leaflet atlas did, and for trains it would have to be
           drawn from arcs, which is wrong. Routes trace one at a time from real
@@ -844,14 +943,9 @@ export default function AtlasCollection({
         card list and the map pin, so clicking a card, clicking a pin and
         arriving on a ?hotel= link all end in the same place.
       */}
-      {detailFor && pinned && (
+      {detailFor && pinned && !inlineDetail && (
         <div className="atlas-detail" onClick={(e) => e.stopPropagation()}>
-          {detailFor(pinned, {
-            close: () => {
-              setPinnedId(null);
-              emitRoute(null);
-            },
-          })}
+          {detailFor(pinned, { close: closeDetail })}
         </div>
       )}
       {/*
@@ -1014,7 +1108,12 @@ export default function AtlasCollection({
           return (
             <article
               key={o.id}
+              ref={(el) => {
+                if (el) cardRefs.current.set(o.id, el);
+                else cardRefs.current.delete(o.id);
+              }}
               className={`atlas-card${o.world ? " world" : ""}`}
+              data-id={o.id}
               data-pinned={pinnedId === o.id ? "" : undefined}
               onMouseEnter={() => previewRoute(o)}
               onMouseLeave={endPreview}
@@ -1086,26 +1185,36 @@ export default function AtlasCollection({
                     Splitting them with "View details" made a matched pair read as
                     two unrelated controls. */}
                 {cardPrimary?.(o)}
-                {cardAction && (
-                  <button
-                    type="button"
-                    className="ac-3d"
-                    title={cardAction.title}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      cardAction.onSelect(o, {
-                        select: () => {
-                          if (pinnedId !== o.id) togglePin(o);
-                        },
-                        showPhotoreal: () => {
-                          if (photoreal) setEngine("photoreal");
-                        },
-                      });
-                    }}
-                  >
-                    {cardAction.label}
-                  </button>
-                )}
+                {cardAction && (() => {
+                  // What the label is being drawn against: which renderer is
+                  // painting, and whether this card is the open one.
+                  const st: CardActionState = { engine, open: pinnedId === o.id };
+                  const text = (v: string | ((s: CardActionState) => string)) =>
+                    typeof v === "function" ? v(st) : v;
+                  return (
+                    <button
+                      type="button"
+                      className="ac-3d"
+                      title={cardAction.title ? text(cardAction.title) : undefined}
+                      aria-expanded={inlineDetail && st.open ? true : undefined}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        cardAction.onSelect(o, {
+                          ...st,
+                          select: () => {
+                            if (pinnedId !== o.id) togglePin(o);
+                          },
+                          showPhotoreal: () => {
+                            if (photoreal) setEngine("photoreal");
+                          },
+                          close: closeDetail,
+                        });
+                      }}
+                    >
+                      {text(cardAction.label)}
+                    </button>
+                  );
+                })()}
                 {o.url && (
                   <a
                     className="ac-link"
@@ -1149,6 +1258,14 @@ export default function AtlasCollection({
                   ✦ Ask The Guide
                 </button>
               </div>
+
+              {/* The dossier, on a phone: under this card's own actions, with
+                  the building held above it by the stuck map band. */}
+              {inlineDetail && pinnedId === o.id && detailFor && (
+                <div className="ac-detail" onClick={(e) => e.stopPropagation()}>
+                  {detailFor(o, { close: closeDetail })}
+                </div>
+              )}
             </article>
           );
         })}

@@ -223,7 +223,22 @@ export default function AtlasHotel() {
    * camera flies to the building. Same gesture, same destination, no tab.
    */
   const openProperty = useCallback(
-    (o: AtlasOffering, api: { select: () => void; showPhotoreal: () => void }) => {
+    (
+      o: AtlasOffering,
+      api: {
+        select: () => void;
+        showPhotoreal: () => void;
+        close: () => void;
+        open: boolean;
+      },
+    ) => {
+      // Open, so the label reads "Hide details" — and a button that says so
+      // has to close. On a phone that is the difference between a card that
+      // expands and one that only ever grows.
+      if (api.open) {
+        api.close();
+        return;
+      }
       hotel3dOpened(o.id, "card");
       api.showPhotoreal();
       api.select();
@@ -254,11 +269,24 @@ export default function AtlasHotel() {
        * actual building under it.
        */
       cardAction={{
-        // No arrow any more: this no longer leaves the page. It opens the
-        // dossier beside the map and puts the real building under it.
-        label: "Property details & 3D",
-        title:
-          "Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view of the building",
+        /*
+         * The label names what the press will ADD to the screen.
+         *
+         * From the Mapbox globe that is both halves — the dossier and the
+         * building — and no arrow any more, because this no longer leaves the
+         * page. Once the photoreal engine is already drawing, promising 3D is
+         * promising the thing the traveller is looking at: all that is left to
+         * offer is the details. And on the open card the same button is the
+         * way back out.
+         */
+        label: ({ engine, open }) =>
+          open ? "Hide details" : engine === "photoreal" ? "Details" : "Property details & 3D",
+        title: ({ engine, open }) =>
+          open
+            ? "Close this property's profile"
+            : engine === "photoreal"
+              ? "Full profile: description, ratings, address, VIP benefits and rates"
+              : "Full profile: description, ratings, address, VIP benefits and rates — with the photoreal 3D view of the building",
         onSelect: openProperty,
       }}
       // The engine, and the panel that makes it worth reaching.

@@ -33,6 +33,7 @@ import type { AtlasOffering, AtlasFilterDescriptor } from "@/lib/atlas/adapters/
 import { ROLE_VALUES } from "@/lib/atlas/adapters/types";
 import { matchesExceptRegion, matchesOffering, regionPass, type AtlasFilterState } from "@/lib/atlas/adapters/filter";
 import { durationDays } from "@/lib/atlas/dates";
+import { useIsMobile } from "@/lib/use-is-mobile";
 
 export interface AtlasQuery {
   q: string;
@@ -216,19 +217,6 @@ const Q_DEBOUNCE_MS = 420;
 
 /** Sentinel for the "Around the World" entry in the region control. */
 const WORLD = "__world__";
-
-/** Matches the CSS breakpoint the rest of the atlas chrome uses. */
-function useIsMobile(): boolean {
-  const [mobile, setMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 680px)");
-    const sync = () => setMobile(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-  return mobile;
-}
 
 export default function AtlasFilterRail({
   descriptor: d, offerings, state, query, regionLabels, today,

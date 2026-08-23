@@ -4413,6 +4413,17 @@ button.card-book {
     overflow: visible;
     padding: 14px 14px 96px;
   }
+  .atlas-collection {
+    /*
+     * The map band's height, named once.
+     *
+     * Two other rules have to agree with it: the sticky band an open property
+     * creates, and the scroll offset that keeps the open card from landing
+     * underneath that band. A literal in three places is a layout that drifts
+     * apart the first time one of them is tuned.
+     */
+    --atlas-map-h: clamp(240px, 46dvh, 400px);
+  }
   .atlas-collection .atlas-map {
     /*
      * A band, not the viewport: the map is what the traveller scrolls past on
@@ -4422,9 +4433,80 @@ button.card-book {
      * stops it swallowing a tall one.
      */
     flex: 0 0 auto;
-    height: clamp(240px, 46dvh, 400px);
+    height: var(--atlas-map-h);
     min-height: 0;
     border-radius: 12px;
+  }
+  /*
+   * An open property sticks the band to the top of the viewport.
+   *
+   * This is the half of pinning worth having, and it is worth having for
+   * exactly as long as a property is open: the dossier below runs several
+   * screens, so without it the building scrolls away at the first paragraph
+   * and "study the building" becomes "remember the building". The page still
+   * scrolls — this is `sticky`, not the fixed band with a nested card scroller
+   * that THE PAGE SCROLLS above got rid of, and it releases the moment the
+   * card is closed.
+   */
+  .atlas-collection .atlas-mapwrap.stuck {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    /* Its own ground, or the cards scroll through the map's rounded corners. */
+    background: var(--bg);
+    padding-bottom: 8px;
+  }
+  /*
+   * …and the open card clears it on the way in.
+   *
+   * `scrollIntoView` measures against the viewport, which the stuck band is
+   * sitting on top of. Only the pinned card needs the offset, and `data-pinned`
+   * is already on it — the same attribute the pinned styling reads.
+   */
+  .atlas-collection .atlas-card[data-pinned] {
+    scroll-margin-top: calc(var(--atlas-map-h) + 14px);
+  }
+  /*
+   * The dossier, inside the card.
+   *
+   * It is already in a bordered, backgrounded box, so it drops the panel
+   * chrome: no second border, no blur, no shadow, no rounded card-within-a-
+   * card. It also stops being its own scroller — the page is the scroller
+   * here, and a 300px scroll well inside a card is the "dead page" problem in
+   * miniature.
+   */
+  .atlas-card .ac-detail {
+    margin-top: 12px;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .atlas-card .ac-detail .hotel-dossier {
+    max-height: none;
+    overflow: visible;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  /* The panel's own header repeats the card's title two lines above it. */
+  .atlas-card .ac-detail .hotel-dossier > header {
+    display: none;
+  }
+  /* The panel's own gutters, dropped: the card already has padding, and
+     16px inside 14px inside the card's border reads as a nested box. */
+  .atlas-card .ac-detail .hotel-dossier .hd-body {
+    padding: 0;
+  }
+  /* Sticky footer actions belong to a panel that scrolls; this one doesn't,
+     so they lose the bar treatment (own ground, own border) and become what
+     they are here — the last two buttons in a card. */
+  .atlas-card .ac-detail .hotel-dossier .hd-actions {
+    position: static;
+    padding: 14px 0 0;
+    background: transparent;
+    border-top: 0;
   }
   /* …except in fullscreen, where that clamped height is the whole bug: `.fs`
      sets position/inset but never a height, so this later, equal-specificity
@@ -5350,8 +5432,13 @@ button.card-book {
 }
 
 @media (max-width: 680px) {
-  /* Phones: the dossier is a bottom sheet over the map, not a rail beside it —
-     340px of panel on a 360px screen IS the screen. */
+  /* Phones: the FALLBACK home for the dossier — a bottom sheet over the map,
+     since 340px of panel beside a 360px screen IS the screen.
+     It is a fallback because the dossier normally opens inside the open card
+     now (`.ac-detail` above), which keeps the whole map band visible instead of
+     leaving a strip of it under this sheet. What still lands here: a property
+     selected from a pin or a `?hotel=` link that is not among the rendered
+     cards, where there is no card to expand. */
   .atlas-detail {
     top: auto;
     left: 0;
