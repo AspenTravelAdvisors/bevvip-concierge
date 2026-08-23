@@ -242,6 +242,30 @@ export async function groundAltitude(lat: number, lng: number): Promise<number> 
 
 export const DETAIL_RANGE = 2600;
 export const DETAIL_TILT = 67;
+
+/**
+ * Where a property is INSPECTED, as opposed to where the detail camera begins.
+ *
+ * DETAIL_RANGE frames a property in its setting — the block, the beach, the
+ * ridge behind it — which is the right arrival for a map you are still
+ * browsing. It is the wrong distance for the thing this engine is actually for:
+ * at 2.6 km the photogrammetry mesh of the building is a shape, and the
+ * traveller opening a card wants the façade, the terraces, the pool deck, how
+ * the wings sit against the water. Opening a card is not browsing, so it gets
+ * its own distance.
+ *
+ * 450 m is chosen against the mesh, not by taste: Google's tiles hold real
+ * detail to roughly 150–300 m and this leaves headroom above that, while still
+ * containing a large resort's grounds at DETAIL_TILT. Closer than ~250 m and a
+ * tall property starts to overrun the frame; further than ~800 m and you are
+ * back to looking at a block.
+ *
+ * Tilt deliberately stays DETAIL_TILT. `maxTiltForRange` caps everything below
+ * TILT_RESET_START_RANGE at that angle, and the debounced tilt sync in
+ * Atlas3DLayer would flatten anything steeper back down within 160 ms — so a
+ * steeper inspection tilt is not a tuning choice here, it is a fight.
+ */
+export const INSPECT_RANGE = 450;
 const TILT_RESET_START_RANGE = 4200;
 const TILT_RESET_END_RANGE = 220000;
 

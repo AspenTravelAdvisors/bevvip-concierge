@@ -163,6 +163,23 @@ check(
   atProperty > 400 && atProperty < 4000,
   `zoom 17 lands at property scale (${Math.round(atProperty)} m, against DETAIL_RANGE ${g3d.DETAIL_RANGE})`,
 );
+// Opening a card is an inspection, not a browse: the property arrival has to be
+// meaningfully closer than the detail seam, and still outside the distance where
+// the photogrammetry mesh stops holding up (~150-300 m) or a tall property would
+// overrun the frame.
+check(
+  g3d.INSPECT_RANGE < g3d.DETAIL_RANGE / 2,
+  `an opened property is inspected well inside detail range (${g3d.INSPECT_RANGE} m vs ${g3d.DETAIL_RANGE} m)`,
+);
+check(
+  g3d.INSPECT_RANGE >= 250 && g3d.INSPECT_RANGE <= 800,
+  `…and stays where the mesh still reads as a building (${g3d.INSPECT_RANGE} m)`,
+);
+check(
+  g3d.tiltForRange(g3d.DETAIL_TILT, g3d.INSPECT_RANGE) === g3d.DETAIL_TILT,
+  "the inspection camera keeps full tilt, so the fly-in is not flattened on arrival",
+);
+
 // A whole-planet Mapbox view must not ask Google for a camera inside the earth.
 const atGlobe = g3d.rangeFromZoom(1, 0, 640);
 check(atGlobe > 1_000_000, `globe zoom stays a globe (${Math.round(atGlobe / 1000)} km out)`);

@@ -1309,3 +1309,33 @@ not move it. Driven in a browser against a stubbed Google Maps API — the real
 `?engine=3d` mounts the engine with 1,200 markers and no clicking, typing
 "Aspen" flies to 39.20/-106.88, a region filter flies to the Caribbean, and
 `?hotel=h_01034` lands on the Burj Al Arab at range 2600 m, tilt 67°.
+
+### Opening a card now inspects the building (2026-08-23)
+
+The photoreal arrival was the standalone atlas's `DETAIL_RANGE` — 2,600 m —
+which frames a property in its setting: the block, the beach, the ridge behind
+it. That is the right camera for a map you are still browsing and the wrong one
+for the moment the traveller opens a card, which is a request to look at the
+BUILDING. At 2.6 km the photogrammetry mesh is a shape, and a shape is exactly
+what Mapbox's extruded footprints already give for free — the whole argument for
+this engine only starts paying at inspection distance.
+
+So the arrival has its own constant. `INSPECT_RANGE = 450` (in
+`lib/atlas/google3d.ts`) is what `Atlas3DLayer.focus()` flies to, and the orbit
+inherits it, so an open property turns at 450 m rather than circling a block.
+`DETAIL_RANGE` is untouched and still means what it always did: where the detail
+camera begins, and the reference point for the Mapbox ⇄ photoreal handoff.
+
+450 m is set against the mesh, not by taste: Google's tiles hold real detail to
+roughly 150–300 m, so this leaves headroom while still containing a large
+resort's grounds at `DETAIL_TILT`. Tilt deliberately stays 67° — `maxTiltForRange`
+caps everything below 4,200 m at that angle and the debounced tilt sync in
+`Atlas3DLayer` would flatten anything steeper within 160 ms, so a steeper
+inspection tilt is not a tuning choice, it is a fight.
+
+**Verified.** `verify:photoreal` gained three checks: the inspection range sits
+well inside detail range, stays in the band where the mesh still reads as a
+building, and survives `tiltForRange` at full tilt (a range low enough to trip
+the easing would have flattened the fly-in on arrival). `npm run check` clean.
+The render itself still cannot be seen here — this sandbox's network policy
+denies `www.google.com`, so no tile paints in it.

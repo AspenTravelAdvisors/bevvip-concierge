@@ -34,6 +34,7 @@ import {
 import {
   DETAIL_RANGE,
   DETAIL_TILT,
+  INSPECT_RANGE,
   categoryColor,
   groundAltitude,
   loadGoogle3D,
@@ -64,7 +65,7 @@ export interface Camera3DState {
 export interface Atlas3DHandle {
   /** The camera right now, for handing back to Mapbox on the way out. */
   getCamera(): Camera3DState | null;
-  /** Fly to a property at detail range, optionally with the cinematic orbit. */
+  /** Fly to a property at inspection range, optionally with the cinematic orbit. */
   focus(id: string, opts?: { orbit?: boolean }): void;
   /** Frame a set of points — the photoreal equivalent of fitBounds. */
   fit(points: Point3D[]): void;
@@ -269,10 +270,17 @@ export default function Atlas3DLayer({
     (id: string, opts?: { orbit?: boolean }) => {
       const p = pointsRef.current.find((x) => x.id === id);
       if (!p) return;
+      /*
+       * INSPECT_RANGE, not DETAIL_RANGE: opening a card is a request to look at
+       * the BUILDING, and the standalone atlas's 2.6 km arrival answered it with
+       * the neighbourhood. The orbit inherits this range, so the property turns
+       * at inspection distance rather than circling a block — which is the whole
+       * argument for photogrammetry over extruded footprints.
+       */
       flyTo({
         lat: p.lat,
         lng: p.lng,
-        range: DETAIL_RANGE,
+        range: INSPECT_RANGE,
         tilt: DETAIL_TILT,
         duration: 1800,
         orbit: opts?.orbit ?? true,
