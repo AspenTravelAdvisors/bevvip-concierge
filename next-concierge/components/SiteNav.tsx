@@ -103,7 +103,7 @@ export default function SiteNav() {
                       Google Photorealistic 3D engine). It hangs off its
                       collection rather than sitting in the list as a peer,
                       because it is not another thing to browse — it is another
-                      way to look at the same 2,501 hotels.
+                      way to look at the same 2,475 hotels.
                     */}
                     {(c.views ?? []).map((v) => (
                       <Link

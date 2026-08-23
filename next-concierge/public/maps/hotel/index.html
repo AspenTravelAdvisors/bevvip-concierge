@@ -268,7 +268,7 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
     <a class="logochip mark" href="https://www.expeditionbucketlist.com" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/57d86bcd46c3c49c625850a1/54c90494-d588-412d-9643-5d5650d856fd/ebl+2026+Gemini.png?content-type=image%2Fpng" alt="Expedition Bucket List"></a>
     <div>
       <h1>Luxury Hotel <span>Atlas</span></h1>
-      <p>2,500 luxury hotel brand stays in photorealistic 3D &middot; filter &amp; tap a pin</p>
+      <p>2,475 luxury hotel brand stays in photorealistic 3D &middot; filter &amp; tap a pin</p>
     </div>
   </div>
   <a class="partner" href="https://www.aspentraveladvisors.com" target="_blank" rel="noopener">
@@ -305,7 +305,7 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
   <div class="rhead">
     <h2>Filters</h2>
     <div class="rheadr">
-      <div class="count"><span id="count">2,500</span> shown</div>
+      <div class="count"><span id="count">2,475</span> shown</div>
       <button type="button" class="railx" id="railClose" aria-label="Close filters">&#10005;</button>
     </div>
   </div>
@@ -318,7 +318,7 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
     <div class="reset" id="reset">Reset all filters</div>
   </div>
   <div class="sheetFooter" id="railFooter">
-    <button type="button" class="sheetApply" id="railApply">Show <span id="applyCount">2,500</span> stays</button>
+    <button type="button" class="sheetApply" id="railApply">Show <span id="applyCount">2,475</span> stays</button>
   </div>
 </aside>
 
@@ -357,7 +357,7 @@ html.basecamp-embed .mapmenu{top:calc(20px + env(safe-area-inset-top,0px))!impor
   <div class="box" id="veilLoad">
     <div class="spinner"></div>
     <h2>Loading the Atlas&hellip;</h2>
-    <p id="loadMsg">Rendering photorealistic 3D terrain and 2,500 luxury stays.</p>
+    <p id="loadMsg">Rendering photorealistic 3D terrain and 2,475 luxury stays.</p>
     <div class="loadbar" role="progressbar" aria-label="Loading the atlas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="loadBar">
       <div class="loadbar-fill" id="loadFill"></div>
     </div>
@@ -667,7 +667,7 @@ async function init(){
     }, {passive:false, capture:true});
 
     FEATURES = await loadInventory();
-    setProgress(70,"Placing 2,500 luxury stays…");
+    setProgress(70,"Placing 2,475 luxury stays…");
     buildFilters();
     applyDeepLink();           // read ?region/brand/program/category/country/ids/q
     await buildMarkers();      // ends with applyFilters(), so the subset is live
