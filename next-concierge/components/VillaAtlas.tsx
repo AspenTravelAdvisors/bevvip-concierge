@@ -917,7 +917,9 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         />
       </div>
 
-      <div className="villa-grid" data-loading={loading || undefined}>
+      {/* The shared results grid, so the two collections are one list in two
+          places rather than two lists that look alike. */}
+      <div className="atlas-results atlas-results--stay" data-loading={loading || undefined}>
         {data.results.map((v) => (
           <VillaCard key={v.id} v={v} />
         ))}
@@ -971,8 +973,32 @@ function bedroomLabel(v: Villa): string | null {
   return min === max ? `${max} bd` : `${min}–${max} bd`;
 }
 
+/**
+ * A villa, on the shared stay card.
+ *
+ * The markup here is `AtlasCollection`'s, not villa's own: `.atlas-card
+ * --stay`, `.ac-media`, `.ac-body`, `.ac-crumb`, `.ac-meta`, `.ac-note`,
+ * `.ac-summary`, `.ac-actions`. Hotels and villas are the same kind of thing to
+ * a traveller — somewhere to stay, chosen substantially by how it looks — and
+ * they were being drawn by two components that had already converged by hand:
+ * `.atlas-collection--hotel` overrode the atlas card's name to 19px serif and
+ * added a gold hover on `--card-hover`, which were `.villa-card`'s values
+ * copied, and both grids were already `minmax(240px, 1fr)`. One card, one
+ * stylesheet, one place to change it.
+ *
+ * What stays villa's own is what villa actually has and hotels do not: the
+ * photograph (`v.imageUrl`, on 3,896 of 3,902), the Featured and Special
+ * badges over it, and two advisor CTAs where a hotel card carries a rate
+ * search. **A villa card may never grow a booking link** — villas are
+ * advisor-arranged, and that rule outranks card symmetry.
+ *
+ * This is deliberately only the card. The map interplay every other atlas has
+ * (click a card, fly to its pin, hold the map still) is Phase 0 of
+ * WORKORDER-villa-unification.md and is not here yet, so these are still links
+ * rather than a selection.
+ */
 function VillaCard({ v }: { v: Villa }) {
-  const crumb = [v.region, v.destination, v.location].filter(Boolean).join(" › ");
+  const crumb = [v.region, v.destination, v.location].filter(Boolean).join(" · ");
   const bedrooms = bedroomLabel(v);
   const multiBedroom = (v.bedroomOptions?.length ?? 0) > 1;
   const stats = [
@@ -985,49 +1011,62 @@ function VillaCard({ v }: { v: Villa }) {
   // The offer itself, not just its category. The badge over the photo says
   // "Free Night(s)"; this says which nights, on which stay.
   const offer = v.specials?.[0] || null;
+  const href = `/atlas/villa/${v.destinationSlug}/${v.slug}`;
   return (
-    <div className="villa-card">
-      <Link className="villa-card-media" href={`/atlas/villa/${v.destinationSlug}/${v.slug}`}>
+    <article className="atlas-card atlas-card--stay">
+      <Link className="ac-media" href={href}>
         {v.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={v.imageUrl} alt={v.name} loading="lazy" />
         ) : (
-          <span className="villa-card-noimg" />
+          <span className="ac-media-empty" />
         )}
         {v.featured && <span className="villa-badge">Featured</span>}
         {v.hasSpecials && (
           <span className="villa-badge special">{v.specialCategory || "Special offer"}</span>
         )}
       </Link>
-      <div className="villa-card-body">
-        <span className="villa-crumb mono">
+      <div className="ac-body">
+        <p className="ac-crumb">
           {crumb}
           {/* 236 villas are pinned to a location or destination centroid. The map
               already draws those hollow; saying so here keeps the card honest
               for anyone reading the list without the map. */}
           {!v.exactLocation && <em className="villa-approx"> · approx. location</em>}
-        </span>
-        <Link className="villa-name" href={`/atlas/villa/${v.destinationSlug}/${v.slug}`}>
-          {v.name}
-        </Link>
-        <span
-          className="villa-stats mono"
+        </p>
+        <div className="ac-head">
+          <div className="ac-headtext">
+            <h3>
+              <Link href={href}>{v.name}</Link>
+            </h3>
+          </div>
+        </div>
+        <p
+          className="ac-meta"
           title={multiBedroom ? `Bookable as ${v.bedroomOptions.join(", ")} bedrooms` : undefined}
         >
           {stats}
-          {stats && " · "}
-          <b>{v.priceDisplay}</b>
-        </span>
-        {offer && <span className="villa-offer">{offer}</span>}
-        {v.summary && <p className="villa-card-summary">{v.summary}</p>}
-        <div className="villa-card-ctas">
-          <Link href={askGuideHref(v)}>Ask the Guide about this villa</Link>
-          <Link href={requestAdvisorHref(v)} className="villa-advisor">
+          {stats && "  ·  "}
+          {/* The one thing on a stay card that is a number the supplier
+              publishes. Hotels have no equivalent — a TravelWits search is not
+              a published rate — so their stats line ends at their attributes. */}
+          <b className="ac-price">{v.priceDisplay}</b>
+        </p>
+        {/* Green rather than the slot's default gold: this is an offer that
+            expires, not a standing benefit, and the colour ties it to the
+            "Special offer" badge over the photograph. */}
+        {offer && <p className="ac-note ac-note--offer">{offer}</p>}
+        {v.summary && <p className="ac-summary">{v.summary}</p>}
+        <div className="ac-actions ac-actions--stacked">
+          <Link className="ac-link" href={askGuideHref(v)}>
+            ✦ Ask The Guide about this villa
+          </Link>
+          <Link className="ac-link ac-advisor" href={requestAdvisorHref(v)}>
             Request through your advisor →
           </Link>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 

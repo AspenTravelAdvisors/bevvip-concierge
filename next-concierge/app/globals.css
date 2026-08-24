@@ -2807,46 +2807,6 @@ main.page {
 .villa-check input {
   accent-color: #c9a84c;
 }
-.villa-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
-  transition: opacity 0.15s ease;
-}
-.villa-grid[data-loading] {
-  opacity: 0.5;
-  pointer-events: none;
-}
-.villa-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  overflow: hidden;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-.villa-card:hover {
-  border-color: var(--gold-dim);
-  background: var(--card-hover);
-}
-.villa-card-media {
-  position: relative;
-  display: block;
-  aspect-ratio: 3 / 2;
-  background: #0e0f13;
-}
-.villa-card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.villa-card-noimg {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, #14151b, #0b0c10);
-}
 .villa-badge {
   position: absolute;
   top: 8px;
@@ -2870,72 +2830,12 @@ main.page {
   position: static;
   margin-right: 8px;
 }
-.villa-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 11px 13px 13px;
-}
-.villa-crumb {
-  color: var(--muted);
-  font-size: 10.5px !important;
-  text-transform: uppercase;
-}
-.villa-name {
-  font-family: var(--serif);
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.25;
-}
-.villa-name:hover {
-  color: var(--gold-light);
-  text-decoration: none;
-}
-.villa-stats {
-  color: var(--sub);
-}
-.villa-stats b {
-  color: #e3c98a;
-  font-weight: 500;
-}
 /* Location precision, said quietly: it qualifies the crumb above it rather
    than competing with the villa's name. */
 .villa-approx {
   color: var(--muted);
   font-style: normal;
   opacity: 0.85;
-}
-/* The offer itself, under the stats line — the green picks up the special
-   badge over the photo so the two read as one fact. */
-.villa-offer {
-  color: #b8e09a;
-  font-size: 11.5px;
-  line-height: 1.35;
-}
-/* Two lines of the supplier's summary. Enough to tell two villas in the same
-   location apart, short enough that the card stays a card. */
-.villa-card-summary {
-  color: var(--sub);
-  font-size: 12.5px;
-  line-height: 1.45;
-  margin: 2px 0 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.villa-card-ctas {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-top: 7px;
-  padding-top: 8px;
-  border-top: 1px solid var(--line-soft);
-  font-size: 12px;
-}
-.villa-card-ctas .villa-advisor {
-  color: #c9ad6a;
 }
 .villa-empty {
   grid-column: 1 / -1;
@@ -3088,10 +2988,6 @@ main.page {
 @media (max-width: 700px) {
   .villa-map-wrap {
     height: 320px;
-  }
-  .villa-grid {
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-    gap: 11px;
   }
 }
 
@@ -4152,22 +4048,136 @@ button.card-book {
      as one card being open. */
   align-items: start;
 }
+/* Photo cards want more air between them than text rows do. Named for the card
+   they hold rather than for the collection, so hotels and villas agree. */
+.atlas-results--stay,
 .atlas-collection--hotel .atlas-results {
   gap: 16px;
+}
+/* Villa's list refetches through /api/villas/search, so the grid dims while a
+   page is in flight. Carried over from `.villa-grid`. */
+.atlas-results {
+  transition: opacity 0.15s ease;
+}
+.atlas-results[data-loading] {
+  opacity: 0.5;
+  pointer-events: none;
 }
 .atlas-card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 12px 14px;
   cursor: pointer;
+  /* The photograph runs to the card's edge, so the card clips and the padding
+     lives one level down, in `.ac-body`. */
+  overflow: hidden;
 }
-.atlas-collection--hotel .atlas-card {
+/* The padding the card used to carry itself. Moved rather than changed: a route
+   atlas's card is the same 12px/14px box it has always been, one div deeper. */
+.atlas-card .ac-body {
+  padding: 12px 14px;
+}
+/*
+ * ── The stay card ──────────────────────────────────────────────────────────
+ *
+ * Hotels and villas browse PLACES, and a place is chosen substantially by how
+ * it looks: a photograph at the top edge, then where it is, then what it is
+ * called, then what you get. Sailings and rail journeys are not chosen that way
+ * — a card there leads with a route and a date — so they keep the text row and
+ * none of this applies to them.
+ *
+ * These three rules were `.atlas-collection--hotel` overrides until now, and
+ * they were `.villa-card`'s values copied by hand: the same card was being
+ * maintained twice under two class names, which is the actual thing this
+ * section fixes. AtlasCollection adds `atlas-card--stay` to any collection that
+ * fills a stay slot.
+ */
+.atlas-card--stay {
+  display: flex;
+  flex-direction: column;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.atlas-collection--hotel .atlas-card:hover {
+.atlas-card--stay:hover {
   border-color: var(--gold-dim);
   background: var(--card-hover);
+}
+/* Where it is, above what it is called. */
+.atlas-card--stay .ac-crumb {
+  margin: 0 0 4px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* What the traveller GETS: VIP amenities, or a villa's special offer. Gold
+   rather than the body colour, and small — it is the one line on the card that
+   is an offer rather than a description, and on a hotel atlas most cards carry
+   one, so it has to read as reassurance and not as shouting. */
+.atlas-card--stay .ac-note {
+  margin: 2px 0 0;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--gold-light);
+}
+/*
+ * …and a LIMITED-TIME offer, in green.
+ *
+ * The two kinds of fact this slot carries are worth telling apart: gold is a
+ * standing benefit that comes with the property (a hotel's VIP amenities),
+ * green is an offer that will expire (a villa's special). The green also picks
+ * up the "Special offer" badge over the photograph, so the badge and the line
+ * beneath it read as one fact rather than two.
+ */
+.atlas-card--stay .ac-note--offer {
+  color: #b8e09a;
+}
+/* Two lines of the supplier's description, clamped. */
+.atlas-card--stay .ac-summary {
+  margin: 4px 0 0;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--sub);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* The photograph. 3:2, flush to the card's edges, its own dark ground so a
+   slow or missing image is a considered space rather than a hole. */
+.atlas-card--stay .ac-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  background: #0e0f13;
+}
+.atlas-card--stay .ac-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* No photograph for this record — a considered space, not a hole. */
+.atlas-card--stay .ac-media-empty {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, #14151b, #0b0c10);
+}
+/* The name is a link on a villa card and plain text on a hotel one; it must
+   read identically either way. */
+.atlas-card--stay h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.atlas-card--stay h3 a:hover {
+  color: var(--gold-light);
+}
+/* The published from-rate, where the supplier publishes one. */
+.atlas-card--stay .ac-price {
+  color: var(--gold-light);
+  font-weight: 500;
 }
 /* Round-the-world journeys carry a quiet gold edge, as `.card.world` did. */
 .atlas-card.world {
@@ -4192,7 +4202,7 @@ button.card-book {
   margin: 0 0 4px;
   color: var(--text);
 }
-.atlas-collection--hotel .atlas-card h3 {
+.atlas-card--stay h3 {
   font-size: 19px;
   line-height: 1.25;
 }
@@ -4236,6 +4246,25 @@ button.card-book {
   align-items: center;
   margin-top: 8px;
   flex-wrap: wrap;
+}
+/*
+ * Two advisor actions, stacked and quiet.
+ *
+ * A villa card's actions are a conversation, not a transaction — ask, or hand
+ * it to your advisor — so they are text links on their own lines rather than
+ * the wrapped row of buttons a hotel card needs for its rate search. Same
+ * container, same class, different rhythm.
+ */
+.atlas-card .ac-actions--stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  margin-top: 7px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-soft);
+}
+.atlas-card .ac-advisor {
+  color: var(--gold-light);
 }
 .atlas-card .ac-book-wrap {
   display: inline-flex;
@@ -4517,7 +4546,7 @@ button.card-book {
     height: 1px;
     background: var(--line);
   }
-  .atlas-card {
+  .atlas-card .ac-body {
     padding: 12px;
   }
   /* The day-by-day block is long; keep it collapsed and thumb-sized. */

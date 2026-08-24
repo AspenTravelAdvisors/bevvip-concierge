@@ -92,6 +92,10 @@ interface RawHotelFeature {
     marqueeRegion?: string | null;
     /** Umbrella-resort search names from data/atlas/hotel/place-aliases.json. */
     alias?: string | null;
+    /** Card-sized VIP amenity tags, from lib/atlas/hotel-perks.js at build. */
+    perks?: string[];
+    /** Property photograph. Present on every point, empty until Virtuoso. */
+    thumb?: string | null;
   };
 }
 export interface RawHotelPoints {
@@ -151,7 +155,18 @@ export function adaptHotels(raw: RawHotelPoints): AtlasOffering[] {
         // means. The filter layer only reads attributes a facet declares, so an
         // extra key here cannot widen or narrow anything.
         city: p.city || null,
+        /*
+         * The VIP amenity block, reduced to at most three tags at build time
+         * ("Daily breakfast · $100 credit · Room upgrade"). Like `city` it is
+         * not a filter axis — no facet names it — it is what the card's benefit
+         * line renders, and it is the closest thing a hotel card has to villa's
+         * special-offer line. 2,270 of 2,475 properties have one.
+         */
+        perks: p.perks && p.perks.length ? p.perks : null,
       },
+      // Empty on every hotel until the Virtuoso feed fills it; the card's media
+      // slot renders nothing for null, so this is inert until it is not.
+      thumb: p.thumb || null,
       // The card shows the BRAND's mark where the brand has one, and falls back
       // to the PROGRAM's mark (what the original card always showed) where it
       // does not. Keying on the program alone put the same virtuoso.com favicon

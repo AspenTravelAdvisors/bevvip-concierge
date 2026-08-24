@@ -114,6 +114,51 @@ interface Props {
    * one filled button per card, and it is the one that starts a booking.
    */
   cardPrimary?: (o: AtlasOffering) => React.ReactNode;
+  /*
+   * ── The stay card ────────────────────────────────────────────────────────
+   *
+   * Four slots that turn the shared card from a text row into the photo card a
+   * PLACE is browsed on. Hotels and villas are the same kind of thing to a
+   * traveller — somewhere to stay, chosen substantially by how it looks — and
+   * they should be browsed on one card; sailings, flights and rail journeys are
+   * not that kind of thing and keep the row, which is why every slot here is
+   * optional and the five route atlases pass none of them.
+   *
+   * A collection that fills any of these gets `atlas-card--stay`, which is
+   * where the treatment that had drifted into `.atlas-collection--hotel`
+   * overrides now lives.
+   */
+  /**
+   * The place, above the name — "Rome · Italy", "Caribbean · St. Barthélemy".
+   *
+   * The card's first line, because for a stay it is the first question: a
+   * property's name means nothing until you know where it is. Route atlases
+   * answer that with the route itself and have no use for this.
+   */
+  cardCrumb?: (o: AtlasOffering) => React.ReactNode;
+  /**
+   * The offer, under the stats — a hotel's VIP amenity tags, a villa's special.
+   *
+   * The one line on the card that says what the traveller GETS rather than what
+   * the property is, and the reason a preferred-partner atlas is worth browsing
+   * at all.
+   */
+  cardNote?: (o: AtlasOffering) => React.ReactNode;
+  /** Two clamped lines of the supplier's description. Villas have one. */
+  cardSummary?: (o: AtlasOffering) => React.ReactNode;
+  /**
+   * The photograph, at the card's top edge, with any badges over it.
+   *
+   * Rendered by the collection because the badges are its own (villa's
+   * "Featured"/"Special offer", a hotel's program mark once there is a photo to
+   * put it on), and because only the collection knows whether its feed
+   * actually carries images. That last part is the rule: media is
+   * photo-CAPABLE, not photo-required. A collection whose records mostly have
+   * no image must pass nothing rather than a grid of grey rectangles — which
+   * is why hotels do not pass it yet, though `o.thumb` is already wired end to
+   * end and empty.
+   */
+  cardMedia?: (o: AtlasOffering) => React.ReactNode;
   /**
    * The ids currently on screen, whenever that set changes.
    *
@@ -248,6 +293,7 @@ const fmtDay = (iso?: string | null) =>
 export default function AtlasCollection({
   type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
   cardPrimary, onVisibleIds, photoreal = false, detailFor,
+  cardCrumb, cardNote, cardSummary, cardMedia,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -935,6 +981,17 @@ export default function AtlasCollection({
    * gesture on all six.
    */
   const stickyBand = phone;
+  /**
+   * Whether this collection browses PLACES.
+   *
+   * Not a prop: it is simply whether the collection filled any of the stay
+   * slots, which only a collection of places can. Hotels and villas do; the
+   * five route atlases pass none and keep the text row they have always had.
+   * The class carries the treatment that had drifted into
+   * `.atlas-collection--hotel` overrides — a 19px serif name, a gold hover —
+   * which were `.villa-card`'s values copied by hand, and are now one rule.
+   */
+  const stayCard = !!(cardMedia || cardCrumb || cardNote || cardSummary);
   /** The offering whose dossier is open, if it is still in the field. */
   const detailed = detailId ? byId.get(detailId) ?? null : null;
   const inlineDetail =
@@ -1183,9 +1240,18 @@ export default function AtlasCollection({
             whenLabelFor(o),
             o.departures && o.departures > 1 ? `${o.departures} departures` : null,
           ].filter(Boolean).join("  ·  ");
+          // Evaluated, not just present: these are render props, so testing the
+          // prop tests only that the collection HAS the slot. A hotel with no
+          // city and no amenity block would otherwise get two empty paragraphs.
+          const crumb = cardCrumb?.(o);
+          const note = cardNote?.(o);
+          const summary = cardSummary?.(o);
           const metaParts =
             type === "hotel"
-              ? [o.brandLabel || o.operator, attr("category"), o.country]
+              // No country: the crumb above the name already says where this
+              // is, and a card that prints "Italy" twice reads as a template
+              // rather than a description.
+              ? [o.brandLabel || o.operator, attr("category")]
               : [
                   o.vessel || o.brandLabel || o.operator,
                   o.days ? `${o.days} days` : null,
@@ -1198,7 +1264,7 @@ export default function AtlasCollection({
                 if (el) cardRefs.current.set(o.id, el);
                 else cardRefs.current.delete(o.id);
               }}
-              className={`atlas-card${o.world ? " world" : ""}`}
+              className={`atlas-card${stayCard ? " atlas-card--stay" : ""}${o.world ? " world" : ""}`}
               data-id={o.id}
               data-pinned={pinnedId === o.id ? "" : undefined}
               data-open={detailId === o.id ? "" : undefined}
@@ -1208,6 +1274,23 @@ export default function AtlasCollection({
               onBlur={endPreview}
               onClick={() => togglePin(o)}
             >
+              {/* The photograph, at the card's top edge and outside the padded
+                  body — nothing today, since no collection that renders here
+                  has images yet, and a whole card's worth of markup the day one
+                  does. */}
+              {cardMedia?.(o)}
+              {/*
+                Everything else lives in a padded body rather than in the card
+                itself, so a photograph can sit flush to the card's edge above
+                it. Rendered for every collection, not only the ones with media:
+                one structure is worth more than the div it costs a route atlas,
+                and the padding simply moved down one level.
+              */}
+              <div className="ac-body">
+              {/* Where it is, before what it is called. For a stay that is the
+                  first question — a property's name means nothing until you
+                  know the place. */}
+              {crumb && <p className="ac-crumb">{crumb}</p>}
               <div className="ac-head">
                 {/* Look the mark up by whichever field this collection filters
                     on. cruise has NO brand — its marks are keyed by operator
@@ -1240,6 +1323,16 @@ export default function AtlasCollection({
               <p className="ac-meta">
                 {metaParts.filter(Boolean).join("  ·  ")}
               </p>
+
+              {/* What the traveller GETS — the VIP amenities, the special
+                  offer. The only line on the card that is not a description of
+                  the property, and the reason a preferred-partner atlas is
+                  worth browsing. */}
+              {note && <p className="ac-note">{note}</p>}
+              {/* Two clamped lines of the supplier's own description: enough to
+                  tell two villas in the same bay apart, short enough that the
+                  card stays a card. */}
+              {summary && <p className="ac-summary">{summary}</p>}
 
               {/*
                 The route as text, so a card is readable without the map — but
@@ -1351,6 +1444,7 @@ export default function AtlasCollection({
                   {detailFor(o, { close: closeDetail })}
                 </div>
               )}
+              </div>
             </article>
           );
         })}

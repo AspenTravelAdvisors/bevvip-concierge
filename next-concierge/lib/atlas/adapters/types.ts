@@ -106,6 +106,17 @@ export interface AtlasOffering {
   attributes?: Record<string, string | string[] | null>;
 
   /**
+   * The card's photograph, where the collection has one.
+   *
+   * A first-class field rather than an attribute because it is part of the
+   * shared card's contract, not a filter axis: hotels and villas are both
+   * places to stay and are browsed by photograph, and the card's media slot
+   * reads this. Null is the normal case for a collection that has no images —
+   * every hotel today, and a route atlas forever.
+   */
+  thumb?: string | null;
+
+  /**
    * Which key to look up in `brandMarks` for this offering's logo, when it is
    * not `brand`. Hotels display their PROGRAM's mark — that is what the
    * original card showed, and what a traveller recognises.

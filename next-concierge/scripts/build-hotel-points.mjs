@@ -16,6 +16,11 @@ const { applyProgramOverrides } = require("../lib/atlas/program-overrides.js");
 // point as `alias` so the map's own q haystack and the native adapter's
 // searchText both see it without either re-reading the feed.
 const { aliasText } = require("../lib/atlas/place-aliases.js");
+// The property's preferred-partner amenity block, reduced to at most three card
+// tags ("Daily breakfast · $100 credit · Room upgrade"). The prose stays in
+// luxury-hotels.json for the dossier; only the tags ride on the point, which is
+// what the card renders. Costs ~9 KB gzipped across 2,475 hotels.
+const { hotelPerks } = require("../lib/atlas/hotel-perks.js");
 
 const hotels = applyProgramOverrides(JSON.parse(fs.readFileSync(SOURCE, "utf8")));
 
@@ -38,6 +43,17 @@ const features = hotels
         region: h.adminRegion || null,
         marqueeRegion: h.region || null,
         alias: aliasText(h) || null,
+        perks: hotelPerks(h),
+        /*
+         * The card's photograph, when there is one.
+         *
+         * `thumb` is a field on every one of the 2,475 records and is currently
+         * empty on every one of them — the slot is cut and waiting for the
+         * Virtuoso feed to fill it. Carrying it now means the day it has values
+         * is a data change and not a code change: the adapter reads it, the
+         * card's media slot renders it, and both already handle null.
+         */
+        thumb: h.thumb || null,
       },
     };
   })

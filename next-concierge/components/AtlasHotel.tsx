@@ -252,11 +252,41 @@ export default function AtlasHotel() {
     [],
   );
 
+  /**
+   * Where the property is, above its name.
+   *
+   * City first, then country — the order a traveller says it in, and the same
+   * shape villa's crumb has. The card's meta line beneath drops the country it
+   * used to repeat and says what the property IS instead.
+   */
+  const cardCrumb = useCallback(
+    (o: AtlasOffering) =>
+      [o.attributes?.city as string | null, o.country].filter(Boolean).join(" · "),
+    [],
+  );
+
+  /**
+   * What the traveller gets — the VIP amenity block, reduced to three tags.
+   *
+   * "Daily breakfast · $100 credit · Room upgrade". This is what a preferred-
+   * partner atlas is FOR, and until now it existed only inside the dossier,
+   * three clicks from the card that was trying to persuade anyone to open it.
+   * lib/atlas/hotel-perks.js does the reduction at build time; the prose stays
+   * in luxury-hotels.json for the dossier, which is where the caveats belong.
+   */
+  const cardNote = useCallback((o: AtlasOffering) => {
+    const perks = o.attributes?.perks;
+    if (!Array.isArray(perks) || !perks.length) return null;
+    return perks.join(" · ");
+  }, []);
+
   return (
     <AtlasCollection
       type="hotel"
       descriptor={HOTEL_DESCRIPTOR}
       load={load}
+      cardCrumb={cardCrumb}
+      cardNote={cardNote}
       // The hotel atlas's own accent.
       accent="#caa44e"
       initialStyle="satellite"
