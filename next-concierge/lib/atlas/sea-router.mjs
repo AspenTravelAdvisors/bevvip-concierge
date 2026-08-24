@@ -17,9 +17,13 @@
  *                  440 for round-the-continent detours, under a 1.4M-cell guard.
  *   rdp + chaikin  Douglas-Peucker, then corner-cutting. This is what turns the
  *                  A* staircase into something that reads as a shipping lane.
- *   arcPts()       quadratic bezier for legs that don't hit land. An arc reads
- *                  as a voyage; a straight line reads as a ruler. k = 0.16 is
- *                  the constant that makes that true — do not "clean it up".
+ *   arcPts()       quadratic bezier for SHORT legs that don't hit land. An arc
+ *                  reads as a voyage; a straight line reads as a ruler.
+ *                  k = 0.16 is the constant that makes that true — do not
+ *                  "clean it up".
+ *   gcPts()        the great circle, for long open-water legs. Past ~1,500 km
+ *                  the bezier stops being a stylisation and starts being
+ *                  wrong; see GC_MIN_DEG for where the line is drawn and why.
  *
  * NOT PORTED: reanchorRoutes / bump / setLatLngs — Leaflet world-copy panning.
  * Mapbox handles that itself.
@@ -62,6 +66,82 @@ export function arcPts(a, b, step = 0.04) {
     const y = (1 - t) * (1 - t) * la1 + 2 * (1 - t) * t * cy + t * t * la2;
     p.push([y, x]);
   }
+  return p;
+}
+
+/**
+ * Minimum leg length, in degrees of arc, before a great circle replaces the
+ * bezier. ~13.5° is about 1,500 km.
+ *
+ * Chosen from the shipped data rather than taste. Of the 912 open-water legs
+ * across the three sea collections, 740 are under 500 km, and on those the
+ * bezier's midpoint sits a median of 13 km from the great circle's — a
+ * difference no zoom level will ever show. Below this threshold the two curves
+ * are the same drawing, so the bezier keeps the legs it was designed for: a
+ * short hop that would otherwise be a ruler-straight line between two islands.
+ *
+ * Above it they diverge for real — up to 871 km on a 5,148 km world-cruise
+ * crossing — and the bezier is the one that is wrong. A ship on a long ocean
+ * passage sails a great circle; that is what great-circle sailing IS, not a
+ * stylisation of it.
+ */
+export const GC_MIN_DEG = 13.5;
+
+/** Great-circle central angle between two [lat, lng] points, in degrees. */
+export function centralAngleDeg(a, b) {
+  const RAD = Math.PI / 180;
+  const la1 = a[0] * RAD, la2 = b[0] * RAD, dLo = (b[1] - a[1]) * RAD;
+  const c = Math.sin(la1) * Math.sin(la2) + Math.cos(la1) * Math.cos(la2) * Math.cos(dLo);
+  return Math.acos(Math.min(1, Math.max(-1, c))) / RAD;
+}
+
+/**
+ * The great circle between two points, in [lat, lng] — the track a ship on a
+ * long open-ocean passage actually sails.
+ *
+ * Companion to arcPts, not a replacement for it: see GC_MIN_DEG for which legs
+ * get which, and why. The bezier's flaw at this range is not merely that it is
+ * approximate — its bulge takes the sign of the leg's direction, so a crossing
+ * sailed eastbound bows north and the same crossing sailed westbound bows
+ * south. 140 port pairs in the shipped data are sailed both ways, and each one
+ * drew a lens instead of a route.
+ *
+ * FRAME. route() unrolls before it calls this, so `a` may legitimately sit at
+ * +241°. Slerp returns longitudes in ±180, so each point is re-anchored to the
+ * one before it and the track stays continuous in the frame it was handed.
+ * Endpoints are pinned exactly, so legs still meet at their ports.
+ */
+export function gcPts(a, b) {
+  const RAD = Math.PI / 180;
+  const ang = centralAngleDeg(a, b) * RAD;
+  const sin = Math.sin(ang);
+  // Degenerate and antipodal alike: no unique great circle, and the slerp
+  // denominator vanishes. Tested on the angle, not its sine — see geo.ts.
+  if (!Number.isFinite(ang) || ang < 1e-7 || Math.PI - ang < 1e-7) {
+    return [a.slice(), b.slice()];
+  }
+  const la1 = a[0] * RAD, lo1 = a[1] * RAD, la2 = b[0] * RAD, lo2 = b[1] * RAD;
+  const x1 = Math.cos(la1) * Math.cos(lo1), y1 = Math.cos(la1) * Math.sin(lo1), z1 = Math.sin(la1);
+  const x2 = Math.cos(la2) * Math.cos(lo2), y2 = Math.cos(la2) * Math.sin(lo2), z2 = Math.sin(la2);
+  const n = Math.min(192, Math.max(24, Math.ceil(ang / RAD / 0.8)));
+  const p = [];
+  let prevLng = a[1];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const f1 = Math.sin((1 - t) * ang) / sin;
+    const f2 = Math.sin(t * ang) / sin;
+    const x = f1 * x1 + f2 * x2, y = f1 * y1 + f2 * y2, z = f1 * z1 + f2 * z2;
+    const lat = Math.atan2(z, Math.hypot(x, y)) / RAD;
+    let lng = Math.atan2(y, x) / RAD;
+    while (lng - prevLng > 180) lng -= 360;
+    while (lng - prevLng < -180) lng += 360;
+    prevLng = lng;
+    p.push([lat, lng]);
+  }
+  // Pin the ends. The slerp lands within float epsilon of both, and legs are
+  // expected to meet exactly at their shared port.
+  p[0] = a.slice();
+  p[p.length - 1] = b.slice();
   return p;
 }
 
@@ -303,8 +383,27 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
     if (hit) return hit;
     let out;
     if (!lineHitsLand(a, b)) {
-      const arc = arcPts(a, b);
-      out = polyHitsLand(arc) ? { pts: densify(a, b, 14), mode: "densified" } : { pts: arc, mode: "arc" };
+      /*
+       * Open water. Long crossings get the great circle a ship actually
+       * sails; short hops keep the bezier, which at that range draws the same
+       * curve and is doing deliberate work. See GC_MIN_DEG.
+       *
+       * A great circle can bow onto land where the straight line between the
+       * same two ports did not — a northern crossing rides up over a landmass
+       * the rhumb line misses — so it is checked like any other candidate and
+       * falls back to the bezier before anything gives up on a curve at all.
+       */
+      let curve = null;
+      let mode = "arc";
+      if (centralAngleDeg(a, b) >= GC_MIN_DEG) {
+        const gc = gcPts(a, b);
+        if (!polyHitsLand(gc)) { curve = gc; mode = "great-circle"; }
+      }
+      if (!curve) {
+        const arc = arcPts(a, b);
+        if (!polyHitsLand(arc)) { curve = arc; mode = "arc"; }
+      }
+      out = curve ? { pts: curve, mode } : { pts: densify(a, b, 14), mode: "densified" };
     } else {
       const raw = aStarSea(a, b);
       if (raw && raw.length >= 2) {

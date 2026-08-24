@@ -29,14 +29,11 @@ import {
   fromLatLngPair,
   fromLngLatPair,
   fromNamed,
+  geodesicLine,
   isFinitePair,
   offset as offsetLngLat,
   unrollLine,
 } from "@/lib/atlas/geo";
-// arcPts is the only piece of the sea router the browser still needs: jet and
-// rail keep runtime geometry. Everything else is precomputed. k = 0.16 is what
-// makes an arc read as a journey rather than a ruler — see sea-router.mjs.
-import { arcPts } from "@/lib/atlas/sea-router.mjs";
 import { mapStyleFallback, hotel3dOpened, mapEngineChosen } from "@/lib/analytics";
 import { askAboutPin, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import Atlas3DLayer, {
@@ -4237,15 +4234,18 @@ async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
         // Unroll first, then arc each leg in that frame — same order the sea
         // router uses, and for the same reason: arcing raw coordinates across
         // the antimeridian sweeps the wrong way round the world.
+        //
+        // The SAME geodesic the traced route uses (see AtlasJet's routeFor).
+        // These two paths draw the same flights — this one as the ambient
+        // underlay, that one when a card is hovered — so a difference in
+        // geometry here would show up as the route visibly jumping off its own
+        // underlay the moment you pointed at it.
         const frame = unrollLine(pts);
         const out: LngLat[] = [];
         for (let i = 0; i < frame.length - 1; i++) {
-          const seg = arcPts(
-            [frame[i][1], frame[i][0]],
-            [frame[i + 1][1], frame[i + 1][0]],
-          ) as [number, number][];
+          const seg = geodesicLine(frame[i], frame[i + 1]);
           for (let k = out.length ? 1 : 0; k < seg.length; k++) {
-            out.push(fromLatLngPair(seg[k]));
+            out.push(seg[k]);
           }
         }
         return out;

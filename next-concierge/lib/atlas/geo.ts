@@ -104,3 +104,89 @@ export function unrollLine(pts: readonly LngLat[]): LngLat[] {
   }
   return out;
 }
+
+/**
+ * The great-circle path between two points, densified enough to draw.
+ *
+ * Jet legs used to be a quadratic bezier — `arcPts` in sea-router.mjs, with a
+ * control point pushed perpendicular to the lat/lng chord. That is the right
+ * call for a SHORT sea hop, where the bow is a chart convention and the true
+ * track is a matter of a few kilometres either way. It is the wrong one for an
+ * aircraft, which flies a geodesic you can look up. (Long sea crossings have
+ * since moved to a great circle too, for the same reason — see GC_MIN_DEG in
+ * sea-router.mjs. This module stays the jet path; the sea router keeps its own
+ * copy because it works in [lat, lng] and must not import the branded type.)
+ *
+ * The bezier was wrong in a way that showed. Its bulge takes the sign of the
+ * leg's direction (`cy = my + dx * k`), so an eastbound leg bows north and a
+ * westbound leg bows SOUTH. Tokyo → Los Angeles bowed the right way and
+ * undershot the true track by about 7° of latitude; the return leg bowed down
+ * past Hawaii, which is not a route any aircraft has ever flown. Any itinerary
+ * with an out-and-back pair drew a lens instead of a path.
+ *
+ * A real slerp costs nothing to compute and is, on regional legs, cheaper to
+ * draw than what it replaces: point count follows the leg's actual length
+ * rather than being fixed at 101, so a Mediterranean hop ships a quarter of
+ * the vertices and a transpacific crossing ships the same.
+ *
+ * FRAME. The caller unrolls its stops first, so a leg may legitimately start
+ * at +241° — see unrollLine. Slerp returns longitudes in ±180, so every point
+ * is re-anchored to the one before it and the path stays continuous in the
+ * frame it was handed, antimeridian and all.
+ *
+ * @param maxStepDeg target angular spacing. 0.8° holds the drawn chord under
+ *        a pixel at the zoom a traced route actually gets framed at.
+ */
+export function geodesicLine(a: LngLat, b: LngLat, maxStepDeg = 0.8): LngLat[] {
+  const RAD = Math.PI / 180;
+  const la1 = a[1] * RAD, lo1 = a[0] * RAD;
+  const la2 = b[1] * RAD, lo2 = b[0] * RAD;
+  const x1 = Math.cos(la1) * Math.cos(lo1);
+  const y1 = Math.cos(la1) * Math.sin(lo1);
+  const z1 = Math.sin(la1);
+  const x2 = Math.cos(la2) * Math.cos(lo2);
+  const y2 = Math.cos(la2) * Math.sin(lo2);
+  const z2 = Math.sin(la2);
+  const dot = Math.min(1, Math.max(-1, x1 * x2 + y1 * y2 + z1 * z2));
+  const ang = Math.acos(dot);
+  const sin = Math.sin(ang);
+  /*
+   * Two degenerate cases share one guard, because they share one symptom.
+   *
+   * A zero-length leg (a stop repeated) and an antipodal pair (no unique great
+   * circle between them) both make the slerp unstable. Neither is reachable
+   * from a real itinerary, and both would emit garbage — NaN in the antipodal
+   * case, which Mapbox does not reject loudly: it drops the whole LineString,
+   * so the failure reads as "this one trip has no route" rather than as a bug.
+   *
+   * The angle is tested directly rather than its sine. Testing `sin(ang)`
+   * looks equivalent and is not, at either end. A repeated stop gives a dot
+   * product of 0.9999999999999999 rather than exactly 1, so `ang` lands near
+   * 1.5e-8 and `sin` clears any threshold tight enough to be safe — the guard
+   * silently missed the case it was written for and emitted a couple of dozen
+   * float-jitter points on top of each other. At the far end, slerp is already
+   * unstable for a NEARLY antipodal pair, while `sin` is still comfortably
+   * non-zero. 1e-7 rad is 64 cm on the ground: below any two distinct stops.
+   */
+  if (!Number.isFinite(ang) || ang < 1e-7 || Math.PI - ang < 1e-7) {
+    return [mint(a[0], a[1]), mint(b[0], b[1])];
+  }
+  const n = Math.min(192, Math.max(24, Math.ceil(ang / RAD / maxStepDeg)));
+  const out: LngLat[] = [];
+  let prevLng = a[0];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const f1 = Math.sin((1 - t) * ang) / sin;
+    const f2 = Math.sin(t * ang) / sin;
+    const x = f1 * x1 + f2 * x2;
+    const y = f1 * y1 + f2 * y2;
+    const z = f1 * z1 + f2 * z2;
+    const lat = Math.atan2(z, Math.hypot(x, y)) / RAD;
+    let lng = Math.atan2(y, x) / RAD;
+    while (lng - prevLng > 180) lng -= 360;
+    while (lng - prevLng < -180) lng += 360;
+    prevLng = lng;
+    out.push(mint(lng, lat));
+  }
+  return out;
+}
