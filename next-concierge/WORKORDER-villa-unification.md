@@ -137,11 +137,36 @@ generalising `world` and the trip-length wheels pays off for the other six too.
 
 ## Phase 3b — one stay card, two collections
 
-**Decided:** villas keep their photographs, and hotels get them too once the supplier
+**Decided:** villas keep their photographs, and hotels get them too when the Virtuoso
 API lands. Hotels and villas are the same kind of thing to a traveller — a place to
 stay, chosen substantially by how it looks — and they should be browsed on the same
 card. Sailings, flights and rail journeys are not that kind of thing (a card there
 leads with a route and a date) and keep the text row.
+
+**Superseding note (2026-08-24): TravelWits is out; the supplier is Virtuoso, and
+hotels will carry no pricing.** Earlier drafts of this section assumed a live rate
+search on the hotel card. That was the one thing making the two cards structurally
+different, and it is gone — which simplifies the job rather than complicating it. Both
+collections are advisor-led now. Treat
+`Master Documents/BeVvip_API_Integration_Strategy.md` and `BOOKING-SPEC.md` as
+describing a superseded integration until they are rewritten.
+
+### What "no hotel pricing" changes
+
+- **The hotel card's primary CTA goes away.** It was `cardPrimary` in `AtlasHotel` — a
+  TravelWits search of the property at the VIP rate codes. Nothing has to be ripped out
+  to stop it: `bookingLink()` returns `null` when `NEXT_PUBLIC_BOOKING_MODE=off`, and
+  `cardPrimary` already renders nothing when it gets `null`. **The switch is one
+  environment variable**, and the deletion of the TravelWits seam
+  (`/api/hotel/tw`, `lib/atlas/travelwits-overlay.js`, the `tw`/`bookUrl` state in
+  `AtlasHotel`, `lib/atlas/booking.js`) is a separate, unhurried cleanup.
+- **There is no per-property portal to fall back to.** All 2,475 records carry the same
+  `bookUrl` (`https://www.VipTravelAi.com`) and the same `bookPassword` (`VIP`) — one
+  distinct value each. So "portal mode" is a site link, not a booking affordance for
+  *this* hotel, and it is not a substitute CTA.
+- **The card converges further, not less.** Hotel and villa both end with
+  advisor-led actions: ask The Guide, and open the property. The rate line simply is
+  not there, and a hotel card must not imply one.
 
 ### The data contract already exists
 
@@ -150,45 +175,55 @@ leads with a route and a date) and keep the text row.
   (`thumb: v.imageUrl`). The Guide has been speaking this dialect the whole time; no
   component renders the images yet.
 - `data/atlas/hotel/luxury-hotels.json` carries a **`thumb` field on all 2,475
-  records, empty on every one**. The slot is cut and waiting for a source.
-- `Master Documents/BeVvip_API_Integration_Strategy.md` §5 defines the normalized
-  supplier response with `"photos": ["https://…"]`, so the incoming feed is expected to
-  fill it.
+  records, empty on every one**. The slot is cut and waiting for a source — now
+  Virtuoso.
 - Villas: **3,896 of 3,902 have an image URL** (avg 76 chars, supplier CDN). The six
   without already fall back to `.villa-card-noimg`.
+- **The hotel card already has its equivalent of villa's offer line, unshipped**:
+  `vipUpgrades` is populated on 2,338 of 2,475 records, and 2,336 carry a usable
+  benefit sentence ("Upgrade on arrival, subject to availability", avg 49 chars).
+  Carrying one line of it in the client feed costs **+8 KB gzipped** (100 → 108 KB).
+  It needs a filter — some records say "Upgrade not applicable for this property",
+  which is not a benefit and must not print as one.
 
 So the work is a media slot on the shared card, not a data project.
 
 ### The card
 
-`AtlasCollection` already takes per-collection card slots — `cardPrimary` (hotels' rate
-link), `cardAction` (Property details & 3D), `detailFor` (the dossier). Add one more,
-`cardMedia`, and the anatomy is shared:
+`AtlasCollection` already takes per-collection card slots — `cardAction`
+(Property details & 3D), `detailFor` (the dossier), and `cardPrimary`, which is about
+to be empty for hotels. Add one more, `cardMedia`, and the anatomy is shared:
 
 ```
 [ media ]              photo, with the collection's badges over it
 crumb                  hotel: City · Country     villa: Region · Destination · Location
 Name
-stats · price          hotel: category · rating  villa: sleeps · bedrooms · from-rate
-[ primary ] [ ask ]    hotel: VIP rate search    villa: request through your advisor
+stats                  hotel: category · rating  villa: sleeps · bedrooms · from-rate
+benefit line           hotel: VIP amenity        villa: the special offer
+[ open ] [ ask ]       hotel: details & 3D       villa: request through your advisor
 ```
 
-The differences that remain are the ones that must remain: a hotel card may carry a
-rate search and the photoreal 3D; **a villa card may never grow a booking link** —
+The stats line's last item is a price **where the supplier publishes one**. Villas do
+(`priceDisplay`, the supplier's own from-rate); hotels do not, and will not under
+Virtuoso. That is the same slot filled with what exists, not an asymmetry to design
+around — and it is the reason nothing on a hotel card may look like a rate.
+
+Two differences remain on purpose: the hotel card opens the **photoreal 3D**, which
+villas have no equivalent of; and **a villa card may never grow a booking link** —
 villas are advisor-arranged, and that rule outranks card symmetry.
 
 ### Photo-capable, not photo-required
 
-Hotels have zero photos today. A photo-led card shipped before the API lands would
+Hotels have zero photos today. A photo-led card shipped before Virtuoso lands would
 turn 2,475 hotel cards into grey rectangles, which is worse than the clean text row
 they have now — and a grid where some cards have images and some do not reads as
 broken, not as mixed.
 
 So media is a **per-collection switch, thrown when that collection's feed actually
-carries images**: villas on (99.8% coverage), hotels off until the supplier feed fills
-`thumb`, then a one-line change in `scripts/build-hotel-points.mjs` (`thumb: h.thumb ||
-null`) and the switch flips. Cost of carrying it in the client feed, at villa's average
-URL length: roughly +25–40 KB gzipped for 2,475 hotels. Not a consideration.
+carries images**: villas on (99.8% coverage), hotels off until the feed fills `thumb`,
+then a one-line change in `scripts/build-hotel-points.mjs` (`thumb: h.thumb || null`)
+and the switch flips. Cost of carrying it in the client feed, at villa's average URL
+length: roughly +25–40 KB gzipped for 2,475 hotels. Not a consideration.
 
 ### Order of work — and note it does not start with photographs
 
@@ -197,13 +232,18 @@ overrides the base card's name to 19px serif and adds a gold-dim hover on
 `--card-hover` — which are `.villa-card`'s values, copied. Both grids are already
 `minmax(240px, 1fr)`. What is missing is not a look, it is a shared component.
 
+0. **Turn hotel pricing off.** `NEXT_PUBLIC_BOOKING_MODE=off` in the Vercel
+   environment. One variable, no deploy of code, and it is what makes the rest of this
+   list describe the product that actually exists. Do it first so the card is designed
+   against the real hotel card, not the one with a rate button on it.
 1. **One card, two collections — no photos needed.** `AtlasCollection` grows
    `cardMedia`, and the card gains the three slots villa has and it does not: a crumb
-   above the name, a stats line that can carry a price, and a stacked-CTA footer. The
+   above the name, a stats line, and a benefit line above a stacked-CTA footer. The
    hotel-only overrides get promoted into the shared card for stay collections instead
    of living as exceptions. Hotels pick up a place crumb (`Rome · Italy` — `city` is
-   already in the feed; it is what the city facet reads). The five route atlases are
-   untouched: every new slot is opt-in.
+   already in the feed; it is what the city facet reads) and their VIP amenity line,
+   which fills the gap the rate CTA leaves and is worth more to this audience anyway.
+   The five route atlases are untouched: every new slot is opt-in.
 2. **Villas render the shared card.** `VillaCard` swaps `.villa-card` markup for the
    shared classes, keeping its media, badges, offer line, summary and two advisor CTAs
    through those slots; `.villa-grid` → `.atlas-results`. `VillaAtlas` keeps its own map
@@ -211,29 +251,35 @@ overrides the base card's name to 19px serif and adds a gold-dim hover on
    product, with none of the port landed.**
 3. **Wire the hotel media slot while it is still dark.** `thumb` through
    `build-hotel-points.mjs` → `adaptHotels` → the slot, rendering nothing when null.
-   The switch is then data-only: the day the supplier feed fills `thumb`, hotels have
+   The switch is then data-only: the day Virtuoso fills `thumb`, hotels have
    photographs with no code change.
 4. **When the photos arrive, move the program mark onto them.** Villa badges sit over
    the photo; the hotel's program mark should too, rather than beside the name. That is
    what makes the two read as siblings. Do it *with* the photos — a mark floating over
    an empty plate looks like a bug.
 
-Steps 1–3 are buildable today. What is genuinely blocked is only the photographs
-themselves, and a nightly rate on a hotel card: TravelWits prices a live dated search,
-so hotel's stats line carries category and rating where villa's carries sleeps,
-bedrooms and a from-rate. That asymmetry is honest and should stay.
+Steps 0–3 are doable now. The only thing genuinely blocked is the photographs.
 
 ### Open questions before the hotel half
 
-1. **Rights.** Villa images are hotlinked from the supplier's CDN. Whatever fills
-   hotels' `thumb` — Virtuoso, TravelWits, or a harvest — needs its redistribution terms
-   confirmed, and a decision on hotlinking vs. proxying/caching through our own origin.
-2. **Delivery.** Cards use plain `<img loading="lazy">` with the Next image optimizer
+1. **What Virtuoso actually returns.** This document does not assume. Before step 3 is
+   more than a null-safe slot, the contract needs reading for three things: an image
+   URL (one, or a set to choose from), the property attributes that fill the stats line
+   (category, star/diamond rating), and whether its VIP amenity text supersedes the
+   `vipUpgrades` already on the records. Map those three fields and step 3 closes.
+2. **Rights.** Villa images are hotlinked from the supplier's CDN. Whatever Virtuoso
+   serves needs its redistribution terms confirmed, and a decision on hotlinking vs.
+   proxying/caching through our own origin.
+3. **Delivery.** Cards use plain `<img loading="lazy">` with the Next image optimizer
    opted out (supplier hosts are not in `next.config` `remotePatterns`). Moving villas
    to the shared list means up to 120 cards rather than a page of 24 — lazy loading
    covers it, but the decision to keep or drop the optimizer should be deliberate.
-3. **Aspect ratio and crop.** One ratio for both collections, chosen for hotel
+4. **Aspect ratio and crop.** One ratio for both collections, chosen for hotel
    exteriors and villa pools alike; supplier images arrive in neither.
+5. **The TravelWits cleanup.** Not on this critical path, but it should get an owner:
+   `BOOKING-SPEC.md` and the API strategy document both describe the retired
+   integration, and `/api/hotel/tw`, the overlay and the `bookingLink` deep-link
+   branch are dead weight once the environment variable is off.
 
 ## Phase 4 — what must still be true afterwards
 
@@ -245,6 +291,8 @@ bedrooms and a from-rate. That asymmetry is honest and should stay.
   / `resolveLocation` still doing the alias work for Guide links.
 - **Every CTA still routes to The Guide or the advisor.** Villas are advisor-arranged;
   no card may grow a booking link, and supplier `deep_link` must not enter the feed.
+  As of the TravelWits retirement this is true of hotels as well, so it is now a rule
+  about the shared card rather than a villa exception.
 - The 7.3 MB dataset still never reaches the browser.
 
 ---
