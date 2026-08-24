@@ -23,7 +23,6 @@ import { askSent, resultsReturned, tourOpened, type AskSource } from "@/lib/anal
 import { collectionsSummary } from "@/lib/atlas-config";
 import { registerGuideHost } from "@/lib/atlas/ask";
 import { openAdvisor, ADVISOR_CTA, ADVISOR_SLA } from "./AdvisorRequest";
-import BookingStrip from "./BookingStrip";
 import ResultCards from "./ResultCards";
 
 const MONTHS_SHORT = [
@@ -46,19 +45,6 @@ function formatTripDates(checkIn: string | null, checkOut: string | null): strin
   }
   if (a) return `${MONTHS_SHORT[a.mo]} ${a.day}`;
   return "";
-}
-
-// "Mar 14–21 · 2 adults · 2 kids" — the one-line trip summary on the chip.
-function tripSummary(trip: TripState): string {
-  const parts: string[] = [];
-  const dates = formatTripDates(trip.checkIn, trip.checkOut);
-  if (dates) parts.push(dates);
-  else if (trip.destination) parts.push(trip.destination);
-  parts.push(`${trip.adults} ${trip.adults === 1 ? "adult" : "adults"}`);
-  if (trip.childrenAges.length) {
-    parts.push(`${trip.childrenAges.length} ${trip.childrenAges.length === 1 ? "kid" : "kids"}`);
-  }
-  return parts.join(" · ");
 }
 
 // The seed prompts on the empty state.
@@ -89,12 +75,10 @@ export default function GuideChat() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
-  // Shared trip state (dates/party), kept live so the folded summary chip and
-  // the booking CTAs react the moment the strip or the Guide captures dates.
+  // Shared trip state (dates/party), kept live so the booking CTAs react the
+  // moment the Guide captures dates from the conversation. Nothing in this
+  // component asks for them any more — see the empty state.
   const [trip, setLocalTrip] = useState<TripState | null>(null);
-  const [editingTrip, setEditingTrip] = useState(false);
-  // The booking strip is no longer the front door — see the empty state below.
-  const [datesOpen, setDatesOpen] = useState(false);
   // A conversation found in localStorage that's old enough to confirm before
   // restoring, rather than silently resurrecting it under the traveler.
   const [resume, setResume] = useState<{ turns: Turn[]; updatedAt: number } | null>(null);
@@ -345,8 +329,6 @@ export default function GuideChat() {
     setResume(null);
     clearConversation();
     clearTrip(); // trip state shares the conversation's lifetime
-    setEditingTrip(false);
-    setDatesOpen(false);
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("bevvip:atlas-reset"));
     }
@@ -484,21 +466,17 @@ export default function GuideChat() {
                   New here? See how this works
                 </button>
 
-                {datesOpen ? (
-                  <BookingStrip
-                    onSearch={(ask) => send(ask, "strip")}
-                    initial={trip}
-                    onCancel={() => setDatesOpen(false)}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    className="empty-toggle"
-                    onClick={() => setDatesOpen(true)}
-                  >
-                    Have dates and a party size? Add them
-                  </button>
-                )}
+                {/*
+                  NO DATES HERE.
+                  There used to be a "Have dates and a party size? Add them"
+                  disclosure and a where/check-in/check-out/party form behind
+                  it. The Guide is a discovery engine for big-ticket travel: the
+                  first question is where you are headed, and a check-in field
+                  under it re-framed the whole page as a hotel search — the
+                  exact failure the strip's own history describes, one layer
+                  down. A traveller who has dates can simply say so, and the
+                  Guide records them from the sentence.
+                */}
               </>
             )}
           </div>
@@ -514,16 +492,11 @@ export default function GuideChat() {
       <div className="composer">
         {turns.length > 0 && (
           <div className="composer-tools">
-            {trip && (trip.checkIn || trip.destination) && !editingTrip && (
-              <button
-                type="button"
-                className="trip-chip"
-                title="Edit dates and party"
-                onClick={() => setEditingTrip(true)}
-              >
-                {tripSummary(trip)} <span className="trip-edit">✎</span>
-              </button>
-            )}
+            {/* The trip chip stood here and opened the same form. It went with
+                it: a summary whose only affordance is "edit" has nothing to
+                offer once there is nothing to edit with. A trip mentioned in
+                conversation is still captured, still prices the hotel deep
+                links, and still clears with Start over. */}
             <button
               type="button"
               className="restart"
@@ -533,17 +506,6 @@ export default function GuideChat() {
               ↺ Start over
             </button>
           </div>
-        )}
-        {turns.length > 0 && editingTrip && (
-          <BookingStrip
-            compact
-            initial={trip}
-            onCancel={() => setEditingTrip(false)}
-            onSearch={(ask) => {
-              setEditingTrip(false);
-              send(ask, "strip");
-            }}
-          />
         )}
         {/* The textarea used to be disabled while a reply streamed, so a
             traveler could not write down the next thought while reading the
