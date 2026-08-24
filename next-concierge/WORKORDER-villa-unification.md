@@ -143,30 +143,35 @@ stay, chosen substantially by how it looks — and they should be browsed on the
 card. Sailings, flights and rail journeys are not that kind of thing (a card there
 leads with a route and a date) and keep the text row.
 
-**Superseding note (2026-08-24): TravelWits is out; the supplier is Virtuoso, and
-hotels will carry no pricing.** Earlier drafts of this section assumed a live rate
-search on the hotel card. That was the one thing making the two cards structurally
-different, and it is gone — which simplifies the job rather than complicating it. Both
-collections are advisor-led now. Treat
-`Master Documents/BeVvip_API_Integration_Strategy.md` and `BOOKING-SPEC.md` as
-describing a superseded integration until they are rewritten.
+**Standing note (2026-08-24): the supplier for hotel content is Virtuoso. TravelWits is
+POSTPONED to phase 2, not retired** — hotel deep links keep going to TravelWits,
+before and after the Virtuoso integration, unchanged. What is not coming in this phase
+is **live rates and availability**: nothing in the product quotes a price for a hotel
+stay, and the deep link stays what it has always been, a search the traveller runs on
+TravelWits. `BOOKING-SPEC.md` and `Master Documents/BeVvip_API_Integration_Strategy.md`
+still describe the TravelWits seam accurately; only their live-rate ambitions are
+deferred.
 
-### What "no hotel pricing" changes
+### What that means for the card
 
-- **The hotel card's primary CTA goes away.** It was `cardPrimary` in `AtlasHotel` — a
-  TravelWits search of the property at the VIP rate codes. Nothing has to be ripped out
-  to stop it: `bookingLink()` returns `null` when `NEXT_PUBLIC_BOOKING_MODE=off`, and
-  `cardPrimary` already renders nothing when it gets `null`. **The switch is one
-  environment variable**, and the deletion of the TravelWits seam
-  (`/api/hotel/tw`, `lib/atlas/travelwits-overlay.js`, the `tw`/`bookUrl` state in
-  `AtlasHotel`, `lib/atlas/booking.js`) is a separate, unhurried cleanup.
-- **There is no per-property portal to fall back to.** All 2,475 records carry the same
-  `bookUrl` (`https://www.VipTravelAi.com`) and the same `bookPassword` (`VIP`) — one
-  distinct value each. So "portal mode" is a site link, not a booking affordance for
-  *this* hotel, and it is not a substitute CTA.
-- **The card converges further, not less.** Hotel and villa both end with
-  advisor-led actions: ask The Guide, and open the property. The rate line simply is
-  not there, and a hotel card must not imply one.
+- **The hotel card keeps its primary CTA.** `cardPrimary` in `AtlasHotel` still builds a
+  TravelWits search of the property at the VIP rate codes, labelled "Search VIP Rates"
+  — a search, not a quote. Nothing in `lib/atlas/booking.js`, `/api/hotel/tw` or the
+  overlay changes.
+- **No card asks for dates.** The Guide's hotel result cards used to render an inline
+  two-date form before linking out, so no click landed on a search priced for an
+  invented tomorrow night. That has been removed: **The Guide is a discovery engine for
+  big-ticket travel** — the conversation is "where should we go", not "which nights" —
+  and TravelWits' own search page opens with the dates editable. The honesty the form
+  protected is kept by not printing the invented stay: with real dates the card still
+  says which nights it is searching; without them it says nothing.
+- **Villas still never get a booking link.** They are advisor-arranged. The hotel CTA
+  is the one thing the shared card carries for one collection and not the other, and
+  the slot (`cardPrimary`) already exists for exactly that.
+- **There is no per-property portal.** All 2,475 records carry the same `bookUrl`
+  (`https://www.VipTravelAi.com`) and the same `bookPassword` (`VIP`) — one distinct
+  value each. Portal mode is a site link, not an affordance for *this* hotel, so the
+  TravelWits deep link is the hotel CTA, not a preferred one among options.
 
 ### The data contract already exists
 
@@ -200,17 +205,19 @@ crumb                  hotel: City · Country     villa: Region · Destination �
 Name
 stats                  hotel: category · rating  villa: sleeps · bedrooms · from-rate
 benefit line           hotel: VIP amenity        villa: the special offer
-[ open ] [ ask ]       hotel: details & 3D       villa: request through your advisor
+[ primary ] [ ask ]    hotel: Search VIP Rates   villa: request through your advisor
+[ open ]               hotel: details & 3D       villa: the property page
 ```
 
 The stats line's last item is a price **where the supplier publishes one**. Villas do
-(`priceDisplay`, the supplier's own from-rate); hotels do not, and will not under
-Virtuoso. That is the same slot filled with what exists, not an asymmetry to design
-around — and it is the reason nothing on a hotel card may look like a rate.
+(`priceDisplay`, the supplier's own from-rate); hotels do not — a TravelWits search is
+not a published rate — so the hotel's stats line ends at its attributes. Same slot,
+filled with what exists.
 
-Two differences remain on purpose: the hotel card opens the **photoreal 3D**, which
-villas have no equivalent of; and **a villa card may never grow a booking link** —
-villas are advisor-arranged, and that rule outranks card symmetry.
+Two differences remain on purpose: the hotel card carries a rate SEARCH and opens the
+**photoreal 3D**, neither of which villas have an equivalent of; and **a villa card may
+never grow a booking link** — villas are advisor-arranged, and that rule outranks card
+symmetry.
 
 ### Photo-capable, not photo-required
 
@@ -232,18 +239,14 @@ overrides the base card's name to 19px serif and adds a gold-dim hover on
 `--card-hover` — which are `.villa-card`'s values, copied. Both grids are already
 `minmax(240px, 1fr)`. What is missing is not a look, it is a shared component.
 
-0. **Turn hotel pricing off.** `NEXT_PUBLIC_BOOKING_MODE=off` in the Vercel
-   environment. One variable, no deploy of code, and it is what makes the rest of this
-   list describe the product that actually exists. Do it first so the card is designed
-   against the real hotel card, not the one with a rate button on it.
 1. **One card, two collections — no photos needed.** `AtlasCollection` grows
    `cardMedia`, and the card gains the three slots villa has and it does not: a crumb
    above the name, a stats line, and a benefit line above a stacked-CTA footer. The
    hotel-only overrides get promoted into the shared card for stay collections instead
    of living as exceptions. Hotels pick up a place crumb (`Rome · Italy` — `city` is
    already in the feed; it is what the city facet reads) and their VIP amenity line,
-   which fills the gap the rate CTA leaves and is worth more to this audience anyway.
-   The five route atlases are untouched: every new slot is opt-in.
+   which is what this audience is actually shopping for and which villas already have
+   an equivalent of. The five route atlases are untouched: every new slot is opt-in.
 2. **Villas render the shared card.** `VillaCard` swaps `.villa-card` markup for the
    shared classes, keeping its media, badges, offer line, summary and two advisor CTAs
    through those slots; `.villa-grid` → `.atlas-results`. `VillaAtlas` keeps its own map
@@ -258,7 +261,7 @@ overrides the base card's name to 19px serif and adds a gold-dim hover on
    what makes the two read as siblings. Do it *with* the photos — a mark floating over
    an empty plate looks like a bug.
 
-Steps 0–3 are doable now. The only thing genuinely blocked is the photographs.
+Steps 1–3 are doable now. The only thing genuinely blocked is the photographs.
 
 ### Open questions before the hotel half
 
@@ -276,10 +279,11 @@ Steps 0–3 are doable now. The only thing genuinely blocked is the photographs.
    covers it, but the decision to keep or drop the optimizer should be deliberate.
 4. **Aspect ratio and crop.** One ratio for both collections, chosen for hotel
    exteriors and villa pools alike; supplier images arrive in neither.
-5. **The TravelWits cleanup.** Not on this critical path, but it should get an owner:
-   `BOOKING-SPEC.md` and the API strategy document both describe the retired
-   integration, and `/api/hotel/tw`, the overlay and the `bookingLink` deep-link
-   branch are dead weight once the environment variable is off.
+5. **Live rates, if they return.** TravelWits is postponed, not retired. If real-time
+   rates and availability come back in a later phase, the dates question belongs
+   wherever a traveller has already committed to a property — the dossier, or
+   TravelWits itself — and not on a discovery card. The inline form that used to do it
+   was removed rather than hidden; it is recoverable from git if the shape is wanted.
 
 ## Phase 4 — what must still be true afterwards
 

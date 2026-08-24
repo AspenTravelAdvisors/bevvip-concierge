@@ -7,7 +7,7 @@ import { atlasRegionQuery, internalAtlasLink, isOfferingType } from "@/lib/atlas
 import { leadTool } from "@/lib/guide-meta";
 import type { NormalizedOffering } from "@/lib/offering-shape";
 import { bookingLink } from "@/lib/atlas/booking.js";
-import { getTrip, onTrip, setTrip as persistTrip } from "@/lib/trip-state";
+import { getTrip, onTrip } from "@/lib/trip-state";
 import { atlasOpened, bookingClicked } from "@/lib/analytics";
 
 // The shared trip drives the hotel booking CTAs: bookingLink prices the
@@ -233,11 +233,25 @@ function Card({
  * The tertiary booking affordance, rendered as a sibling of the card's <a> so
  * anchors never nest.
  *
- * The important behavior is the dateless case. `bookingLink` will happily build
- * a TravelWits search using an invented tomorrow-night stay, which is how a
- * traveler planning next spring ended up on a list priced for tonight. When
- * `needsDates` is set we don't link at all — we ask, inline, and only then send
- * them somewhere real. One extra step; every click lands on a true search.
+ * IT DOES NOT ASK FOR DATES ANY MORE.
+ *
+ * It used to: a dateless hotel card rendered an inline two-date form and only
+ * linked out once it had been filled, so that no click landed on a search
+ * `bookingLink` had priced for an invented tomorrow night. That was the right
+ * answer to the wrong question. The Guide is a discovery engine for big-ticket
+ * travel — the conversation is "where should we go", not "which nights" — and a
+ * check-in/check-out form on a result card asks a traveller who is still
+ * choosing a continent to commit to a Tuesday. TravelWits itself is the place
+ * that asks; its search page opens with the dates editable.
+ *
+ * So the link goes straight out, and the honesty that form was protecting is
+ * kept by NOT PRINTING the invented stay: with real dates the card still says
+ * which nights it is searching, and without them it says nothing rather than
+ * showing tomorrow's date as though the traveller had chosen it.
+ *
+ * Live rates and availability may come back (TravelWits is postponed, not
+ * retired). If they do, the dates question belongs wherever the traveller has
+ * already committed to a property — not on a discovery card.
  */
 function CardBooking({
   result,
@@ -248,7 +262,6 @@ function CardBooking({
   trip: TripState | null;
   type: OfferingType | null;
 }) {
-  const [asking, setAsking] = useState(false);
   const booking = bookingLink(result, trip);
   if (!booking) return null;
 
@@ -257,29 +270,10 @@ function CardBooking({
   // as secondary text beneath the CTA, never inside the button (BOOKING-SPEC:
   // on the CTA itself it reads as a barrier at the moment of intent).
   const code = booking.note ? <span className="card-book-code">{booking.note}</span> : null;
+  // Only the traveller's own dates are worth printing; `needsDates` marks the
+  // stay as ours.
+  const stay = booking.needsDates ? null : booking.stay;
 
-  if (booking.kind === "deep" && booking.needsDates) {
-    return asking ? (
-      <>
-        <BookingDates
-          result={result}
-          trip={trip}
-          onCancel={() => setAsking(false)}
-          onDone={() => setAsking(false)}
-        />
-        {code}
-      </>
-    ) : (
-      <>
-        <button type="button" className={`card-book${kindClass}`} onClick={() => setAsking(true)}>
-          {booking.label} →
-        </button>
-        {code}
-      </>
-    );
-  }
-
-  const stay = booking.stay;
   return (
     <>
       <a
@@ -296,77 +290,6 @@ function CardBooking({
       </a>
       {code}
     </>
-  );
-}
-
-/** Two dates, inline, so the link that follows is priced for a real stay. */
-function BookingDates({
-  result,
-  trip,
-  onCancel,
-  onDone,
-}: {
-  result: OfferingResult;
-  trip: TripState | null;
-  onCancel: () => void;
-  onDone: () => void;
-}) {
-  const today = new Date().toISOString().slice(0, 10);
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const ready = !!checkIn && !!checkOut && checkOut > checkIn;
-
-  const go = () => {
-    if (!ready) return;
-    // Persist first: the trip is shared, so every other card's CTA lights up
-    // with the same dates the moment this one is answered.
-    const next = persistTrip(
-      {
-        destination: trip?.destination ?? (result.city as string) ?? null,
-        checkIn,
-        checkOut,
-        adults: trip?.adults ?? 2,
-        childrenAges: trip?.childrenAges ?? [],
-      },
-      "strip",
-    );
-    const link = bookingLink(result, next);
-    bookingClicked(String(result.type ?? ""), true);
-    if (link?.url) window.open(link.url, "_blank", "noopener,noreferrer");
-    onDone();
-  };
-
-  return (
-    <div className="card-dates">
-      <div className="cd-cap">Which nights?</div>
-      <div className="cd-row">
-        <input
-          type="date"
-          aria-label="Check-in"
-          min={today}
-          value={checkIn}
-          onChange={(e) => {
-            setCheckIn(e.target.value);
-            if (checkOut && e.target.value && checkOut <= e.target.value) setCheckOut("");
-          }}
-        />
-        <input
-          type="date"
-          aria-label="Check-out"
-          min={checkIn || today}
-          value={checkOut}
-          onChange={(e) => setCheckOut(e.target.value)}
-        />
-      </div>
-      <div className="cd-actions">
-        <button type="button" className="cd-go" disabled={!ready} onClick={go}>
-          Search rates
-        </button>
-        <button type="button" className="cd-cancel" onClick={onCancel}>
-          Cancel
-        </button>
-      </div>
-    </div>
   );
 }
 
