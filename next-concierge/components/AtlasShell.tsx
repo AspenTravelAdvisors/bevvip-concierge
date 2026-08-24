@@ -1104,8 +1104,22 @@ export default function AtlasShell({
           closeOnClick: false,
           offset: 10,
           maxWidth: "260px",
+          // Inert to the pointer. The label sits directly over the stop's
+          // (now generous) hit target, so a popup that took mouse events would
+          // pull the cursor off the layer, close itself, hand the cursor back
+          // and reopen — a flicker loop right where you are trying to aim.
+          className: "atlas-stopcap",
         });
         let stopHoverWired = false;
+        /**
+         * A stop label opened by a TAP, which must survive until the next tap
+         * lands somewhere else. Hover labels close themselves on mouseleave;
+         * a touch screen never sends one, so without this a tapped stop would
+         * either close instantly or stay stuck on the map forever.
+         */
+        let stopPinned = false;
+        /** Set by the stop click handler so the map-wide one can skip its turn. */
+        let stopClickHandled = false;
 
         const popup = new mapboxgl.Popup({
           closeButton: true,
@@ -2245,6 +2259,30 @@ export default function AtlasShell({
               "circle-opacity": 0.95,
             },
           });
+          /*
+           * The invisible target the pointer actually hits.
+           *
+           * The bead above is sized against the route line on purpose — 3.2px
+           * of radius at world zoom, 6.4px zoomed in — and that is right for
+           * the drawing and hopeless for aiming at. A 3px target needs the
+           * cursor placed to within three pixels of a dot that sits ON a line
+           * you may also be trying to read; on a phone a fingertip covers the
+           * whole neighbourhood and can still miss every stop on the route.
+           *
+           * So the dot keeps its drawn size and something bigger does the
+           * listening. Nothing here is visible (opacity 0 still answers hit
+           * tests, unlike `visibility: none`), so the route looks exactly as
+           * it did and stops behave like real controls.
+           */
+          addLayer(map, {
+            id: "fs_hit", type: "circle", source: "focus-stops",
+            paint: {
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 12, 8, 18],
+              "circle-color": "#000",
+              "circle-opacity": 0,
+              "circle-stroke-width": 0,
+            },
+          });
           // Held back a zoom level: below z5 the dot is ~3.5px and a numeral
           // inside it is illegible anyway, so it was only adding clutter.
           addLayer(map, {
@@ -2284,16 +2322,70 @@ export default function AtlasShell({
 
           if (!stopHoverWired) {
             stopHoverWired = true;
-            map.on("mouseenter", "fs_dot", (e: MBEvent) => {
-              map.getCanvas().style.cursor = "pointer";
-              const f = e.features?.[0];
+            const showStop = (e: MBEvent) => {
+              const hits = e.features ?? [];
+              if (!hits.length) return;
+              /*
+               * Nearest wins, not topmost.
+               *
+               * Widening the target means neighbouring stops' targets now
+               * overlap — three Society Islands calls sit within a thumb's
+               * width at world zoom. Mapbox hands back everything under the
+               * pointer in render order, so taking [0] would answer a tap on
+               * Bora Bora with whichever stop happens to draw last. Longitude
+               * is scaled by cos(lat) so the comparison is a real distance and
+               * not a Mercator one.
+               */
+              const f = hits.length === 1 ? hits[0] : hits.reduce((best, cand) => {
+                const d = (g: typeof cand) => {
+                  const c = g.geometry?.coordinates;
+                  if (!c) return Number.POSITIVE_INFINITY;
+                  const dy = c[1] - e.lngLat.lat;
+                  const dx = (c[0] - e.lngLat.lng) * Math.cos((e.lngLat.lat * Math.PI) / 180);
+                  return dx * dx + dy * dy;
+                };
+                return d(cand) < d(best) ? cand : best;
+              });
               if (!f) return;
-              stopPopup.setLngLat(e.lngLat).setHTML(
-                `<div class="iw"><div class="iwn">${escapeHtml(f.properties.label || "")}</div></div>`,
-              ).addTo(map);
+              // Anchored on the STOP, not on the pointer. The target is now
+              // much wider than the dot, so a label placed where the cursor
+              // crossed its edge would float in open water next to the call it
+              // names.
+              const at = f.geometry?.coordinates;
+              stopPopup
+                .setLngLat(at ?? e.lngLat)
+                .setHTML(
+                  `<div class="iw"><div class="iwn">${escapeHtml(f.properties.label || "")}</div></div>`,
+                )
+                .addTo(map);
+            };
+            map.on("mouseenter", "fs_hit", (e: MBEvent) => {
+              map.getCanvas().style.cursor = "pointer";
+              showStop(e);
             });
-            map.on("mouseleave", "fs_dot", () => {
+            // mouseenter fires once for the whole layer, so walking the route
+            // from stop to stop used to leave the first stop's label up over
+            // every one after it. mousemove re-reads whichever stop is under
+            // the cursor now.
+            map.on("mousemove", "fs_hit", showStop);
+            map.on("mouseleave", "fs_hit", () => {
               map.getCanvas().style.cursor = "";
+              if (!stopPinned) stopPopup.remove();
+            });
+            // Touch has no hover at all: before this, tapping a stop on a phone
+            // did nothing whatsoever — the numbered dots were decoration there.
+            // A tap now names the call and holds it until you tap elsewhere.
+            map.on("click", "fs_hit", (e: MBEvent) => {
+              stopClickHandled = true;
+              stopPinned = true;
+              showStop(e);
+            });
+            // Registered after the delegated handler above, so it sees the flag
+            // that click set and knows to leave the fresh label alone.
+            map.on("click", () => {
+              if (stopClickHandled) { stopClickHandled = false; return; }
+              if (!stopPinned) return;
+              stopPinned = false;
               stopPopup.remove();
             });
           }
@@ -2307,6 +2399,7 @@ export default function AtlasShell({
           const empty = { type: "FeatureCollection" as const, features: [] };
           if (map.getSource("focus-route")) map.getSource("focus-route")?.setData(empty);
           if (map.getSource("focus-stops")) map.getSource("focus-stops")?.setData(empty);
+          stopPinned = false;
           stopPopup.remove();
         }
 

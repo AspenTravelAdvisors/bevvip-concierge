@@ -1373,6 +1373,15 @@ main.page {
   font-size: 16px;
 }
 
+/* Stop labels on a traced route. Purely informational — the pointer must go
+   straight through to the stop underneath, which is what listens for the
+   hover and the tap. */
+.atlas-stopcap,
+.atlas-stopcap .mapboxgl-popup-content,
+.atlas-stopcap .mapboxgl-popup-tip {
+  pointer-events: none;
+}
+
 /* ── Ambient auto-tour caption ──────────────────────────────────────────────
    The card that rides beside each pin the tour drops. Deliberately quieter
    than a real popup: no close button, no tip, no border. It is not a thing you
