@@ -190,6 +190,39 @@ carries images**: villas on (99.8% coverage), hotels off until the supplier feed
 null`) and the switch flips. Cost of carrying it in the client feed, at villa's average
 URL length: roughly +25–40 KB gzipped for 2,475 hotels. Not a consideration.
 
+### Order of work — and note it does not start with photographs
+
+The convergence has already begun by accident: `.atlas-collection--hotel .atlas-card`
+overrides the base card's name to 19px serif and adds a gold-dim hover on
+`--card-hover` — which are `.villa-card`'s values, copied. Both grids are already
+`minmax(240px, 1fr)`. What is missing is not a look, it is a shared component.
+
+1. **One card, two collections — no photos needed.** `AtlasCollection` grows
+   `cardMedia`, and the card gains the three slots villa has and it does not: a crumb
+   above the name, a stats line that can carry a price, and a stacked-CTA footer. The
+   hotel-only overrides get promoted into the shared card for stay collections instead
+   of living as exceptions. Hotels pick up a place crumb (`Rome · Italy` — `city` is
+   already in the feed; it is what the city facet reads). The five route atlases are
+   untouched: every new slot is opt-in.
+2. **Villas render the shared card.** `VillaCard` swaps `.villa-card` markup for the
+   shared classes, keeping its media, badges, offer line, summary and two advisor CTAs
+   through those slots; `.villa-grid` → `.atlas-results`. `VillaAtlas` keeps its own map
+   and rail — this is the card alone. **After this the two lists are visibly the same
+   product, with none of the port landed.**
+3. **Wire the hotel media slot while it is still dark.** `thumb` through
+   `build-hotel-points.mjs` → `adaptHotels` → the slot, rendering nothing when null.
+   The switch is then data-only: the day the supplier feed fills `thumb`, hotels have
+   photographs with no code change.
+4. **When the photos arrive, move the program mark onto them.** Villa badges sit over
+   the photo; the hotel's program mark should too, rather than beside the name. That is
+   what makes the two read as siblings. Do it *with* the photos — a mark floating over
+   an empty plate looks like a bug.
+
+Steps 1–3 are buildable today. What is genuinely blocked is only the photographs
+themselves, and a nightly rate on a hotel card: TravelWits prices a live dated search,
+so hotel's stats line carries category and rating where villa's carries sleeps,
+bedrooms and a from-rate. That asymmetry is honest and should stay.
+
 ### Open questions before the hotel half
 
 1. **Rights.** Villa images are hotlinked from the supplier's CDN. Whatever fills
