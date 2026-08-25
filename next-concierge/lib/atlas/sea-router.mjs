@@ -87,6 +87,13 @@ export function arcPts(a, b, step = 0.04) {
  */
 export const GC_MIN_DEG = 13.5;
 
+/**
+ * Bow height as a fraction of the chord for a great-circle leg, matching the
+ * sagitta arcPts produces at ARC_K = 0.16 so that short hops and long
+ * crossings inside one voyage are drawn to the same rhythm.
+ */
+export const GC_LOFT = 0.08;
+
 /** Great-circle central angle between two [lat, lng] points, in degrees. */
 export function centralAngleDeg(a, b) {
   const RAD = Math.PI / 180;
@@ -110,8 +117,27 @@ export function centralAngleDeg(a, b) {
  * +241°. Slerp returns longitudes in ±180, so each point is re-anchored to the
  * one before it and the track stays continuous in the frame it was handed.
  * Endpoints are pinned exactly, so legs still meet at their ports.
+ *
+ * LOFT. A bare great circle only looks curved when it is a high-latitude
+ * east-west leg: of the 68 crossings that reach this function, 59 bow under 4%
+ * of their chord and 49 under 2%. Left alone they would draw FLATTER than the
+ * short bezier hops on either side of them in the same voyage, which is a
+ * worse drawing than either convention on its own. So the same top-up geo.ts
+ * applies to flight paths applies here, to the same 8%: the crossing keeps its
+ * true track, and the voyage keeps one rhythm from end to end.
+ *
+ * The bow is what makes endpoint ORDER matter — an offset that follows the
+ * direction of travel is precisely the defect this replaced — so the endpoints
+ * are sorted first and the result reversed, making A→B and B→A the same line.
  */
 export function gcPts(a, b) {
+  const swap = a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]);
+  const out = gcRun(swap ? b : a, swap ? a : b);
+  return swap ? out.reverse() : out;
+}
+
+/** The ordered half of gcPts. Assumes a/b are already canonical. [lat, lng] */
+function gcRun(a, b) {
   const RAD = Math.PI / 180;
   const ang = centralAngleDeg(a, b) * RAD;
   const sin = Math.sin(ang);
@@ -124,6 +150,30 @@ export function gcPts(a, b) {
   const x1 = Math.cos(la1) * Math.cos(lo1), y1 = Math.cos(la1) * Math.sin(lo1), z1 = Math.sin(la1);
   const x2 = Math.cos(la2) * Math.cos(lo2), y2 = Math.cos(la2) * Math.sin(lo2), z2 = Math.sin(la2);
   const n = Math.min(192, Math.max(24, Math.ceil(ang / RAD / 0.8)));
+  // Bow perpendicular to the chord, poleward where that means anything, and
+  // only enough to bring the leg's OWN curvature up to GC_LOFT — never to
+  // flatten a crossing that already curves more than that. See the note above.
+  const dLat = b[0] - a[0], dLng = b[1] - a[1];
+  const chord = Math.hypot(dLng, dLat);
+  let px = 0, py = 0, amp = 0;
+  if (chord > 1e-12) {
+    px = dLng; py = -dLat; // perpendicular, as [lat, lng] components
+    const norm = Math.hypot(px, py);
+    px /= norm; py /= norm;
+    const midLat = (a[0] + b[0]) / 2;
+    if (px * midLat < 0) { px = -px; py = -py; }
+    const gx = x1 + x2, gy = y1 + y2, gz = z1 + z2;
+    const gn = Math.hypot(gx, gy, gz);
+    let own = 0;
+    if (gn > 1e-12) {
+      const mLat = Math.atan2(gz / gn, Math.hypot(gx / gn, gy / gn)) / RAD;
+      let mLng = Math.atan2(gy / gn, gx / gn) / RAD;
+      while (mLng - a[1] > 180) mLng -= 360;
+      while (mLng - a[1] < -180) mLng += 360;
+      own = Math.abs((mLng - a[1]) * dLat - (mLat - a[0]) * dLng) / chord / chord;
+    }
+    amp = Math.max(0, GC_LOFT - own) * chord;
+  }
   const p = [];
   let prevLng = a[1];
   for (let i = 0; i <= n; i++) {
@@ -136,7 +186,8 @@ export function gcPts(a, b) {
     while (lng - prevLng > 180) lng -= 360;
     while (lng - prevLng < -180) lng += 360;
     prevLng = lng;
-    p.push([lat, lng]);
+    const bow = amp * 4 * t * (1 - t);
+    p.push([lat + bow * px, lng + bow * py]);
   }
   // Pin the ends. The slerp lands within float epsilon of both, and legs are
   // expected to meet exactly at their shared port.

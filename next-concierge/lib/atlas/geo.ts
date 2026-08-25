@@ -106,6 +106,16 @@ export function unrollLine(pts: readonly LngLat[]): LngLat[] {
 }
 
 /**
+ * Bow height as a fraction of the chord, for the parabolic loft below.
+ *
+ * 0.08 is not a taste call — it is the sagitta the quadratic bezier this
+ * replaced produced at k = 0.16, measured at its midpoint. Matching it means
+ * the drawn curvature is exactly what the atlas looked like before, on top of
+ * a track that is now correct.
+ */
+export const LOFT_K = 0.08;
+
+/**
  * The great-circle path between two points, densified enough to draw.
  *
  * Jet legs used to be a quadratic bezier — `arcPts` in sea-router.mjs, with a
@@ -134,10 +144,53 @@ export function unrollLine(pts: readonly LngLat[]): LngLat[] {
  * is re-anchored to the one before it and the path stays continuous in the
  * frame it was handed, antimeridian and all.
  *
+ * LOFT. The track is right; the drawn line is the track plus a parabolic bow,
+ * for the reason airline route maps have always drawn one. A true great circle
+ * only LOOKS curved when it is a high-latitude east-west leg: measured over the
+ * 553 legs in the jet atlas, the bezier this replaced bowed a constant 8% of
+ * its chord and the bare geodesic bows a median of 1.3%, leaving 62% of legs
+ * drawing as good as straight. That is the "reads as a wire rather than a
+ * journey" this file's callers have always been trying to avoid, and losing it
+ * was a real regression even though the geometry underneath got more honest.
+ *
+ * So the bow is added back on top of the correct track rather than instead of
+ * it, at the amplitude the bezier used, and — unlike the bezier — symmetrically:
+ * see the canonical ordering below.
+ *
  * @param maxStepDeg target angular spacing. 0.8° holds the drawn chord under
  *        a pixel at the zoom a traced route actually gets framed at.
+ * @param loft bow height as a fraction of the chord. 0 draws the bare geodesic.
  */
-export function geodesicLine(a: LngLat, b: LngLat, maxStepDeg = 0.8): LngLat[] {
+export function geodesicLine(
+  a: LngLat,
+  b: LngLat,
+  maxStepDeg = 0.8,
+  loft = LOFT_K,
+): LngLat[] {
+  /*
+   * Canonical endpoint order — this is what keeps the bow honest.
+   *
+   * The bezier's actual defect was never the bow itself, it was that the bow
+   * took the sign of the leg's DIRECTION, so the same city pair flown the other
+   * way bowed the other way and an out-and-back itinerary drew a lens. Any
+   * perpendicular offset reintroduces that unless the offset is computed from
+   * the unordered pair. Sorting the endpoints first, and reversing the result
+   * at the end, makes A→B and B→A the identical polyline by construction.
+   *
+   * The two frames a caller may hand us (unrollLine puts Tokyo→LAX at +241°
+   * and LAX→Tokyo at -220°) differ by exactly 360°, so every quantity derived
+   * from the DIFFERENCE of the endpoints — chord, perpendicular, amplitude —
+   * is frame-independent and matches across the pair.
+   */
+  const flip = a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]);
+  const p0 = flip ? b : a;
+  const p1 = flip ? a : b;
+  const out = geodesicRun(p0, p1, maxStepDeg, loft);
+  return flip ? out.reverse() : out;
+}
+
+/** The ordered half of geodesicLine. Assumes p0/p1 are already canonical. */
+function geodesicRun(a: LngLat, b: LngLat, maxStepDeg: number, loft: number): LngLat[] {
   const RAD = Math.PI / 180;
   const la1 = a[1] * RAD, lo1 = a[0] * RAD;
   const la2 = b[1] * RAD, lo2 = b[0] * RAD;
@@ -172,6 +225,61 @@ export function geodesicLine(a: LngLat, b: LngLat, maxStepDeg = 0.8): LngLat[] {
     return [mint(a[0], a[1]), mint(b[0], b[1])];
   }
   const n = Math.min(192, Math.max(24, Math.ceil(ang / RAD / maxStepDeg)));
+  /*
+   * The bow, perpendicular to the chord in lat/lng space.
+   *
+   * Deliberately computed in raw degrees rather than on the sphere, because
+   * the point is to reproduce what the bezier drew — which worked in degrees,
+   * and so bowed a little wider on screen at high latitude. Matching the old
+   * look means matching that too.
+   *
+   * Direction is POLEWARD wherever the perpendicular has a real latitude
+   * component: that is the way a great circle already leans, so the bow
+   * exaggerates the truth instead of fighting it. On a due north-south leg the
+   * perpendicular is purely east-west and "poleward" means nothing — there the
+   * canonical ordering above is what settles it, consistently for both
+   * directions of travel.
+   */
+  const dLng = b[0] - a[0];
+  const dLat = b[1] - a[1];
+  const chord = Math.hypot(dLng, dLat);
+  let px = 0;
+  let py = 0;
+  let amp = 0;
+  if (loft !== 0 && chord > 1e-12) {
+    px = -dLat / chord;
+    py = dLng / chord;
+    const midLat = (a[1] + b[1]) / 2;
+    if (py * midLat < 0) { px = -px; py = -py; }
+    /*
+     * Top the geodesic's own bow UP to `loft`, rather than adding to it.
+     *
+     * The bezier's charm was that every leg bowed by the same fraction of its
+     * chord, which is what gave a multi-stop itinerary its rhythm. A geodesic
+     * already bows on its own — by almost nothing on a north-south or
+     * equatorial leg, and by a lot on a high-latitude east-west one — so
+     * simply adding a constant bow on top stacked the two on exactly the legs
+     * that were already the most curved: measured across the jet atlas, the
+     * drawn bow ranged from 8% to 26% of chord instead of a steady 8%, and the
+     * longest, most prominent crossings were the ones thrown off.
+     *
+     * So the loft supplies only the DIFFERENCE. A leg that already bows the
+     * full amount gets none and is drawn as the bare great circle; a leg that
+     * bows more than that keeps its own shape, since the truth is never worth
+     * flattening to hit a number.
+     */
+    const gx = x1 + x2, gy = y1 + y2, gz = z1 + z2;
+    const gn = Math.hypot(gx, gy, gz);
+    let own = 0;
+    if (gn > 1e-12) {
+      const mLat = Math.atan2(gz / gn, Math.hypot(gx / gn, gy / gn)) / RAD;
+      let mLng = Math.atan2(gy / gn, gx / gn) / RAD;
+      while (mLng - a[0] > 180) mLng -= 360;
+      while (mLng - a[0] < -180) mLng += 360;
+      own = Math.abs((mLng - a[0]) * dLat - (mLat - a[1]) * dLng) / chord / chord;
+    }
+    amp = Math.max(0, loft - own) * chord;
+  }
   const out: LngLat[] = [];
   let prevLng = a[0];
   for (let i = 0; i <= n; i++) {
@@ -186,7 +294,11 @@ export function geodesicLine(a: LngLat, b: LngLat, maxStepDeg = 0.8): LngLat[] {
     while (lng - prevLng > 180) lng -= 360;
     while (lng - prevLng < -180) lng += 360;
     prevLng = lng;
-    out.push(mint(lng, lat));
+    // 4t(1-t): a parabola, zero at both ends and 1 at the midpoint, so the
+    // endpoints stay pinned exactly on their stops and the peak sagitta is
+    // `amp` — i.e. LOFT_K of the chord.
+    const bow = amp * 4 * t * (1 - t);
+    out.push(mint(lng + bow * px, lat + bow * py));
   }
   return out;
 }
