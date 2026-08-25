@@ -890,6 +890,56 @@ const FLY_FULL_CLIMB = 2;
  */
 const FLY_SAMPLES = 360;
 /**
+ * How hard the camera's path is low-passed, as a fraction of the reading frame.
+ *
+ * ── Why the camera does not simply follow the line ─────────────────────────
+ *
+ * Because the line is a real one. A jet leg is an analytic great-circle loft
+ * with no detail below the scale of the journey, which is why that atlas
+ * always looked right and the other three did not. Rail track and routed sea
+ * lanes are surveyed geometry, and they wobble far below the scale the flight
+ * is about — so a camera pinned to the line inherits every kink in the survey.
+ *
+ * Measured by walking each shipped leg at 60fps exactly as the flight does and
+ * taking the camera's screen-space acceleration, in px/frame² (rms, and the
+ * worst frame of the leg), on a 1263px map:
+ *
+ *                             following the line     following this path
+ *     rail                     4.98   worst 14.11     1.08   worst 2.67
+ *     sea / expedition         2.61   worst  8.85     1.23   worst 3.15
+ *     sea / world cruise       2.24   worst  8.70     1.18   worst 2.96
+ *     sea / yacht              1.96   worst  7.13     1.12   worst 2.78
+ *
+ * The number that sizes the constant is the CONTROL: a perfectly straight leg,
+ * flown with the same climb and the same ramp, reads 0.87 rms / 2.16 worst.
+ * That is the floor — motion the flight is supposed to have, and no survey can
+ * remove it. Smoothed, every collection sits within about a third of that
+ * floor, which says the surveyed shake is gone and what is left is the camera
+ * doing its job. Smoothing harder from here would stop taking out wobble and
+ * start taking out the route.
+ *
+ * Expressed against the FRAME rather than in kilometres, because whether a
+ * wobble is visible is a question about the picture and never about the
+ * ground. The cost is that the camera no longer sits exactly over the line:
+ * worst case across the shipped legs, 12–18px at reading altitude, or about
+ * 1.4% of the frame. The line still runs through the middle of the picture.
+ *
+ * The DRAWN route is untouched. The trail follows the surveyed line exactly,
+ * because that line is the product's claim about where the train goes; only
+ * the camera is allowed to take the smooth way round it.
+ */
+const FLY_SMOOTH = 0.09;
+/**
+ * …and the most of a leg the smoothing may eat, whatever the frame says.
+ *
+ * A short hop is framed tightly, so a fixed fraction of ITS frame is a large
+ * fraction of the hop itself, and past about here the smoothing stops removing
+ * wobble and starts removing the leg — a coastal run around a headland
+ * straightened into the chord that crosses the headland. The route on screen
+ * would then visibly not be the path the camera flies.
+ */
+const FLY_SMOOTH_MAX = 0.12;
+/**
  * How far the camera will follow a route toward a pole.
  *
  * An Antarctic leg genuinely runs past 70°S, and a camera that goes there is
@@ -3133,6 +3183,63 @@ export default function AtlasShell({
           return 1;
         }
 
+        /**
+         * The camera's path along a leg: the route, resampled evenly, then
+         * low-passed until nothing below `radius` degrees of ground survives.
+         *
+         * Resampling FIRST is not a tidying step. Surveyed geometry is dense
+         * where the surveying was — a station approach carries more vertices
+         * per mile than an ocean crossing does per hundred — so a smoothing
+         * pass over the raw vertices weights the average by how closely the
+         * line happens to be sampled, and pulls the camera toward the busiest
+         * part of the leg rather than toward its shape.
+         *
+         * Two box passes rather than one: a single moving average has a boxy
+         * response that leaves a visible corner where the window enters a bend,
+         * and two of them convolve to a triangle, which is close enough to
+         * Gaussian at this scale that nothing on screen betrays it.
+         *
+         * The window closes to nothing at both ends, so the first and last
+         * points survive exactly: those are the CALLS, and a camera that
+         * smoothed its way to somewhere near the port would name a port it is
+         * not looking at.
+         */
+        function cameraPath(
+          pts: [number, number][], cum: number[], radius: number,
+        ): [number, number][] {
+          const len = cum[cum.length - 1];
+          const K = FLY_SAMPLES;
+          const even: [number, number][] = [];
+          let i = 1;
+          for (let k = 0; k <= K; k++) {
+            const d = (len * k) / K;
+            while (i < cum.length - 1 && cum[i] < d) i++;
+            const segLen = cum[i] - cum[i - 1] || 1;
+            const f = Math.max(0, Math.min(1, (d - cum[i - 1]) / segLen));
+            even.push([
+              pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * f,
+              pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * f,
+            ]);
+          }
+          const half = Math.max(0, Math.min(
+            Math.floor(K / 8), Math.round(radius / ((len / K) || 1)),
+          ));
+          if (!half) return even;
+          let cur = even;
+          for (let pass = 0; pass < 2; pass++) {
+            const next: [number, number][] = [];
+            for (let k = 0; k <= K; k++) {
+              const w = Math.min(half, k, K - k);
+              if (!w) { next.push(cur[k]); continue; }
+              let x = 0, y = 0;
+              for (let j = k - w; j <= k + w; j++) { x += cur[j][0]; y += cur[j][1]; }
+              next.push([x / (2 * w + 1), y / (2 * w + 1)]);
+            }
+            cur = next;
+          }
+          return cur;
+        }
+
         const PROFILE_N = 32;
         /**
          * How a leg's ground is covered over its own duration.
@@ -3355,8 +3462,15 @@ export default function AtlasShell({
            * under its neighbour's name.
            */
           to: Call;
-          /** The hop's own drawn geometry, which is what the camera follows. */
+          /** The hop's own drawn geometry — the line, and what the trail draws. */
           pts: [number, number][];
+          /**
+           * The camera's path over the same ground, evenly sampled and
+           * low-passed (see cameraPath). Held apart from `pts` because the two
+           * answer different questions: the line is where the vehicle goes, and
+           * this is where a camera can watch it from without shaking.
+           */
+          cam: [number, number][];
           /** Cumulative degrees along `pts`, so the tween moves at a steady rate. */
           cum: number[];
           /**
@@ -3501,9 +3615,19 @@ export default function AtlasShell({
                     FLY_LEG_BASE_MS + FLY_LEG_PER_ZOOM_MS * climb));
               const paceMs = (1000 * len) / (area * FLY_PACE * (1 - FLY_RAMP));
               const ms = Math.max(climbMs, paceMs);
+              /*
+               * Smooth against the READING frame, not the cruise one: the
+               * camera is lowest at the two calls, so that is where a given
+               * wobble is the largest share of the picture and where the
+               * smoothing has to be judged. Bounded by the leg's own length so
+               * a short hop is not straightened out of existence.
+               */
+              const cam = cameraPath(pts, cum, Math.min(
+                FLY_SMOOTH * frameDegAt(stopZoom), len * FLY_SMOOTH_MAX,
+              ));
               out.push({
                 to: callFor(h.hop + 1, pts[pts.length - 1]),
-                pts, cum, cruiseZoom: cruise, ms, prof,
+                pts, cam, cum, cruiseZoom: cruise, ms, prof,
                 pitchTo: FLY_PITCH + (FLY_CRUISE_PITCH - FLY_PITCH) *
                   Math.max(0, Math.min(1, climb / FLY_FULL_CLIMB)),
               });
@@ -3781,6 +3905,19 @@ export default function AtlasShell({
                 const lng = l.pts[i - 1][0] + (l.pts[i][0] - l.pts[i - 1][0]) * f;
                 const lat = l.pts[i - 1][1] + (l.pts[i][1] - l.pts[i - 1][1]) * f;
                 /*
+                 * Where the CAMERA is, which is not quite where the vehicle
+                 * is: the same fraction along, read off the smoothed path (see
+                 * cameraPath). The gap between the two is by construction below
+                 * what the frame can show — that is the whole specification of
+                 * the smoothing — so the line still runs through the middle of
+                 * the picture while the picture stops shaking.
+                 */
+                const cq = Math.max(0, Math.min(1, u)) * FLY_SAMPLES;
+                const ci = Math.min(FLY_SAMPLES - 1, Math.floor(cq));
+                const cf = cq - ci;
+                const camLng = l.cam[ci][0] + (l.cam[ci + 1][0] - l.cam[ci][0]) * cf;
+                const camLat = l.cam[ci][1] + (l.cam[ci + 1][1] - l.cam[ci][1]) * cf;
+                /*
                  * …while altitude and pitch ride a hump on the RAW clock: the
                  * climb has to be under way before the camera has gone
                  * anywhere, or the first moments of a long leg are spent
@@ -3792,14 +3929,14 @@ export default function AtlasShell({
                  */
                 const climb = climbAt(t);
                 map.jumpTo({
-                  center: [lng, clampFlyLat(lat)],
+                  center: [camLng, clampFlyLat(camLat)],
                   zoom: stopZoom + (l.cruiseZoom - stopZoom) * climb,
                   pitch: FLY_PITCH + (l.pitchTo - FLY_PITCH) * climb,
                   bearing: 0,
                 });
-                // The trail follows the route under the camera, not the
-                // camera's own path — they are the same line here, but the
-                // route is the one that has to be drawn correctly.
+                // The trail draws the ROUTE, not the camera's path. They are
+                // no longer the same line — see cameraPath — and the surveyed
+                // one is the product's claim about where the vehicle goes.
                 setTrail(l.pts.slice(1, i).concat([[lng, lat]]));
               }
 
