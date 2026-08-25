@@ -38,7 +38,7 @@ export default function AnswersIndex() {
         <p>
           The questions luxury travelers actually ask, answered directly and
           grounded in the Expedition Bucket List atlas — {""}
-          <Link href="/atlas/hotel">2,501 vetted hotels</Link>,{" "}
+          <Link href="/atlas/hotel">2,382 vetted hotels</Link>,{" "}
           <Link href="/atlas/cruise">3,542 expedition sailings</Link>,{" "}
           <Link href="/atlas/villa">3,902 villas</Link>, plus world cruises,
           rails, jets and yachts. When you want the answer priced for your

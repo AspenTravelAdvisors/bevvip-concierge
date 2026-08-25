@@ -3926,6 +3926,28 @@ button.card-book {
   inset: 0;
   background: radial-gradient(ellipse at center, #14151b, #0b0c10);
 }
+/* The photograph with the brand mark riding on it (AtlasCollection's
+   `markOverMedia`). The wrapper exists only to give the mark something to
+   position against, since `.ac-media` is supplied by the collection. */
+.atlas-card--stay .ac-media-wrap {
+  position: relative;
+  display: block;
+}
+/* Bottom-left, clear of the top-left corner villas use for their badges, and
+   sitting on the darkest part of most photographs. The mark carries its own
+   light chip, so it stays legible over a bright image. */
+.atlas-card--stay .ac-media-mark {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.55));
+}
+/* Over a photograph the mark needs no card of its own beyond its chip. */
+.atlas-card--stay .ac-media-mark .brandlogo {
+  margin: 0;
+}
 /* The name is a link on a villa card and plain text on a hotel one; it must
    read identically either way. */
 .atlas-card--stay h3 a {

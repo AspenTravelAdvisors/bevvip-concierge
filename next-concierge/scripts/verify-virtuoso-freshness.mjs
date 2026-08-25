@@ -37,5 +37,18 @@ for (const { label, file } of feeds) {
   else console.log(`  ok       ${label} — ${age} old (${count} records)`);
 }
 
+// The headline count in lib/atlas-config.ts is a hand-kept constant, and the
+// nightly sync moves the real number underneath it. Nobody would notice the
+// page advertising a stale figure, so say so here rather than never.
+{
+  const hotels = JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.json'), 'utf8')).length;
+  const config = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
+  const stated = Number(/nounPlural: "vetted hotels"[\s\S]*?count: (\d+)/.exec(config)?.[1] ?? 0);
+  if (!stated) console.warn('  note     could not read the hotel count from lib/atlas-config.ts');
+  else if (stated !== hotels) {
+    console.warn(`  drift    lib/atlas-config.ts advertises ${stated} hotels; the feed holds ${hotels}. Update the constant.`);
+  } else console.log(`  ok       headline count matches the feed (${hotels})`);
+}
+
 if (failed) { console.error(`\nVirtuoso data is stale. Refresh it with: npm run sync:virtuoso`); process.exit(1); }
 console.log(`\nVirtuoso feeds are current (oldest ${worst < 1 ? `${Math.round(worst * 24)}h` : `${worst.toFixed(1)}d`}).`);

@@ -154,11 +154,20 @@ interface Props {
    * put it on), and because only the collection knows whether its feed
    * actually carries images. That last part is the rule: media is
    * photo-CAPABLE, not photo-required. A collection whose records mostly have
-   * no image must pass nothing rather than a grid of grey rectangles — which
-   * is why hotels do not pass it yet, though `o.thumb` is already wired end to
-   * end and empty.
+   * no image must pass nothing rather than a grid of grey rectangles. Hotels
+   * withheld it for years on exactly that ground; the Virtuoso sync filled
+   * `o.thumb` (2,066 of 2,382 properties) and the slot opened.
    */
   cardMedia?: (o: AtlasOffering) => React.ReactNode;
+  /**
+   * Move the brand mark off the head row and onto the photograph.
+   *
+   * Only sensible alongside `cardMedia`, and only for a collection whose feed
+   * mostly HAS photographs — over the empty state the mark is floating on a
+   * gradient. It is a move, never a copy: printing the same mark twice on one
+   * card is the failure this flag exists to avoid.
+   */
+  markOverMedia?: boolean;
   /**
    * The ids currently on screen, whenever that set changes.
    *
@@ -293,7 +302,7 @@ const fmtDay = (iso?: string | null) =>
 export default function AtlasCollection({
   type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
   cardPrimary, onVisibleIds, photoreal = false, detailFor,
-  cardCrumb, cardNote, cardSummary, cardMedia,
+  cardCrumb, cardNote, cardSummary, cardMedia, markOverMedia,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -998,6 +1007,34 @@ export default function AtlasCollection({
    * which were `.villa-card`'s values copied by hand, and are now one rule.
    */
   const stayCard = !!(cardMedia || cardCrumb || cardNote || cardSummary);
+
+  /**
+   * The collection's brand mark for one offering.
+   *
+   * Look the mark up by whichever field this collection filters on. cruise has
+   * NO brand — its marks are keyed by operator name — so a `o.brand`-only
+   * lookup silently dropped every cruise logo.
+   *
+   * A function rather than inline markup because it now has two homes: the head
+   * row, or over the photograph when `markOverMedia` is set. It must render
+   * identically in both, and one of them printing a subtly different mark is
+   * exactly the bug that would go unnoticed.
+   */
+  const brandMarkFor = (o: AtlasOffering) => {
+    const markKey = o.logoKey ?? (descriptor.brandField === "operator" ? o.operator : o.brand);
+    if (!markKey && !o.operator) return null;
+    return (
+      <BrandLogo
+        brand={
+          brandMarks[markKey || ""] || {
+            key: markKey || o.operator || "",
+            short: o.brandLabel || o.operator,
+          }
+        }
+        assetBase={logoBase}
+      />
+    );
+  };
   /** The offering whose dossier is open, if it is still in the field. */
   const detailed = detailId ? byId.get(detailId) ?? null : null;
   const inlineDetail =
@@ -1284,7 +1321,20 @@ export default function AtlasCollection({
                   body — nothing today, since no collection that renders here
                   has images yet, and a whole card's worth of markup the day one
                   does. */}
-              {cardMedia?.(o)}
+              {cardMedia && (
+                markOverMedia
+                  ? (
+                    /* The mark rides on the photograph rather than the head row.
+                       Rendered here, not inside the collection's `cardMedia`,
+                       because the resolved marks live in this component — the
+                       same reason the badges belong to the collection at all. */
+                    <span className="ac-media-wrap">
+                      {cardMedia(o)}
+                      <span className="ac-media-mark">{brandMarkFor(o)}</span>
+                    </span>
+                  )
+                  : cardMedia(o)
+              )}
               {/*
                 Everything else lives in a padded body rather than in the card
                 itself, so a photograph can sit flush to the card's edge above
@@ -1298,25 +1348,7 @@ export default function AtlasCollection({
                   know the place. */}
               {crumb && <p className="ac-crumb">{crumb}</p>}
               <div className="ac-head">
-                {/* Look the mark up by whichever field this collection filters
-                    on. cruise has NO brand — its marks are keyed by operator
-                    name — so a `o.brand`-only lookup silently dropped every
-                    cruise logo. */}
-                {(() => {
-                  const markKey = o.logoKey ?? (descriptor.brandField === "operator" ? o.operator : o.brand);
-                  if (!markKey && !o.operator) return null;
-                  return (
-                    <BrandLogo
-                      brand={
-                        brandMarks[markKey || ""] || {
-                          key: markKey || o.operator || "",
-                          short: o.brandLabel || o.operator,
-                        }
-                      }
-                      assetBase={logoBase}
-                    />
-                  );
-                })()}
+                {!markOverMedia && brandMarkFor(o)}
                 <div className="ac-headtext">
                   <h3>{o.title}</h3>
                   {/* Date line, mirroring the original's three non-hotel cases:

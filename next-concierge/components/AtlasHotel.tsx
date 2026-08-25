@@ -280,6 +280,34 @@ export default function AtlasHotel() {
     return perks.join(" · ");
   }, []);
 
+  /**
+   * The property's photograph, at the card's top edge.
+   *
+   * AtlasCollection's rule for `cardMedia` is that media is photo-CAPABLE, not
+   * photo-required: a collection passes it only once its feed actually carries
+   * images, or every card becomes a grey rectangle. Hotels withheld it for
+   * exactly that reason — `thumb` was cut end to end and empty on all of them.
+   * The Virtuoso sync filled it, so the slot opens now: 2,066 of 2,382
+   * properties have a supplier photograph, and the rest fall through to the
+   * considered empty space `.ac-media-empty` already draws.
+   *
+   * No badge over it. The program mark is a brand logo the card body already
+   * renders, and putting it here too would say the same thing twice.
+   */
+  const cardMedia = useCallback((o: AtlasOffering) => {
+    const src = typeof o.thumb === "string" ? o.thumb : null;
+    return (
+      <span className="ac-media">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt="" loading="lazy" />
+        ) : (
+          <span className="ac-media-empty" />
+        )}
+      </span>
+    );
+  }, []);
+
   return (
     <AtlasCollection
       type="hotel"
@@ -287,6 +315,10 @@ export default function AtlasHotel() {
       load={load}
       cardCrumb={cardCrumb}
       cardNote={cardNote}
+      cardMedia={cardMedia}
+      // The program mark rides on the photograph now that there is one, and
+      // leaves the head row to the property's name.
+      markOverMedia
       // The hotel atlas's own accent.
       accent="#caa44e"
       initialStyle="satellite"
