@@ -47,6 +47,13 @@ interface HotelRecord {
   bookUrl?: string | null;
   bookPassword?: string | null;
   tw?: { hotelId?: string | number; lat?: number; lon?: number; label?: string } | null;
+  /** Virtuoso's editorial copy and insider note, and the room breakdown. */
+  description?: string | null;
+  inTheKnow?: string | null;
+  rooms?: { name?: string | null; description?: string | null }[] | null;
+  roomTypeCount?: number | null;
+  perksYear?: number | null;
+  perksStale?: boolean | null;
   fit?: {
     description?: string | null;
     forbesRating?: number | string | null;
@@ -150,7 +157,17 @@ export default function HotelDossier({
   const name = record?.name || fallbackName || "Property";
   const where = [record?.city, record?.adminRegion, record?.country].filter(Boolean).join(", ");
   const benefits = benefitList(record?.vipUpgrades);
-  const description = cleanDescription(record?.fit?.description);
+  /*
+   * Virtuoso's editorial copy first, the old AI blurb only as a fallback.
+   *
+   * `fit.description` was model-written, the same vintage as the categories
+   * that filed 73% of the inventory under "City Hotel". The supplier text is
+   * written by Virtuoso's travel desk and covers 2,071 of 2,073 properties, so
+   * the fallback now only catches the non-Virtuoso partners.
+   */
+  const description = record?.description || cleanDescription(record?.fit?.description);
+  const inTheKnow = record?.inTheKnow || null;
+  const rooms = (record?.rooms || []).filter((r) => r && r.name);
   const forbes = record?.fit?.forbesRating;
   const aaa = record?.fit?.aaaDiamondRating;
   const logo = record ? logoFor(record) : null;
@@ -205,6 +222,9 @@ export default function HotelDossier({
       {record && (
         <div className="hd-body">
           {description && <p className="hd-desc">{description}</p>}
+          {/* Virtuoso's one-line insider note — the detail an advisor would
+              actually lead with, and the closest the feed comes to a voice. */}
+          {inTheKnow && <p className="hd-know"><span>In the know</span> {inTheKnow}</p>}
 
           {(forbes || aaa) && (
             <div className="hd-ratings">
@@ -266,9 +286,40 @@ export default function HotelDossier({
           )}
           {booking?.note && <p className="hd-code">{booking.note}</p>}
 
+          {rooms.length > 0 && (
+            <>
+              <p className="hd-label">
+                Rooms &amp; Suites
+                {/* The feed caps the list; say so rather than implying these
+                    are all of them. */}
+                {record?.roomTypeCount && record.roomTypeCount > rooms.length ? (
+                  <span className="hd-roomcount"> {rooms.length} of {record.roomTypeCount}</span>
+                ) : null}
+              </p>
+              <ul className="hd-rooms">
+                {rooms.map((r, i) => (
+                  <li key={i}>
+                    <span className="hd-room-name">{r.name}</span>
+                    {r.description ? <span className="hd-room-desc">{r.description}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
           {benefits.length > 0 && (
             <>
-              <p className="hd-label">VIP Upgrades</p>
+              <p className="hd-label">
+                VIP Upgrades
+                {/* Benefit blocks are written per year and 157 properties are
+                    still on an old one. Better to date it than to let an
+                    advisor quote a lapsed benefit. */}
+                {record?.perksYear ? (
+                  <span className={record?.perksStale ? "hd-perkyear stale" : "hd-perkyear"}>
+                    {" "}for {record.perksYear}
+                  </span>
+                ) : null}
+              </p>
               <ul className="hd-ups">
                 {benefits.map((b, i) => (
                   <li key={i}>{renderBenefit(b)}</li>

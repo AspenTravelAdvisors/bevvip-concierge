@@ -41,6 +41,21 @@ const text = html => String(html ?? '')
   .replace(/&quot;|&ldquo;|&rdquo;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
   .replace(/\s+/g, ' ').trim();
 
+/**
+ * The year the supplier's benefit block is written for.
+ *
+ * `virtuosoAmenitiesHtml` opens with "For 2026:" and the list items follow. The
+ * heading is not a perk and must not be shown as one, but the year is the most
+ * important thing on the block: 157 properties are still stamped 2024 or 2025,
+ * and an advisor quoting a two-year-old benefit is the failure this catches.
+ */
+const perkYear = html => {
+  const m = /For\s+([\d\s&]+?)\s*:/i.exec(String(html ?? ''));
+  if (!m) return null;
+  const years = m[1].match(/\d{4}/g);
+  return years?.length ? Number(years[years.length - 1]) : null;   // "2025 & 2026" → 2026
+};
+
 /** The perk list is the one thing guests actually compare, so keep its items intact. */
 const listItems = html => {
   const items = String(html ?? '').match(/<li[^>]*>([\s\S]*?)<\/li>/gi) || [];
@@ -101,12 +116,19 @@ function normalize(summary, detail) {
     features: selected(d.hotelFeatures),
 
     numberOfRooms: d.numberOfRooms ?? null,
-    roomTypes: (d.guestRooms ?? []).slice(0, MAX_ROOM_TYPES)
-      .map(r => ({ name: r.roomTypeName, description: clip(text(r.descriptionHtml), 160) })),
+    roomTypes: (d.guestRooms ?? []).slice(0, MAX_ROOM_TYPES).map(r => ({
+      name: r.roomTypeName,
+      description: clip(text(r.descriptionHtml), 160),
+      // Only the flags actually set. A traveller asks for a private pool or
+      // connecting rooms; the "false" entries are noise and triple the payload.
+      amenities: [r.amenities, r.services, r.features]
+        .flatMap(g => (g?.features ?? []).filter(f => f.isSelected).map(f => f.featureName)),
+    })),
     roomTypeCount: (d.guestRooms ?? []).length,
 
     // Authoritative Virtuoso benefits, year-stamped by the supplier.
     perks: listItems(d.virtuosoAmenitiesHtml),
+    perksYear: perkYear(d.virtuosoAmenitiesHtml),
     hasVirtuosoBenefits: summary.hasVirtuosoBenefits ?? null,
     hasSpecialAmenities: d.hasSpecialAmenities ?? d.productHasSpecialAmenities ?? null,
     hideAmenitiesFromConsumer: d.hideVirtuosoAmenitiesFromConsumer ?? false,

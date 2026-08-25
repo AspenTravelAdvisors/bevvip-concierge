@@ -129,7 +129,40 @@ for (const h of base) {
     countryCode: v.countryCodeISO3 ?? null,
 
     vipUpgrades: v.perks.length ? v.perks : h.vipUpgrades,
+    // Which year the supplier wrote the benefits for, and whether that year has
+    // passed. An advisor quoting a 2024 benefit block in 2026 is the thing this
+    // exists to prevent; 157 properties are still stamped 2024 or 2025.
+    perksYear: v.perksYear ?? null,
+    perksStale: v.perksYear != null && v.perksYear < new Date().getFullYear(),
     hideAmenities: v.hideAmenitiesFromConsumer || false,
+
+    /*
+     * The property's description, replacing the AI-written one the dossier has
+     * been showing (hotel-fit's `description`, same vintage as the categories
+     * that put 73% of the inventory in "City Hotel").
+     *
+     * `description` is Virtuoso's own editorial copy, written by their travel
+     * desk and factually vetted — the closest thing to a recommendation the
+     * feed carries. `inTheKnow` is their one-line insider note. Both verbatim:
+     * rewriting 2,000 descriptions with a model is how the categories got wrong
+     * in the first place.
+     */
+    description: v.folioDescription || null,
+    inTheKnow: v.folioInTheKnow || null,
+    // The hotel's own marketing copy. Kept for the search haystack rather than
+    // display — it is brochure voice, but it names restaurants and features a
+    // traveller may search for.
+    summary: v.summary || null,
+
+    // Room types, so "suites that sleep four" can match. `roomTypeCount` is the
+    // true total; the list is capped in the feed.
+    rooms: (v.roomTypes ?? []).map(r => ({ name: r.name, description: r.description })),
+    roomTypeCount: v.roomTypeCount ?? 0,
+    // The amenity flags, unioned across room types rather than repeated on each.
+    // Per-room they came to 126,371 strings, mostly the same handful over and
+    // over; a traveller asking for a private pool wants to know the property has
+    // one, and the per-room breakdown stays in virtuoso-hotels.json.
+    roomAmenities: [...new Set((v.roomTypes ?? []).flatMap(r => r.amenities ?? []))].sort(),
 
     bookUrl: h.bookUrl,                               // ours
     bookPassword: h.bookPassword,                     // ours
@@ -169,7 +202,14 @@ for (const v of feedDoc.hotels) {
     country: v.country, city: v.city, address: null, postalCode: v.postalCode ?? null,
     lat: v.lat, lng: v.lng, region: null, adminRegion: v.state ?? null,
     countryCode: v.countryCodeISO3 ?? null,
-    vipUpgrades: v.perks, hideAmenities: v.hideAmenitiesFromConsumer || false,
+    vipUpgrades: v.perks, perksYear: v.perksYear ?? null,
+    perksStale: v.perksYear != null && v.perksYear < new Date().getFullYear(),
+    hideAmenities: v.hideAmenitiesFromConsumer || false,
+    description: v.folioDescription || null, inTheKnow: v.folioInTheKnow || null,
+    summary: v.summary || null,
+    rooms: (v.roomTypes ?? []).map(r => ({ name: r.name, description: r.description })),
+    roomTypeCount: v.roomTypeCount ?? 0,
+    roomAmenities: [...new Set((v.roomTypes ?? []).flatMap(r => r.amenities ?? []))].sort(),
     bookUrl: 'https://www.VipTravelAi.com', bookPassword: 'VIP',
     thumb: v.image, images: (v.images ?? []).slice(0, 3).map(i => i.url).filter(Boolean),
     imageCount: v.imageCount ?? 0,
@@ -243,4 +283,10 @@ console.log(`luxury-hotels.json — ${merged.length} properties`);
 console.log(`  ${stats.upgraded} upgraded from Virtuoso · ${stats.added} newly added · ${stats.localOnly} local-only partners`);
 console.log(`  ${stats.dropped} duplicates folded away · ${stats.junk} junk records removed`);
 console.log(`  ${stats.categoryChanged} categories corrected · ${stats.perksReplaced} perk lists from supplier · ${stats.photos} photos attached`);
+{
+  const withDesc = merged.filter(h => h.description).length;
+  const withRooms = merged.filter(h => h.rooms?.length).length;
+  const stale = merged.filter(h => h.perksStale).length;
+  console.log(`  ${withDesc} supplier descriptions · ${withRooms} with room detail · ${stale} carrying a stale perk year`);
+}
 console.log(`  overlays: ${twMoved} booking links moved to survivors · hotel-fit re-keyed to id (${fitKept} kept, ${fitLost} without curation)`);

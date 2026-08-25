@@ -286,6 +286,16 @@ function filterHotels(params = {}) {
           fit.aaaDiamondRating ? `AAA ${fit.aaaDiamondRating} Diamond` : null,
           ...(fit.ratingBadges || []).map((r) => r && r.label),
           ...(fit.searchKeywords || []), ...(Array.isArray(h.tags) ? h.tags : []),
+          // Supplier prose and room detail, from the Virtuoso sync. `summary`
+          // is brochure voice we never display, but it names the restaurants,
+          // the spa and the view — the nouns travellers actually search for.
+          // The rooms let occupancy and layout queries land: "suites that sleep
+          // four", "connecting rooms", "private pool".
+          h.description, h.inTheKnow, h.summary,
+          ...(Array.isArray(h.experiences) ? h.experiences : []),
+          ...(Array.isArray(h.vibes) ? h.vibes : []),
+          ...(Array.isArray(h.roomAmenities) ? h.roomAmenities : []),
+          ...(Array.isArray(h.rooms) ? h.rooms.flatMap((r) => [r && r.name, r && r.description]) : []),
           isCaribbeanHotel(h) ? "caribbean" : null,
           aliasText(h),
         ].map(fold).join(" ");
