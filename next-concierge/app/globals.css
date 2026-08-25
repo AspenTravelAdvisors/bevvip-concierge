@@ -4321,8 +4321,9 @@ button.card-book {
   .atlas-card .ac-ask {
     padding: 6px 0; /* 44px-ish touch target without changing the look */
   }
-  /* The two outlined actions keep their box; just make it thumb-height. */
+  /* The outlined actions keep their box; just make them thumb-height. */
   .atlas-card .ac-book,
+  .atlas-card .ac-fly,
   .atlas-card .ac-3d {
     padding: 9px 13px;
   }
@@ -4622,6 +4623,7 @@ button.card-book {
    rather than filled, because a card carrying a solid gold slab reads as an
    advert for itself. */
 .atlas-card .ac-book,
+.atlas-card .ac-fly,
 .atlas-card .ac-3d {
   font-family: var(--sans);
   font-size: 12px;
@@ -4637,6 +4639,7 @@ button.card-book {
   white-space: nowrap;
 }
 .atlas-card .ac-book:hover,
+.atlas-card .ac-fly:hover,
 .atlas-card .ac-3d:hover {
   background: rgba(201, 168, 76, 0.16);
   border-color: var(--gold);

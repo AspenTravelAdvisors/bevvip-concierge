@@ -1474,3 +1474,96 @@ the old fixture claimed to be a hotel selection while carrying no `selecting`,
 which would have quietly asserted the opposite of what ships. Driven in a
 browser against the stubbed engine: one flight per selection, 3,648 ms for a
 40 km hop and 5,200 ms for 17,802 km. `npm run verify` clean.
+
+## The route flight — a journey too wide to frame (2026-08-25)
+
+Since the collection atlases became a square-ish map band on phones
+(`--atlas-map-h: clamp(240px, 46dvh, 400px)` against ~350px of width), the
+private jet round-the-world itineraries — and the world cruises, which are
+worse — could not be got onto the screen at all. That was reported as a framing
+bug. It is not one; it is arithmetic:
+
+- **Mercator's floor is minZoom.** At 0.6 the whole world is 512·2^0.6 ≈ 776px
+  wide, so a ~350px band shows less than half a planet and the route runs off
+  both edges. Lowering minZoom does not rescue it — the world is 512px at zoom
+  0 and Mapbox has nothing below that. **No phone can show a circumnavigation
+  flat, at any zoom.**
+- **A globe shows at most a hemisphere**, and the outer ~30° of it is edge-on:
+  about 110° usable, which is what `SPAN_FLAT_LNG` has always encoded.
+
+So there is no camera position that answers "show me this whole route", and
+every previous fix was a better-aimed version of an impossible shot.
+
+**Two changes, and the first is the smaller one.**
+
+**1. The flatten gate is now measured in pixels.** `flattenIfCircumnavigation`
+dropped a wide route to mercator whenever the globe could not frame it, without
+ever asking whether the flat map could. `canFrameFlat()` asks: it computes the
+zoom mercator would need for the span in the box we actually have, insets and
+all, and compares it to `getMinZoom()`. A desktop map is wider than 776px and
+still flattens a world route, as it should. The phone band keeps the globe,
+because a coherent hemisphere with the route continuing round the limb beats a
+strip that severs it at both frame edges. Being pixels rather than a breakpoint,
+this also covers a short fullscreen window and the map beside an open Guide
+panel.
+
+**2. Wide routes are flown, not framed.** `▶ Fly the route` — on every card with
+two located stops, and in the map's own control stack (fullscreen has no cards,
+and fullscreen is where a reel gets filmed). The camera drops onto the first
+call at 58° of pitch, follows the itinerary in travel order with each call
+naming itself as it passes and a bright trail growing behind it over the dimmed
+route, then levels out and pulls back.
+
+**Deliberately not automatic.** A card tap is browsing: it traces and frames as
+well as the viewport allows, and you keep the camera. The flight takes the
+camera for ~9s, and taking someone's map away is not something to do because
+they were reading a list. It is also the reason a reduced-motion visitor is
+fine: nothing flies unless it is asked to.
+
+**Speed and altitude are one decision.** Degrees per second is meaningless
+alone — 50°/s is a drift at world scale and unwatchable at city scale. What
+stays constant is how much of the FRAME goes past per second (`FLY_PACE`, 0.9
+screen-widths), so the flight derives the window it needs to fly the route
+inside the reel's budget and takes its zoom from that. A circumnavigation is
+flown high and a Riviera hop low, both at the same readable pace. Budget is the
+reel: ~7.5s of travel between a 0.9s arrival and a 1.2s settle, so three routes
+fit in half a minute.
+
+**Details that are load-bearing:**
+
+- **It flies `lastFocusLegs`**, the chain `paintFocusRoute` stored — ordered,
+  oriented and unrolled into one longitude frame by `lib/atlas/route-frame.ts`.
+  Raw legs would cross the Pacific four times.
+- **Trapezoid, not ease-in-out.** The obvious smoothstep peaks at TWICE its
+  average speed, which at a comfortable average put the middle of every route —
+  the ocean crossing, the part with nothing to watch but the map — past at 2.5
+  frame-widths a second. Ramping over the first and last 15% and cruising
+  between peaks at 1.18×. Caught by the harness, not by eye.
+- **The camera is interpolated between path samples**, not rounded to one:
+  rounding quantises to 360 positions, so at speed some frames advance two
+  samples and some none, which reads as dropped frames.
+- **Bearings are unrolled before smoothing** (…350°, 10°… is a 20° turn) and
+  smoothed harder than position, or the horizon whips round at every call.
+- **An interruption returns nothing to the camera.** Any hand on the globe ends
+  the flight through the existing `haltSpin` path, and the teardown puts back
+  only what was borrowed — the dimmed route, the trail, the label, the lit call.
+  Not the position, not the pitch: a camera that answers a drag by easing
+  somewhere else is the map arguing with you, and the teardown also runs one
+  tick after the landing's own ease is issued, where a second camera command
+  would cancel the first. Levelling belongs to the landing.
+- **The flight lives inside `wireHandlers()`** with the rest of the route
+  drawing, so the things above it that must stand down — the idle spin, the view
+  reporter, the effect cleanup — reach it through `focusRouteRef`, and share its
+  state through `flyingRef`.
+
+**Verified.** `scripts/verify-route-flight.mjs` (in `npm run verify`) slices the
+real framing-and-flight block out of `AtlasShell.tsx`, compiles it and runs it
+against a fake map and a fake clock, in the idiom of `verify-ambient-tour.mjs`:
+28 checks that it flies the itinerary forwards and lands on the last call, names
+every call once in order, holds its pace, fits inside ten seconds, gives back
+everything it borrowed on an interruption at any point, and flattens on a
+desktop box while keeping the globe on a phone one. Two real bugs came out of
+it — the whip-pan cruise and a trail that stopped up to 80ms short of the final
+call. `npm run verify` clean; production build clean. Not seen live: this
+sandbox's network policy blocks `api.mapbox.com`, so the flight has been driven
+only against the stub — the pace and the pitch want an eye on a real phone.

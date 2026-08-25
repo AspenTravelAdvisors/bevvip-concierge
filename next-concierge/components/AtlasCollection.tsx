@@ -511,7 +511,7 @@ export default function AtlasCollection({
    * poisoned the home page with that collection's trips.
    */
   const emitRoute = useCallback(
-    (o: AtlasOffering | null, fit = false) => {
+    (o: AtlasOffering | null, fit = false, fly = false) => {
       if (!o) {
         window.dispatchEvent(new CustomEvent("bevvip:atlas-route", { detail: { legs: [] } }));
         return;
@@ -540,6 +540,10 @@ export default function AtlasCollection({
             legs,
             stops,
             fit,
+            // The Fly button. It rides on the route event because the flight
+            // needs the route traced first and this is the message that traces
+            // it — one dispatch, in order, rather than two to be sequenced.
+            fly,
             fitPoints: fallback.length ? fallback : undefined,
             // A fitting emit is a selection; a hover preview is not. The
             // photoreal engine stands down for the former, because the
@@ -651,11 +655,13 @@ export default function AtlasCollection({
    * traveller asked where this is, not for its file.
    */
   const togglePin = useCallback(
-    (o: AtlasOffering, opts?: { detail?: boolean }) => {
+    (o: AtlasOffering, opts?: { detail?: boolean; fly?: boolean }) => {
       if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
       // A second tap on the selected card releases it — but a details request
       // for it is a request to OPEN, not to toggle the selection away.
-      if (pinnedId === o.id && !opts?.detail) {
+      // …but flying the route you are already looking at is a request to
+      // watch it, not to put it away.
+      if (pinnedId === o.id && !opts?.detail && !opts?.fly) {
         setPinnedId(null);
         setDetailId(null);
         emitRoute(null);
@@ -663,7 +669,7 @@ export default function AtlasCollection({
       }
       setPinnedId(o.id);
       setDetailId(opts?.detail ? o.id : null);
-      emitRoute(o, true);
+      emitRoute(o, true, opts?.fly);
       /*
        * PUT THE TWO THINGS TOGETHER.
        *
@@ -1361,6 +1367,33 @@ export default function AtlasCollection({
               )}
 
               <div className="ac-actions">
+                {/*
+                  Fly the route — the cinematic pass, and the answer to a
+                  journey that does not fit on a phone at any zoom.
+
+                  Deliberately separate from tapping the card. A tap is
+                  browsing: it traces the route and frames it as well as the
+                  viewport allows, and you keep the camera. This hands the
+                  camera over for about nine seconds, and taking someone's map
+                  away is not something to do because they were reading a list.
+
+                  Only where there is a journey to fly: two located stops is the
+                  same test the route itself passes, so a hotel or a villa —
+                  one place, no itinerary — never offers it.
+                */}
+                {o.stops.filter((st) => st.at).length > 1 && (
+                  <button
+                    type="button"
+                    className="ac-fly"
+                    title="Fly this route — the camera follows the itinerary, calling at each stop"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePin(o, { fly: true });
+                    }}
+                  >
+                    ▶ Fly the route
+                  </button>
+                )}
                 {/* The two boxed actions sit together, then the plain links.
                     Splitting them with "View details" made a matched pair read as
                     two unrelated controls. */}

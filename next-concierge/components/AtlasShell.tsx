@@ -90,6 +90,14 @@ const ROUTE_ZOOM = 5.5;         // dashed route polylines appear above this zoom
  * driving it.
  */
 const TILT_PITCH = 55;
+/**
+ * A stop filter that matches nothing.
+ *
+ * The "current call" highlight is a permanent layer pointed at one stop at a
+ * time, so its resting state has to be a filter no feature satisfies — stop
+ * numbers are "1", "2", … and a lone selection is "", so an em dash is free.
+ */
+const FS_NOW_NONE: unknown[] = ["==", ["get", "n"], "—"];
 const STREET_ZOOM = 13.5;
 // Routes are live as of Deliverable 1: sea geometry is precomputed at build
 // time (scripts/build-sea-routes.mjs), so enabling this no longer means running
@@ -347,6 +355,16 @@ interface AtlasApi {
   setProjection(globe: boolean): void;
   /** Tilt the camera off vertical so extruded buildings read as buildings. */
   setTilt(on: boolean): void;
+  /**
+   * Fly the traced route — the cinematic pass, not a camera move.
+   *
+   * On the API rather than only on the route event bus because the map's own
+   * Fly control needs it: in fullscreen there are no cards to press, and
+   * fullscreen is exactly where someone is filming.
+   */
+  flyRoute(): void;
+  /** Hand the camera back mid-flight. */
+  stopFly(): void;
   resize(): void;
   plot(meta: GuideMeta): void;
   refit(): void;
@@ -389,6 +407,14 @@ export interface RouteDetail {
    * property, a search) is nobody else's job and is flown here.
    */
   selecting?: boolean;
+  /**
+   * Fly it once it is painted — the card's Fly button, not its tap.
+   *
+   * Carried on the route event rather than given its own event because the
+   * flight needs the route traced first, and this is the message that traces
+   * it: one dispatch, in order, instead of two that have to be sequenced.
+   */
+  fly?: boolean;
 }
 
 interface Props {
@@ -621,6 +647,95 @@ const REVEAL_POINT_MS = 3000;
  */
 const REFRAME_MS = 700;
 
+/**
+ * The route flight — a journey too wide to frame, shown by flying it.
+ *
+ * ── The thing that cannot be done ──────────────────────────────────────────
+ *
+ * There is no camera position that puts a round-the-world itinerary on a
+ * phone, in either projection, and no amount of tuning the fit changes that.
+ *
+ * Mercator's floor is minZoom: at 0.6 the whole world is 512·2^0.6 ≈ 776px
+ * wide against a map band about 350px across, so less than half a planet fits
+ * and the itinerary runs off both edges — which is what "the private jet round
+ * the world routes can't fit on the screen" is. Lowering minZoom does not
+ * rescue it either: the world is 512px at zoom 0 and there is nothing below
+ * that. A globe shows at most a hemisphere, and the outer ~30° of that is
+ * edge-on, so it frames about 110° — which is what SPAN_FLAT_LNG encodes.
+ *
+ * ── So don't frame it, fly it ──────────────────────────────────────────────
+ *
+ * Framing is what the card tap does, as well as it can. The flight is a
+ * separate, deliberate act: the camera drops onto the first stop, tilts, and
+ * follows the itinerary in travel order with each call naming itself as it
+ * passes, then pulls back to the whole route at rest. The idle spin already
+ * proves the mechanism — a globe under a camera that writes its centre every
+ * frame reads as a planet turning rather than as a map panning — this aims
+ * that same loop along a journey.
+ *
+ * ── The pace is the design ─────────────────────────────────────────────────
+ *
+ * Speed and altitude are one decision, not two. Degrees per second is
+ * meaningless on its own: 50°/s is a gentle drift at world scale and unwatch-
+ * able at city scale. What stays constant is how much of the FRAME goes past
+ * per second, so the flight picks its altitude from the route's own length —
+ * the window it needs to fly a circumnavigation in the reel's budget — and a
+ * short regional route, needing no such window, is flown low and close.
+ *
+ * The budget is the reel: two or three journeys inside thirty seconds. So a
+ * whole circumnavigation gets ~7.5s of travel between a 0.9s arrival and a
+ * 1.2s settle, and comes out around nine and a half seconds a route.
+ */
+/** Screen-widths of ground per second. Above ~1 the eye stops tracking. */
+const FLY_PACE = 0.9;
+/** What the flight aims to take, before the clamps below argue with it. */
+const FLY_TARGET_MS = 7500;
+const FLY_MIN_MS = 4000;
+const FLY_MAX_MS = 8500;
+/** The drop onto the first stop, and the pull-back at the end. */
+const FLY_ARRIVE_MS = 900;
+const FLY_SETTLE_MS = 1200;
+/**
+ * Longitude across the frame, clamped at both ends.
+ *
+ * The floor stops a two-stop hop being flown from inside the aircraft; the
+ * ceiling stops a circumnavigation being "flown" from a static world view,
+ * which is the fit that already failed.
+ */
+const FLY_WINDOW_MIN = 22;
+const FLY_WINDOW_MAX = 70;
+/**
+ * The pitch. Harder than the Tilt button's 55°, and just under Mapbox's
+ * default 60° ceiling — this is the one camera in the product meant to look
+ * like a seat-back map rather than a chart, and a globe under 45° still reads
+ * as a disc seen from above. Globe view lowers the ceiling further at low zoom
+ * (you would otherwise be looking past the horizon); a circumnavigation is
+ * flown high, so it lands wherever Mapbox allows and degrades to a lean.
+ */
+const FLY_PITCH = 58;
+/**
+ * How much of the flight is spent getting up to speed, and slowing down again.
+ *
+ * The flight holds a constant speed between the two, so this is also what sets
+ * its peak: 1/(1 - FLY_RAMP) of the average, or about 18% over. See the profile
+ * in the step function for why an ease-in-out — 100% over — was the wrong shape
+ * for a journey.
+ */
+const FLY_RAMP = 0.15;
+/** Camera path samples. Enough that the smoothing below has room to work. */
+const FLY_SAMPLES = 360;
+/**
+ * How far the camera will follow a route toward a pole.
+ *
+ * An Antarctic leg genuinely runs past 70°S, and a camera that goes there is
+ * looking at the underside of the globe with the itinerary wrapped around the
+ * horizon. Clamped, the route rides the top of the frame instead — off-centre,
+ * but still a map.
+ */
+const FLY_MAX_LAT = 74;
+/** A call names itself this long after the camera reaches it. */
+const FLY_LABEL_MS = 2200;
+
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
@@ -708,8 +823,22 @@ export default function AtlasShell({
     flatten(legs: { coordinates: [number, number][] }[]): boolean;
     /** Mark a routeless selection (a hotel) so the chosen pin is identifiable. */
     mark(stops: FocusStop[]): void;
+    /** Fly what is traced: the cinematic pass along the itinerary. */
+    fly(): void;
+    /** Give the camera back mid-flight. */
+    stopFly(): void;
   } | null>(null);
   const lastFocusStops = useRef<FocusStop[]>([]);
+  /**
+   * Is the camera flying a route right now?
+   *
+   * A ref rather than the `flyingRoute` state because the readers are inside
+   * the map closure, which never re-renders: the flight itself lives in
+   * wireHandlers() (with the rest of the route drawing) while the things that
+   * have to stand down for it — the view reporter, the idle spin — are in the
+   * scope above. This is what they share.
+   */
+  const flyingRef = useRef(false);
   // Stops the traced route's dash animation. Filled by the map effect; called
   // from its cleanup so an unmounted map can't keep a rAF loop alive.
   const stopFlowRef = useRef<(() => void) | null>(null);
@@ -762,6 +891,16 @@ export default function AtlasShell({
    * street-level camera move (flyTo carries the pitch in the same ease).
    */
   const [tilted, setTilted] = useState(false);
+  /**
+   * Is a route traced, and is one being flown?
+   *
+   * Both exist for the Fly control: it appears only when there is a route to
+   * fly, and it becomes a Stop while the camera has the wheel. The map effect
+   * owns the truth (it is the thing that paints and flies); these mirror it
+   * out to the chrome.
+   */
+  const [hasRoute, setHasRoute] = useState(false);
+  const [flyingRoute, setFlyingRoute] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   /* ── Engine ───────────────────────────────────────────────────────────
@@ -1149,6 +1288,12 @@ export default function AtlasShell({
         function haltSpin() {
           spinning = false;
           cancelAnimationFrame(spinRAF);
+          // The route flight is the spin pointed somewhere. Anything that
+          // stops one stops the other, or a traveller who grabs the globe
+          // mid-flight is fighting a camera that keeps driving. Reached through
+          // the route api because the flight lives with the route drawing,
+          // inside wireHandlers().
+          focusRouteRef.current?.stopFly();
         }
         function stopSpin() {
           haltSpin();
@@ -2209,7 +2354,16 @@ export default function AtlasShell({
             map.setPaintProperty("fr_arrow", "text-halo-color", p.casing);
           } catch { /* layer missing mid-restyle */ }
 
+          /*
+           * The flight's trail is created HERE, with the rest of the route
+           * drawing, rather than when a flight starts — layer order is
+           * insertion order, and a trail added later draws over the numbered
+           * calls it is supposed to run between. Empty until something flies.
+           */
+          try { ensureTrail(p); } catch { /* the trail is decoration */ }
           paintFocusStops(stops ?? lastFocusStops.current, p);
+          // Something is traced, so the Fly control has something to fly.
+          setHasRoute(true);
         }
 
         /**
@@ -2254,6 +2408,27 @@ export default function AtlasShell({
               "circle-stroke-color": p.casing,
               "circle-stroke-width": 1,
               "circle-opacity": 0.95,
+            },
+          });
+          /*
+           * The call the flight is passing, lit.
+           *
+           * Filtered to nothing at rest — FS_NOW_NONE matches no stop number —
+           * and pointed at one stop at a time by flyRoute. It lives here rather
+           * than in the flight so it is created and repainted with the rest of
+           * the stop drawing, and so a basemap switch mid-flight cannot leave
+           * a highlight behind in the old palette.
+           */
+          addLayer(map, {
+            id: "fs_now", type: "circle", source: "focus-stops",
+            filter: FS_NOW_NONE,
+            paint: {
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 7, 8, 13],
+              "circle-color": p.tie,
+              "circle-opacity": 0.28,
+              "circle-stroke-color": p.tie,
+              "circle-stroke-width": 1.4,
+              "circle-stroke-opacity": 0.9,
             },
           });
           /*
@@ -2391,6 +2566,8 @@ export default function AtlasShell({
         function clearFocusRoute() {
           setAmbientMuted(false);
           stopRouteFlow(); // nothing traced → nothing to march along
+          endFlight();     // …and nothing to fly
+          setHasRoute(false);
           lastFocusLegs.current = [];
           lastFocusStops.current = [];
           const empty = { type: "FeatureCollection" as const, features: [] };
@@ -2426,7 +2603,10 @@ export default function AtlasShell({
          */
         const SPAN_FLAT_LNG = 110;
         const SPAN_FLAT_LAT = 100;
-        function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]): boolean {
+
+        /** The bounding box of some geometry, in its own unrolled frame. */
+        interface Span { lo: number; hi: number; latLo: number; latHi: number }
+        function spanOf(legs: { coordinates: [number, number][] }[]): Span {
           let lo = Infinity, hi = -Infinity, latLo = Infinity, latHi = -Infinity;
           for (const l of legs) for (const c of l.coordinates) {
             if (c[0] < lo) lo = c[0];
@@ -2434,12 +2614,496 @@ export default function AtlasShell({
             if (c[1] < latLo) latLo = c[1];
             if (c[1] > latHi) latHi = c[1];
           }
-          const wide = hi - lo > SPAN_FLAT_LNG || latHi - latLo > SPAN_FLAT_LAT;
+          return { lo, hi, latLo, latHi };
+        }
+
+        /** Normalised Mercator Y, 0 at the top of the world and 1 at the bottom. */
+        function mercY(lat: number): number {
+          const l = Math.max(-85.05, Math.min(85.05, lat));
+          return (1 - Math.log(Math.tan(Math.PI / 4 + (l * Math.PI) / 360)) / Math.PI) / 2;
+        }
+
+        /** Whatever padding fitBounds is about to use, as four numbers. */
+        function fitInsets(): { top: number; bottom: number; left: number; right: number } {
+          const p = fitPad();
+          return typeof p === "number" ? { top: p, bottom: p, left: p, right: p } : p;
+        }
+
+        /**
+         * Could a flat map hold this span AT ALL, in the box we actually have?
+         *
+         * This is the question the flatten below used to skip, and skipping it
+         * is what put a round-the-world itinerary off both edges of a phone.
+         * Mercator's widest possible view is the whole world at minZoom, which
+         * is 512·2^minZoom pixels across — 776px at 0.6. A desktop map is wider
+         * than that and can therefore show a circumnavigation; the ~350px
+         * square band a phone gives a collection page cannot show one at any
+         * zoom, so flattening for it trades a globe that frames PART of the
+         * route for a strip that frames part of it worse.
+         *
+         * Answered in pixels rather than by breakpoint on purpose: the binding
+         * constraint is the size of the box, and the box is also small in
+         * fullscreen-on-a-short-window, in the phone's split map band, and
+         * beside an open Guide panel.
+         */
+        function canFrameFlat(s: Span): boolean {
+          const ins = fitInsets();
+          const w = node.clientWidth - ins.left - ins.right;
+          const h = node.clientHeight - ins.top - ins.bottom;
+          if (!(w > 0) || !(h > 0)) return false;
+          const spanLng = Math.max(s.hi - s.lo, 0.01);
+          const zx = Math.log2((w * 360) / (spanLng * 512));
+          const dy = Math.max(Math.abs(mercY(s.latHi) - mercY(s.latLo)), 1e-4);
+          const zy = Math.log2(h / (dy * 512));
+          // A hair of margin: landing exactly ON minZoom is the clamped case.
+          return Math.min(zx, zy) >= map.getMinZoom() + 0.05;
+        }
+
+        function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]): boolean {
+          const s = spanOf(legs);
+          const wide = s.hi - s.lo > SPAN_FLAT_LNG || s.latHi - s.latLo > SPAN_FLAT_LAT;
           if (!wide || !projGlobe) return false;
+          // Too wide for a globe is not by itself a reason to flatten — see
+          // canFrameFlat. When the flat map cannot hold it either, the globe is
+          // the better half-answer (a coherent hemisphere, and the route
+          // continuing round the limb rather than severed at the frame edge),
+          // and the Fly button is the real one.
+          if (!canFrameFlat(s)) return false;
           projGlobe = false;
           setIs3D(false);
           try { map.setProjection("mercator"); } catch { /* projection optional */ }
           return true;
+        }
+
+        /* ── The route flight ─────────────────────────────────────────────────
+         *
+         * See the FLY_* constants for why this exists and how its pace is set.
+         * Everything below is the mechanism: build a camera path from the
+         * traced route, fly it, name the calls on the way past, and put
+         * everything back the way it was on any exit.
+         */
+
+        /**
+         * The flight's rAF and its arrival timer, and what it borrowed.
+         *
+         * endFlight is wired into haltSpin and into the effect's cleanup
+         * through the route api, so an unmount or a hand on the globe mid-
+         * flight cannot leave a loop writing the centre of a map that has gone.
+         */
+        let flyRAF = 0;
+        let flyTimer = 0;
+        let flyRestore: (() => void) | null = null;
+
+        /**
+         * End a flight, however it ended — finished, interrupted, unmounted.
+         *
+         * Idempotent, and it never moves the camera: an interruption is
+         * someone's hand on the globe, and the one thing they must not get is a
+         * camera that answers by easing somewhere else. It only puts back what
+         * the flight borrowed — the dimmed route, the trail, the label, the
+         * highlighted call.
+         */
+        function endFlight() {
+          if (flyTimer) { clearTimeout(flyTimer); flyTimer = 0; }
+          if (flyRAF) { cancelAnimationFrame(flyRAF); flyRAF = 0; }
+          if (!flyingRef.current) return;
+          flyingRef.current = false;
+          setFlyingRoute(false);
+          const restore = flyRestore;
+          flyRestore = null;
+          try { restore?.(); } catch { /* the map may be mid-restyle */ }
+        }
+
+        /** The trail the flight draws behind itself, added on first use. */
+        function ensureTrail(p: ReturnType<typeof routePalette>) {
+          const empty = { type: "FeatureCollection" as const, features: [] };
+          if (!map.getSource("fly-trail")) {
+            map.addSource("fly-trail", { type: "geojson", data: empty });
+          }
+          // Wider and softer under a bright core: the trail has to stay legible
+          // over imagery at 58° of pitch, where the line is foreshortened into
+          // the distance and a single 2px stroke disappears entirely.
+          addLayer(map, {
+            id: "ft_glow", type: "line", source: "fly-trail",
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: {
+              "line-color": p.line,
+              "line-width": ["interpolate", ["linear"], ["zoom"], 1, 7, 6, 13],
+              "line-opacity": 0.28,
+              "line-blur": 6,
+            },
+          });
+          addLayer(map, {
+            id: "ft_line", type: "line", source: "fly-trail",
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: {
+              "line-color": p.tie,
+              "line-width": ["interpolate", ["linear"], ["zoom"], 1, 2.2, 6, 4],
+              "line-opacity": 0.95,
+            },
+          });
+        }
+
+        /**
+         * The traced route as one ordered list of points.
+         *
+         * lastFocusLegs is what paintFocusRoute stored: already chained into
+         * travel order, oriented the way the journey runs, and unrolled into a
+         * single longitude frame by lib/atlas/route-frame. The flight depends
+         * on all three — it is the difference between following an itinerary
+         * and being thrown back and forth across the Pacific.
+         */
+        function flightPath(): [number, number][] {
+          const pts: [number, number][] = [];
+          for (const leg of lastFocusLegs.current) {
+            for (const c of leg.coordinates) {
+              const last = pts[pts.length - 1];
+              if (last && last[0] === c[0] && last[1] === c[1]) continue;
+              pts.push([c[0], c[1]]);
+            }
+          }
+          return pts;
+        }
+
+        /**
+         * Fly the traced route.
+         *
+         * Deliberate and explicit — the Fly button, never a side effect of
+         * picking a card. Browsing is a camera you control; this is a camera
+         * that takes over for nine seconds, and the difference has to be
+         * something the traveller asked for.
+         */
+        function flyRoute() {
+          const path = flightPath();
+          if (path.length < 2 || !node.clientWidth || !node.clientHeight) return;
+          // Claims the camera (and, through haltSpin, ends any flight already
+          // running) before this one borrows anything.
+          stopSpin();
+          setAmbientMuted(true);
+
+          // A flight is a globe act: a tilted mercator is a sheared rectangle,
+          // and the whole point of the tilt is the curve of the planet.
+          if (!projGlobe) {
+            projGlobe = true;
+            setIs3D(true);
+            try { map.setProjection("globe"); } catch { /* projection optional */ }
+          }
+
+          /* ── The path ─────────────────────────────────────────────────── */
+
+          // Cumulative length in degrees, longitude scaled by latitude so a
+          // Baltic leg is not counted as further than an equatorial one of the
+          // same longitude span.
+          const cum: number[] = [0];
+          for (let i = 1; i < path.length; i++) {
+            const dLat = path[i][1] - path[i - 1][1];
+            const k = Math.cos((((path[i][1] + path[i - 1][1]) / 2) * Math.PI) / 180);
+            const dLng = (path[i][0] - path[i - 1][0]) * k;
+            cum.push(cum[i - 1] + Math.hypot(dLng, dLat));
+          }
+          const total = cum[cum.length - 1];
+          if (!Number.isFinite(total) || total <= 0) return;
+
+          // Resample evenly by distance. Flying the vertices themselves means
+          // the camera corners at every stop and crawls across a densified
+          // ocean crossing; even spacing is what makes the speed a speed.
+          const even: [number, number][] = [];
+          let j = 1;
+          for (let i = 0; i < FLY_SAMPLES; i++) {
+            const d = (total * i) / (FLY_SAMPLES - 1);
+            while (j < cum.length - 1 && cum[j] < d) j++;
+            const seg = cum[j] - cum[j - 1] || 1;
+            const f = Math.max(0, Math.min(1, (d - cum[j - 1]) / seg));
+            even.push([
+              path[j - 1][0] + (path[j][0] - path[j - 1][0]) * f,
+              path[j - 1][1] + (path[j][1] - path[j - 1][1]) * f,
+            ]);
+          }
+          const smooth = (src: number[], half: number) =>
+            src.map((_, i) => {
+              let sum = 0, n = 0;
+              for (let k = i - half; k <= i + half; k++) {
+                sum += src[Math.max(0, Math.min(src.length - 1, k))];
+                n++;
+              }
+              return sum / n;
+            });
+          const lngs = smooth(even.map((c) => c[0]), 6);
+          const lats = smooth(even.map((c) => c[1]), 6);
+
+          /*
+           * Bearings, so the camera looks the way the journey is going.
+           *
+           * Unrolled before smoothing (…, 350°, 10°, …  is a 20° turn, not a
+           * 340° one) and smoothed harder than position, because heading is the
+           * derivative of a line that changes direction at every call and an
+           * unsmoothed one whips the horizon round at each stop.
+           */
+          const heads: number[] = [];
+          for (let i = 0; i < lngs.length; i++) {
+            const a = Math.max(0, i - 1);
+            const b = Math.min(lngs.length - 1, i + 1);
+            const dLat = lats[b] - lats[a];
+            const dLng = (lngs[b] - lngs[a]) * Math.cos((lats[i] * Math.PI) / 180);
+            let deg = (Math.atan2(dLng, dLat) * 180) / Math.PI;
+            if (i > 0) {
+              const prev = heads[i - 1];
+              while (deg - prev > 180) deg -= 360;
+              while (deg - prev < -180) deg += 360;
+            }
+            heads.push(deg);
+          }
+          const bearings = smooth(heads, 16);
+
+          /* ── Altitude and pace, which are one decision ────────────────── */
+
+          const winRaw = total / ((FLY_TARGET_MS / 1000) * FLY_PACE);
+          const win = Math.max(FLY_WINDOW_MIN, Math.min(FLY_WINDOW_MAX, winRaw));
+          const zoom = Math.max(
+            map.getMinZoom() + 0.3,
+            Math.min(6, Math.log2((node.clientWidth * 360) / (win * 512))),
+          );
+          const durMs = Math.max(
+            FLY_MIN_MS,
+            Math.min(FLY_MAX_MS, (total / (FLY_PACE * win)) * 1000),
+          );
+
+          /* ── The calls, in order, at their own distances along the path ── */
+
+          const stops = lastFocusStops.current ?? [];
+          const marks: { at: number; n: string; label: string }[] = [];
+          {
+            // Searched forward from the last match, never globally: an
+            // out-and-back itinerary calls at the same port twice, and a
+            // nearest-sample search over the whole path gives both calls the
+            // same moment — the second one silently never announced.
+            let from = 0;
+            for (let si = 0; si < stops.length; si++) {
+              const st = stops[si];
+              if (!st?.at) continue;
+              let best = -1, bestD = Infinity;
+              for (let i = from; i < even.length; i++) {
+                const k = Math.cos((st.at[1] * Math.PI) / 180);
+                const dLng = (even[i][0] - st.at[0]) * k;
+                const d = dLng * dLng + (even[i][1] - st.at[1]) ** 2;
+                if (d < bestD) { bestD = d; best = i; }
+              }
+              if (best < 0) continue;
+              from = best;
+              marks.push({
+                at: best / (even.length - 1),
+                n: stops.length > 1 ? String(si + 1) : "",
+                label: stops.length === 1
+                  ? st.name
+                  : st.day ? `${si + 1}. Day ${st.day} · ${st.name}` : `${si + 1}. ${st.name}`,
+              });
+            }
+          }
+
+          /* ── Borrow the drawing, and promise to give it back ──────────── */
+
+          const p = routePalette();
+          try { ensureTrail(p); } catch { /* the trail is decoration */ }
+          const dim = (on: boolean) => {
+            try {
+              if (map.getLayer("fr_rail")) {
+                map.setPaintProperty("fr_rail", "line-opacity", on ? p.lineO * 0.32 : p.lineO);
+              }
+              if (map.getLayer("fr_ties")) {
+                map.setPaintProperty("fr_ties", "line-opacity", on ? 0.25 : 0.9);
+              }
+              if (map.getLayer("fr_arrow")) {
+                map.setPaintProperty("fr_arrow", "text-opacity", on ? 0.25 : 0.9);
+              }
+            } catch { /* mid-restyle */ }
+          };
+          dim(true);
+
+          flyingRef.current = true;
+          setFlyingRoute(true);
+          /*
+           * What the flight borrowed, and nothing else.
+           *
+           * Note what is NOT put back here: the camera. Not its position, not
+           * its pitch, not its bearing. An interruption is someone's hand on
+           * the globe, and a camera that answers by easing somewhere else — even
+           * "back where it was" — is the map arguing with them. It also cannot
+           * be done safely: this runs on the natural finish too, one tick after
+           * the settle's own ease is issued, and a second camera command in the
+           * same breath cancels the first. Levelling out belongs to the landing
+           * (settleAfterFlight); an interruption leaves the camera exactly where
+           * the traveller caught it, tilt included, with the Tilt button lit to
+           * say so.
+           */
+          flyRestore = () => {
+            dim(false);
+            map.getSource("fly-trail")?.setData({ type: "FeatureCollection", features: [] });
+            if (map.getLayer("fs_now")) map.setFilter("fs_now", FS_NOW_NONE);
+            if (!stopPinned) stopPopup.remove();
+            setAmbientMuted(false);
+          };
+
+          /* ── Fly it ──────────────────────────────────────────────────── */
+
+          const clampLat = (l: number) => Math.max(-FLY_MAX_LAT, Math.min(FLY_MAX_LAT, l));
+          try {
+            map.flyTo({
+              center: [lngs[0], clampLat(lats[0])],
+              zoom,
+              pitch: FLY_PITCH,
+              bearing: bearings[0],
+              duration: FLY_ARRIVE_MS,
+              essential: true,
+            });
+          } catch { endFlight(); return; }
+          setTilted(true);
+
+          let mark = 0;
+          let labelUntil = 0;
+          let trailAt = 0;
+          flyTimer = window.setTimeout(() => {
+            flyTimer = 0;
+            if (!flyingRef.current) return;
+            const t0 = performance.now();
+            const step = (now: number) => {
+              if (!flyingRef.current) return;
+              const t = Math.min(1, (now - t0) / durMs);
+              /*
+               * Take off, cruise, land — a trapezoid, not an ease-in-out.
+               *
+               * The obvious smoothstep is wrong here and measurably so: it
+               * spends the whole flight either accelerating or braking, and its
+               * peak is TWICE the average speed. At a frame chosen so the
+               * average is comfortable, the middle of every route — the ocean
+               * crossing, the part with nothing to look at but the moving map —
+               * went past at two and a half frame-widths a second, which is not
+               * cinematic, it is a whip pan. Ramping over the first and last
+               * FLY_RAMP of the flight and holding a constant speed between
+               * them peaks at 1/(1-FLY_RAMP) of the average instead: it still
+               * leaves and arrives softly, and the cruise is a cruise.
+               */
+              const v = 1 / (1 - FLY_RAMP); // so the profile still integrates to 1
+              const e =
+                t < FLY_RAMP ? (v * t * t) / (2 * FLY_RAMP)
+                : t > 1 - FLY_RAMP ? 1 - (v * (1 - t) ** 2) / (2 * FLY_RAMP)
+                : v * (t - FLY_RAMP / 2);
+              // Interpolated between samples, not rounded to one. Rounding
+              // quantises the camera to 360 positions, so at speed some frames
+              // advance two samples and some none — a judder that reads as a
+              // dropped frame rather than as motion.
+              const at = Math.max(0, Math.min(1, e)) * (lngs.length - 1);
+              const i = Math.min(lngs.length - 1, Math.floor(at));
+              const f = at - i;
+              const j = Math.min(lngs.length - 1, i + 1);
+              const lerp = (a: number, b: number) => a + (b - a) * f;
+              try {
+                map.jumpTo({
+                  center: [lerp(lngs[i], lngs[j]), clampLat(lerp(lats[i], lats[j]))],
+                  bearing: lerp(bearings[i], bearings[j]),
+                  zoom,
+                  pitch: FLY_PITCH,
+                });
+              } catch { endFlight(); return; }
+
+              // The trail, at ~12fps — and always on the last frame, or it
+              // stops up to 80ms short of the final call, which at cruise is a
+              // visible gap between the trail and where the camera landed.
+              // Every frame would be a setData per frame over a few hundred
+              // coordinates, a cost with no visible return: the line is already
+              // growing faster than the eye reads.
+              if (now - trailAt > 80 || t >= 1) {
+                trailAt = now;
+                try {
+                  map.getSource("fly-trail")?.setData({
+                    type: "FeatureCollection",
+                    features: [{
+                      type: "Feature",
+                      properties: {},
+                      geometry: {
+                        type: "LineString",
+                        coordinates: lngs.slice(0, j + 1).map((lng, k) => [lng, lats[k]]),
+                      },
+                    }],
+                  });
+                } catch { /* source torn down mid-restyle */ }
+              }
+
+              // Name the call as the camera reaches it, and let the label go a
+              // couple of seconds later — a flight that holds every label to
+              // the end arrives with nine of them stacked over the last stop.
+              while (mark < marks.length && e >= marks[mark].at) {
+                const m = marks[mark++];
+                labelUntil = now + FLY_LABEL_MS;
+                try {
+                  const st = stops.find((_, si) => String(si + 1) === m.n) ?? stops[0];
+                  if (st?.at) {
+                    stopPopup
+                      .setLngLat(st.at)
+                      .setHTML(`<div class="iw"><div class="iwn">${escapeHtml(m.label)}</div></div>`)
+                      .addTo(map);
+                  }
+                  if (map.getLayer("fs_now") && m.n) {
+                    map.setFilter("fs_now", ["==", ["get", "n"], m.n]);
+                  }
+                } catch { /* the label is decoration */ }
+              }
+              if (labelUntil && now > labelUntil) {
+                labelUntil = 0;
+                if (!stopPinned) stopPopup.remove();
+                try {
+                  if (map.getLayer("fs_now")) map.setFilter("fs_now", FS_NOW_NONE);
+                } catch { /* noop */ }
+              }
+
+              if (t < 1) { flyRAF = requestAnimationFrame(step); return; }
+              flyRAF = 0;
+              settleAfterFlight(spanOf([{ coordinates: even }]));
+            };
+            flyRAF = requestAnimationFrame(step);
+          }, FLY_ARRIVE_MS);
+        }
+
+        /**
+         * The closing frame: level out and pull back to as much of the route as
+         * the projection can hold, so the last thing on screen is the whole
+         * journey rather than wherever the aircraft stopped.
+         *
+         * On a wide route that is a globe at rest with the itinerary running
+         * round the limb — still not the whole thing, which is the point the
+         * flight has just spent nine seconds making.
+         */
+        function settleAfterFlight(s: Span) {
+          const w = node.clientWidth, h = node.clientHeight;
+          const z = Math.max(
+            map.getMinZoom(),
+            Math.min(9, Math.log2((Math.min(w, h) * 0.92) / 162.97)),
+          );
+          const spanLng = s.hi - s.lo;
+          const spanLat = s.latHi - s.latLo;
+          // A regional route does not want the whole planet back; frame it.
+          const tight = spanLng <= SPAN_FLAT_LNG && spanLat <= SPAN_FLAT_LAT;
+          try {
+            if (tight) {
+              const b = new (mapboxgl as MapboxModule).LngLatBounds();
+              b.extend([s.lo, s.latLo]);
+              b.extend([s.hi, s.latHi]);
+              map.fitBounds(b, {
+                padding: fitPad(), maxZoom: 9, duration: FLY_SETTLE_MS,
+                pitch: 0, bearing: 0,
+              });
+            } else {
+              map.easeTo({
+                center: [(s.lo + s.hi) / 2, Math.max(-60, Math.min(60, (s.latLo + s.latHi) / 2))],
+                zoom: z, pitch: 0, bearing: 0,
+                duration: FLY_SETTLE_MS, essential: true,
+              });
+            }
+          } catch { /* the rest is decoration */ }
+          setTilted(false);
+          // The camera has landed where it means to stay, so hand the drawing
+          // back before the ease finishes rather than after — the route coming
+          // up to full strength IS the settle, seen from the map's side.
+          endFlight();
         }
 
         /**
@@ -2504,7 +3168,7 @@ export default function AtlasShell({
 
         focusRouteRef.current = {
           paint: paintFocusRoute, clear: clearFocusRoute, fit: fitFocusRoute, mark: markFocusPlace,
-          flatten: flattenIfCircumnavigation,
+          flatten: flattenIfCircumnavigation, fly: flyRoute, stopFly: endFlight,
         };
 
         // Progressive zoom: load route lines on first crossing above ROUTE_ZOOM,
@@ -2755,6 +3419,10 @@ export default function AtlasShell({
 
         // Publish the view so the page can build a Share link from it.
         const reportView = () => {
+          // A flight writes the camera every frame, and each write ends a move:
+          // reporting all of them would rebuild the Share view sixty times a
+          // second for nine seconds. The settle at the end reports once.
+          if (flyingRef.current) return;
           try {
             const c = map.getCenter();
             const v = {
@@ -3064,6 +3732,8 @@ export default function AtlasShell({
               map.easeTo({ pitch: on ? TILT_PITCH : 0, duration: 550, essential: true });
             } catch { /* pitch optional */ }
           },
+          flyRoute() { focusRouteRef.current?.fly(); },
+          stopFly() { focusRouteRef.current?.stopFly(); },
           resize() {
             setTimeout(() => { try { map.resize(); } catch { /* noop */ } }, 60);
           },
@@ -3154,6 +3824,9 @@ export default function AtlasShell({
     return () => {
       cancelled = true;
       cancelAnimationFrame(spinRAF);
+      // Ends the flight's rAF and its arrival timer, both of which live with
+      // the route drawing inside wireHandlers().
+      focusRouteRef.current?.stopFly();
       cancelAnimationFrame(pulseRAF);
       stopFlowRef.current?.();
       stopFlowRef.current = null;
@@ -3219,7 +3892,10 @@ export default function AtlasShell({
         return;
       }
       api.paint(legs, detail?.stops);
-      if (detail?.fit) api.fit(legs);
+      // A flight frames the route itself, by flying it — fitting first would
+      // spend two and a half seconds easing to a view it is about to leave.
+      if (detail?.fly) api.fly();
+      else if (detail?.fit) api.fit(legs);
     };
     applyRouteRef.current = applyRoute;
     /**
@@ -3697,6 +4373,35 @@ export default function AtlasShell({
               >
                 {is3D ? "▭ Flat" : "◍ Globe"}
               </button>
+              {/*
+                Fly the traced route.
+
+                Only here when there is a route to fly, and it is the only
+                control in this stack that is not a property of the view — the
+                others change what you are looking at and hand it straight back,
+                this one takes the camera for nine seconds. Which is why it also
+                says how to stop, in the same place, rather than making the
+                traveller work out that grabbing the globe will do it.
+
+                It sits on the MAP as well as on the cards because fullscreen
+                has no cards, and fullscreen is where a reel gets filmed.
+              */}
+              {hasRoute && (
+                <button
+                  type="button"
+                  className={`actrl${flyingRoute ? " on" : ""}`}
+                  onClick={() =>
+                    flyingRoute ? apiRef.current?.stopFly() : apiRef.current?.flyRoute()
+                  }
+                  title={
+                    flyingRoute
+                      ? "Stop and give the camera back"
+                      : "Fly this route — the camera follows the itinerary, calling at each stop"
+                  }
+                >
+                  {flyingRoute ? "■ Stop" : "▶ Fly route"}
+                </button>
+              )}
               <button
                 type="button"
                 className={`actrl${tilted ? " on" : ""}`}
@@ -4409,6 +5114,8 @@ interface MBMap {
   easeTo(opts: {
     center?: readonly [number, number];
     pitch?: number;
+    /** The route flight levels the camera on the way out, so rotation too. */
+    bearing?: number;
     zoom?: number;
     duration?: number;
     essential?: boolean;
@@ -4441,6 +5148,8 @@ interface MBMap {
   removeLayer(id: string): void;
   setPaintProperty(id: string, prop: string, val: unknown): void;
   setLayoutProperty(id: string, prop: string, val: unknown): void;
+  /** Re-point a layer's filter — the flight's "current call" highlight. */
+  setFilter(id: string, filter: unknown): void;
   setFog(f: unknown): void;
   setStyle(url: string): void;
   setProjection(name: string): void;
