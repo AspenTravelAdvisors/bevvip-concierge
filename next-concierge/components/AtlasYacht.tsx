@@ -37,7 +37,7 @@ export default function AtlasYacht() {
     // Itinerary and precomputed routes together, as the Leaflet atlas loads its
     // land mask alongside the tiles rather than waiting for a hover.
     const [raw, seaRoutes] = await Promise.all([
-      fetch("/maps/yacht/itinerary.json", { cache: "force-cache" }).then((r) => {
+      fetch("/maps/yacht/itinerary.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`yacht itinerary ${r.status}`);
         return r.json() as Promise<RawVoyageAtlas>;
       }),

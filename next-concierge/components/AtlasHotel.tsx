@@ -163,9 +163,20 @@ export default function AtlasHotel() {
   );
 
   const load = useCallback(async () => {
-    // The same point feed the home globe already fetches — no new payload.
+    /*
+     * The same point feed the home globe already fetches — no new payload.
+     *
+     * `no-cache`, NOT `force-cache`. force-cache serves a cached copy however
+     * stale and never revalidates, which was survivable when this file only
+     * changed on a human deploy. The nightly Virtuoso sync rewrites it, so a
+     * returning visitor was pinned to whatever inventory their browser cached
+     * the first time — old properties still listed, new ones missing, and no
+     * photographs at all, since the pre-sync feed had no `thumb`. `no-cache`
+     * revalidates and the server answers 304 when nothing moved, so the cost is
+     * a conditional request rather than the payload.
+     */
     const raw: RawHotelPoints = await fetch("/maps/hotel/hotel-points.json", {
-      cache: "force-cache",
+      cache: "no-cache",
     }).then((r) => {
       if (!r.ok) throw new Error(`hotel points ${r.status}`);
       return r.json();

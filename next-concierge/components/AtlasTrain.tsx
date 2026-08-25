@@ -32,7 +32,7 @@ export default function AtlasTrain() {
     // did — it kicks loadRailGeo() alongside the map tiles rather than waiting
     // for a hover.
     const [raw, railGeo] = await Promise.all([
-      fetch("/maps/train/itinerary.json", { cache: "force-cache" }).then((r) => {
+      fetch("/maps/train/itinerary.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`train itinerary ${r.status}`);
         return r.json() as Promise<RawJourneyAtlas>;
       }),

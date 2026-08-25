@@ -5811,7 +5811,7 @@ async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
       // Precomputed at build time: land-avoiding A* geometry, already unrolled
       // across the antimeridian and simplified. The 765 KB land mask and the
       // per-visitor A* it fed are both gone from the browser.
-      const r = await fetch(`/maps/shared/sea-routes-${key}.json`, { cache: "force-cache" });
+      const r = await fetch(`/maps/shared/sea-routes-${key}.json`, { cache: "no-cache" });
       if (!r.ok) return [];
       const j: { features?: { geometry?: { coordinates?: [number, number][] } }[] } = await r.json();
       return (j.features || [])
@@ -5877,7 +5877,7 @@ interface FeaturedFC {
 
 async function fetchHotelPoints(): Promise<HotelFC> {
   try {
-    const r = await fetch(`${HOTEL_BASE}/hotel-points.json`, { cache: "force-cache" });
+    const r = await fetch(`${HOTEL_BASE}/hotel-points.json`, { cache: "no-cache" });
     if (r.ok) {
       const data = (await r.json()) as {
         type?: string;
@@ -5932,7 +5932,7 @@ async function fetchHotelPoints(): Promise<HotelFC> {
 }
 
 async function fetchHotelPage(offset: number, limit: number): Promise<{ total?: number; results?: unknown[] }> {
-  const r = await fetch(`${HOTEL_BASE}/api/luxury-hotels?limit=${limit}&offset=${offset}&summary=1`, { cache: "force-cache" });
+  const r = await fetch(`${HOTEL_BASE}/api/luxury-hotels?limit=${limit}&offset=${offset}&summary=1`, { cache: "no-cache" });
   if (!r.ok) throw new Error("hotel atlas " + r.status);
   return r.json();
 }

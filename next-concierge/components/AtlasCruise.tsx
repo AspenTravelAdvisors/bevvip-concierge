@@ -48,22 +48,22 @@ export default function AtlasCruise() {
     logoBase?: string;
   }> => {
     const [sailings, meta, routes, regionOverrides, seaRoutes] = await Promise.all([
-      fetch("/maps/cruise/sailings.json", { cache: "force-cache" }).then((r) => {
+      fetch("/maps/cruise/sailings.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`cruise sailings ${r.status}`);
         return r.json() as Promise<RawCruiseSailings>;
       }),
-      fetch("/maps/cruise/atlas-meta.json", { cache: "force-cache" }).then((r) => {
+      fetch("/maps/cruise/atlas-meta.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`cruise meta ${r.status}`);
         return r.json() as Promise<RawCruiseMeta>;
       }),
-      fetch("/maps/cruise/data/itinerary-routes.json", { cache: "force-cache" }).then((r) => {
+      fetch("/maps/cruise/data/itinerary-routes.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`cruise routes ${r.status}`);
         return r.json() as Promise<RawCruiseRoutes>;
       }),
       // The geographic region correction (see scripts/build-cruise-regions.mjs).
       // Non-fatal: without it the atlas falls back to the feed's own buckets and
       // the title rules, which is worse but still a working map.
-      fetch("/maps/cruise/region-overrides.json", { cache: "force-cache" })
+      fetch("/maps/cruise/region-overrides.json", { cache: "no-cache" })
         .then((r) => (r.ok ? (r.json() as Promise<RawCruiseRegionOverrides>) : {}))
         .catch(() => ({} as RawCruiseRegionOverrides)),
       loadSeaRoutes("cruise"),

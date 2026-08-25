@@ -40,7 +40,7 @@ export default function AtlasWorldCruise() {
     logoBase?: string;
   }> => {
     const [raw, seaRoutes] = await Promise.all([
-      fetch("/maps/worldcruise/itinerary.json", { cache: "force-cache" }).then((r) => {
+      fetch("/maps/worldcruise/itinerary.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`worldcruise itinerary ${r.status}`);
         return r.json() as Promise<RawVoyageAtlas>;
       }),

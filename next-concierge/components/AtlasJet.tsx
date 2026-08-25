@@ -42,7 +42,7 @@ export default function AtlasJet() {
     logoBase?: string;
   }> => {
     const raw: RawJourneyAtlas = await fetch("/maps/jet/itinerary.json", {
-      cache: "force-cache",
+      cache: "no-cache",
     }).then((r) => {
       if (!r.ok) throw new Error(`jet itinerary ${r.status}`);
       return r.json();
