@@ -730,8 +730,8 @@ const FLY_LEG_PER_ZOOM_MS = 420;
 const FLY_LEG_MIN_MS = 1200;
 const FLY_LEG_MAX_MS = 3400;
 /**
- * The ceiling on a whole flight, and the number of calls it will set down on —
- * BOTH of which apply to world cruises alone.
+ * How a world cruise's landings are spaced — and why one collection alone is
+ * not flown call by call.
  *
  * ── Why one collection is treated differently ──────────────────────────────
  *
@@ -742,30 +742,56 @@ const FLY_LEG_MAX_MS = 3400;
  *     rail          median  4, max  14
  *     hotel yacht   median  6, max  10
  *     expedition    median  9, max  79
- *     world cruise  median 39, max 153
+ *     world cruise  median 49, max 168
  *
  * A flight that sheds calls to fit a budget is showing less of the itinerary
  * than the itinerary has, and for the first four that trade is not worth
- * making: they are short enough to fly in full, so they are. A world cruise
- * cannot be — 153 ports at a hold and a hop each is the better part of ten
- * minutes — so there alone the landings are spread across the voyage, roughly
- * one a week, and the ROUTE is still drawn and still flown over in full. Only
- * the pauses thin out.
+ * making: they are short enough to fly in full, so they are — every stop,
+ * including the hops route-frame shipped no line for (see fillGaps). A world
+ * cruise cannot be: 168 ports at a hold and a hop each is a quarter of an
+ * hour.
+ *
+ * ── What replaces "every call" ─────────────────────────────────────────────
+ *
+ * A week of the voyage. Not a call count — that was the previous rule and it
+ * is the wrong unit for the thing being shown: sampling 13 landings out of 49
+ * makes the camera stop every four days in the Caribbean and every fortnight
+ * across the Pacific, which is precisely the reading a voyage does not want.
+ * A week is the beat a world cruise is actually lived and sold in, the shipped
+ * itineraries carry a day number on every call, and it makes the LENGTH of the
+ * flight say something true: a 72-day voyage flies eleven landings, a 133-day
+ * voyage nineteen. Measured over the 250 shipped voyages, weeks per itinerary
+ * run p10 8, median 11, p90 19.
+ *
+ * The ROUTE is still drawn and still flown over in full. Only the pauses thin.
  *
  * The tail of the expedition atlas (its longest is 79 ports) will therefore run
  * long. That is deliberate: it is one sailing in a hundred, the traveller asked
  * for the flight, and the control says "Stop" for as long as it runs.
  */
-const FLY_TOTAL_MS = 40000;
-const FLY_MAX_CALLS = 14;
+const FLY_WEEK_DAYS = 7;
 /**
- * …and the fewest it will thin down to.
+ * The ceiling a voyage's flight is held under, and the only thing that widens
+ * the week.
  *
- * A flight that has shed everything but its endpoints is no longer showing an
- * itinerary. Past this the ceiling gives way instead — better a world cruise
- * that runs long than one that claims six ports were the trip.
+ * Generous, because the weekly beat is the point and buying seconds by
+ * dropping to a call a fortnight should be a last resort: at 75s the twenty-one
+ * voyages longer than twenty weeks step to a fortnight and the other 229 keep
+ * their week. Reached by widening the bucket in whole weeks — never by flying
+ * faster, and never by an arbitrary count (see FLY_PACE for what happened when
+ * the budget was taken out of the travel instead).
  */
-const FLY_MIN_CALLS = 8;
+const FLY_VOYAGE_MS = 75000;
+/** The widest the bucket goes before the flight is simply allowed to run long. */
+const FLY_MAX_WEEKS = 4;
+/**
+ * The count-based fallback, for a voyage whose calls carry no day numbers.
+ *
+ * Nothing shipped today is in that state, and the weekly rule cannot be
+ * applied to an itinerary that will not say when its calls happen, so this
+ * keeps the old behaviour rather than flying all 168.
+ */
+const FLY_MAX_CALLS = 14;
 /**
  * The altitude a call is read at, bounded.
  *
@@ -786,6 +812,23 @@ const FLY_CRUISE_PAD = 1.3;
  * jump cut. A leg that already FITS the frame does not climb — see below.
  */
 const FLY_MIN_CLIMB = 0.6;
+/**
+ * How far a leg that stands in for SEVERAL calls climbs, whatever it fits.
+ *
+ * A world cruise's weekly leg covers two, three, sometimes six ports, and the
+ * "already fits, so don't climb" rule above is wrong for it in a way that is
+ * obvious in motion: a week spent working down the Caribbean fits the reading
+ * frame comfortably, so the camera crossed it flat, sliding from island to
+ * island at inspection height and stopping a beat at every third one. That
+ * reads as jitter — the picture never settles and never opens out, and the
+ * viewer cannot see that a WEEK went by.
+ *
+ * So a merged leg always rises: the camera pulls back far enough to hold the
+ * whole week's ground (roughly three times the frame), carries across it, and
+ * comes down on the call. It is the same gesture the ocean crossings already
+ * make, which is what makes the weekly beat legible as a beat.
+ */
+const FLY_WEEK_CLIMB = 1.6;
 /**
  * The speed limit, and the only one: frame-widths of ground per second.
  *
@@ -2927,6 +2970,14 @@ export default function AtlasShell({
           /** 1-based index into the itinerary: this runs from stop `hop` to `hop + 1`. */
           hop: number;
           pts: [number, number][];
+          /**
+           * How many itinerary hops this one leg stands in for.
+           *
+           * 1 everywhere except a world cruise's weekly legs, which carry a
+           * whole week's ports. The flight reads it to decide the leg has to
+           * climb whatever it would otherwise fit in — see FLY_WEEK_CLIMB.
+           */
+          span?: number;
         }
         function routeHops(): RouteHop[] {
           const dedupe = (coords: readonly [number, number][]) => {
@@ -2939,6 +2990,45 @@ export default function AtlasShell({
             return pts;
           };
 
+          const stops = (lastFocusStops.current ?? []).filter((st) => st?.at);
+          const stopAt = (n: number): [number, number] | null => {
+            const st = stops[n - 1];
+            return st?.at ? [st.at[0], st.at[1]] : null;
+          };
+
+          /**
+           * Give every hop in the itinerary something to fly, geometry or not.
+           *
+           * route-frame deliberately leaves a hop it has no line for EMPTY —
+           * drawing a straight stroke between two ports is a claim about a
+           * route the ship does not take, and the atlas would rather show a
+           * gap than a lie. The camera is not under that constraint: it draws
+           * nothing, it only travels, and the alternative to travelling is
+           * silently not calling at a port the itinerary lists. So a hop with
+           * no shipped line is flown as a direct move between its two stops.
+           *
+           * This is what makes "every stop is called at" true rather than
+           * nearly true: a single missing sea leg used to drop its destination
+           * out of the flight altogether, and the label numbering ("7. Day 19
+           * · Marrakesh") made the omission look like a data error instead.
+           */
+          const fillGaps = (list: RouteHop[]): RouteHop[] => {
+            if (stops.length < 2) return list;
+            const byHop = new Map(list.map((h) => [h.hop, h]));
+            const out: RouteHop[] = [];
+            for (let k = 1; k < stops.length; k++) {
+              const have = byHop.get(k);
+              if (have) { out.push(have); continue; }
+              const a = stopAt(k), b = stopAt(k + 1);
+              if (!a || !b || !(degBetween(a, b) > 0)) continue; // nowhere to go
+              out.push({ hop: k, pts: [a, b] });
+            }
+            // A leg claimed for a hop outside the itinerary's range is still
+            // geometry someone drew; keep it rather than quietly losing it.
+            for (const h of list) if (h.hop < 1 || h.hop >= stops.length) out.push(h);
+            return out.sort((x, y) => x.hop - y.hop);
+          };
+
           // The good case: route-frame walked the itinerary and every leg knows
           // which hop it is. Sea and rail geometry arrives one leg per hop, so
           // this is the path they take.
@@ -2948,7 +3038,7 @@ export default function AtlasShell({
             .sort((a, b) => (a.hop as number) - (b.hop as number))
             .map((l) => ({ hop: l.hop as number, pts: dedupe(l.coordinates) }))
             .filter((h) => h.pts.length >= 2);
-          if (claimed.length) return claimed;
+          if (claimed.length) return fillGaps(claimed);
 
           /*
            * Nothing claimed — which does NOT mean there is no itinerary.
@@ -2969,7 +3059,6 @@ export default function AtlasShell({
            * port twice lands on it twice rather than twice on the first pass.
            */
           const path = dedupe(lastFocusLegs.current.flatMap((l) => l.coordinates));
-          const stops = (lastFocusStops.current ?? []).filter((st) => st?.at);
           /*
            * No drawable geometry at all, but an itinerary that says where the
            * calls are — a sailing whose legs came back as a pile of identical
@@ -3002,7 +3091,15 @@ export default function AtlasShell({
           const hops: RouteHop[] = [];
           for (let k = 0; k < cut.length - 1; k++) {
             const pts = path.slice(cut[k], cut[k + 1] + 1);
+            // Two stops that cut to the same point on the line — a port the
+            // drawn path only touches once, or two calls in the same harbour.
+            // Fly it as a direct move rather than dropping the call; see
+            // fillGaps for why the camera may do what the pen may not.
             if (pts.length >= 2) hops.push({ hop: k + 1, pts });
+            else {
+              const a = stopAt(k + 1), b = stopAt(k + 2);
+              if (a && b && degBetween(a, b) > 0) hops.push({ hop: k + 1, pts: [a, b] });
+            }
           }
           return hops.length ? hops : [{ hop: 1, pts: path }];
         }
@@ -3206,10 +3303,25 @@ export default function AtlasShell({
           map.easeTo(cam);
         }
 
-        /** Distance in degrees, longitude scaled by latitude. */
+        /**
+         * Distance in degrees, longitude scaled by latitude.
+         *
+         * The longitude difference is wrapped to the shorter way round, and
+         * that is not a nicety: drawn routes are UNWRAPPED so a line that
+         * crosses the antimeridian stays one continuous stroke rather than
+         * whipping back across the whole map, which puts Kyoto on a Seattle →
+         * Maldives jet route at longitude -225 while the itinerary's own stop
+         * still says 135.7. Comparing those raw makes every port past the
+         * dateline look 360° away — which is exactly what stopped routeHops
+         * finding the calls on a lofted jet arc, and flew an eight-city world
+         * tour as a single unbroken leg that landed nowhere.
+         */
         function degBetween(a: [number, number], b: [number, number]): number {
           const k = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
-          return Math.hypot((b[0] - a[0]) * k, b[1] - a[1]);
+          let dx = (b[0] - a[0]) % 360;
+          if (dx > 180) dx -= 360;
+          if (dx < -180) dx += 360;
+          return Math.hypot(dx * k, b[1] - a[1]);
         }
 
         /**
@@ -3355,9 +3467,16 @@ export default function AtlasShell({
                * the FRAME they cover rather than by a climb they do not make.
                */
               const fits = zoomToFit(spanOf([{ coordinates: pts }]), FLY_CRUISE_PAD);
-              const cruise = fits >= stopZoom
+              /*
+               * A leg standing in for several calls always pulls back, even
+               * when it would fit — the climb is what makes a week read as a
+               * week rather than as the camera skidding between islands. See
+               * FLY_WEEK_CLIMB.
+               */
+              const floor = (h.span ?? 1) > 1 ? FLY_WEEK_CLIMB : FLY_MIN_CLIMB;
+              const cruise = fits >= stopZoom && (h.span ?? 1) <= 1
                 ? stopZoom
-                : Math.max(map.getMinZoom() + 0.25, Math.min(stopZoom - FLY_MIN_CLIMB, fits));
+                : Math.max(map.getMinZoom() + 0.25, Math.min(stopZoom - floor, fits));
               const climb = stopZoom - cruise;
               const { prof, area } = legProfile(stopZoom, cruise);
               /*
@@ -3392,12 +3511,12 @@ export default function AtlasShell({
             return out;
           };
 
-          /* ── Thin the landings until the flight fits its budget ─────────
+          /* ── Thin the landings, never the travel ────────────────────────
            *
            * The budget is spent by CALLS, not by distance: each one costs a
-           * hold plus the hop that reaches it. When an itinerary asks for more
-           * than the ceiling allows, the thing to give up is landings — not
-           * speed, and not reading time.
+           * hold plus the hop that reaches it. When a voyage asks for more
+           * landings than the ceiling allows, the thing to give up is landings
+           * — not speed, and not reading time.
            *
            * Scaling the legs instead was the obvious move and it is wrong in
            * exactly the way this whole shape is about: it buys time by flying
@@ -3410,7 +3529,31 @@ export default function AtlasShell({
            * route still runs through the port; the camera simply does not stop
            * there. Nothing is skipped, and each label's number ("7. Day 19 ·
            * Marrakesh") keeps the traveller's place in the whole itinerary.
+           *
+           * WHICH landings are dropped is decided by sampleWeeks below; merge()
+           * is only the fallback for a voyage that will not say what day its
+           * calls happen on.
            */
+          /** Several hops flown as one leg, arriving where the last of them does. */
+          const join = (group: RouteHop[]): RouteHop => {
+            const pts: [number, number][] = [];
+            for (const g of group) {
+              for (const c of g.pts) {
+                const last = pts[pts.length - 1];
+                if (last && last[0] === c[0] && last[1] === c[1]) continue;
+                pts.push(c);
+              }
+            }
+            // The merged leg ARRIVES at the last hop's destination, so its
+            // label is that port's — the ones passed through keep their
+            // numbers in the itinerary and simply go unannounced.
+            return {
+              hop: group[group.length - 1].hop,
+              pts,
+              span: group.reduce((n, g) => n + (g.span ?? 1), 0),
+            };
+          };
+
           const merge = (list: RouteHop[], keepN: number): RouteHop[] => {
             if (list.length <= keepN) return list;
             const out: RouteHop[] = [];
@@ -3418,20 +3561,54 @@ export default function AtlasShell({
               const from = Math.round((k * list.length) / keepN);
               const to = Math.round(((k + 1) * list.length) / keepN);
               const group = list.slice(from, Math.max(to, from + 1));
-              if (!group.length) continue;
-              const pts: [number, number][] = [];
-              for (const g of group) {
-                for (const c of g.pts) {
-                  const last = pts[pts.length - 1];
-                  if (last && last[0] === c[0] && last[1] === c[1]) continue;
-                  pts.push(c);
-                }
-              }
-              // The merged leg ARRIVES at the last hop's destination, so its
-              // label is that port's — the ones passed through keep their
-              // numbers in the itinerary and simply go unannounced.
-              out.push({ hop: group[group.length - 1].hop, pts });
+              if (group.length) out.push(join(group));
             }
+            return out;
+          };
+
+          /**
+           * The voyage's own calendar: which day of the cruise each call is.
+           *
+           * `null` when the itinerary does not say, which is what decides
+           * between the weekly rule and the count-based fallback below.
+           */
+          const dayOfStop = (n: number): number | null => {
+            const d = stops[n - 1]?.day;
+            return typeof d === "number" && Number.isFinite(d) ? d : null;
+          };
+
+          /**
+           * Land once every `weeks` weeks of the voyage.
+           *
+           * Measured from the LAST landing rather than against fixed calendar
+           * buckets, and that difference is not cosmetic: the shipped world
+           * cruise data is not perfectly ordered by day — one voyage's calls
+           * run …35, 22, 31, 47, 29… where a port list has been stitched out of
+           * sequence — and fixed buckets flap in and out on a run like that,
+           * turning single ports into their own "week" and putting the camera
+           * back exactly where the beat was meant to remove it. Measuring
+           * forward from the last landing simply carries a call whose day goes
+           * backwards into the leg it is already flying.
+           *
+           * Everything between two landings is carried into one leg (see join),
+           * so the route is flown in full and only the pauses thin. The final
+           * call is always a landing however short its week — a voyage that
+           * does not set down where it ends has not been shown.
+           */
+          const sampleWeeks = (list: RouteHop[], weeks: number): RouteHop[] => {
+            const span = weeks * FLY_WEEK_DAYS;
+            const out: RouteHop[] = [];
+            let group: RouteHop[] = [];
+            let mark = dayOfStop(1) ?? 1;
+            for (const h of list) {
+              group.push(h);
+              const day = dayOfStop(h.hop + 1);
+              if (day == null || day - mark < span) continue;
+              out.push(join(group));
+              group = [];
+              mark = day;
+            }
+            if (group.length) out.push(join(group));
             return out;
           };
 
@@ -3443,19 +3620,30 @@ export default function AtlasShell({
            * A journey is flown in full; a voyage is sampled.
            *
            * `mayThin` is true for the world cruise atlas alone — see the
-           * FLY_MAX_CALLS comment for the stop counts that make it the only
-           * collection where flying every call is not an option. Everywhere
-           * else the itinerary decides the length of the flight, and the
-           * ceiling does not get a vote: shedding calls from a nine-city jet
-           * tour to save four seconds is showing less of the trip than the trip
-           * has, which is the opposite of what the flight is for.
+           * FLY_WEEK_DAYS comment for the stop counts that make it the only
+           * collection where flying every call is not an option, and for why
+           * what it samples by is a week of the voyage rather than a number of
+           * landings. Everywhere else the itinerary decides the length of the
+           * flight and the ceiling does not get a vote: shedding calls from a
+           * nine-city jet tour to save four seconds is showing less of the trip
+           * than the trip has, which is the opposite of what the flight is for.
            */
-          let flown = mayThin ? merge(hops, Math.min(hops.length, FLY_MAX_CALLS - 1)) : hops;
-          let legs = buildLegs(flown);
-          while (mayThin && legs.length + 1 > FLY_MIN_CALLS && runsTo(legs) > FLY_TOTAL_MS) {
-            flown = merge(flown, flown.length - 1);
-            legs = buildLegs(flown);
+          const dated = hops.filter((h) => dayOfStop(h.hop + 1) != null).length;
+          let flown = hops;
+          if (mayThin && dated >= hops.length / 2) {
+            // One landing a week, widening to a fortnight and beyond only for
+            // the handful of voyages that would otherwise run past the ceiling.
+            let weeks = 1;
+            flown = sampleWeeks(hops, weeks);
+            while (weeks < FLY_MAX_WEEKS && runsTo(buildLegs(flown)) > FLY_VOYAGE_MS) {
+              weeks += 1;
+              flown = sampleWeeks(hops, weeks);
+            }
+          } else if (mayThin) {
+            // No day numbers to bucket by — fall back to spacing by count.
+            flown = merge(hops, Math.min(hops.length, FLY_MAX_CALLS - 1));
           }
+          const legs = buildLegs(flown);
           if (!legs.length) return;
 
           const first = callFor(hops[0].hop, hops[0].pts[0]);
