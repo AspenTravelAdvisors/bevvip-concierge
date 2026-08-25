@@ -1,0 +1,69 @@
+# Refreshes the Virtuoso-sourced atlas data every night and commits the result.
+#
+# The data is committed rather than fetched at request time so that every change
+# lands as a reviewable diff: these files carry a lot of hand-curation, and a
+# supplier quietly dropping records is invisible without one. Vercel deploys from
+# the resulting commit as usual.
+#
+# Requires four repository secrets: VIRTUOSO_API_USER, VIRTUOSO_API_KEY,
+# VIRTUOSO_API_AES_KEY, VIRTUOSO_API_AES_IV.
+name: Virtuoso data sync
+
+on:
+  schedule:
+    - cron: '0 9 * * *'      # 09:00 UTC — 03:00 Aspen (MDT), well clear of the working day
+  workflow_dispatch:          # and on demand, from the Actions tab
+
+concurrency:
+  group: virtuoso-sync        # never let two syncs race for the same commit
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write         # required to push the refreshed data back
+    timeout-minutes: 90       # the detail crawl is ~2,000 sequential calls
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-concierge/package-lock.json
+
+      - name: Install dependencies
+        working-directory: next-concierge
+        run: npm ci
+
+      - name: Sync from the Virtuoso API
+        working-directory: next-concierge
+        env:
+          VIRTUOSO_API_USER: ${{ secrets.VIRTUOSO_API_USER }}
+          VIRTUOSO_API_KEY: ${{ secrets.VIRTUOSO_API_KEY }}
+          VIRTUOSO_API_AES_KEY: ${{ secrets.VIRTUOSO_API_AES_KEY }}
+          VIRTUOSO_API_AES_IV: ${{ secrets.VIRTUOSO_API_AES_IV }}
+        run: npm run sync:virtuoso
+
+      - name: Refuse an implausible shrink
+        working-directory: next-concierge
+        run: node scripts/verify-virtuoso-delta.mjs
+
+      - name: Verify the atlas still holds together
+        working-directory: next-concierge
+        run: npm run verify:hotels
+
+      - name: Commit the refreshed data
+        run: |
+          if git diff --quiet; then
+            echo "No supplier changes today."
+            exit 0
+          fi
+          SUMMARY=$(cd next-concierge && node -e "const d=require('./data/atlas/hotel/virtuoso-hotels.json');process.stdout.write(\`Hotels: \${d._meta.count} properties, synced \${d._meta.lastSynced}.\`)")
+          git config user.name  "virtuoso-sync[bot]"
+          git config user.email "virtuoso-sync@users.noreply.github.com"
+          git add next-concierge/data/atlas next-concierge/public/maps
+          git commit -m "Refresh Virtuoso data" -m "Automated nightly sync from the Virtuoso Partner API." -m "$SUMMARY"
+          git push

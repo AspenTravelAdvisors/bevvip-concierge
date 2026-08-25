@@ -30,7 +30,11 @@ const keyPart = (s) => ci(s).replace(/[^a-z0-9|]+/g, " ").trim();
 const fitKey = (h) => [h.name, h.city, h.country].map(keyPart).join("|");
 // hotelFit still supplies the Forbes/AAA rating and the `q` search haystack /
 // card copy; it no longer drives ranking order (see preferredRank).
-const fitFor = (h) => hotelFit[fitKey(h)] || null;
+// Keyed by our stable id since the Virtuoso merge: supplier names change on
+// every sync, so a name-derived key loses the curation attached to a property
+// the moment it is rebranded. The name key stays as a fallback for any record
+// that predates the re-key.
+const fitFor = (h) => hotelFit[h.id] || hotelFit[fitKey(h)] || null;
 const CARIBBEAN_COUNTRIES = new Set([
   "anguilla",
   "antigua and barbuda",
