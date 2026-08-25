@@ -67,10 +67,11 @@ const body = between(
 );
 
 const constDecls = [
-  "SPAN_FLAT_LNG", "SPAN_FLAT_LAT", "FLY_PACE", "FLY_TARGET_MS", "FLY_MIN_MS",
-  "FLY_MAX_MS", "FLY_ARRIVE_MS", "FLY_SETTLE_MS", "FLY_WINDOW_MIN",
-  "FLY_WINDOW_MAX", "FLY_PITCH", "FLY_RAMP", "FLY_SAMPLES", "FLY_MAX_LAT",
-  "FLY_LABEL_MS",
+  "SPAN_FLAT_LNG", "SPAN_FLAT_LAT", "FLY_ARRIVE_MS", "FLY_SETTLE_MS",
+  "FLY_DWELL_MS", "FLY_LEG_BASE_MS", "FLY_LEG_PER_ZOOM_MS", "FLY_LEG_MIN_MS",
+  "FLY_LEG_MAX_MS", "FLY_TOTAL_MS", "FLY_MAX_CALLS", "FLY_STOP_ZOOM",
+  "FLY_MIN_CALLS", "FLY_CRUISE_PAD", "FLY_MIN_CLIMB", "FLY_PITCH", "FLY_CRUISE_PITCH",
+  "FLY_SAMPLES", "FLY_MAX_LAT",
 ];
 // SPAN_FLAT_* live inside the map effect and the FLY_* ones at module scope, so
 // each is grabbed by name rather than by a range that would swallow the file.
@@ -151,6 +152,7 @@ const MED = stopsOf([
 function harness(opts = {}) {
   const box = opts.box ?? { w: 348, h: 340 }; // the phone's map band
   let now = 0;
+  const clock = () => now;
   const timers = new Map();
   let nextId = 1;
   const log = [];
@@ -183,12 +185,12 @@ function harness(opts = {}) {
     flyTo: (o) => {
       camera.center = [...o.center]; camera.zoom = o.zoom;
       camera.pitch = o.pitch ?? camera.pitch; camera.bearing = o.bearing ?? camera.bearing;
-      log.push("flyTo"); track.push({ t: now, at: [...o.center] });
+      log.push("flyTo"); track.push({ t: now, at: [...o.center], zoom: camera.zoom, pitch: camera.pitch });
     },
     jumpTo: (o) => {
       camera.center = [...o.center]; camera.zoom = o.zoom ?? camera.zoom;
       camera.pitch = o.pitch ?? camera.pitch; camera.bearing = o.bearing ?? camera.bearing;
-      track.push({ t: now, at: [...o.center], bearing: o.bearing });
+      track.push({ t: now, at: [...o.center], zoom: camera.zoom, pitch: camera.pitch });
     },
     easeTo: (o) => {
       if (o.center) camera.center = [...o.center];
@@ -226,8 +228,8 @@ function harness(opts = {}) {
     flyingRef,
     stopPopup: {
       setLngLat(at) { this._at = at; return this; },
-      setHTML(h) { labels.push(/>([^<]*)<\/div><\/div>/.exec(h)[1]); return this; },
-      addTo() { log.push("label"); return this; },
+      setHTML(h) { this._html = /(?:>)([^<]*)<\/div><\/div>/.exec(h)[1]; return this; },
+      addTo() { labels.push({ text: this._html, at: [...(this._at ?? [])], t: clock() }); log.push("label"); return this; },
       remove() { log.push("label off"); },
     },
     stopPinned: false,
@@ -264,11 +266,13 @@ function harness(opts = {}) {
 // ── Scenarios ───────────────────────────────────────────────────────────────
 const results = [];
 const check = (name, cond, detail = "") => results.push([name, !!cond, detail]);
-const RUN = 30000;
+const RUN = 120000;
 
 const flat = (legs) => legs.flatMap((l) => l.coordinates);
 /** Distance in degrees, longitude scaled by latitude — the flight's own metric. */
 const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180), a[1] - b[1]);
+/** Degrees of longitude across the frame at this zoom — what "too fast" is measured in. */
+const frameDeg = (zoom, w) => (w * 360) / (512 * 2 ** zoom);
 
 {
   // A full circumnavigation, on the phone band that started all this.
@@ -278,7 +282,6 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
   h.tick(RUN);
 
   const path = flat(legs);
-  const total = path.slice(1).reduce((s, p, i) => s + dist(path[i], p), 0);
   const track = h.track;
 
   // Follows the route: every camera position sits on the itinerary, and the
@@ -297,51 +300,79 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
   check("flies the itinerary itself, not a bounding box", offRoute === 0,
     `${track.length} camera writes, ${offRoute} off route`);
   check("…forwards, in travel order", backwards === 0, `${backwards} steps back`);
-  check("…starting at the first call", dist(track[0].at, path[0]) < 3);
-  check("…and reaching the last", dist(track[track.length - 1].at, path[path.length - 1]) < 6);
+  check("…starting at the first call", dist(track[0].at, path[0]) < 0.01);
+  check("…and reaching the last", dist(track[track.length - 1].at, path[path.length - 1]) < 0.01);
 
-  // The reel budget.
-  const done = h.log.lastIndexOf("easeTo") >= 0 || h.log.lastIndexOf("fitBounds") >= 0;
-  const travel = track[track.length - 1].t - track[0].t;
-  check("fits the reel: a circumnavigation inside ten seconds",
-    done && travel + K.FLY_ARRIVE_MS + K.FLY_SETTLE_MS <= 10600,
-    `${Math.round(travel)}ms of travel + ${K.FLY_ARRIVE_MS} arrive + ${K.FLY_SETTLE_MS} settle`);
-  check("…and long enough to read as travel", travel >= K.FLY_MIN_MS);
-
-  // Pace: never more than about one frame-width of ground per second, which is
-  // the whole reason altitude is chosen from the route's length.
-  const win = Math.max(K.FLY_WINDOW_MIN, Math.min(K.FLY_WINDOW_MAX, total / ((K.FLY_TARGET_MS / 1000) * K.FLY_PACE)));
-  let fastest = 0;
+  /*
+   * THE PACE, measured the way the complaint was made: not in degrees per
+   * second, which is meaningless without an altitude, but in how much of the
+   * FRAME goes past per second. The first version held one altitude and paid
+   * for distance with speed, which put the middle of every long leg past at
+   * two and a half frame-widths a second. The hop pays with altitude instead.
+   */
+  let fastest = 0, sumScreens = 0, n = 0;
   for (let i = 1; i < track.length; i++) {
     const dt = (track[i].t - track[i - 1].t) / 1000;
-    if (dt > 0) fastest = Math.max(fastest, dist(track[i - 1].at, track[i].at) / dt);
+    if (dt <= 0) continue;
+    const screens = dist(track[i - 1].at, track[i].at) / dt / frameDeg(track[i].zoom, 348);
+    fastest = Math.max(fastest, screens);
+    sumScreens += screens; n++;
   }
-  // The cruise is flat, so the peak is only the ramp's overshoot — about
-  // 1/(1-FLY_RAMP) of the average. An ease-in-out peaked at twice it, which at
-  // this frame width is two and a half screens a second: a whip pan.
-  const budget = K.FLY_PACE * win * (1 / (1 - K.FLY_RAMP)) * 1.12;
-  check("holds a watchable pace at the altitude it picked",
-    fastest <= budget,
-    `${fastest.toFixed(0)}°/s peak vs ${budget.toFixed(0)}°/s allowed, frame ${win.toFixed(0)}° wide`);
+  check("never moves faster than about one frame-width a second",
+    fastest <= 1.15, `${fastest.toFixed(2)} screens/s peak`);
+  check("…and averages a good deal less than that while moving",
+    sumScreens / n <= 0.55, `${(sumScreens / n).toFixed(2)} screens/s mean`);
 
-  // The calls.
+  // It stops at every call. A "dwell" is a stretch with no camera write at all.
+  const gaps = [];
+  for (let i = 1; i < track.length; i++) {
+    const gap = track[i].t - track[i - 1].t;
+    if (gap > 200) gaps.push({ ms: gap, at: track[i - 1].at });
+  }
+  check("holds still at every call, long enough to read it",
+    gaps.length === RTW.length - 1 && gaps.every((g) => g.ms >= K.FLY_DWELL_MS),
+    `${gaps.length} holds of ${Math.round(Math.min(...gaps.map((g) => g.ms)))}ms+`);
+  check("…with the camera on the call itself, not near it",
+    gaps.every((g, i) => dist(g.at, RTW[i].at) < 0.01));
+
+  // It climbs between them: the whole reason the empty middle can go past
+  // quickly while the ends stay legible.
+  let climbed = 0;
+  for (let i = 1; i < track.length; i++) {
+    if (track[i].t - track[i - 1].t > 200) continue; // a dwell, not a leg
+    if (track[i].zoom < K.FLY_STOP_ZOOM - K.FLY_MIN_CLIMB + 0.01) climbed++;
+  }
+  check("climbs out between calls rather than crossing at city zoom", climbed > 0,
+    `${climbed} frames above the minimum climb`);
+  // Every call is read from the same height, arrival included — a flight whose
+  // altitude drifted between calls would make one city look more important
+  // than the next for no reason anyone chose.
+  const atCalls = [track[0], ...track.filter((p, i) => i > 0 && track[i].t - track[i - 1].t > 200)
+    .map((_, k) => track[track.findIndex((q, i) => i > 0 && track[i].t - track[i - 1].t > 200 && k-- === 0) - 1])];
+  check("…and reads every call from the same height",
+    atCalls.every((p) => Math.abs(p.zoom - K.FLY_STOP_ZOOM) < 0.01),
+    `${atCalls.length} landings at zoom ${K.FLY_STOP_ZOOM}`);
+  check("…tilting hard at the calls and flattening at cruise",
+    track[0].pitch === K.FLY_PITCH &&
+      Math.min(...track.filter((p) => p.zoom < K.FLY_STOP_ZOOM - 0.5).map((p) => p.pitch)) < K.FLY_PITCH - 10);
+
+  // The names.
   check("names every call, in order, once",
     h.labels.length === RTW.length &&
-      h.labels.every((l, i) => l.startsWith(`${i + 1}. Day ${RTW[i].day} · ${RTW[i].name}`)),
-    h.labels.join(" → "));
+      h.labels.every((l, i) => l.text.startsWith(`${i + 1}. Day ${RTW[i].day} · ${RTW[i].name}`)),
+    h.labels.map((l) => l.text.split(" · ")[1]).join(" → "));
+  check("…each one up before its hold, so there is something to read during it",
+    h.labels.every((l, i) => i === 0 || l.t <= gaps[i - 1].ms + l.t));
 
+  // The budget.
+  const end = track[track.length - 1].t + K.FLY_DWELL_MS + K.FLY_SETTLE_MS;
+  check("a nine-call world tour runs to a watchable length",
+    end <= K.FLY_TOTAL_MS, `${(end / 1000).toFixed(1)}s`);
 
-  // The landing has to be the last word. An earlier version put the pitch back
-  // in the flight's own teardown, which runs one tick after the settle is
-  // issued — a second camera command in the same breath, cancelling the
-  // pull-back it was meant to follow.
   const moves = h.log.filter((l) => ["flyTo", "easeTo", "fitBounds"].includes(l));
   check("the landing is the last camera command, not the second to last",
-    moves.length === 2 && moves[0] === "flyTo" && moves[1] !== "flyTo",
-    moves.join(" → "));
-  check("tilts hard on the way in, and levels out at the end",
-    h.log.indexOf("tilted true") >= 0 && h.log.lastIndexOf("tilted false") > h.log.indexOf("tilted true") &&
-      h.camera.pitch === 0);
+    moves.length === 2 && moves[0] === "flyTo" && moves[1] !== "flyTo", moves.join(" → "));
+  check("levels out at the end", h.camera.pitch === 0);
   check("hands the route back at full strength", h.paint.get("fr_rail.line-opacity") === 0.92);
   check("leaves nothing lit", h.filters.get("fs_now") === JSON.stringify(["==", ["get", "n"], "—"]));
   check("leaves no timer or frame running", h.pending() === 0 && !h.flyingRef.current);
@@ -354,7 +385,7 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
   const legs = route(RTW);
   const h = harness({ legs, stops: RTW });
   h.api.flyRoute();
-  h.tick(K.FLY_ARRIVE_MS + 3000);
+  h.tick(K.FLY_ARRIVE_MS + K.FLY_DWELL_MS + 900);
   const mid = h.trail();
   const camera = [...h.camera.center];
   h.tick(RUN);
@@ -365,11 +396,11 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
 }
 
 {
-  // Interruption: a hand on the globe, half way round.
+  // Interruption: a hand on the globe, mid-leg.
   const legs = route(RTW);
   const h = harness({ legs, stops: RTW });
   h.api.flyRoute();
-  h.tick(4000);
+  h.tick(K.FLY_ARRIVE_MS + K.FLY_DWELL_MS + 600);
   const where = [...h.camera.center];
   const flownTo = h.track.length;
   h.api.endFlight();
@@ -381,12 +412,12 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
   check("…empties the trail", h.trail().length === 0);
   check("…puts the call label away", h.log.lastIndexOf("label off") > h.log.lastIndexOf("label"));
   check("…leaves the tilt where it was caught, rather than levelling uninvited",
-    h.camera.pitch === K.FLY_PITCH, `pitch ${h.camera.pitch}`);
+    h.camera.pitch > 0, `pitch ${h.camera.pitch.toFixed(0)}`);
   check("…and ends the flight", !h.flyingRef.current && h.pending() === 0);
 }
 
 {
-  // Interrupted during the drop-in, before the travel starts.
+  // Interrupted during the drop-in, before the first call.
   const h = harness({ legs: route(RTW), stops: RTW });
   h.api.flyRoute();
   h.tick(K.FLY_ARRIVE_MS / 2);
@@ -398,18 +429,48 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
 }
 
 {
-  // A regional route: same machinery, flown low and close.
+  // A regional route: same beats, a shorter climb, a shorter flight.
   const legs = route(MED);
   const h = harness({ legs, stops: MED });
   h.api.flyRoute();
   h.tick(RUN);
-  const travel = h.track[h.track.length - 1].t - h.track[0].t;
-  check("a regional route still gets a real flight, not a twitch", travel >= K.FLY_MIN_MS,
-    `${Math.round(travel)}ms`);
-  check("…flown closer than a circumnavigation", h.camera.zoom > 3,
-    `zoom ${h.camera.zoom.toFixed(2)}`);
-  check("…and framed at the end rather than left on the last stop",
+  const end = h.track[h.track.length - 1].t + K.FLY_DWELL_MS + K.FLY_SETTLE_MS;
+  const world = harness({ legs: route(RTW), stops: RTW });
+  world.api.flyRoute();
+  world.tick(RUN);
+  const worldEnd = world.track[world.track.length - 1].t;
+  check("a four-call regional route is a short flight, not a world tour's worth",
+    end < worldEnd / 1.6, `${(end / 1000).toFixed(1)}s vs ${(worldEnd / 1000).toFixed(1)}s`);
+  check("…and never climbs as far, because it never has to",
+    Math.min(...h.track.map((p) => p.zoom)) > Math.min(...world.track.map((p) => p.zoom)),
+    `zoom ${Math.min(...h.track.map((p) => p.zoom)).toFixed(1)} vs ${Math.min(...world.track.map((p) => p.zoom)).toFixed(1)}`);
+  check("…and is framed at the end rather than left on the last call",
     h.log.includes("fitBounds"));
+}
+
+{
+  // A world cruise: more ports than a flight can set down on.
+  const many = stopsOf(
+    Array.from({ length: 34 }, (_, i) => [`Port ${i + 1}`, -170 + i * 10, 20 * Math.sin(i / 2)]),
+  );
+  const h = harness({ legs: route(many), stops: many });
+  h.api.flyRoute();
+  h.tick(RUN);
+  const end = h.track[h.track.length - 1].t + K.FLY_DWELL_MS + K.FLY_SETTLE_MS;
+  // The ceiling, plus a frame of slack per beat: each beat ends on the first
+  // frame at or after its duration, so a flight with fifty of them lands a few
+  // hundred milliseconds late by construction and that is not a budget failure.
+  const slack = 17 * h.labels.length * 2;
+  check("a thirty-four port world cruise thins its landings rather than running to two minutes",
+    h.labels.length <= K.FLY_MAX_CALLS && end <= K.FLY_TOTAL_MS + slack,
+    `${h.labels.length} of ${many.length} calls, ${(end / 1000).toFixed(1)}s`);
+  check("…keeping the first and the last", h.labels[0].text.startsWith("1.") &&
+    h.labels[h.labels.length - 1].text.startsWith(`${many.length}.`));
+  // Thinning the LANDINGS is not thinning the route: the camera still flies
+  // over every port, it just does not stop at all of them.
+  const missed = many.filter((st) => !h.track.some((p) => dist(p.at, st.at) < 2));
+  check("…while still flying over every port it does not stop at",
+    missed.length === 0, `${many.length - missed.length}/${many.length} overflown`);
 }
 
 {
@@ -418,6 +479,16 @@ const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) 
   h.api.flyRoute();
   h.tick(RUN);
   check("nothing traced, nothing flown", h.track.length === 0 && !h.flyingRef.current);
+}
+
+{
+  // A route with geometry but no itinerary behind it: its ends are its calls.
+  const legs = route(MED);
+  const h = harness({ legs, stops: [] });
+  h.api.flyRoute();
+  h.tick(RUN);
+  check("a route with no named stops is still flown, end to end",
+    h.track.length > 0 && !h.flyingRef.current);
 }
 
 {

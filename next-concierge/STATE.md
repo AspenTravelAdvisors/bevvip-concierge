@@ -1509,41 +1509,72 @@ panel.
 
 **2. Wide routes are flown, not framed.** `▶ Fly the route` — on every card with
 two located stops, and in the map's own control stack (fullscreen has no cards,
-and fullscreen is where a reel gets filmed). The camera drops onto the first
-call at 58° of pitch, follows the itinerary in travel order with each call
-naming itself as it passes and a bright trail growing behind it over the dimmed
-route, then levels out and pulls back.
+and fullscreen is where a reel gets filmed). The flight is one beat repeated:
+
+    land on the call · name it · hold · hop to the next
 
 **Deliberately not automatic.** A card tap is browsing: it traces and frames as
 well as the viewport allows, and you keep the camera. The flight takes the
-camera for ~9s, and taking someone's map away is not something to do because
-they were reading a list. It is also the reason a reduced-motion visitor is
-fine: nothing flies unless it is asked to.
+camera for as long as the itinerary needs, and taking someone's map away is not
+something to do because they were reading a list. It is also the reason a
+reduced-motion visitor is fine: nothing flies unless it is asked to.
 
-**Speed and altitude are one decision.** Degrees per second is meaningless
-alone — 50°/s is a drift at world scale and unwatchable at city scale. What
-stays constant is how much of the FRAME goes past per second (`FLY_PACE`, 0.9
-screen-widths), so the flight derives the window it needs to fly the route
-inside the reel's budget and takes its zoom from that. A circumnavigation is
-flown high and a Riviera hop low, both at the same readable pace. Budget is the
-reel: ~7.5s of travel between a 0.9s arrival and a 1.2s settle, so three routes
-fit in half a minute.
+**Distance is paid for with ALTITUDE, not speed.** The first version of this
+(same day, replaced) flew the whole itinerary as one continuous pass at one
+altitude and paid for the distance by moving faster. It was too fast to watch,
+and it could not have been fixed by slowing down: at an altitude close enough to
+recognise a city, a Pacific crossing is 9,000km of empty water, and any speed
+that crosses it in reel time makes the cities unreadable.
+
+So each leg now rises out of one call, crosses at a height that frames the whole
+leg, and descends into the next — the arc a flight actually makes, and the one
+thing that lets the empty middle go past quickly while the ends stay legible. A
+leg's duration follows how far it CLIMBS, not how far it travels: a hop down the
+Riviera takes about a second and a half, a Pacific crossing climbs nearly four
+zoom levels and takes three and a half. Pitch rides the same hump — hard (58°)
+at the calls, flattened (22°) at cruise, where the job is context and a tilted
+world map is a smeared one.
+
+**The dwell is the point.** The map holds still at each call, the name comes up,
+and there is time to read it. That is what the flight exists to deliver, so it
+is the one budget that never gets scaled: when an itinerary will not fit inside
+the ceiling, what gives is the number of LANDINGS, not the pace and not the
+reading time. Scaling the legs instead was tried and is wrong in exactly the way
+this rewrite is about — measured on the shipped itineraries, a 13-call world
+tour was crossing the Pacific at 1.26 frame-widths a second while a 9-call one
+managed 0.75, so the routes that most needed to be readable were the ones being
+rushed. It now sheds calls until it fits, down to a floor of 8; the route is
+still drawn and still flown over in full, and each label's number ("7. Day 19 ·
+Marrakesh") keeps the traveller's place in the whole itinerary.
+
+**North stays up.** No rotation to face along each leg. That is the seat-back
+idiom and it costs more than it pays: every basemap label arrives at a different
+angle, and a viewer who looked away has to re-find north before they can read
+where they are. The tilt and the climb carry the motion.
+
+**Measured on the shipped jet atlas** (348×340 phone band, 40 routes): median
+26.8s, longest 39.3s (10-call round-the-world), shortest 13.5s (4-call
+regional), peak pace 1.07 frame-widths/sec across all of them. The dials, in
+descending order of effect: `FLY_DWELL_MS` (1400), `FLY_LEG_BASE_MS` (1500) and
+`FLY_LEG_PER_ZOOM_MS` (420), `FLY_STOP_ZOOM` (4.6, which sets how far every leg
+has to climb), `FLY_TOTAL_MS` (40000 ceiling).
 
 **Details that are load-bearing:**
 
 - **It flies `lastFocusLegs`**, the chain `paintFocusRoute` stored — ordered,
   oriented and unrolled into one longitude frame by `lib/atlas/route-frame.ts`.
   Raw legs would cross the Pacific four times.
-- **Trapezoid, not ease-in-out.** The obvious smoothstep peaks at TWICE its
-  average speed, which at a comfortable average put the middle of every route —
-  the ocean crossing, the part with nothing to watch but the map — past at 2.5
-  frame-widths a second. Ramping over the first and last 15% and cruising
-  between peaks at 1.18×. Caught by the harness, not by eye.
-- **The camera is interpolated between path samples**, not rounded to one:
-  rounding quantises to 360 positions, so at speed some frames advance two
-  samples and some none, which reads as dropped frames.
-- **Bearings are unrolled before smoothing** (…350°, 10°… is a 20° turn) and
-  smoothed harder than position, or the horizon whips round at every call.
+- **The camera lands ON the call**, not on the nearest sample to it: each leg's
+  point list has its two ends replaced by the stops themselves. A resampled
+  route is ~1° between samples on a world tour, which at reading altitude is a
+  city visibly off centre.
+- **Altitude rides the raw clock, position an eased one.** The climb has to be
+  under way before the camera has gone anywhere, or the first moments of a long
+  leg are spent crossing ground at city zoom — the too-fast this shape exists to
+  fix, in miniature.
+- **Calls are matched forward along the route**, never by nearest sample
+  globally: an out-and-back itinerary calls at the same port twice, and a global
+  search gives both calls the same moment.
 - **An interruption returns nothing to the camera.** Any hand on the globe ends
   the flight through the existing `haltSpin` path, and the teardown puts back
   only what was borrowed — the dimmed route, the trail, the label, the lit call.
@@ -1559,11 +1590,20 @@ fit in half a minute.
 **Verified.** `scripts/verify-route-flight.mjs` (in `npm run verify`) slices the
 real framing-and-flight block out of `AtlasShell.tsx`, compiles it and runs it
 against a fake map and a fake clock, in the idiom of `verify-ambient-tour.mjs`:
-28 checks that it flies the itinerary forwards and lands on the last call, names
-every call once in order, holds its pace, fits inside ten seconds, gives back
-everything it borrowed on an interruption at any point, and flattens on a
-desktop box while keeping the globe on a phone one. Two real bugs came out of
-it — the whip-pan cruise and a trail that stopped up to 80ms short of the final
-call. `npm run verify` clean; production build clean. Not seen live: this
-sandbox's network policy blocks `api.mapbox.com`, so the flight has been driven
-only against the stub — the pace and the pitch want an eye on a real phone.
+41 checks that it flies the itinerary forwards and lands exactly on each call,
+holds still there long enough to read the name, climbs out between calls,
+reads every call from the same height, names them in order once, gives back
+everything it borrowed on an interruption at any point, thins a 34-port world
+cruise rather than running to two minutes while still flying over every port,
+and flattens on a desktop box while keeping the globe on a phone one.
+
+The pace check is the one that matters and it is expressed the way the
+complaint was: not degrees per second, which is meaningless without an altitude,
+but **frame-widths per second** — capped at 1.15 peak, 0.55 mean. Four real bugs
+came out of this harness: the whip-pan cruise, a trail that stopped short of the
+final call, a teardown that cancelled its own landing, and the budget scaling
+that quietly re-rushed the longest itineraries.
+
+Not seen live: this sandbox's network policy blocks `api.mapbox.com`, so the
+flight has been driven only against the stub — the pitch and the dwell want an
+eye on a real phone.
