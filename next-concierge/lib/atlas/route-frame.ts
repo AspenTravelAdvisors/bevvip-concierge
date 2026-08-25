@@ -47,21 +47,6 @@ export type Pt = [number, number];
 export interface FrameLeg {
   mode: string;
   coordinates: Pt[];
-  /**
-   * Which itinerary hop this leg IS — 1 for the leg from stop 1 to stop 2, and
-   * so on. Absent when nothing claimed it: a leg left over after the walk, or
-   * any leg at all when there was no itinerary to walk (see chainGreedy).
-   *
-   * Drawing does not need it — a route is the same picture whichever leg is
-   * which. Anything that has to TRAVEL the route does, because the two things
-   * this file appends without ceremony are fatal to a camera: an orphan leg
-   * that belongs to no hop, and a hop with no geometry at all. Concatenating
-   * the legs and following the result flies the orphan as if it came next, and
-   * cuts the missing hop as a straight line through whatever lies between —
-   * which is how the route flight came to show a different journey from the one
-   * drawn underneath it.
-   */
-  hop?: number;
 }
 
 /** Longitude into [-180, 180). */
@@ -201,9 +186,6 @@ function chainByItinerary(pool: FrameLeg[], stops: Pt[]): { legs: FrameLeg[]; pl
     ordered.push({
       mode: pool[pick.i].mode,
       coordinates: pick.reversed ? [...c].reverse() : c,
-      // The hop this leg was claimed FOR, so a consumer that has to travel the
-      // route can tell a claimed leg from the leftovers appended below.
-      hop: i,
     });
   }
 
@@ -295,7 +277,7 @@ function unrollChain(legs: FrameLeg[]): FrameLeg[] {
       prev = x;
       out.push([x, lat]);
     }
-    return { mode: leg.mode, coordinates: out, hop: leg.hop };
+    return { mode: leg.mode, coordinates: out };
   });
 }
 

@@ -69,21 +69,21 @@ const body = between(
 const constDecls = [
   "SPAN_FLAT_LNG", "SPAN_FLAT_LAT", "FLY_ARRIVE_MS", "FLY_SETTLE_MS",
   "FLY_DWELL_MS", "FLY_LEG_BASE_MS", "FLY_LEG_PER_ZOOM_MS", "FLY_LEG_MIN_MS",
-  "FLY_LEG_MAX_MS", "FLY_TOTAL_MS", "FLY_MAX_CALLS", "FLY_STOP_ZOOM_MIN",
-  "FLY_STOP_ZOOM_MAX", "FLY_MIN_CALLS", "FLY_CRUISE_PAD", "FLY_MIN_CLIMB",
-  "FLY_PACE", "FLY_PAN_MIN_MS", "FLY_RAMP", "FLY_PITCH", "FLY_CRUISE_PITCH", "FLY_FULL_CLIMB", "FLY_MAX_LAT",
+  "FLY_LEG_MAX_MS", "FLY_TOTAL_MS", "FLY_MAX_CALLS", "FLY_STOP_ZOOM",
+  "FLY_MIN_CALLS", "FLY_CRUISE_PAD", "FLY_MIN_CLIMB", "FLY_PITCH", "FLY_CRUISE_PITCH",
+  "FLY_SAMPLES", "FLY_MAX_LAT",
 ];
 // SPAN_FLAT_* live inside the map effect and the FLY_* ones at module scope, so
 // each is grabbed by name rather than by a range that would swallow the file.
 const decls = constDecls
   .map((name) => {
-    const m = new RegExp(`^\\s*const ${name} = [\\d.]+;(?:\\s*//.*)?$`, "m").exec(SRC);
+    const m = new RegExp(`^\\s*const ${name} = [\\d.]+;$`, "m").exec(SRC);
     if (!m) throw new Error(`verify-route-flight: ${name} moved or changed shape`);
-    return m[0].trim().replace(/\s*\/\/.*$/, "");
+    return m[0].trim();
   })
   .join("\n");
 const K = Object.fromEntries(
-  constDecls.map((n) => [n, Number(new RegExp(`^\\s*const ${n} = ([\\d.]+);(?:\\s*//.*)?$`, "m").exec(SRC)[1])]),
+  constDecls.map((n) => [n, Number(new RegExp(`^\\s*const ${n} = ([\\d.]+);$`, "m").exec(SRC)[1])]),
 );
 const FS_NOW_NONE_DECL = /^const FS_NOW_NONE.*$/m.exec(SRC);
 if (!FS_NOW_NONE_DECL) throw new Error("verify-route-flight: FS_NOW_NONE moved");
@@ -107,7 +107,6 @@ writeFileSync(
     `  let projGlobe: boolean = dep.projGlobe;\n` +
     `${body}\n` +
     `  return { flyRoute, endFlight, flattenIfCircumnavigation, canFrameFlat, spanOf,\n` +
-    `    framingLat, frameSpan, routeHops,\n` +
     `    state: () => ({ projGlobe, flying: flyingRef.current }) };\n` +
     `}\n`,
 );
@@ -121,24 +120,17 @@ execFileSync("npx", [
 const { makeFlight } = await import(pathToFileURL(join(OUT, "flight.js")).href);
 
 // ── Itineraries ─────────────────────────────────────────────────────────────
-/**
- * Legs the way paintFocusRoute leaves them: one per itinerary hop, tagged with
- * the hop it IS (see route-frame.ts). `bow` bends a leg off the straight line
- * between its stops, the way a great circle or a real sea lane does, so
- * "follows the drawn route" is a claim with something to fail on.
- */
-function route(stops, opts = {}) {
+/** Straight legs between stops, unrolled — what paintFocusRoute leaves behind. */
+function route(stops) {
   const legs = [];
   for (let i = 1; i < stops.length; i++) {
     const [aLng, aLat] = stops[i - 1].at;
     const [bLng, bLat] = stops[i].at;
     const coords = [];
     for (let k = 0; k <= 24; k++) {
-      const f = k / 24;
-      const bow = (opts.bow ?? 0) * Math.sin(Math.PI * f);
-      coords.push([aLng + (bLng - aLng) * f, aLat + (bLat - aLat) * f + bow]);
+      coords.push([aLng + ((bLng - aLng) * k) / 24, aLat + ((bLat - aLat) * k) / 24]);
     }
-    legs.push({ mode: "primary", coordinates: coords, hop: i });
+    legs.push({ mode: "primary", coordinates: coords });
   }
   return legs;
 }
@@ -281,35 +273,6 @@ const flat = (legs) => legs.flatMap((l) => l.coordinates);
 const dist = (a, b) => Math.hypot((a[0] - b[0]) * Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180), a[1] - b[1]);
 /** Degrees of longitude across the frame at this zoom — what "too fast" is measured in. */
 const frameDeg = (zoom, w) => (w * 360) / (512 * 2 ** zoom);
-/**
- * How far the furthest camera position strays from the drawn line.
- *
- * Measured to the nearest point on a SEGMENT, not to the nearest vertex: the
- * drawn route is a polyline, a camera correctly half way along one of its
- * segments is exactly on the route, and scoring it against vertices alone
- * would call that half the segment's length of error.
- */
-function furthestFromLine(points, legs) {
-  const segs = [];
-  for (const l of legs) {
-    for (let i = 1; i < l.coordinates.length; i++) segs.push([l.coordinates[i - 1], l.coordinates[i]]);
-  }
-  let worst = 0;
-  for (const p of points) {
-    let best = Infinity;
-    for (const [a, b] of segs) {
-      const k = Math.cos((p[1] * Math.PI) / 180);
-      const ax = (a[0] - p[0]) * k, ay = a[1] - p[1];
-      const bx = (b[0] - p[0]) * k, by = b[1] - p[1];
-      const dx = bx - ax, dy = by - ay;
-      const len2 = dx * dx + dy * dy;
-      const t = len2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / len2)) : 0;
-      best = Math.min(best, Math.hypot(ax + dx * t, ay + dy * t));
-    }
-    worst = Math.max(worst, best);
-  }
-  return worst;
-}
 
 {
   // A full circumnavigation, on the phone band that started all this.
@@ -372,16 +335,12 @@ function furthestFromLine(points, legs) {
   check("…with the camera on the call itself, not near it",
     gaps.every((g, i) => dist(g.at, RTW[i].at) < 0.01));
 
-  // The reading altitude the flight chose for this route — every landing is
-  // read from it, and every climb is measured against it.
-  const readZoom = track[0].zoom;
-
   // It climbs between them: the whole reason the empty middle can go past
   // quickly while the ends stay legible.
   let climbed = 0;
   for (let i = 1; i < track.length; i++) {
     if (track[i].t - track[i - 1].t > 200) continue; // a dwell, not a leg
-    if (track[i].zoom < readZoom - K.FLY_MIN_CLIMB + 0.01) climbed++;
+    if (track[i].zoom < K.FLY_STOP_ZOOM - K.FLY_MIN_CLIMB + 0.01) climbed++;
   }
   check("climbs out between calls rather than crossing at city zoom", climbed > 0,
     `${climbed} frames above the minimum climb`);
@@ -391,12 +350,11 @@ function furthestFromLine(points, legs) {
   const atCalls = [track[0], ...track.filter((p, i) => i > 0 && track[i].t - track[i - 1].t > 200)
     .map((_, k) => track[track.findIndex((q, i) => i > 0 && track[i].t - track[i - 1].t > 200 && k-- === 0) - 1])];
   check("…and reads every call from the same height",
-    atCalls.every((p) => Math.abs(p.zoom - readZoom) < 0.01) &&
-      readZoom >= K.FLY_STOP_ZOOM_MIN && readZoom <= K.FLY_STOP_ZOOM_MAX,
-    `${atCalls.length} landings at zoom ${readZoom.toFixed(2)}`);
+    atCalls.every((p) => Math.abs(p.zoom - K.FLY_STOP_ZOOM) < 0.01),
+    `${atCalls.length} landings at zoom ${K.FLY_STOP_ZOOM}`);
   check("…tilting hard at the calls and flattening at cruise",
     track[0].pitch === K.FLY_PITCH &&
-      Math.min(...track.filter((p) => p.zoom < readZoom - 0.5).map((p) => p.pitch)) < K.FLY_PITCH - 10);
+      Math.min(...track.filter((p) => p.zoom < K.FLY_STOP_ZOOM - 0.5).map((p) => p.pitch)) < K.FLY_PITCH - 10);
 
   // The names.
   check("names every call, in order, once",
@@ -486,16 +444,8 @@ function furthestFromLine(points, legs) {
   check("…and never climbs as far, because it never has to",
     Math.min(...h.track.map((p) => p.zoom)) > Math.min(...world.track.map((p) => p.zoom)),
     `zoom ${Math.min(...h.track.map((p) => p.zoom)).toFixed(1)} vs ${Math.min(...world.track.map((p) => p.zoom)).toFixed(1)}`);
-  // The landing pulls back to the whole route: wider than the reading height it
-  // was just at, and centred on the itinerary rather than on its last call.
-  const routeSpan = { lo: Math.min(...MED.map((st) => st.at[0])), hi: Math.max(...MED.map((st) => st.at[0])) };
   check("…and is framed at the end rather than left on the last call",
-    h.camera.zoom < Math.min(...h.track.map((p) => p.zoom)) + 0.01 ||
-      h.camera.zoom < h.track[0].zoom,
-    `settled at zoom ${h.camera.zoom.toFixed(2)} after reading at ${h.track[0].zoom.toFixed(2)}`);
-  check("…centred on the route, not on wherever it stopped",
-    h.camera.center[0] > routeSpan.lo && h.camera.center[0] < routeSpan.hi,
-    `centre ${h.camera.center[0].toFixed(1)}° in ${routeSpan.lo.toFixed(0)}…${routeSpan.hi.toFixed(0)}`);
+    h.log.includes("fitBounds"));
 }
 
 {
@@ -539,135 +489,6 @@ function furthestFromLine(points, legs) {
   h.tick(RUN);
   check("a route with no named stops is still flown, end to end",
     h.track.length > 0 && !h.flyingRef.current);
-}
-
-{
-  /*
-   * FOLLOWS THE DRAWN ROUTE, which is a stronger claim than "stays near the
-   * stops" and the one that was failing: the flight used to concatenate every
-   * stored leg and resample the result, which flew orphan legs route-frame had
-   * appended, and cut hops with no geometry as straight lines. Both show a
-   * journey the map underneath is not drawing.
-   *
-   * The fixtures bow their legs off the straight line, the way a great circle
-   * or a sea lane does, so a camera taking the short way is measurable.
-   */
-  const bowed = route(RTW, { bow: 6 });
-  const h = harness({ legs: bowed, stops: RTW });
-  h.api.flyRoute();
-  h.tick(RUN);
-  const worst = furthestFromLine(h.track.map((p) => p.at), bowed);
-  check("every camera position sits ON the drawn line, not near its endpoints",
-    worst < 0.6, `worst ${worst.toFixed(2)}° off the drawn route`);
-
-  // An orphan leg — one no hop claimed, which route-frame appends after the
-  // route. It is drawn; it must not be flown.
-  const withOrphan = [...route(RTW), { mode: "primary", coordinates: [[20, -70], [40, -72]] }];
-  const g = harness({ legs: withOrphan, stops: RTW });
-  g.api.flyRoute();
-  g.tick(RUN);
-  check("an orphan leg is drawn but never flown",
-    g.track.every((p) => p.at[1] > -60),
-    `southernmost camera latitude ${Math.min(...g.track.map((p) => p.at[1])).toFixed(0)}°`);
-
-  // A hop with no geometry at all. The old code closed the gap with a straight
-  // line; the flight should simply not have that leg.
-  const holed = route(RTW).filter((l) => l.hop !== 4);
-  const k = harness({ legs: holed, stops: RTW });
-  k.api.flyRoute();
-  k.tick(RUN);
-  const holedWorst = furthestFromLine(k.track.map((p) => p.at), holed);
-  check("a hop with no geometry is left out, not cut across",
-    holedWorst < 0.6 && k.labels.length === holed.length + 1,
-    `${k.labels.length} calls over ${holed.length} drawn hops, worst ${holedWorst.toFixed(2)}° off`);
-  check("…and the calls after the gap still carry their own names",
-    k.labels.every((l) => {
-      const n = Number(l.text.split(".")[0]);
-      return l.text.includes(RTW[n - 1].name);
-    }),
-    k.labels.map((l) => l.text.split(" · ")[1]).join(" → "));
-}
-
-{
-  /*
-   * CLOSE STOPS ARE CROSSED FLAT. A coastal cruise or a rail journey is watched
-   * to study its stops, and climbing out over a strait whose far side is
-   * already on screen costs exactly that.
-   */
-  const coastal = stopsOf([
-    ["Nice", 7.27, 43.70], ["Villefranche", 7.31, 43.70], ["Monaco", 7.42, 43.74],
-    ["Menton", 7.50, 43.78], ["San Remo", 7.78, 43.82],
-  ]);
-  const h = harness({ legs: route(coastal), stops: coastal });
-  h.api.flyRoute();
-  h.tick(RUN);
-  const zooms = h.track.map((p) => p.zoom);
-  check("a coastal itinerary is read from close in, not from a jet's altitude",
-    Math.max(...zooms) >= K.FLY_STOP_ZOOM_MAX - 0.01,
-    `reading zoom ${Math.max(...zooms).toFixed(2)}`);
-  check("…and crosses between close stops flat, with no climb to sit through",
-    Math.max(...zooms) - Math.min(...zooms) < 0.01,
-    `zoom varies by ${(Math.max(...zooms) - Math.min(...zooms)).toFixed(3)}`);
-  check("…keeping the tilt the whole way, since it never climbs",
-    h.track.every((p) => p.pitch === K.FLY_PITCH));
-  const world = harness({ legs: route(RTW), stops: RTW });
-  world.api.flyRoute();
-  world.tick(RUN);
-  const legMs = (t) => {
-    const holds = [];
-    for (let i = 1; i < t.length; i++) if (t[i].t - t[i - 1].t > 200) holds.push(i);
-    return holds.length > 1 ? t[holds[1] - 1].t - t[holds[0]].t : 0;
-  };
-  // …and on a route where SOME legs outgrow the frame, only those climb. The
-  // reading height comes from the median leg, so a longer-than-median one
-  // genuinely needs room and gets it; the short ones are still crossed flat.
-  const mixed = stopsOf([
-    ["Nice", 7.27, 43.70], ["Monaco", 7.42, 43.74], ["Portovenere", 9.84, 44.05],
-    ["Amalfi", 14.60, 40.63], ["Taormina", 15.29, 37.85],
-  ]);
-  const m = harness({ legs: route(mixed), stops: mixed });
-  m.api.flyRoute();
-  m.tick(RUN);
-  const mz = m.track.map((p) => p.zoom);
-  check("…while a leg that outgrows the frame still climbs for it",
-    Math.max(...mz) - Math.min(...mz) >= K.FLY_MIN_CLIMB - 0.01,
-    `zoom ${Math.min(...mz).toFixed(1)}…${Math.max(...mz).toFixed(1)}`);
-
-  check("…and moves a bit quicker for it than a leg that has to climb",
-    legMs(h.track) < legMs(world.track),
-    `${legMs(h.track)}ms vs ${legMs(world.track)}ms per leg`);
-}
-
-{
-  /*
-   * NEVER READ FROM A POLE. An Antarctic expedition's bounding box is centred
-   * at 65°S, and fitBounds obediently puts the camera there — which on a sphere
-   * is the underside of the world seen from directly above, with the itinerary
-   * wrapped round the outside. It shows most of the route and reads as nothing.
-   */
-  const h = harness({ box: { w: 348, h: 340 } });
-  check("a whole-globe framing is read from near the equator",
-    Math.abs(h.api.framingLat(-64, 1.1)) <= 40 && Math.abs(h.api.framingLat(72, 0.9)) <= 40,
-    `-64° → ${h.api.framingLat(-64, 1.1).toFixed(0)}°, 72° → ${h.api.framingLat(72, 0.9).toFixed(0)}°`);
-  check("…and a wide-but-not-global one keeps the pole out of the picture",
-    h.api.framingLat(78, 3) < 78,
-    `78° at zoom 3 → ${h.api.framingLat(78, 3).toFixed(0)}°`);
-  check("a regional framing is left exactly where it belongs",
-    h.api.framingLat(61, 5) === 61 && h.api.framingLat(43.7, 7) === 43.7,
-    "an Alaskan cruise and a Riviera one are untouched");
-  check("…and so is anything near the equator, at any zoom",
-    [0, 1, 2, 4, 6].every((z) => h.api.framingLat(12, z) === 12));
-
-  // End to end: an Antarctic route browsed on a phone must not settle on a pole.
-  const polar = stopsOf([
-    ["Ushuaia", -68.3, -54.8], ["Deception Island", -60.6, -63.0],
-    ["Paradise Bay", -62.9, -64.9], ["South Georgia", -36.5, -54.3],
-  ]);
-  const p = harness({ legs: route(polar), stops: polar });
-  p.api.frameSpan(p.api.spanOf([{ coordinates: route(polar).flatMap((l) => l.coordinates) }]),
-    { duration: 2400 });
-  check("browsing an Antarctic itinerary does not look down at the pole",
-    p.camera.center[1] > -60, `centred at ${p.camera.center[1].toFixed(0)}°`);
 }
 
 {

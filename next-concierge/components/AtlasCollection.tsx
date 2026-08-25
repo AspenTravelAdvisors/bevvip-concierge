@@ -35,7 +35,7 @@ import type { Point3D } from "./Atlas3DLayer";
 import { useIsMobile } from "@/lib/use-is-mobile";
 import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
-import { internalAtlasLink, routeVerbLong } from "@/lib/atlas-config";
+import { internalAtlasLink } from "@/lib/atlas-config";
 
 /** One drawable leg of a traced route, already in [lng, lat]. */
 export interface RouteLegOut {
@@ -1381,17 +1381,17 @@ export default function AtlasCollection({
                   same test the route itself passes, so a hotel or a villa —
                   one place, no itinerary — never offers it.
                 */}
-                {o.stops.filter((st) => st.at).length > 1 && routeVerbLong(type) && (
+                {o.stops.filter((st) => st.at).length > 1 && (
                   <button
                     type="button"
                     className="ac-fly"
-                    title={`${routeVerbLong(type)} — the camera follows the itinerary, calling at each stop`}
+                    title="Fly this route — the camera follows the itinerary, calling at each stop"
                     onClick={(e) => {
                       e.stopPropagation();
                       togglePin(o, { fly: true });
                     }}
                   >
-                    ▶ {routeVerbLong(type)}
+                    ▶ Fly the route
                   </button>
                 )}
                 {/* The two boxed actions sit together, then the plain links.
