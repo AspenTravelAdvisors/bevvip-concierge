@@ -710,10 +710,14 @@ const FLY_SETTLE_MS = 1400;
  * The hold at each call: the map still, the name up, long enough to read it.
  *
  * This is the beat the whole flight exists to deliver, so it is the one budget
- * below that never gets scaled away — when a long itinerary has to be trimmed
- * to fit, the travel gives up time and the reading does not.
+ * below that never gets scaled away — when an itinerary has to be trimmed to
+ * fit, the travel gives up time and the reading does not.
+ *
+ * 1100ms, down from 1400: a call's name is three or four words on a still map
+ * and the eye is already there, having just been flown to it. The saving is
+ * per call, so it comes off a thirteen-city world tour four seconds at a time.
  */
-const FLY_DWELL_MS = 1400;
+const FLY_DWELL_MS = 1100;
 /**
  * A leg's duration, from how far it has to climb.
  *
@@ -726,21 +730,33 @@ const FLY_LEG_PER_ZOOM_MS = 420;
 const FLY_LEG_MIN_MS = 1200;
 const FLY_LEG_MAX_MS = 3400;
 /**
- * The ceiling on a whole flight, past which legs (never dwells) are scaled.
+ * The ceiling on a whole flight, and the number of calls it will set down on —
+ * BOTH of which apply to world cruises alone.
  *
- * Generous on purpose. A 13-call round-the-world tour is a long look at a long
- * journey and the traveller asked for it — they can stop it with a finger on
- * the globe at any point, and the Fly control says "Stop" while it runs. This
- * only bites on the extremes: a world cruise with thirty ports.
+ * ── Why one collection is treated differently ──────────────────────────────
+ *
+ * Every other atlas is a journey; a world cruise is a voyage, and the shipped
+ * data says so plainly. Stops per itinerary, measured:
+ *
+ *     private jet   median  7, max  13
+ *     rail          median  4, max  14
+ *     hotel yacht   median  6, max  10
+ *     expedition    median  9, max  79
+ *     world cruise  median 39, max 153
+ *
+ * A flight that sheds calls to fit a budget is showing less of the itinerary
+ * than the itinerary has, and for the first four that trade is not worth
+ * making: they are short enough to fly in full, so they are. A world cruise
+ * cannot be — 153 ports at a hold and a hop each is the better part of ten
+ * minutes — so there alone the landings are spread across the voyage, roughly
+ * one a week, and the ROUTE is still drawn and still flown over in full. Only
+ * the pauses thin out.
+ *
+ * The tail of the expedition atlas (its longest is 79 ports) will therefore run
+ * long. That is deliberate: it is one sailing in a hundred, the traveller asked
+ * for the flight, and the control says "Stop" for as long as it runs.
  */
 const FLY_TOTAL_MS = 40000;
-/**
- * Calls the camera will actually set down on.
- *
- * Above this the landings are spread evenly across the itinerary (the first and
- * last always kept) rather than the flight running to a minute and a half. The
- * ROUTE is still drawn and still flown over in full — only the pauses thin out.
- */
 const FLY_MAX_CALLS = 14;
 /**
  * …and the fewest it will thin down to.
@@ -3196,6 +3212,17 @@ export default function AtlasShell({
           return Math.hypot((b[0] - a[0]) * k, b[1] - a[1]);
         }
 
+        /**
+         * May this collection's flights shed calls to fit the ceiling?
+         *
+         * World cruises only. Read from the collection rather than from the
+         * itinerary's length because the two are not the same question — a long
+         * expedition and a short world cruise can carry the same number of
+         * ports, and it is the PRODUCT that decides whether flying all of them
+         * is the point (a journey) or impossible (a voyage of 153 calls).
+         */
+        const mayThin = type === "worldcruise";
+
         /** A call on the itinerary: where the camera sets down, and what it says. */
         interface Call {
           at: [number, number];
@@ -3412,9 +3439,20 @@ export default function AtlasShell({
             FLY_ARRIVE_MS + FLY_SETTLE_MS + FLY_DWELL_MS * (list.length + 1) +
             list.reduce((sum, l) => sum + l.ms, 0);
 
-          let flown = merge(hops, Math.min(hops.length, FLY_MAX_CALLS - 1));
+          /*
+           * A journey is flown in full; a voyage is sampled.
+           *
+           * `mayThin` is true for the world cruise atlas alone — see the
+           * FLY_MAX_CALLS comment for the stop counts that make it the only
+           * collection where flying every call is not an option. Everywhere
+           * else the itinerary decides the length of the flight, and the
+           * ceiling does not get a vote: shedding calls from a nine-city jet
+           * tour to save four seconds is showing less of the trip than the trip
+           * has, which is the opposite of what the flight is for.
+           */
+          let flown = mayThin ? merge(hops, Math.min(hops.length, FLY_MAX_CALLS - 1)) : hops;
           let legs = buildLegs(flown);
-          while (legs.length + 1 > FLY_MIN_CALLS && runsTo(legs) > FLY_TOTAL_MS) {
+          while (mayThin && legs.length + 1 > FLY_MIN_CALLS && runsTo(legs) > FLY_TOTAL_MS) {
             flown = merge(flown, flown.length - 1);
             legs = buildLegs(flown);
           }

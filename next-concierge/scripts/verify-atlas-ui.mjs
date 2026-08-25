@@ -39,8 +39,15 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PORT = Number(process.env.ATLAS_UI_PORT || 3311);
 const CHROMIUM = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-/** Collections with routes to trace. Hotels and villas have neither. */
-const TYPES = ["jet", "yacht", "worldcruise", "cruise", "train"];
+/**
+ * Collections with routes to trace. Hotels and villas have neither.
+ *
+ * ATLAS_UI_TYPES narrows the run to a subset — five collections in a real
+ * browser takes minutes on a busy machine, and when a change only touches one
+ * of them, waiting for the other four is time spent not checking anything.
+ */
+const TYPES = (process.env.ATLAS_UI_TYPES || "jet,yacht,worldcruise,cruise,train")
+  .split(",").map((t) => t.trim()).filter(Boolean);
 
 const skip = (why) => { console.log(`\nAtlas UI\n\n  SKIPPED — ${why}\n`); process.exit(0); };
 
@@ -93,10 +100,25 @@ for (const type of TYPES) {
   page.on("pageerror", (e) => crashes.push(e.message));
 
   await page.goto(`http://localhost:${PORT}/atlas/${type}`, { waitUntil: "domcontentloaded", timeout: 90000 });
-  await page.waitForTimeout(6000);
 
+  /*
+   * WAIT for a card, do not sleep for one. The cards are client-rendered from a
+   * fetched itinerary, and a fixed pause is a race that this machine loses
+   * whenever the server is cold or the box is busy — which produced a full
+   * sheet of "no card with a route" against a build that was working perfectly.
+   * A check that cries wolf is worse than no check: it teaches you to disbelieve
+   * it, which is exactly how the breakage this file exists to catch got shipped.
+   */
   const card = page.locator(".atlas-card").filter({ has: page.locator(".ac-fly") }).first();
-  if (!(await card.count())) { check(`${type}: a card offers its route control`, false, "no card with a route"); await ctx.close(); continue; }
+  try {
+    await card.waitFor({ state: "attached", timeout: 60000 });
+  } catch {
+    check(`${type}: a card offers its route control`, false, "no card with a route inside 60s");
+    await ctx.close();
+    continue;
+  }
+  // …and a beat more for the map to finish booting behind them.
+  await page.waitForTimeout(2500);
   await card.scrollIntoViewIfNeeded();
 
   // Hover previews the route…

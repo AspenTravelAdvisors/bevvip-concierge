@@ -89,7 +89,7 @@ const FS_NOW_NONE_DECL = /^const FS_NOW_NONE.*$/m.exec(SRC);
 if (!FS_NOW_NONE_DECL) throw new Error("verify-route-flight: FS_NOW_NONE moved");
 
 const DEPS = [
-  "node", "map", "mapboxgl", "escapeHtml", "addLayer", "fitPad", "stopSpin",
+  "node", "map", "mapboxgl", "escapeHtml", "addLayer", "fitPad", "stopSpin", "type",
   "setAmbientMuted", "setIs3D", "setTilted", "setFlyingRoute", "setHasRoute",
   "lastFocusLegs", "lastFocusStops", "flyingRef", "stopPopup", "stopPinned",
   "window", "performance", "requestAnimationFrame", "cancelAnimationFrame",
@@ -226,6 +226,8 @@ function harness(opts = {}) {
     escapeHtml: (s) => s,
     addLayer: (m, spec) => m.addLayer(spec),
     fitPad: () => 78,
+    // The collection, which is what decides whether a flight may shed calls.
+    type: opts.type ?? "jet",
     // Models haltSpin: it yields the ambient spin and NOTHING else. Ending a
     // flight from here is the bug this scenario exists to catch — see
     // "a repaint does not kill a flight in progress".
@@ -513,7 +515,7 @@ function furthestFromLine(points, legs) {
   const many = stopsOf(
     Array.from({ length: 34 }, (_, i) => [`Port ${i + 1}`, -170 + i * 10, 20 * Math.sin(i / 2)]),
   );
-  const h = harness({ legs: route(many), stops: many });
+  const h = harness({ legs: route(many), stops: many, type: "worldcruise" });
   h.api.flyRoute();
   h.tick(RUN);
   const end = h.track[h.track.length - 1].t + K.FLY_DWELL_MS + K.FLY_SETTLE_MS;
@@ -531,6 +533,21 @@ function furthestFromLine(points, legs) {
   const missed = many.filter((st) => !h.track.some((p) => dist(p.at, st.at) < 2));
   check("…while still flying over every port it does not stop at",
     missed.length === 0, `${many.length - missed.length}/${many.length} overflown`);
+
+  /*
+   * …and no other collection sheds a call, at any length. A journey is flown in
+   * full: shedding calls from a jet tour to save a few seconds shows less of
+   * the trip than the trip has, which is the opposite of the point. Checked on
+   * the same oversized itinerary so the only difference is the collection.
+   */
+  for (const type of ["jet", "yacht", "cruise", "train"]) {
+    const g = harness({ legs: route(many), stops: many, type });
+    g.api.flyRoute();
+    g.tick(RUN * 4);
+    check(`a ${type} itinerary lands on every one of its calls, however long`,
+      g.labels.length === many.length,
+      `${g.labels.length} of ${many.length}`);
+  }
 }
 
 {

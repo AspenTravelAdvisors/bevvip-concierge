@@ -1778,3 +1778,52 @@ a route drawn as a single leg still lands at every call; a route with no
 drawable geometry is flown between its calls. Two of them assert on the SOURCE,
 because which of `haltSpin` and the interaction listeners ends a flight is the
 whole bug and both live outside the sliced block.
+
+## A journey is flown in full; a voyage is sampled (2026-08-25)
+
+Two tunings, once the flight was working on real maps.
+
+**The hold came down to 1100ms** from 1400. A call's name is three or four
+words on a still map, and the eye is already on it — it has just been flown
+there. The saving is per call, so it comes off a thirteen-city tour four
+seconds at a time.
+
+**And the ceiling stopped shedding calls from anything but a world cruise.**
+Every other atlas is a journey; a world cruise is a voyage, and the shipped
+data says so plainly — stops per itinerary:
+
+| collection | median | max |
+|---|---|---|
+| private jet | 7 | 13 |
+| rail | 4 | 14 |
+| hotel yacht | 6 | 10 |
+| expedition | 9 | 79 |
+| world cruise | 39 | 153 |
+
+Shedding calls from a nine-city jet tour to save four seconds shows less of the
+trip than the trip has, which is the opposite of what the flight is for. A world
+cruise cannot be flown in full — 153 ports at a hold and a hop each is the
+better part of ten minutes — so there alone the landings are spread across the
+voyage, roughly one a week. The route is still drawn and still flown over in
+full either way; only the pauses thin out.
+
+Read from the COLLECTION rather than from the itinerary's length, because the
+two are not the same question: a long expedition and a short world cruise carry
+the same number of ports, and it is the product that decides whether flying all
+of them is the point or impossible. The consequence is that the tail of the
+expedition atlas (its longest is 79 ports) runs long, deliberately — one sailing
+in a hundred, asked for, and the control says "Stop" for as long as it runs.
+
+**Measured on the shipped atlases** (348×340 phone band, ~40 routes each):
+
+| collection | read zoom | median length | peak pace | flat legs | calls landed |
+|---|---|---|---|---|---|
+| private jet | 4.60 | 24.4s (max 47s) | 0.67 sc/s | 15% | all |
+| rail | 6.28 | 13.8s (max 38s) | 0.64 sc/s | 64% | 99% |
+| hotel yacht | 6.81 | 18.5s (max 26s) | 0.67 sc/s | 55% | 93% |
+| world cruise | 5.58 | 38.8s (max 40s) | 0.73 sc/s | 0% | 10% |
+
+The rail and yacht figures are not calls being dropped: they are exactly the
+consecutive same-port repeats — a second night in one place — which have no hop
+to fly and so no landing to make. Collapsing consecutive repeats in the source
+data gives 99% and 93%, the same numbers. Every distinct call is landed on.
