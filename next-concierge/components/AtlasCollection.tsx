@@ -1381,7 +1381,22 @@ export default function AtlasCollection({
                   same test the route itself passes, so a hotel or a villa —
                   one place, no itinerary — never offers it.
                 */}
-                {o.stops.filter((st) => st.at).length > 1 && routeVerbLong(type) && (
+                {(() => {
+                  /*
+                   * Two DISTINCT located stops, not two located stops.
+                   *
+                   * A handful of shipped sailings resolve every port to the
+                   * same coordinate — "Secrets of The Adriatic" puts all five
+                   * calls on Venice — and a journey between a place and itself
+                   * has nothing to draw and nowhere to fly. Counting located
+                   * stops offered the control anyway, and pressing it did
+                   * nothing at all, which is worse than not offering it.
+                   */
+                  const seen = new Set(
+                    o.stops.filter((st) => st.at).map((st) => `${st.at![0]},${st.at![1]}`),
+                  );
+                  return seen.size > 1;
+                })() && routeVerbLong(type) && (
                   <button
                     type="button"
                     className="ac-fly"

@@ -1396,12 +1396,25 @@ export default function AtlasShell({
         function haltSpin() {
           spinning = false;
           cancelAnimationFrame(spinRAF);
-          // The route flight is the spin pointed somewhere. Anything that
-          // stops one stops the other, or a traveller who grabs the globe
-          // mid-flight is fighting a camera that keeps driving. Reached through
-          // the route api because the flight lives with the route drawing,
-          // inside wireHandlers().
-          focusRouteRef.current?.stopFly();
+          /*
+           * NOT the route flight. This is the difference between stopping the
+           * ambient spin and stopping a flight, and wiring them together broke
+           * the flight outright.
+           *
+           * stopSpin() means "something else is driving the camera now", and
+           * paintFocusRoute calls it on EVERY repaint — a hover leaving a card
+           * and restoring the pinned route, a basemap switch, a filter change.
+           * With endFlight() hung off haltSpin, the first of those killed the
+           * flight a few hundred milliseconds after it began: on a desktop the
+           * page smooth-scrolls the selected card under a stationary pointer,
+           * the card's mouseleave re-emits the pinned route, and the flight was
+           * dead before its own arrival had finished.
+           *
+           * A repaint of the route being flown is not an interruption. Ending
+           * the flight belongs to the things that genuinely take the camera —
+           * a hand on the globe, a new framing, the route being cleared — and
+           * each of those calls endFlight() for itself.
+           */
         }
         function stopSpin() {
           haltSpin();
@@ -2909,16 +2922,73 @@ export default function AtlasShell({
             }
             return pts;
           };
-          const claimed = lastFocusLegs.current.filter((l) => typeof l.hop === "number");
-          if (claimed.length) {
-            return claimed
-              .slice()
-              .sort((a, b) => (a.hop as number) - (b.hop as number))
-              .map((l) => ({ hop: l.hop as number, pts: dedupe(l.coordinates) }))
-              .filter((h) => h.pts.length >= 2);
+
+          // The good case: route-frame walked the itinerary and every leg knows
+          // which hop it is. Sea and rail geometry arrives one leg per hop, so
+          // this is the path they take.
+          const claimed = lastFocusLegs.current
+            .filter((l) => typeof l.hop === "number")
+            .slice()
+            .sort((a, b) => (a.hop as number) - (b.hop as number))
+            .map((l) => ({ hop: l.hop as number, pts: dedupe(l.coordinates) }))
+            .filter((h) => h.pts.length >= 2);
+          if (claimed.length) return claimed;
+
+          /*
+           * Nothing claimed — which does NOT mean there is no itinerary.
+           *
+           * The private jet atlas draws a whole journey as ONE leg: adaptJet
+           * arcs every hop and concatenates them into a single lofted polyline
+           * (see AtlasJet), so route-frame's walk finds no leg whose two ends
+           * are a consecutive pair of stops, claims nothing, and falls back to
+           * its greedy chain. Reading "no hops" as "no itinerary" is what made
+           * a nine-city world tour fly as one unbroken leg from Washington to
+           * Washington, naming one call and stopping at none — the flight
+           * "not working" on the collection it matters most to.
+           *
+           * So cut the drawn line at the stops instead. The camera still
+           * follows exactly the geometry on screen — this only decides where
+           * along it the flight comes down — and the cut is searched FORWARD
+           * from the previous stop, so an out-and-back itinerary that passes a
+           * port twice lands on it twice rather than twice on the first pass.
+           */
+          const path = dedupe(lastFocusLegs.current.flatMap((l) => l.coordinates));
+          const stops = (lastFocusStops.current ?? []).filter((st) => st?.at);
+          /*
+           * No drawable geometry at all, but an itinerary that says where the
+           * calls are — a sailing whose legs came back as a pile of identical
+           * points, which the shipped yacht data does contain. The stops are
+           * still drawn as numbered dots, so fly between those: the alternative
+           * is a control that is offered and does nothing when pressed.
+           */
+          if (path.length < 2) {
+            if (stops.length < 2) return [];
+            return stops.slice(1).map((st, i) => ({
+              hop: i + 1,
+              pts: [stops[i].at as [number, number], st.at as [number, number]],
+            })).filter((h) => degBetween(h.pts[0], h.pts[1]) > 0);
           }
-          const all = dedupe(lastFocusLegs.current.flatMap((l) => l.coordinates));
-          return all.length >= 2 ? [{ hop: 1, pts: all }] : [];
+          if (stops.length < 2) return [{ hop: 1, pts: path }];
+
+          const cut: number[] = [0];
+          let from = 0;
+          for (let si = 1; si < stops.length - 1; si++) {
+            let best = from, bestD = Infinity;
+            for (let i = from; i < path.length; i++) {
+              const d = degBetween(path[i], stops[si].at as [number, number]);
+              if (d < bestD) { bestD = d; best = i; }
+            }
+            from = best;
+            cut.push(best);
+          }
+          cut.push(path.length - 1);
+
+          const hops: RouteHop[] = [];
+          for (let k = 0; k < cut.length - 1; k++) {
+            const pts = path.slice(cut[k], cut[k + 1] + 1);
+            if (pts.length >= 2) hops.push({ hop: k + 1, pts });
+          }
+          return hops.length ? hops : [{ hop: 1, pts: path }];
         }
 
         /** The zoom at which this box holds this span, with `pad` to spare. */
@@ -3095,14 +3165,29 @@ export default function AtlasShell({
               lo: s.lo, hi: s.hi, latLo: framed - half, latHi: framed + half,
             })),
           );
-          map.easeTo({
+          /*
+           * The keys are built conditionally, and that is not tidiness.
+           *
+           * Mapbox reads its camera options with `'pitch' in options`, not with
+           * a value check — so a key PRESENT and undefined is not "leave this
+           * axis alone", it is `+undefined`, which is NaN. A NaN pitch or
+           * bearing poisons the camera transform, and the map stops rendering:
+           * clicking a card produced no route and a frozen globe, in every
+           * browser, because the framing that was meant to reveal the route
+           * killed the renderer instead. An absent key is the only way to say
+           * "don't touch that axis".
+           */
+          const cam: {
+            center: [number, number]; zoom: number; duration: number;
+            essential: boolean; pitch?: number; bearing?: number;
+          } = {
             center: [(s.lo + s.hi) / 2, framed],
             zoom,
-            pitch: opts.pitch,
-            bearing: opts.pitch === 0 ? 0 : undefined,
             duration: opts.duration,
             essential: true,
-          });
+          };
+          if (opts.pitch != null) { cam.pitch = opts.pitch; cam.bearing = 0; }
+          map.easeTo(cam);
         }
 
         /** Distance in degrees, longitude scaled by latitude. */
@@ -3168,8 +3253,9 @@ export default function AtlasShell({
         function flyRoute() {
           const hops = routeHops();
           if (!hops.length || !node.clientWidth || !node.clientHeight) return;
-          // Claims the camera (and, through haltSpin, ends any flight already
-          // running) before this one borrows anything.
+          // End any flight already running before this one borrows anything,
+          // and claim the camera from the ambient spin.
+          endFlight();
           stopSpin();
           setAmbientMuted(true);
 
@@ -3560,14 +3646,18 @@ export default function AtlasShell({
 
         function markFocusPlace(stops: FocusStop[]) {
           stopSpin();
+          endFlight(); // framing a single place is not somewhere a flight goes
+
           setAmbientMuted(true);
           lastFocusStops.current = stops;
           paintFocusStops(stops, routePalette());
         }
 
         function fitFocusRoute(rawLegs: { coordinates: [number, number][] }[]) {
-          // Any deliberate camera move outranks the idle spin.
+          // Any deliberate camera move outranks the idle spin — and a NEW
+          // framing outranks a flight, which is a camera move of its own.
           stopSpin();
+          endFlight();
           /*
            * Frame the points before measuring them.
            *
@@ -3851,7 +3941,13 @@ export default function AtlasShell({
         loadTimeout = window.setTimeout(() => {
           if (!ready && !cancelled) setMapFailed(true);
         }, 12000);
-        ["mousedown", "touchstart", "wheel", "dragstart"].forEach((ev) => map.on(ev, stopSpin));
+        // A hand on the globe outranks both the ambient spin and a flight. These
+        // are the only events that mean the traveller took the camera; every
+        // other caller of stopSpin is the app moving it, and a repaint is not a
+        // reason to abandon a flight in progress (see haltSpin).
+        ["mousedown", "touchstart", "wheel", "dragstart"].forEach((ev) =>
+          map.on(ev, () => { stopSpin(); focusRouteRef.current?.stopFly(); }),
+        );
         // "click" gets its own line rather than joining the list above. A click
         // that lands on nothing is not a request to stop the idle spin — the
         // globe has always kept turning through one — but it IS unambiguously a

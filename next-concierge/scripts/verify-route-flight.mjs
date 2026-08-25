@@ -167,6 +167,8 @@ function harness(opts = {}) {
   const camera = { center: [0, 0], zoom: 1.25, pitch: 0, bearing: 0 };
   /** Every camera position the flight actually wrote, in order. */
   const track = [];
+  /** Every options object handed to the camera, for the undefined-key check. */
+  const cameraOpts = [];
   const paint = new Map();
   const filters = new Map();
   const sources = new Map();
@@ -191,36 +193,43 @@ function harness(opts = {}) {
     setFilter: (id, f) => filters.set(id, JSON.stringify(f)),
     setProjection: (name) => log.push(`projection ${name}`),
     flyTo: (o) => {
+      cameraOpts.push(o);
       camera.center = [...o.center]; camera.zoom = o.zoom;
       camera.pitch = o.pitch ?? camera.pitch; camera.bearing = o.bearing ?? camera.bearing;
       log.push("flyTo"); track.push({ t: now, at: [...o.center], zoom: camera.zoom, pitch: camera.pitch });
     },
     jumpTo: (o) => {
+      cameraOpts.push(o);
       camera.center = [...o.center]; camera.zoom = o.zoom ?? camera.zoom;
       camera.pitch = o.pitch ?? camera.pitch; camera.bearing = o.bearing ?? camera.bearing;
       track.push({ t: now, at: [...o.center], zoom: camera.zoom, pitch: camera.pitch });
     },
     easeTo: (o) => {
+      cameraOpts.push(o);
       if (o.center) camera.center = [...o.center];
       camera.zoom = o.zoom ?? camera.zoom;
       camera.pitch = o.pitch ?? camera.pitch; camera.bearing = o.bearing ?? camera.bearing;
       log.push("easeTo");
     },
     fitBounds: (b, o) => {
+      cameraOpts.push(o);
       camera.pitch = o.pitch ?? camera.pitch; camera.bearing = o.bearing ?? camera.bearing;
       log.push("fitBounds");
     },
   };
 
   const flyingRef = { current: false };
-  const api = makeFlight({
+  const dep = {
     node: { clientWidth: box.w, clientHeight: box.h },
     map,
     mapboxgl: { LngLatBounds: class { extend() {} } },
     escapeHtml: (s) => s,
     addLayer: (m, spec) => m.addLayer(spec),
     fitPad: () => 78,
-    stopSpin: () => { log.push("stopSpin"); api.endFlight(); },
+    // Models haltSpin: it yields the ambient spin and NOTHING else. Ending a
+    // flight from here is the bug this scenario exists to catch — see
+    // "a repaint does not kill a flight in progress".
+    stopSpin: () => { log.push("stopSpin"); },
     setAmbientMuted: (on) => log.push(`mute ${on}`),
     setIs3D: () => {},
     setTilted: (on) => log.push(`tilted ${on}`),
@@ -246,10 +255,11 @@ function harness(opts = {}) {
     requestAnimationFrame: (fn) => { frames.push(fn); return frames.length; },
     cancelAnimationFrame: () => { frames = []; },
     clearTimeout: clearTimeout_,
-  });
+  };
+  const api = makeFlight(dep);
 
   return {
-    api, log, camera, track, labels, paint, filters, flyingRef,
+    api, dep, log, camera, track, labels, paint, filters, flyingRef, cameraOpts,
     trail: () => {
       const d = sources.get("fly-trail");
       return d?.features?.[0]?.geometry?.coordinates ?? [];
@@ -671,6 +681,98 @@ function furthestFromLine(points, legs) {
 }
 
 {
+  /*
+   * A REPAINT DOES NOT KILL A FLIGHT. paintFocusRoute calls stopSpin on every
+   * repaint — a hover leaving a card and restoring the pinned route, a basemap
+   * switch, a filter change — and endFlight was wired into that path. On a
+   * desktop the selected card smooth-scrolls under a stationary pointer, its
+   * mouseleave re-emits the pinned route, and the flight was dead a few hundred
+   * milliseconds in, before its own arrival had finished. Every time.
+   */
+  const legs = route(RTW);
+  const h = harness({ legs, stops: RTW });
+  h.api.flyRoute();
+  h.tick(K.FLY_ARRIVE_MS + K.FLY_DWELL_MS + 500);
+  const before = h.track.length;
+  h.api.state();
+  // The repaint, exactly as paintFocusRoute does it.
+  h.dep.stopSpin();
+  h.tick(4000);
+  check("a repaint does not kill a flight in progress",
+    h.flyingRef.current && h.track.length > before + 20,
+    `${h.track.length - before} camera writes after the repaint`);
+
+  // …while a hand on the globe still does, because the map's own interaction
+  // listeners call stopFly for themselves.
+  const g = harness({ legs, stops: RTW });
+  g.api.flyRoute();
+  g.tick(K.FLY_ARRIVE_MS + K.FLY_DWELL_MS + 500);
+  const stopped = g.track.length;
+  g.api.endFlight();
+  g.tick(4000);
+  check("…but a hand on the globe still does", !g.flyingRef.current && g.track.length === stopped);
+}
+
+{
+  /*
+   * NO UNDEFINED CAMERA KEYS. Mapbox reads its options with `'pitch' in
+   * options`, not with a value check, so a key present and undefined becomes
+   * `+undefined` — NaN — and a NaN pitch or bearing poisons the transform and
+   * stops the renderer. Clicking a card produced no route and a frozen globe in
+   * every browser, because the framing meant to reveal the route killed the
+   * map instead.
+   */
+  const cases = [
+    ["a route framing", (h) => h.api.frameSpan(h.api.spanOf([{ coordinates: flat(route(MED)) }]), { duration: 2400 })],
+    ["a polar framing", (h) => h.api.frameSpan(h.api.spanOf([{ coordinates: flat(route(stopsOf([["A", -60, -62], ["B", -30, -66]]))) }]), { duration: 2400 })],
+    ["a whole flight", (h) => { h.api.flyRoute(); h.tick(RUN); }],
+  ];
+  const bad = [];
+  for (const [name, run] of cases) {
+    const h = harness({ legs: route(RTW), stops: RTW });
+    run(h);
+    for (const o of h.cameraOpts) {
+      for (const k of Object.keys(o)) {
+        if (o[k] === undefined) bad.push(`${name}: ${k}`);
+        if (typeof o[k] === "number" && !Number.isFinite(o[k])) bad.push(`${name}: ${k}=${o[k]}`);
+      }
+    }
+  }
+  check("never hands the camera an undefined or non-finite option",
+    bad.length === 0, bad.slice(0, 4).join(", ") || "clean");
+}
+
+{
+  /*
+   * A ROUTE DRAWN AS ONE LEG STILL LANDS AT EVERY CALL. The private jet atlas
+   * arcs a whole journey into a single lofted polyline, so route-frame's walk
+   * claims no hop and the flight has no per-hop geometry to follow. Reading
+   * that as "no itinerary" flew a nine-city world tour as one unbroken leg,
+   * naming one call and stopping at none.
+   */
+  const oneLeg = [{ mode: "primary", coordinates: flat(route(RTW)) }]; // no hop tags
+  const h = harness({ legs: oneLeg, stops: RTW });
+  h.api.flyRoute();
+  h.tick(RUN);
+  check("a route drawn as a single leg still lands at every call",
+    h.labels.length === RTW.length,
+    `${h.labels.length} of ${RTW.length} calls named`);
+  check("…and still follows the drawn line to get there",
+    furthestFromLine(h.track.map((p) => p.at), oneLeg) < 0.01);
+
+  // A sailing whose geometry came back as a pile of identical points — the
+  // shipped yacht data has these. The stops are still drawn, so fly those
+  // rather than offering a control that does nothing.
+  const dud = [{ mode: "primary", hop: 1, coordinates: [[12.34, 45.43], [12.34, 45.43], [12.34, 45.43]] }];
+  const d = harness({ legs: dud, stops: MED });
+  d.api.flyRoute();
+  d.tick(RUN);
+  check("a route with no drawable geometry is flown between its calls",
+    d.track.length > 0 && d.labels.length > 1,
+    `${d.labels.length} calls named`);
+}
+
+{
   // The flatten gate, in pixels.
   const wide = [{ coordinates: flat(route(RTW)) }];
   const phone = harness({ legs: route(RTW), stops: RTW });
@@ -689,6 +791,26 @@ function furthestFromLine(points, legs) {
       h.api.flyRoute();
       return h.log.includes("projection globe");
     })());
+}
+
+{
+  /*
+   * THE WIRING, checked in the source. haltSpin and the map's interaction
+   * listeners live above the sliced block, so the harness cannot exercise
+   * them — but which of the two ends a flight is exactly what broke it, so it
+   * is worth asserting outright.
+   */
+  // Comments say the words too, and this is a file that explains itself at
+  // length — strip them, or the prose about the bug reads as the bug.
+  const code = (t) => t.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  const halt = /function haltSpin\(\)\s*\{([\s\S]*?)\n        \}/.exec(SRC);
+  check("haltSpin does not end the flight — a repaint calls it",
+    !!halt && !/stopFly|endFlight/.test(code(halt[1])),
+    halt ? (code(halt[1]).trim().split("\n").length + " statements") : "haltSpin not found — anchor moved");
+  const grab = /\["mousedown", "touchstart", "wheel", "dragstart"\][\s\S]{0,300}/.exec(SRC);
+  check("…and a hand on the globe does",
+    !!grab && /stopFly/.test(code(grab[0])),
+    grab ? "clean" : "interaction listeners not found — anchor moved");
 }
 
 rmSync(OUT, { recursive: true, force: true });

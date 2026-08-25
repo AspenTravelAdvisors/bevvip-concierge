@@ -1713,3 +1713,68 @@ framing while leaving an Alaskan cruise and a Riviera one exactly where they
 belong.
 
 Still not seen live: this sandbox blocks `api.mapbox.com`.
+
+## The three fixes broke the map, and what that cost (2026-08-25)
+
+The polar/hop/verb commit shipped to main and broke the atlas: clicking a card
+showed no route and froze the globe in every browser. Main was reverted to the
+previous commit within the hour, the causes were found against a stubbed
+renderer, and the work re-landed. Four faults, in the order they bite:
+
+**1. A NaN camera froze the map.** `frameSpan` passed `pitch: opts.pitch` and
+`bearing: …` through to `easeTo`, and for the ordinary browse framing both were
+`undefined`. Mapbox reads camera options with `'pitch' in options`, not with a
+value check — a key PRESENT and undefined is not "leave that axis alone", it is
+`+undefined`, which is NaN. A NaN pitch or bearing poisons the transform and the
+renderer stops. So the framing meant to reveal the route killed the map instead,
+which is why the route never appeared: it was drawn onto a map that had died.
+Camera options are now built conditionally; an absent key is the only way to say
+"don't touch that axis".
+
+**2. A repaint killed any flight in progress**, and this one was NOT new — it
+shipped with the flight rewrite and had been live since. `endFlight()` was wired
+into `haltSpin()`, and `paintFocusRoute` calls `stopSpin()` on every repaint: a
+hover leaving a card and restoring the pinned route, a basemap switch, a filter
+change. On a desktop the selected card smooth-scrolls under a stationary
+pointer, its mouseleave re-emits the pinned route, and the flight was dead a few
+hundred milliseconds in — before its own arrival had finished. Ending a flight
+now belongs to the things that genuinely take the camera: the map's own
+interaction listeners, a new framing, the route being cleared.
+
+**3. The jet atlas flew as one leg.** The hop-tagging fix assumed geometry
+arrives one leg per itinerary hop, which is true of sea and rail and false of
+jets: `adaptJet` arcs a whole journey into a single lofted polyline, so
+route-frame's walk claims nothing and falls back to its greedy chain. Reading
+"no hops claimed" as "no itinerary" flew a nine-city world tour as one unbroken
+leg, naming one call and stopping at none. `routeHops` now cuts the drawn line
+at the stops in that case — the camera still follows exactly the geometry on
+screen; only where it comes down is decided differently.
+
+**4. A dead control on a handful of sailings.** Some shipped yacht itineraries
+resolve every port to the same coordinate ("Secrets of The Adriatic" puts all
+five calls on Venice), so there is nothing to draw and nowhere to fly. The card
+counted LOCATED stops and offered the control anyway. It now counts DISTINCT
+ones, and a route with no drawable geometry but real stops is flown between them
+rather than not at all.
+
+**What let all this through.** `npm run verify`, the type checker and a
+production build were all clean on the broken commit, and the browser check
+made was that the right verbs rendered — not that clicking a card still drew a
+route. Every one of these faults is visible in the first two seconds of using
+the page, and none of them is visible to a harness that only ever calls the
+flight's own functions.
+
+So there is now a **stubbed Mapbox** (`scripts/mapbox-stub.js`) — a stand-in
+implementing the map surface AtlasShell actually uses, recording sources,
+layers, camera calls and popups rather than rendering. `scripts/verify-atlas-ui.mjs`
+serves it to a headless browser in place of the CDN build and drives the real
+page: hover a card, click it, press the route control, and assert that a route
+is painted, that the camera is asked to go somewhere finite, and that the flight
+reaches its calls. It is the check that would have caught all four.
+
+`verify:route-flight` also grows the regressions as unit checks: a repaint does
+not kill a flight; the camera is never handed an undefined or non-finite option;
+a route drawn as a single leg still lands at every call; a route with no
+drawable geometry is flown between its calls. Two of them assert on the SOURCE,
+because which of `haltSpin` and the interaction listeners ends a flight is the
+whole bug and both live outside the sliced block.
