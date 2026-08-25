@@ -19,7 +19,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { OfferingType, GuideMeta, GuideToolMeta, OfferingResult } from "@/lib/types";
-import { ATLASES, COLLECTIONS, atlasRegionQuery, internalAtlasLink } from "@/lib/atlas-config";
+import {
+  ATLASES, COLLECTIONS, atlasRegionQuery, internalAtlasLink,
+  routeVerbLong, routeVerbShort,
+} from "@/lib/atlas-config";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 // Every coordinate this component touches is minted here. See lib/atlas/geo.ts
 // for why: six upstream feeds disagree about [lat,lng] vs [lng,lat], and the
@@ -748,16 +751,59 @@ const FLY_MAX_CALLS = 14;
  */
 const FLY_MIN_CALLS = 8;
 /**
- * The altitude a call is read at, and the one it is left at.
+ * The altitude a call is read at, bounded.
  *
- * High enough to place the city in its region — the coast, the range, the
- * island it sits on — rather than a rooftop with no context.
+ * Not a constant, because one altitude cannot read every collection: a private
+ * jet's calls are a continent apart and a rail journey's are an hour apart, and
+ * at the jet's height a Highland line is a smudge while at the railway's a
+ * Pacific crossing is an afternoon of open water. The flight takes its reading
+ * height from the route's own median leg (see flyRoute) and holds it between
+ * these — low enough to place a city in its region on a world tour, close
+ * enough to study the stops on a coastal cruise.
  */
-const FLY_STOP_ZOOM = 4.6;
+const FLY_STOP_ZOOM_MIN = 4.6;
+const FLY_STOP_ZOOM_MAX = 7.4;
 /** How much wider than the leg its cruise framing is. */
 const FLY_CRUISE_PAD = 1.3;
-/** Every leg climbs at least this far, or the hop reads as a jump cut. */
+/**
+ * A leg that climbs at all climbs at least this far, or the hop reads as a
+ * jump cut. A leg that already FITS the frame does not climb — see below.
+ */
 const FLY_MIN_CLIMB = 0.6;
+/**
+ * The speed limit, and the only one: frame-widths of ground per second.
+ *
+ * Degrees per second is meaningless without an altitude — 50°/s is a drift at
+ * world scale and unwatchable at city scale — so what is held is how much of
+ * the PICTURE goes past. Every leg is timed to obey this at its fastest
+ * moment, whatever it is doing: a coastal hop crossed flat at reading height,
+ * an ocean crossing four zoom levels up, or a merged leg spanning several
+ * ports at once. See legProfile for how the camera is made to obey it
+ * throughout a leg rather than only on average.
+ */
+const FLY_PACE = 0.75;
+/**
+ * The shortest a leg can take, for a hop with no climb to pay for.
+ *
+ * Only ever the floor: how long a flat leg actually takes comes from the pace,
+ * which is what a hop between two ports in sight of each other should be timed
+ * by. This just stops a hop of a few miles being over before it registers.
+ */
+const FLY_PAN_MIN_MS = 700;
+/**
+ * How much of a leg is spent getting up to speed, and slowing down again.
+ *
+ * The camera holds a constant speed between the two, so this also sets its
+ * peak: 1/(1 - FLY_RAMP) of the leg's average, or about 18% over.
+ *
+ * An ease-in-out is the obvious profile and it peaks at TWICE the average,
+ * which is affordable on a climbing leg — the camera is highest exactly where
+ * it is fastest, so the FRAME is widest there too — and not affordable on a
+ * flat one. Measured: a 7° hop crossed at reading height averaged the 0.75
+ * frame-widths a second it was budgeted and touched 1.48 in the middle. One
+ * profile for both, bounded, is simpler than two.
+ */
+const FLY_RAMP = 0.15;
 /**
  * The pitch at a call, and at the top of the climb.
  *
@@ -770,6 +816,15 @@ const FLY_MIN_CLIMB = 0.6;
  */
 const FLY_PITCH = 58;
 const FLY_CRUISE_PITCH = 22;
+/**
+ * The climb, in zoom levels, at which the camera has flattened all the way.
+ *
+ * Below it the tilt gives way in proportion — a leg that rises half a level
+ * leans a little, one that crosses an ocean lies right down. Which means a leg
+ * that does not climb at all keeps its tilt, which is what a coastal hop
+ * between two ports in sight of each other needs.
+ */
+const FLY_FULL_CLIMB = 2;
 /**
  * Camera path samples. The camera lands on the calls themselves, so this only
  * has to be dense enough that the arc between two of them is smooth.
@@ -823,7 +878,9 @@ export default function AtlasShell({
   // painters without re-running the whole map lifecycle.
   // Last traced route, so a basemap switch can repaint it. setStyle wipes all
   // sources and layers; a pinned route must outlive that.
-  const lastFocusLegs = useRef<{ mode: string; coordinates: [number, number][] }[]>([]);
+  const lastFocusLegs = useRef<
+    { mode: string; coordinates: [number, number][]; hop?: number }[]
+  >([]);
   // The map effect is keyed on [token] and never re-runs, so it must read the
   // handler through a ref rather than capturing it.
   const onRegionSelectRef = useRef(onRegionSelect);
@@ -2697,17 +2754,30 @@ export default function AtlasShell({
          * fullscreen-on-a-short-window, in the phone's split map band, and
          * beside an open Guide panel.
          */
-        function canFrameFlat(s: Span): boolean {
+        /**
+         * The zoom fitBounds would choose for this span, in the box we have.
+         *
+         * Shared by the flatten gate (which asks whether mercator can hold a
+         * route at all) and the polar guard (which needs the same number to
+         * re-frame around a corrected latitude without changing what is on
+         * screen). Not clamped to minZoom — both callers care about the
+         * unclamped answer.
+         */
+        function zoomToFitBox(s: Span): number {
           const ins = fitInsets();
           const w = node.clientWidth - ins.left - ins.right;
           const h = node.clientHeight - ins.top - ins.bottom;
-          if (!(w > 0) || !(h > 0)) return false;
+          if (!(w > 0) || !(h > 0)) return map.getMinZoom();
           const spanLng = Math.max(s.hi - s.lo, 0.01);
           const zx = Math.log2((w * 360) / (spanLng * 512));
           const dy = Math.max(Math.abs(mercY(s.latHi) - mercY(s.latLo)), 1e-4);
           const zy = Math.log2(h / (dy * 512));
+          return Math.min(zx, zy);
+        }
+
+        function canFrameFlat(s: Span): boolean {
           // A hair of margin: landing exactly ON minZoom is the clamped case.
-          return Math.min(zx, zy) >= map.getMinZoom() + 0.05;
+          return zoomToFitBox(s) >= map.getMinZoom() + 0.05;
         }
 
         function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]): boolean {
@@ -2796,24 +2866,59 @@ export default function AtlasShell({
         }
 
         /**
-         * The traced route as one ordered list of points.
+         * The route as the flight will travel it: one entry per itinerary hop,
+         * carrying that hop's own drawn geometry.
          *
-         * lastFocusLegs is what paintFocusRoute stored: already chained into
-         * travel order, oriented the way the journey runs, and unrolled into a
-         * single longitude frame by lib/atlas/route-frame. The flight depends
-         * on all three — it is the difference between following an itinerary
-         * and being thrown back and forth across the Pacific.
+         * ── Why this is not just "concatenate the legs" ────────────────────
+         *
+         * It was, and it flew a different journey from the one drawn under it.
+         * lastFocusLegs is what paintFocusRoute stored — chained into travel
+         * order, oriented, and unrolled into one longitude frame by
+         * route-frame.ts — but that chain also carries two things that are fine
+         * to DRAW and fatal to FOLLOW:
+         *
+         *   - legs no hop claimed, appended after the route in source order. A
+         *     camera walking the concatenation flies the itinerary, then jumps
+         *     back and flies an orphan as though it came next.
+         *   - hops with no geometry at all, which leave a gap. Concatenation
+         *     closes that gap with a straight line, so the camera cuts across
+         *     whatever lies between two ports while the drawing beneath it
+         *     shows no such leg.
+         *
+         * So take the hops route-frame actually claimed, in hop order, and fly
+         * each one along its own coordinates. What the camera traverses is then
+         * the same geometry the map is drawing, by construction — and the leg
+         * knows which stops it runs between without any nearest-point guessing.
+         *
+         * A route with no itinerary behind it (route-frame fell back to its
+         * greedy chain, so nothing carries a hop) has no such structure to use:
+         * it gets the whole chain as a single leg, which is what it is.
          */
-        function flightPath(): [number, number][] {
-          const pts: [number, number][] = [];
-          for (const leg of lastFocusLegs.current) {
-            for (const c of leg.coordinates) {
+        interface RouteHop {
+          /** 1-based index into the itinerary: this runs from stop `hop` to `hop + 1`. */
+          hop: number;
+          pts: [number, number][];
+        }
+        function routeHops(): RouteHop[] {
+          const dedupe = (coords: readonly [number, number][]) => {
+            const pts: [number, number][] = [];
+            for (const c of coords) {
               const last = pts[pts.length - 1];
               if (last && last[0] === c[0] && last[1] === c[1]) continue;
               pts.push([c[0], c[1]]);
             }
+            return pts;
+          };
+          const claimed = lastFocusLegs.current.filter((l) => typeof l.hop === "number");
+          if (claimed.length) {
+            return claimed
+              .slice()
+              .sort((a, b) => (a.hop as number) - (b.hop as number))
+              .map((l) => ({ hop: l.hop as number, pts: dedupe(l.coordinates) }))
+              .filter((h) => h.pts.length >= 2);
           }
-          return pts;
+          const all = dedupe(lastFocusLegs.current.flatMap((l) => l.coordinates));
+          return all.length >= 2 ? [{ hop: 1, pts: all }] : [];
         }
 
         /** The zoom at which this box holds this span, with `pad` to spare. */
@@ -2826,17 +2931,189 @@ export default function AtlasShell({
           return Math.min(zx, zy);
         }
 
+        /** Longitude across the frame at this zoom, in degrees. */
+        function frameDegAt(zoom: number): number {
+          return (node.clientWidth * 360) / (512 * 2 ** zoom);
+        }
+
+        /** The climb's shape over a leg: 0 at both calls, 1 at the top. */
+        function climbAt(t: number): number {
+          // Squared-sine tops out flatter than a sine, so the middle of a leg
+          // is a cruise rather than a peak the camera immediately falls off.
+          return Math.sin(Math.PI * t) ** 0.7;
+        }
+
+        /** Take-off and landing, so a leg has soft ends. Peaks at 1. */
+        function rampAt(t: number): number {
+          if (t < FLY_RAMP) return t / FLY_RAMP;
+          if (t > 1 - FLY_RAMP) return (1 - t) / FLY_RAMP;
+          return 1;
+        }
+
+        const PROFILE_N = 32;
+        /**
+         * How a leg's ground is covered over its own duration.
+         *
+         * ── Why this is not just an easing curve ───────────────────────────
+         *
+         * The camera climbs while it travels, so the FRAME is a different width
+         * at every moment of a leg, and a profile that says "how far along" without
+         * reference to that will always be wrong somewhere. Position on a fixed
+         * ease plus altitude on its own curve is the natural thing to write and it
+         * fails at the two ends: the ramp reaches full speed by 15% of the leg
+         * while the climb has only got a quarter of the way up, so the opening of
+         * a long crossing is flown fast through a frame still tight enough to read
+         * a city in. Measured on the shipped atlases, that put a world cruise at
+         * 3.97 frame-widths a second and a jet tour at 1.94 — both while their
+         * averages looked perfectly respectable.
+         *
+         * So make speed a function of the frame instead: move the camera at a rate
+         * PROPORTIONAL to how wide the picture currently is, shaped by the ramp for
+         * soft ends. Integrate that and normalise, and the leg covers exactly its
+         * own ground while crossing the same fraction of the frame every second —
+         * which makes the pace bound something the profile obeys throughout,
+         * rather than on average.
+         *
+         * Returns the cumulative profile (0…1 over PROFILE_N + 1 samples) and the
+         * integral itself, which is what the duration is derived from.
+         */
+        function legProfile(stopZoom: number, cruiseZoom: number): { prof: number[]; area: number } {
+          const w: number[] = [];
+          for (let i = 0; i <= PROFILE_N; i++) {
+            const t = i / PROFILE_N;
+            w.push(frameDegAt(stopZoom + (cruiseZoom - stopZoom) * climbAt(t)) * rampAt(t));
+          }
+          const prof = [0];
+          for (let i = 1; i <= PROFILE_N; i++) {
+            prof.push(prof[i - 1] + ((w[i - 1] + w[i]) / 2) * (1 / PROFILE_N));
+          }
+          const area = prof[PROFILE_N] || 1;
+          return { prof: prof.map((v) => v / area), area };
+        }
+
+        /**
+         * How far the camera will follow a route toward a pole.
+         *
+         * An Antarctic leg genuinely runs past 70°S, and a camera that goes
+         * there is looking at the underside of the globe with the itinerary
+         * wrapped around the horizon. Clamped, the route rides the top of the
+         * frame instead — off-centre, but still a map.
+         */
+        function clampFlyLat(lat: number): number {
+          return Math.max(-FLY_MAX_LAT, Math.min(FLY_MAX_LAT, lat));
+        }
+
+        /** Latitude back from mercator's normalised Y — the inverse of mercY. */
+        function mercLat(y: number): number {
+          return (Math.atan(Math.sinh(Math.PI * (1 - 2 * y))) * 180) / Math.PI;
+        }
+
+        /**
+         * Where a framing may put its centre, so the globe is never read from
+         * a pole.
+         *
+         * A polar view is geometrically excellent and useless to look at: an
+         * Antarctic expedition or a Northern Europe voyage has its bounding box
+         * centred at 60-70° of latitude, and fitBounds obediently puts the
+         * camera there — which on a sphere is the top of the world seen from
+         * directly above, with the itinerary wrapped round the outside and
+         * every basemap label converging. It shows most of the route and reads
+         * as nothing.
+         *
+         * Two rules, in order of how often they bite:
+         *
+         *   - A whole-globe framing is read from near the equator. Below
+         *     GLOBE_VIEW_ZOOM you are looking at a sphere rather than a map,
+         *     and a sphere has one natural vantage.
+         *   - Otherwise, keep the pole out of frame: the ceiling is however far
+         *     the centre can sit from it and still leave POLE_GUARD degrees of
+         *     sky at the top of the picture. On a regional framing — an Alaskan
+         *     cruise at zoom 5, a fjords itinerary at 4 — this is far above any
+         *     centre those produce, so nothing moves. It only engages where the
+         *     frame is wide enough for the pole to actually appear in it.
+         *
+         * The vertical extent is computed in mercator, which is not exactly
+         * what globe view shows. It does not need to be: this is a guard rail,
+         * and being approximately right about where the pole is is enough to
+         * keep it out of the middle of the picture.
+         */
+        const GLOBE_VIEW_ZOOM = 2.0;
+        const GLOBE_VIEW_LAT = 40;
+        const POLE_GUARD = 6;
+        /**
+         * Degrees of latitude between the centre of the frame and its top edge.
+         *
+         * Two projections, two answers, and the difference is the whole point:
+         * mercator stretches latitude toward the poles, so it puts a SMALL
+         * number of degrees in the top half of a high-latitude frame. A globe
+         * does the opposite — it is a sphere, and at 78°N a frame that mercator
+         * says reaches 81° actually carries the camera over the pole and down
+         * the other side. Using the mercator figure for both is why the first
+         * version of this guard did nothing at exactly the latitudes it was
+         * written for.
+         *
+         * On a globe the frame subtends an arc, and the globe's projected
+         * diameter is 162.97·2^zoom pixels — the same constant fitGlobe inverts
+         * to fit the sphere to the box.
+         */
+        function halfFrameLat(lat: number, zoom: number): number {
+          if (projGlobe) {
+            const diameter = 162.97 * 2 ** zoom;
+            return (Math.asin(Math.min(1, node.clientHeight / diameter)) * 180) / Math.PI;
+          }
+          const halfH = node.clientHeight / 2 / (512 * 2 ** zoom);
+          return mercLat(Math.max(0, mercY(lat) - halfH)) - lat;
+        }
+        function framingLat(lat: number, zoom: number): number {
+          if (!Number.isFinite(lat)) return 0;
+          if (projGlobe && zoom <= GLOBE_VIEW_ZOOM) {
+            return Math.max(-GLOBE_VIEW_LAT, Math.min(GLOBE_VIEW_LAT, lat));
+          }
+          const cap = Math.max(0, 90 - POLE_GUARD - halfFrameLat(lat, zoom));
+          return Math.max(-cap, Math.min(cap, lat));
+        }
+
+        /**
+         * Put a span on screen: fitBounds' framing, corrected away from a pole.
+         *
+         * The box is the right answer for zoom and for longitude and can be the
+         * wrong one for latitude — see framingLat. When the correction bites,
+         * the camera is placed explicitly instead: same centre longitude, same
+         * zoom the box asked for, latitude pulled back toward the equator, and
+         * the zoom eased out by however much of the route that pushes off the
+         * top or bottom, so the correction never loses part of the route.
+         */
+        function frameSpan(s: Span, opts: { duration: number; maxZoom?: number; pitch?: number }) {
+          const maxZoom = opts.maxZoom ?? 9;
+          const cLat = (s.latLo + s.latHi) / 2;
+          const z = Math.min(maxZoom, zoomToFitBox(s));
+          const framed = framingLat(cLat, z);
+          const half = Math.max(s.latHi - framed, framed - s.latLo);
+          const zoom = Math.max(
+            map.getMinZoom(),
+            Math.min(maxZoom, zoomToFitBox({
+              lo: s.lo, hi: s.hi, latLo: framed - half, latHi: framed + half,
+            })),
+          );
+          map.easeTo({
+            center: [(s.lo + s.hi) / 2, framed],
+            zoom,
+            pitch: opts.pitch,
+            bearing: opts.pitch === 0 ? 0 : undefined,
+            duration: opts.duration,
+            essential: true,
+          });
+        }
+
         /** Distance in degrees, longitude scaled by latitude. */
         function degBetween(a: [number, number], b: [number, number]): number {
           const k = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
           return Math.hypot((b[0] - a[0]) * k, b[1] - a[1]);
         }
 
-        /** A call on the itinerary, placed on the route the flight will follow. */
+        /** A call on the itinerary: where the camera sets down, and what it says. */
         interface Call {
           at: [number, number];
-          /** Where it falls in the resampled path. */
-          i: number;
           /** Its number in the FULL itinerary, which is what the label shows. */
           n: string;
           label: string;
@@ -2847,19 +3124,36 @@ export default function AtlasShell({
           /**
            * The call this leg arrives at.
            *
-           * Carried on the leg rather than looked up by index, because a leg
-           * can be dropped — an itinerary that names the same port twice in a
-           * row has no geometry between them — and from that point on leg `k`
-           * no longer arrives at call `k + 1`. Index alignment would have
-           * announced every remaining call under its neighbour's name.
+           * Carried on the leg rather than looked up by index, because legs and
+           * calls do not correspond one-to-one: a hop with no geometry is not
+           * flown at all, and from that point on leg `k` no longer arrives at
+           * call `k + 1`. Index alignment would announce every remaining call
+           * under its neighbour's name.
            */
           to: Call;
-          /** The route's own points, from this call to the next. */
+          /** The hop's own drawn geometry, which is what the camera follows. */
           pts: [number, number][];
           /** Cumulative degrees along `pts`, so the tween moves at a steady rate. */
           cum: number[];
-          /** The top of the climb — high enough to hold the whole leg. */
+          /**
+           * The top of the climb. Equal to the reading altitude when the leg
+           * already fits the frame — a hop between two close stops is crossed
+           * flat, with no climb to sit through.
+           */
           cruiseZoom: number;
+          /**
+           * The pitch at the top of this leg's climb.
+           *
+           * Follows how far the leg actually rises, rather than being a fixed
+           * cruise value: the tilt flattens because the camera has gone up, so
+           * a leg that does not go up must not flatten. Applying the hump
+           * straight to pitch levelled a coastal hop between two ports a few
+           * miles apart — no zoom change at all, and the horizon lying down
+           * and sitting back up for no reason anyone could see.
+           */
+          pitchTo: number;
+          /** How its ground is covered over its duration — see legProfile. */
+          prof: number[];
           ms: number;
         }
 
@@ -2872,8 +3166,8 @@ export default function AtlasShell({
          * asked for.
          */
         function flyRoute() {
-          const path = flightPath();
-          if (path.length < 2 || !node.clientWidth || !node.clientHeight) return;
+          const hops = routeHops();
+          if (!hops.length || !node.clientWidth || !node.clientHeight) return;
           // Claims the camera (and, through haltSpin, ends any flight already
           // running) before this one borrows anything.
           stopSpin();
@@ -2887,68 +3181,103 @@ export default function AtlasShell({
             try { map.setProjection("globe"); } catch { /* projection optional */ }
           }
 
-          /* ── Resample, so a leg's length is measured in ground and not in
-           *    however densely its geometry happened to be drawn ──────────── */
-
-          const cumAll: number[] = [0];
-          for (let i = 1; i < path.length; i++) {
-            cumAll.push(cumAll[i - 1] + degBetween(path[i - 1], path[i]));
-          }
-          const total = cumAll[cumAll.length - 1];
-          if (!Number.isFinite(total) || total <= 0) return;
-
-          const even: [number, number][] = [];
-          {
-            let j = 1;
-            for (let i = 0; i < FLY_SAMPLES; i++) {
-              const d = (total * i) / (FLY_SAMPLES - 1);
-              while (j < cumAll.length - 1 && cumAll[j] < d) j++;
-              const seg = cumAll[j] - cumAll[j - 1] || 1;
-              const f = Math.max(0, Math.min(1, (d - cumAll[j - 1]) / seg));
-              even.push([
-                path[j - 1][0] + (path[j][0] - path[j - 1][0]) * f,
-                path[j - 1][1] + (path[j][1] - path[j - 1][1]) * f,
-              ]);
-            }
-          }
-
-          /* ── The calls, in order, at their own place along the route ────── */
-
+          /* ── The calls ──────────────────────────────────────────────────
+           *
+           * A hop runs from stop `hop` to stop `hop + 1`, so the itinerary
+           * names both ends of every leg outright. Nothing is matched by
+           * proximity here — that was the old way, and an out-and-back voyage
+           * that calls at the same port twice defeats it.
+           */
           const stops = lastFocusStops.current ?? [];
-          const calls: Call[] = [];
-          {
-            // Searched forward from the last match, never globally: an
-            // out-and-back itinerary calls at the same port twice, and a
-            // nearest-sample search over the whole path gives both calls the
-            // same moment — the second one silently never landed on.
-            let from = 0;
-            for (let si = 0; si < stops.length; si++) {
-              const st = stops[si];
-              if (!st?.at) continue;
-              let best = -1, bestD = Infinity;
-              for (let i = from; i < even.length; i++) {
-                const d = degBetween(even[i], st.at);
-                if (d < bestD) { bestD = d; best = i; }
+          const callFor = (n: number, fallback: [number, number]): Call => {
+            const st = stops[n - 1];
+            if (!st?.at) return { at: fallback, n: "", label: "" };
+            return {
+              at: [st.at[0], st.at[1]],
+              n: stops.length > 1 ? String(n) : "",
+              label: stops.length === 1
+                ? st.name
+                : st.day ? `${n}. Day ${st.day} · ${st.name}` : `${n}. ${st.name}`,
+            };
+          };
+
+          /* ── The reading altitude follows the scale of the journey ───────
+           *
+           * A private jet's calls are a continent apart and a rail journey's
+           * are an hour apart, and one altitude cannot read both: at the jet's,
+           * a Highland line is a smudge; at the railway's, a Pacific crossing
+           * is an afternoon of open water. So the height a call is read from
+           * comes from the route's own median leg — close enough to study the
+           * stops on a coastal cruise, high enough to place a city on a world
+           * tour — bounded at both ends so it stays a view of somewhere.
+           */
+          const spans = hops.map((h) => spanOf([{ coordinates: h.pts }]));
+          const legZooms = spans.map((sp) => zoomToFit(sp, FLY_CRUISE_PAD));
+          const median = [...legZooms].sort((a, b) => a - b)[Math.floor(legZooms.length / 2)];
+          const stopZoom = Math.max(
+            FLY_STOP_ZOOM_MIN,
+            Math.min(FLY_STOP_ZOOM_MAX, Number.isFinite(median) ? median : FLY_STOP_ZOOM_MIN),
+          );
+
+          /* ── Build the legs ─────────────────────────────────────────────── */
+
+          const buildLegs = (list: RouteHop[]): FlyLeg[] => {
+            const out: FlyLeg[] = [];
+            for (const h of list) {
+              const pts = h.pts;
+              const cum: number[] = [0];
+              for (let i = 1; i < pts.length; i++) {
+                cum.push(cum[i - 1] + degBetween(pts[i - 1], pts[i]));
               }
-              if (best < 0) continue;
-              from = best;
-              calls.push({
-                at: [st.at[0], st.at[1]],
-                i: best,
-                n: stops.length > 1 ? String(si + 1) : "",
-                label: stops.length === 1
-                  ? st.name
-                  : st.day ? `${si + 1}. Day ${st.day} · ${st.name}` : `${si + 1}. ${st.name}`,
+              const len = cum[cum.length - 1];
+              if (!(len > 0)) continue; // a hop with nowhere to go
+              /*
+               * The climb, and whether there is one at all.
+               *
+               * A leg that already fits the frame at reading altitude has
+               * nothing to climb for: rising and falling over a strait the
+               * traveller can see both sides of is motion for its own sake, and
+               * it costs the very thing they are trying to do — study the
+               * stops. Those are crossed flat and quickly, timed by how much of
+               * the FRAME they cover rather than by a climb they do not make.
+               */
+              const fits = zoomToFit(spanOf([{ coordinates: pts }]), FLY_CRUISE_PAD);
+              const cruise = fits >= stopZoom
+                ? stopZoom
+                : Math.max(map.getMinZoom() + 0.25, Math.min(stopZoom - FLY_MIN_CLIMB, fits));
+              const climb = stopZoom - cruise;
+              const { prof, area } = legProfile(stopZoom, cruise);
+              /*
+               * Two durations, and the leg takes the longer.
+               *
+               * The first is how long the CLIMB wants: a leg that rises four
+               * zoom levels and falls back has that much camera work to do
+               * whatever ground it covers, and rushing it reads as a lurch.
+               * The second is how long the PACE requires: the profile above
+               * crosses `area` degrees per unit of leg time at its reference
+               * speed and peaks 1/(1-FLY_RAMP) above it, so this is the
+               * duration at which that peak lands exactly on the limit.
+               *
+               * Taking the longer is what makes the limit hold for a merged
+               * leg spanning half an ocean as surely as for a coastal hop —
+               * the case the old climb-only timing missed, because merging
+               * lengthens a leg without changing how far it climbs.
+               */
+              const climbMs = climb <= 0.001
+                ? FLY_PAN_MIN_MS
+                : Math.max(FLY_LEG_MIN_MS, Math.min(FLY_LEG_MAX_MS,
+                    FLY_LEG_BASE_MS + FLY_LEG_PER_ZOOM_MS * climb));
+              const paceMs = (1000 * len) / (area * FLY_PACE * (1 - FLY_RAMP));
+              const ms = Math.max(climbMs, paceMs);
+              out.push({
+                to: callFor(h.hop + 1, pts[pts.length - 1]),
+                pts, cum, cruiseZoom: cruise, ms, prof,
+                pitchTo: FLY_PITCH + (FLY_CRUISE_PITCH - FLY_PITCH) *
+                  Math.max(0, Math.min(1, climb / FLY_FULL_CLIMB)),
               });
             }
-          }
-          // A route with no itinerary behind it (a bare cloud of legs) still
-          // gets a flight: its ends are its calls.
-          if (calls.length < 2) {
-            calls.length = 0;
-            calls.push({ at: even[0], i: 0, n: "", label: "" });
-            calls.push({ at: even[even.length - 1], i: even.length - 1, n: "", label: "" });
-          }
+            return out;
+          };
 
           /* ── Thin the landings until the flight fits its budget ─────────
            *
@@ -2958,75 +3287,54 @@ export default function AtlasShell({
            * speed, and not reading time.
            *
            * Scaling the legs instead was the obvious move and it is wrong in
-           * exactly the way this whole rewrite is about: it buys time by
-           * flying faster, so a thirteen-call world tour crossed the Pacific
-           * at 1.26 frame-widths a second while a nine-call one managed 0.75.
-           * Measured on the shipped itineraries — the routes that most need to
-           * be readable were the ones being rushed.
+           * exactly the way this whole shape is about: it buys time by flying
+           * faster, so a thirteen-call world tour crossed the Pacific at 1.26
+           * frame-widths a second while a nine-call one managed 0.75. Measured
+           * on the shipped itineraries — the routes that most needed to be
+           * readable were the ones being rushed.
            *
-           * So: fly every call if the ceiling allows it, and if not, set down
-           * on fewer of them at a pace that stays watchable. The route is
-           * still drawn and still flown over in full; the numbering on each
-           * label ("7. Day 19 · Marrakesh") keeps the traveller's place in the
-           * itinerary rather than pretending the flight is the whole of it.
+           * Dropping a landing MERGES the two hops either side of it, so the
+           * route still runs through the port; the camera simply does not stop
+           * there. Nothing is skipped, and each label's number ("7. Day 19 ·
+           * Marrakesh") keeps the traveller's place in the whole itinerary.
            */
-
-          const thin = (list: Call[], keepN: number): Call[] => {
+          const merge = (list: RouteHop[], keepN: number): RouteHop[] => {
             if (list.length <= keepN) return list;
-            const keep: Call[] = [];
-            let last = -1;
+            const out: RouteHop[] = [];
             for (let k = 0; k < keepN; k++) {
-              const i = Math.round((k * (list.length - 1)) / (keepN - 1));
-              if (i !== last) { keep.push(list[i]); last = i; }
-            }
-            return keep;
-          };
-
-          /** The legs between a set of landings, and what each one costs. */
-          const buildLegs = (list: Call[]): FlyLeg[] => {
-            const out: FlyLeg[] = [];
-            for (let k = 0; k < list.length - 1; k++) {
-              const a = list[k], b = list[k + 1];
-              // The route's own points between the two calls, with the ends
-              // replaced by the calls themselves — so the camera lands ON the
-              // city rather than on the nearest sample to it.
-              const mid = b.i > a.i + 1 ? even.slice(a.i + 1, b.i) : [];
-              const pts: [number, number][] = [a.at, ...mid, b.at];
-              const cum: number[] = [0];
-              for (let i = 1; i < pts.length; i++) {
-                cum.push(cum[i - 1] + degBetween(pts[i - 1], pts[i]));
+              const from = Math.round((k * list.length) / keepN);
+              const to = Math.round(((k + 1) * list.length) / keepN);
+              const group = list.slice(from, Math.max(to, from + 1));
+              if (!group.length) continue;
+              const pts: [number, number][] = [];
+              for (const g of group) {
+                for (const c of g.pts) {
+                  const last = pts[pts.length - 1];
+                  if (last && last[0] === c[0] && last[1] === c[1]) continue;
+                  pts.push(c);
+                }
               }
-              if (!(cum[cum.length - 1] > 0)) continue; // a call at its own port
-              const cruise = Math.min(
-                FLY_STOP_ZOOM - FLY_MIN_CLIMB,
-                Math.max(
-                  map.getMinZoom() + 0.25,
-                  zoomToFit(spanOf([{ coordinates: pts }]), FLY_CRUISE_PAD),
-                ),
-              );
-              out.push({
-                to: b, pts, cum, cruiseZoom: cruise,
-                ms: Math.max(FLY_LEG_MIN_MS, Math.min(FLY_LEG_MAX_MS,
-                  FLY_LEG_BASE_MS + FLY_LEG_PER_ZOOM_MS * (FLY_STOP_ZOOM - cruise))),
-              });
+              // The merged leg ARRIVES at the last hop's destination, so its
+              // label is that port's — the ones passed through keep their
+              // numbers in the itinerary and simply go unannounced.
+              out.push({ hop: group[group.length - 1].hop, pts });
             }
             return out;
           };
 
-          const runsTo = (list: Call[], list2: FlyLeg[]) =>
-            FLY_ARRIVE_MS + FLY_SETTLE_MS + FLY_DWELL_MS * list.length +
-            list2.reduce((sum, l) => sum + l.ms, 0);
+          const runsTo = (list: FlyLeg[]) =>
+            FLY_ARRIVE_MS + FLY_SETTLE_MS + FLY_DWELL_MS * (list.length + 1) +
+            list.reduce((sum, l) => sum + l.ms, 0);
 
-          let landings = thin(calls, Math.min(calls.length, FLY_MAX_CALLS));
-          let legs = buildLegs(landings);
-          while (
-            landings.length > FLY_MIN_CALLS &&
-            runsTo(landings, legs) > FLY_TOTAL_MS
-          ) {
-            landings = thin(landings, landings.length - 1);
-            legs = buildLegs(landings);
+          let flown = merge(hops, Math.min(hops.length, FLY_MAX_CALLS - 1));
+          let legs = buildLegs(flown);
+          while (legs.length + 1 > FLY_MIN_CALLS && runsTo(legs) > FLY_TOTAL_MS) {
+            flown = merge(flown, flown.length - 1);
+            legs = buildLegs(flown);
           }
           if (!legs.length) return;
+
+          const first = callFor(hops[0].hop, hops[0].pts[0]);
 
           /* ── Borrow the drawing, and promise to give it back ──────────── */
 
@@ -3079,9 +3387,8 @@ export default function AtlasShell({
            * leg would hand Mapbox a curve of its own and there would be two.
            */
 
-          const clampLat = (l: number) => Math.max(-FLY_MAX_LAT, Math.min(FLY_MAX_LAT, l));
           const trailDone: [number, number][] = [];
-          let leg = 0;      // index of the leg being flown
+          let leg = 0;
           let dwelling = true;
 
           const nameCall = (c: Call | undefined) => {
@@ -3119,8 +3426,8 @@ export default function AtlasShell({
 
           try {
             map.flyTo({
-              center: landings[0].at,
-              zoom: FLY_STOP_ZOOM,
+              center: legs[0].pts[0],
+              zoom: stopZoom,
               pitch: FLY_PITCH,
               bearing: 0,
               duration: FLY_ARRIVE_MS,
@@ -3133,8 +3440,8 @@ export default function AtlasShell({
             flyTimer = 0;
             if (!flyingRef.current) return;
             let beatStart = performance.now();
-            nameCall(landings[0]);
-            trailDone.push(landings[0].at);
+            nameCall(first);
+            trailDone.push(legs[0].pts[0]);
             setTrail([]);
 
             const step = (now: number) => {
@@ -3145,11 +3452,15 @@ export default function AtlasShell({
 
               if (!dwelling) {
                 /*
-                 * Position eases in and out over the leg, so the camera leaves
-                 * a call and settles onto the next rather than starting and
-                 * stopping at speed…
+                 * Where the camera is along the leg: read from its own profile
+                 * (see legProfile), which is shaped so that the fraction of the
+                 * FRAME crossed each second is the same throughout — soft at
+                 * both ends, and never faster than FLY_PACE anywhere in
+                 * between, whatever the climb is doing.
                  */
-                const u = t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) ** 2) / 2;
+                const q = Math.max(0, Math.min(1, t)) * PROFILE_N;
+                const qi = Math.min(PROFILE_N - 1, Math.floor(q));
+                const u = l.prof[qi] + (l.prof[qi + 1] - l.prof[qi]) * (q - qi);
                 const d = u * l.cum[l.cum.length - 1];
                 let i = 1;
                 while (i < l.cum.length - 1 && l.cum[i] < d) i++;
@@ -3161,16 +3472,17 @@ export default function AtlasShell({
                  * …while altitude and pitch ride a hump on the RAW clock: the
                  * climb has to be under way before the camera has gone
                  * anywhere, or the first moments of a long leg are spent
-                 * crossing the ground at city zoom, which is the too-fast this
-                 * whole shape exists to fix. Squared-sine tops out flatter than
-                 * a sine, so the middle of the leg is a cruise rather than a
-                 * peak the camera immediately falls off.
+                 * crossing the ground at reading zoom, which is the too-fast
+                 * this whole shape exists to fix. Squared-sine tops out flatter
+                 * than a sine, so the middle of the leg is a cruise rather than
+                 * a peak the camera immediately falls off. A leg with no climb
+                 * (cruiseZoom === stopZoom) rides it to no effect, as it should.
                  */
-                const climb = Math.sin(Math.PI * t) ** 0.7;
+                const climb = climbAt(t);
                 map.jumpTo({
-                  center: [lng, clampLat(lat)],
-                  zoom: FLY_STOP_ZOOM + (l.cruiseZoom - FLY_STOP_ZOOM) * climb,
-                  pitch: FLY_PITCH + (FLY_CRUISE_PITCH - FLY_PITCH) * climb,
+                  center: [lng, clampFlyLat(lat)],
+                  zoom: stopZoom + (l.cruiseZoom - stopZoom) * climb,
+                  pitch: FLY_PITCH + (l.pitchTo - FLY_PITCH) * climb,
                   bearing: 0,
                 });
                 // The trail follows the route under the camera, not the
@@ -3196,7 +3508,7 @@ export default function AtlasShell({
                   flyTimer = window.setTimeout(() => {
                     flyTimer = 0;
                     if (!flyingRef.current) return;
-                    settleAfterFlight(spanOf([{ coordinates: even }]));
+                    settleAfterFlight(spanOf(legs.map((x) => ({ coordinates: x.pts }))));
                   }, FLY_DWELL_MS);
                   flyRAF = 0;
                   return;
@@ -3230,16 +3542,10 @@ export default function AtlasShell({
           const tight = spanLng <= SPAN_FLAT_LNG && spanLat <= SPAN_FLAT_LAT;
           try {
             if (tight) {
-              const b = new (mapboxgl as MapboxModule).LngLatBounds();
-              b.extend([s.lo, s.latLo]);
-              b.extend([s.hi, s.latHi]);
-              map.fitBounds(b, {
-                padding: fitPad(), maxZoom: 9, duration: FLY_SETTLE_MS,
-                pitch: 0, bearing: 0,
-              });
+              frameSpan(s, { duration: FLY_SETTLE_MS, maxZoom: 9, pitch: 0 });
             } else {
               map.easeTo({
-                center: [(s.lo + s.hi) / 2, Math.max(-60, Math.min(60, (s.latLo + s.latHi) / 2))],
+                center: [(s.lo + s.hi) / 2, framingLat((s.latLo + s.latHi) / 2, z)],
                 zoom: z, pitch: 0, bearing: 0,
                 duration: FLY_SETTLE_MS, essential: true,
               });
@@ -3292,7 +3598,7 @@ export default function AtlasShell({
                 map.flyTo({ center: only, zoom: 14, duration: REVEAL_POINT_MS, essential: true, pitch: TILT_PITCH });
                 setTilted(true);
               } else if (n) {
-                map.fitBounds(b, { padding: fitPad(), maxZoom: 9, duration: REVEAL_MS });
+                frameSpan(spanOf(legs), { duration: REVEAL_MS });
               }
             } catch { /* fit optional */ }
           };
@@ -4524,7 +4830,7 @@ export default function AtlasShell({
                 It sits on the MAP as well as on the cards because fullscreen
                 has no cards, and fullscreen is where a reel gets filmed.
               */}
-              {hasRoute && (
+              {hasRoute && routeVerbShort(type) && (
                 <button
                   type="button"
                   className={`actrl${flyingRoute ? " on" : ""}`}
@@ -4534,10 +4840,10 @@ export default function AtlasShell({
                   title={
                     flyingRoute
                       ? "Stop and give the camera back"
-                      : "Fly this route — the camera follows the itinerary, calling at each stop"
+                      : `${routeVerbLong(type)} — the camera follows the itinerary, calling at each stop`
                   }
                 >
-                  {flyingRoute ? "■ Stop" : "▶ Fly route"}
+                  {flyingRoute ? "■ Stop" : `▶ ${routeVerbShort(type)}`}
                 </button>
               )}
               <button

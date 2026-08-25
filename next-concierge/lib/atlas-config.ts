@@ -322,6 +322,42 @@ export function isOfferingType(value: string): value is OfferingType {
   return value in ATLASES;
 }
 
+/**
+ * What the route control says, per collection.
+ *
+ * An aircraft flies, a yacht sails, an expedition or a world voyage cruises, a
+ * train runs. "Fly the route" over a Mediterranean sailing is the kind of wrong
+ * word that tells a traveller the product was built for something else and they
+ * are looking at the leftovers — and this button sits on a card next to the
+ * ship's own name.
+ *
+ * Rail gets "Ride" rather than "Run": a train runs, but the traveller rides,
+ * and every other verb here is the traveller's.
+ *
+ * The map's own control uses the same verbs with the article dropped, because
+ * it is a button in a stack of four and "Fly the route" does not fit beside
+ * "Fullscreen".
+ */
+const ROUTE_VERB: Partial<Record<OfferingType, string>> = {
+  jet: "Fly",
+  yacht: "Sail",
+  cruise: "Cruise",
+  worldcruise: "Cruise",
+  train: "Ride",
+};
+
+/** "Sail the route" — the card action. Null where a collection has no routes. */
+export function routeVerbLong(type: OfferingType): string | null {
+  const verb = ROUTE_VERB[type];
+  return verb ? `${verb} the route` : null;
+}
+
+/** "Sail route" — the map control, where the stack is narrow. */
+export function routeVerbShort(type: OfferingType): string | null {
+  const verb = ROUTE_VERB[type];
+  return verb ? `${verb} route` : null;
+}
+
 export function externalAtlasLink(type: OfferingType, region?: string | null): string {
   return internalAtlasLink(type, atlasRegionQuery(region));
 }

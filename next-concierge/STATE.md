@@ -1607,3 +1607,109 @@ that quietly re-rushed the longest itineraries.
 Not seen live: this sandbox's network policy blocks `api.mapbox.com`, so the
 flight has been driven only against the stub — the pitch and the dwell want an
 eye on a real phone.
+
+## The route flight, corrected on three counts (2026-08-25)
+
+Reported after the first day on it, and all three were real.
+
+**1. Browsing a route could look straight down at a pole.** `fitBounds` centres
+on the bounding box, so an Antarctic expedition (box centre ~65°S) or a
+Northern Europe voyage put the camera there — which on a sphere is the top or
+bottom of the world seen from directly above, itinerary wrapped round the
+outside, every basemap label converging on the middle. It shows most of the
+route and reads as nothing.
+
+`framingLat()` is the guard, and it has two rules. A whole-globe framing (below
+zoom 2, where you are looking at a sphere rather than a map) is read from within
+40° of the equator. Anything wider than regional keeps the pole out of frame
+entirely. Below that, nothing moves: an Alaskan cruise at zoom 5 and a Riviera
+one at zoom 7 are untouched, which is the point — the correction only engages
+where the frame is actually wide enough for a pole to appear in it. When it does
+engage the camera is placed explicitly rather than by `fitBounds`: same centre
+longitude, latitude pulled equator-ward, and the zoom eased out by however much
+of the route that pushes off the top, so the correction never loses part of it.
+
+The first version of this guard computed the frame's vertical extent in
+mercator and did nothing at the latitudes it was written for. Mercator stretches
+latitude toward the poles, so it reports a SMALL number of degrees in the top
+half of a high-latitude frame; a globe does the opposite, and at 78°N a frame
+mercator says reaches 81° actually carries the camera over the pole. `halfFrameLat()`
+now answers per projection, using the globe's projected diameter (162.97·2^zoom
+px — the constant `fitGlobe` inverts).
+
+**2. The flight flew a different route from the one drawn.** It concatenated
+every stored leg and resampled the result. `frameRoute()` returns more than the
+route: legs no hop claimed are appended after it in source order, and hops with
+no geometry leave gaps. Concatenation flies the orphan as though it came next,
+and closes each gap with a straight line through whatever lies between — so the
+camera crossed ground the map below it was not drawing.
+
+`FrameLeg` now carries `hop`, set by `chainByItinerary` when it claims a leg for
+a hop. The flight takes the claimed hops in order and follows each one's own
+coordinates, so what the camera traverses is the drawn geometry by construction.
+It also removes a whole class of error for free: a leg knows which stops it runs
+between, so nothing is matched by proximity any more — the out-and-back
+itinerary that calls at one port twice used to defeat that.
+
+**3. Every collection said "Fly the route".** Now `routeVerbLong` /
+`routeVerbShort` in atlas-config: jets fly, hotel yachts **sail**, expeditions
+and world voyages **cruise**, rail **rides** (a train runs, but the traveller
+rides, and every other verb here is the traveller's). Hotels and villas have one
+stop and no route, so they get no control at all.
+
+**…and close stops are no longer flown as if they were an ocean.** Two changes,
+both geometric rather than per-collection:
+
+- **The reading altitude follows the route's own median leg**, bounded by
+  `FLY_STOP_ZOOM_MIN`/`MAX` (4.6–7.4). One height cannot read every collection:
+  at the jet's, a Highland line is a smudge; at the railway's, a Pacific
+  crossing is an afternoon of open water. Measured on the shipped atlases, rail
+  now reads at 6.28, hotel yachts at 6.81, world cruises at 5.58, jets at 4.60.
+- **A leg that already fits the frame does not climb.** Rising and falling over
+  a strait whose far side is on screen is motion for its own sake and it costs
+  the very thing a coastal cruise is being watched for. 64% of rail legs and 55%
+  of yacht legs are now crossed flat, at reading height, and quicker for it;
+  world cruise legs, whose ports are genuinely far apart, still climb.
+  Pitch follows the same logic — it flattens in proportion to how far the leg
+  actually rises (`FLY_FULL_CLIMB`), so a flat leg keeps its tilt instead of the
+  horizon lying down and sitting back up for no visible reason.
+
+**The pace bound is now structural, not a target.** Chasing the above turned up
+the deeper bug: position rode an easing curve while altitude rode its own, so
+the ramp reached full speed at 15% of a leg while the climb had got a quarter of
+the way up — the opening of every long crossing was flown fast through a frame
+still tight enough to read a city in. Measured on the shipped atlases: a world
+cruise peaked at **3.97 frame-widths a second** and a jet tour at 1.94, while
+both averages looked respectable.
+
+`legProfile()` replaces the easing curve with an integral: the camera moves at a
+rate proportional to how wide the picture currently IS, shaped by the ramp for
+soft ends. Normalised, a leg covers exactly its own ground while crossing the
+same fraction of the frame every second, so the limit holds throughout a leg
+rather than on average. A leg's duration is then the longer of what its climb
+wants and what the pace requires — which is what makes the bound hold for a
+merged leg spanning half an ocean, the case climb-only timing missed entirely
+(merging lengthens a leg without changing how far it climbs).
+
+**Measured after, on the shipped atlases** (348×340 phone band, ~40 routes each):
+
+| collection | read zoom | median length | peak pace | legs flown flat |
+|---|---|---|---|---|
+| private jet | 4.60 | 26.5s (max 39s) | 0.70 sc/s | 16% |
+| rail | 6.28 | 15.4s (max 40s) | 0.64 sc/s | 64% |
+| hotel yacht | 6.81 | 20.6s (max 29s) | 0.67 sc/s | 55% |
+| world cruise | 5.58 | 38.7s (max 42s) | 0.72 sc/s | 0% |
+
+Every collection now sits under the 0.75 limit, against 1.94 and 3.97 before.
+
+**Verified.** `verify:route-flight` grows to 55 checks. The ones that matter
+here: every camera position sits on the drawn line to within 0.006° (measured to
+the nearest point on a segment, not to a vertex — a camera correctly half way
+along a segment is on the route); an orphan leg is drawn but never flown; a hop
+with no geometry is left out rather than cut across, and the calls after the gap
+still carry their own names; close stops are crossed flat while a leg that
+outgrows the frame still climbs; and the polar guard engages on a whole-globe
+framing while leaving an Alaskan cruise and a Riviera one exactly where they
+belong.
+
+Still not seen live: this sandbox blocks `api.mapbox.com`.
