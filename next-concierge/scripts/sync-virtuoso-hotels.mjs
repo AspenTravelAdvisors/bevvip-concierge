@@ -116,7 +116,11 @@ function normalize(summary, detail) {
     features: selected(d.hotelFeatures),
 
     numberOfRooms: d.numberOfRooms ?? null,
-    roomTypes: (d.guestRooms ?? []).slice(0, MAX_ROOM_TYPES).map(r => ({
+    roomTypes: (d.guestRooms ?? [])
+      .map(r => ({ r, rank: roomRank(r.roomTypeName, text(r.descriptionHtml)) }))
+      .sort((a, b) => b.rank - a.rank)              // best of the house first
+      .slice(0, MAX_ROOM_TYPES)
+      .map(({ r }) => ({
       name: r.roomTypeName,
       description: clip(text(r.descriptionHtml), 160),
       // Only the flags actually set. A traveller asks for a private pool or
@@ -151,6 +155,41 @@ function normalize(summary, detail) {
     joinDate: d.joinDate || null,
   };
 }
+
+
+/*
+ * Rank room types so the best of the house comes first.
+ *
+ * The feed lists rooms the supplier's way, which is usually smallest upward —
+ * "Cosy Double" was leading a nine-room property whose Signature Suites are the
+ * reason anyone books it. Since the list is capped, taking the first six showed
+ * the six least interesting rooms.
+ *
+ * Name is the signal that actually exists: only 10% of rooms state a size, but
+ * 874 of 5,645 sampled say "suite" and 313 "villa". So tier by what the room is
+ * called, and use square metres only to break ties inside a tier.
+ */
+const ROOM_TIERS = [
+  [/\b(presidential|royal|imperial|owner'?s)\b/i, 100],
+  [/\bpenthouse\b/i, 90],
+  [/\b(villa|residence|bungalow|chalet)\b/i, 80],
+  [/\b(signature|grand|premier)\s+suite\b/i, 75],
+  [/\bsuite\b/i, 60],
+  [/\b(signature|grand)\b/i, 50],
+  [/\b(premier|executive|club)\b/i, 40],
+  [/\b(deluxe|superior)\b/i, 30],
+  [/\bstudio\b/i, 20],
+];
+
+const roomRank = (name, descriptionText) => {
+  const n = String(name ?? '');
+  let tier = 10;                                   // a plain room
+  for (const [re, score] of ROOM_TIERS) if (re.test(n)) { tier = score; break; }
+  // "Junior Suite" is a suite, but not one of the best rooms in the house.
+  if (/\bjunior\b/i.test(n)) tier -= 25;
+  const sqm = Number(/([\d,.]+)\s*m²/.exec(descriptionText ?? '')?.[1]?.replace(/,/g, '')) || 0;
+  return tier * 10000 + Math.min(sqm, 9999);
+};
 
 // ---------- crawl ----------
 

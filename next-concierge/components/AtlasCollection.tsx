@@ -54,6 +54,14 @@ export interface CardActionState {
   open: boolean;
 }
 
+/**
+ * Whether picking a card on desktop also opens its details.
+ *
+ * One switch rather than a scatter of conditions, so the behaviour can be put
+ * back to click-to-open without hunting through the selection logic.
+ */
+const AUTO_OPEN_DETAIL_ON_DESKTOP = true;
+
 interface Props {
   type: OfferingType;
   descriptor: AtlasFilterDescriptor;
@@ -374,6 +382,18 @@ export default function AtlasCollection({
    * behave the same way.
    */
   const stickyOkRef = useRef(false);
+  /*
+   * On desktop, selecting a card opens its details straight away.
+   *
+   * The property file holds the description, the rooms, the ratings and the
+   * benefit list, and it used to take a second click to reach — so the richest
+   * page in the product was the one nobody opened. A phone keeps the extra tap:
+   * there the dossier expands inline and would push the card list around under
+   * the traveller's thumb.
+   *
+   * Flip this to false to put the second click back.
+   */
+  const autoDetailRef = useRef(false);
   const phone = useIsMobile();
   const viewRef = useRef<{
     style: string; engine?: "mapbox" | "photoreal"; globe: boolean;
@@ -677,7 +697,7 @@ export default function AtlasCollection({
         return;
       }
       setPinnedId(o.id);
-      setDetailId(opts?.detail ? o.id : null);
+      setDetailId(opts?.detail || autoDetailRef.current ? o.id : null);
       emitRoute(o, true, opts?.fly);
       /*
        * PUT THE TWO THINGS TOGETHER.
@@ -1040,6 +1060,7 @@ export default function AtlasCollection({
   const inlineDetail =
     inlineCapable && !!detailed && visible.some((o) => o.id === detailed.id);
   stickyOkRef.current = stickyBand;
+  autoDetailRef.current = AUTO_OPEN_DETAIL_ON_DESKTOP && !phone && !!detailFor;
 
   /**
    * Close the dossier — from the panel's ✕ or the card's "Hide details".

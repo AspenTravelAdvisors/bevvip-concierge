@@ -42,6 +42,9 @@ export const HOTEL_DESCRIPTOR: AtlasFilterDescriptor = {
   supportsMonthFilter: false,
   supportsStopFilter: false,
   supportsDurationFilter: false,
+  // Hotels are the first collection with supplier offers attached; the cruise
+  // and tour promotions in the same feed belong to the journey atlases.
+  supportsPromotionFilter: true,
   // `ids=` frames the shortlist without hiding the rest of the field, and `q`
   // is a raw substring over name/city/region/country. Both differ from the five.
   idsHighlightOnly: true,
@@ -96,6 +99,7 @@ interface RawHotelFeature {
     perks?: string[];
     /** Property photograph. Present on every point, empty until Virtuoso. */
     thumb?: string | null;
+    promo?: number;
   };
 }
 export interface RawHotelPoints {
@@ -167,6 +171,7 @@ export function adaptHotels(raw: RawHotelPoints): AtlasOffering[] {
       // Empty on every hotel until the Virtuoso feed fills it; the card's media
       // slot renders nothing for null, so this is inert until it is not.
       thumb: p.thumb || null,
+      hasPromotion: p.promo === 1,
       // The card shows the BRAND's mark where the brand has one, and falls back
       // to the PROGRAM's mark (what the original card always showed) where it
       // does not. Keying on the program alone put the same virtuoso.com favicon

@@ -760,6 +760,23 @@ export default function AtlasFilterRail({
         onBlur={() => commitQ(qText)}
         aria-label="Search"
       />
+      {/* Special offers — a toggle, not a menu: there is only one thing to ask
+          for, and burying "yes" in a dropdown would cost a click on the most
+          commercially useful filter on the rail. Lives in the shared controls
+          so the phone drawer gets it too, and reads `shown`/`set` like every
+          other control: immediate on desktop, part of the draft behind Apply on
+          a phone. */}
+      {d.supportsPromotionFilter && (
+        <button
+          type="button"
+          className={shown.promoOnly ? "atlas-promo on" : "atlas-promo"}
+          aria-pressed={shown.promoOnly ? "true" : "false"}
+          onClick={() => set({ promoOnly: !shown.promoOnly })}
+          title="Show only properties with a live Virtuoso offer"
+        >
+          ✦ Special offers
+        </button>
+      )}
     </>
   );
 

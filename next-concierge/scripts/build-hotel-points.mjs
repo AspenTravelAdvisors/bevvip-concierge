@@ -54,6 +54,9 @@ const features = hotels
          * card's media slot renders it, and both already handle null.
          */
         thumb: h.thumb || null,
+        // Whether a live Virtuoso offer is attached, so the rail's "Special
+        // offers" toggle can filter without shipping the offers themselves.
+        promo: h.hasPromotion ? 1 : 0,
       },
     };
   })

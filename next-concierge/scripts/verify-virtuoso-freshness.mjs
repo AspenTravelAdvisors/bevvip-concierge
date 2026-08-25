@@ -17,7 +17,12 @@ const STRICT = process.argv.includes('--strict');
 const WARN_DAYS = 7;
 const FAIL_DAYS = 30;
 
-const feeds = [{ label: 'hotels', file: 'data/atlas/hotel/virtuoso-hotels.json' }];
+const feeds = [
+  { label: 'hotels', file: 'data/atlas/hotel/virtuoso-hotels.json' },
+  // Offers carry an end date, so a stale promotions feed advertises expired
+  // deals — worse than showing none.
+  { label: 'promotions', file: 'data/atlas/shared/virtuoso-promotions.json' },
+];
 
 let worst = 0;
 let failed = false;
@@ -31,7 +36,7 @@ for (const { label, file } of feeds) {
   const days = (Date.now() - Date.parse(synced)) / 86400000;
   worst = Math.max(worst, days);
   const age = days < 1 ? `${Math.round(days * 24)}h` : `${days.toFixed(1)}d`;
-  const count = doc._meta?.count ?? doc.hotels?.length ?? '?';
+  const count = doc._meta?.count ?? doc.hotels?.length ?? doc.promotions?.length ?? '?';
   if (days > FAIL_DAYS || (STRICT && days > WARN_DAYS)) { console.error(`  STALE    ${label} — ${age} old (${count} records)`); failed = true; }
   else if (days > WARN_DAYS) console.warn(`  ageing   ${label} — ${age} old (${count} records); run npm run sync:virtuoso`);
   else console.log(`  ok       ${label} — ${age} old (${count} records)`);

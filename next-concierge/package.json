@@ -36,8 +36,9 @@
     "sync:virtuoso-hotels": "node scripts/sync-virtuoso-hotels.mjs",
     "match:virtuoso-hotels": "node scripts/match-virtuoso-hotels.mjs",
     "merge:virtuoso-hotels": "node scripts/merge-virtuoso-hotels.mjs",
-    "sync:virtuoso": "npm run sync:virtuoso-hotels && npm run match:virtuoso-hotels && npm run merge:virtuoso-hotels && npm run build:hotel-points",
-    "verify:virtuoso": "node scripts/verify-virtuoso-freshness.mjs && node scripts/merge-virtuoso-hotels.mjs --check"
+    "sync:virtuoso": "npm run sync:virtuoso-hotels && npm run sync:virtuoso-promotions && npm run match:virtuoso-hotels && npm run merge:virtuoso-hotels && npm run build:hotel-points",
+    "verify:virtuoso": "node scripts/verify-virtuoso-freshness.mjs && node scripts/merge-virtuoso-hotels.mjs --check",
+    "sync:virtuoso-promotions": "node scripts/sync-virtuoso-promotions.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

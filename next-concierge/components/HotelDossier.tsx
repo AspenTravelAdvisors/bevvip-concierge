@@ -54,6 +54,8 @@ interface HotelRecord {
   roomTypeCount?: number | null;
   perksYear?: number | null;
   perksStale?: boolean | null;
+  /** Live Virtuoso offers on this property, soonest to expire first. */
+  promotions?: { id?: string; name?: string | null; endDate?: string | null; exclusive?: boolean; description?: string | null }[] | null;
   fit?: {
     description?: string | null;
     forbesRating?: number | string | null;
@@ -168,6 +170,7 @@ export default function HotelDossier({
   const description = record?.description || cleanDescription(record?.fit?.description);
   const inTheKnow = record?.inTheKnow || null;
   const rooms = (record?.rooms || []).filter((r) => r && r.name);
+  const offers = (record?.promotions || []).filter((o) => o && o.name);
   const forbes = record?.fit?.forbesRating;
   const aaa = record?.fit?.aaaDiamondRating;
   const logo = record ? logoFor(record) : null;
@@ -285,6 +288,26 @@ export default function HotelDossier({
             </a>
           )}
           {booking?.note && <p className="hd-code">{booking.note}</p>}
+
+          {offers.length > 0 && (
+            <>
+              <p className="hd-label">Current Offers</p>
+              <ul className="hd-offers">
+                {offers.map((o, i) => (
+                  <li key={o.id ?? i}>
+                    <span className="hd-offer-name">
+                      {o.exclusive && <span className="hd-offer-excl">Virtuoso exclusive</span>}
+                      {o.name}
+                    </span>
+                    {o.description && <span className="hd-offer-desc">{o.description}</span>}
+                    {/* An offer without its expiry is an offer nobody can act
+                        on with confidence. */}
+                    {o.endDate && <span className="hd-offer-until">Through {o.endDate}</span>}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           {rooms.length > 0 && (
             <>

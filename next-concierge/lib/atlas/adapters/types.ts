@@ -115,6 +115,8 @@ export interface AtlasOffering {
    * every hotel today, and a route atlas forever.
    */
   thumb?: string | null;
+  /** A live supplier offer is attached to this record. */
+  hasPromotion?: boolean;
 
   /**
    * Which key to look up in `brandMarks` for this offering's logo, when it is
@@ -327,6 +329,13 @@ export interface AtlasFilterDescriptor {
    * it there would filter on a number the feed does not have.
    */
   supportsDurationFilter?: boolean;
+  /**
+   * Offer a "Special offers" toggle in the rail.
+   *
+   * Requires the collection's offerings to carry `hasPromotion`, which the
+   * Virtuoso promotions feed supplies (scripts/sync-virtuoso-promotions.mjs).
+   */
+  supportsPromotionFilter?: boolean;
 }
 
 export const ROLE_VALUES: Record<RoleVocabulary, readonly string[]> = {

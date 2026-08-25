@@ -27,6 +27,40 @@ const feedDoc = read('virtuoso-hotels.json');
 const map = read('virtuoso-id-map.json');
 const byVid = new Map(feedDoc.hotels.map(h => [h.vid, h]));
 
+/*
+ * Live supplier offers, attached to properties by company name.
+ *
+ * The promotions feed has no product id pointing back at a hotel — its only
+ * link is `company`, which for a hotel offer is the property's own name. That
+ * matched 1,742 of 2,028 offers against the catalogue, so it is the join we
+ * have. Normalising the same way the id-map does keeps "Hotel de la Cité" and
+ * "Hotel de la Cite" together.
+ */
+// Shared, not hotel-scoped: the same feed carries the cruise and tour offers
+// the journey atlases will read.
+const PROMO_FILE = path.join(repoRoot, 'data/atlas/shared/virtuoso-promotions.json');
+const promoDoc = fs.existsSync(PROMO_FILE)
+  ? JSON.parse(fs.readFileSync(PROMO_FILE, 'utf8'))
+  : { promotions: [] };
+const promoKey = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const today = new Date().toISOString().slice(0, 10);
+const promosByCompany = new Map();
+for (const p of promoDoc.promotions ?? []) {
+  if (!/hotel|resort|property/i.test(p.type ?? '')) continue;       // cruise/tour offers belong to other atlases
+  if (p.endDate && p.endDate < today) continue;                      // expired
+  const k = promoKey(p.company);
+  if (!k) continue;
+  if (!promosByCompany.has(k)) promosByCompany.set(k, []);
+  promosByCompany.get(k).push(p);
+}
+/** Offers for one property, soonest to expire first — that is the one to push. */
+const promosFor = v => (promosByCompany.get(promoKey(v.name)) ?? [])
+  .slice()
+  .sort((a, b) => (a.endDate ?? '9999').localeCompare(b.endDate ?? '9999'))
+  .slice(0, 3)
+  .map(p => ({ id: p.id, name: p.name, endDate: p.endDate, exclusive: p.exclusive, description: p.description }));
+
 // ---------- category, from supplier signals instead of a guess ----------
 
 // The old feed put 73% of every property into "City Hotel" — the classifier's
@@ -163,6 +197,9 @@ for (const h of base) {
     // over; a traveller asking for a private pool wants to know the property has
     // one, and the per-room breakdown stays in virtuoso-hotels.json.
     roomAmenities: [...new Set((v.roomTypes ?? []).flatMap(r => r.amenities ?? []))].sort(),
+    // Live supplier offers on this property, and the flag the rail filters on.
+    promotions: promosFor(v),
+    hasPromotion: promosFor(v).length > 0,
 
     bookUrl: h.bookUrl,                               // ours
     bookPassword: h.bookPassword,                     // ours
@@ -210,6 +247,9 @@ for (const v of feedDoc.hotels) {
     rooms: (v.roomTypes ?? []).map(r => ({ name: r.name, description: r.description })),
     roomTypeCount: v.roomTypeCount ?? 0,
     roomAmenities: [...new Set((v.roomTypes ?? []).flatMap(r => r.amenities ?? []))].sort(),
+    // Live supplier offers on this property, and the flag the rail filters on.
+    promotions: promosFor(v),
+    hasPromotion: promosFor(v).length > 0,
     bookUrl: 'https://www.VipTravelAi.com', bookPassword: 'VIP',
     thumb: v.image, images: (v.images ?? []).slice(0, 3).map(i => i.url).filter(Boolean),
     imageCount: v.imageCount ?? 0,

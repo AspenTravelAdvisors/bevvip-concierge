@@ -3483,7 +3483,29 @@ button.card-book {
    auto-margin on the group, rather than one on each item — the old
    `margin-left: auto` on .atlas-count meant everything after it had to fit in
    whatever the filters had left, and when it didn't, it wrapped. */
-.villa-filters .atlas-railend {
+.villa-filters /* Special offers toggle. Reads as a filter at rest and as a claim when on —
+   the gold is the same accent the VIP language uses everywhere else. */
+.atlas-promo {
+  border: 1px solid #4a412a;
+  background: rgba(28, 24, 14, 0.7);
+  color: #c8bf9f;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  padding: 6px 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.atlas-promo:hover {
+  border-color: #7a6228;
+  color: #e3c98a;
+}
+.atlas-promo.on {
+  background: rgba(122, 98, 40, 0.28);
+  border-color: #a98a3e;
+  color: #f0dca6;
+}
+.atlas-railend {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -5038,6 +5060,61 @@ button.card-book {
   margin-right: 6px;
 }
 /* The room breakdown. Name on its own line, the size/bed/occupancy under it. */
+/* Current offers. Loudest block in the dossier after the name — it is the only
+   part with a deadline on it. */
+.hd-offers {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+.hd-offers li {
+  margin-bottom: 10px;
+  padding-left: 10px;
+  border-left: 2px solid #7a6228;
+}
+.hd-offer-name {
+  display: block;
+  font-size: 13px;
+  color: #e3c98a;
+}
+.hd-offer-excl {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 5px;
+  border: 1px solid #7a6228;
+  border-radius: 4px;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #f0dca6;
+}
+.hd-offer-desc {
+  display: block;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-dim, #9c998f);
+}
+.hd-offer-until {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #9c8a5e;
+}
+/* On the card, over the photograph, opposite corner from the brand mark. */
+.atlas-card--stay .ac-offer-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  background: rgba(20, 17, 8, 0.85);
+  border: 1px solid #7a6228;
+  color: #f0dca6;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 5px;
+}
 .hd-rooms {
   list-style: none;
   margin: 6px 0 0;

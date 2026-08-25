@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write         # required to push the refreshed data back
-    timeout-minutes: 90       # the detail crawl is ~2,000 sequential calls
+    timeout-minutes: 150      # two detail crawls, ~2,000 sequential calls each
 
     steps:
       - uses: actions/checkout@v4

@@ -35,6 +35,8 @@ export interface AtlasFilterState {
   terms: readonly string[];
   /** Raw `q`, for descriptors using searchMode "substring". */
   rawQuery?: string;
+  /** Show only records carrying a live supplier offer (`promo=1`). */
+  promoOnly?: boolean;
   /**
    * Trip length in days, inclusive bounds — `minDays=` / `maxDays=`.
    *
@@ -152,6 +154,8 @@ export function matchesExceptRegion(
     const value = d.brandField === "operator" ? o.operator : o.brand;
     if (!value || !state.brands.has(value)) return false;
   }
+
+  if (d.supportsPromotionFilter && state.promoOnly && !o.hasPromotion) return false;
 
   if (d.supportsVesselFilter && state.vessels.size) {
     if (!o.vessel || !state.vessels.has(o.vessel)) return false;

@@ -309,6 +309,10 @@ export default function AtlasHotel() {
     const src = typeof o.thumb === "string" ? o.thumb : null;
     return (
       <span className="ac-media">
+        {/* A live supplier offer, flagged on the point feed. The offer's terms
+            are in the dossier; on a card the badge only has to be worth the
+            click. */}
+        {o.hasPromotion && <span className="ac-offer-badge">✦ Offer</span>}
         {src ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={src} alt="" loading="lazy" />

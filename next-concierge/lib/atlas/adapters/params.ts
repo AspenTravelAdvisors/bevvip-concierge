@@ -263,6 +263,11 @@ export function parseDeepLink(
   const minDays = d.supportsDurationFilter === false ? null : dayBound(params.get("minDays"));
   const maxDays = d.supportsDurationFilter === false ? null : dayBound(params.get("maxDays"));
   const vessels = new Set(d.supportsVesselFilter ? splitList(params.get("ships")) : []);
+  // A toggle, so only its presence matters — but accept the honest spellings a
+  // hand-edited link might carry rather than silently ignoring them.
+  const promoRaw = (params.get("promo") ?? "").trim().toLowerCase();
+  const promoOnly = d.supportsPromotionFilter === true
+    && (promoRaw === "1" || promoRaw === "true" || promoRaw === "yes");
 
   // brand falls back to operator (and vice versa for cruise, whose Share button
   // emits operator=). Each entry is resolved fuzzily and unknown values drop.
@@ -350,6 +355,7 @@ export function parseDeepLink(
         d.collection,
       ),
       rawQuery: params.get("q") || undefined,
+      promoOnly,
       // world is both a filter and a view intent: it narrows the results AND
       // is what the old worldBtn toggled.
       world: /^(1|true|yes|y)$/i.test(String(params.get("world") ?? "").trim()) || undefined,
@@ -441,6 +447,7 @@ export function toSearchParams(
     if (state.minDays != null) p.set("minDays", String(state.minDays));
     if (state.maxDays != null) p.set("maxDays", String(state.maxDays));
   }
+  if (d.supportsPromotionFilter && state.promoOnly) p.set("promo", "1");
   if (rawQuery?.q) p.set("q", rawQuery.q);
   // Same asymmetry on the way out: a country facet already wrote this key.
   if (rawQuery?.country && !d.facets?.some((f) => f.param === "country")) {
