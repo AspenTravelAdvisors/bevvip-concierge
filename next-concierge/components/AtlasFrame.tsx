@@ -24,10 +24,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { OfferingType } from "@/lib/types";
 import { ATLASES, collectionPhrase } from "@/lib/atlas-config";
 import AtlasGuideDock from "./AtlasGuideDock";
+import AtlasBackToTop from "./AtlasBackToTop";
 import { askGuide, askGuideHref } from "@/lib/atlas/ask";
 
 export default function AtlasFrame({
@@ -40,6 +41,8 @@ export default function AtlasFrame({
   const atlas = ATLASES[type];
   const router = useRouter();
   const [ask, setAsk] = useState("");
+  // Where "back to top" lands, for anyone who cannot see that it happened.
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   /**
    * Ask without leaving.
@@ -65,7 +68,12 @@ export default function AtlasFrame({
             ← The Guide
           </Link>
           <div className="afw-title">
-            <h1>{atlas.nav}</h1>
+            {/* `tabIndex={-1}`: not in the tab order, but focusable on purpose
+                — AtlasBackToTop moves focus here so a screen reader says where
+                the jump landed. */}
+            <h1 ref={titleRef} tabIndex={-1}>
+              {atlas.nav}
+            </h1>
             <p>
               {collectionPhrase(atlas)} · {atlas.tagline}
             </p>
@@ -103,6 +111,16 @@ export default function AtlasFrame({
         per-card and per-pin asks stop being links out of the product.
       */}
       <AtlasGuideDock />
+      {/*
+        The way back up, on a phone.
+
+        Every atlas under this frame is a long scroll — the map, the filters and
+        the count all live at the top of it, and reaching them again from card
+        forty was a swipe with no end in sight. It sits above the Guide's
+        launcher rather than beside it: the bottom-right corner is spoken for,
+        and the filter bar owns the rest of that strip.
+      */}
+      <AtlasBackToTop landing={titleRef} />
     </div>
   );
 }

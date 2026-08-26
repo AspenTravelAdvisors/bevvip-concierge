@@ -83,7 +83,10 @@ export default async function VillaAtlasPage({ searchParams }) {
   // this). AtlasFrame is what makes arriving here feel like the same product.
   return (
     <AtlasFrame type="villa">
-      <div className={`villa-atlas ${mono.variable}`}>
+      {/* `data-atlas-scroll`: this list scrolls inside itself rather than
+          moving the page, and AtlasBackToTop has to know which of the two it is
+          being asked to send back to the top. */}
+      <div className={`villa-atlas ${mono.variable}`} data-atlas-scroll>
         <VillaAtlas initial={initial} initialParams={params} taxonomy={taxonomy} />
       </div>
     </AtlasFrame>

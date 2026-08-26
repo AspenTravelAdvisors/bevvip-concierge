@@ -1095,7 +1095,10 @@ export default function AtlasCollection({
   }
 
   return (
-    <div className={`atlas-collection atlas-collection--${type}`}>
+    /* `data-atlas-scroll`: hotel browse scrolls inside itself above 680px and
+       joins the page scroll below it (globals.css). AtlasBackToTop reads the
+       computed overflow rather than the class, so one mark covers both. */
+    <div className={`atlas-collection atlas-collection--${type}`} data-atlas-scroll>
       {/* `stuck`: on a phone, the band sticks to the top of the viewport while
           something is SELECTED — so the pin or route the traveller just moved
           to stays on screen with its card beneath it, and stays there while the

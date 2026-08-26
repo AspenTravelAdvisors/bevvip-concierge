@@ -5427,3 +5427,71 @@ button.atlas-cta {
   font-family: var(--sans);
   cursor: pointer;
 }
+
+/* ── The way back up (phones) ───────────────────────────────────────────────
+   Rendered by AtlasBackToTop, mounted in AtlasFrame, so every atlas gets the
+   same one: the collections, the villa list, and any future surface that
+   arrives inside the frame.
+
+   THE BOTTOM-RIGHT CORNER IS TAKEN, so this stacks on top of it rather than
+   next to it. The Guide's launcher is fixed down there on every atlas page,
+   and where a collection also has a filter rail the whole bottom strip is the
+   rail's bar (see `.atlas-mobilebar`). Three offsets below, one per shape that
+   strip can take — each is the launcher's own bottom plus its height plus the
+   gap between them, so the two controls read as a column with even air. */
+.atlas-totop {
+  position: fixed;
+  z-index: 40; /* with the launcher and the bar — under the filter scrim (45) */
+  right: 18px;
+  bottom: calc(18px + 46px + 10px);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 38px;
+  padding: 0 15px;
+  border-radius: 999px;
+  background: rgba(12, 12, 14, 0.94);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* Absent until the top is actually out of reach: it fades in on the scroll
+     that puts it there, and takes no taps while it is invisible. */
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.atlas-totop.on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.atlas-totop:active {
+  border-color: var(--gold-dim);
+  color: var(--gold-light);
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-totop {
+    transition: none;
+  }
+}
+@media (max-width: 640px) {
+  /* The launcher tucks into the corner at this width (right/bottom 12). */
+  .atlas-totop {
+    right: 12px;
+    bottom: calc(12px + 46px + 10px);
+  }
+  /* …and where the filter bar is on the page the launcher is a 43px disc in
+     that row, so the column starts from the bar's own bottom edge — safe area
+     included, or this lands on the home indicator. */
+  .atlas-frame-wrap:has(.atlas-mobilebar) .atlas-totop {
+    bottom: calc(10px + 43px + 10px + env(safe-area-inset-bottom));
+  }
+}
