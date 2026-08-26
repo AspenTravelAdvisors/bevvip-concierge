@@ -1,13 +1,18 @@
 #!/usr/bin/env node
-// Warns when the Virtuoso feed has gone stale.
+// Warns when the Virtuoso data has gone stale.
 //
-// Itineraries expire and properties change hands, so silently serving a feed
-// nobody has refreshed in months is the failure mode worth catching. This warns
-// by default and only fails the build past a hard limit, so a weekend outage of
-// the nightly sync doesn't block a deploy.
+// Freshness is judged on when a feed was last CHECKED, not when it last changed.
+// Those are different facts and conflating them gets it wrong in both
+// directions: a quiet fortnight at the supplier would read as a broken sync, and
+// a sync that has been failing for a week looks fine as long as the file on disk
+// still has yesterday's data in it. scripts/../lib/virtuoso/write-feed.mjs keeps
+// the two apart.
 //
-//   node scripts/verify-virtuoso-freshness.mjs            # warn past 7 days, fail past 30
-//   node scripts/verify-virtuoso-freshness.mjs --strict   # fail past the warn threshold
+// This warns by default and only fails past a hard limit, so one bad night — the
+// API drops into maintenance often enough — does not block a deploy.
+//
+//   node scripts/verify-virtuoso-freshness.mjs
+//   node scripts/verify-virtuoso-freshness.mjs --strict   # fail at the warn line
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,43 +22,66 @@ const STRICT = process.argv.includes('--strict');
 const WARN_DAYS = 7;
 const FAIL_DAYS = 30;
 
-const feeds = [
-  { label: 'hotels', file: 'data/atlas/hotel/virtuoso-hotels.json' },
-  // Offers carry an end date, so a stale promotions feed advertises expired
-  // deals — worse than showing none.
-  { label: 'promotions', file: 'data/atlas/shared/virtuoso-promotions.json' },
+const STATUS = path.join(repoRoot, 'data/atlas/shared/virtuoso-sync-status.json');
+
+const FEEDS = [
+  { label: 'hotels', file: 'data/atlas/hotel/virtuoso-hotels.json', key: 'hotels' },
+  // Offers carry an end date, so a stale promotions feed advertises expired deals.
+  { label: 'promotions', file: 'data/atlas/shared/virtuoso-promotions.json', key: 'promotions' },
+  { label: 'cruises', file: 'data/atlas/shared/virtuoso-cruises.json', key: 'cruises' },
+  { label: 'tours', file: 'data/atlas/shared/virtuoso-tours.json', key: 'tours' },
 ];
 
-let worst = 0;
+const status = fs.existsSync(STATUS) ? JSON.parse(fs.readFileSync(STATUS, 'utf8')) : { feeds: {} };
+const age = iso => (iso ? (Date.now() - Date.parse(iso)) / 86400000 : null);
+const human = d => (d < 1 ? `${Math.round(d * 24)}h` : `${d.toFixed(1)}d`);
+
 let failed = false;
+let worst = 0;
 
-for (const { label, file } of feeds) {
+for (const { label, file, key } of FEEDS) {
   const full = path.join(repoRoot, file);
-  if (!fs.existsSync(full)) { console.error(`  MISSING  ${label} — ${file} has never been synced`); failed = true; continue; }
-  const doc = JSON.parse(fs.readFileSync(full, 'utf8'));
-  const synced = doc._meta?.lastSynced;
-  if (!synced) { console.error(`  MISSING  ${label} — no lastSynced stamp in ${file}`); failed = true; continue; }
-  const days = (Date.now() - Date.parse(synced)) / 86400000;
-  worst = Math.max(worst, days);
-  const age = days < 1 ? `${Math.round(days * 24)}h` : `${days.toFixed(1)}d`;
-  const count = doc._meta?.count ?? doc.hotels?.length ?? doc.promotions?.length ?? '?';
-  if (days > FAIL_DAYS || (STRICT && days > WARN_DAYS)) { console.error(`  STALE    ${label} — ${age} old (${count} records)`); failed = true; }
-  else if (days > WARN_DAYS) console.warn(`  ageing   ${label} — ${age} old (${count} records); run npm run sync:virtuoso`);
-  else console.log(`  ok       ${label} — ${age} old (${count} records)`);
+  if (!fs.existsSync(full)) { console.warn(`  absent   ${label} — never synced (${file})`); continue; }
+
+  const entry = status.feeds?.[key];
+  const checked = age(entry?.lastChecked);
+  const changed = age(entry?.lastChanged);
+  const count = entry?.count ?? '?';
+
+  if (checked == null) {
+    console.warn(`  unknown  ${label} — no check recorded; run npm run sync:virtuoso`);
+    continue;
+  }
+  worst = Math.max(worst, checked);
+  const suffix = changed != null ? `, last changed ${human(changed)} ago` : '';
+
+  if (checked > FAIL_DAYS || (STRICT && checked > WARN_DAYS)) {
+    console.error(`  STALE    ${label} — checked ${human(checked)} ago (${count} records${suffix})`);
+    failed = true;
+  } else if (checked > WARN_DAYS) {
+    console.warn(`  ageing   ${label} — checked ${human(checked)} ago (${count} records${suffix})`);
+  } else {
+    console.log(`  ok       ${label} — checked ${human(checked)} ago (${count} records${suffix})`);
+  }
 }
 
-// The headline count in lib/atlas-config.ts is a hand-kept constant, and the
-// nightly sync moves the real number underneath it. Nobody would notice the
-// page advertising a stale figure, so say so here rather than never.
+// The headline count in lib/atlas-config.ts is a hand-kept constant and the
+// nightly sync moves the real number underneath it. Nobody would notice the page
+// advertising a stale figure, so say so here rather than never.
 {
-  const hotels = JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.json'), 'utf8')).length;
-  const config = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
-  const stated = Number(/nounPlural: "vetted hotels"[\s\S]*?count: (\d+)/.exec(config)?.[1] ?? 0);
-  if (!stated) console.warn('  note     could not read the hotel count from lib/atlas-config.ts');
-  else if (stated !== hotels) {
-    console.warn(`  drift    lib/atlas-config.ts advertises ${stated} hotels; the feed holds ${hotels}. Update the constant.`);
-  } else console.log(`  ok       headline count matches the feed (${hotels})`);
+  const hotelsFile = path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.json');
+  if (fs.existsSync(hotelsFile)) {
+    const hotels = JSON.parse(fs.readFileSync(hotelsFile, 'utf8')).length;
+    const config = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
+    const stated = Number(/nounPlural: "vetted hotels"[\s\S]*?count: (\d+)/.exec(config)?.[1] ?? 0);
+    if (!stated) console.warn('  note     could not read the hotel count from lib/atlas-config.ts');
+    else if (stated !== hotels) console.warn(`  drift    lib/atlas-config.ts advertises ${stated} hotels; the feed holds ${hotels}.`);
+    else console.log(`  ok       headline count matches the feed (${hotels})`);
+  }
 }
 
-if (failed) { console.error(`\nVirtuoso data is stale. Refresh it with: npm run sync:virtuoso`); process.exit(1); }
-console.log(`\nVirtuoso feeds are current (oldest ${worst < 1 ? `${Math.round(worst * 24)}h` : `${worst.toFixed(1)}d`}).`);
+if (failed) {
+  console.error('\nVirtuoso data is stale. Refresh it with: npm run sync:virtuoso');
+  process.exit(1);
+}
+console.log(`\nVirtuoso feeds are current (oldest check ${human(worst)} ago).`);

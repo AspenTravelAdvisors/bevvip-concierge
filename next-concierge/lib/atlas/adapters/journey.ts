@@ -177,8 +177,12 @@ export function adaptJourney(
     // jet has no id field; its atlas assigns guideId = 'jt_' + arrayIndex, and
     // that is the only alias an ids= link can match, because String(undefined)
     // and 'jt_undefined' match nothing. See AtlasFilterDescriptor.idStrategy.
-    const useIndex = d.idStrategy === "index";
-    const id = useIndex ? String(i) : String(trip.id ?? i);
+    // A record with no id falls back to its index even under the "field"
+    // strategy. Without that, `${prefix}${undefined}` becomes the literal
+    // "jt_undefined" on every trip at once — an alias that matches the whole
+    // collection instead of nothing, which is worse than having no alias.
+    const useIndex = d.idStrategy === "index" || trip.id == null;
+    const id = useIndex ? String(i) : String(trip.id);
     const guideId = trip.guideId ?? `${d.idPrefix}${useIndex ? i : trip.id}`;
     const aliases = useIndex
       ? [guideId]

@@ -12,6 +12,35 @@ import crypto from 'node:crypto';
 
 const BASE = process.env.VIRTUOSO_API_BASE || 'https://api.virtuoso.com';
 
+/*
+ * Virtuoso rolls maintenance one instance at a time behind its load balancer.
+ * A request that lands on a draining instance is 301'd to an Azure maintenance
+ * host, and following that redirect ends in "redirect count exceeded" — which
+ * reads like a client bug and is really "try again, you will get a healthy
+ * instance". Redirects are therefore handled manually so this is retryable
+ * rather than fatal, which matters most for the unattended nightly sync.
+ */
+const MAINTENANCE_HOST = /maintenance[^/]*\.azurewebsites\.net/i;
+
+class MaintenanceError extends Error {
+  constructor(path) {
+    super(`Virtuoso ${path} hit an instance in maintenance`);
+    this.retryable = true;
+  }
+}
+
+/** fetch that refuses to chase a maintenance redirect. */
+async function fetchNoMaintenance(url, init, path) {
+  const res = await fetch(url, { ...init, redirect: 'manual' });
+  if (res.status >= 300 && res.status < 400) {
+    const to = res.headers.get('location') ?? '';
+    if (MAINTENANCE_HOST.test(to)) throw new MaintenanceError(path);
+    // Any other redirect is followed once, normally.
+    return fetch(to || url, init);
+  }
+  return res;
+}
+
 function credentials() {
   const user = process.env.VIRTUOSO_API_USER;
   const key = process.env.VIRTUOSO_API_KEY;
@@ -29,7 +58,7 @@ function authToken({ key, aesKey, aesIv }) {
   return Buffer.concat([cipher.update(plain, 'utf8'), cipher.final()]).toString('base64');
 }
 
-export function createClient({ retries = 3, log = () => {} } = {}) {
+export function createClient({ retries = 10, log = () => {} } = {}) {
   const creds = credentials();
   let bearer = null;
   let issuedAt = 0;
@@ -39,7 +68,7 @@ export function createClient({ retries = 3, log = () => {} } = {}) {
     // `user`, not `apiUser`. The wrong name returns a bodyless 500 that looks
     // exactly like an encryption failure.
     const qs = new URLSearchParams({ authToken: authToken(creds), user: creds.user });
-    const res = await fetch(`${BASE}/v2/login?${qs}`);
+    const res = await fetchNoMaintenance(`${BASE}/v2/login?${qs}`, {}, '/v2/login');
     const body = await res.text();
     if (!res.ok) throw new Error(`Virtuoso login failed: HTTP ${res.status}${body ? ` — ${body.slice(0, 200)}` : ' (bodyless — check the `user` param and the AES key/IV)'}`);
     const json = JSON.parse(body);
@@ -56,13 +85,13 @@ export function createClient({ retries = 3, log = () => {} } = {}) {
   async function request(path, params) {
     if (stale()) await login();
     const qs = new URLSearchParams({ ...params, token: bearer });
-    const res = await fetch(`${BASE}${path}?${qs}`);
+    const res = await fetchNoMaintenance(`${BASE}${path}?${qs}`, {}, path);
     const body = await res.text();
 
     if (res.status === 401) {            // token consumed or expired — re-login once
       await login();
       const retryQs = new URLSearchParams({ ...params, token: bearer });
-      const retryRes = await fetch(`${BASE}${path}?${retryQs}`);
+      const retryRes = await fetchNoMaintenance(`${BASE}${path}?${retryQs}`, {}, path);
       const retryBody = await retryRes.text();
       if (!retryRes.ok) throw new Error(`Virtuoso ${path} failed after re-login: HTTP ${retryRes.status} ${retryBody.slice(0, 200)}`);
       return consume(retryBody, path);
@@ -88,7 +117,19 @@ export function createClient({ retries = 3, log = () => {} } = {}) {
         catch (err) {
           lastError = err;
           if (attempt < retries) {
-            const wait = 500 * 2 ** (attempt - 1);
+            /*
+             * Retry a maintenance redirect almost immediately.
+             *
+             * Virtuoso drains one instance at a time behind a load balancer, so
+             * a redirect means "you hit the wrong one", not "the API is down" —
+             * the very next request usually lands somewhere healthy. Backing off
+             * five seconds and upward turned a 1.7-second call into a
+             * 25-second one and was the single biggest drag on the crawl.
+             * Still doubles, so a genuine full outage backs off properly.
+             */
+            const wait = err instanceof MaintenanceError
+              ? Math.min(250 * 2 ** (attempt - 1), 8000)
+              : 500 * 2 ** (attempt - 1);
             log(`virtuoso: ${path} attempt ${attempt} failed (${err.message}); retrying in ${wait}ms`);
             await new Promise(r => setTimeout(r, wait));
             bearer = null;                // force a fresh token on retry

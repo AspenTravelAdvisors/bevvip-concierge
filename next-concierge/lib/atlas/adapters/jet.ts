@@ -10,7 +10,8 @@
  *   - 39 trips carry no usable `g` and take their regions from the route.
  *   - 65 trips resolve their route by SLUGGED TITLE, not `t.route`; 33 have no
  *     route at all.
- *   - No `id` field whatsoever — see idStrategy below.
+ *   - Ids come from the Virtuoso tours API since the migration; the scraped
+ *     feed had none, which is why links used to be positional.
  *
  * The work order notes jet's itinerary data has no aircraft field, so the
  * "vessel" is left null and the programme is identified by brand.
@@ -40,7 +41,10 @@ export const JET_DESCRIPTOR: AtlasFilterDescriptor = {
    * already in the wild — but this is a data problem worth fixing at the
    * source, and it should be flagged before jet's links are advertised further.
    */
-  idStrategy: "index",
+  // Was "index": the scraped feed had no id field, so links were positional.
+  // The Virtuoso tours API gives every journey a stable product id, which the
+  // merge now writes through — so jet links survive a rebuild like rail's do.
+  idStrategy: "field",
 };
 
 export type RawJetAtlas = RawJourneyAtlas;

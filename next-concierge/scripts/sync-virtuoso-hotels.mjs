@@ -15,6 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
+import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
 
 loadEnv();
@@ -257,14 +258,13 @@ async function main() {
   const out = {
     _meta: {
       source: 'Virtuoso Partner API /v2/hotels + /v2/hotel',
-      lastSynced: new Date().toISOString(),
       count: feed.length,
       withDetail,
       note: 'Supplier-provided truth. Ranking and curation overlays live alongside this file, keyed by vid.',
     },
     hotels: feed.sort((a, b) => a.name.localeCompare(b.name)),
   };
-  fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 1));
+  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'hotels' });
   console.log(`\nwrote ${path.relative(repoRoot, OUT_FILE)} — ${feed.length} properties, ${withDetail} with detail`);
   console.log(`  photos: ${feed.filter(h => h.image).length} · perks: ${feed.filter(h => h.perks.length).length} · prose: ${feed.filter(h => h.summary).length}`);
 }

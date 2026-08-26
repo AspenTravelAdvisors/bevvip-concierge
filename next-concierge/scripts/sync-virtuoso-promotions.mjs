@@ -15,6 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
+import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
 
 loadEnv();
@@ -143,14 +144,13 @@ async function main() {
   const out = {
     _meta: {
       source: 'Virtuoso Partner API /v2/promotions + /v2/promotion',
-      lastSynced: new Date().toISOString(),
       count: feed.length,
       byType,
       note: 'Live supplier offers. Linked to atlas records by company name in scripts/merge-virtuoso-hotels.mjs.',
     },
     promotions: feed.sort((a, b) => (a.endDate ?? '').localeCompare(b.endDate ?? '')),
   };
-  fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 1));
+  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'promotions' });
   console.log(`\nwrote ${path.relative(repoRoot, OUT_FILE)} — ${feed.length} promotions`);
   console.log(`  by type: ${Object.entries(byType).map(([k, n]) => `${k} ${n}`).join(' · ')}`);
   console.log(`  with description: ${feed.filter(p => p.description).length} · exclusive: ${feed.filter(p => p.exclusive).length}`);

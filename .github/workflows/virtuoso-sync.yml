@@ -23,7 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write         # required to push the refreshed data back
-    timeout-minutes: 150      # two detail crawls, ~2,000 sequential calls each
+    # Four crawls now — hotels, promotions, sailings and tours — and Virtuoso
+    # drops instances into maintenance without warning, which slows everything
+    # to a crawl until it passes. Generous rather than optimistic.
+    timeout-minutes: 300
 
     steps:
       - uses: actions/checkout@v4
