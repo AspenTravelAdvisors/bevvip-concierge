@@ -1,29 +1,5 @@
 [
  {
-  "id": "h_00001",
-  "name": "02 Beach Club & Spa",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Spa / Wellness Resort",
-  "country": "Greece",
-  "city": "Rhodes",
-  "address": "Perivoli",
-  "lat": 36.434053,
-  "lng": 28.217638,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean",
-  "vipUpgrades": [],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "spa",
-   "wellness"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00002",
   "vid": "16161169",
   "name": "1 Hotel Brooklyn Bridge",
@@ -2355,29 +2331,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00028",
-  "name": "Airelles",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "France",
-  "city": "Paris",
-  "address": "5 Rue François 1er",
-  "lat": 48.865561,
-  "lng": 2.308744,
-  "region": null,
-  "adminRegion": "Ile-de-France",
-  "vipUpgrades": [],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00393",
   "vid": "12648194",
   "name": "Airelles Château de la Messardière, Saint‑Tropez",
@@ -2721,7 +2674,7 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_v16918921",
+  "id": "h_00035",
   "vid": "16918921",
   "name": "Airelles Palladio, Venice",
   "brand": null,
@@ -2730,11 +2683,11 @@
   "category": "City Hotel",
   "country": "Italy",
   "city": "Venezia",
-  "address": null,
+  "address": "Fondamenta Zitelle 33",
   "postalCode": "30133",
   "lat": 45.4269,
   "lng": 12.3394,
-  "region": null,
+  "region": "mediterranean",
   "adminRegion": "Veneto",
   "countryCode": "ITA",
   "vipUpgrades": [
@@ -2831,7 +2784,7 @@
    "urban",
    "wellness"
   ],
-  "source": "virtuoso-new"
+  "source": "virtuoso"
  },
  {
   "id": "h_01482",
@@ -2941,38 +2894,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00035",
-  "name": "Airelles Venezia - A Virtuoso Preview Property",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Italy",
-  "city": "Venezia",
-  "address": "Fondamenta Zitelle 33",
-  "lat": 45.426877,
-  "lng": 12.339382,
-  "region": "mediterranean",
-  "adminRegion": "Veneto",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 2+ nights will also receive a complimentary one-way trip by water taxi from Marco Polo Airport",
-   "Bookings in our Suite categories will also receive: A Bespoke amenity according to suite and guest's profile",
-   "Bookings in our Suite categories will also receive: A complimentary round-trip by water taxi to/from Marco Polo Airport",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00036",
@@ -3320,35 +3241,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00038",
-  "name": "Al Maha",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "United Arab Emirates",
-  "city": "Dubai",
-  "address": "Al Maha Desert Resort",
-  "lat": 24.789567,
-  "lng": 55.607626,
-  "region": null,
-  "adminRegion": "Dubai Emirate",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00039",
@@ -8649,36 +8541,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00089",
-  "name": "Ambergris Cay",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Turks and Caicos",
-  "city": "Turks and Caicos",
-  "address": "Ambergris Cay Private Island",
-  "lat": 21.297668,
-  "lng": -71.634703,
-  "region": null,
-  "adminRegion": "South Caicos",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Complimentary Sunset Cruise for up to two guests per bedroom, once during stay",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00090",
   "vid": "18075165",
   "name": "Ambergris Cay, Turks and Caicos",
@@ -8908,36 +8770,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00093",
-  "name": "Amirandes",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Crete",
-  "address": "Gouves",
-  "lat": 35.334285,
-  "lng": 25.323788,
-  "region": "mediterranean",
-  "adminRegion": "Crete Region",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 7+ nights in Villa Accommodations will also receive a complimentary 30 minutes Relax massage per adult per stay",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00094",
@@ -13027,65 +12859,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00129",
-  "name": "Andaz Peninsula Papagayo",
-  "brand": "Andaz",
-  "program": "Hyatt Privé",
-  "category": "Beach Resort",
-  "country": "Costa Rica",
-  "city": "Guanacaste",
-  "address": "Peninsula Papagayo",
-  "lat": 10.641584,
-  "lng": -85.658913,
-  "region": null,
-  "adminRegion": "Guanacaste Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
-  "id": "h_00130",
-  "name": "Andaz Peninsula Papagayo Resort",
-  "brand": "Andaz",
-  "program": "The Peninsula Pen Club",
-  "category": "Resort / Leisure",
-  "country": "Costa Rica",
-  "city": "Guanacaste",
-  "address": "Peninsula Papagayo",
-  "lat": 10.641584,
-  "lng": -85.658913,
-  "region": null,
-  "adminRegion": "Guanacaste Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00131",
   "vid": "14092422",
   "name": "Andaz Peninsula Papagayo Resort, Costa Rica, by Hyatt",
@@ -13888,36 +13661,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00015",
-  "name": "ANI Private Resorts",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Resort / Leisure",
-  "country": "Dominican Republic",
-  "city": "Samaná",
-  "address": "Las Terrenas",
-  "lat": 19.299298,
-  "lng": -69.555916,
-  "region": null,
-  "adminRegion": "Samaná Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade at time of booking, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant (all meals inclusive in rates)",
-   "$1500 USD equivalent Resort or Hotel credit to be utilized during stay (applicable towards additional excursions/entertainment; not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 10+ nights will receive a $2500 Resort or Hotel credit (same terms apply)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00016",
@@ -15194,36 +14937,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00150",
-  "name": "Armendaris",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "New Mexico",
-  "address": "Engle",
-  "lat": 33.176409,
-  "lng": -107.030874,
-  "region": null,
-  "adminRegion": "New Mexico State",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade not applicable for this property",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit per occupied room, to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00151",
@@ -22804,35 +22517,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00174",
-  "name": "BLESS Hotel Ibiza",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Spain",
-  "city": "Ibiza",
-  "address": "Playa, Av. Cala Nova",
-  "lat": 39.006501,
-  "lng": 1.580602,
-  "region": "mediterranean",
-  "adminRegion": "Isles Baleares",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00175",
   "vid": "17905182",
   "name": "BLESS Hotel Madrid",
@@ -22954,7 +22638,7 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_v16703712",
+  "id": "h_00174",
   "vid": "16703712",
   "name": "Bless Ibiza Cala Nova",
   "brand": null,
@@ -22963,11 +22647,11 @@
   "category": "Beach Resort",
   "country": "Spain",
   "city": "Ibiza",
-  "address": null,
+  "address": "Playa, Av. Cala Nova",
   "postalCode": "07849",
   "lat": 39.0036,
   "lng": 1.5781,
-  "region": null,
+  "region": "mediterranean",
   "adminRegion": "Isles Baleares",
   "countryCode": "ESP",
   "vipUpgrades": [
@@ -23059,7 +22743,7 @@
    "wellness",
    "zen"
   ],
-  "source": "virtuoso-new"
+  "source": "virtuoso"
  },
  {
   "id": "h_00227",
@@ -25322,37 +25006,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00251",
-  "name": "Buahan",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Indonesia",
-  "city": "Bali",
-  "address": "Payangan, Gianyar",
-  "lat": -8.398932,
-  "lng": 115.233377,
-  "region": null,
-  "adminRegion": "Bali Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 3+ nights will receive an additional $100 credit (for a total of $200 during stay)",
-   "Stays of 7+ nights will receive an additional $200 credit (for a total of $300 during stay)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00252",
   "vid": "16268185",
   "name": "Buahan, A Banyan Tree Escape",
@@ -27420,35 +27073,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00284",
-  "name": "Cala di Volpe",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Italy",
-  "city": "Porto Cervo",
-  "address": "Costa Smeralda",
-  "lat": 41.090263,
-  "lng": 9.541051,
-  "region": "mediterranean",
-  "adminRegion": "Sardinia",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$200 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00285",
   "vid": "6163985",
   "name": "Cala di Volpe, a Luxury Collection Hotel, Costa Smeralda",
@@ -28108,36 +27732,6 @@
   "source": "virtuoso-new"
  },
  {
-  "id": "h_00290",
-  "name": "Cameron House",
-  "brand": null,
-  "program": "Cadence Individual Partner",
-  "category": "Resort / Leisure",
-  "country": "United Kingdom",
-  "city": "Alexandria",
-  "address": "Loch Lomond",
-  "lat": 56.013215,
-  "lng": -4.607749,
-  "region": null,
-  "adminRegion": "Scotland",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "Cruise on Loch Lomond on Celtic Warrior, once during stay",
-   "Nip of Whisky from the Virtuoso Whisky Locker",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00291",
   "vid": "11654772",
   "name": "Cameron House on Loch Lomond",
@@ -28667,30 +28261,6 @@
    "Early Check-In / Late Check-Out, subject to availability",
    "Complimentary Wi-Fi"
   ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
-  "id": "h_00299",
-  "name": "Canaves Oia, Santorini",
-  "brand": null,
-  "program": "Canaves Oia Luxury Resorts",
-  "category": "Beach Resort",
-  "country": "Greece",
-  "city": "Santorini",
-  "address": "Oia",
-  "lat": 36.46182,
-  "lng": 25.37531,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean",
-  "vipUpgrades": [],
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": null,
@@ -29450,36 +29020,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00309",
-  "name": "Cap Juluca",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Anguilla",
-  "city": "Anguilla",
-  "address": "Maundays Bay",
-  "lat": 18.161964,
-  "lng": -63.145041,
-  "region": null,
-  "adminRegion": "Anguilla Territory",
-  "vipUpgrades": [
-   "For 2024:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00310",
@@ -30788,37 +30328,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00320",
-  "name": "Capella Kyoto - A Virtuoso Preview Property",
-  "brand": "Capella",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Japan",
-  "city": "Kyoto",
-  "address": "146 Komatsucho",
-  "lat": 34.99935,
-  "lng": 135.77206,
-  "region": "japan",
-  "adminRegion": "Kyoto Prefecture",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Junior Suite or higher cateogies will receive an additional $100 Resort or Hotel credit (for a total of $200 during stay)",
-   "Stays of 7+ nights will receive an additional $200 Resort or Hotel credit (for a total of $300 during stay, $400 for Junior Suite and higher bookings)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00321",
   "vid": "15782470",
   "name": "Capella Shanghai Jian Ye Li",
@@ -31266,36 +30775,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00325",
-  "name": "Capella Taipei - A Virtuoso Preview Property",
-  "brand": "Capella",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Taiwan",
-  "city": "Taipei",
-  "address": "No. 88, Songren Rd",
-  "lat": 25.03525,
-  "lng": 121.568072,
-  "region": null,
-  "adminRegion": "Taipei City",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served at Plume (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Suites will also receive complimentary arrival private airport transfers",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_v16186412",
@@ -32708,37 +32187,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00340",
-  "name": "Carton House",
-  "brand": null,
-  "program": "Fairmont",
-  "category": "City Hotel",
-  "country": "Ireland",
-  "city": "County Kildare",
-  "address": "Maynooth",
-  "lat": 53.39135,
-  "lng": -6.565984,
-  "region": null,
-  "adminRegion": "Leinster",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "In-Room Welcome Amenity of plated seasonal food & beverage",
-   "Bookings of 4+ nights in Manor House Suites will receive an additional $100 Hotel credit (for a total of $200 during stay)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00341",
   "vid": "16493950",
   "name": "Carton House, A Fairmont Managed Hotel",
@@ -32858,36 +32306,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00342",
-  "name": "Caruso",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Italy",
-  "city": "Ravello",
-  "address": "Piazza San Giovanni del Toro 2",
-  "lat": 40.651431,
-  "lng": 14.612981,
-  "region": "mediterranean",
-  "adminRegion": "Campania",
-  "vipUpgrades": [
-   "For 2024:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD Equivalent Food & Beverage credit to be utilized during stay (not combinable, no cash value if not redeemed in full, to be utilized at the hotel restaurant for Lunch or Dinner)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00343",
@@ -35647,36 +35065,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00368",
-  "name": "Castello di Casole",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Italy",
-  "city": "Siena",
-  "address": "Loc. Casole d'Elsa",
-  "lat": 43.324796,
-  "lng": 11.084069,
-  "region": "mediterranean",
-  "adminRegion": "Tuscany",
-  "vipUpgrades": [
-   "For 2024:",
-   "Upgrade on arrival, subject to availability (upgrade in hotel suites category only)",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00369",
   "vid": "6842249",
   "name": "Castello di Casole, A Belmond Hotel, Tuscany",
@@ -35788,35 +35176,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00370",
-  "name": "Castello di Velona Resort",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Resort / Leisure",
-  "country": "Italy",
-  "city": "Castelnuovo dell'Abate",
-  "address": "Loc. La Velona",
-  "lat": 42.987342,
-  "lng": 11.533876,
-  "region": "mediterranean",
-  "adminRegion": "Tuscany",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining",
-   "$100 USD equivalent credit applicable towards Food & Beverage, SPA treatment and Cooking Classes, to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00371",
@@ -41392,40 +40751,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00273",
-  "name": "COMO Parrot Cay",
-  "brand": "COMO",
-  "program": "Virtuoso",
-  "category": "Beach Resort",
-  "country": "Turks and Caicos",
-  "city": "Providenciales",
-  "address": "Parrot Cay Island",
-  "lat": 21.936193,
-  "lng": -72.053601,
-  "region": null,
-  "adminRegion": "Providenciales Island",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Beach House and higher categories will receive an additional $100 Resort or Hotel credit (for a total of $200 during stay)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "island",
-   "private-island",
-   "wellness"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00274",
   "vid": "6164164",
   "name": "COMO Parrot Cay, Turks and Caicos",
@@ -42828,35 +42153,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00437",
-  "name": "Conrad Hamburg - A Virtuoso Preview Property",
-  "brand": "Conrad",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Germany",
-  "city": "Hamburg",
-  "address": "Bugenhagenstrasse 8",
-  "lat": 53.551041,
-  "lng": 10.003032,
-  "region": null,
-  "adminRegion": "Hamburg State",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00438",
@@ -45662,36 +44958,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00469",
-  "name": "Crockfords Las Vegas",
-  "brand": null,
-  "program": "Hilton for Luxury",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Las Vegas",
-  "address": "3708 Las Vegas Blvd S",
-  "lat": 36.109946,
-  "lng": -115.175391,
-  "region": null,
-  "adminRegion": "Nevada",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in Club 66 (7 – 10am)",
-   "Daily Social Hour in Club 66 (3 - 5pm, for guests aged 21+)",
-   "$100 USD equivalent Food & Beverage credit utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check- Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00470",
   "vid": "16393328",
   "name": "Crockfords Las Vegas, LXR Hotels & Resorts at Resorts World",
@@ -47706,36 +46972,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00490",
-  "name": "Delano Dubai - A Virtuoso Preview Property",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "United Arab Emirates",
-  "city": "Dubai",
-  "address": "City Walk, Al Safa St",
-  "lat": 25.20749,
-  "lng": 55.262525,
-  "region": null,
-  "adminRegion": "Dubai Emirate",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value)",
-   "Early check-in / Late check-out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00491",
   "vid": "18099798",
   "name": "Delano Miami Beach",
@@ -47852,66 +47088,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00492",
-  "name": "Deos Mykonos",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Mykonos",
-  "address": "Agios Vasileios, Mykonos Town",
-  "lat": 37.453489,
-  "lng": 25.331901,
-  "region": "mediterranean",
-  "adminRegion": "Notio Aigaio",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Complimentary roundtrip private airport transfers",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
-  "id": "h_00493",
-  "name": "Deos Mykonos - A Virtuoso Preview Property",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Mykonos",
-  "address": "Agios Stefanos",
-  "lat": 37.468919,
-  "lng": 25.319629,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Complimentary roundtrip private airport transfers",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01562",
@@ -49074,36 +48250,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00506",
-  "name": "Domes Zeen",
-  "brand": null,
-  "program": "Marriott STARS",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Crete",
-  "address": "Chersonissos",
-  "lat": 35.319244,
-  "lng": 25.391707,
-  "region": "mediterranean",
-  "adminRegion": "Crete Region",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 5+ nights will receive an additional $100 credit (for a total of $200 during stay)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00507",
   "vid": "16318863",
   "name": "Domes Zeen, A Luxury Collection Resort, Chania",
@@ -49947,35 +49093,6 @@
    "spa"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00514",
-  "name": "Dwarika's Resort",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Resort / Leisure",
-  "country": "Nepal",
-  "city": "Dhulikhel",
-  "address": "Dwarika's Village",
-  "lat": 27.615041,
-  "lng": 85.571003,
-  "region": null,
-  "adminRegion": "Bagmati",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "Complimentary Pada Shanti Treatment for up to two guests per bedroom",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00515",
@@ -53852,38 +52969,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00557",
-  "name": "Etéreo",
-  "brand": null,
-  "program": "Auberge Resorts Collection",
-  "category": "City Hotel",
-  "country": "Mexico",
-  "city": "Holbox",
-  "address": "Carretera Costera Sur",
-  "lat": 21.530842,
-  "lng": -87.286699,
-  "region": null,
-  "adminRegion": "Quintana Roo",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $45 per person, for up to two guests per bedroom, served in the restaurant (credit is non-cumulative)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our 2 and 3 Bedroom Suites will receive an additional $150 Resort or Hotel credit (for a total of $250 during stay)",
-   "Stays of 7+ nights will receive an additional $200 Resort or Hotel credit (for a total of $300 during stay, $450 for 2 or 3 bedroom suites)",
-   "Early check-in / Late check-out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00558",
   "vid": "16278530",
   "name": "Etéreo, Auberge Collection",
@@ -54015,39 +53100,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00556",
-  "name": "Etereo, Quintana Roo",
-  "brand": null,
-  "program": "Auberge Resorts Collection",
-  "category": "Beach Resort",
-  "country": "Mexico",
-  "city": "Holbox",
-  "address": "Carretera Costera Sur",
-  "lat": 20.385157,
-  "lng": -87.018562,
-  "region": null,
-  "adminRegion": "Quintana Roo",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $45 per person, for up to two guests per bedroom, served in the restaurant (credit is non-cumulative)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our 2 and 3 Bedroom Suites will receive an additional $150 Resort or Hotel credit (for a total of $250 during stay)",
-   "Stays of 7+ nights will receive an additional $200 Resort or Hotel credit (for a total of $300 during stay, $450 for 2 or 3 bedroom suites)",
-   "Early check-in / Late check-out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00520",
@@ -55531,35 +54583,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00575",
-  "name": "Faena New York - A Virtuoso Preview Property",
-  "brand": "Faena",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "New York",
-  "address": "50 W 18th St",
-  "lat": 40.739453,
-  "lng": -73.994578,
-  "region": null,
-  "adminRegion": "New York State",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $50 per person, for up to two guests per bedroom, served in the restaurant or via room service (credit is non-cumulative)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00576",
@@ -59932,36 +58955,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00614",
-  "name": "Fairmont Tokyo - A Virtuoso Preview Property",
-  "brand": "Fairmont",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Japan",
-  "city": "Tokyo",
-  "address": "1-1 Yurakucho",
-  "lat": 35.672986,
-  "lng": 139.759057,
-  "region": "japan",
-  "adminRegion": "Tokyo Prefecture",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage and Spa treatment credit to be utilized during stay (not applicable towards SPA Retail products, not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in, subject to availability",
-   "Late check-out of 2:00pm, confirmed at time of booking"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00615",
   "vid": "15394714",
   "name": "Fairmont Tremblant",
@@ -60876,35 +59869,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_00623",
-  "name": "Finca Cortesin Hotel",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Spain",
-  "city": "Casares",
-  "address": "Ctra. Casares km 2",
-  "lat": 36.397025,
-  "lng": -5.223518,
-  "region": "mediterranean",
-  "adminRegion": "Andalusia",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full Breakfast for up to two guests per bedroom, served in restaurant (special items will be charged extra according to al la carte breakfast menu)",
-   "A complimentary 50 minute massage for up to two people, per room, once during stay",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_00624",
   "vid": "6616359",
   "name": "Finca Cortesin Hotel, Golf, Spa & Villas",
@@ -61633,39 +60597,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00631",
-  "name": "Forte Village Hotel Castello",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Villas / Residences",
-  "country": "Italy",
-  "city": "Santa Margherita di Pula",
-  "address": "SS 195 km 39.600",
-  "lat": 38.932451,
-  "lng": 8.931518,
-  "region": "mediterranean",
-  "adminRegion": "Sardinia",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent in local currency Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "One Complimentary SPA access with use of Thalasso pools (value of €120 per person per day)",
-   "20% discount on spa treatments",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "villa",
-   "residences"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00632",
@@ -69418,35 +68349,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_00710",
-  "name": "Giza Palace - A Virtuoso Preview Property",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Egypt",
-  "city": "Cairo Governorate",
-  "address": "Giza",
-  "lat": 29.953756,
-  "lng": 31.537,
-  "region": null,
-  "adminRegion": "Giza Governorate",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade guaranteed at time of booking",
-   "Daily buffet breakfast for up to two guests per bedroom, served in Hotel Restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_00711",
@@ -96897,30 +95799,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01005",
-  "name": "Isia Bella Beach Resort",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Beach Resort",
-  "country": "Greece",
-  "city": "Rhodes",
-  "address": "Ixia",
-  "lat": 36.418853,
-  "lng": 28.18186,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean",
-  "vipUpgrades": [],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01006",
   "vid": "16325961",
   "name": "Isla Bella Beach Resort",
@@ -97961,36 +96839,6 @@
  },
  {
   "id": "h_01020",
-  "name": "Jabulani",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "South Africa",
-  "city": "Hoedspruit",
-  "address": "Greater Kruger Park",
-  "lat": -24.34883,
-  "lng": 30.958483,
-  "region": null,
-  "adminRegion": "Mpumalanga",
-  "vipUpgrades": [
-   "Upgrade upon arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "Complimentary roundtrip private airport transfers (must have minimum value of $100USD equivalent)",
-   "Complimentary lunch or dinner for two people/room, once during stay, excluding alcohol, taxes and gratuities",
-   "A complimentary 50 minute massage for up to two people, per room, once during stay",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
-  "id": "h_v6164210",
   "vid": "6164210",
   "name": "Jabulani Safari Relais & Châteaux",
   "brand": null,
@@ -97999,7 +96847,7 @@
   "category": "Lodge / Safari",
   "country": "South Africa",
   "city": "Hoedspruit",
-  "address": null,
+  "address": "Greater Kruger Park",
   "postalCode": "1380",
   "lat": -24.3183,
   "lng": 30.9697,
@@ -98082,7 +96930,7 @@
    "spa",
    "wellness"
   ],
-  "source": "virtuoso-new"
+  "source": "virtuoso"
  },
  {
   "id": "h_01021",
@@ -99241,36 +98089,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01029",
-  "name": "Jumby Bay Island",
-  "brand": null,
-  "program": "Oetker Collection",
-  "category": "Island Resort",
-  "country": "Antigua and Barbuda",
-  "city": "Antigua",
-  "address": null,
-  "lat": 17.155135,
-  "lng": -61.754647,
-  "region": null,
-  "adminRegion": "St. John Parish",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (all food and beverage are already included in Hotel rates, not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "island",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01030",
@@ -107519,36 +106337,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01113",
-  "name": "La Residencia",
-  "brand": null,
-  "program": "Belmond Bellini Club",
-  "category": "City Hotel",
-  "country": "Spain",
-  "city": "Deià",
-  "address": "Son Canals",
-  "lat": 39.74931,
-  "lng": 2.649128,
-  "region": "mediterranean",
-  "adminRegion": "Mallorca",
-  "vipUpgrades": [
-   "For 2024:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage credit utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01114",
   "vid": "6163640",
   "name": "La Residencia, A Belmond Hotel, Mallorca",
@@ -107664,31 +106452,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01116",
-  "name": "La Samanna",
-  "brand": "Aman",
-  "program": "Belmond Bellini Club",
-  "category": "City Hotel",
-  "country": "Saint Martin",
-  "city": "St. Martin",
-  "address": "Baie Longue",
-  "lat": 18.055715,
-  "lng": -63.138843,
-  "region": null,
-  "adminRegion": "Saint-Martin",
-  "vipUpgrades": [
-   "For 2024:"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01117",
@@ -110468,36 +109231,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01149",
-  "name": "Le Couvent des Minimes Hotel & Spa L'occitane",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Spa / Wellness Resort",
-  "country": "France",
-  "city": "Mane",
-  "address": "Chemin des Jeux de Maï",
-  "lat": 43.939609,
-  "lng": 5.771491,
-  "region": "mediterranean",
-  "adminRegion": "Provence",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "spa",
-   "wellness"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01150",
@@ -117184,35 +115917,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01218",
-  "name": "Mandapa",
-  "brand": null,
-  "program": "Ritz-Carlton Reserve",
-  "category": "City Hotel",
-  "country": "Indonesia",
-  "city": "Ubud",
-  "address": "Banjar Kedewatan",
-  "lat": -8.485696,
-  "lng": 115.244091,
-  "region": null,
-  "adminRegion": "Bali",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining",
-   "$100 USD equivalent in local currency Resort or Hotel credit to be utilized during stay (Not valid on Car transfers, not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01219",
   "vid": "15243327",
   "name": "Mandapa, a Ritz-Carlton Reserve",
@@ -117344,65 +116048,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01220",
-  "name": "Mandarin Oriental",
-  "brand": "Mandarin Oriental",
-  "program": "Mandarin Oriental Fan Club",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "New York City",
-  "address": "888 7th Ave",
-  "lat": 40.765486,
-  "lng": -73.980853,
-  "region": null,
-  "adminRegion": "New York",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $45 per person, for up to two guests per bedroom, served in the restaurant and via in-room dining (credit is non-cumulative)",
-   "$100 USD Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
-  "id": "h_01241",
-  "name": "Mandarin Oriental Bosphorus",
-  "brand": "Mandarin Oriental",
-  "program": "Mandarin Oriental Fan Club",
-  "category": "City Hotel",
-  "country": "Turkey",
-  "city": "Istanbul",
-  "address": "Salhane Sok. 1",
-  "lat": 41.022427,
-  "lng": 28.918692,
-  "region": "mediterranean",
-  "adminRegion": "Istanbul Province",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01242",
@@ -122171,35 +120816,6 @@
    "urban"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01288",
-  "name": "Maroma",
-  "brand": null,
-  "program": "Belmond Bellini Club",
-  "category": "City Hotel",
-  "country": "Mexico",
-  "city": "Riviera Maya",
-  "address": "Carretera Federal 307",
-  "lat": 20.746018,
-  "lng": -86.980754,
-  "region": null,
-  "adminRegion": "Quintana Roo",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01289",
@@ -129753,7 +128369,7 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_v16773256",
+  "id": "h_00492",
   "vid": "16773256",
   "name": "Myconian Deos - The Set",
   "brand": null,
@@ -129762,11 +128378,11 @@
   "category": "City Hotel",
   "country": "Greece",
   "city": "Mykonos",
-  "address": null,
+  "address": "Agios Vasileios, Mykonos Town",
   "postalCode": "84600",
   "lat": 37.4511,
   "lng": 25.3311,
-  "region": null,
+  "region": "mediterranean",
   "adminRegion": "Notio Aigaio",
   "countryCode": "GRC",
   "vipUpgrades": [
@@ -129862,7 +128478,7 @@
    "urban",
    "wellness"
   ],
-  "source": "virtuoso-new"
+  "source": "virtuoso"
  },
  {
   "id": "h_01353",
@@ -130070,42 +128686,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01355",
-  "name": "Mykonos Blu",
-  "brand": null,
-  "program": "Grecotel",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Mykonos",
-  "address": "Psarou Beach",
-  "lat": 37.416498,
-  "lng": 25.339089,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "Complimentary roundtrip private airport transfers (must have minimum value of $100USD equivalent)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 4+ nights will also receive a complimentary 30 minutes Relaxing massage per adult, once during stay",
-   "Bookings in our Villas and Suites will also receive: Chef's choice Greek family style dinner in Aegean Poets Restaurant once during stay, excluding alcoholic beverages",
-   "Bookings in our Villas and Suites will also receive: Complimentary selected gift from Agreco Farm with Bio products on departure",
-   "Bookings in our Villas and Suites will also receive: “Floating Breakfast” served via Room Service in your private Villa’s pool, once during stay",
-   "Stays of 7+ nights in Villa Accommodations will also receive (in addition to all above amenities): \"Feel like a local\" experience: 6 hour private tour on the island with a car and driver, and free lunch, excluding alcoholic beverages.",
-   "Stays of 7+ nights in Villa Accommodations will also receive (in addition to all above amenities): Complimentary car rental for two days during stay (gas or any damages is responsibility of the guests)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01356",
@@ -132167,37 +130747,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01361",
-  "name": "NEW Hotel",
-  "brand": null,
-  "program": "Design Hotels",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Athens",
-  "address": "16 Filellinon St",
-  "lat": 37.973362,
-  "lng": 23.733514,
-  "region": "mediterranean",
-  "adminRegion": "Attica",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Welcome signature in-room amenities",
-   "15% discount on spa treatments per person",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01379",
@@ -134580,35 +133129,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01393",
-  "name": "Nobu Hotel Toronto - A Virtuoso Preview Property",
-  "brand": "Nobu",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Canada",
-  "city": "Toronto",
-  "address": "33 Mercer St",
-  "lat": 43.645501,
-  "lng": -79.390945,
-  "region": null,
-  "adminRegion": "Ontario",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01394",
@@ -137362,36 +135882,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01419",
-  "name": "One&Only Kéa Island - A Virtuoso Preview Property",
-  "brand": "One&Only",
-  "program": "Virtuoso",
-  "category": "Island Resort",
-  "country": "Greece",
-  "city": "South Aegean",
-  "address": "Kea Island",
-  "lat": 37.612867,
-  "lng": 24.273674,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean Region",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "island",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01420",
   "vid": "6163839",
   "name": "One&Only Le Saint Geran",
@@ -138034,36 +136524,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01426",
-  "name": "One&Only One Za'abeel - A Virtuoso Preview Property",
-  "brand": "One&Only",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "United Arab Emirates",
-  "city": "Dubai",
-  "address": "Za'abeel",
-  "lat": 25.228222,
-  "lng": 55.290655,
-  "region": null,
-  "adminRegion": "Dubai Emirate",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability (not applicable towards or within Royal Suite and Villa One)",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Suites will receive an additional $100 Resort or Hotel credit (for a total of $200 during stay)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01428",
@@ -143180,36 +141640,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01486",
-  "name": "Parilio",
-  "brand": null,
-  "program": "Design Hotels",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Paros",
-  "address": "Kolimbithres",
-  "lat": 37.129359,
-  "lng": 25.214412,
-  "region": "mediterranean",
-  "adminRegion": "South Aegean",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent in local currency Food & Beverage credit to be utilized during stay (excludes mini-bar, not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 7+ nights will receive an additional $200 Food & Beverage credit (for a total of $300 during stay)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01487",
   "vid": "16161179",
   "name": "Parilio, a Member of Design Hotels",
@@ -144479,16 +142909,16 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_v16763328",
+  "id": "h_01498",
   "vid": "16763328",
   "name": "Park Hyatt Cabo del Sol",
-  "brand": null,
+  "brand": "Park Hyatt",
   "chain": "Hyatt Hotels Corporation",
   "program": "Virtuoso",
   "category": "Beach Resort",
   "country": "Mexico",
   "city": "Cabo San Lucas",
-  "address": null,
+  "address": "KM 10.3 Carretera Transpeninsular",
   "postalCode": "23455 ",
   "lat": 22.9153,
   "lng": -109.842,
@@ -144590,37 +143020,7 @@
    "spa",
    "wellness"
   ],
-  "source": "virtuoso-new"
- },
- {
-  "id": "h_01498",
-  "name": "Park Hyatt Cabo del Sol - A Virtuoso Preview Property",
-  "brand": "Park Hyatt",
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Mexico",
-  "city": "Cabo San Lucas",
-  "address": "KM 10.3 Carretera Transpeninsular",
-  "lat": 22.919157,
-  "lng": -109.831741,
-  "region": null,
-  "adminRegion": "Baja California Sur",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent in local currency Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Villas will also receive complimentary roundtrip private airport transfers",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
+  "source": "virtuoso"
  },
  {
   "id": "h_01499",
@@ -148193,37 +146593,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01532",
-  "name": "Patina Maldives",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Beach Resort",
-  "country": "Maldives",
-  "city": "North Malé Atoll",
-  "address": "Fari Islands, North Malé",
-  "lat": 4.416667,
-  "lng": 73.5,
-  "region": null,
-  "adminRegion": "Faafu Atoll",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$200 USD equivalent Resort credit to be utilized during stay (Applicable only for Resort operated facilities, not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our 2 & 3 Bedroom Villas will receive an additional $100 Resort credit (for a total of $300 during stay)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01533",
   "vid": "16258253",
   "name": "Patina Maldives, Fari Islands",
@@ -150100,36 +148469,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01548",
-  "name": "Phaea Blue",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Crete",
-  "address": "Kavros",
-  "lat": 35.350795,
-  "lng": 24.298821,
-  "region": "mediterranean",
-  "adminRegion": "Crete Region",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Island Suite Sea View Private Heated Pool or The Phaea Blue Villa will receive an additional $50 Hotel credit per bedroom, per stay",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01549",
   "vid": "6164353",
   "name": "Phaea Blue, Elounda, Crete",
@@ -150258,36 +148597,6 @@
    "spa"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01550",
-  "name": "Phulay Bay",
-  "brand": null,
-  "program": "Ritz-Carlton Reserve",
-  "category": "Beach Resort",
-  "country": "Thailand",
-  "city": "Krabi",
-  "address": "111 Moo 3, Ao Nammao",
-  "lat": 8.032594,
-  "lng": 98.863846,
-  "region": null,
-  "adminRegion": "Krabi Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent in local currency Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01551",
@@ -151977,36 +150286,6 @@
   "source": "local"
  },
  {
-  "id": "h_01568",
-  "name": "Primland",
-  "brand": null,
-  "program": "Auberge Resorts Collection",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Meadows of Dan",
-  "address": "2000 Primland Dr",
-  "lat": 36.68532,
-  "lng": -80.36085,
-  "region": null,
-  "adminRegion": "Virginia",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01571",
   "vid": "12293469",
   "name": "Prince de Galles, a Luxury Collection Hotel, Paris",
@@ -152943,36 +151222,6 @@
    "urban"
   ],
   "source": "virtuoso-new"
- },
- {
-  "id": "h_02495",
-  "name": "qualia",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Australia",
-  "city": "Hamilton Island",
-  "address": "1 Qualia Dr",
-  "lat": -20.332884,
-  "lng": 148.947739,
-  "region": null,
-  "adminRegion": "Queensland",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "Guests choice of ONE of the following: Colors of Sunset Cruise - includes a tour of the Whitsundays for 1 & 1/2 hours on a luxury cruiser, including canapés and select alcoholic beverages for up to two adults, once during stay",
-   "Guests choice of ONE of the following: Talk & Taste Experience, once during stay.",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02496",
@@ -157296,36 +155545,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01619",
-  "name": "Rio Sagrado",
-  "brand": null,
-  "program": "Belmond Bellini Club",
-  "category": "City Hotel",
-  "country": "Peru",
-  "city": "Sacred Valley",
-  "address": "Km 75 Urubamba",
-  "lat": -13.290561,
-  "lng": -72.144941,
-  "region": null,
-  "adminRegion": "Cusco",
-  "vipUpgrades": [
-   "For 2024:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "Complimentary 50 minute massage for up to two people, per room, once during stay",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01620",
   "vid": "6202634",
   "name": "Rio Sagrado, A Belmond Hotel, Sacred Valley",
@@ -158402,37 +156621,6 @@
   "source": "virtuoso-new"
  },
  {
-  "id": "h_01631",
-  "name": "Romazzino",
-  "brand": null,
-  "program": "Belmond Bellini Club",
-  "category": "City Hotel",
-  "country": "Italy",
-  "city": "Porto Cervo",
-  "address": "Costa Smeralda",
-  "lat": 41.099182,
-  "lng": 9.563654,
-  "region": "mediterranean",
-  "adminRegion": "Sardinia",
-  "vipUpgrades": [
-   "Hotel Romazzino in Costa Smeralda will open the 2024 season as a Belmond hotel, marking a new era for Sardinia’s original beach hotel",
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01632",
   "vid": "6164362",
   "name": "Romazzino, a Belmond Hotel, Costa Smeralda",
@@ -159038,36 +157226,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01638",
-  "name": "Rosewood Amsterdam - A Virtuoso Preview Property",
-  "brand": "Rosewood",
-  "program": "Rosewood Elite",
-  "category": "City Hotel",
-  "country": "Netherlands",
-  "city": "Amsterdam",
-  "address": "Herengracht 600-610",
-  "lat": 52.365403,
-  "lng": 4.900535,
-  "region": null,
-  "adminRegion": "North Holland",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability (Upgrades are granted from non-canal view rooms to non-canal view rooms and from canal view rooms to canal view rooms; Excludes Signature Houses)",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Signature Houses (the largest suites) will also receive complimentary roundtrip private airport transfers",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01639",
@@ -162793,36 +160951,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01670",
-  "name": "Royal Davui Island Resort",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Island Resort",
-  "country": "Fiji",
-  "city": "Davui Island",
-  "address": "Beqa Lagoon",
-  "lat": -18.433477,
-  "lng": 178.074808,
-  "region": "polynesia",
-  "adminRegion": "Serua Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining (already included in property rates)",
-   "A complimentary 60 minute massage for up to two people, per room, once during stay",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "island",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01671",
@@ -167895,35 +166023,6 @@
   "source": "local"
  },
  {
-  "id": "h_01732",
-  "name": "Shangri-La Boracay",
-  "brand": "Shangri-La",
-  "program": "Shangri-La The Luxury Circle",
-  "category": "City Hotel",
-  "country": "Philippines",
-  "city": "Boracay Island",
-  "address": "Barangay Yapak",
-  "lat": 11.987425,
-  "lng": 121.906229,
-  "region": null,
-  "adminRegion": "Aklan Province",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay. (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01733",
   "vid": "15767952",
   "name": "Shangri-La Boracay, Philippines",
@@ -170885,36 +168984,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01769",
-  "name": "Sierra Grande",
-  "brand": null,
-  "program": "Ted Turner Reserves",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "New Mexico",
-  "address": "Engle",
-  "lat": 33.176609,
-  "lng": -107.031235,
-  "region": null,
-  "adminRegion": "New Mexico State",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01770",
   "vid": "15334830",
   "name": "Sierra Grande, A Ted Turner Retreat",
@@ -171472,35 +169541,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01772",
-  "name": "Silversands Grand Anse",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Grenada",
-  "city": "Grenada",
-  "address": "Grand Anse Beach",
-  "lat": 12.016667,
-  "lng": -61.766667,
-  "region": null,
-  "adminRegion": "St. George Parish",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade upon arrival, subject to availability (not applicable on suites and villas)",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01773",
@@ -178434,36 +176474,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01829",
-  "name": "Solaz",
-  "brand": null,
-  "program": "Marriott STARS",
-  "category": "City Hotel",
-  "country": "Mexico",
-  "city": "San José del Cabo",
-  "address": "Km 18.5 Carretera",
-  "lat": 23.0885,
-  "lng": -109.7119,
-  "region": null,
-  "adminRegion": "Baja California Sur",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$150 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Suite Bookings will receive an addition $100 USD Resort or Hotel credit (for a total of $250 during stay)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01830",
   "vid": "16163171",
   "name": "Solaz, a Luxury Collection Resort Los Cabos",
@@ -183317,39 +181327,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_01885",
-  "name": "Taj Exotica Resort & Spa",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Spa / Wellness Resort",
-  "country": "Maldives",
-  "city": "South Malé Atoll",
-  "address": "South Malé Atoll",
-  "lat": 4.100959,
-  "lng": 73.526131,
-  "region": null,
-  "adminRegion": "Kaafu Atoll",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability (villa category-not applicable to suites)",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 3+ nights will also receive: Complimentary lunch or dinner for up to two guests per room, once during stay (excluding alcohol, taxes, and gratuities)",
-   "Stays of 3+ nights will also receive: $100 USD equivalent Spa Services credit to be utilized during stay (no cash value if not redeemed in full)",
-   "Stays of 3+ nights will also receive: Complimentary Sunset Cruise",
-   "Early Check-In/Late Check-Out, subject to Availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "spa",
-   "wellness"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_01886",
   "vid": "6164201",
   "name": "Taj Exotica Resort & Spa, Maldives",
@@ -183783,35 +181760,6 @@
    "urban"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01890",
-  "name": "Taj Palace",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "India",
-  "city": "New Delhi",
-  "address": "2 Man Singh Rd",
-  "lat": 28.605076,
-  "lng": 77.224775,
-  "region": null,
-  "adminRegion": "Delhi",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade at time of booking, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "Lunch for two at the Indian Specialty Restaurant (three course meal) excluding alcohol, taxes and gratuities once during per stay",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01891",
@@ -187106,35 +185054,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01925",
-  "name": "The Cape",
-  "brand": null,
-  "program": "Thompson Hotels",
-  "category": "City Hotel",
-  "country": "Mexico",
-  "city": "Cabo San Lucas",
-  "address": "Km 5 Carretera Transpeninsular",
-  "lat": 22.981208,
-  "lng": -109.763162,
-  "region": null,
-  "adminRegion": "Baja California Sur",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01926",
@@ -190557,36 +188476,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02497",
-  "name": "the DOUGLAS",
-  "brand": null,
-  "program": "Autograph Collection",
-  "category": "City Hotel",
-  "country": "United Kingdom",
-  "city": "Edinburgh",
-  "address": "Princes St",
-  "lat": 55.951727,
-  "lng": -3.197967,
-  "region": null,
-  "adminRegion": "Scotland",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $60 per person, for up to two guests per bedroom, served in the restaurant and via in-room dining (credit is non-cumulative)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, no cash value if not redeemed in full)",
-   "Exclusive Virtuoso Welcome Amenity - DOUGLAS Fir Cocktail crafted from local bitters",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02498",
   "vid": "15849735",
   "name": "the DOUGLAS, an Autograph Collection Hotel",
@@ -190691,35 +188580,6 @@
    "urban"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_01959",
-  "name": "The Dunlin",
-  "brand": null,
-  "program": "Auberge Resorts Collection",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Kiawah Island",
-  "address": "18 Heritage Oaks Dr",
-  "lat": 32.610684,
-  "lng": -80.051085,
-  "region": null,
-  "adminRegion": "South Carolina",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $45 per person, for up to two guests per bedroom, served in the restaurant and via in-room dining (credit is non-cumulative)",
-   "$100 USD Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_01960",
@@ -195745,36 +193605,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02011",
-  "name": "The Jefferson",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Washington",
-  "address": "1200 16th St NW",
-  "lat": 38.905954,
-  "lng": -77.03683,
-  "region": null,
-  "adminRegion": "DC",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Bookings in our Executive or higher Suite categories will also receive complimentary roundtrip private airport transfers",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02012",
   "vid": "11633520",
   "name": "The Jefferson, Washington, DC",
@@ -195866,37 +193696,6 @@
    "urban"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_02013",
-  "name": "The Joseph",
-  "brand": null,
-  "program": "Marriott STARS",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Nashville",
-  "address": "401 Union St",
-  "lat": 36.1648,
-  "lng": -86.779929,
-  "region": null,
-  "adminRegion": "Tennessee",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast credit of $50 per person, for up to two guests per bedroom, served in the restaurant and via in-room dining (credit is non-cumulative)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Stays of 6+ nights will receive an additional $100 Resort or Hotel credit (for a total of $200 during stay)",
-   "Stays of 7+ nights will receive an additional $200 Resort or Hotel credit (for a total of $300 during stay)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02014",
@@ -202004,37 +199803,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02072",
-  "name": "The Oberoi",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "India",
-  "city": "New Delhi",
-  "address": "37-38 Dr. Zakir Hussain Marg",
-  "lat": 28.5963,
-  "lng": 77.23966,
-  "region": null,
-  "adminRegion": "Delhi",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability (upgrade excludes the Oberoi Suite)",
-   "Daily Buffet Breakfast for up to two guests per bedroom, served in the hotel restaurant",
-   "Complimentary lunch or dinner for two people/room, once during stay, excluding alcohol, taxes and gratuities (minimum 3-courses & value of $100 USD)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi",
-   "NOW OPEN AFTER A COMPLETE RENOVATION!"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02073",
   "name": "The Oberoi Beach Resort",
   "brand": null,
@@ -202686,37 +200454,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_02084",
-  "name": "The Oberoi Zahra",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Egypt",
-  "city": "Luxor",
-  "address": "Nile Cruise",
-  "lat": 25.703055,
-  "lng": 32.644383,
-  "region": null,
-  "adminRegion": "Luxor Governorate",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade not applicable for this property",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "A complimentary 50-minute massage for up to two guests per bedroom, once during stay (must have minimum value of $100 USD equivalent)",
-   "A bottle of local wine upon arrival",
-   "Daily fresh fruits",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02085",
@@ -203387,35 +201124,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_02091",
-  "name": "The Paims Turks & Caicos",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Turks and Caicos",
-  "city": "Providenciales",
-  "address": "Grace Bay",
-  "lat": 21.791836,
-  "lng": -72.190837,
-  "region": null,
-  "adminRegion": "Providenciales Island",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent in local currency Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02092",
@@ -207329,37 +205037,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02128",
-  "name": "The Retreat Costa Rica",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "Resort / Leisure",
-  "country": "Costa Rica",
-  "city": "Quepos",
-  "address": "Barú, Pacífico Central",
-  "lat": 9.431868,
-  "lng": -84.161908,
-  "region": null,
-  "adminRegion": "Puntarenas",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade at time of booking, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Welcome amenity in-room on arrival 20% discount offered for any tour or excursion",
-   "Bookings in our Luxury Lofts will also receive complimentary roundtrip private airport transfers",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02129",
   "vid": "16628201",
   "name": "The Retreat Costa Rica, Wellness Resort & Spa",
@@ -208633,37 +206310,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02145",
-  "name": "The Ritz-Carlton Maldives",
-  "brand": "Ritz-Carlton",
-  "program": "Marriott STARS",
-  "category": "Beach Resort",
-  "country": "Maldives",
-  "city": "North Malé Atoll",
-  "address": "Fari Islands, North Malé",
-  "lat": 4.604176,
-  "lng": 73.580396,
-  "region": null,
-  "adminRegion": "Kaafu Atoll",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Complimentary 1-hour professional portrait session, with one free photo selected",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "beach",
-   "resort"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02146",
   "vid": "16398309",
   "name": "The Ritz-Carlton Maldives, Fari Islands",
@@ -209401,35 +207047,6 @@
    "zen"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_02156",
-  "name": "The Ritz-Carlton Orlando",
-  "brand": "Ritz-Carlton",
-  "program": "Marriott STARS",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Orlando",
-  "address": "4012 Central Florida Pkwy",
-  "lat": 28.405203,
-  "lng": -81.429164,
-  "region": null,
-  "adminRegion": "Florida",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02157",
@@ -215560,35 +213177,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02210",
-  "name": "The Romanos",
-  "brand": null,
-  "program": "Marriott STARS",
-  "category": "City Hotel",
-  "country": "Greece",
-  "city": "Costa Navarino",
-  "address": "Messenia",
-  "lat": 36.997323,
-  "lng": 21.649779,
-  "region": "mediterranean",
-  "adminRegion": "Peloponnese",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02211",
   "vid": "6616890",
   "name": "The Romanos, a Luxury Collection Resort, Costa Navarino",
@@ -218489,35 +216077,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_02238",
-  "name": "The Singular Patagonia",
-  "brand": null,
-  "program": "Virtuoso",
-  "category": "City Hotel",
-  "country": "Chile",
-  "city": "Patagonia",
-  "address": "Km 4 Nor, Puerto Natales",
-  "lat": -51.69278,
-  "lng": -72.533575,
-  "region": "patagonia",
-  "adminRegion": "Magallanes",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay. For all-inclusive bookings, this credit can be applied towards premium wine and liquors (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02239",
@@ -225372,35 +222931,6 @@
   "source": "local"
  },
  {
-  "id": "h_02304",
-  "name": "The Whitley",
-  "brand": null,
-  "program": "Marriott STARS",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "Atlanta",
-  "address": "3434 Peachtree Rd NE",
-  "lat": 33.850425,
-  "lng": -84.363419,
-  "region": null,
-  "adminRegion": "Georgia",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02305",
   "vid": "6164056",
   "name": "The Whitley, A Luxury Collection Hotel, Atlanta Buckhead",
@@ -231395,37 +228925,6 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_02364",
-  "name": "Vermejo",
-  "brand": null,
-  "program": "Ted Turner Reserves",
-  "category": "City Hotel",
-  "country": "United States",
-  "city": "New Mexico",
-  "address": "Colfax County",
-  "lat": 36.727032,
-  "lng": -104.845755,
-  "region": null,
-  "adminRegion": "New Mexico State",
-  "vipUpgrades": [
-   "For 2025:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent Resort or Hotel credit per occupied room, to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Virtuoso Sundowner: includes choice of beer or wine at a scenic location following your afternoon activity.",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
- },
- {
   "id": "h_02365",
   "vid": "15290391",
   "name": "Vermejo, A Ted Turner Reserve",
@@ -235846,37 +233345,6 @@
    "wellness"
   ],
   "source": "virtuoso"
- },
- {
-  "id": "h_02403",
-  "name": "Villa Sant'Andrea",
-  "brand": null,
-  "program": "Belmond Bellini Club",
-  "category": "Villas / Residences",
-  "country": "Italy",
-  "city": "Taormina",
-  "address": "Via Nazionale 137",
-  "lat": 37.85411,
-  "lng": 15.302712,
-  "region": "mediterranean",
-  "adminRegion": "Sicily",
-  "vipUpgrades": [
-   "For 2024:",
-   "Upgrade on arrival, subject to availability",
-   "Daily breakfast for up to two guests per bedroom, served in the restaurant (already included in property rates)",
-   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early Check-In / Late Check-Out, subject to availability",
-   "Complimentary Wi-Fi"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "villa",
-   "residences"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02404",
@@ -240922,20 +238390,20 @@
   "source": "virtuoso"
  },
  {
-  "id": "h_v17898555",
+  "id": "h_02458",
   "vid": "17898555",
   "name": "Waldorf Astoria Osaka",
-  "brand": null,
+  "brand": "Waldorf Astoria",
   "chain": "Hilton Luxury Brands",
-  "program": "Virtuoso",
+  "program": "Hilton for Luxury",
   "category": "City Hotel",
   "country": "Japan",
   "city": "Osaka",
-  "address": null,
+  "address": "Grand Green Osaka South Tower",
   "postalCode": "530-0011",
   "lat": 34.7072,
   "lng": 135.493,
-  "region": null,
+  "region": "japan",
   "adminRegion": "Osaka",
   "countryCode": "JPN",
   "vipUpgrades": [
@@ -241030,36 +238498,7 @@
    "spa",
    "urban"
   ],
-  "source": "virtuoso-new"
- },
- {
-  "id": "h_02458",
-  "name": "Waldorf Astoria Osaka - A Virtuoso Preview Property",
-  "brand": "Waldorf Astoria",
-  "program": "Hilton for Luxury",
-  "category": "City Hotel",
-  "country": "Japan",
-  "city": "Osaka",
-  "address": "Grand Green Osaka South Tower",
-  "lat": 34.702993,
-  "lng": 135.491544,
-  "region": "japan",
-  "adminRegion": "Osaka Prefecture",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
-   "$100 USD equivalent in local currency Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Early check-in / Late check-out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
+  "source": "virtuoso"
  },
  {
   "id": "h_02459",
@@ -244058,39 +241497,6 @@
    "urban"
   ],
   "source": "virtuoso-new"
- },
- {
-  "id": "h_02487",
-  "name": "Zadún",
-  "brand": null,
-  "program": "Ritz-Carlton Reserve",
-  "category": "City Hotel",
-  "country": "Mexico",
-  "city": "San José del Cabo",
-  "address": "Km 10 Carretera Transpeninsular",
-  "lat": 22.919157,
-  "lng": -109.831741,
-  "region": null,
-  "adminRegion": "Baja California Sur",
-  "vipUpgrades": [
-   "For 2026:",
-   "Upgrade on arrival, subject to availability (excludes one-bedroom suites, up to villas and residences)",
-   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining",
-   "$150USD equivalent in local currency Resort credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
-   "Complimentary roundtrip private airport transfers",
-   "Bookings in our Suites will receive a one-time additional $150 USD Resort Credit (for a total of $300 during stay)",
-   "Bookings in our Zadún Suites will receive a one-time additional $300 USD Resort Credit (for a total of $450 during stay)",
-   "Bookings in our Villas and Residences will receive a one-time additional $500 USD Resort Credit (for a total of $650 during stay)",
-   "Early Check-In / Late Check-Out, subject to availability"
-  ],
-  "bookUrl": "https://www.VipTravelAi.com",
-  "bookPassword": "VIP",
-  "thumb": null,
-  "tags": [
-   "urban"
-  ],
-  "vid": null,
-  "source": "local"
  },
  {
   "id": "h_02488",

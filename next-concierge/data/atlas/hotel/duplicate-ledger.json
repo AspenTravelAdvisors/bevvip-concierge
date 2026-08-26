@@ -1,0 +1,153 @@
+{
+ "_note": [
+  "Hotel pairs a person has ruled on, in both directions.",
+  "",
+  "scripts/match-virtuoso-hotels.mjs decides duplicates from names and distance, and",
+  "there is a class of pair it cannot decide from either. Two Ritz-Carltons in the",
+  "same city read as one hotel and its fuller name; one desert resort 6.6 km from",
+  "the city pin our record carries reads as two hotels. Nothing in the strings or",
+  "the coordinates separates those cases, so they are separated here.",
+  "",
+  "`notTheSame` blocks a merge the matcher would otherwise make. `sameHotel` forces",
+  "one it refuses — always because our record's coordinate is a region rather than a",
+  "property, which puts a genuine duplicate past the 25 km ceiling.",
+  "",
+  "Both are keyed by our local id and the Virtuoso product id, never by name: names",
+  "change on every supplier sync, and a rule keyed to a name would quietly stop",
+  "applying the first time one did.",
+  "",
+  "Every entry needs a reason. If you cannot write one, the pair belongs in",
+  "nameOnlyReview in the id-map instead — the matcher puts anything it will not",
+  "Every entry needs a reason. If you cannot write one, the pair belongs in",
+  "nameOnlyReview in the id-map instead — the matcher puts anything it will not",
+  "decide there, and leaving a record unmatched is always the safe answer.",
+  "",
+  "A `sameHotel` entry overrules the country check as well as the distance one.",
+  "That is deliberate and it is why the reasons matter: the records it exists for",
+  "include corrupted copies whose country and coordinates are both wrong, where the",
+  "name is the only field on the record telling the truth."
+ ],
+ "notTheSame": [
+  {
+   "id": "h_02140",
+   "vid": "6164079",
+   "ours": "The Ritz-Carlton Dallas",
+   "theirs": "The Ritz-Carlton Dallas, Las Colinas",
+   "why": "Two Ritz-Carltons, 16.5 km apart: ours is the Uptown Dallas hotel, theirs is in Irving. Virtuoso carries only Las Colinas, so folding ours away would delete the Dallas property from the atlas entirely."
+  },
+  {
+   "id": "h_02137",
+   "vid": "6164220",
+   "ours": "The Ritz-Carlton Beijing",
+   "theirs": "The Ritz-Carlton Beijing, Financial Street",
+   "why": "The same shape as Dallas — two Ritz-Carltons in one city, 11 km apart, and only the Financial Street one is in the feed."
+  },
+  {
+   "id": "h_00407",
+   "vid": "6176935",
+   "ours": "China World Hotel, Beijing",
+   "theirs": "Shangri-La China World Summit Wing, Beijing",
+   "why": "Two hotels in one complex. The Summit Wing is the tower; China World Hotel is the original beside it. 2.2 km apart and sharing a name is exactly what makes this pair unresolvable without knowing the place."
+  },
+  {
+   "id": "h_00494",
+   "vid": "16129921",
+   "ours": "Desaru Coast",
+   "theirs": "Anantara Desaru Coast Resort & Villas",
+   "why": "Desaru Coast is a destination, not a hotel — several properties sit on it, and we carry One&Only Desaru Coast separately. The record is a stub for the place; merging it into Anantara would assert a booking that record never described."
+  }
+ ],
+ "sameHotel": [
+  {
+   "id": "h_00015",
+   "vid": "16803813",
+   "ours": "ANI Private Resorts",
+   "theirs": "ANI Private Resorts, Dominican Republic",
+   "why": "One hotel, 66 km apart on paper because our record is geocoded to Samana province and the property is at Cabrera. The only ANI in the country."
+  },
+  {
+   "id": "h_00506",
+   "vid": "16318863",
+   "ours": "Domes Zeen",
+   "theirs": "Domes Zeen, A Luxury Collection Resort, Chania",
+   "why": "Our city is 'Crete' — the island, not a place — so the pin lands 126 km from Chania. The name is unique in Greece."
+  },
+  {
+   "id": "h_01548",
+   "vid": "6164353",
+   "ours": "Phaea Blue",
+   "theirs": "Phaea Blue, Elounda, Crete",
+   "why": "Same island-as-city problem, 130 km. Phaea Blue is one hotel."
+  },
+  {
+   "id": "h_00556",
+   "vid": "16278530",
+   "ours": "Etereo, Quintana Roo",
+   "theirs": "Etéreo, Auberge Collection",
+   "why": "Our record says Holbox; Etéreo is on the Riviera Maya, 28 km past the ceiling. One of two stubs we carry for it."
+  },
+  {
+   "id": "h_00557",
+   "vid": "16278530",
+   "ours": "Etéreo",
+   "theirs": "Etéreo, Auberge Collection",
+   "why": "The second stub for the same hotel, geocoded further out again at 102 km."
+  },
+  {
+   "id": "h_00710",
+   "vid": "16701278",
+   "ours": "Giza Palace - A Virtuoso Preview Property",
+   "theirs": "Giza Palace",
+   "why": "The preview placeholder for the property Virtuoso now lists. 51 km apart because ours is pinned to Cairo Governorate rather than to Giza."
+  },
+  {
+   "id": "h_00001",
+   "vid": "17904237",
+   "ours": "02 Beach Club & Spa",
+   "theirs": "O2 Beach Club & Spa",
+   "why": "A zero for the letter O, and a pin dropped on Rhodes for a hotel in Christ Church, Barbados — 8,954 km out. Both fields that would normally decide this are wrong, so only the name is evidence."
+  },
+  {
+   "id": "h_01005",
+   "vid": "16325961",
+   "ours": "Isia Bella Beach Resort",
+   "theirs": "Isla Bella Beach Resort",
+   "why": "The same import corruption as 02 Beach Club — an i for an l, and the SAME bogus Rhodes coordinate, for a resort in Marathon, Florida."
+  },
+  {
+   "id": "h_02497",
+   "vid": "15849735",
+   "ours": "the DOUGLAS",
+   "theirs": "the DOUGLAS, an Autograph Collection Hotel",
+   "why": "Identical name; the record was filed under Edinburgh, which is a plausible-looking guess for a Scottish name and is 7,064 km from the hotel in Vancouver."
+  },
+  {
+   "id": "h_02128",
+   "vid": "16628201",
+   "ours": "The Retreat Costa Rica",
+   "theirs": "The Retreat Costa Rica, Wellness Resort & Spa",
+   "why": "67 km apart because our record is pinned to Quepos on the Pacific coast and the hotel is inland at Atenas, Alajuela. One retreat of that name in the country."
+  },
+  {
+   "id": "h_02145",
+   "vid": "16398309",
+   "ours": "The Ritz-Carlton Maldives",
+   "theirs": "The Ritz-Carlton Maldives, Fari Islands",
+   "why": "Our city is 'North Malé Atoll', an atoll rather than a place, so the pin sits 50 km from Fari Islands. The only Ritz-Carlton in the Maldives."
+  },
+  {
+   "id": "h_02364",
+   "vid": "15290391",
+   "ours": "Vermejo",
+   "theirs": "Vermejo, A Ted Turner Reserve",
+   "why": "Our city is 'New Mexico' — the state — putting it 30 km from the reserve at Raton. Its two siblings, Armendaris and Sierra Grande, merged on distance; this one fell just outside."
+  },
+  {
+   "id": "h_02487",
+   "vid": "15802926",
+   "ours": "Zadún",
+   "theirs": "Zadún Los Cabos, a Ritz-Carlton Reserve",
+   "why": "25.2 km apart, two hundred metres past the ceiling, because both records point at San José del Cabo rather than at the property."
+  }
+ ]
+}

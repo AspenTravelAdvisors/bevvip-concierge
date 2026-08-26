@@ -25,6 +25,35 @@ const FEED_OVERRIDE = (() => { const i = args.indexOf('--feed'); return i >= 0 ?
 const LOCAL_FILE = path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.base.json');
 const FEED_FILE = FEED_OVERRIDE ? path.resolve(FEED_OVERRIDE) : path.join(repoRoot, 'data/atlas/hotel/virtuoso-hotels.json');
 const MAP_FILE = path.join(repoRoot, 'data/atlas/hotel/virtuoso-id-map.json');
+const LEDGER_FILE = path.join(repoRoot, 'data/atlas/hotel/duplicate-ledger.json');
+
+/*
+ * Pairs a person has ruled on.
+ *
+ * Name comparison gets same-brand neighbours wrong in both directions and no
+ * amount of cleverness fixes it from the strings alone: "The Ritz-Carlton
+ * Beijing" and "The Ritz-Carlton Beijing, Financial Street" are two hotels 11 km
+ * apart, while "Al Maha" and "Al Maha, a Luxury Collection Desert Resort & Spa"
+ * are one hotel 6.6 km from its own city pin. Both look identical to a matcher.
+ * So the judgement calls are written down, with a reason each, and the matcher
+ * obeys them.
+ */
+function loadLedger() {
+  const veto = new Map();     // local id -> Set(vid) that is NOT the same hotel
+  const same = new Map();     // local id -> vid that IS, whatever the distance says
+  if (!fs.existsSync(LEDGER_FILE)) return { veto, same };
+  const doc = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf8'));
+  for (const row of doc.notTheSame ?? []) {
+    if (!row?.id || !row?.vid) continue;
+    if (!veto.has(row.id)) veto.set(row.id, new Set());
+    veto.get(row.id).add(String(row.vid));
+  }
+  for (const row of doc.sameHotel ?? []) {
+    if (!row?.id || !row?.vid) continue;
+    same.set(row.id, String(row.vid));
+  }
+  return { veto, same };
+}
 const DRY = Boolean(FEED_OVERRIDE);   // a substitute feed must never overwrite the real ledger
 
 // ---------- name normalization ----------
@@ -41,9 +70,30 @@ const normName = s => deaccent(s).toLowerCase()
 // API cities sometimes embed the region ("Edinburgh, Scotland"); ours don't.
 const normCity = s => normName(String(s ?? '').split(',')[0]);
 
+/*
+ * Country, as both sides spell it.
+ *
+ * Every pass that compares two records starts by requiring the same country, so
+ * a spelling difference here does not weaken a match — it removes the candidate
+ * before any name is looked at. "Ambergris Cay" sat on the map twice for exactly
+ * that reason: our record says Turks and Caicos and the supplier says Turks And
+ * Caicos Islands, and no amount of name evidence was ever going to be consulted.
+ * Türkiye against Turkey is the same story for every Istanbul property.
+ *
+ * Only pairs that are demonstrably the same country belong here. This is not the
+ * place to be generous: two country names that merely look alike are how a hotel
+ * ends up merged with one on another continent.
+ */
 const normCountry = s => {
   const c = normName(s);
-  const alias = { 'usa': 'united states', 'us': 'united states', 'uk': 'united kingdom', 'united states of america': 'united states' };
+  const alias = {
+    'usa': 'united states', 'us': 'united states', 'united states of america': 'united states',
+    'uk': 'united kingdom',
+    'turks caicos': 'turks caicos islands',
+    'turkey': 'turkiye',
+    'cape verde': 'cabo verde',
+    'russia': 'russian federation',
+  };
   return alias[c] ?? c;
 };
 
@@ -134,7 +184,7 @@ const onSiteRadius = score => (score >= 0.9 ? 1000 : score >= 0.8 ? 600 : SAME_P
 
 // ---------- matching ----------
 
-function buildMap(local, feed) {
+function buildMap(local, feed, { veto: notTheSame = new Map(), same: sameHotel = new Map() } = {}) {
   const byNameCountry = new Map();
   const byNameCity = new Map();
   const byName = new Map();
@@ -309,7 +359,23 @@ function buildMap(local, feed) {
    * suites", which is 0.67 on characters and nowhere near the bar. The word that
    * separates two hotels is never the city they are both in.
    */
-  const TWIN_METRES = 300;
+  /*
+   * How far apart two records may be and still be one hotel.
+   *
+   * Far more generous than the earlier passes, and deliberately so: the records
+   * this pass exists for are legacy stubs whose coordinate is a CITY CENTROID,
+   * not a property. Al Maha's desert resort sits 6.6 km from the Dubai pin our
+   * record carries, Conrad Hamburg 1.6 km, Cameron House 8 km. Distance is the
+   * unreliable signal here and the name is the strong one, which is the reverse
+   * of every pass above — so the name evidence is what is made strict instead.
+   *
+   * It still has to do the work of separating same-brand neighbours: "The
+   * Chatwal Lodge" in White Lake and "The Chatwal, New York" strip to the same
+   * name and are 121 km apart, as do the two Mandarin Oriental Palaces at 190
+   * km. Both are correctly refused here, on distance alone.
+   */
+  const TWIN_KM = 25;
+  const TWIN_METRES = TWIN_KM * 1000;
   const MARKETING_TAIL = /\b(virtuoso preview property|virtuoso preview|preview property|auberge|belmond|lxr|mgallery|autograph|curio|tribute portfolio|small luxury hotels|leading hotels of the world)\b/g;
 
   /** A name with everything that is not the hotel's own identity taken out. */
@@ -318,6 +384,16 @@ function buildMap(local, feed) {
   const strippedName = (name, ctx = {}) => {
     let n = ` ${normName(name)} `;
     n = n.replace(MARKETING_TAIL, ' ');
+    /*
+     * A component is only removed if something survives it.
+     *
+     * "Capella Kyoto" is a chain called Capella and a city called Kyoto, and
+     * "Ambergris Cay" is a hotel whose city is also called Ambergris Cay — so
+     * stripping every component left the empty string, which the comparison
+     * then had to refuse, and every one of those pairs stayed on the map twice.
+     * A name made entirely of furniture is still that hotel's name.
+     */
+    const keepIfEmpty = (next) => (next.trim() ? next : n);
     for (const extra of [ctx.city, ctx.country, ctx.chain, ctx.adminRegion]) {
       const phrase = normName(String(extra ?? '').split(',')[0]);
       if (!phrase) continue;
@@ -332,38 +408,188 @@ function buildMap(local, feed) {
        * first takes "santa fe" out whole, and the per-word pass is then only
        * there for a place the two records spell differently.
        */
-      n = n.replace(new RegExp(`\\b${escape(phrase)}\\b`, 'g'), ' ');
+      n = keepIfEmpty(n.replace(new RegExp(`\\b${escape(phrase)}\\b`, 'g'), ' '));
       for (const word of phrase.split(' ')) {
         if (word.length < 3) continue;
-        n = n.replace(new RegExp(`\\b${escape(word)}\\b`, 'g'), ' ');
+        n = keepIfEmpty(n.replace(new RegExp(`\\b${escape(word)}\\b`, 'g'), ' '));
       }
     }
     return n.replace(/\s+/g, ' ').trim();
   };
 
+  /** The name with only the marketing tail taken off — no place, no chain. */
+  const plainName = (name) => normName(String(name ?? '')).replace(MARKETING_TAIL, ' ').replace(/\s+/g, ' ').trim();
+
+  const tokensOf = (s) => s.split(' ').filter(Boolean);
+  /** Is every identifying word of `short` present in `long`, and `long` says more? */
+  const containedIn = (short, long) => {
+    const a = tokensOf(short), b = new Set(tokensOf(long));
+    return a.length > 0 && b.size > a.length && a.every((t) => b.has(t));
+  };
+
+  /*
+   * The candidate pool is every Virtuoso product, not only the ones a local
+   * record already claimed.
+   *
+   * "Airelles Venezia - A Virtuoso Preview Property" duplicates a product no
+   * local record had matched, so a local-to-local pass could not see it however
+   * good its name comparison was. Matching against the feed reaches the 154
+   * properties the API added, and a candidate that IS already claimed simply
+   * makes this a duplicate of that claimant instead of a new match.
+   */
+  const nameOnlyReview = [];
   const twinLeftovers = unmatchedLocal.splice(0, unmatchedLocal.length);
   for (const u of twinLeftovers) {
     const h = local.find(l => l.id === u.id);
-    let hit = null;
-    for (const [twinId, m] of Object.entries(matched)) {
-      const twin = local.find(l => l.id === twinId);
-      if (!twin) continue;
-      const d = metresApart(h, twin);
-      if (d === null || d > TWIN_METRES) continue;
-      const v = feed.find(f => f.vid === m.vid) ?? null;
-      const ours = strippedName(h.name, { city: h.city, country: h.country, adminRegion: h.adminRegion, chain: v?.chain });
-      const theirs = strippedName(twin.name, { city: twin.city, country: twin.country, adminRegion: twin.adminRegion, chain: v?.chain });
-      if (!ours || !theirs) continue;
-      const score = ours === theirs ? 1 : charSimilarity(ours, theirs);
-      if (score < TYPO_TWIN_MIN) continue;
-      if (!hit || d < hit.metres) hit = { twinId, twin, vid: m.vid, virtuosoName: v?.name, metres: d, score, ours, theirs };
+
+    /*
+     * A declared pair skips every test below, including the country.
+     *
+     * Some of our records are corrupted copies whose geography belongs to
+     * nothing: "02 Beach Club & Spa" is O2 Beach Club in Barbados with a zero
+     * for the letter O and a pin dropped on Rhodes, and "Isia Bella Beach
+     * Resort" is Isla Bella in the Florida Keys with the SAME bogus Rhodes
+     * coordinate. For those the name is the only true field on the record, and
+     * no rule that consults a country or a distance can be allowed to speak.
+     * A person read them and wrote the answer in the ledger.
+     */
+    const declared = sameHotel.get(h.id);
+    if (declared) {
+      const cand = feed.find(f => String(f.vid) === declared);
+      if (cand) {
+        const claimant = claimed.get(cand.vid)?.[0];
+        if (claimant) {
+          duplicates.push({ vid: cand.vid, virtuosoName: cand.name, keep: claimant, drop: h.id,
+            keepName: local.find(l => l.id === claimant)?.name, dropName: h.name, score: 1,
+            metresApart: Math.round(metresApart(h, cand) ?? -1),
+            note: 'declared in data/atlas/hotel/duplicate-ledger.json' });
+          record(h, cand, `ledger-of:${claimant}`);
+        } else {
+          record(h, cand, `ledger-of:${cand.vid}`);
+        }
+        continue;
+      }
+      console.warn(`duplicate-ledger: ${h.id} -> ${declared}: no such Virtuoso product`);
     }
-    if (!hit) { unmatchedLocal.push(u); continue; }
-    duplicates.push({ vid: hit.vid, virtuosoName: hit.virtuosoName, keep: hit.twinId, drop: h.id,
-      keepName: hit.twin.name, dropName: h.name, score: Number(hit.score.toFixed(2)),
-      metresApart: Math.round(hit.metres),
-      note: `same property under a shorter name — both read as "${hit.ours}" once chain, city and country are stripped` });
-    record(h, { vid: hit.vid, name: hit.virtuosoName }, `twin-of:${hit.twinId}`);
+
+    const ours = strippedName(h.name, { city: h.city, country: h.country, adminRegion: h.adminRegion });
+    if (!ours) { unmatchedLocal.push(u); continue; }
+
+    const oursKeepingChain = ours;
+    const named = [];
+    for (const cand of feed) {
+      if (normCountry(cand.country) !== normCountry(h.country)) continue;
+      /*
+       * Read the chain both ways, because we cannot know which it is.
+       *
+       * Stripping the supplier's chain is what lets "Bishop's Lodge" meet
+       * "Bishop's Lodge, Auberge Collection". But some hotels ARE their chain:
+       * Virtuoso files "Airelles Palladio, Venice" under the chain "Airelles",
+       * so stripping it left "palladio venice" and our "Airelles Venezia" — the
+       * same building, the same coordinate to six decimal places — matched
+       * nothing at all. Capella Kyoto and Nobu Toronto fail the same way.
+       *
+       * So the pair is compared twice, chain removed and chain kept, and either
+       * reading agreeing is enough. Both readings still have to survive the
+       * distance ceiling, which is what stops the looser one running away.
+       */
+      const theirs = strippedName(cand.name, { city: cand.city, country: cand.country, adminRegion: cand.adminRegion, chain: cand.chain });
+      const theirsKeepingChain = strippedName(cand.name, { city: cand.city, country: cand.country, adminRegion: cand.adminRegion });
+      if (!theirs && !theirsKeepingChain) continue;
+      /*
+       * Two ways to be the same hotel under two names.
+       *
+       * EQUAL     the stub is the property's plain name and the supplier's is
+       *           the same name wearing a chain — "Conrad Hamburg" against
+       *           "Conrad Hamburg - A Virtuoso Preview Property".
+       * CONTAINED the supplier adds description the stub never carried — "Al
+       *           Maha" against "Al Maha, a Luxury Collection Desert Resort &
+       *           Spa". Every identifying word of the short name must appear in
+       *           the long one; a single word of disagreement is what keeps
+       *           "China World Hotel" apart from "China World Summit Wing".
+       */
+      /*
+       * A third reading with nothing stripped but the marketing tail.
+       *
+       * Place-stripping uses each record's OWN city, and the two records rarely
+       * agree on what the city is called: ours says Providenciales and the
+       * supplier says Parrot Cay, so "COMO Parrot Cay" lost the words the
+       * supplier kept and the pair stopped matching two kilometres apart. Same
+       * for Royal Davui, Castello di Casole and Andaz Peninsula Papagayo — all
+       * of them plainly the same hotel, all of them pulled apart by the step
+       * meant to bring them together.
+       *
+       * Comparing the plain names too costs nothing in safety: this reading is
+       * the most permissive of the three and every one of them still has to
+       * clear the distance ceiling and be the only candidate that does.
+       */
+      const readings = [
+        [ours, theirs],
+        [oursKeepingChain, theirsKeepingChain],
+        [plainName(h.name), plainName(cand.name)],
+      ].filter(([a, b]) => a && b);
+      const equal = readings.some(([a, b]) => a === b || charSimilarity(a, b) >= TYPO_TWIN_MIN);
+      const contained = readings.some(([a, b]) => containedIn(a, b));
+      if (!equal && !contained) continue;
+      const shownAs = readings.find(([a, b]) => a === b || charSimilarity(a, b) >= TYPO_TWIN_MIN)
+        ?? readings.find(([a, b]) => containedIn(a, b));
+      named.push({ cand, theirs: shownAs[1], ours: shownAs[0], metres: metresApart(h, cand), how: equal ? 'equal' : 'contained' });
+    }
+    if (!named.length) { unmatchedLocal.push(u); continue; }
+
+    /*
+     * One answer, or none.
+     *
+     * A stub like "Airelles" in Paris is contained in six different Airelles
+     * properties and identifies none of them — it is a brand, not a hotel. A
+     * name that cannot pick out a single property is not evidence, so those go
+     * to review rather than to whichever candidate happened to be first.
+     */
+    const near = named.filter(c => c.metres !== null && c.metres <= TWIN_METRES);
+    /*
+     * The whole name beats part of it.
+     *
+     * "Splendido" sits 100 m from "Splendido, A Belmond Hotel, Portofino" and
+     * 400 m from "Splendido Mare, A Belmond Hotel, Portofino", and both contain
+     * it — but only the first IS it. Same in Riviera Maya, where "Maroma" is
+     * equally close to "Maroma, A Belmond Hotel" and to "Chablé Maroma". An
+     * exact match after stripping is a statement that the two names are the
+     * same name; containment only says one name is inside another, which is
+     * also true of every hotel that took its neighbour's name and added a word.
+     */
+    const exact = near.filter(c => c.how === 'equal');
+    const pool = exact.length ? exact : near;
+    const decided = pool.length === 1 ? pool[0] : null;
+
+    const veto = notTheSame.get(h.id);
+    if (decided && veto && veto.has(String(decided.cand.vid))) {
+      unmatchedLocal.push(u);
+      continue;
+    }
+
+    if (!decided) {
+      if (named.length) {
+        nameOnlyReview.push({ id: h.id, name: h.name, city: h.city, country: h.country,
+          reason: near.length > 1
+            ? `name matches ${near.length} Virtuoso properties within ${TWIN_KM} km — too ambiguous to call`
+            : `name matches but the nearest is ${Math.round((named[0].metres ?? Infinity) / 1000)} km away, beyond the ${TWIN_KM} km ceiling`,
+          candidates: named.slice(0, 4).map(c => ({ vid: c.cand.vid, name: c.cand.name, city: c.cand.city, km: c.metres == null ? null : Number((c.metres / 1000).toFixed(1)), how: c.how })) });
+      }
+      unmatchedLocal.push(u);
+      continue;
+    }
+
+    const claimant = claimed.get(decided.cand.vid)?.[0];
+    const shared = { vid: decided.cand.vid, virtuosoName: decided.cand.name,
+      dropName: h.name, metresApart: Math.round(decided.metres),
+      note: `${decided.how === 'equal' ? 'the same name' : 'the same name, with the supplier saying more'} — "${decided.ours}" against "${decided.theirs}" once city and country are stripped` };
+    if (claimant) {
+      duplicates.push({ ...shared, keep: claimant, drop: h.id, keepName: local.find(l => l.id === claimant)?.name, score: 1 });
+      record(h, decided.cand, `twin-of:${claimant}`);
+    } else {
+      // Nobody had claimed this product: the stub IS that hotel, so it adopts it.
+      record(h, decided.cand, `stub-of:${decided.cand.vid}`);
+    }
   }
 
   const collisions = [...claimed.entries()].filter(([, ids]) => ids.length > 1)
@@ -376,7 +602,7 @@ function buildMap(local, feed) {
   const unmatchedApi = feed.filter(f => !matchedVids.has(f.vid))
     .map(f => ({ vid: f.vid, name: f.name, city: f.city, country: f.country }));
 
-  return { matched, ambiguous, unmatchedLocal, unmatchedApi, collisions, duplicates, geoReview };
+  return { matched, ambiguous, unmatchedLocal, unmatchedApi, collisions, duplicates, geoReview, nameOnlyReview };
 }
 
 // ---------- main ----------
@@ -389,7 +615,7 @@ const feed = feedDoc.hotels;
 const existing = fs.existsSync(MAP_FILE) ? JSON.parse(fs.readFileSync(MAP_FILE, 'utf8')) : {};
 const overrides = existing.overrides ?? {};
 
-const result = buildMap(local, feed);
+const result = buildMap(local, feed, loadLedger());
 
 // Hand-corrections win over anything the matcher decided.
 for (const [localId, vid] of Object.entries(overrides)) {
@@ -431,6 +657,7 @@ const doc = {
   ambiguous: result.ambiguous,
   collisions: result.collisions,
   duplicates: result.duplicates,
+  nameOnlyReview: result.nameOnlyReview,
   geoReview: result.geoReview,
   unmatchedLocal: result.unmatchedLocal,
   unmatchedApi: result.unmatchedApi,

@@ -1,66 +1,4 @@
 {
- "h_00001": {
-  "bestFit": "Expedition / active luxury",
-  "intentTags": [
-   "Expedition / active luxury",
-   "Active"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71.6,
-  "matchScores": {
-   "honeymoon": 74.2,
-   "family": 77.4,
-   "celebration": 64,
-   "business": 74.7,
-   "active": 76.8,
-   "uhnw": 73.4,
-   "simpleVip": 74.7
-  },
-  "criteriaScores": {
-   "guestIntent": 3.54,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.93,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 4.46,
-   "privacyExclusivity": 4.1,
-   "sceneFit": 2.8,
-   "familyMultigen": 3.72,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.3,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.62,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "location:beach; wellness:wellness/spa; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "location:beach; wellness:wellness/spa; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "02 Beach Club & Spa: in Rhodes, South Aegean with salt in the margins. Come for water close enough to edit the itinerary and a serious recovery clause; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "02 Beach Club & Spa Rhodes",
-   "02 Beach Club & Spa luxury hotel",
-   "Rhodes wellness resort",
-   "Rhodes spa resort",
-   "luxury wellness retreat Greece"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00002": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -1376,67 +1314,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00028": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.1,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 66.2,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 8,
-  "nearbyHotelCount": 31,
-  "description": "Airelles: in Paris, Ile-de-France with the cuffs just so; a base with its shoes shined, a certain Versailles-adjacent confidence, even far from Versailles, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "Airelles Paris",
-   "Airelles luxury hotel",
-   "best luxury hotels in Paris",
-   "Paris 5 star hotel",
-   "Paris luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00393": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -1620,6 +1497,65 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
+ "h_00035": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 68.3,
+  "matchScores": {
+   "honeymoon": 60.5,
+   "family": 76.5,
+   "celebration": 65.3,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 65.5,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3.14,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.32,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 3.8,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 1,
+  "nearbyHotelCount": 1,
+  "description": "Airelles Venezia - A Virtuoso Preview Property: a stay in Venezia, Veneto that knows when to be useful and when to be invisible; a room that remembers the view and suite comfort. When the hotel should understand the occasion before anyone says it.",
+  "searchKeywords": [
+   "best luxury hotels in Venezia",
+   "Venezia 5 star hotel",
+   "Venezia luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
  "h_01482": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -1669,65 +1605,6 @@
    "best luxury hotels in St. Tropez",
    "St. Tropez 5 star hotel",
    "St. Tropez luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00035": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Airelles Venezia - A Virtuoso Preview Property: a stay in Venezia, Veneto that knows when to be useful and when to be invisible; a room that remembers the view and suite comfort. When the hotel should understand the occasion before anyone says it.",
-  "searchKeywords": [
-   "best luxury hotels in Venezia",
-   "Venezia 5 star hotel",
-   "Venezia luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -1850,67 +1727,6 @@
    "best luxury hotels in Budapest",
    "Budapest 5 star hotel",
    "Budapest luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00038": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.1,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 66.2,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 10,
-  "nearbyHotelCount": 19,
-  "description": "Al Maha: a hotel key in Dubai with a little weight to it; heat, horizon, and civilized shade, the Al Maha Desert Resort address, and a useful base, and the excellent feeling of plans behaving.",
-  "searchKeywords": [
-   "Al Maha Dubai",
-   "Al Maha luxury hotel",
-   "best luxury hotels in Dubai",
-   "Dubai 5 star hotel",
-   "Dubai luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -5002,67 +4818,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00089": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Ambergris Cay: a private-island answer in Turks and Caicos, South Caicos; island privacy and a little room from the world for travelers who want the sea to be both scenery and security.",
-  "searchKeywords": [
-   "Ambergris Cay Turks and Caicos",
-   "Ambergris Cay luxury hotel",
-   "best luxury hotels in Turks and Caicos",
-   "Turks and Caicos 5 star hotel",
-   "Turks and Caicos luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00090": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -5173,67 +4928,6 @@
    "A Landscape Hotel Sedona",
    "A Landscape Hotel luxury hotel",
    "best luxury hotels in Sedona"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00093": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 3,
-  "description": "Amirandes: in Crete, an address with its collar buttoned and its eyes open; the Gouves address and a useful base, preferred-program polish, and no appetite for drama.",
-  "searchKeywords": [
-   "Amirandes Crete",
-   "Amirandes luxury hotel",
-   "best luxury hotels in Crete",
-   "Crete 5 star hotel",
-   "Crete luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -7396,129 +7090,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00129": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Formal / discreet",
-  "confidence": "Low",
-  "overallFitScore": 68.8,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 77.7,
-   "celebration": 66.3,
-   "business": 72.1,
-   "active": 71.9,
-   "uhnw": 71.6,
-   "simpleVip": 72.1
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 3.58,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.4
-  },
-  "evaluationNotes": "location:beach; family:beach; Hyatt Prive / World of Hyatt:preferred partner participation",
-  "criteriaFound": "location:beach; family:beach; Hyatt Prive / World of Hyatt:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 5,
-  "description": "Andaz Peninsula Papagayo: in Guanacaste with salt in the margins. Come for salt-air afternoons and a setting that does some of the planning; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "Andaz Peninsula Papagayo Guanacaste",
-   "Andaz Peninsula Papagayo luxury hotel",
-   "luxury beach resort Guanacaste",
-   "Guanacaste beach resort",
-   "Guanacaste honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00130": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Formal / discreet",
-  "confidence": "Low",
-  "overallFitScore": 68.6,
-  "matchScores": {
-   "honeymoon": 62.4,
-   "family": 69.5,
-   "celebration": 65.6,
-   "business": 78.7,
-   "active": 64,
-   "uhnw": 77.9,
-   "simpleVip": 78.7
-  },
-  "criteriaScores": {
-   "guestIntent": 3.25,
-   "serviceStyleFit": 3.99,
-   "locationQuality": 3.4,
-   "roomSuiteReality": 3.4,
-   "valueWithinLuxury": 4.18,
-   "partnerStrength": 4.9,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.2,
-   "sceneFit": 3,
-   "familyMultigen": 3.2,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.99,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 3.4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "The Peninsula Pen Club:formal classic service and upgrade leverage",
-  "criteriaFound": "The Peninsula Pen Club:formal classic service and upgrade leverage",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 3,
-  "nearbyHotelCount": 5,
-  "description": "Andaz Peninsula Papagayo Resort: in Guanacaste with holiday instincts and grown-up follow-through; holiday instincts under control, Peninsula polish with proper recognition, and a stay that understands the occasion before anyone says toast.",
-  "searchKeywords": [
-   "Andaz Peninsula Papagayo Resort Guanacaste",
-   "Andaz Peninsula Papagayo Resort luxury hotel",
-   "best luxury hotels in Guanacaste",
-   "Guanacaste 5 star hotel",
-   "Guanacaste luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00131": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -7995,64 +7566,6 @@
    "Corfu wellness resort",
    "Corfu spa resort",
    "luxury wellness retreat Greece"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00015": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 65.7,
-  "matchScores": {
-   "honeymoon": 62.9,
-   "family": 70.8,
-   "celebration": 62.4,
-   "business": 72.6,
-   "active": 64,
-   "uhnw": 67.9,
-   "simpleVip": 72.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.4,
-   "roomSuiteReality": 3.4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.32,
-   "sceneFit": 3,
-   "familyMultigen": 3.2,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 3.4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "privacy:private; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "privacy:private; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "ANI Private Resorts: in Samaná, built for the excellent problem of how to spend the afternoon; privacy that does not make a speech and a resort rhythm. When arrival itself should feel like someone opened the right door.",
-  "searchKeywords": [
-   "ANI Private Resorts Samaná",
-   "ANI Private Resorts luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -8848,67 +8361,6 @@
    "best luxury hotels in Milan",
    "Milan 5 star hotel",
    "Milan luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00150": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 3,
-  "description": "Armendaris: in New Mexico, an address with its collar buttoned and its eyes open; the Engle address and a room that knows when to go quiet, luxury's practical machinery, and no appetite for drama.",
-  "searchKeywords": [
-   "Armendaris New Mexico",
-   "Armendaris luxury hotel",
-   "best luxury hotels in New Mexico",
-   "New Mexico 5 star hotel",
-   "New Mexico luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -12777,67 +12229,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00174": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.7,
-  "matchScores": {
-   "honeymoon": 60.7,
-   "family": 76,
-   "celebration": 66.2,
-   "business": 79,
-   "active": 73.7,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3.18,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.04,
-   "guestPersonalityFit": 3.4,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 6,
-  "description": "BLESS Hotel Ibiza: in Ibiza, Isles Baleares with the cuffs just so; wellness that feels earned and arrival logistics that behave, luxury's practical machinery, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "BLESS Hotel Ibiza Ibiza",
-   "BLESS Hotel Ibiza luxury hotel",
-   "best luxury hotels in Ibiza",
-   "Ibiza 5 star hotel",
-   "Ibiza luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00175": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -12887,6 +12278,67 @@
    "best luxury hotels in Madrid",
    "Madrid 5 star hotel",
    "Madrid luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
+ "h_00174": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 68.7,
+  "matchScores": {
+   "honeymoon": 60.7,
+   "family": 76,
+   "celebration": 66.2,
+   "business": 79,
+   "active": 73.7,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3.14,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3.18,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 4.15,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4.04,
+   "guestPersonalityFit": 3.4,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 2,
+  "nearbyHotelCount": 6,
+  "description": "BLESS Hotel Ibiza: in Ibiza, Isles Baleares with the cuffs just so; wellness that feels earned and arrival logistics that behave, luxury's practical machinery, and a base that lets the place make the speech.",
+  "searchKeywords": [
+   "BLESS Hotel Ibiza Ibiza",
+   "BLESS Hotel Ibiza luxury hotel",
+   "best luxury hotels in Ibiza",
+   "Ibiza 5 star hotel",
+   "Ibiza luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -14064,67 +13516,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00251": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 9,
-  "nearbyHotelCount": 18,
-  "description": "Buahan: a stay in Bali that knows when to be useful and when to be invisible; a useful base. When the brief is simple: make the stay feel chosen.",
-  "searchKeywords": [
-   "Buahan Bali",
-   "Buahan luxury hotel",
-   "best luxury hotels in Bali",
-   "Bali 5 star hotel",
-   "Bali luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00252": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -15227,67 +14618,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00284": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 2,
-  "description": "Cala di Volpe: in Porto Cervo, Sardinia, neatly folded into a hotel key; the Costa Smeralda address and a base with its shoes shined, luxury's practical machinery, and the sort of operational calm that saves a trip from itself.",
-  "searchKeywords": [
-   "Cala di Volpe Porto Cervo",
-   "Cala di Volpe luxury hotel",
-   "best luxury hotels in Porto Cervo",
-   "Porto Cervo 5 star hotel",
-   "Porto Cervo luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00285": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -15580,67 +14910,6 @@
    "best luxury hotels in London",
    "London 5 star hotel",
    "London luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00290": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 65.2,
-  "matchScores": {
-   "honeymoon": 62.4,
-   "family": 67.7,
-   "celebration": 63.1,
-   "business": 72.2,
-   "active": 64,
-   "uhnw": 70.8,
-   "simpleVip": 72.2
-  },
-  "criteriaScores": {
-   "guestIntent": 3.25,
-   "serviceStyleFit": 3.38,
-   "locationQuality": 3.4,
-   "roomSuiteReality": 3.4,
-   "valueWithinLuxury": 3.73,
-   "partnerStrength": 4.3,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.2,
-   "sceneFit": 3,
-   "familyMultigen": 3.2,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.43,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 3.4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.4
-  },
-  "evaluationNotes": "Cadence Individual Partner:direct advisor relationship signal",
-  "criteriaFound": "Cadence Individual Partner:direct advisor relationship signal",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Cameron House: a resort address in Alexandria, Scotland for guests who want the setting to do some of the planning; a setting that quietly edits the calendar; enough polish for the first bottle.",
-  "searchKeywords": [
-   "Cameron House Alexandria",
-   "Cameron House luxury hotel",
-   "best luxury hotels in Alexandria",
-   "Alexandria 5 star hotel",
-   "Alexandria luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -16024,68 +15293,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00299": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.6,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 77.1,
-   "celebration": 66.3,
-   "business": 71.5,
-   "active": 71.9,
-   "uhnw": 71.6,
-   "simpleVip": 71.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 3.43,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.4
-  },
-  "evaluationNotes": "location:beach; family:beach; Canaves Oia Luxury Resorts:preferred partner participation",
-  "criteriaFound": "location:beach; family:beach; Canaves Oia Luxury Resorts:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 8,
-  "nearbyHotelCount": 10,
-  "description": "Canaves Oia, Santorini: in Santorini, South Aegean reduced to the correct elements: water, shade, dinner, sleep. With water close enough to edit the itinerary and a polished answer to the travel brief, plus a well-booked stay, it becomes more than a pretty beach.",
-  "searchKeywords": [
-   "Canaves Oia",
-   "Santorini Santorini",
-   "Santorini luxury hotel",
-   "luxury beach resort Santorini",
-   "Santorini beach resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00300": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -16441,67 +15648,6 @@
    "best luxury hotels in Eze",
    "Eze 5 star hotel",
    "Eze luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00309": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 2,
-  "description": "Cap Juluca: in Anguilla with the cuffs just so; a room that remembers the view, the Maundays Bay address, and an address that keeps the day moving, a well-booked stay, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "Cap Juluca Anguilla",
-   "Cap Juluca luxury hotel",
-   "best luxury hotels in Anguilla",
-   "Anguilla 5 star hotel",
-   "Anguilla luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -17064,65 +16210,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00320": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 5,
-  "nearbyHotelCount": 10,
-  "description": "Capella Kyoto - A Virtuoso Preview Property: a polished base in Kyoto; views worth unpacking for and suite comfort. The trick is not spectacle, but not having to ask twice.",
-  "searchKeywords": [
-   "best luxury hotels in Kyoto",
-   "Kyoto 5 star hotel",
-   "Kyoto luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00321": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -17352,65 +16439,6 @@
   "searchKeywords": [
    "Capella Taipei Taipei",
    "Capella Taipei luxury hotel",
-   "best luxury hotels in Taipei",
-   "Taipei 5 star hotel",
-   "Taipei luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00325": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Capella Taipei - A Virtuoso Preview Property: in Taipei with the cuffs just so; a room that remembers the view and room to close the door on the day, a house-party mood with very good instincts, and a base that lets the place make the speech.",
-  "searchKeywords": [
    "best luxury hotels in Taipei",
    "Taipei 5 star hotel",
    "Taipei luxury hotel"
@@ -18118,67 +17146,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00340": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Fairmont Managed Hotel:preferred partner participation",
-  "criteriaFound": "A Fairmont Managed Hotel:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Carton House: in County Kildare, Leinster with the cuffs just so; the Maynooth address and a room that knows when to go quiet, a well-booked stay, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "Carton House County Kildare",
-   "Carton House luxury hotel",
-   "best luxury hotels in County Kildare",
-   "County Kildare 5 star hotel",
-   "County Kildare luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00341": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -18228,67 +17195,6 @@
    "A Fairmont Managed Hotel Maynooth",
    "A Fairmont Managed Hotel luxury hotel",
    "best luxury hotels in Maynooth"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00342": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 3,
-  "description": "Caruso: in Ravello, Campania, an address with its collar buttoned and its eyes open; arrival logistics that behave, luxury's practical machinery, and no appetite for drama.",
-  "searchKeywords": [
-   "Caruso Ravello",
-   "Caruso luxury hotel",
-   "best luxury hotels in Ravello",
-   "Ravello 5 star hotel",
-   "Ravello luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -19653,67 +18559,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00368": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Castello di Casole: an address in Siena, Tuscany for travelers who like the day well-managed and the night within reach; cellar-door temptation, the Loc. Casole d'Elsa address, and city access without the scramble. Behind it: luxury's practical machinery.",
-  "searchKeywords": [
-   "Castello di Casole Siena",
-   "Castello di Casole luxury hotel",
-   "best luxury hotels in Siena",
-   "Siena 5 star hotel",
-   "Siena luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00369": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -19763,67 +18608,6 @@
    "Tuscany",
    "Tuscany Casole d'Elsa",
    "Tuscany luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00370": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "High",
-  "overallFitScore": 71.4,
-  "matchScores": {
-   "honeymoon": 76.3,
-   "family": 74.3,
-   "celebration": 74.1,
-   "business": 74.2,
-   "active": 74.4,
-   "uhnw": 69.7,
-   "simpleVip": 74.2
-  },
-  "criteriaScores": {
-   "guestIntent": 3.82,
-   "serviceStyleFit": 3.3,
-   "locationQuality": 3.79,
-   "roomSuiteReality": 3.76,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 4.07,
-   "wellnessRecovery": 3.72,
-   "privacyExclusivity": 3.32,
-   "sceneFit": 3.2,
-   "familyMultigen": 3.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 4.2,
-   "destinationSpecificFit": 3.68,
-   "guestPersonalityFit": 3.65,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "location:landmark/landmarks/castle; room/suite:suite/suites/terrace; F&B:wine/chef/michelin/farm; wellness:wellness/spa/yoga/thermal; privacy:private; family:pool; sense-of-place:immersion/design/castle/landmark/garden; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "location:landmark/landmarks/castle; room/suite:suite/suites/terrace; F&B:wine/chef/michelin/farm; wellness:wellness/spa/yoga/thermal; privacy:private; family:pool; sense-of-place:immersion/design/castle/landmark/garden; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; Virtuoso description text; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Castello di Velona Resort: in Castelnuovo dell'Abate, Tuscany, built for the excellent problem of how to spend the afternoon; terrace-and-window temptation, wellness that feels earned, and proper attention to the table. When the room key should feel like a small private appointment with fate.",
-  "searchKeywords": [
-   "Castello di Velona Resort Castelnuovo dell'Abate",
-   "Castello di Velona Resort luxury hotel",
-   "best luxury hotels in Castelnuovo dell'Abate",
-   "Castelnuovo dell'Abate 5 star hotel",
-   "Castelnuovo dell'Abate luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -22783,67 +21567,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00273": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Private / wellness-led",
-  "confidence": "Low",
-  "overallFitScore": 68.8,
-  "matchScores": {
-   "honeymoon": 62.6,
-   "family": 76,
-   "celebration": 66.9,
-   "business": 79,
-   "active": 74.9,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.92,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 5,
-  "nearbyHotelCount": 6,
-  "description": "COMO Parrot Cay: a private-island answer in Providenciales; island privacy, wellness that feels earned, and privacy that does not make a speech for travelers who want the sea to be both scenery and security.",
-  "searchKeywords": [
-   "COMO Parrot Cay Providenciales",
-   "COMO Parrot Cay luxury hotel",
-   "best luxury hotels in Providenciales",
-   "Providenciales 5 star hotel",
-   "Providenciales luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00274": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -23630,65 +22353,6 @@
   "searchKeywords": [
    "Conrad Hamburg Hamburg",
    "Conrad Hamburg luxury hotel",
-   "best luxury hotels in Hamburg",
-   "Hamburg 5 star hotel",
-   "Hamburg luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00437": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 4,
-  "description": "Conrad Hamburg - A Virtuoso Preview Property: in Hamburg, an address with its collar buttoned and its eyes open; views worth unpacking for and suite comfort, clean-lined comfort for travelers who keep moving, and no appetite for drama.",
-  "searchKeywords": [
    "best luxury hotels in Hamburg",
    "Hamburg 5 star hotel",
    "Hamburg luxury hotel"
@@ -25329,67 +23993,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00469": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 69,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 65.5,
-   "business": 81.6,
-   "active": 72.8,
-   "uhnw": 68.4,
-   "simpleVip": 81.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.38,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 4.3,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.43,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "Hilton for Luxury:preferred channel value for Hilton luxury brands",
-  "criteriaFound": "Hilton for Luxury:preferred channel value for Hilton luxury brands",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 12,
-  "description": "Crockfords Las Vegas: an address in Las Vegas, Nevada for travelers who like the day well-managed and the night within reach; the Las Vegas Boulevard S address and an address that keeps the day moving. Behind it: preferred-program polish.",
-  "searchKeywords": [
-   "Crockfords Las Vegas Las Vegas",
-   "Crockfords Las Vegas luxury hotel",
-   "best luxury hotels in Las Vegas",
-   "Las Vegas 5 star hotel",
-   "Las Vegas luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00470": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -26566,65 +25169,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00490": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.5,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 66.7,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 8,
-  "nearbyHotelCount": 19,
-  "description": "Delano Dubai - A Virtuoso Preview Property: an address in Dubai for travelers who like the day well-managed and the night within reach; a room that remembers the view and room to close the door on the day. Behind it: luxury's practical machinery.",
-  "searchKeywords": [
-   "best luxury hotels in Dubai",
-   "Dubai 5 star hotel",
-   "Dubai luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00491": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -26673,126 +25217,6 @@
    "luxury beach resort Miami Beach",
    "Miami Beach beach resort",
    "Miami Beach honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00492": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 8,
-  "nearbyHotelCount": 14,
-  "description": "Deos Mykonos: in Mykonos, Notio Aigaio with the cuffs just so; arrival logistics that behave, preferred-program polish, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "Deos Mykonos Mykonos",
-   "Deos Mykonos luxury hotel",
-   "best luxury hotels in Mykonos",
-   "Mykonos 5 star hotel",
-   "Mykonos luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00493": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 4,
-  "description": "Deos Mykonos - A Virtuoso Preview Property: in Mykonos, South Aegean with the cuffs just so; a room that remembers the view and room to close the door on the day, luxury's practical machinery, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "best luxury hotels in Mykonos",
-   "Mykonos 5 star hotel",
-   "Mykonos luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -27415,67 +25839,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00506": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.8,
-   "celebration": 65.9,
-   "business": 85.5,
-   "active": 72.8,
-   "uhnw": 71.8,
-   "simpleVip": 85.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 3,
-  "description": "Domes Zeen: in Crete, rendered useful; the Chersonissos address and arrival logistics that behave, Marriott STARS polish behind the curtain, and enough poise to keep the day from fraying.",
-  "searchKeywords": [
-   "Domes Zeen Crete",
-   "Domes Zeen luxury hotel",
-   "best luxury hotels in Crete",
-   "Crete 5 star hotel",
-   "Crete luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00507": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -27897,67 +26260,6 @@
    "best luxury hotels in Dolores",
    "Dolores 5 star hotel",
    "Dolores luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00514": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 65.4,
-  "matchScores": {
-   "honeymoon": 62.4,
-   "family": 70.8,
-   "celebration": 62.4,
-   "business": 72.6,
-   "active": 64,
-   "uhnw": 67.4,
-   "simpleVip": 72.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3.25,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.4,
-   "roomSuiteReality": 3.4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.2,
-   "sceneFit": 3,
-   "familyMultigen": 3.2,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 3.4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 2,
-  "description": "Dwarika's Resort: a resort address in Dhulikhel, Bagmati for guests who want the setting to do some of the planning; afternoons with fewer obligations; enough polish for the first bottle.",
-  "searchKeywords": [
-   "Dwarika's Resort Dhulikhel",
-   "Dwarika's Resort luxury hotel",
-   "best luxury hotels in Dhulikhel",
-   "Dhulikhel 5 star hotel",
-   "Dhulikhel luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -30016,67 +28318,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00557": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 71.3,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.3,
-   "celebration": 67.7,
-   "business": 85.6,
-   "active": 72.8,
-   "uhnw": 74.2,
-   "simpleVip": 85.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.92,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.57,
-   "partnerStrength": 4.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.92,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Auberge Resorts Collection:warm personal resort service",
-  "criteriaFound": "Auberge Resorts Collection:warm personal resort service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 3,
-  "description": "Etéreo: in Holbox, Quintana Roo, neatly folded into a hotel key; the Carretera Costera Sur address and a room that knows when to go quiet, warmth that feels remembered rather than scripted, and the sort of operational calm that saves a trip from itself.",
-  "searchKeywords": [
-   "Etéreo Holbox",
-   "Etéreo luxury hotel",
-   "best luxury hotels in Holbox",
-   "Holbox 5 star hotel",
-   "Holbox luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00558": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -30126,68 +28367,6 @@
    "Auberge Collection Riviera Maya",
    "Auberge Collection luxury hotel",
    "best luxury hotels in Riviera Maya"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00556": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 72.9,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 78.7,
-   "celebration": 69.3,
-   "business": 79.9,
-   "active": 71.9,
-   "uhnw": 81.4,
-   "simpleVip": 79.9
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.92,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 3.83,
-   "partnerStrength": 4.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.92,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "location:beach; family:beach; Auberge Resorts Collection:warm personal resort service",
-  "criteriaFound": "location:beach; family:beach; Auberge Resorts Collection:warm personal resort service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 3,
-  "description": "Etereo, Quintana Roo: a seaside proposition in Holbox, Quintana Roo; a beach rhythm and a stay with a clear point of view, personal attention without the hovering, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "Etereo",
-   "Quintana Roo",
-   "Quintana Roo Holbox",
-   "Quintana Roo luxury hotel",
-   "luxury beach resort Holbox"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -31051,65 +29230,6 @@
    "best luxury hotels in New York City",
    "New York City 5 star hotel",
    "New York City luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00575": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.5,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 66.7,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 4,
-  "nearbyHotelCount": 16,
-  "description": "Faena New York - A Virtuoso Preview Property: a polished base in New York; views worth unpacking for and room to close the door on the day. The trick is not spectacle, but not having to ask twice.",
-  "searchKeywords": [
-   "best luxury hotels in New York",
-   "New York 5 star hotel",
-   "New York luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -33471,65 +31591,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00614": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 7,
-  "nearbyHotelCount": 18,
-  "description": "Fairmont Tokyo - A Virtuoso Preview Property: in Tokyo with the cuffs just so; views worth unpacking for and suite comfort, historic scale and dependable polish, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "best luxury hotels in Tokyo",
-   "Tokyo 5 star hotel",
-   "Tokyo luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00615": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -34025,67 +32086,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00623": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.4,
-  "matchScores": {
-   "honeymoon": 60.7,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 73.7,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3.18,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.04,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Finca Cortesin Hotel: an address in Casares, Andalusia for travelers who like the day well-managed and the night within reach; wellness that feels earned and plans that do not fray at the edges. Behind it: a well-booked stay.",
-  "searchKeywords": [
-   "Finca Cortesin Hotel Casares",
-   "Finca Cortesin Hotel luxury hotel",
-   "best luxury hotels in Casares",
-   "Casares 5 star hotel",
-   "Casares luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00624": {
   "bestFit": "Relaxation / wellness",
   "intentTags": [
@@ -34511,67 +32511,6 @@
    "Tuscany Siena",
    "Tuscany luxury hotel",
    "Siena wellness resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00631": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 72.9,
-  "matchScores": {
-   "honeymoon": 76,
-   "family": 84.1,
-   "celebration": 68,
-   "business": 73.8,
-   "active": 69.6,
-   "uhnw": 81,
-   "simpleVip": 73.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3.29,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.8,
-   "roomSuiteReality": 5,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 5,
-   "sceneFit": 2.8,
-   "familyMultigen": 4.62,
-   "accessibilityEase": 3.1,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.5,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "room/suite:villa/villas/residence; privacy:villa/villas/residence; family:villa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:villa/villas/residence; privacy:villa/villas/residence; family:villa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Forte Village Hotel Castello: a private-key proposition in Santa Margherita di Pula, Sardinia; residential room to spread out, room to close the door on the day, and multi-gen ease. A well-booked stay handles the practicalities discreetly.",
-  "searchKeywords": [
-   "Forte Village Hotel Castello Santa Margherita di Pula",
-   "Forte Village Hotel Castello luxury hotel",
-   "luxury villas Santa Margherita di Pula",
-   "Santa Margherita di Pula villa resort",
-   "Italy luxury villas"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -39211,65 +37150,6 @@
    "best luxury hotels in Giza",
    "Giza 5 star hotel",
    "Giza luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_00710": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Giza Palace - A Virtuoso Preview Property: a grand address in Cairo Governorate, Giza Governorate; a room that remembers the view, old-stone theatre, and room to close the door on the day and luxury's practical machinery for guests who like their history with the plumbing solved.",
-  "searchKeywords": [
-   "best luxury hotels in Cairo Governorate",
-   "Cairo Governorate 5 star hotel",
-   "Cairo Governorate luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -54513,68 +52393,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01005": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 81.4,
-   "celebration": 66.4,
-   "business": 76.3,
-   "active": 71.9,
-   "uhnw": 72.2,
-   "simpleVip": 76.3
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 2,
-  "description": "Isia Bella Beach Resort: a seaside proposition in Rhodes, South Aegean; water close enough to edit the itinerary and luxury that knows its assignment, luxury's practical machinery, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "Isia Bella Beach Resort Rhodes",
-   "Isia Bella Beach Resort luxury hotel",
-   "luxury beach resort Rhodes",
-   "Rhodes beach resort",
-   "Rhodes honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01006": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -55866,75 +53684,6 @@
   "aaaDiamondYear": 2026,
   "aaaFirstDiamondYear": null,
   "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01029": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Design-led / scene-aware",
-  "confidence": "Low",
-  "overallFitScore": 75.9,
-  "matchScores": {
-   "honeymoon": 74.5,
-   "family": 78.8,
-   "celebration": 73.4,
-   "business": 81.4,
-   "active": 71.5,
-   "uhnw": 86.5,
-   "simpleVip": 81.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3.25,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 4.4,
-   "roomSuiteReality": 4.3,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3.18,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 4.62,
-   "sceneFit": 3.4,
-   "familyMultigen": 3.8,
-   "accessibilityEase": 2.45,
-   "seasonalityRiskFit": 2.7,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4.5,
-   "guestPersonalityFit": 3.65,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "F&B:bar; privacy:island; sense-of-place:island; Oetker Collection:ultra-luxury independent collection",
-  "criteriaFound": "F&B:bar; privacy:island; sense-of-place:island; Oetker Collection:ultra-luxury independent collection",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Jumby Bay Island: in Antigua, St. John Parish reduced to the correct elements: water, shade, dinner, sleep. With beach days with island logic, terrace-and-window temptation, and privacy that does not make a speech, plus good taste with just enough voltage, it becomes more than a pretty beach.",
-  "searchKeywords": [
-   "Jumby Bay Island Antigua",
-   "Jumby Bay Island luxury hotel",
-   "private island resort Antigua and Barbuda",
-   "luxury island resort Antigua",
-   "Antigua honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": 5,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": 2024,
-  "ratingBadges": [
-   {
-    "source": "AAA",
-    "rating": 5,
-    "label": "AAA 5 Diamond",
-    "year": 2026
-   }
-  ],
   "ratingsSource": {
    "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
@@ -60244,64 +57993,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01113": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 72.3,
-  "matchScores": {
-   "honeymoon": 60.7,
-   "family": 77,
-   "celebration": 67.8,
-   "business": 86.8,
-   "active": 73.7,
-   "uhnw": 74.8,
-   "simpleVip": 86.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3.18,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.04,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "wellness:spa; Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "criteriaFound": "wellness:spa; Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "La Residencia: in Deià, Mallorca with the cuffs just so; waterfront composure and spa time treated as strategy, Belmond romance and advisor leverage, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "La Residencia Deià",
-   "La Residencia luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01114": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -60351,67 +58042,6 @@
    "Mallorca",
    "Mallorca Majorca",
    "Mallorca luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01116": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Formal / discreet",
-  "confidence": "Low",
-  "overallFitScore": 71.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 77,
-   "celebration": 67.8,
-   "business": 86.8,
-   "active": 72.8,
-   "uhnw": 74.8,
-   "simpleVip": 86.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "criteriaFound": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "La Samanna: a polished base in St. Martin, Saint-Martin; the Baie Longue address and plans that do not fray at the edges. The trick is not spectacle, but not having to ask twice.",
-  "searchKeywords": [
-   "La Samanna St. Martin",
-   "La Samanna luxury hotel",
-   "best luxury hotels in St. Martin",
-   "St. Martin 5 star hotel",
-   "St. Martin luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -62066,68 +59696,6 @@
    "best luxury hotels in Les Allues",
    "Les Allues 5 star hotel",
    "Les Allues luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01149": {
-  "bestFit": "Expedition / active luxury",
-  "intentTags": [
-   "Expedition / active luxury",
-   "Active"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71.2,
-  "matchScores": {
-   "honeymoon": 74.2,
-   "family": 76.4,
-   "celebration": 64,
-   "business": 74.2,
-   "active": 76.2,
-   "uhnw": 73.4,
-   "simpleVip": 74.2
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.8,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 4.46,
-   "privacyExclusivity": 4.1,
-   "sceneFit": 2.8,
-   "familyMultigen": 3.6,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.3,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.58,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "wellness:wellness/spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "wellness:wellness/spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Le Couvent des Minimes Hotel & Spa L'occitane: in Mane, Provence with recovery written into the architecture; spa time treated as strategy and a setting that does some of the planning. When the traveler wants movement by day and proper sheets by night.",
-  "searchKeywords": [
-   "Le Couvent des Minimes Hotel & Spa L'occitane Mane",
-   "Le Couvent des Minimes Hotel & Spa L'occitane luxury hotel",
-   "Mane wellness resort",
-   "Mane spa resort",
-   "luxury wellness retreat France"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -65702,67 +63270,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01218": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Ritz-Carlton Reserve:preferred partner participation",
-  "criteriaFound": "A Ritz-Carlton Reserve:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 5,
-  "nearbyHotelCount": 5,
-  "description": "Mandapa: in Ubud, Bali with the cuffs just so; the Banjar Kedewatan address and an address that keeps the day moving, preferred-program polish, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "Mandapa Ubud",
-   "Mandapa luxury hotel",
-   "best luxury hotels in Ubud",
-   "Ubud 5 star hotel",
-   "Ubud luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01219": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -65812,128 +63319,6 @@
    "a Ritz-Carlton Reserve Bali",
    "a Ritz-Carlton Reserve luxury hotel",
    "best luxury hotels in Bali"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01220": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Formal / discreet",
-  "confidence": "High",
-  "overallFitScore": 78.2,
-  "matchScores": {
-   "honeymoon": 72.4,
-   "family": 80.5,
-   "celebration": 81.1,
-   "business": 89,
-   "active": 82,
-   "uhnw": 77.7,
-   "simpleVip": 89
-  },
-  "criteriaScores": {
-   "guestIntent": 3.86,
-   "serviceStyleFit": 4.09,
-   "locationQuality": 4.26,
-   "roomSuiteReality": 3.68,
-   "valueWithinLuxury": 4.78,
-   "partnerStrength": 4.9,
-   "foodAndBeverage": 3.9,
-   "wellnessRecovery": 3.54,
-   "privacyExclusivity": 2.77,
-   "sceneFit": 4.4,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.31,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.99,
-   "designSenseOfPlace": 4.2,
-   "destinationSpecificFit": 4.2,
-   "guestPersonalityFit": 3.85,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "location:city life/central; room/suite:suite/suites/terrace/view; F&B:culinary/restaurant/dining/bar/cuisine; wellness:wellness/spa/sauna; privacy:intimate; sense-of-place:historic/local/immersion/design/garden; Mandarin Oriental Fan Club:formal polished service, strong amenity handling",
-  "criteriaFound": "location:city life/central; room/suite:suite/suites/terrace/view; F&B:culinary/restaurant/dining/bar/cuisine; wellness:wellness/spa/sauna; privacy:intimate; sense-of-place:historic/local/immersion/design/garden; Mandarin Oriental Fan Club:formal polished service, strong amenity handling",
-  "sourceFlags": "CSV partner benefits; Virtuoso description text; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 37,
-  "description": "Mandarin Oriental: in New York City, an address with its collar buttoned and its eyes open; a room that remembers the view, wellness that feels earned, and food-and-drink with a little consequence, Mandarin Oriental's spa-wise grace, and no appetite for drama.",
-  "searchKeywords": [
-   "Mandarin Oriental New York City",
-   "Mandarin Oriental luxury hotel",
-   "best luxury hotels in New York City",
-   "New York City 5 star hotel",
-   "New York City luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01241": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Formal / discreet",
-  "confidence": "Low",
-  "overallFitScore": 72.1,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 77.1,
-   "celebration": 68,
-   "business": 87.5,
-   "active": 72.8,
-   "uhnw": 75.5,
-   "simpleVip": 87.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.99,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.78,
-   "partnerStrength": 4.9,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.99,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Mandarin Oriental Fan Club:formal polished service, strong amenity handling",
-  "criteriaFound": "Mandarin Oriental Fan Club:formal polished service, strong amenity handling",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 11,
-  "description": "Mandarin Oriental Bosphorus: a polished base in Istanbul; a view that keeps moving and a useful base. The trick is not spectacle, but not having to ask twice.",
-  "searchKeywords": [
-   "Mandarin Oriental Bosphorus Istanbul",
-   "Mandarin Oriental Bosphorus luxury hotel",
-   "best luxury hotels in Istanbul",
-   "Istanbul 5 star hotel",
-   "Istanbul luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -68458,67 +65843,6 @@
    "best luxury hotels in Singapore",
    "Singapore 5 star hotel",
    "Singapore luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01288": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 71.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 77,
-   "celebration": 67.8,
-   "business": 86.8,
-   "active": 72.8,
-   "uhnw": 74.8,
-   "simpleVip": 86.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "criteriaFound": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 9,
-  "description": "Maroma: a seaside proposition in Riviera Maya, Quintana Roo; water close enough to edit the itinerary and city access without the scramble, Belmond romance and advisor leverage, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "Maroma Riviera Maya",
-   "Maroma luxury hotel",
-   "best luxury hotels in Riviera Maya",
-   "Riviera Maya 5 star hotel",
-   "Riviera Maya luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -72339,6 +69663,67 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
+ "h_00492": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 67.9,
+  "matchScores": {
+   "honeymoon": 60,
+   "family": 76,
+   "celebration": 64.8,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 3.8,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 8,
+  "nearbyHotelCount": 14,
+  "description": "Deos Mykonos: in Mykonos, Notio Aigaio with the cuffs just so; arrival logistics that behave, preferred-program polish, and a base that lets the place make the speech.",
+  "searchKeywords": [
+   "Deos Mykonos Mykonos",
+   "Deos Mykonos luxury hotel",
+   "best luxury hotels in Mykonos",
+   "Mykonos 5 star hotel",
+   "Mykonos luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
  "h_01353": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -72449,67 +69834,6 @@
    "luxury villas Mykonos",
    "Mykonos villa resort",
    "Greece luxury villas"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01355": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Grecotel Resort to Live:preferred partner participation",
-  "criteriaFound": "A Grecotel Resort to Live:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 4,
-  "nearbyHotelCount": 4,
-  "description": "Mykonos Blu: in Mykonos, South Aegean, where the sensible plan is water first and questions later; water close enough to edit the itinerary, the Psarou Beach address, and arrival logistics that behave. When comfort, location, and a whisper of theatre need to arrive together.",
-  "searchKeywords": [
-   "Mykonos Blu Mykonos",
-   "Mykonos Blu luxury hotel",
-   "best luxury hotels in Mykonos",
-   "Mykonos 5 star hotel",
-   "Mykonos luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -73571,67 +70895,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01361": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.7,
-  "matchScores": {
-   "honeymoon": 60.7,
-   "family": 75.9,
-   "celebration": 65.4,
-   "business": 78.4,
-   "active": 73.5,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3.17,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "sense-of-place:design; A Member of Design Hotels:preferred partner participation",
-  "criteriaFound": "sense-of-place:design; A Member of Design Hotels:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 4,
-  "nearbyHotelCount": 4,
-  "description": "NEW Hotel: a hotel key in Athens, Attica with a little weight to it; the Filellinon Street address and a base with its shoes shined, and the excellent feeling of plans behaving.",
-  "searchKeywords": [
-   "NEW Hotel Athens",
-   "NEW Hotel luxury hotel",
-   "best luxury hotels in Athens",
-   "Athens 5 star hotel",
-   "Athens luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01379": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -74534,65 +71797,6 @@
   "searchKeywords": [
    "Nobu Hotel Toronto Toronto",
    "Nobu Hotel Toronto luxury hotel",
-   "best luxury hotels in Toronto",
-   "Toronto 5 star hotel",
-   "Toronto luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01393": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.3,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 65.3,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 3,
-  "nearbyHotelCount": 11,
-  "description": "Nobu Hotel Toronto - A Virtuoso Preview Property: in Toronto, Ontario, rendered useful; terrace-and-window temptation and a suite-minded stay, a chef-led mood and late-evening confidence, and enough poise to keep the day from fraying.",
-  "searchKeywords": [
    "best luxury hotels in Toronto",
    "Toronto 5 star hotel",
    "Toronto luxury hotel"
@@ -76158,66 +73362,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01419": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Private / wellness-led",
-  "confidence": "Low",
-  "overallFitScore": 71.7,
-  "matchScores": {
-   "honeymoon": 74.2,
-   "family": 78.3,
-   "celebration": 68.6,
-   "business": 73.6,
-   "active": 71.5,
-   "uhnw": 77.2,
-   "simpleVip": 73.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4.4,
-   "roomSuiteReality": 4.42,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 4.62,
-   "sceneFit": 3,
-   "familyMultigen": 3.8,
-   "accessibilityEase": 2.45,
-   "seasonalityRiskFit": 2.7,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4.5,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "room/suite:view; privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "One&Only Kéa Island - A Virtuoso Preview Property: a seaside proposition in South Aegean; water on the schedule and shoes on probation, a room that remembers the view, and a suite-minded stay, a resort mood with its collar open and its standards intact, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "private island resort Greece",
-   "luxury island resort South Aegean",
-   "South Aegean honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01420": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -76508,65 +73652,6 @@
   "searchKeywords": [
    "One&Only One Za’abeel Dubai",
    "One&Only One Za’abeel luxury hotel",
-   "best luxury hotels in Dubai",
-   "Dubai 5 star hotel",
-   "Dubai luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01426": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Private / wellness-led",
-  "confidence": "Low",
-  "overallFitScore": 68.5,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 76.5,
-   "celebration": 66.7,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:view; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 9,
-  "nearbyHotelCount": 19,
-  "description": "One&Only One Za'abeel - A Virtuoso Preview Property: in Dubai, neatly folded into a hotel key; views worth unpacking for and room to close the door on the day, a resort mood with its collar open and its standards intact, and the sort of operational calm that saves a trip from itself.",
-  "searchKeywords": [
    "best luxury hotels in Dubai",
    "Dubai 5 star hotel",
    "Dubai luxury hotel"
@@ -79766,67 +76851,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01486": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.7,
-  "matchScores": {
-   "honeymoon": 60.7,
-   "family": 75.9,
-   "celebration": 65.4,
-   "business": 78.4,
-   "active": 73.5,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3.17,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "sense-of-place:design; A Member of Design Hotels:preferred partner participation",
-  "criteriaFound": "sense-of-place:design; A Member of Design Hotels:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Parilio: an address in Paros, South Aegean for travelers who like the day well-managed and the night within reach; the Kolimbithres address and a base with its shoes shined. Behind it: luxury's practical machinery.",
-  "searchKeywords": [
-   "Parilio Paros",
-   "Parilio luxury hotel",
-   "best luxury hotels in Paros",
-   "Paros 5 star hotel",
-   "Paros luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01487": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -82489,68 +79513,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01532": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 81.4,
-   "celebration": 66.4,
-   "business": 76.3,
-   "active": 71.9,
-   "uhnw": 72.2,
-   "simpleVip": 76.3
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Patina Maldives: a seaside proposition in North Malé Atoll, Faafu Atoll; beach days with island logic and luxury that knows its assignment, a well-booked stay, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "Patina Maldives North Malé Atoll",
-   "Patina Maldives luxury hotel",
-   "luxury beach resort North Malé Atoll",
-   "North Malé Atoll beach resort",
-   "North Malé Atoll honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01533": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -83354,67 +80316,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01548": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 3,
-  "nearbyHotelCount": 3,
-  "description": "Phaea Blue: in Crete, neatly folded into a hotel key; the Kavros address and a room that knows when to go quiet, a well-booked stay, and the sort of operational calm that saves a trip from itself.",
-  "searchKeywords": [
-   "Phaea Blue Crete",
-   "Phaea Blue luxury hotel",
-   "best luxury hotels in Crete",
-   "Crete 5 star hotel",
-   "Crete luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01549": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -83464,68 +80365,6 @@
    "Crete Elounda",
    "Crete luxury hotel",
    "best luxury hotels in Elounda"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01550": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.3,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 81.3,
-   "celebration": 66.3,
-   "business": 75.7,
-   "active": 71.9,
-   "uhnw": 71.6,
-   "simpleVip": 75.7
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.4
-  },
-  "evaluationNotes": "location:beach; family:beach; A Ritz-Carlton Reserve:preferred partner participation",
-  "criteriaFound": "location:beach; family:beach; A Ritz-Carlton Reserve:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 3,
-  "description": "Phulay Bay: in Krabi with salt in the margins. Come for salt-air afternoons and views worth unpacking for; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "Phulay Bay Krabi",
-   "Phulay Bay luxury hotel",
-   "luxury beach resort Krabi",
-   "Krabi beach resort",
-   "Krabi honeymoon resort"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -84456,67 +81295,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01568": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 71.3,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.3,
-   "celebration": 67.7,
-   "business": 85.6,
-   "active": 72.8,
-   "uhnw": 74.2,
-   "simpleVip": 85.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.92,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.57,
-   "partnerStrength": 4.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.92,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Auberge Resorts Collection:warm personal resort service",
-  "criteriaFound": "Auberge Resorts Collection:warm personal resort service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Primland: in Meadows of Dan, Virginia, an address with its collar buttoned and its eyes open; the Primland Drive address and arrival logistics that behave, personal attention without the hovering, and no appetite for drama.",
-  "searchKeywords": [
-   "Primland Meadows of Dan",
-   "Primland luxury hotel",
-   "best luxury hotels in Meadows of Dan",
-   "Meadows of Dan 5 star hotel",
-   "Meadows of Dan luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01571": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -85001,67 +81779,6 @@
    "best luxury hotels in Abu Dhabi",
    "Abu Dhabi 5 star hotel",
    "Abu Dhabi luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02495": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.8,
-  "matchScores": {
-   "honeymoon": 62.6,
-   "family": 76,
-   "celebration": 66.9,
-   "business": 79,
-   "active": 74.9,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.92,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 2,
-  "description": "qualia: in Hamilton Island, Queensland reduced to the correct elements: water, shade, dinner, sleep. With island pacing and discretion with good posture, plus luxury's practical machinery, it becomes more than a pretty beach.",
-  "searchKeywords": [
-   "qualia Hamilton Island",
-   "qualia luxury hotel",
-   "best luxury hotels in Hamilton Island",
-   "Hamilton Island 5 star hotel",
-   "Hamilton Island luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -87164,67 +83881,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01619": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 71.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 77,
-   "celebration": 67.8,
-   "business": 86.8,
-   "active": 72.8,
-   "uhnw": 74.8,
-   "simpleVip": 86.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "criteriaFound": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "Rio Sagrado: in Sacred Valley, Cusco for the traveler who wants the outside world close and the room calm; a useful base. Behind it: Belmond romance and advisor leverage.",
-  "searchKeywords": [
-   "Rio Sagrado Sacred Valley",
-   "Rio Sagrado luxury hotel",
-   "best luxury hotels in Sacred Valley",
-   "Sacred Valley 5 star hotel",
-   "Sacred Valley luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01620": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -87836,67 +84492,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01631": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 71.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 77,
-   "celebration": 67.8,
-   "business": 86.8,
-   "active": 72.8,
-   "uhnw": 74.8,
-   "simpleVip": 86.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "criteriaFound": "Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "Romazzino: a hotel key in Porto Cervo, Sardinia with a little weight to it; the Costa Smeralda address and a room that knows when to go quiet, and the excellent feeling of plans behaving.",
-  "searchKeywords": [
-   "Romazzino Porto Cervo",
-   "Romazzino luxury hotel",
-   "best luxury hotels in Porto Cervo",
-   "Porto Cervo 5 star hotel",
-   "Porto Cervo luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01632": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -88187,65 +84782,6 @@
   "searchKeywords": [
    "Rosewood Amsterdam Amsterdam",
    "Rosewood Amsterdam luxury hotel",
-   "best luxury hotels in Amsterdam",
-   "Amsterdam 5 star hotel",
-   "Amsterdam luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01638": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 71.8,
-  "matchScores": {
-   "honeymoon": 60.5,
-   "family": 75.3,
-   "celebration": 68.6,
-   "business": 85.7,
-   "active": 72.8,
-   "uhnw": 76.6,
-   "simpleVip": 85.7
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 4.02,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.32,
-   "valueWithinLuxury": 4.2,
-   "partnerStrength": 5,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 4.02,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "room/suite:view; Rosewood Elite:warm personal luxury, strong brand recognition",
-  "criteriaFound": "room/suite:view; Rosewood Elite:warm personal luxury, strong brand recognition",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "Rosewood Amsterdam - A Virtuoso Preview Property: in Amsterdam, North Holland, an address with its collar buttoned and its eyes open; views worth unpacking for and suite comfort, the feeling of a private address, only better staffed, and no appetite for drama.",
-  "searchKeywords": [
    "best luxury hotels in Amsterdam",
    "Amsterdam 5 star hotel",
    "Amsterdam luxury hotel"
@@ -90077,68 +86613,6 @@
    "Champillon wellness resort",
    "Champillon spa resort",
    "luxury wellness retreat France"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01670": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71.4,
-  "matchScores": {
-   "honeymoon": 73.8,
-   "family": 77.8,
-   "celebration": 68.1,
-   "business": 73.6,
-   "active": 71.5,
-   "uhnw": 76.7,
-   "simpleVip": 73.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3.25,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4.4,
-   "roomSuiteReality": 4.3,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 4.62,
-   "sceneFit": 3,
-   "familyMultigen": 3.8,
-   "accessibilityEase": 2.45,
-   "seasonalityRiskFit": 2.7,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4.5,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Royal Davui Island Resort: in Davui Island, Serua Province reduced to the correct elements: water, shade, dinner, sleep. With salt air and island pacing, lake-country calm, and a little room from the world, plus preferred-program polish, it becomes more than a pretty beach.",
-  "searchKeywords": [
-   "Royal Davui Island Resort Davui Island",
-   "Royal Davui Island Resort luxury hotel",
-   "private island resort Fiji",
-   "luxury island resort Davui Island",
-   "Davui Island honeymoon resort"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -92814,67 +89288,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01732": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71.3,
-  "matchScores": {
-   "honeymoon": 62.6,
-   "family": 76.7,
-   "celebration": 67.9,
-   "business": 84.9,
-   "active": 74.9,
-   "uhnw": 71.7,
-   "simpleVip": 84.9
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.45,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.68,
-   "partnerStrength": 4.5,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.92,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.85,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "privacy:island; sense-of-place:island; Shangri-La The Luxury Circle:Asian luxury service program",
-  "criteriaFound": "privacy:island; sense-of-place:island; Shangri-La The Luxury Circle:Asian luxury service program",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Shangri-La Boracay: in Boracay Island, Aklan Province with salt in the margins. Come for island pacing and privacy that does not make a speech; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "Shangri-La Boracay Boracay Island",
-   "Shangri-La Boracay luxury hotel",
-   "best luxury hotels in Boracay Island",
-   "Boracay Island 5 star hotel",
-   "Boracay Island luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01733": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -94593,67 +91006,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01769": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Ted Turner Retreat:preferred partner participation",
-  "criteriaFound": "A Ted Turner Retreat:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 3,
-  "description": "Sierra Grande: in New Mexico for the traveler who wants the outside world close and the room calm; the Engle address and arrival logistics that behave. Behind it: luxury's practical machinery.",
-  "searchKeywords": [
-   "Sierra Grande New Mexico",
-   "Sierra Grande luxury hotel",
-   "best luxury hotels in New Mexico",
-   "New Mexico 5 star hotel",
-   "New Mexico luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01770": {
   "bestFit": "Expedition / active luxury",
   "intentTags": [
@@ -94903,67 +91255,6 @@
     "year": 2026
    }
   ],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01772": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.1,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 66.2,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Silversands Grand Anse: in Grenada, St. George Parish, where the sensible plan is water first and questions later; salt-air afternoons, the Grand Anse Beach address, and a useful base. For the kind of trip that wants a little ceremony.",
-  "searchKeywords": [
-   "Silversands Grand Anse Grenada",
-   "Silversands Grand Anse luxury hotel",
-   "best luxury hotels in Grenada",
-   "Grenada 5 star hotel",
-   "Grenada luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
   "ratingsSource": {
    "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
@@ -98292,67 +94583,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01829": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.8,
-   "celebration": 65.9,
-   "business": 85.5,
-   "active": 72.8,
-   "uhnw": 71.8,
-   "simpleVip": 85.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 4,
-  "description": "Solaz: a seaside proposition in San José del Cabo, Baja California Sur; water close enough to edit the itinerary and city access without the scramble, Marriott STARS polish behind the curtain, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "Solaz San José del Cabo",
-   "Solaz luxury hotel",
-   "best luxury hotels in San José del Cabo",
-   "San José del Cabo 5 star hotel",
-   "San José del Cabo luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01830": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -101010,68 +97240,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_01885": {
-  "bestFit": "Expedition / active luxury",
-  "intentTags": [
-   "Expedition / active luxury",
-   "Active"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71.2,
-  "matchScores": {
-   "honeymoon": 74.2,
-   "family": 76.4,
-   "celebration": 64,
-   "business": 74.2,
-   "active": 76.2,
-   "uhnw": 73.4,
-   "simpleVip": 74.2
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.8,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 4.46,
-   "privacyExclusivity": 4.1,
-   "sceneFit": 2.8,
-   "familyMultigen": 3.6,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.3,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.58,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "wellness:wellness/spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "wellness:wellness/spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "Taj Exotica Resort & Spa: a seaside proposition in South Malé Atoll, Kaafu Atoll; island pacing and wellness that feels earned, preferred-program polish, and the happy suspicion that shoes were an administrative error.",
-  "searchKeywords": [
-   "Taj Exotica Resort & Spa South Malé Atoll",
-   "Taj Exotica Resort & Spa luxury hotel",
-   "South Malé Atoll wellness resort",
-   "South Malé Atoll spa resort",
-   "luxury wellness retreat Maldives"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_01886": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -101299,67 +97467,6 @@
   "searchKeywords": [
    "Taj Mahal New Delhi New Delhi",
    "Taj Mahal New Delhi luxury hotel",
-   "best luxury hotels in New Delhi",
-   "New Delhi 5 star hotel",
-   "New Delhi luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01890": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 8,
-  "description": "Taj Palace: a grand address in New Delhi; a past that has learned good service, the Man Singh Road address, and plans that do not fray at the edges and a well-booked stay for guests who like their history with the plumbing solved.",
-  "searchKeywords": [
-   "Taj Palace New Delhi",
-   "Taj Palace luxury hotel",
    "best luxury hotels in New Delhi",
    "New Delhi 5 star hotel",
    "New Delhi luxury hotel"
@@ -103100,67 +99207,6 @@
    "Scottsdale Scottsdale",
    "Scottsdale luxury hotel",
    "best luxury hotels in Scottsdale"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01925": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Thompson Hotel:preferred partner participation",
-  "criteriaFound": "A Thompson Hotel:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 12,
-  "nearbyHotelCount": 13,
-  "description": "The Cape: in Cabo San Lucas, Baja California Sur, where the sensible plan is water first and questions later; a beach rhythm and plans that do not fray at the edges. For a celebration that prefers polish to noise.",
-  "searchKeywords": [
-   "The Cape Cabo San Lucas",
-   "The Cape luxury hotel",
-   "best luxury hotels in Cabo San Lucas",
-   "Cabo San Lucas 5 star hotel",
-   "Cabo San Lucas luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -104926,67 +100972,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02497": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "An Autograph Collection Hotel:preferred partner participation",
-  "criteriaFound": "An Autograph Collection Hotel:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 4,
-  "nearbyHotelCount": 4,
-  "description": "the DOUGLAS: in Edinburgh, Scotland, an address with its collar buttoned and its eyes open; the Princes Street address and a useful base, luxury's practical machinery, and no appetite for drama.",
-  "searchKeywords": [
-   "the DOUGLAS Edinburgh",
-   "the DOUGLAS luxury hotel",
-   "best luxury hotels in Edinburgh",
-   "Edinburgh 5 star hotel",
-   "Edinburgh luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02498": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -105050,67 +101035,6 @@
     "year": 2026
    }
   ],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01959": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 72.2,
-  "matchScores": {
-   "honeymoon": 62.6,
-   "family": 76.3,
-   "celebration": 69.8,
-   "business": 85.6,
-   "active": 74.9,
-   "uhnw": 74.6,
-   "simpleVip": 85.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.92,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.57,
-   "partnerStrength": 4.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.92,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.92,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "privacy:island; sense-of-place:island; Auberge Resorts Collection:warm personal resort service",
-  "criteriaFound": "privacy:island; sense-of-place:island; Auberge Resorts Collection:warm personal resort service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "The Dunlin: in Kiawah Island, South Carolina reduced to the correct elements: water, shade, dinner, sleep. With warm-weather logic, old-stone theatre, and privacy that does not make a speech, plus warmth that feels remembered rather than scripted, it becomes more than a pretty beach.",
-  "searchKeywords": [
-   "The Dunlin Kiawah Island",
-   "The Dunlin luxury hotel",
-   "best luxury hotels in Kiawah Island",
-   "Kiawah Island 5 star hotel",
-   "Kiawah Island luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
   "ratingsSource": {
    "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
@@ -107821,67 +103745,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02011": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 4,
-  "nearbyHotelCount": 5,
-  "description": "The Jefferson: in Washington, DC for the traveler who wants the outside world close and the room calm; arrival logistics that behave. Behind it: luxury's practical machinery.",
-  "searchKeywords": [
-   "The Jefferson Washington",
-   "The Jefferson luxury hotel",
-   "best luxury hotels in Washington",
-   "Washington 5 star hotel",
-   "Washington luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02012": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -107931,67 +103794,6 @@
    "DC Washington",
    "DC luxury hotel",
    "best luxury hotels in Washington"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02013": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.8,
-   "celebration": 67.3,
-   "business": 85.5,
-   "active": 72.8,
-   "uhnw": 71.8,
-   "simpleVip": 85.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 9,
-  "description": "The Joseph: a hotel key in Nashville, Tennessee with a little weight to it; the Union Street address and a base with its shoes shined, and the excellent feeling of plans behaving.",
-  "searchKeywords": [
-   "The Joseph Nashville",
-   "The Joseph luxury hotel",
-   "best luxury hotels in Nashville",
-   "Nashville 5 star hotel",
-   "Nashville luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -111284,67 +107086,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02072": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 7,
-  "nearbyHotelCount": 8,
-  "description": "The Oberoi: in New Delhi, rendered useful; plans that do not fray at the edges, a well-booked stay, and enough poise to keep the day from fraying.",
-  "searchKeywords": [
-   "The Oberoi New Delhi",
-   "The Oberoi luxury hotel",
-   "best luxury hotels in New Delhi",
-   "New Delhi 5 star hotel",
-   "New Delhi luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02073": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -111837,67 +107578,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02084": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "The Oberoi Zahra: in Luxor, neatly folded into a hotel key; the Nile Cruise address and city access without the scramble, luxury's practical machinery, and the sort of operational calm that saves a trip from itself.",
-  "searchKeywords": [
-   "The Oberoi Zahra Luxor",
-   "The Oberoi Zahra luxury hotel",
-   "best luxury hotels in Luxor",
-   "Luxor 5 star hotel",
-   "Luxor luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02085": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -112198,67 +107878,6 @@
    "best luxury hotels in Porto",
    "Porto 5 star hotel",
    "Porto luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02091": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.8,
-  "matchScores": {
-   "honeymoon": 62.6,
-   "family": 76,
-   "celebration": 66.9,
-   "business": 79,
-   "active": 74.9,
-   "uhnw": 65.5,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.92,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3.52,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "privacy:island; sense-of-place:island; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 6,
-  "nearbyHotelCount": 6,
-  "description": "The Paims Turks & Caicos: in Providenciales with salt in the margins. Come for island pacing, views worth unpacking for, and a little room from the world; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "The Paims Turks & Caicos Providenciales",
-   "The Paims Turks & Caicos luxury hotel",
-   "best luxury hotels in Providenciales",
-   "Providenciales 5 star hotel",
-   "Providenciales luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -114214,67 +109833,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02128": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 65.4,
-  "matchScores": {
-   "honeymoon": 62.4,
-   "family": 70.8,
-   "celebration": 62.4,
-   "business": 72.6,
-   "active": 64,
-   "uhnw": 67.4,
-   "simpleVip": 72.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3.25,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 3.4,
-   "roomSuiteReality": 3.4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.2,
-   "sceneFit": 3,
-   "familyMultigen": 3.2,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 3.4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "The Retreat Costa Rica: in Quepos, Puntarenas, built for the excellent problem of how to spend the afternoon; a resort rhythm. For travelers who want the place to remember why they came.",
-  "searchKeywords": [
-   "The Retreat Costa Rica Quepos",
-   "The Retreat Costa Rica luxury hotel",
-   "best luxury hotels in Quepos",
-   "Quepos 5 star hotel",
-   "Quepos luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02129": {
   "bestFit": "Expedition / active luxury",
   "intentTags": [
@@ -115115,68 +110673,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02145": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 73.5,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 82.2,
-   "celebration": 67.5,
-   "business": 82.8,
-   "active": 71.9,
-   "uhnw": 79,
-   "simpleVip": 82.8
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "location:beach; family:beach; Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "location:beach; family:beach; Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "The Ritz-Carlton Maldives: in North Malé Atoll, Kaafu Atoll with salt in the margins. Come for beach days with island logic and a setting that does some of the planning; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "The Ritz-Carlton Maldives North Malé Atoll",
-   "The Ritz-Carlton Maldives luxury hotel",
-   "luxury beach resort North Malé Atoll",
-   "North Malé Atoll beach resort",
-   "North Malé Atoll honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02146": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -115614,67 +111110,6 @@
    "Turtle Bay Kahuku",
    "Turtle Bay luxury hotel",
    "best luxury hotels in Kahuku"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02156": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.8,
-   "celebration": 65.9,
-   "business": 85.5,
-   "active": 72.8,
-   "uhnw": 71.8,
-   "simpleVip": 85.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 5,
-  "description": "The Ritz-Carlton Orlando: in Orlando, Florida with the cuffs just so; the Central Florida Pkwy address and arrival logistics that behave, classic luxury that knows the family schedule matters, and a base that lets the place make the speech.",
-  "searchKeywords": [
-   "The Ritz-Carlton Orlando Orlando",
-   "The Ritz-Carlton Orlando luxury hotel",
-   "best luxury hotels in Orlando",
-   "Orlando 5 star hotel",
-   "Orlando luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -118926,67 +114361,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02210": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.8,
-   "celebration": 65.9,
-   "business": 85.5,
-   "active": 72.8,
-   "uhnw": 71.8,
-   "simpleVip": 85.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "The Romanos: an address in Costa Navarino, Peloponnese for travelers who like the day well-managed and the night within reach; the Messenia address and a base with its shoes shined. Behind it: Marriott STARS polish behind the curtain.",
-  "searchKeywords": [
-   "The Romanos Costa Navarino",
-   "The Romanos luxury hotel",
-   "best luxury hotels in Costa Navarino",
-   "Costa Navarino 5 star hotel",
-   "Costa Navarino luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02211": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -120415,67 +115789,6 @@
    "best luxury hotels in Singapore",
    "Singapore 5 star hotel",
    "Singapore luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02238": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "The Singular Patagonia: in Patagonia, Magallanes, rendered useful; an address that keeps the day moving, luxury's practical machinery, and enough poise to keep the day from fraying.",
-  "searchKeywords": [
-   "The Singular Patagonia Patagonia",
-   "The Singular Patagonia luxury hotel",
-   "best luxury hotels in Patagonia",
-   "Patagonia 5 star hotel",
-   "Patagonia luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -124063,67 +119376,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02304": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76.8,
-   "celebration": 65.9,
-   "business": 85.5,
-   "active": 72.8,
-   "uhnw": 71.8,
-   "simpleVip": 85.5
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.48,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.7,
-   "partnerStrength": 4.6,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.88,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.9
-  },
-  "evaluationNotes": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "criteriaFound": "Marriott STARS:brand-preferred channel with breakfast, credit, upgrade priority",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 2,
-  "nearbyHotelCount": 7,
-  "description": "The Whitley: a hotel key in Atlanta, Georgia with a little weight to it; the Peachtree Road NE address and arrival logistics that behave, and the excellent feeling of plans behaving.",
-  "searchKeywords": [
-   "The Whitley Atlanta",
-   "The Whitley luxury hotel",
-   "best luxury hotels in Atlanta",
-   "Atlanta 5 star hotel",
-   "Atlanta luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02305": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -127296,67 +122548,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02364": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Ted Turner Reserve:preferred partner participation",
-  "criteriaFound": "A Ted Turner Reserve:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 3,
-  "nearbyHotelCount": 3,
-  "description": "Vermejo: in New Mexico for the traveler who wants the outside world close and the room calm; the Colfax County address and arrival logistics that behave. Behind it: luxury's practical machinery.",
-  "searchKeywords": [
-   "Vermejo New Mexico",
-   "Vermejo luxury hotel",
-   "best luxury hotels in New Mexico",
-   "New Mexico 5 star hotel",
-   "New Mexico luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02365": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -129632,67 +124823,6 @@
    "Florence Florence",
    "Florence luxury hotel",
    "luxury villas Florence"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02403": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Warm / personal",
-  "confidence": "Low",
-  "overallFitScore": 76.8,
-  "matchScores": {
-   "honeymoon": 76,
-   "family": 85.1,
-   "celebration": 71,
-   "business": 81.6,
-   "active": 69.6,
-   "uhnw": 90.8,
-   "simpleVip": 81.6
-  },
-  "criteriaScores": {
-   "guestIntent": 3.29,
-   "serviceStyleFit": 3.95,
-   "locationQuality": 3.8,
-   "roomSuiteReality": 5,
-   "valueWithinLuxury": 4.75,
-   "partnerStrength": 4.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 5,
-   "sceneFit": 2.8,
-   "familyMultigen": 4.62,
-   "accessibilityEase": 3.1,
-   "seasonalityRiskFit": 3.2,
-   "operationalReliability": 3.95,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.5,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:villa/villas/residence; privacy:villa/villas/residence; family:villa; Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "criteriaFound": "room/suite:villa/villas/residence; privacy:villa/villas/residence; family:villa; Belmond Bellini Club:sense of place, rail/resort heritage, distinctive service",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 3,
-  "description": "Villa Sant'Andrea: a private-key proposition in Taormina, Sicily; residential room to spread out, a suite-minded stay, and room for more than two opinions. Belmond romance and advisor leverage handles the practicalities discreetly.",
-  "searchKeywords": [
-   "Villa Sant'Andrea Taormina",
-   "Villa Sant'Andrea luxury hotel",
-   "luxury villas Taormina",
-   "Taormina villa resort",
-   "Italy luxury villas"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -134214,67 +129344,6 @@
    "best luxury hotels in Boca Raton",
    "Boca Raton 5 star hotel",
    "Boca Raton luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_02487": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.5,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 75.9,
-   "celebration": 64.7,
-   "business": 78.4,
-   "active": 72.8,
-   "uhnw": 64.4,
-   "simpleVip": 78.4
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.17,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 3.7,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.22,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.55
-  },
-  "evaluationNotes": "A Ritz-Carlton Reserve:preferred partner participation",
-  "criteriaFound": "A Ritz-Carlton Reserve:preferred partner participation",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 4,
-  "nearbyHotelCount": 4,
-  "description": "Zadún: in San José del Cabo, Baja California Sur, where the sensible plan is water first and questions later; water close enough to edit the itinerary and a room that knows when to go quiet. For the sort of escape that starts behaving like a memory while it is still happening.",
-  "searchKeywords": [
-   "Zadún San José del Cabo",
-   "Zadún luxury hotel",
-   "best luxury hotels in San José del Cabo",
-   "San José del Cabo 5 star hotel",
-   "San José del Cabo luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
