@@ -27,6 +27,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
+import { cardImage } from '../lib/virtuoso/media.mjs';
 
 const args = process.argv.slice(2);
 const CHECK = args.includes('--check');
@@ -277,7 +278,7 @@ function buildSeaAtlas({ atlas, baseRel, outRel, publicRel }) {
       id: c.id,
       g: regionsFor(c.itinerary, REGIONS),
       u: c.path ? `https://www.virtuoso.com/advisor/brianharris${c.path}` : null,
-      image: c.image ?? null,
+      image: cardImage(c.image) ?? null,
       description: c.description || null,
       promotions: c.promotions ?? [],
       itin,
@@ -311,10 +312,14 @@ function buildExpedition() {
     c.path ? String(c.path).split('/').pop() : '',
     '',
     c.ship ?? '',
+    // The supplier's photograph, so the expedition cards can show one like the
+    // other atlases. Appended rather than inserted: the schema is read by index.
+    cardImage(c.image) ?? '',
   ]);
 
   writePair('data/atlas/cruise/sailings.json', 'public/maps/cruise/sailings.json',
-    { schema: base.schema, urlBase: base.urlBase, productBase: base.productBase, rows });
+    { schema: [...base.schema.filter(c => c !== 'image'), 'image'],
+      urlBase: base.urlBase, productBase: base.productBase, rows });
 
   /*
    * The day-by-day route file the map draws from, now built straight out of the
@@ -452,7 +457,7 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
       g,
       u: `https://www.virtuoso.com/advisor/brianharris/tours/${t.id}/${slugKey(t.name).slice(0, 60)}`,
       days: Number(String(t.lengthLabel ?? '').match(/\d+/)?.[0]) || itin.length,
-      img: t.image ?? null,
+      img: cardImage(t.image) ?? null,
       from: t.embarkation ?? t.startLocation ?? null,
       to: t.disembarkation ?? null,
       country: (t.countries ?? [])[0] ?? null,

@@ -115,6 +115,9 @@ export function adaptCruise(
     const name = String(get("name") ?? "");
     const operator = (get("operator") as string) || null;
     const ship = (get("ship") as string) || null;
+    // Supplier photograph; the column was appended by the Virtuoso merge, so an
+    // older feed without it simply yields null.
+    const image = (get("image") as string) || null;
     const start = (get("start") as string) || null;
     const nights = get("nights");
     const region = REGION_BY_ID[sid] || correctedRegionName(String(get("region") ?? ""), name);
@@ -139,6 +142,7 @@ export function adaptCruise(
       idAliases: [sid, `${CRUISE_DESCRIPTOR.idPrefix}${sid}`],
       collection: "cruise",
       title: name,
+      thumb: image,
       brand: null, // cruise has no brand concept
       brandLabel: operator,
       operator,

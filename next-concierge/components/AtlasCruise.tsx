@@ -99,8 +99,34 @@ export default function AtlasCruise() {
     return { offerings, ctx, regionLabels, routeFor, brandMarks, logoBase: "/maps/cruise/logos" };
   }, []);
 
+
+  /*
+   * The supplier's photograph, at the card's top edge.
+   *
+   * AtlasCollection only takes `cardMedia` from a collection whose feed really
+   * carries images — a grid of grey rectangles is worse than none. The Virtuoso
+   * sync filled every one of 3,662 sailings, so the slot opens here the same way it did for hotels,
+   * with the brand mark riding on the photograph instead of the head row.
+   */
+  const cardMedia = useCallback((o: AtlasOffering) => {
+    const src = typeof o.thumb === "string" ? o.thumb : null;
+    return (
+      <span className="ac-media">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt="" loading="lazy" />
+        ) : (
+          <span className="ac-media-empty" />
+        )}
+      </span>
+    );
+  }, []);
+
   return (
     <AtlasCollection
+      cardMedia={cardMedia}
+      // The brand mark rides on the photograph, as it does on the hotel cards.
+      markOverMedia
       type="cruise"
       descriptor={CRUISE_DESCRIPTOR}
       load={load}

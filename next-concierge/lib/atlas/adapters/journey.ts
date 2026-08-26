@@ -236,6 +236,8 @@ export function adaptJourney(
       idAliases: aliases,
       collection: d.collection,
       title: trip.n || "Journey",
+      // Supplier photograph, from the Virtuoso sync.
+      thumb: (trip as { img?: string | null }).img || null,
       brand: brandKey,
       brandLabel,
       operator: brandLabel,

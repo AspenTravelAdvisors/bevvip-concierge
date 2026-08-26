@@ -937,6 +937,75 @@
    "place": "Varanasi",
    "why": "18.9N 83.9E is in Andhra Pradesh, 725km south; Varanasi is on the Ganges in Uttar Pradesh",
    "source": "three other jet journeys in the same feed map it at 25.3333, 83"
+  },
+  {
+   "name": "Kochi, Japan",
+   "collections": [
+    "world"
+   ],
+   "was": [
+    26.2336,
+    127.739
+   ],
+   "ll": [
+    33.55,
+    133.53
+   ],
+   "place": "Kochi",
+   "why": "26.2N 127.7E is Naha on Okinawa; these voyages call Hiroshima -> Kochi -> Kobe, a Seto Inland Sea run, so this is Kochi on Shikoku",
+   "source": "the expedition feed maps the same name at 33.55, 133.53 across 12 sailings on Osaka and Kobe runs"
+  },
+  {
+   "name": "Santa Margherita, Italy",
+   "collections": [
+    "world",
+    "yacht"
+   ],
+   "was": [
+    38.4833,
+    14.95
+   ],
+   "ll": [
+    44.33,
+    9.21
+   ],
+   "place": "Santa Margherita Ligure",
+   "why": "38.5N 15.0E is the Aeolian Islands off Sicily; these voyages call St. Tropez / Ajaccio -> here -> Cannes, which is Santa Margherita Ligure on the Riviera",
+   "source": "the expedition feed maps it at 44.33, 9.21 on Nice -> here -> Porto Venere"
+  },
+  {
+   "name": "Indian Harbour, NL, Canada",
+   "collections": [
+    "world"
+   ],
+   "was": [
+    47.4833,
+    -54.2
+   ],
+   "ll": [
+    54.45,
+    -57.22
+   ],
+   "place": "Indian Harbour, Labrador",
+   "why": "47.5N 54.2W is the Avalon in Newfoundland; the routing is Nain -> here -> Battle Harbour, both Labrador, so this is the Labrador harbour",
+   "source": "the expedition feed maps the identical routing at 54.45, -57.22 across 60 sailings"
+  },
+  {
+   "name": "San Martin, Peru",
+   "collections": [
+    "world"
+   ],
+   "was": [
+    -1.5685,
+    -74.5965
+   ],
+   "ll": [
+    -13.8045,
+    -76.293
+   ],
+   "place": "General San Martin, Pisco",
+   "why": "1.6S 74.6W is Loreto in the Amazon; these voyages call Callao -> here -> Iquique or Coquimbo, a Pacific coastal run, so this is the port of General San Martin at Pisco",
+   "source": "the expedition feed maps it at -13.8045, -76.293 on the same Callao departures"
   }
  ],
  "confirmed": [
@@ -1119,6 +1188,21 @@
    "collection": "yacht",
    "name": "Vista Mar Marina, Panama, Panama",
    "why": "a Panama repositioning call between Caribbean charters"
+  },
+  {
+   "collection": "yacht",
+   "name": "Miyako, Japan",
+   "why": "two real ports share the name: Miyako in Iwate on the Tokyo-Kushiro runs, Miyakojima on the Keelung-Naha runs. The feed now places each correctly, so the cross-collection difference is right"
+  },
+  {
+   "collection": "jet",
+   "name": "Antarctic Peninsula, Antarctica",
+   "why": "-63.25, -60.20 sits by the South Shetlands, which fits a fly-in trip routing Buenos Aires -> here -> Admiralty Bay, King George Island"
+  },
+  {
+   "collection": "jet",
+   "name": "Antarctic Sound, Antarctica",
+   "why": "the position is agreed; the flagged journey is a supplier itinerary error (Zanzibar -> Antarctic Sound -> Maasai Mara) rather than a misplaced port"
   }
  ]
 }

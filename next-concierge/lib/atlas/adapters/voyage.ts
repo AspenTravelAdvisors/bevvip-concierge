@@ -128,6 +128,8 @@ export function adaptVoyage(
       idAliases: [id, `${d.idPrefix}${id}`],
       collection: d.collection,
       title: trip.title || "Voyage",
+      // Supplier photograph, from the Virtuoso sync.
+      thumb: (trip as { image?: string | null }).image || null,
       brand: brandKey,
       brandLabel,
       operator: trip.operator || brandLabel,

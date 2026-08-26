@@ -17,6 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
+import { cardImage } from '../lib/virtuoso/media.mjs';
 
 const CHECK = process.argv.includes('--check');
 const D = path.join(repoRoot, 'data/atlas/hotel');
@@ -204,7 +205,7 @@ for (const h of base) {
     bookUrl: h.bookUrl,                               // ours
     bookPassword: h.bookPassword,                     // ours
 
-    thumb: v.image ?? h.thumb,
+    thumb: cardImage(v.image) ?? h.thumb,
     // The guide's card renderer takes `photos` as plain URL strings and shows up
     // to three (lib/search-offerings.js). The full library stays in the Virtuoso
     // feed, looked up by vid when a dossier needs it.
@@ -251,7 +252,7 @@ for (const v of feedDoc.hotels) {
     promotions: promosFor(v),
     hasPromotion: promosFor(v).length > 0,
     bookUrl: 'https://www.VipTravelAi.com', bookPassword: 'VIP',
-    thumb: v.image, images: (v.images ?? []).slice(0, 3).map(i => i.url).filter(Boolean),
+    thumb: cardImage(v.image), images: (v.images ?? []).slice(0, 3).map(i => i.url).filter(Boolean),
     imageCount: v.imageCount ?? 0,
     propertyType: v.propertyType ?? null, numberOfRooms: v.numberOfRooms ?? null,
     nearestAirport: v.nearestAirport ?? null, nearestAirportMiles: v.nearestAirportMiles ?? null,

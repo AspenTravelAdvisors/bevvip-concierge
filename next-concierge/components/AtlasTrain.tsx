@@ -80,5 +80,35 @@ export default function AtlasTrain() {
   }, []);
 
   // Copper, from the rail atlas's own --accent.
-  return <AtlasCollection type="train" descriptor={TRAIN_DESCRIPTOR} load={load} accent="#e08d5f" />;
+  /*
+   * The operator's photograph, at the card's top edge.
+   *
+   * AtlasCollection only takes `cardMedia` from a feed that really carries
+   * images; the Virtuoso sync filled 126 of 127 rail journeys, so the slot opens
+   * here as it did for hotels, with the brand mark on the photograph.
+   */
+  const cardMedia = useCallback((o: AtlasOffering) => {
+    const src = typeof o.thumb === "string" ? o.thumb : null;
+    return (
+      <span className="ac-media">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt="" loading="lazy" />
+        ) : (
+          <span className="ac-media-empty" />
+        )}
+      </span>
+    );
+  }, []);
+
+  return (
+    <AtlasCollection
+      type="train"
+      descriptor={TRAIN_DESCRIPTOR}
+      load={load}
+      accent="#e08d5f"
+      cardMedia={cardMedia}
+      markOverMedia
+    />
+  );
 }
