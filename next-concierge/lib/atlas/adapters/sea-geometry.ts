@@ -39,7 +39,22 @@ export function loadSeaRoutes(collection: string): Promise<Map<string, SeaRouteL
   const pending = inflight.get(collection);
   if (pending) return pending;
 
-  const p = fetch(`/maps/shared/sea-routes-${collection}.json`, { cache: "force-cache" })
+  /*
+   * `no-cache`, NOT `force-cache` — the rule the hotel feed already follows.
+   *
+   * force-cache serves whatever the browser has, however old, and never
+   * revalidates. That was survivable while this file only changed on a human
+   * deploy and nobody was looking at the shape of the lines. It stopped being
+   * survivable the moment the land mask was rebuilt: the routes are correct on
+   * the server and a returning visitor keeps being shown the ones that sail
+   * over Brac, with no way to ask for the new ones short of clearing their
+   * site data. AtlasShell already fetches this exact URL with `no-cache`, so
+   * the two callers were disagreeing about the same file.
+   *
+   * Revalidation costs a conditional request; the server answers 304 when
+   * nothing moved.
+   */
+  const p = fetch(`/maps/shared/sea-routes-${collection}.json`, { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : null))
     .then((j: RawSeaRoutes | null) => {
       const index = new Map<string, SeaRouteLeg[]>();

@@ -41,7 +41,10 @@ let inflight: Promise<RawRailGeo | null> | null = null;
 export function loadRailGeometry(): Promise<RawRailGeo | null> {
   if (cache) return Promise.resolve(cache);
   if (inflight) return inflight;
-  inflight = fetch("/maps/train/data/rail-routes.json", { cache: "force-cache" })
+  // `no-cache` for the same reason as sea-geometry.ts: this file is rebuilt by
+  // the nightly sync, and force-cache pins a returning visitor to whatever
+  // geometry their browser happened to see first.
+  inflight = fetch("/maps/train/data/rail-routes.json", { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : null))
     .then((j: RawRailGeo | null) => { cache = j; return j; })
     .catch(() => null);
