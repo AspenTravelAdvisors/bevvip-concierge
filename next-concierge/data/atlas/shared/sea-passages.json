@@ -1,0 +1,80 @@
+{
+ "_note": [
+  "Water the land mask has to be told about.",
+  "",
+  "scripts/build-landmask.mjs marks a cell as land when land touches it ANYWHERE in",
+  "the cell — the rule that finally made Brac, Capri and Cape Cod visible. It cuts",
+  "both ways: a channel narrower than a 3.7 km cell is walled off by the same",
+  "honesty, and a few of those channels are among the most heavily used water on",
+  "earth. The Bosphorus is 700 m across. The Suez Canal is 300 m. The Corinth Canal",
+  "is twenty-one metres.",
+  "",
+  "So this file reopens them. It is an exception list, not a tuning knob: every",
+  "entry is a named canal or strait that ships genuinely transit, and the reason it",
+  "needs an entry is its width. Nothing here exists to make a route look nicer.",
+  "",
+  "The old 0.1-degree mask left the Bosphorus open by accident rather than by",
+  "intent, which is why removing this file would silently strand the entire Black",
+  "Sea — Istanbul, Odessa and Constanta — 240 km from the nearest water the router",
+  "believes in.",
+  "",
+  "`line` is a polyline of [lat, lng] following the channel; `widthCells` is the",
+  "half-width carved either side, so 1 clears a three-cell corridor (~11 km).",
+  "",
+  "NOT here, deliberately: the estuary berths that sit tens of kilometres up a",
+  "river — London, Hamburg, Antwerp, Bordeaux, Seville, Montreal. Those were out of",
+  "reach of the old mask too, at 77-272 km, and a river is not a strait. They snap",
+  "to the nearest coastal water, which is what a sea atlas should draw."
+ ],
+ "passages": [
+  {
+   "name": "Bosphorus",
+   "width": "700 m at its narrowest",
+   "why": "The only way into the Black Sea. Without it Istanbul, Odessa and Constanta are unreachable.",
+   "widthCells": 1,
+   "line": [[41.35, 29.18], [41.24, 29.14], [41.12, 29.06], [41.04, 29.01], [40.97, 28.95], [40.90, 28.85]]
+  },
+  {
+   "name": "Dardanelles",
+   "width": "1.2 km at Canakkale",
+   "why": "The other half of the Turkish Straits: the Sea of Marmara reaches the Aegean through here or not at all.",
+   "widthCells": 1,
+   "line": [[40.72, 27.30], [40.55, 26.95], [40.41, 26.67], [40.15, 26.41], [40.03, 26.18], [39.95, 25.95]]
+  },
+  {
+   "name": "Suez Canal",
+   "width": "205 m at the waterline",
+   "why": "Mediterranean to Red Sea. It survives rasterisation today only because Natural Earth happens to leave a gap there, which is luck rather than a guarantee.",
+   "widthCells": 1,
+   "line": [[31.40, 32.32], [31.26, 32.31], [30.59, 32.31], [30.15, 32.42], [29.93, 32.55], [29.70, 32.58]]
+  },
+  {
+   "name": "Panama Canal",
+   "width": "192 m in the Culebra Cut",
+   "why": "Atlantic to Pacific, and the spine of the atlas's Central America & Panama region.",
+   "widthCells": 1,
+   "line": [[9.45, -79.92], [9.34, -79.92], [9.18, -79.81], [9.04, -79.63], [8.93, -79.56], [8.82, -79.52]]
+  },
+  {
+   "name": "Corinth Canal",
+   "width": "21 m",
+   "why": "Saronic Gulf to Gulf of Corinth. Too narrow for cruise ships and routinely transited by the yachts this atlas sells.",
+   "widthCells": 0,
+   "line": [[37.96, 22.90], [37.93, 22.98], [37.91, 23.03]]
+  },
+  {
+   "name": "Strait of Messina",
+   "width": "3.1 km at its narrowest",
+   "why": "Between Sicily and the toe of Italy — the difference between Naples to Taormina being a hop and being a circumnavigation of Sicily.",
+   "widthCells": 0,
+   "line": [[38.30, 15.65], [38.22, 15.60], [38.13, 15.52], [38.05, 15.50]]
+  },
+  {
+   "name": "Stockholm archipelago",
+   "width": "channels under 1 km between 30,000 islands",
+   "why": "Stockholm is a scheduled Baltic port and the fairway to it threads islands far narrower than a cell.",
+   "widthCells": 0,
+   "line": [[59.28, 19.30], [59.29, 18.92], [59.36, 18.60], [59.40, 18.35], [59.33, 18.15], [59.33, 18.07]]
+  }
+ ]
+}

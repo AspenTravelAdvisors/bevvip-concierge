@@ -34,14 +34,49 @@
  * [lat, lng] because that is what PORTS / ll / REGIONS.coord already hold.
  */
 
-const W = 3600;
-const H = 1700;
-const RES = 10; // cells per degree — 0.1 deg
-const LAT_MAX = 85;
-export const MASK_BYTES = (W * H) / 8; // 765,000
+/*
+ * THE GRID. Changing RES here changes the mask, and nothing else has to be told:
+ * scripts/build-landmask.mjs imports these to rasterise, and every search
+ * distance below is written in DEGREES and converted, so none of them silently
+ * means something different at a new resolution.
+ *
+ * RES was 10 — 0.1 degrees, about 11 km — and it was point-sampled, so anything
+ * narrower than a cell fell between samples and read as open ocean. Measured
+ * against 26 known land points, 14 came back sea: Brac, Korcula, Peljesac and
+ * Dugi Otok in the Adriatic, plus Long Island, Cape Cod, Phuket, Santorini,
+ * Mykonos, Capri, Elba, Jersey and Lofoten. Routes went straight through all of
+ * them and the router had no way to know, because a leg it drew over Brac came
+ * back "sea": A* had routed around every obstacle the mask contained.
+ */
+export const MASK_RES = 30;              // cells per degree — 0.0333 deg, ~3.7 km
+export const MASK_LAT_MAX = 85;
+export const MASK_W = 360 * MASK_RES;
+export const MASK_H = 2 * MASK_LAT_MAX * MASK_RES;
+
+const W = MASK_W;
+const H = MASK_H;
+const RES = MASK_RES;
+const LAT_MAX = MASK_LAT_MAX;
+export const MASK_BYTES = Math.ceil((W * H) / 8);
 
 /** Bezier bulge. The arcs stop reading as voyages if you touch this. */
 export const ARC_K = 0.16;
+
+/*
+ * Search distances in degrees, converted to cells on use.
+ *
+ * These were written as bare cell counts when a cell was 0.1 degrees — 30 cells
+ * to find open water, search boxes padded by 45/140/280/440. Left that way,
+ * tripling the resolution would have quietly cut every one of them to a third
+ * of the distance it was chosen to cover, and the only symptom would have been
+ * long legs going back to drawing arcs over continents.
+ */
+const SNAP_MAX_DEG = 3;                     // how far to look for connected ocean
+const PAD_MIN_DEG = 4.5;                    // smallest A* search box
+const PAD_STEPS_DEG = [14, 28, 44];         // widening retries, for round-a-continent detours
+
+const deg = (d) => Math.round(d * MASK_RES);
+const SNAP_MAX_CELLS = deg(SNAP_MAX_DEG);
 
 const normLng = (lng) => (((lng + 180) % 360) + 360) % 360 - 180;
 const col = (lng) => { let c = Math.round((normLng(lng) + 180) * RES); if (c >= W) c -= W; if (c < 0) c += W; return c; };
@@ -264,13 +299,21 @@ function hPop(h) {
  * @param {Uint8Array|ArrayBuffer|Buffer} maskBuffer bit-packed land grid,
  *        exactly MASK_BYTES long (3600 x 1700 / 8).
  */
-export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
+/*
+ * Cells one A* search may cover. The number is a memory and time ceiling, not a
+ * geographic one, so it scales with the square of the resolution: 1.4M was the
+ * right ceiling for a visitor's main thread at 0.1 degrees, and the same ground
+ * costs nine times as many cells at 0.0333. Build-time callers raise it further.
+ */
+export const DEFAULT_CELL_BUDGET = 1400000 * (MASK_RES / 10) ** 2;
+
+export function createSeaRouter(maskBuffer, { cellBudget = DEFAULT_CELL_BUDGET } = {}) {
   const mask =
     maskBuffer instanceof Uint8Array
       ? maskBuffer
       : new Uint8Array(maskBuffer.buffer ?? maskBuffer, maskBuffer.byteOffset ?? 0, maskBuffer.byteLength ?? maskBuffer.length);
   if (mask.length !== MASK_BYTES) {
-    throw new Error(`landmask must be ${MASK_BYTES} bytes (3600x1700/8), got ${mask.length}`);
+    throw new Error(`landmask must be ${MASK_BYTES} bytes (${W}x${H}/8 at ${RES} cells/deg), got ${mask.length}. Rebuild it: npm run build:landmask`);
   }
 
   const isLandCell = (c, r) => {
@@ -328,7 +371,22 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
     }
     return false;
   };
+  /**
+   * Does a drawn polyline touch land anywhere?
+   *
+   * Segment interiors AND the vertices between them. `lineHitsLand` samples
+   * strictly between its two endpoints — deliberately, because a leg's own ends
+   * are ports and a port is on a coast — but a polyline's INTERIOR vertices are
+   * not ports, and nothing was testing them. Chaikin smoothing rounds a corner
+   * by inventing points, and a rounded corner is precisely where an invented
+   * point lands on the headland. Twenty-seven legs passed every check the router
+   * made while carrying a vertex sitting on dry land, among them the Costa del
+   * Sol hops, Cape Sounion and the point outside Porto; the fallback to the
+   * unsmoothed path existed the whole time and was never triggered, because the
+   * test that would have triggered it looked everywhere except at the point.
+   */
   const polyHitsLand = (pts) => {
+    for (let i = 1; i < pts.length - 1; i++) if (isLandLL(pts[i][0], pts[i][1])) return true;
     for (let i = 0; i < pts.length - 1; i++) if (lineHitsLand(pts[i], pts[i + 1])) return true;
     return false;
   };
@@ -342,7 +400,7 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
   const nearestSeaCell = (lat, lng) => {
     const c0 = col(lng), r0 = row(lat);
     if (oceanAt(c0, r0)) return [c0, r0];
-    for (let rad = 1; rad <= 30; rad++)
+    for (let rad = 1; rad <= SNAP_MAX_CELLS; rad++)
       for (let dy = -rad; dy <= rad; dy++)
         for (let dx = -rad; dx <= rad; dx++) {
           if (Math.max(Math.abs(dx), Math.abs(dy)) !== rad) continue;
@@ -362,7 +420,14 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
     if (bw * bh > cellBudget) return null;
     const idx = (c, r) => (r - minR) * bw + (c - minC);
     const inBox = (c, r) => c >= minC && c <= maxC && r >= minR && r <= maxR;
-    const g = new Float64Array(bw * bh).fill(Infinity);
+    /*
+     * Float32, not Float64. The g-scores are cell counts — a few tens of
+     * thousands at the very most — so single precision is ample, and at this
+     * resolution the array is the search's whole memory cost. Halving it is what
+     * lets the budget stay large enough for a Yokohama-to-Kodiak leg to be
+     * routed rather than drawn as an arc over the Aleutians.
+     */
+    const g = new Float32Array(bw * bh).fill(Infinity);
     const came = new Int32Array(bw * bh).fill(-1);
     const closed = new Uint8Array(bw * bh);
     const cosR = (r) => Math.max(0.15, Math.cos((cellLat(r) * Math.PI) / 180));
@@ -381,6 +446,17 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
       for (const [dx, dy] of dirs) {
         const nc = cur.c + dx, nr = cur.r + dy;
         if (!inBox(nc, nr) || isLandCell(nc, nr)) continue;
+        /*
+         * No corner cutting.
+         *
+         * Both cells of a diagonal step can be water while the corner between
+         * them is land, and the drawn leg is a straight line between cell
+         * CENTRES — so it passes through that corner. The path is legal by the
+         * grid's rules and crosses a headland on the map. Requiring the two
+         * orthogonal cells to be water as well means a diagonal is only taken
+         * through water a ship could actually be in.
+         */
+        if (dx && dy && (isLandCell(cur.c + dx, cur.r) || isLandCell(cur.c, cur.r + dy))) continue;
         const ni = idx(nc, nr);
         if (closed[ni]) continue;
         let step = dx && dy ? Math.hypot(cl, 1) : dx ? cl : 1;
@@ -412,8 +488,8 @@ export function createSeaRouter(maskBuffer, { cellBudget = 1400000 } = {}) {
       else sb[0] += W;
     }
     const span = Math.max(Math.abs(sa[0] - sb[0]), Math.abs(sa[1] - sb[1]));
-    const pads = [Math.max(45, Math.round(span * 0.9))];
-    for (const p of [140, 280, 440]) if (p > pads[pads.length - 1]) pads.push(p);
+    const pads = [Math.max(deg(PAD_MIN_DEG), Math.round(span * 0.9))];
+    for (const d of PAD_STEPS_DEG) { const p = deg(d); if (p > pads[pads.length - 1]) pads.push(p); }
     for (const pad of pads) { const r = searchSea(sa, sb, pad); if (r) return r; }
     return null;
   };

@@ -53,10 +53,18 @@ const r3 = (n) => Math.round(n * 10 ** DP) / 10 ** DP;
 const SIMPLIFY_EPS = 0.01;
 
 /**
- * A* search-box ceiling. The browser-safe default is 1.4M cells; at build time
- * we can afford more, and the longest legs need it — see sea-router.mjs.
+ * A* search-box ceiling. The browser-safe default is sized for a visitor's main
+ * thread; at build time we can afford far more, and the longest legs need it —
+ * see sea-router.mjs.
+ *
+ * The number is in CELLS, so it does not mean the same amount of ocean at every
+ * resolution: tripling the grid to 30 cells per degree made the same Yokohama-to-
+ * Kodiak search box nine times as many cells, and 12M — which had been ample —
+ * started turning transatlantic and transpacific legs into arcs drawn over the
+ * Aleutians and Iberia. At 40M with the search's Float32 g-scores, the peak is
+ * around 360 MB for the handful of legs that reach it.
  */
-const CELL_BUDGET = 12000000;
+const CELL_BUDGET = 40000000;
 
 const read = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), "utf8"));
 
@@ -147,6 +155,7 @@ const byTypeFeatures = new Map();
 const modeCounts = { sea: 0, arc: 0, densified: 0, "arc-fallback": 0 };
 const failed = [];
 const crossers = [];
+let simplifyBackoffs = 0;
 let pointsBefore = 0;
 let pointsAfter = 0;
 
@@ -170,13 +179,37 @@ for (const [key, rec] of legs) {
   const crossesLand = interior.length >= 2 && router.polyHitsLand(interior);
   if (crossesLand) crossers.push({ key, mode, a: rec.a, b: rec.b });
 
-  const simplified = rdp(coordinates, SIMPLIFY_EPS);
-  pointsAfter += simplified.length;
+  /*
+   * Simplify as far as the coastline allows, not as far as the budget allows.
+   *
+   * Douglas-Peucker at 0.01 degrees moves a vertex by up to 1.1 km, and the
+   * router deliberately hugs the coast — it sits a ship about one cell offshore
+   * and no further. In open water that is invisible; threading the Dalmatian
+   * islands or the Inside Passage it is enough to cut a corner across the very
+   * headland A* just spent its search avoiding. So the epsilon is offered, and
+   * withdrawn for the legs that cannot take it: about one leg in a hundred keeps
+   * more points, and none of them gains a land crossing it did not arrive with.
+   *
+   * Checked AFTER rounding, because r3 is another 100 m of movement and there is
+   * no sense auditing geometry that is not the geometry we ship.
+   */
+  const round = (pts) => pts.map(([lng, lat]) => [r3(lng), r3(lat)]);
+  let shipped = round(rdp(coordinates, SIMPLIFY_EPS));
+  if (!crossesLand) {
+    for (const eps of [SIMPLIFY_EPS / 4, 0]) {
+      const interiorOf = (pts) => pts.slice(1, -1).map(([lng, lat]) => [lat, lng]);
+      const bad = interiorOf(shipped).length >= 2 && router.polyHitsLand(interiorOf(shipped));
+      if (!bad) break;
+      shipped = round(eps ? rdp(coordinates, eps) : coordinates);
+      simplifyBackoffs++;
+    }
+  }
+  pointsAfter += shipped.length;
 
   const list = byTypeFeatures.get(rec.type) || [];
   list.push({
     type: "Feature",
-    geometry: { type: "LineString", coordinates: simplified.map(([lng, lat]) => [r3(lng), r3(lat)]) },
+    geometry: { type: "LineString", coordinates: shipped },
     properties: {
       type: rec.type,
       mode,
@@ -227,7 +260,7 @@ console.log("");
 console.log(`  raw legs            ${stats.rawLegs.toLocaleString()}`);
 console.log(`  unique legs         ${features.length.toLocaleString()}  (${(stats.rawLegs / features.length).toFixed(1)}x dedupe)`);
 console.log(`  routed in           ${(routeMs / 1000).toFixed(1)}s`);
-console.log(`  points              ${pointsBefore.toLocaleString()} -> ${pointsAfter.toLocaleString()}  (rdp eps ${SIMPLIFY_EPS})`);
+console.log(`  points              ${pointsBefore.toLocaleString()} -> ${pointsAfter.toLocaleString()}  (rdp eps ${SIMPLIFY_EPS}, backed off on ${simplifyBackoffs} legs that it pushed onto land)`);
 console.log("");
 console.log("  by mode:");
 console.log(`    sea (A* around land)   ${String(modeCounts.sea || 0).padStart(6)}`);
