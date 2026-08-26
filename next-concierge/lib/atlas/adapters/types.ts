@@ -185,6 +185,18 @@ export interface AtlasFilterDescriptor {
   brandParam: "brand" | "operator";
   /** train/jet support excluding regions via `exRegions=`; voyages do not. */
   supportsRegionExclusion: boolean;
+  /**
+   * What this collection's `world=1` view is CALLED in the region control.
+   *
+   * The flag is shared and the meaning is not. On the jet atlas it marks a
+   * journey that circles the planet, and the Leaflet original's globe button
+   * said "Around the World". On rail it marks a journey aboard a named train —
+   * the Orient-Express, Rovos Rail, the Rocky Mountaineer — and that button
+   * said "Legendary Trains". Same param, same filter, two different questions,
+   * so the wording travels with the collection rather than being hardcoded into
+   * a control both of them render. Defaults to "Around the World".
+   */
+  worldLabel?: string;
   /** Voyages expose a ship filter (`ships=`); journeys do not. */
   supportsVesselFilter: boolean;
   /**

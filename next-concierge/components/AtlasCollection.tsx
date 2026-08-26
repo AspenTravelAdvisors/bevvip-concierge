@@ -497,7 +497,20 @@ export default function AtlasCollection({
   /** Push a new filter state into the URL; the memo above picks it back up. */
   const writeUrl = useCallback(
     (next: AtlasFilterState, nextQuery: AtlasQuery) => {
-      const qs = toSearchParams(next, parsed?.view ?? {}, descriptor, {
+      /*
+       * `world` is carried BOTH as a filter and as a view intent, and
+       * toSearchParams writes the param when either is set. Reusing the parsed
+       * view verbatim therefore made the choice one-way: once `world=1` was in
+       * the URL, `view.world` stayed true, and every later push re-attached it
+       * even when the region control had just cleared `state.world`. Picking
+       * "Around the World" on the jet atlas was a trap you could not leave —
+       * every other region silently resolved back to the world view.
+       *
+       * The view half follows the state half on write. Nothing else in `view`
+       * is a filter, so nothing else has this problem.
+       */
+      const view = { ...(parsed?.view ?? {}), world: !!next.world };
+      const qs = toSearchParams(next, view, descriptor, {
         q: nextQuery.q,
         country: nextQuery.country,
       });

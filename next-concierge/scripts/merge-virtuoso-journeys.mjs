@@ -27,7 +27,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
-import { cardImage } from '../lib/virtuoso/media.mjs';
+import { cardImage, journeyPhotoKey } from '../lib/virtuoso/media.mjs';
 
 const args = process.argv.slice(2);
 const CHECK = args.includes('--check');
@@ -44,6 +44,34 @@ const TOURS = exists('data/atlas/shared/virtuoso-tours.json')
 
 const report = [];
 const written = [];
+
+/*
+ * Hero photographs for the journeys the API supplies none for.
+ *
+ * Harvested by scripts/harvest-journey-photos.mjs from the operator's own page
+ * — see data/atlas/shared/journey-photo-sources.json. Read here rather than
+ * fetched here on purpose: the merge runs in `prebuild` and in a nightly
+ * unattended Action, and neither may depend on a supplier's marketing site
+ * being up. Missing file means no overlay, not a failure.
+ */
+const PHOTOS = exists('data/atlas/shared/journey-photos.json')
+  ? (read('data/atlas/shared/journey-photos.json').photos ?? {})
+  : {};
+
+/**
+ * The picture for a card: the supplier's, then the first of its gallery, then
+ * ours.
+ *
+ * The gallery step is not padding. One rail journey ships a null
+ * `defaultImageUrl` and three perfectly good brochure photographs right beside
+ * it, so the only thing standing between that card and a picture was never
+ * looking at the second field.
+ */
+function heroFor(record, trip) {
+  const supplied = cardImage(record?.image) ?? cardImage((record?.images ?? [])[0]);
+  if (supplied) return supplied;
+  return PHOTOS[journeyPhotoKey(trip)]?.url ?? null;
+}
 
 /*
  * Two guards, both learned the hard way by overwriting five live atlases with a
@@ -370,6 +398,153 @@ function buildExpedition() {
     `${placed}/${stops} stops carry coordinates (${Math.round((placed / Math.max(stops, 1)) * 100)}%)`);
 }
 
+// ---------- departures ----------
+
+/*
+ * WHEN a tour goes, in the supplier's own words.
+ *
+ * `travelDates` comes back in exactly three shapes across all 226 journeys, and
+ * they mean three different things:
+ *
+ *   "Dates: 28 Jan 2028 - 12 Feb 2028"                55  one fixed departure
+ *   "Valid for Departures: 16 Sep 2026 - 26 Oct 2026" 44  a season of departures
+ *   "Valid for Departures Now Through: 01 Jun 2027"  127  open, book any time
+ *
+ * The distinction is the whole reason the jet and rail cards lost their dates.
+ * `startDate`/`endDate` are populated on all three, so reading them blindly
+ * publishes "16 Sep – 26 Oct" as the length of a fourteen-day journey, and
+ * "1 Jun 2024 – 1 Jun 2027" as a private jet departure two years in the past.
+ * Only the first shape is a departure and a return; in the second the pair is
+ * the first and last departure of a season; in the third it is a shelf life.
+ *
+ * Only the first shape gets a departure date. A season and an open window are
+ * both "no specific date yet" as far as a traveller is concerned, so both are
+ * published as booking windows and both sort past everything that has a real
+ * departure. Publishing the first day of a season as though it were THE
+ * departure was the tempting middle road and it is a lie in both directions:
+ * it puts a journey you can take in June among the September departures, and it
+ * prints one date on a product sold across six weeks of them.
+ */
+function departureOf(tour) {
+  const label = String(tour.travelDates ?? '').trim();
+  const start = tour.startDate ?? null;
+  const end = tour.endDate ?? null;
+  if (/^dates\s*:/i.test(label)) return { kind: 'fixed', start, end };
+  if (/^valid for departures\s*:/i.test(label)) return { kind: 'season', start: null, end: null, window: end };
+  if (/^valid for departures now through/i.test(label)) return { kind: 'open', start: null, end: null, window: end };
+  /*
+   * No label at all. Trust the dates only if they read like one journey rather
+   * than a window — a start and end more than a season apart is a shelf life
+   * wearing a departure's clothes.
+   */
+  if (start && end) {
+    const days = Math.round((Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86400000);
+    if (Number.isFinite(days) && days >= 0 && days <= 120) return { kind: 'fixed', start, end };
+  }
+  return { kind: 'open', start: null, end: null };
+}
+
+/** "2026-09-16" -> "9/16/2026". Both journey atlases store US format. */
+function usDate(iso) {
+  if (!iso) return null;
+  const [y, m, d] = String(iso).split('-').map(Number);
+  if (!y || !m || !d) return null;
+  return `${m}/${d}/${y}`;
+}
+
+const MONTH_INDEX = new Map(
+  ['january', 'february', 'march', 'april', 'may', 'june',
+    'july', 'august', 'september', 'october', 'november', 'december']
+    .map((m, i) => [m, String(i + 1).padStart(2, '0')]),
+);
+
+/**
+ * `departureMonths` ("August 2026") as the atlas's month keys ("2026-08").
+ *
+ * These drive the month filter, which is the only control that can find a
+ * journey with no single departure date. A season running May through October
+ * has to answer to all six months, not to whichever one its first departure
+ * happens to fall in.
+ */
+function monthKeys(departureMonths) {
+  const keys = [];
+  for (const label of departureMonths ?? []) {
+    const m = /^([A-Za-z]+)\s+(\d{4})$/.exec(String(label).trim());
+    if (!m) continue;
+    const mm = MONTH_INDEX.get(m[1].toLowerCase());
+    if (mm) keys.push(`${m[2]}-${mm}`);
+  }
+  return [...new Set(keys)].sort();
+}
+
+/*
+ * Longitude actually covered, in degrees, walking the route as flown.
+ *
+ * Unrolled leg by leg rather than measured min-to-max on raw longitudes: a
+ * journey Tokyo → Los Angeles → London reads as a 258° span on raw numbers and
+ * as the 190° it really crosses once the dateline hop is unrolled. A journey
+ * that circles the planet lands near 360.
+ */
+function routeLongitudeSpan(stops) {
+  if (!Array.isArray(stops) || stops.length < 2) return 0;
+  let prev = stops[0]?.ll?.[1];
+  if (!Number.isFinite(prev)) return 0;
+  let walked = 0, min = 0, max = 0;
+  for (let i = 1; i < stops.length; i++) {
+    const lng = stops[i]?.ll?.[1];
+    if (!Number.isFinite(lng)) continue;
+    let step = lng - prev;
+    while (step > 180) step -= 360;
+    while (step < -180) step += 360;
+    walked += step;
+    min = Math.min(min, walked);
+    max = Math.max(max, walked);
+    prev = lng;
+  }
+  return max - min;
+}
+
+/*
+ * Round-the-world, for the jet atlas's "Around the World" view.
+ *
+ * Geometry first, because it is the honest test: a journey that crosses half
+ * the planet's longitude is a global one whatever it calls itself, and 180° is
+ * where the Four Seasons and TCS globe-circlers sit while the regional jet
+ * charters sit far below it.
+ *
+ * The name is checked too, and not as a nicety. Aman's "Around the World in
+ * Three Continents" spans 144° — genuinely three continents, genuinely sold as
+ * a round-the-world journey — and a traveller who opens the Around the World
+ * view is looking for it. When an operator says this is the round-the-world
+ * trip, that is a fact about the product, not a marketing flourish to correct.
+ */
+const WORLD_NAME = /\baround the world\b|\bworld tour\b|seven continents|circumnavigat|\bgrandest tour\b|\bworld less traveled\b/i;
+const WORLD_MIN_SPAN = 180;
+
+function isRoundTheWorld(name, stops) {
+  if (WORLD_NAME.test(String(name ?? ''))) return true;
+  return routeLongitudeSpan(stops) >= WORLD_MIN_SPAN;
+}
+
+/*
+ * The named trains behind rail's "Legendary Trains" view.
+ *
+ * The API has no field for which train a journey rides, so this is a curated
+ * ledger — see data/atlas/train/legendary-trains.json for why, and why the
+ * order of its entries matters.
+ */
+const LEGENDARY_TRAINS = (() => {
+  if (!exists('data/atlas/train/legendary-trains.json')) return [];
+  return (read('data/atlas/train/legendary-trains.json').trains ?? [])
+    .map(t => ({ name: t.name, re: new RegExp(t.match, 'i') }))
+    .filter(t => t.name);
+})();
+
+function trainFor(tour) {
+  const haystack = [tour.name, tour.company, tour.description].filter(Boolean).join(' ');
+  return LEGENDARY_TRAINS.find(t => t.re.test(haystack))?.name ?? null;
+}
+
 // ---------- private jet and rail ----------
 
 function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
@@ -386,8 +561,35 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
    * of. They are identified by that missing link rather than by a hard-coded
    * brand list, so anything else bespoke survives a rebuild automatically.
    */
-  const bespoke = (base.TRIPS ?? []).filter(t => !/virtuoso\.com/.test(t.u ?? ''));
-  const bespokeIds = new Set(bespoke.map(t => String(t.id)));
+  const bespokeRaw = (base.TRIPS ?? []).filter(t => !/virtuoso\.com/.test(t.u ?? ''));
+  const bespokeIds = new Set(bespokeRaw.map(t => String(t.id)));
+
+  /*
+   * Staying put is not the same as being exempt.
+   *
+   * Five of the bespoke jet journeys are called "Around the World by Private
+   * Jet" and carried no `world` flag, so the atlas's Around the World view —
+   * the one place a traveller goes looking for exactly those — did not list
+   * the trips whose titles are the name of the view. The base never had to say
+   * so while the flag was scraped alongside it; now that the flag is derived,
+   * the derivation has to reach these too.
+   *
+   * Filled in, never overwritten: where the base states a `world` value that
+   * is our editorial call and it wins.
+   */
+  const bespoke = bespokeRaw.map(t => {
+    const patch = {};
+    if (kind !== 'rail' && t.world == null && isRoundTheWorld(t.n, (base.ROUTES ?? {})[t.route] ?? [])) {
+      patch.world = true;
+    }
+    // The whole reason the photo overlay exists: these are the journeys with no
+    // supplier record to take a picture from.
+    if (!t.img) {
+      const harvested = PHOTOS[journeyPhotoKey(t)]?.url;
+      if (harvested) patch.img = harvested;
+    }
+    return Object.keys(patch).length ? { ...t, ...patch } : t;
+  });
 
   /*
    * A place keeps the region the atlas already gave it.
@@ -450,6 +652,27 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
     for (const p of t.itinerary) if (p.place != null && !dayOf.has(p.place)) dayOf.set(p.place, p.day);
     const itin = waypoints.map((w, n) => ({ d: dayOf.get(w.n) ?? n + 1, n: w.n }));
 
+    /*
+     * Departure, month keys, and the two marketing views.
+     *
+     * `d`/`r` are what the whole atlas orders by — lib/atlas/dates.js reads
+     * them through `departureKey`, and a trip without one sorts past every
+     * dated trip as "no departure". The migration wrote neither, so all 95 API
+     * jet journeys and all 127 rail journeys landed in that bucket at once and
+     * the chronological sort had nothing left to order.
+     *
+     * `mks` is the month filter's answer for a journey that runs a season
+     * rather than a single date, and `onDemand` is what keeps an open-ended
+     * journey from being read as a departure that never happened — both
+     * atlases treat it as "never past", which is the only reason a rail
+     * journey bookable through 2029 is not filtered out for having a 2025
+     * placeholder on its record.
+     */
+    const dep = departureOf(t);
+    const mks = monthKeys(t.departureMonths);
+    const world = kind === 'rail' ? null : isRoundTheWorld(t.name, waypoints);
+    const train = kind === 'rail' ? trainFor(t) : null;
+
     TRIPS.push({
       id: t.id,
       n: t.name,
@@ -457,11 +680,33 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
       g,
       u: `https://www.virtuoso.com/advisor/brianharris/tours/${t.id}/${slugKey(t.name).slice(0, 60)}`,
       days: Number(String(t.lengthLabel ?? '').match(/\d+/)?.[0]) || itin.length,
-      img: cardImage(t.image) ?? null,
+      img: heroFor(t, { route: String(t.id), n: t.name }),
       from: t.embarkation ?? t.startLocation ?? null,
       to: t.disembarkation ?? null,
       country: (t.countries ?? [])[0] ?? null,
-      ...(kind === 'rail' ? { train: null, world: (t.countries ?? []).length > 3, onDemand: !t.startDate } : {}),
+      /*
+       * Rail's "world" is not jet's. The jet atlas's globe button says "Around
+       * the World"; rail's says "Legendary Trains", and its flag has always
+       * meant exactly "this journey rides a named train". Computing it from a
+       * country count — which is what the migration did — answered a question
+       * neither atlas asks, and took Legendary Trains from 75 journeys to 5.
+       */
+      ...(kind === 'rail' ? { train, world: Boolean(train) } : { world }),
+      ...(dep.start ? { d: usDate(dep.start) } : {}),
+      ...(dep.end ? { r: usDate(dep.end) } : {}),
+      ...(mks.length ? { mks } : {}),
+      /*
+       * On demand covers both dateless shapes.
+       *
+       * It is the flag the whole stack already reads for "there is no departure
+       * to be behind or ahead of": lib/atlas/dates.js gives it a null sort key
+       * so it lands after every dated journey, and the past-date cutoff leaves
+       * it alone rather than expiring a journey over a placeholder date. A
+       * season answers to that description exactly — you choose your date inside
+       * the window — so it is filed the same way rather than given a flag of its
+       * own that every reader would then have to learn.
+       */
+      ...(dep.kind === 'fixed' ? {} : { onDemand: true }),
       win: t.travelDates ?? null,
       description: t.description || null,
       itin,

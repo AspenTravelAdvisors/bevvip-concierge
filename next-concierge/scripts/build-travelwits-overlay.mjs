@@ -11,7 +11,14 @@
 // Rebuild after luxury-hotels.json changes:
 //   node scripts/build-travelwits-overlay.mjs
 // Resumable: already-resolved ids (matches AND recorded misses) are skipped on
-// re-run; delete data/atlas/hotel/travelwits-overlay.json to start fresh.
+// re-run; delete data/atlas/hotel/travelwits-overlay.base.json to start fresh.
+//
+// Writes the BASE, not the live overlay. merge-virtuoso-hotels reads this file
+// and writes travelwits-overlay.json, moving a folded-away duplicate's booking
+// link onto the record that survived it. That step is destructive — the losing
+// key is deleted — so it must never run against the file it also writes, or the
+// next change to the duplicate set moves a link the harvest can no longer
+// supply. Two links were lost exactly that way before this split.
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -19,7 +26,7 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HOTELS_PATH = join(ROOT, "data/atlas/hotel/luxury-hotels.json");
-const OUT_PATH = join(ROOT, "data/atlas/hotel/travelwits-overlay.json");
+const OUT_PATH = join(ROOT, "data/atlas/hotel/travelwits-overlay.base.json");
 
 const API = "https://www.travelwitsapi.com/autocomplete";
 // The API resolves the agency from the request origin; without it: 500

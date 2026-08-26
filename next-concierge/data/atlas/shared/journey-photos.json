@@ -1,0 +1,90 @@
+{
+ "_meta": {
+  "generatedAt": "2026-08-26T15:33:32.988Z",
+  "generator": "scripts/harvest-journey-photos.mjs",
+  "ledger": "data/atlas/shared/journey-photo-sources.json",
+  "note": "Hero photographs for journeys the Virtuoso API supplies none for. Applied by merge-virtuoso-journeys.mjs."
+ },
+ "photos": {
+  "around-the-world-by-private-jet::around-the-world-by-private-jet": {
+   "url": "https://www.nationalgeographic.com/content/dam/expeditions/destinations/around-the-world/private-jet/Around-the-World-by-Private-Jet/Heroes-2020/taj-mahal-atw-2020-1.jpg",
+   "source": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/around-the-world-jet-tour/",
+   "fetchedAt": "2026-08-26"
+  },
+  "oceans-and-islands-of-the-world-by-private-jet::oceans-and-islands-of-the-world-by-private-jet": {
+   "url": "https://www.nationalgeographic.com/content/dam/expeditions/destinations/around-the-world/private-jet/oceans-and-islands-by-private-jet/2025-updates/nge-oceans-islands-pj-hero.jpg",
+   "source": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/oceans-and-islands-by-private-jet/",
+   "fetchedAt": "2026-08-26"
+  },
+  "wildlife-of-the-world-by-private-jet::wildlife-of-the-world-by-private-jet": {
+   "url": "https://www.nationalgeographic.com/content/dam/expeditions/destinations/around-the-world/private-jet/Wildlife-of-the-world-by-private-jet/hero-1.jpg",
+   "source": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/wildlife-of-the-world-global-wildlife-tour-safari/",
+   "fetchedAt": "2026-08-26"
+  },
+  "the-silk-road-by-private-jet::the-silk-road-by-private-jet": {
+   "url": "https://www.nationalgeographic.com/content/dam/expeditions/destinations/around-the-world/private-jet/silk-road-private-jet-2024/silk-road-private-jet-hero-02.jpg",
+   "source": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/silk-road-private-jet/",
+   "fetchedAt": "2026-08-26"
+  },
+  "sdm-world-classiques-2026::the-world-tour-grands-classiques-2026": {
+   "url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "World Tour · Grands Classiques"
+  },
+  "sdm-world-classiques-2027::the-world-tour-grands-classiques-2027": {
+   "url": "https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "World Tour · Grands Classiques"
+  },
+  "sdm-world-special-2026::the-world-tour-special-edition-2027": {
+   "url": "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "World Tour · Special Edition"
+  },
+  "sdm-7wonders-asia::7-wonders-of-asia-by-private-jet-2028": {
+   "url": "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "7 Wonders of Asia"
+  },
+  "sdm-7wonders-asia::7-wonders-of-asia-by-private-jet-2027": {
+   "url": "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "7 Wonders of Asia"
+  },
+  "sdm-nye-symphony::new-year-s-eve-ultra-symphony": {
+   "url": "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "New Year's Eve · Ultra Symphony"
+  },
+  "sdm-japan::japan-in-grand-luxury-spring": {
+   "url": "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "Japan in Grand Luxury · Spring"
+  },
+  "sdm-japan::japan-in-grand-luxury-autumn": {
+   "url": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "Japan in Grand Luxury · Autumn"
+  },
+  "sdm-south-america::south-america-in-grand-luxury": {
+   "url": "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "South America in Grand Luxury"
+  },
+  "sdm-southern-africa::majesty-of-southern-africa": {
+   "url": "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "Majesty of Southern Africa"
+  },
+  "sdm-rajasthan::rajasthan-in-grand-luxury": {
+   "url": "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "Rajasthan in Grand Luxury"
+  },
+  "sdm-tour-de-france::tour-de-france-in-grand-luxury": {
+   "url": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=75",
+   "source": "public/safrans-du-monde.html",
+   "title": "Tour de France in Grand Luxury"
+  }
+ }
+}

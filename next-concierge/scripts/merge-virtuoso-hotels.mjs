@@ -119,6 +119,27 @@ for (const c of map.collisions ?? []) {
   for (const r of rest) if (!dropped.has(r)) dropped.set(r, keep);
 }
 
+/*
+ * Follow the chain to the record that actually survives.
+ *
+ * Three of our records can describe one hotel, and the matcher pairs them up
+ * two at a time: "Bowie House, Fort Worth" folds into "Bowie House", which folds
+ * in turn into "Bowie House, Auberge Collection". Read literally, the middle
+ * entry names a survivor that is itself being dropped — so the first record's
+ * booking link was carefully moved onto a record that then disappeared, and the
+ * hotel people actually see was left dead-ending at the TravelWits search form.
+ * Two properties were in that state.
+ *
+ * A cycle would be a bug in the ledger rather than a shape to support, so the
+ * walk is bounded and stops rather than spinning.
+ */
+for (const start of [...dropped.keys()]) {
+  let keep = dropped.get(start);
+  const seen = new Set([start]);
+  while (dropped.has(keep) && !seen.has(keep)) { seen.add(keep); keep = dropped.get(keep); }
+  dropped.set(start, keep);
+}
+
 // Records that are obviously not real properties.
 const JUNK = /^iceportal hotel test/i;
 
@@ -268,7 +289,13 @@ merged.sort((a, b) => a.name.localeCompare(b.name));
 
 // travelwits-overlay is keyed by our local id. When a duplicate is folded away,
 // its booking link has to follow, or the surviving record dead-ends.
-const tw = read('travelwits-overlay.json');
+//
+// Base in, overlay out — the same rule hotel-fit follows below, and for the same
+// reason: this rewrite deletes the losing key, so reading and writing one file
+// meant every run consumed the last one's output. Change which record survives a
+// duplicate group after that and the link has already been moved somewhere else
+// and deleted, with nothing left to move. It cost two booking links.
+const tw = read('travelwits-overlay.base.json');
 let twMoved = 0;
 for (const [drop, keep] of dropped) {
   if (tw.matched?.[drop] && !tw.matched?.[keep]) { tw.matched[keep] = tw.matched[drop]; twMoved++; }

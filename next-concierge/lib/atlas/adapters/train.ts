@@ -18,6 +18,8 @@ export const TRAIN_DESCRIPTOR: AtlasFilterDescriptor = {
   brandField: "brand",
   brandParam: "brand",
   supportsRegionExclusion: true, // exRegions= — journeys only
+  // rail's world=1 is the named-train view, not a round-the-world one
+  worldLabel: "Legendary Trains",
   supportsVesselFilter: false, // rail has no ship filter
   idPrefix: "rj_",
   // Only back-fill regions when the curated g[] is empty (jet overrides more

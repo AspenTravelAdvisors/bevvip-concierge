@@ -31,3 +31,29 @@ export function cardImage(url, height = CARD_HEIGHT) {
   if (!m) return url;
   return `${m[1]}h${height}/${m[2]}.webp`;
 }
+
+/*
+ * The key a journey's harvested photograph is filed under.
+ *
+ * Route AND title, because neither alone is right. The five National Geographic
+ * "Around the World by Private Jet" departures are five cards of one journey
+ * sharing one route slug — they should share one photograph, and keying on the
+ * per-departure id would send this script off to fetch the same page five times
+ * to get five copies of the same answer. But route alone collapses the Safrans
+ * pairs that deliberately share an anchor: `#sdm-japan` is both the spring
+ * journey and the autumn one, and they are photographed in different seasons.
+ *
+ * The title separates those two and the route holds the departures together.
+ * Both halves come from the atlas record, so the harvester and the merge derive
+ * the same key without either having to be told it.
+ */
+export function journeyPhotoKey(trip) {
+  const route = String(trip?.route ?? trip?.id ?? '');
+  const title = String(trip?.n ?? trip?.name ?? '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `${route}::${title}`;
+}

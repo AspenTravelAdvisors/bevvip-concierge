@@ -48,13 +48,66 @@ const normCountry = s => {
 };
 
 /** Token-overlap similarity — forgiving about word order and extra words. */
-function similarity(a, b) {
+function tokenSimilarity(a, b) {
   const A = new Set(a.split(' ').filter(Boolean));
   const B = new Set(b.split(' ').filter(Boolean));
   if (!A.size || !B.size) return 0;
   let shared = 0;
   for (const t of A) if (B.has(t)) shared++;
   return (2 * shared) / (A.size + B.size);
+}
+
+/** Levenshtein distance, two rows at a time. */
+function editDistance(a, b) {
+  const m = a.length, n = b.length;
+  if (!m || !n) return Math.max(m, n);
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+/** Character-level similarity, 0–1. */
+function charSimilarity(a, b) {
+  const len = Math.max(a.length, b.length);
+  return len ? 1 - editDistance(a, b) / len : 0;
+}
+
+/*
+ * Name similarity: tokens, or characters when the tokens have been broken by a
+ * typo.
+ *
+ * Token overlap alone scores "Sonnenaip Hotel" against "Sonnenalp Hotel" at
+ * ZERO. Both normalise to a single identifying word, the words differ by one
+ * letter, and a set intersection has no way to say so — so the misspelled twin
+ * never reached the 0.6 gate, stayed unmatched, and shipped as a second Vail
+ * property with no photograph, no description, and the wrong category. It is
+ * not alone: "Bvlgari Resort Dubal", "Hotel II Pellicano", "II Salviatino",
+ * "II Falconiere", "Glenio Abbey" and "Del'Europe Amsterdam" are all the same
+ * l-for-i slip from an old import.
+ *
+ * The character measure fixes exactly that and nothing else. It is taken only
+ * when it is very high, because the pairs it must NOT rescue sit well below:
+ * "Canaves Oia Suites" against "Canaves Oia Sunday Suites" scores 0.72, "The
+ * Ritz-Carlton Shanghai" against "The Portman Ritz-Carlton, Shanghai" 0.72, and
+ * Fairmont against Four Seasons in San Francisco 0.69 — all real, distinct
+ * hotels, and all safely under the bar. The typo twins score 0.89 to 0.95.
+ *
+ * Everything downstream is unchanged: a high score still has to survive the
+ * distance gates before anything is called a duplicate.
+ */
+const TYPO_TWIN_MIN = 0.85;
+
+function similarity(a, b) {
+  const tokens = tokenSimilarity(a, b);
+  if (tokens >= TYPO_TWIN_MIN) return tokens;
+  const chars = charSimilarity(a, b);
+  return chars >= TYPO_TWIN_MIN ? Math.max(tokens, chars) : tokens;
 }
 
 /** Metres between two local records — the tiebreaker fuzzy names can't provide. */
@@ -229,6 +282,88 @@ function buildMap(local, feed) {
         reason: 'same location, unrelated names — confirm before merging' });
       unmatchedLocal.push(u);
     }
+  }
+
+  /*
+   * Pass 4 — our own short-name twins.
+   *
+   * What is left over now is largely one shape: our record calls the hotel what
+   * a person calls it, and the supplier's calls it what the letterhead does.
+   * "Brown's Hotel" and "Brown's Hotel, a Rocco Forte Hotel", nineteen metres
+   * apart. "Shangri-La Bosphorus" and "Shangri-La Bosphorus, Istanbul", sixty-
+   * nine. "Ambergris Cay" and "Ambergris Cay, Turks and Caicos", four. Token
+   * overlap scores those 0.5 to 0.67 and the earlier passes want 0.6 with a
+   * matching country, so they fall through — and each one ships as a second
+   * card for a hotel already on the map, with no photograph and no description,
+   * which is exactly the complaint that started this.
+   *
+   * They are recognisable because everything the longer name adds is furniture:
+   * the chain, the city, the country, or a marketing tail. Strip those from
+   * BOTH names using each record's own fields — not a word list, so it works for
+   * chains nobody thought to enumerate — and the two either become the same name
+   * or they do not.
+   *
+   * The pair this must not merge is on record: "Canaves Oia Suites" and "Canaves
+   * Oia Sunday Suites" are different hotels a few metres apart in the same
+   * village. Stripping the city leaves "canaves suites" against "canaves sunday
+   * suites", which is 0.67 on characters and nowhere near the bar. The word that
+   * separates two hotels is never the city they are both in.
+   */
+  const TWIN_METRES = 300;
+  const MARKETING_TAIL = /\b(virtuoso preview property|virtuoso preview|preview property|auberge|belmond|lxr|mgallery|autograph|curio|tribute portfolio|small luxury hotels|leading hotels of the world)\b/g;
+
+  /** A name with everything that is not the hotel's own identity taken out. */
+  const escape = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const strippedName = (name, ctx = {}) => {
+    let n = ` ${normName(name)} `;
+    n = n.replace(MARKETING_TAIL, ' ');
+    for (const extra of [ctx.city, ctx.country, ctx.chain, ctx.adminRegion]) {
+      const phrase = normName(String(extra ?? '').split(',')[0]);
+      if (!phrase) continue;
+      /*
+       * The whole place name first, then its words.
+       *
+       * Word by word alone needs a length guard — "st" and "la" are too common
+       * to delete from a hotel's name on the strength of appearing in a city's
+       * — and that guard is what kept "Bishop's Lodge, Santa Fe" apart from
+       * "Bishop's Lodge, Auberge Collection": "santa" came out and "fe" stayed,
+       * leaving half a city sitting in the hotel's name. Matching the phrase
+       * first takes "santa fe" out whole, and the per-word pass is then only
+       * there for a place the two records spell differently.
+       */
+      n = n.replace(new RegExp(`\\b${escape(phrase)}\\b`, 'g'), ' ');
+      for (const word of phrase.split(' ')) {
+        if (word.length < 3) continue;
+        n = n.replace(new RegExp(`\\b${escape(word)}\\b`, 'g'), ' ');
+      }
+    }
+    return n.replace(/\s+/g, ' ').trim();
+  };
+
+  const twinLeftovers = unmatchedLocal.splice(0, unmatchedLocal.length);
+  for (const u of twinLeftovers) {
+    const h = local.find(l => l.id === u.id);
+    let hit = null;
+    for (const [twinId, m] of Object.entries(matched)) {
+      const twin = local.find(l => l.id === twinId);
+      if (!twin) continue;
+      const d = metresApart(h, twin);
+      if (d === null || d > TWIN_METRES) continue;
+      const v = feed.find(f => f.vid === m.vid) ?? null;
+      const ours = strippedName(h.name, { city: h.city, country: h.country, adminRegion: h.adminRegion, chain: v?.chain });
+      const theirs = strippedName(twin.name, { city: twin.city, country: twin.country, adminRegion: twin.adminRegion, chain: v?.chain });
+      if (!ours || !theirs) continue;
+      const score = ours === theirs ? 1 : charSimilarity(ours, theirs);
+      if (score < TYPO_TWIN_MIN) continue;
+      if (!hit || d < hit.metres) hit = { twinId, twin, vid: m.vid, virtuosoName: v?.name, metres: d, score, ours, theirs };
+    }
+    if (!hit) { unmatchedLocal.push(u); continue; }
+    duplicates.push({ vid: hit.vid, virtuosoName: hit.virtuosoName, keep: hit.twinId, drop: h.id,
+      keepName: hit.twin.name, dropName: h.name, score: Number(hit.score.toFixed(2)),
+      metresApart: Math.round(hit.metres),
+      note: `same property under a shorter name — both read as "${hit.ours}" once chain, city and country are stripped` });
+    record(h, { vid: hit.vid, name: hit.virtuosoName }, `twin-of:${hit.twinId}`);
   }
 
   const collisions = [...claimed.entries()].filter(([, ids]) => ids.length > 1)

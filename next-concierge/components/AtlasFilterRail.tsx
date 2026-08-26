@@ -543,10 +543,14 @@ export default function AtlasFilterRail({
       >
         <option value="">All regions</option>
         {shown.regions.size > 1 && <option value={MULTI}>Several ({shown.regions.size})</option>}
-        {/* Round-the-world itineraries cross every region, so they belong at
-            the top of the region control rather than in the alphabet. This is
-            the old worldBtn, put where people look for "where does it go". */}
-        {worldCount > 0 && <option value={WORLD}>Around the World ({worldCount})</option>}
+        {/* The `world=1` view belongs at the top of the region control rather
+            than in the alphabet: on jet it crosses every region, on rail it cuts
+            across all of them. This is the old worldBtn, put where people look
+            for "where does it go" — and it takes its wording from the
+            collection, because rail's is Legendary Trains. */}
+        {worldCount > 0 && (
+          <option value={WORLD}>{d.worldLabel || "Around the World"} ({worldCount})</option>
+        )}
         {options.regions.map(([key, label]) => (
           <option key={key} value={key}>
             {label}{facets.region[key] != null ? ` (${facets.region[key]})` : ""}

@@ -1,0 +1,66 @@
+{
+ "_note": [
+  "Where to find a hero photograph for a journey the Virtuoso API has never heard of.",
+  "",
+  "Every card on the five journey atlases takes its picture from the supplier's own",
+  "`defaultImageUrl`, except the 27 bespoke jet journeys — 18 Safrans du Monde and 9",
+  "National Geographic — which we built ourselves and which therefore arrive with no",
+  "photograph at all. A card with no picture beside cards that have one does not read as",
+  "'no photo available', it reads as broken.",
+  "",
+  "This ledger names the page each journey's photograph should come from.",
+  "scripts/harvest-journey-photos.mjs reads it, pulls the hero out of each page, and",
+  "writes the answers to journey-photos.json, which the merge then applies. The two files",
+  "are separate on purpose: this one is edited by a person and the other is generated, so",
+  "a supplier redesigning their site costs a re-run rather than a re-research.",
+  "",
+  "`collector` says how to read the page:",
+  "  og       the page's og:image / twitter:image meta tag — the supplier's own hero.",
+  "  safrans  the journey table inside public/safrans-du-monde.html, matched on the",
+  "           `#sdm-…` anchor these trips already link to. Local, so it needs no network",
+  "           and cannot drift from the promo page a guest sees for the same journey.",
+  "",
+  "A journey with no entry here keeps no photograph, and that is a deliberate outcome",
+  "rather than a gap to paper over: better one plate-coloured card than a stock picture",
+  "of somewhere the journey does not go."
+ ],
+ "sources": [
+  {
+   "atlas": "jet",
+   "route": "around-the-world-by-private-jet",
+   "collector": "og",
+   "page": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/around-the-world-jet-tour/"
+  },
+  {
+   "atlas": "jet",
+   "route": "oceans-and-islands-of-the-world-by-private-jet",
+   "collector": "og",
+   "page": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/oceans-and-islands-by-private-jet/"
+  },
+  {
+   "atlas": "jet",
+   "route": "wildlife-of-the-world-by-private-jet",
+   "collector": "og",
+   "page": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/wildlife-of-the-world-global-wildlife-tour-safari/"
+  },
+  {
+   "atlas": "jet",
+   "route": "the-silk-road-by-private-jet",
+   "collector": "og",
+   "page": "https://www.nationalgeographic.com/expeditions/destinations/around-the-world/private-jet/silk-road-private-jet/"
+  },
+  {
+   "atlas": "jet",
+   "route": "atlantic-crossroads-a-discovery-by-private-jet",
+   "collector": "og",
+   "page": null,
+   "note": "National Geographic has published no public trip page for this 2027 departure yet — only a terms page and a press release, neither carrying an og:image. Paste the trip page here when it goes live."
+  },
+  {
+   "atlas": "jet",
+   "brand": "safrans",
+   "collector": "safrans",
+   "page": "public/safrans-du-monde.html"
+  }
+ ]
+}
