@@ -249,8 +249,16 @@ for (const [name, itinPath, geoPath] of [
 {
   const d = read("data/atlas/yacht/itinerary.json");
   const geo = read("data/atlas/shared/sea-routes-yacht.json");
-  const trip = d.TRIPS.find((t) => t.id === 243);
-  const feats = geo.features.filter((f) => (f.properties?.tripIds || []).includes(243));
+  /*
+   * The regression this names was found on yacht trip 243, back when trip ids
+   * were positions in the array. The Virtuoso migration replaced them with the
+   * supplier's product ids precisely so a rebuild could not hand 243 to a
+   * different voyage — which also means the old fixture no longer points at
+   * anything. Any multi-stop sailing exercises the same code path, so pick the
+   * first one rather than pinning a number that will rot again.
+   */
+  const trip = d.TRIPS.find((t) => (t.itin || []).filter((s) => s && s.n).length >= 6);
+  const feats = geo.features.filter((f) => (f.properties?.tripIds || []).includes(trip.id));
   const stops = stopsOf(trip, d.PORTS);
   const out = frameRoute(feats.map((f) => ({ mode: "primary", coordinates: f.geometry.coordinates })), stops);
 

@@ -66,6 +66,22 @@ function place(raw) {
   catch { return String(raw) || null; }
 }
 
+/*
+ * Exactly 0,0 is not a place.
+ *
+ * The API returns portLatitude/portLongitude as "0" for entries that have no
+ * position — "Day-at-Sea", "International Dateline (Crossing)", "Scenic
+ * Cruising", "Air travel" — and for a few real ports it simply lacks. Taken at
+ * face value that put 9,341 of 63,529 expedition stops in the Gulf of Guinea and
+ * drew routes across Africa to reach them. Null Island is never a port of call.
+ */
+const coord = (lat, lng) => {
+  const a = num(lat), b = num(lng);
+  if (a == null || b == null) return [null, null];
+  if (a === 0 && b === 0) return [null, null];
+  return [a, b];
+};
+
 function normalize(row, detail, kinds) {
   const d = detail ?? {};
 
@@ -84,8 +100,8 @@ function normalize(row, detail, kinds) {
       date: day(p.segmentDate),
       place: String(p.poiName ?? p.portName ?? '').trim() || null,
       placeFull: String(p.portName ?? '').trim() || null,
-      lat: num(p.portLatitude),
-      lng: num(p.portLongitude),
+      lat: coord(p.portLatitude, p.portLongitude)[0],
+      lng: coord(p.portLatitude, p.portLongitude)[1],
       note: clip(text(p.stopDescription), 240) || null,
     }))
     .filter(p => p.place);
@@ -142,10 +158,31 @@ function normalize(row, detail, kinds) {
 function readCache() {
   if (!fs.existsSync(CACHE_FILE) || FORCE) return new Map();
   const entries = new Map();
-  for (const line of fs.readFileSync(CACHE_FILE, 'utf8').split('\n')) {
-    if (!line.trim()) continue;
-    try { const rec = JSON.parse(line); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn */ }
-  }
+  /*
+   * Streamed, not slurped. The cruise cache reached 1.35GB and
+   * `readFileSync(..., 'utf8')` threw ERR_STRING_TOO_LONG at Node's 512MB
+   * string ceiling — the crawl had completed and the sync could not read its
+   * own cache back.
+   */
+  let carry = '';
+  const fd = fs.openSync(CACHE_FILE, 'r');
+  const buf = Buffer.allocUnsafe(1 << 20);
+  try {
+    let read;
+    while ((read = fs.readSync(fd, buf, 0, buf.length, null)) > 0) {
+      carry += buf.toString('utf8', 0, read);
+      let nl;
+      while ((nl = carry.indexOf(String.fromCharCode(10))) >= 0) {
+        const line = carry.slice(0, nl);
+        carry = carry.slice(nl + 1);
+        if (!line.trim()) continue;
+        try { const rec = JSON.parse(line); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn line */ }
+      }
+    }
+    if (carry.trim()) {
+      try { const rec = JSON.parse(carry); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn tail */ }
+    }
+  } finally { fs.closeSync(fd); }
   return entries;
 }
 
@@ -222,7 +259,7 @@ async function main() {
     },
     tours: feed,
   };
-  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'tours' });
+  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'tours', arrayKey: 'tours' });
   console.log(`\nwrote ${path.relative(repoRoot, OUT_FILE)} — ${feed.length} tours`);
   console.log(`  by kind: ${Object.entries(byKind).map(([k, n]) => `${k} ${n}`).join(' · ')}`);
   console.log(`  with day-by-day stops: ${feed.filter(t => t.itinerary.length).length} · with coordinates: ${feed.filter(t => t.stopCount).length}`);

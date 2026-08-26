@@ -107,7 +107,17 @@ function normalise(collection, raw) {
   const ROUTES = raw.ROUTES || {};
   const TRIPS = (raw.TRIPS || []).map((t) => ({ ...t }));
   TRIPS.forEach((t, i) => {
-    t.guideId = collection === "jet" ? "jt_" + i : "rj_" + t.id;
+    /*
+     * Jet ids used to be array positions, because the scraped feed had no id
+     * field at all. Since the Virtuoso migration every journey carries the
+     * supplier's product id, and the adapter uses it — deliberately, so that a
+     * nightly rebuild cannot hand position 38 to a different journey and
+     * silently repoint saved links. The reference has to model the same rule or
+     * it is testing a contract that no longer exists.
+     */
+    t.guideId = collection === "jet"
+      ? "jt_" + (t.id != null ? t.id : i)
+      : "rj_" + t.id;
     const key = (t.route && ROUTES[t.route]) ? t.route
       : (ROUTES[tripSlug(t.n)] ? tripSlug(t.n) : null);
     if (key) {

@@ -108,6 +108,22 @@ const nights = (a, b) => {
 
 const num = v => { const n = Number(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 
+/*
+ * Exactly 0,0 is not a place.
+ *
+ * The API returns portLatitude/portLongitude as "0" for entries that have no
+ * position — "Day-at-Sea", "International Dateline (Crossing)", "Scenic
+ * Cruising", "Air travel" — and for a few real ports it simply lacks. Taken at
+ * face value that put 9,341 of 63,529 expedition stops in the Gulf of Guinea and
+ * drew routes across Africa to reach them. Null Island is never a port of call.
+ */
+const coord = (lat, lng) => {
+  const a = num(lat), b = num(lng);
+  if (a == null || b == null) return [null, null];
+  if (a === 0 && b === 0) return [null, null];
+  return [a, b];
+};
+
 function normalize(row, detail, atlases) {
   const d = detail ?? {};
   const start = day(row.startDate), end = day(row.endDate);
@@ -124,18 +140,20 @@ function normalize(row, detail, atlases) {
   const itinerary = (d.itineraryPoints ?? [])
     .slice()
     .sort((a, b) => (a.sequenceNumber ?? 0) - (b.sequenceNumber ?? 0))
-    .map(p => ({
-      day: p.dayOfCruise ?? null,
-      date: day(p.segmentDate),
-      port: String(p.portName ?? p.poIname ?? '').trim() || null,
-      lat: num(p.portLatitude),
-      lng: num(p.portLongitude),
-      // The operator's own "this is a day at sea / on land" marker.
-      onLand: Boolean(p.isOnLand),
-      arrive: p.startTime && p.startTime !== '00:00:00' ? p.startTime.slice(0, 5) : null,
-      depart: p.endTime && p.endTime !== '00:00:00' ? p.endTime.slice(0, 5) : null,
-    }))
-    .filter(p => p.port);
+    /*
+     * Four fields per stop, not eight.
+     *
+     * There are 87,217 stops across the selection, so every field costs about a
+     * megabyte of committed feed. Day, name and position are what the atlas
+     * draws and what the guide searches; the port-call clock times and the
+     * at-sea flag were carried because the API offered them, and nothing reads
+     * them. The date is `startDate + day` when anyone needs it.
+     */
+    .map(p => {
+      const [lat, lng] = coord(p.portLatitude, p.portLongitude);
+      return { d: p.dayOfCruise ?? null, n: String(p.portName ?? p.poIname ?? '').trim() || null, lat, lng };
+    })
+    .filter(p => p.n);
 
   const sailing = (d.sailings ?? [])[0] ?? null;
 
@@ -145,13 +163,11 @@ function normalize(row, detail, atlases) {
     name: String(d.cruiseName ?? row.name ?? '').trim(),
     line: (row.company ?? d.companyName ?? '').trim() || null,
     ship: d.shipName ?? (row.ships ?? [])[0] ?? null,
-    ships: row.ships ?? [],
 
     startDate: start,
     endDate: end,
     days,
     lengthLabel: d.cruiseLength ?? row.travelLength ?? null,
-    departureMonths: row.departureMonths ?? [],
 
     startPort: place(row.startLocation),
     endPort: place(row.endLocation),
@@ -162,7 +178,6 @@ function normalize(row, detail, atlases) {
     portCount: itinerary.filter(p => p.lat != null).length,
 
     description: clip(text(d.cruiseDescription), 700),
-    included: (d.whatIsIncludedItems ?? []).map(text).filter(Boolean).slice(0, 8),
     // Offers ride along on the cruise record rather than needing the promotions join.
     promotions: (d.promotions ?? []).map(p => ({
       name: String(p.promotionName ?? '').trim(),
@@ -183,20 +198,59 @@ function normalize(row, detail, atlases) {
      */
 
     image: row.defaultImageUrl || d.cruiseImagePath || null,
-    shipImage: d.shipImagePath || null,
     // A relative path on virtuoso.com; the advisor prefix is added at merge time.
     path: sailing?.url ?? null,
-    departureCode: d.cruiseDepartureCode ?? null,
   };
 }
+
+/*
+ * Keep only the fields the normalizer reads before caching a detail record.
+ *
+ * The raw responses cached out at 1.35GB, of which `addOns` alone was 1,022MB —
+ * shore excursions and pre/post packages nothing here touches — with another
+ * 141MB of `visibleRegions` region trees. Slimming on the way in keeps the cache
+ * around a sixth of the size, which matters twice: reading it back, and the
+ * nightly Action carrying it between runs.
+ */
+const CACHED_DETAIL_FIELDS = [
+  'cruiseName', 'shipName', 'cruiseLength', 'cruiseDescription', 'itineraryPoints',
+  'sailings', 'promotions', 'cruiseImagePath', 'companyName', 'productId',
+];
+const slimDetail = d => {
+  if (!d) return null;
+  const out = {};
+  for (const k of CACHED_DETAIL_FIELDS) if (d[k] !== undefined) out[k] = d[k];
+  return out;
+};
 
 function readCache() {
   if (!fs.existsSync(CACHE_FILE) || FORCE) return new Map();
   const entries = new Map();
-  for (const line of fs.readFileSync(CACHE_FILE, 'utf8').split('\n')) {
-    if (!line.trim()) continue;
-    try { const rec = JSON.parse(line); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn */ }
-  }
+  /*
+   * Streamed, not slurped. The cruise cache reached 1.35GB and
+   * `readFileSync(..., 'utf8')` threw ERR_STRING_TOO_LONG at Node's 512MB
+   * string ceiling — the crawl had completed and the sync could not read its
+   * own cache back.
+   */
+  let carry = '';
+  const fd = fs.openSync(CACHE_FILE, 'r');
+  const buf = Buffer.allocUnsafe(1 << 20);
+  try {
+    let read;
+    while ((read = fs.readSync(fd, buf, 0, buf.length, null)) > 0) {
+      carry += buf.toString('utf8', 0, read);
+      let nl;
+      while ((nl = carry.indexOf(String.fromCharCode(10))) >= 0) {
+        const line = carry.slice(0, nl);
+        carry = carry.slice(nl + 1);
+        if (!line.trim()) continue;
+        try { const rec = JSON.parse(line); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn line */ }
+      }
+    }
+    if (carry.trim()) {
+      try { const rec = JSON.parse(carry); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn tail */ }
+    }
+  } finally { fs.closeSync(fd); }
   return entries;
 }
 
@@ -258,7 +312,7 @@ async function main() {
       for (const id of todo) {
         try {
           const res = await v.call('/v2/cruise', { id });
-          const rec = { id, detail: res.result?.data ?? null };
+          const rec = { id, detail: slimDetail(res.result?.data) };
           cache.set(id, rec);
           stream.write(JSON.stringify(rec) + '\n');
         } catch (err) {
@@ -296,7 +350,7 @@ async function main() {
     },
     cruises: feed,
   };
-  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'cruises' });
+  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'cruises', arrayKey: 'cruises' });
 
   const withItin = feed.filter(c => c.itinerary.length).length;
   const withCoords = feed.filter(c => c.portCount).length;

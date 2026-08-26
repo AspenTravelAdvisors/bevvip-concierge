@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "npm run merge:virtuoso-hotels && npm run fix:ports && npm run build:hotel-points && npm run build:sea-routes && npm run build:cruise-regions",
+    "prebuild": "npm run merge:virtuoso-hotels && npm run merge:virtuoso-journeys && npm run fix:ports && npm run build:hotel-points && npm run build:sea-routes && npm run build:cruise-regions",
     "build:hotel-points": "node scripts/build-hotel-points.mjs",
     "build:sea-routes": "node scripts/build-sea-routes.mjs",
     "build:cruise-regions": "node scripts/build-cruise-regions.mjs",

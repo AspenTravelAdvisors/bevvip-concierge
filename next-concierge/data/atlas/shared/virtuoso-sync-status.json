@@ -1,0 +1,17 @@
+{
+ "_meta": {
+  "purpose": "When each Virtuoso feed was last checked, and when it last actually changed."
+ },
+ "feeds": {
+  "cruises": {
+   "lastChecked": "2026-08-26T09:24:02.197Z",
+   "lastChanged": "2026-08-26T09:24:02.197Z",
+   "count": 4465
+  },
+  "tours": {
+   "lastChecked": "2026-08-26T09:24:02.503Z",
+   "lastChanged": "2026-08-26T09:24:02.503Z",
+   "count": 226
+  }
+ }
+}

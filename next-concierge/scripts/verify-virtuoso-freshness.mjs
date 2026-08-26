@@ -65,19 +65,27 @@ for (const { label, file, key } of FEEDS) {
   }
 }
 
-// The headline count in lib/atlas-config.ts is a hand-kept constant and the
-// nightly sync moves the real number underneath it. Nobody would notice the page
-// advertising a stale figure, so say so here rather than never.
+// The headline counts in lib/atlas-config.ts are hand-kept constants and the
+// nightly sync moves the real numbers underneath them. Nobody would notice a
+// page advertising a stale figure, so say so here rather than never.
 {
-  const hotelsFile = path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.json');
-  if (fs.existsSync(hotelsFile)) {
-    const hotels = JSON.parse(fs.readFileSync(hotelsFile, 'utf8')).length;
-    const config = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
-    const stated = Number(/nounPlural: "vetted hotels"[\s\S]*?count: (\d+)/.exec(config)?.[1] ?? 0);
-    if (!stated) console.warn('  note     could not read the hotel count from lib/atlas-config.ts');
-    else if (stated !== hotels) console.warn(`  drift    lib/atlas-config.ts advertises ${stated} hotels; the feed holds ${hotels}.`);
-    else console.log(`  ok       headline count matches the feed (${hotels})`);
+  const config = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
+  const counted = [
+    ['vetted hotels', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.json'), 'utf8')).length],
+    ['expedition sailings', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/cruise/sailings.json'), 'utf8')).rows.length],
+    ['hotel-brand yacht voyages', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/yacht/itinerary.json'), 'utf8')).TRIPS.length],
+    ['world cruises and grand voyages', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/world/itinerary.json'), 'utf8')).TRIPS.length],
+    ['private jet expeditions', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/jet/itinerary.json'), 'utf8')).TRIPS.length],
+    ['rail journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/train/itinerary.json'), 'utf8')).TRIPS.length],
+  ];
+  let drifted = 0;
+  for (const [noun, count] of counted) {
+    const stated = Number(new RegExp(`nounPlural: "${noun.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}"[\\s\\S]*?count: (\\d+)`).exec(config)?.[1] ?? 0);
+    let actual; try { actual = count(); } catch { continue; }
+    if (!stated) { console.warn(`  note     no count found for "${noun}" in lib/atlas-config.ts`); continue; }
+    if (stated !== actual) { console.warn(`  drift    "${noun}" advertises ${stated}; the feed holds ${actual}`); drifted++; }
   }
+  if (!drifted) console.log('  ok       every headline count matches its feed');
 }
 
 if (failed) {

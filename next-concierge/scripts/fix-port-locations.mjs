@@ -87,6 +87,23 @@ const FEEDS = [
     shape: "inline",
     files: ["public/maps/cruise/data/itinerary-routes.json"],
   },
+  /*
+   * The journey atlases were left out while their coordinates were our own
+   * geocoding — there was nothing for a supplier ledger to correct. Since the
+   * Virtuoso migration the stops carry operator coordinates, and operators get
+   * them wrong: the API places "Sao Paulo" in Paraíba, 2,090km from the city.
+   * audit-port-locations already checked these two; now the fixer can mend them.
+   */
+  {
+    collection: "jet",
+    shape: "waypoints",
+    files: ["data/atlas/jet/itinerary.json", "public/maps/jet/itinerary.json"],
+  },
+  {
+    collection: "train",
+    shape: "waypoints",
+    files: ["data/atlas/train/itinerary.json", "public/maps/train/itinerary.json"],
+  },
 ];
 
 /**
@@ -116,6 +133,36 @@ function improvesFit(here, entry, neighbours) {
  * original entry is left exactly as the feed had it, for the voyages it was
  * right for all along.
  */
+/**
+ * ROUTES as `{ key: [{ n, r, ll }] }` — the jet and rail shape.
+ *
+ * Every occurrence of the name is moved, because a waypoint list has no shared
+ * port table to correct once; the coordinate is repeated on each stop.
+ */
+function applyToWaypoints(doc, entries, log) {
+  let changed = 0;
+  for (const entry of entries) {
+    if (entry.scope === "occurrence") continue;   // no per-occurrence split here
+    let hits = 0, stale = 0;
+    for (const stops of Object.values(doc.ROUTES ?? {})) {
+      for (const stop of stops ?? []) {
+        if (!stop || stop.n !== entry.name || !Array.isArray(stop.ll)) continue;
+        if (!near(stop.ll, entry.was)) {
+          if (entry.ll && near(stop.ll, entry.ll)) log.alreadyApplied.push(entry);
+          else stale++;
+          continue;
+        }
+        if (entry.ll == null) stop.ll = null;
+        else stop.ll = [entry.ll[0], entry.ll[1]];
+        hits++;
+      }
+    }
+    if (hits) { changed += hits; log.applied.push({ entry, hits }); }
+    else if (stale) log.stale.push({ entry, found: "no waypoint at the recorded position" });
+  }
+  return changed;
+}
+
 function applyToPorts(doc, entries, log) {
   let changed = 0;
   for (const entry of entries) {
@@ -272,8 +319,8 @@ for (const feed of FEEDS) {
   // Both copies are meant to be identical, so correct one document and write
   // it to every path. That also repairs a pair that has drifted apart.
   const doc = read(present[0]);
-  const changed = feed.shape === "ports"
-    ? applyToPorts(doc, entries, log)
+  const changed = feed.shape === "ports" ? applyToPorts(doc, entries, log)
+    : feed.shape === "waypoints" ? applyToWaypoints(doc, entries, log)
     : applyToInlineRoutes(doc, entries, log);
   if (!changed) continue;
   wouldChange += changed;

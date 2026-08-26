@@ -41,14 +41,73 @@ jobs:
         working-directory: next-concierge
         run: npm ci
 
-      - name: Sync from the Virtuoso API
+      # Carry the crawl cache between runs.
+      #
+      # Every sync is resumable from NDJSON under scripts/cache/virtuoso, but a
+      # runner starts empty, so without this the job re-fetches all ~8,800 detail
+      # records nightly and a run that times out throws away everything it did.
+      # That matters because this API is genuinely unreliable — Virtuoso drops
+      # instances into maintenance for hours at a time, and during one of those
+      # a single night cannot finish the crawl. With the cache restored, each
+      # night continues where the last one stopped.
+      #
+      # The key rotates daily so the cache is rewritten rather than growing
+      # stale; restore-keys falls back to the most recent previous day.
+      - name: Restore the crawl cache
+        uses: actions/cache@v4
+        with:
+          path: next-concierge/scripts/cache/virtuoso
+          key: virtuoso-crawl-${{ github.run_id }}
+          restore-keys: |
+            virtuoso-crawl-
+
+      # Each crawl is its own step, and none of them can fail the job.
+      #
+      # Chained with `&&` a bad night for sailings would throw away a perfectly
+      # good hotel refresh that had already finished. They are independent
+      # sources and are treated as such: whatever succeeded gets published,
+      # whatever did not resumes tomorrow from the cache above.
+      - name: Sync hotels
+        id: hotels
+        continue-on-error: true
         working-directory: next-concierge
-        env:
+        env: &virtuoso
           VIRTUOSO_API_USER: ${{ secrets.VIRTUOSO_API_USER }}
           VIRTUOSO_API_KEY: ${{ secrets.VIRTUOSO_API_KEY }}
           VIRTUOSO_API_AES_KEY: ${{ secrets.VIRTUOSO_API_AES_KEY }}
           VIRTUOSO_API_AES_IV: ${{ secrets.VIRTUOSO_API_AES_IV }}
-        run: npm run sync:virtuoso
+        run: npm run sync:virtuoso-hotels
+
+      - name: Sync promotions
+        continue-on-error: true
+        working-directory: next-concierge
+        env: *virtuoso
+        run: npm run sync:virtuoso-promotions
+
+      # The journey atlases were reviewed against a complete crawl before this
+      # was switched on, so the merge now runs here too.
+      - name: Sync sailings
+        continue-on-error: true
+        working-directory: next-concierge
+        env: *virtuoso
+        run: npm run sync:virtuoso-cruises
+
+      - name: Sync tours
+        continue-on-error: true
+        working-directory: next-concierge
+        env: *virtuoso
+        run: npm run sync:virtuoso-tours
+
+      - name: Rebuild the atlases
+        working-directory: next-concierge
+        run: |
+          npm run match:virtuoso-hotels
+          npm run merge:virtuoso-hotels
+          npm run merge:virtuoso-journeys
+          npm run fix:ports
+          npm run build:hotel-points
+          npm run build:sea-routes
+          npm run build:cruise-regions
 
       - name: Refuse an implausible shrink
         working-directory: next-concierge
@@ -64,7 +123,16 @@ jobs:
             echo "No supplier changes today."
             exit 0
           fi
-          SUMMARY=$(cd next-concierge && node -e "const d=require('./data/atlas/hotel/virtuoso-hotels.json');process.stdout.write(\`Hotels: \${d._meta.count} properties, synced \${d._meta.lastSynced}.\`)")
+          # Read the run's own record of what it touched. The feeds no longer
+          # carry a per-run timestamp — that is exactly what stopped this job
+          # committing every night whether or not anything moved — so the status
+          # file is the authority on what was checked and what actually changed.
+          SUMMARY=$(cd next-concierge && node -e "
+            const s = require('./data/atlas/shared/virtuoso-sync-status.json');
+            const lines = Object.entries(s.feeds ?? {}).map(([k, f]) =>
+              \`\${k}: \${f.count ?? '?'} records, last changed \${(f.lastChanged ?? '').slice(0, 16)}\`);
+            process.stdout.write(lines.join('\n') || 'No feed status recorded.');
+          ")
           git config user.name  "virtuoso-sync[bot]"
           git config user.email "virtuoso-sync@users.noreply.github.com"
           git add next-concierge/data/atlas next-concierge/public/maps

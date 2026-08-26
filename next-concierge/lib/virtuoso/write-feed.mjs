@@ -17,6 +17,23 @@ import { repoRoot } from './env.mjs';
 
 const STATUS_FILE = path.join(repoRoot, 'data/atlas/shared/virtuoso-sync-status.json');
 
+/*
+ * Serialize with one record per line instead of pretty-printing.
+ *
+ * `JSON.stringify(doc, null, 1)` on the cruise feed — 4,373 sailings holding
+ * 87,217 itinerary stops — produced a string past Node's 512MB ceiling and
+ * threw ERR_STRING_TOO_LONG. Indenting every nested object costs more than the
+ * data. A record per line is compact, and still gives git a real per-record
+ * diff, which is the only reason the feeds are pretty-printed at all.
+ */
+function serialize(doc, arrayKey) {
+  if (!arrayKey || !Array.isArray(doc[arrayKey])) return JSON.stringify(doc, null, 1);
+  const { [arrayKey]: rows, ...head } = doc;
+  const headJson = JSON.stringify(head, null, 1).replace(/\n?\}$/, '');
+  const body = rows.map(r => ` ${JSON.stringify(r)}`).join(',\n');
+  return `${headJson},\n "${arrayKey}": [\n${body}\n ]\n}\n`;
+}
+
 /** Everything except the volatile stamps, so two runs can be compared. */
 function payloadOf(doc) {
   const { _meta, ...rest } = doc;
@@ -28,7 +45,7 @@ function payloadOf(doc) {
  * Write `doc` to `relPath`, preserving the previous `lastChanged` when nothing
  * but the timestamp would differ. Returns whether the content actually moved.
  */
-export function writeFeed(relPath, doc, { label } = {}) {
+export function writeFeed(relPath, doc, { label, arrayKey } = {}) {
   const full = path.join(repoRoot, relPath);
   const now = new Date().toISOString();
 
@@ -42,7 +59,7 @@ export function writeFeed(relPath, doc, { label } = {}) {
 
   const out = { ...doc, _meta: { ...(doc._meta ?? {}), lastChanged } };
   fs.mkdirSync(path.dirname(full), { recursive: true });
-  fs.writeFileSync(full, JSON.stringify(out, null, 1));
+  fs.writeFileSync(full, serialize(out, arrayKey));
 
   recordCheck(label ?? path.basename(relPath, '.json'), {
     lastChecked: now,

@@ -139,19 +139,22 @@ function haversine(a, b) {
  * bucket, which is how a Chilean fjord ends up filed under Norway.
  */
 const MAX_REGION_KM = 2500;
-function regionsFor(points, REGIONS) {
-  const entries = Object.entries(REGIONS).filter(([, r]) => Array.isArray(r.coord));
-  if (!entries.length) return [];
-  const hits = new Set();
-  for (const p of points) {
-    if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
-    let best = null, bestKm = Infinity;
-    for (const [key, r] of entries) {
-      const km = haversine([p.lat, p.lng], r.coord);
-      if (km < bestKm) { bestKm = km; best = key; }
-    }
-    if (best && bestKm <= MAX_REGION_KM) hits.add(best);
+
+/** The single region a stop sits in, or null if it is nowhere near one. */
+function regionOf(point, REGIONS) {
+  if (!Number.isFinite(point?.lat) || !Number.isFinite(point?.lng)) return null;
+  let best = null, bestKm = Infinity;
+  for (const [key, r] of Object.entries(REGIONS)) {
+    if (!Array.isArray(r.coord)) continue;
+    const km = haversine([point.lat, point.lng], r.coord);
+    if (km < bestKm) { bestKm = km; best = key; }
   }
+  return best && bestKm <= MAX_REGION_KM ? best : null;
+}
+
+function regionsFor(points, REGIONS) {
+  const hits = new Set();
+  for (const p of points) { const r = regionOf(p, REGIONS); if (r) hits.add(r); }
   // Keep the atlas's own declared order, not insertion order.
   return Object.keys(REGIONS).filter(k => hits.has(k));
 }
@@ -162,8 +165,17 @@ function writePair(rel, publicRel, value) {
   for (const target of [rel, publicRel].filter(Boolean)) {
     const full = path.join(repoRoot, target);
     if (CHECK) {
-      const current = fs.existsSync(full) ? fs.readFileSync(full, 'utf8') : '';
-      if (current !== json) { console.error(`STALE: ${target}`); process.exitCode = 1; }
+      /*
+       * Existence, not byte-equality.
+       *
+       * These outputs are deliberately edited after the merge writes them —
+       * fix-port-locations applies the override ledger to the very same files —
+       * so a byte comparison against a fresh merge reports STALE on a perfectly
+       * healthy tree, every time. What is worth checking in CI is that the merge
+       * still runs against the current feeds and that its outputs exist; the
+       * atlas verifiers check the contents properly.
+       */
+      if (!fs.existsSync(full)) { console.error(`MISSING: ${target}`); process.exitCode = 1; }
       continue;
     }
     fs.mkdirSync(path.dirname(full), { recursive: true });
@@ -173,6 +185,19 @@ function writePair(rel, publicRel, value) {
 }
 
 const wanted = name => !ONLY || ONLY === name;
+
+/*
+ * Entries that are not ports of call.
+ *
+ * Operators list mid-ocean markers as itinerary stops — "Pacific Ocean
+ * (Cruising)", "International Dateline (Crossing)", "Day-at-Sea" — each with a
+ * nominal position somewhere out in the water. Treated as calls they make the
+ * ship detour thousands of kilometres to touch a point in the open sea. They
+ * are days, not places, so they stay out of the port tables and the drawn route
+ * and become the sea days they describe.
+ */
+const NON_PORT = /\((cruising|crossing)\)|day[- ]at[- ]sea|scenic cruising|at sea|air travel/i;
+const isPort = name => Boolean(name) && !NON_PORT.test(name);
 
 /** Refuse to shrink an atlas past the point where expiry explains it. */
 function guardShrink(atlas, next, before) {
@@ -208,7 +233,7 @@ function buildSeaAtlas({ atlas, baseRel, outRel, publicRel }) {
     if (!c.itinerary.length) { noItinerary++; continue; }
 
     for (const p of c.itinerary) {
-      if (p.port && Number.isFinite(p.lat) && Number.isFinite(p.lng)) PORTS[p.port] = [p.lat, p.lng];
+      if (isPort(p.n) && Number.isFinite(p.lat) && Number.isFinite(p.lng)) PORTS[p.n] = [p.lat, p.lng];
     }
 
     /*
@@ -219,12 +244,13 @@ function buildSeaAtlas({ atlas, baseRel, outRel, publicRel }) {
      * on screen.
      */
     const byDay = new Map();
-    for (const p of c.itinerary) if (p.day != null && !byDay.has(p.day)) byDay.set(p.day, p);
+    for (const p of c.itinerary) if (p.d != null && !byDay.has(p.d)) byDay.set(p.d, p);
     const lastDay = Math.max(...byDay.keys(), 0);
     const itin = [];
     for (let d = 1; d <= lastDay; d++) {
       const p = byDay.get(d);
-      if (p) itin.push({ n: p.port, d });
+      if (p && isPort(p.n)) itin.push({ n: p.n, d });
+      else if (p) itin.push({ s: 1 });
       else itin.push({ s: 1 });
     }
 
@@ -300,8 +326,8 @@ function buildExpedition() {
   for (const c of sailings) {
     const byDay = new Map();
     for (const p of c.itinerary) {
-      if (!byDay.has(p.day ?? 0)) byDay.set(p.day ?? 0, []);
-      byDay.get(p.day ?? 0).push(p);
+      if (!byDay.has(p.d ?? 0)) byDay.set(p.d ?? 0, []);
+      byDay.get(p.d ?? 0).push(p);
     }
     const lastDay = Math.max(...byDay.keys(), 0);
     const days = [];
@@ -312,7 +338,9 @@ function buildExpedition() {
       days.push({
         d,
         s: pts.length ? 0 : 1,
-        p: pts.map(p => [p.port, Number.isFinite(p.lat) ? p.lat : null, Number.isFinite(p.lng) ? p.lng : null]),
+        p: pts.map(p => (isPort(p.n) && Number.isFinite(p.lat) && Number.isFinite(p.lng))
+          ? [p.n, p.lat, p.lng]
+          : [p.n, null, null]),
       });
     }
     routes[c.id] = days;
@@ -356,6 +384,23 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
   const bespoke = (base.TRIPS ?? []).filter(t => !/virtuoso\.com/.test(t.u ?? ''));
   const bespokeIds = new Set(bespoke.map(t => String(t.id)));
 
+  /*
+   * A place keeps the region the atlas already gave it.
+   *
+   * Nearest-coordinate is a crude classifier and it loses to editorial
+   * judgement: Ulaanbaatar is 2,300km from the EASTASIA anchor and 2,800km from
+   * SILK, so geometry files Mongolia under East Asia while this atlas has always
+   * called it Silk Road. Worse, the bespoke routes we preserve still say SILK,
+   * so the two disagreed about the same city. The existing assignment wins and
+   * geometry only decides places the atlas has never seen — which is the same
+   * rule the whole migration follows: the API owns facts, we own curation.
+   */
+  const inheritedRegion = new Map();
+  for (const stops of Object.values(base.ROUTES ?? {})) {
+    for (const stop of stops ?? []) if (stop?.n && stop.r) inheritedRegion.set(stop.n, stop.r);
+  }
+  const regionForStop = p => inheritedRegion.get(p.place) ?? regionOf(p, REGIONS);
+
   const tours = TOURS.filter(t => t.kinds.includes(kind) && t.itinerary.length);
   const ROUTES = { ...(base.ROUTES ?? {}) };
   const TRIPS = [...bespoke];
@@ -369,24 +414,36 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
     // One waypoint per distinct place, in order — consecutive repeats collapse.
     const waypoints = [];
     for (const p of t.itinerary) {
-      if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
+      if (!isPort(p.place) || !Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
       const last = waypoints[waypoints.length - 1];
       if (last && last.n === p.place) continue;
-      waypoints.push({ n: p.place, r: null, ll: [p.lat, p.lng] });
+      /*
+       * Each stop carries the region it is actually in, not the journey's first.
+       * verify-atlas-regions builds one global stop-name -> region table across
+       * every route, so stamping a trip-level region onto each of its stops made
+       * a shared city take whichever journey was processed last and put Cairo in
+       * the Middle East on one route and Europe on another.
+       */
+      waypoints.push({ n: p.place, r: regionForStop(p), ll: [p.lat, p.lng] });
     }
     if (waypoints.length < 2) continue;
 
-    const g = regionsFor(t.itinerary, REGIONS);
-    for (const w of waypoints) w.r = g[0] ?? null;
+    // The journey's regions are exactly those its drawn stops carry.
+    const g = Object.keys(REGIONS).filter(k => waypoints.some(w => w.r === k));
     ROUTES[t.id] = waypoints;
 
-    const itin = [];
-    let lastPlace = null;
-    for (const p of t.itinerary) {
-      if (p.place === lastPlace) continue;
-      lastPlace = p.place;
-      itin.push({ d: p.day ?? itin.length + 1, n: p.place, ...(p.date ? { date: p.date } : {}) });
-    }
+    /*
+     * The listed itinerary and the drawn route describe the same stops.
+     *
+     * Building the itinerary from every entry while the route kept only the
+     * placed ones let a coordinate-less stop be resolved through some other
+     * journey's copy of that name — which is how a trip ended up "tagged CANADA"
+     * with a South American stop the region tags never mentioned. Deriving both
+     * from `waypoints` makes the two agree by construction.
+     */
+    const dayOf = new Map();
+    for (const p of t.itinerary) if (p.place != null && !dayOf.has(p.place)) dayOf.set(p.place, p.day);
+    const itin = waypoints.map((w, n) => ({ d: dayOf.get(w.n) ?? n + 1, n: w.n }));
 
     TRIPS.push({
       id: t.id,
@@ -408,6 +465,18 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
   }
 
   if (!guardShrink(atlas, TRIPS.length, base.TRIPS?.length ?? 0)) return;
+
+  /*
+   * Drop routes no surviving journey points at.
+   *
+   * ROUTES starts as a copy of the base so bespoke journeys keep their geometry,
+   * but that also carries forward keys for departures the API has retired. They
+   * stay invisible until the port audit trips over one — a stale "Sao Paulo" in
+   * a dead route disagreeing with the live one 2,090km away.
+   */
+  const live = new Set(TRIPS.map(t => String(t.route ?? t.id)));
+  for (const key of Object.keys(ROUTES)) if (!live.has(String(key))) delete ROUTES[key];
+
   const out = { ...base, BRANDS, REGIONS, ROUTES, TRIPS };
   writePair(outRel, publicRel, out);
   report.push(`${atlas}: ${TRIPS.length} trips (base had ${base.TRIPS?.length ?? 0}, of which ${bespoke.length} bespoke kept)` +
