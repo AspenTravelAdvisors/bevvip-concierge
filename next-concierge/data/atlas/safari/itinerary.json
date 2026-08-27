@@ -2,7 +2,7 @@
  "_meta": {
   "purpose": "The curated half of the safari atlas. BRANDS and REGIONS are ours; TRIPS and ROUTES are rebuilt from the Virtuoso tours feed by scripts/merge-virtuoso-journeys.mjs and are empty here on purpose.",
   "brandNote": "One key per house, not per country arm. The API lists andBeyond five times (Botswana, South Africa, Kenya, Tanzania, Rwanda) and Abercrombie & Kent six; a traveller is choosing andBeyond, not andBeyond Botswana. A house is listed here BEFORE it has journeys on purpose: merge-virtuoso-journeys.mjs drops any tour whose company matches no key in this table (`unmatchedBrand`), so a missing entry is not a missing logo, it is a missing journey. Tauck, Giltedge and Remote Lands are seeded for that reason — the current feed is the pre-egress slice, which never crawled them.",
-  "regionNote": "Anchors are the region's centre of gravity for game-viewing, not its capital: the Mara-Serengeti ecosystem rather than Nairobi, the Delta rather than Gaborone. scripts/merge-virtuoso-journeys.mjs tags each stop with the nearest anchor within 2,500km."
+  "regionNote": "Anchors are the region's centre of gravity for game-viewing, not its capital: the Mara-Serengeti ecosystem rather than Nairobi, the Delta rather than Gaborone. scripts/merge-virtuoso-journeys.mjs tags each stop with the nearest anchor within 2,500km, and a stop outside every anchor's reach is left untagged rather than forced into the least-wrong bucket. The ten non-African anchors exist because the collection stopped being African: a Nat Hab Alaska bear camp or a White Desert Antarctic season is a safari by every test that matters, and before these anchors existed such a journey would have drawn on the map with no region at all and been invisible to the region filter. They are placed on the wildlife, not the airport — Katmai and Kodiak rather than Anchorage, the Peninsula rather than Ushuaia. None of them is nearer to an African stop than an African anchor, so adding them cannot re-tag a journey already in the atlas; npm run verify:atlas-regions holds that line."
  },
  "BRANDS": {
   "andbeyond": {
@@ -59,6 +59,51 @@
    "short": "Remote Lands",
    "domain": "remotelands.com",
    "color": "#3c4b52"
+  },
+  "whitedesert": {
+   "short": "White Desert",
+   "domain": "white-desert.com",
+   "color": "#7fa8c9"
+  },
+  "tcs": {
+   "short": "TCS World Travel",
+   "domain": "tcsworldtravel.com",
+   "color": "#0f6d75"
+  },
+  "blueparallel": {
+   "short": "Blue Parallel",
+   "domain": "blueparallel.com",
+   "color": "#1677a3"
+  },
+  "lindblad": {
+   "short": "Lindblad Expeditions",
+   "domain": "expeditions.com",
+   "color": "#1c4f7c"
+  },
+  "natgeo": {
+   "short": "National Geographic",
+   "domain": "nationalgeographic.com",
+   "color": "#ffcc00"
+  },
+  "frontiersnorth": {
+   "short": "Frontiers North",
+   "domain": "frontiersnorth.com",
+   "color": "#356b8c"
+  },
+  "churchillwild": {
+   "short": "Churchill Wild",
+   "domain": "churchillwild.com",
+   "color": "#6b8ea3"
+  },
+  "naturalworld": {
+   "short": "Natural World Safaris",
+   "domain": "naturalworldsafaris.com",
+   "color": "#4e7a52"
+  },
+  "bushtracks": {
+   "short": "Bushtracks Expeditions",
+   "domain": "bushtracks.com",
+   "color": "#8a6a3b"
   }
  },
  "REGIONS": {
@@ -109,6 +154,96 @@
     -20,
     45
    ]
+  },
+  "ALASKA": {
+   "name": "Alaska & the Great Bear Rainforest",
+   "ab": "Alaska",
+   "coord": [
+    58,
+    -150
+   ],
+   "maxKm": 1700
+  },
+  "ROCKIES": {
+   "name": "Yellowstone & the Rockies",
+   "ab": "Rockies",
+   "coord": [
+    44.5,
+    -110.5
+   ],
+   "maxKm": 800
+  },
+  "CHURCHILL": {
+   "name": "Churchill & the Canadian North",
+   "ab": "Churchill",
+   "coord": [
+    58.8,
+    -94.2
+   ],
+   "maxKm": 1200
+  },
+  "HIGHARCTIC": {
+   "name": "Svalbard & the High Arctic",
+   "ab": "High Arctic",
+   "coord": [
+    78,
+    16
+   ],
+   "maxKm": 1200
+  },
+  "ANTARCTIC": {
+   "name": "Antarctica & South Georgia",
+   "ab": "Antarctica",
+   "coord": [
+    -64,
+    -60
+   ],
+   "maxKm": 2000
+  },
+  "GALAPAGOS": {
+   "name": "Galápagos & Ecuador",
+   "ab": "Galápagos",
+   "coord": [
+    -0.7,
+    -90.3
+   ],
+   "maxKm": 1400
+  },
+  "AMAZONIA": {
+   "name": "The Amazon & the Pantanal",
+   "ab": "Amazonia",
+   "coord": [
+    -10,
+    -58
+   ],
+   "maxKm": 1800
+  },
+  "PATAGONIA": {
+   "name": "Patagonia & the Southern Cone",
+   "ab": "Patagonia",
+   "coord": [
+    -50,
+    -72
+   ],
+   "maxKm": 1200
+  },
+  "SUBCONTINENT": {
+   "name": "India & the Subcontinent",
+   "ab": "India",
+   "coord": [
+    22,
+    79
+   ],
+   "maxKm": 1400
+  },
+  "BORNEO": {
+   "name": "Borneo & Southeast Asia",
+   "ab": "Borneo",
+   "coord": [
+    1,
+    114
+   ],
+   "maxKm": 1400
   }
  },
  "ROUTES": {
@@ -1075,6 +1210,40 @@
     "ll": [
      -1.9536,
      30.0606
+    ]
+   }
+  ],
+  "15224889": [
+   {
+    "n": "New Delhi",
+    "r": "SUBCONTINENT",
+    "ll": [
+     28.6,
+     77.2
+    ]
+   },
+   {
+    "n": "Ranthambhore",
+    "r": "SUBCONTINENT",
+    "ll": [
+     26.0314,
+     76.3429
+    ]
+   },
+   {
+    "n": "Kanha",
+    "r": "SUBCONTINENT",
+    "ll": [
+     19.8636,
+     77.6816
+    ]
+   },
+   {
+    "n": "Bandhavgarh",
+    "r": "SUBCONTINENT",
+    "ll": [
+     23.3246,
+     80.5184
     ]
    }
   ],
@@ -2705,6 +2874,24 @@
     "ll": [
      -33.9167,
      19.1167
+    ]
+   }
+  ],
+  "16517354": [
+   {
+    "n": "Pretoria",
+    "r": "SOUTHERN",
+    "ll": [
+     -25.7069,
+     28.2294
+    ]
+   },
+   {
+    "n": "Durban",
+    "r": "SOUTHERN",
+    "ll": [
+     -29.85,
+     31.0167
     ]
    }
   ],
@@ -5266,6 +5453,40 @@
     ]
    }
   ],
+  "18368504": [
+   {
+    "n": "Anchorage",
+    "r": "ALASKA",
+    "ll": [
+     61.2231,
+     -149.853
+    ]
+   },
+   {
+    "n": "Kakadu National Park",
+    "r": null,
+    "ll": [
+     -13.025,
+     132.45
+    ]
+   },
+   {
+    "n": "Bali",
+    "r": "BORNEO",
+    "ll": [
+     -8.3675,
+     115.183
+    ]
+   },
+   {
+    "n": "Yala National Park",
+    "r": null,
+    "ll": [
+     6.458,
+     81.4865
+    ]
+   }
+  ],
   "18375050": [
    {
     "n": "Livingstone",
@@ -5723,6 +5944,24 @@
     "ll": [
      -1.2833,
      36.8167
+    ]
+   }
+  ],
+  "18460819": [
+   {
+    "n": "Big Sky",
+    "r": "ROCKIES",
+    "ll": [
+     45.265,
+     -111.253
+    ]
+   },
+   {
+    "n": "Arenal Volcano National Park",
+    "r": "GALAPAGOS",
+    "ll": [
+     10.45,
+     -84.725
     ]
    }
   ],
@@ -7039,6 +7278,40 @@
     "ll": [
      -22.57,
      17.0836
+    ]
+   }
+  ],
+  "18540106": [
+   {
+    "n": "Iguazu Falls",
+    "r": "AMAZONIA",
+    "ll": [
+     -25.6953,
+     -54.4367
+    ]
+   },
+   {
+    "n": "Miranda",
+    "r": "AMAZONIA",
+    "ll": [
+     -3.55,
+     -44.5167
+    ]
+   },
+   {
+    "n": "Amazonas",
+    "r": null,
+    "ll": [
+     -5.2911,
+     -36.0097
+    ]
+   },
+   {
+    "n": "Fernando de Noronha",
+    "r": null,
+    "ll": [
+     -3.85,
+     -32.4
     ]
    }
   ],
@@ -8907,7 +9180,7 @@
    },
    {
     "n": "La Paz",
-    "r": null,
+    "r": "AMAZONIA",
     "ll": [
      -16.5,
      -68.15
@@ -14280,6 +14553,73 @@
    "route": "18535651"
   },
   {
+   "id": "18368504",
+   "n": "Edges of the Living World:  Asia and Oceania by Private Jet",
+   "b": "tcs",
+   "g": [
+    "ALASKA",
+    "BORNEO"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18368504/edgesofthelivingworldasiaandoceaniabyprivatejet",
+   "days": 22,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
+   "from": "Anchorage, AK, United States",
+   "to": "Singapore  , Singapore",
+   "country": "Sri Lanka",
+   "world": false,
+   "d": "6/29/2027",
+   "r": "7/20/2027",
+   "mks": [
+    "2027-06",
+    "2027-07"
+   ],
+   "win": "Dates: 29 Jun 2027 - 20 Jul 2027",
+   "description": "Step into untouched worlds, where orangutans stir beneath emerald canopies, elephants graze open grasslands and Papua New Guinea comes alive in color and ceremony. Trace Kakadu’s ancient culture, immerse in Bali’s sacred waters and wander Komodo’s pink-sand shores, where the last great dragons roam. A rare expedition that brings wild lands and living traditions within reach, seamlessly by private jet. Venture into untamed worlds few ever reach, where wild wonders and living traditions unfold in a journey of rare discovery. ALL-INCLUSIVE PRICING $159,000 per person, based on double occupancy $15,900 single supplement for solo travelers",
+   "included": [
+    "• Travel on a privately chartered business jet",
+    "• Best-available accommodations",
+    "• All meals and beverages, including select beer, wine and spirits",
+    "• All sightseeing activities, from guided small group excursions to more active options such as hiking",
+    "• Ground transportation",
+    "• Special events and private access",
+    "• Dedicated expedition team available 24/7",
+    "• Top local guides and on-trip experts"
+   ],
+   "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
+    {
+     "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "For a limited time, receive a $10,000 travel credit when booking our Signature Expedition Around the World by Private Jet. Valid on two departures only: October 10 – November 2, 2026 | 24 Days November 28 – December 22, 2026 | 25 Days The travel credit is applied per person (a double occupancy booking receives $20,000 in total credit). The October 10 departure is available for double-occupancy bookings only. The November 28 departure is available for both double occupancy and solo travelers. Offer is valid on new bookings only and is subject to change while availability lasts. Limited seats…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Anchorage"
+    },
+    {
+     "d": 8,
+     "n": "Kakadu National Park"
+    },
+    {
+     "d": 13,
+     "n": "Bali"
+    },
+    {
+     "d": 18,
+     "n": "Yala National Park"
+    }
+   ],
+   "route": "18368504"
+  },
+  {
    "id": "16121882",
    "n": "Essence of Namibia – Private Luxury Safaris",
    "b": "artisans",
@@ -15977,6 +16317,59 @@
     }
    ],
    "route": "18600969"
+  },
+  {
+   "id": "15224889",
+   "n": "In Search of the Royal Bengal Tiger: India's National Parks by Private Jet",
+   "b": "remotelands",
+   "g": [
+    "SUBCONTINENT"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15224889/insearchoftheroyalbengaltigerindiasnationalparksbyprivatejet",
+   "days": 11,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_231_0809.webp",
+   "from": "New Delhi, India",
+   "to": "Bandhavgarh, India",
+   "country": "India",
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 01 May 2027",
+   "description": "Hop aboard your private jet and fly into some of India’s most thrilling and exotic national parks, homes to the fearsome Bengal tiger. These tigers number less than 2,000 in India, so spotting one is rare and breathtaking. You’ll start off in New Delhi, before jetting off to Ranthambhore, Kanha, and Bandhavgarh national parks for game drives, birdwatching, elephant treks, and more riveting adventures. Your inner explorer will thank you for this exciting 11-day journey through India’s richly biodiverse backyard. Why fly by private jet? Take traveling in style to a whole new level as your board your private jet and take off on this thrilling journey through India’s national parks. This is the…",
+   "included": [
+    "Transfers as specified Private English-speaking guide Use of private vehicle and driver Activities and entrance fees while touring Daily breakfasts Lunches that are specified"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "New Delhi"
+    },
+    {
+     "d": 3,
+     "n": "Ranthambhore"
+    },
+    {
+     "d": 5,
+     "n": "Kanha"
+    },
+    {
+     "d": 8,
+     "n": "Bandhavgarh"
+    }
+   ],
+   "route": "15224889"
   },
   {
    "id": "18561532",
@@ -20782,6 +21175,70 @@
     }
    ],
    "route": "11922921"
+  },
+  {
+   "id": "16517354",
+   "n": "Rovos Rail: Pretoria-Durban",
+   "b": "andbeyond",
+   "g": [
+    "SOUTHERN"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16517354/rovosrailpretoriadurban",
+   "days": 3,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15687445_2_2_0803.webp",
+   "from": "Pretoria, South Africa",
+   "to": "Durban, South Africa",
+   "country": "South Africa",
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 23 Nov 2027",
+   "description": "2 NIGHTS • 800km This safari between Pretoria and Durban departs during the summer months and includes game drives, a battlefield tale with a world-class historian and a look at unusual African ceramics. Experience the Nambiti Conservancy – a Big Five private retreat set on 20 000 acres of malaria-free bushveld in KwaZulu-Natal. It has an incredible biodiversity including savannah, grasslands, thornveld and tall acacia trees. Situated on an expansive game farm, Spionkop Lodge – which adjoins an 11 000-acre nature reserve – is the perfect base for exploring the mountains, bush, birds and battlefields of the region. Ardmore Ceramics is a story about the Zulu people whose sense of rhythm,…",
+   "included": [
+    "Accommodation; all meals; all beverages on board; room service; limited laundry service; excursions accompanied by a qualified guide (where applicable); entrance fees as per itinerary; government tax."
+   ],
+   "promotions": [
+    {
+     "name": "Milestone Celebrations Offer",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding certificate as proof. What's includedStandard &Beyond lodge, camp or yacht…"
+    },
+    {
+     "name": "Honeymoon offer",
+     "endDate": "2027-04-22",
+     "exclusive": false,
+     "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Pretoria"
+    },
+    {
+     "d": 3,
+     "n": "Durban"
+    }
+   ],
+   "route": "16517354"
   },
   {
    "id": "18346151",
@@ -26306,6 +26763,63 @@
    "route": "18597738"
   },
   {
+   "id": "18460819",
+   "n": "Wildlife & Natural Wonders: The Americas by Private Jet",
+   "b": "tcs",
+   "g": [
+    "ROCKIES",
+    "GALAPAGOS"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18460819/wildlifenaturalwonderstheamericasbyprivatejet",
+   "days": 16,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
+   "from": "Big Sky, MT, United States",
+   "to": "Sea of Cortez, Mexico",
+   "country": "Mexico",
+   "world": false,
+   "d": "6/15/2027",
+   "r": "6/30/2027",
+   "mks": [
+    "2027-06"
+   ],
+   "win": "Dates: 15 Jun 2027 - 30 Jun 2027",
+   "description": "Wildlife & Natural Wonders: The Americas by Private Jet ALL-INCLUSIVE PRICING 16 DAYS | 52 GUESTS | AIRBUS A321 $135,000 per person, double occupancy; $13,500 solo supplement Child sharing with one adult: $128,000 | Child sharing with two adults: $115,000 Journey through the Americas, where adventure spans five extraordinary landscapes. Raft Montana’s pristine rivers, hike volcanic trails beneath Costa Rica’s emerald canopy, glide along the mirrored waterways of the Amazon and snorkel in the Galápagos and the Sea of Cortez. Extend your expedition by starting in Banff— where the Canadian Rockies frame an unforgettable prelude to the classic itinerary ahead. With wildlife encounters at every…",
+   "included": [
+    "Travel by private aircraft",
+    "All hotel accommadations",
+    "All meals and beverages (including select beer, wine and spirits aboard the jet and at group lunches and dinners)",
+    "Ground transportation",
+    "All daily activities",
+    "Top-of-the-line guides",
+    "Every single tip"
+   ],
+   "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
+    {
+     "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "For a limited time, receive a $10,000 travel credit when booking our Signature Expedition Around the World by Private Jet. Valid on two departures only: October 10 – November 2, 2026 | 24 Days November 28 – December 22, 2026 | 25 Days The travel credit is applied per person (a double occupancy booking receives $20,000 in total credit). The October 10 departure is available for double-occupancy bookings only. The November 28 departure is available for both double occupancy and solo travelers. Offer is valid on new bookings only and is subject to change while availability lasts. Limited seats…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Big Sky"
+    },
+    {
+     "d": 4,
+     "n": "Arenal Volcano National Park"
+    }
+   ],
+   "route": "18460819"
+  },
+  {
    "id": "18574393",
    "n": "Wildlife Abundance in Botswana & Beach",
    "b": "wilderness",
@@ -26416,12 +26930,63 @@
    "route": "15730440"
   },
   {
+   "id": "18540106",
+   "n": "Wildlife Kingdoms Of Brazil By Small Private Jet",
+   "b": "blueparallel",
+   "g": [
+    "AMAZONIA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18540106/wildlifekingdomsofbrazilbysmallprivatejet",
+   "days": 12,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/12022063_2_5_0805.webp",
+   "from": "Iguazu Falls, Brazil",
+   "to": "Fernando de Noronha, Brazil",
+   "country": "Brazil",
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 30 Sep 2026",
+   "description": "Explore Brazil’s most extraordinary natural regions without logistical constraints when you travel to its wildlife kingdoms by small private jet. From the thundering cascades of Iguazú Falls and the biodiverse wetlands of the Pantanal to the depths of the Amazon rainforest and the crystalline waters of Fernando de Noronha, each destination on this luxury journey reveals Brazil’s captivating natural world. Experience Iguazú Falls by land, water, and air, explore the Pantanal alongside specialist guides and biologists, and venture deep into the Amazon for aerial perspectives and cultural exchanges with local communities. The journey concludes in Fernando de Noronha, where pristine marine…",
+   "included": [
+    "Accommodations Internal flights Services of personal Blue Parallel hosts & private expert guides throughout the itinerary",
+    "All special events, private guided tours, private excursions, private outdoor activities, and entrance fees as described in the detailed itinerary",
+    "Continual monitoring of your journey by a Blue Parallel team",
+    "All private transfers and transportation throughout the trip as indicated in the itinerary",
+    "All breakfasts; certain lunches and dinners as per the right-hand column of the detailed itinerary",
+    "A customized Blue Parallel Travel Kit that you will receive prior to departure"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Iguazu Falls"
+    },
+    {
+     "d": 3,
+     "n": "Miranda"
+    },
+    {
+     "d": 6,
+     "n": "Amazonas"
+    },
+    {
+     "d": 9,
+     "n": "Fernando de Noronha"
+    }
+   ],
+   "route": "18540106"
+  },
+  {
    "id": "18601052",
    "n": "Wildlife Safari: Around the World by Private Jet",
    "b": "ak",
    "g": [
     "EASTAFRICA",
-    "GREATAPES"
+    "GREATAPES",
+    "AMAZONIA"
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18601052/wildlifesafariaroundtheworldbyprivatejet",
    "days": 26,

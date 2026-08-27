@@ -22,8 +22,8 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 
 const walk = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -39,22 +39,35 @@ export function buildAdapters(root) {
   rmSync(BUILD, { recursive: true, force: true });
   execFileSync("npx", ["tsc", "-p", "tsconfig.adapters.json"], { cwd: root, stdio: "inherit" });
   for (const file of walk(BUILD)) {
+    const here = dirname(file);
+    /*
+     * `@/lib/atlas/<name>` resolves to one of two different files, and which
+     * one is not something a hand-written list can be trusted to remember.
+     *
+     * tsc compiles the .ts modules in tsconfig.adapters.json's `include` into
+     * the build; the plain-CommonJS ones — dates.js, wildlife-terms.js — are
+     * not in it and never appear there, so an import of those has to point at
+     * the real file in the repo. Node's ESM loader reads their named exports
+     * through cjs-module-lexer, which handles the static `module.exports`
+     * object each of them ends with.
+     *
+     * Asking the filesystem which case applies is the version that cannot go
+     * stale, and computing the path per FILE rather than assuming `../` is
+     * what makes it correct for modules compiled to the build root as well as
+     * for the ones under adapters/.
+     */
+    const rel = (target) => {
+      const p = relative(here, target).replace(/\\/g, "/");
+      return p.startsWith(".") ? p : `./${p}`;
+    };
     writeFileSync(
       file,
       readFileSync(file, "utf8")
-        /*
-         * dates.js is CommonJS and lives outside rootDir, so tsc never copies
-         * it into the build — point at the real file instead. Node's ESM loader
-         * reads its named exports through cjs-module-lexer, which handles the
-         * static `module.exports = { … }` object it ends with.
-         *
-         * This has to run BEFORE the general rule below, which would otherwise
-         * claim it and point at a file that is not there.
-         */
-        .replace(/from "@\/lib\/atlas\/dates"/g, 'from "../../lib/atlas/dates.js"')
-        // Everything else under lib/atlas/ that tsc DID compile — geo,
-        // route-frame, wildlife, and whatever an adapter reaches for next.
-        .replace(/from "@\/lib\/atlas\/([a-zA-Z0-9-]+)"/g, 'from "../$1.js"')
+        .replace(/from "@\/lib\/atlas\/([a-zA-Z0-9-]+)"/g, (_m, name) => {
+          const built = join(BUILD, `${name}.js`);
+          const target = existsSync(built) ? built : join(root, "lib", "atlas", `${name}.js`);
+          return `from "${rel(target)}"`;
+        })
         // Node's ESM loader will not guess the extension on a relative import.
         .replace(/from "(\.\/[a-zA-Z-]+)"/g, 'from "$1.js"'),
     );

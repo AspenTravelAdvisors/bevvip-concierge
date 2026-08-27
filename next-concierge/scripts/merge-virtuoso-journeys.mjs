@@ -28,6 +28,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { cardImage, journeyPhotoKey } from '../lib/virtuoso/media.mjs';
+import { admitsStoredTour } from "../lib/virtuoso/safari-selector.mjs";
 
 const args = process.argv.slice(2);
 const CHECK = args.includes('--check');
@@ -200,16 +201,31 @@ function haversine(a, b) {
  */
 const MAX_REGION_KM = 2500;
 
-/** The single region a stop sits in, or null if it is nowhere near one. */
+/**
+ * The single region a stop sits in, or null if it is nowhere near one.
+ *
+ * A region may declare its own `maxKm`, and the ones that do are the reason
+ * this exists. 2,500km is right for Africa, where six anchors tile a continent
+ * and every gap between them is also game country. It is badly wrong for a
+ * sparse anchor on a big continent: when the safari atlas stopped being
+ * African, Boston — 2,427km from Churchill and nearer to nothing else — was
+ * tagged CHURCHILL, and Portland was tagged ROCKIES at 953km. Both are gateway
+ * cities on a round-the-world wildlife jet, and a traveller filtering for
+ * Churchill polar bears would have been shown a journey that never goes there.
+ *
+ * How far an anchor's authority reaches is a property of the region, not of
+ * the atlas, so the region declares it. Omitted, it stays 2,500km and nothing
+ * that predates this changes.
+ */
 function regionOf(point, REGIONS) {
   if (!Number.isFinite(point?.lat) || !Number.isFinite(point?.lng)) return null;
-  let best = null, bestKm = Infinity;
+  let best = null, bestKm = Infinity, bestMax = MAX_REGION_KM;
   for (const [key, r] of Object.entries(REGIONS)) {
     if (!Array.isArray(r.coord)) continue;
     const km = haversine([point.lat, point.lng], r.coord);
-    if (km < bestKm) { bestKm = km; best = key; }
+    if (km < bestKm) { bestKm = km; best = key; bestMax = Number(r.maxKm) || MAX_REGION_KM; }
   }
-  return best && bestKm <= MAX_REGION_KM ? best : null;
+  return best && bestKm <= bestMax ? best : null;
 }
 
 function regionsFor(points, REGIONS) {
@@ -583,7 +599,7 @@ function trainFor(tour) {
 
 // ---------- private jet and rail ----------
 
-function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
+function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel, admits }) {
   const base = read(baseRel);
   const BRANDS = base.BRANDS ?? {};
   const REGIONS = base.REGIONS ?? {};
@@ -644,7 +660,18 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
   }
   const regionForStop = p => inheritedRegion.get(p.place) ?? regionOf(p, REGIONS);
 
-  const tours = TOURS.filter(t => t.kinds.includes(kind) && t.itinerary.length);
+  /*
+   * Which tours this atlas takes.
+   *
+   * `kinds` is the crawl's verdict, baked in at sync time, and for jet and rail
+   * it is the whole answer. Safari passes an `admits` predicate as well, so a
+   * widened definition of the collection reaches the tours we ALREADY HOLD
+   * rather than waiting for a crawl that is blocked on network egress — see
+   * lib/virtuoso/safari-selector.mjs, and note that the predicate is additive
+   * by construction: it can admit a stored tour, never reject one.
+   */
+  const takes = admits ?? (t => t.kinds.includes(kind));
+  const tours = TOURS.filter(t => takes(t) && t.itinerary.length);
   const ROUTES = { ...(base.ROUTES ?? {}) };
   const TRIPS = [...bespoke];
   let unmatchedBrand = 0;
@@ -796,7 +823,7 @@ if (wanted('world')) buildSeaAtlas({ atlas: 'world', baseRel: 'data/atlas/world/
 if (wanted('expedition')) buildExpedition();
 if (wanted('jet')) buildTourAtlas({ atlas: 'jet', kind: 'jet', baseRel: 'data/atlas/jet/itinerary.base.json', outRel: 'data/atlas/jet/itinerary.json', publicRel: 'public/maps/jet/itinerary.json' });
 if (wanted('rail')) buildTourAtlas({ atlas: 'rail', kind: 'rail', baseRel: 'data/atlas/train/itinerary.base.json', outRel: 'data/atlas/train/itinerary.json', publicRel: 'public/maps/train/itinerary.json' });
-if (wanted('safari')) buildTourAtlas({ atlas: 'safari', kind: 'safari', baseRel: 'data/atlas/safari/itinerary.base.json', outRel: 'data/atlas/safari/itinerary.json', publicRel: 'public/maps/safari/itinerary.json' });
+if (wanted('safari')) buildTourAtlas({ atlas: 'safari', kind: 'safari', baseRel: 'data/atlas/safari/itinerary.base.json', outRel: 'data/atlas/safari/itinerary.json', publicRel: 'public/maps/safari/itinerary.json', admits: admitsStoredTour });
 
 for (const line of report) console.log(line);
 if (!CHECK) console.log(`\nwrote ${written.length} files`);

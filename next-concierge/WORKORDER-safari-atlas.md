@@ -517,6 +517,110 @@ compiled module sits one directory above `adapters/`. Nothing needs listing.
 
 ---
 
+## Phase 5 — What qualifies, reconsidered
+
+The question that prompted this: *Natural Habitat sells 21 journeys on Virtuoso
+and this atlas holds 4.*
+
+### 5.1 · The old rule, and why the count was 4
+
+`isSafari()` was three tests, **all** of which had to pass:
+
+1. a country in a list of thirteen African ones, **and**
+2. a `Wildlife & Nature` experience or a safari word in the name, **and**
+3. an operator we sell.
+
+Test 1 is the whole answer. Nat Hab's four survivors are the three Botswana
+itineraries and the Kenya migration; the Alaska grizzly camp, the Churchill
+polar bears, the Galápagos, Yellowstone in winter and the Indian tiger parks
+were every one of them excluded for being in the wrong hemisphere. They are the
+same product, from the same house, for the same traveller. White Desert's
+Antarctic camps never had a chance either.
+
+**Test 1 is gone.** Its job — keeping out the things that merely use the word —
+now falls to the other two, which is where it belonged:
+
+- **The journey is about wildlife.** `isWildlifeJourney()` in
+  `lib/atlas/wildlife-terms.js`, the same vocabulary the atlas filter tags with:
+  the supplier's own `Wildlife & Nature` classification, or a product name that
+  says what the trip is, or prose naming **at least two different animals**.
+  Two, not one, is the line between "mentions" and "is about".
+- **A house we sell it from.** The quality bar the original rule already leaned
+  on, extended with the worldwide wildlife specialists — Natural Habitat, White
+  Desert, Lindblad/National Geographic, Frontiers North, Churchill Wild,
+  Natural World Safaris, Bushtracks — and with three houses already in this feed
+  selling wildlife journeys it was refusing.
+
+Both directions of the gate are visible in the shipped feed. Refused: *Tiger
+Express, Eastern & Oriental Express* (a Belmond train named after a tiger), and
+*Classic Rocky Mountain Rail Circle Tour*, which advertises "wildlife viewing of
+Grizzly bears, moose, elk and more" and is a scenic train that passes animals.
+Admitted: *In Search of the Royal Bengal Tiger*, *Wildlife Kingdoms of Brazil*,
+*Wildlife & Natural Wonders: The Americas*, and — the one that makes the point
+best — andBeyond's *Rovos Rail: Pretoria-Durban*, whose own description opens
+"This safari between Pretoria and Durban … includes game drives" and visits a
+Big Five conservancy. It stays a rail journey too; a tour carries as many kinds
+as it earns.
+
+**269 → 274 without a crawl.** The selector lives in
+`lib/virtuoso/safari-selector.mjs` and has two callers: the sync applies it at
+crawl time, and the merge applies it to the feed already on disk, so a widened
+definition reaches inventory we already hold. The merge's use is **additive** —
+it can admit a stored tour, never reject one — because the crawl reads a field
+the feed does not keep (see 5.2). The number a real crawl returns will be much
+larger; the stored 505 were never selected with anything outside Africa in mind.
+
+### 5.2 · The selection signal was thrown away after use
+
+`isSafari()` has always tested `experiences` for `Wildlife & Nature` — the
+supplier's own classification, and the single strongest signal in the feed — and
+the stored record has never kept the field. Of the 281 tours the crawl filed as
+safari, only ~178 can be re-derived from disk. Nobody auditing the collection
+offline could tell which 103 were which, and no widened rule could be tested
+against them.
+
+`sync-virtuoso-tours.mjs` now stores it. Until a crawl runs, the merge's
+`kinds` fallback is load-bearing; after one, it is belt and braces.
+
+### 5.3 · Regions, because a journey with no region is invisible
+
+The base carried six anchors, all African. `regionOf()` leaves a stop further
+than its reach from every anchor untagged, so an Alaska journey would have drawn
+on the map with no region at all and been unreachable by the region filter. Ten
+non-African anchors are added — Alaska, the Rockies, Churchill, the High Arctic,
+Antarctica, Galápagos, Amazonia, Patagonia, the Subcontinent, Borneo — placed on
+the wildlife rather than the airport.
+
+That immediately produced the failure `MAX_REGION_KM`'s own comment warns about.
+At a flat 2,500km, **Boston** was tagged `CHURCHILL` (2,427km, and nearer to
+nothing else) and Portland was tagged `ROCKIES` at 953km — two gateway cities on
+a round-the-world wildlife jet, and a traveller filtering for Churchill polar
+bears would have been shown a journey that never goes there. Six anchors tiling
+Africa can afford 2,500km because the gaps between them are also game country;
+one anchor on a continent cannot.
+
+So **a region now declares its own reach**. `maxKm` is optional and defaults to
+the old 2,500, so nothing that predates it moves; the ten new anchors carry
+800–2,000km each. How far an anchor's authority extends is a property of the
+region, not of the atlas.
+
+### 5.4 · The audit was checking seven of eight counts
+
+`SHIPPED` in `audit-listings.mjs` — the table behind the check that caught the
+home page overstating the collection by 142 hotels — had seven entries. Safari,
+the newest collection and the only one whose count was actively moving, was not
+one of them, and a missing row is silent in both directions: the audit reported
+"0 of 7" and passed while the headline drifted. It is eight now, and the
+headline claims 11,102 against a dataset of 11,102.
+
+### 5.5 · The atlas no longer promises Africa
+
+`label` is "Safari & wildlife atlas" and the tagline is "Where the wildlife is —
+the migration and the Delta, the ice and the rainforest". The nav label stays
+**Safari**, because that is the word a traveller arrives with.
+
+---
+
 ## Definition of done
 
 - [x] `node scripts/audit-listings.mjs --strict` passes (all ▸ findings at zero)

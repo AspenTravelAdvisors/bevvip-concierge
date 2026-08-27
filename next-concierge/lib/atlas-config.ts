@@ -171,12 +171,22 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   },
   safari: {
     type: "safari",
-    label: "Safari journeys atlas",
+    label: "Safari & wildlife atlas",
     nav: "Safari",
-    nounPlural: "safari journeys",
-    tagline: "The great migration, the Delta and the gorilla forests, camp by camp",
+    nounPlural: "safari and wildlife journeys",
+    /*
+     * The tagline moved off Africa with the collection.
+     *
+     * It read "The great migration, the Delta and the gorilla forests, camp by
+     * camp", which described the atlas exactly while its selector required an
+     * African country — and became a promise the collection no longer keeps the
+     * moment a Nat Hab Alaska bear camp or a White Desert Antarctic season is in
+     * it. The nav label stays "Safari" because that is the word a traveller
+     * arrives with; the tagline is where the wider truth goes.
+     */
+    tagline: "Where the wildlife is — the migration and the Delta, the ice and the rainforest",
     base: process.env.NEXT_PUBLIC_SAFARI_ATLAS_BASE || "/maps/safari",
-    sampleRegions: ["EASTAFRICA", "OKAVANGO", "ZAMBEZI", "GREATAPES"],
+    sampleRegions: ["EASTAFRICA", "OKAVANGO", "GREATAPES", "GALAPAGOS"],
     /*
      * Jacaranda, and it is a correction rather than a preference.
      *
@@ -194,7 +204,11 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
      * the reason it is not an arbitrary one either.
      */
     color: "#b57edc",
-    count: 269,
+    // 269 -> 274: the five journeys the widened selector recognised in the feed
+    // already on disk. See lib/virtuoso/safari-selector.mjs; the number a crawl
+    // returns will be substantially larger, since the pre-egress slice never
+    // looked outside Africa at all.
+    count: 274,
     order: 8,
     intent: "land",
   },

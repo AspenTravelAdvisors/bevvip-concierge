@@ -343,8 +343,15 @@ function auditTours() {
 /*
  * atlas-config.ts keeps a hand-written `count` per collection, and
  * collectionsHeadline() adds them up into the first sentence a visitor reads.
- * Six of the seven are right. Checking them is three lines and the alternative
- * is a headline that drifts silently every time a supplier retires a property.
+ * Checking them is three lines and the alternative is a headline that drifts
+ * silently every time a supplier retires a property — which is what it had
+ * done, by 142 hotels, when this check was written.
+ *
+ * EVERY collection in ATLASES belongs in this table. Safari shipped as the
+ * eighth and was not added to it, so the one collection whose count was moving
+ * — a new selector, a new sync — was the one collection nobody was checking.
+ * A missing row here is silent in both directions: the audit reports "0 of 7"
+ * and passes, and the headline drifts anyway.
  */
 const SHIPPED = {
   hotel: ['data/atlas/hotel/luxury-hotels.json', d => (Array.isArray(d) ? d.length : null)],
@@ -354,6 +361,7 @@ const SHIPPED = {
   train: ['data/atlas/train/itinerary.json', d => (d.TRIPS ?? []).length],
   yacht: ['data/atlas/yacht/itinerary.json', d => (d.TRIPS ?? []).length],
   jet: ['data/atlas/jet/itinerary.json', d => (d.TRIPS ?? []).length],
+  safari: ['data/atlas/safari/itinerary.json', d => (d.TRIPS ?? []).length],
 };
 
 function auditCounts() {

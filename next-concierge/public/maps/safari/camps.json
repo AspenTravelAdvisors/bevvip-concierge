@@ -5,9 +5,9 @@
   "radiusKm": 25,
   "lodgesInCategory": 72,
   "lodgesInSafariCountries": 32,
-  "journeysWithCamps": 199,
-  "journeysTotal": 269,
-  "campsMatched": 22
+  "journeysWithCamps": 201,
+  "journeysTotal": 274,
+  "campsMatched": 24
  },
  "radiusKm": 25,
  "totals": {
@@ -297,6 +297,23 @@
    ],
    "promo": 0
   },
+  "h_00327": {
+   "n": "Capella Ubud, Bali",
+   "house": "Capella Hotel Group",
+   "country": "Indonesia",
+   "ll": [
+    -8.44829,
+    115.268
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15769589_2_47_0814.webp",
+   "rooms": 23,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
   "h_01021": {
    "n": "Jack's Camp",
    "house": null,
@@ -381,6 +398,23 @@
     "Spa treatment"
    ],
    "promo": 0
+  },
+  "h_01374": {
+   "n": "Nayara Tented Camp",
+   "house": "Nayara Resorts",
+   "country": "Costa Rica",
+   "ll": [
+    10.505,
+    -84.689
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0_0820.webp",
+   "rooms": 30,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   }
  },
  "BYTRIP": {
@@ -1872,6 +1906,14 @@
     "km": 18.1
    }
   ],
+  "18368504": [
+   {
+    "id": "h_00327",
+    "stop": "Bali",
+    "day": 13,
+    "km": 13
+   }
+  ],
   "18375050": [
    {
     "id": "h_01349",
@@ -2070,6 +2112,14 @@
     "stop": "Masai Mara National Reserve",
     "day": 9,
     "km": 18.1
+   }
+  ],
+  "18460819": [
+   {
+    "id": "h_01374",
+    "stop": "Arenal Volcano National Park",
+    "day": 4,
+    "km": 7.3
    }
   ],
   "18473611": [

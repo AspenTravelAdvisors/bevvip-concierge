@@ -24,6 +24,7 @@ import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
 import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
 import { text, prose, clip } from '../lib/virtuoso/text.mjs';
+import { isSafari } from "../lib/virtuoso/safari-selector.mjs";
 
 loadEnv();
 
@@ -50,47 +51,14 @@ const OUT_FILE = path.join(repoRoot, 'data/atlas/shared/virtuoso-tours.json');
 const JET_NAME = /\b(private jet|by air\b|by private air|jet expedition|jet experience|air cruise|jet by day)\b/i;
 
 /*
- * What belongs in the safari atlas.
+ * What belongs in the safari atlas — see lib/virtuoso/safari-selector.mjs.
  *
- * Three tests, all of which must pass. Country because a safari is a place
- * before it is a style; wildlife because those countries also sell wine tours
- * and Cape Town city breaks; and operator because the catalogue's African
- * wildlife tours run from Globus and G Adventures coaches up to andBeyond and
- * Wilderness, and this atlas sits with the other five, not below them.
- *
- * Loosening any one of the three is a business decision, not a bug — dropping
- * the operator test alone takes it from 273 journeys to 591.
+ * It lives there rather than here because the merge applies the same test to
+ * the feed already on disk, and a selector the crawl and the merge each keep
+ * their own copy of is a selector that will eventually disagree with itself.
+ * That file also carries the argument for why the old African-country
+ * requirement is gone.
  */
-const SAFARI_COUNTRIES = new Set(['Kenya', 'Tanzania', 'Botswana', 'South Africa', 'Namibia',
-  'Zambia', 'Zimbabwe', 'Rwanda', 'Uganda', 'Malawi', 'Mozambique', 'Madagascar', 'Ethiopia']);
-
-const SAFARI_WILDLIFE = /safari|big five|game (drive|reserve)|gorilla|serengeti|masai|maasai|okavango|kruger|wildlife/i;
-
-/*
- * The houses this atlas sells.
- *
- * Kept in step with BRANDS in data/atlas/safari/itinerary.base.json, and the
- * two have to move together in that order: this regex decides what the crawl
- * KEEPS, and the BRANDS table decides what the merge can then place. A tour
- * selected here whose company matches no brand key is counted as
- * `unmatchedBrand` and dropped — selected, downloaded, and thrown away.
- *
- * Tauck, Giltedge and Remote Lands are listed although the current feed
- * contains none of them: the stored slice is the pre-egress crawl, which only
- * ever looked for "Rail" and private-jet names, so their absence is an
- * artefact of what was fetched rather than of what Virtuoso sells. Tauck and
- * Giltedge sell East and Southern African safaris directly; Remote Lands is an
- * Asia house that already carries 24 journeys in the jet atlas and sells
- * Africa alongside it. Naming them now means the first crawl that reaches
- * api.virtuoso.com brings them in branded, instead of selecting them and
- * discarding them on the next line.
- */
-const SAFARI_OPERATOR = /abercrombie|wilderness|andbeyond|and beyond|ker & downey|ker and downey|artisans of leisure|african travel|singita|great plains|micato|roar africa|extraordinary journeys|natural habitat|journeys by design|tauck|giltedge|gilt edge|remote lands/i;
-
-const isSafari = row =>
-  (row.countries ?? []).some(c => SAFARI_COUNTRIES.has(c))
-  && ((row.experiences ?? []).includes('Wildlife & Nature') || SAFARI_WILDLIFE.test(row.name ?? ''))
-  && SAFARI_OPERATOR.test(row.company ?? '');
 
 // ---------- helpers ----------
 
@@ -167,6 +135,18 @@ function normalize(row, detail, kinds) {
     disembarkation: d.disembarkation ?? null,
     countries: row.countries ?? [],
     destinationRegions: row.destinationRegions ?? [],
+    /*
+     * The supplier's own experience facets — `Wildlife & Nature` among them.
+     *
+     * Stored, at last. isSafari() has always tested this field and the record
+     * has never kept it, so the single strongest signal in the whole selection
+     * was invisible the moment the crawl finished: of the 281 tours filed as
+     * safari, only ~178 can be re-derived from the shipped feed, and nobody
+     * auditing the collection offline could tell which. Keeping it makes the
+     * classification reproducible, lets the merge re-apply a widened rule to
+     * tours already on disk, and costs a handful of short strings per record.
+     */
+    experiences: row.experiences ?? [],
     // Ordered place names from the search row — a fallback when a tour has no
     // detail itinerary, which is the difference between a drawable route and none.
     ports: row.ports ?? [],
