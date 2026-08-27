@@ -5355,23 +5355,61 @@ button.card-book {
   /* Phones: the FALLBACK home for the dossier — a bottom sheet over the map,
      since 340px of panel beside a 360px screen IS the screen.
      It is a fallback because the dossier normally opens inside the open card
-     now (`.ac-detail` above), which keeps the whole map band visible instead of
-     leaving a strip of it under this sheet. What still lands here: a property
-     selected from a pin or a `?hotel=` link that is not among the rendered
-     cards, where there is no card to expand. */
+     now (`.ac-detail` above), where the page's own scroll carries it and the
+     map band stays put above it rather than being covered by a sheet. What
+     still lands here: a property selected from a pin or a `?hotel=` link that
+     is not among the rendered cards, where there is no card to expand. */
   .atlas-detail {
+    /*
+     * Fixed to the VIEWPORT, not absolute inside the map band.
+     *
+     * `.atlas-detail` lives inside `.atlas-mapwrap`, so `bottom: 0` used to put
+     * the sheet's foot at the foot of a 240–400px map — a "bottom sheet" whose
+     * bottom was halfway up the screen, and which scrolled away with the band
+     * whenever nothing was selected to make it sticky. Fixed puts it where the
+     * label already claimed it was, and where `.atlas-guide-sheet` (the other
+     * phone sheet on this page) has always been.
+     *
+     * Above the fixed filter bar and The Guide's disc, both z-index 40: this is
+     * a sheet you dismiss, not a layer they poke through.
+     */
+    position: fixed;
+    z-index: 41;
     top: auto;
     left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
-    max-height: 62%;
+    /*
+     * A DEFINITE height, which is the whole reason the dossier could not be
+     * scrolled here.
+     *
+     * `max-height` alone leaves an absolutely positioned box auto-height, so
+     * the dossier's own `max-height: 100%` resolved against nothing, computed
+     * to `none`, and its `overflow: auto` never had anything to scroll: the
+     * panel simply rendered at its full ~1100px and spilled down over the card
+     * list with its foot off the screen. Give the sheet a height and the
+     * percentage resolves, the dossier clamps, and the overflow it has always
+     * declared starts working.
+     */
+    height: min(72dvh, 620px);
+    max-height: none;
+    /* Short dossiers still hug the bottom edge rather than floating at the top
+       of the box the height above reserves. */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
   .hotel-dossier {
     border-radius: 16px 16px 0 0;
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
+  }
+  /* The sheet now reaches the physical bottom of the screen, so its own last
+     row has to clear the home indicator. */
+  .atlas-detail .hotel-dossier .hd-actions {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
   .atlas-guide-sheet {
     right: 0;
