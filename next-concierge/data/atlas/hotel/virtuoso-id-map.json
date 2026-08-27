@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-08-26T22:05:52.888Z",
+  "generated": "2026-08-27T19:43:53.981Z",
   "feedSynced": "2026-08-25T22:45:32.488Z",
   "localCount": 2475,
   "feedCount": 2073,
@@ -20771,8 +20771,8 @@
    "keepName": "Grand Hotel Victoria Concept & Spa",
    "dropName": "Grand Hotel Victoria, Como",
    "score": 0.67,
-   "ourMetresFromSupplier": 7.95607923266739,
-   "twinMetresFromSupplier": 7.95607923266739,
+   "ourMetresFromSupplier": 7.956079232667392,
+   "twinMetresFromSupplier": 7.956079232667392,
    "note": "both our records carry the same coordinate"
   },
   {
