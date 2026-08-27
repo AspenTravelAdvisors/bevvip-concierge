@@ -46,7 +46,7 @@ const CHROMIUM = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium-1194/ch
  * browser takes minutes on a busy machine, and when a change only touches one
  * of them, waiting for the other four is time spent not checking anything.
  */
-const TYPES = (process.env.ATLAS_UI_TYPES || "jet,yacht,worldcruise,cruise,train")
+const TYPES = (process.env.ATLAS_UI_TYPES || "jet,yacht,worldcruise,cruise,train,safari")
   .split(",").map((t) => t.trim()).filter(Boolean);
 
 const skip = (why) => { console.log(`\nAtlas UI\n\n  SKIPPED — ${why}\n`); process.exit(0); };
@@ -140,6 +140,56 @@ for (const type of TYPES) {
   check(`${type}: clicking a card draws the route and its calls`,
     clicked.feats > 0 && clicked.stops > 0 && clicked.layers >= 3,
     `${clicked.feats} legs, ${clicked.stops} stops, ${clicked.layers} route layers`);
+
+  /*
+   * THE TRANSPOSITION. Does the route go where the journey goes?
+   *
+   * Every check above this one passes with a route drawn on the wrong
+   * continent, and one shipped: the safari atlas's routeFor() read the feed's
+   * `ll: [lat, lng]` and handed it to Mapbox, which reads [lng, lat]. The
+   * Namibia circuit — Windhoek, Sossusvlei, Walvis Bay — drew as a triangle in
+   * the Atlantic off Cape Verde. Features were painted, layers existed, the
+   * camera got finite numbers, and every assertion was green.
+   *
+   * The two sources are independently derived, which is what makes this
+   * checkable at all: `focus-stops` comes from the ADAPTED offering, where
+   * fromLatLngPair() has already converted, and `focus-route` comes from the
+   * collection's own routeFor(). A route is drawn THROUGH its stops, so their
+   * bounding boxes must overlap. Transposing either one pulls them apart by
+   * tens of degrees — far more than any tolerance a legitimately lofted arc
+   * needs.
+   *
+   * Longitudes are folded back into [-180, 180] first: unrollLine() puts a
+   * Tokyo → Los Angeles crossing at +241° on purpose, and comparing that to a
+   * stop at -119° would fail a correct route.
+   */
+  const geo = await page.evaluate(() => {
+    const fold = (lng) => ((((lng + 180) % 360) + 360) % 360) - 180;
+    const bbox = (pts) => pts.reduce(
+      (b, [x, y]) => [Math.min(b[0], fold(x)), Math.min(b[1], y), Math.max(b[2], fold(x)), Math.max(b[3], y)],
+      [Infinity, Infinity, -Infinity, -Infinity],
+    );
+    const coords = (fc) => (fc?.features || []).flatMap((f) => {
+      const g = f.geometry || {};
+      if (g.type === "Point") return [g.coordinates];
+      if (g.type === "LineString") return g.coordinates;
+      if (g.type === "MultiLineString") return g.coordinates.flat();
+      return [];
+    }).filter((c) => Array.isArray(c) && Number.isFinite(c[0]) && Number.isFinite(c[1]));
+    const route = coords(window.__stub.sources["focus-route"]);
+    const stops = coords(window.__stub.sources["focus-stops"]);
+    if (route.length < 2 || !stops.length) return null;
+    const r = bbox(route);
+    const s = bbox(stops);
+    // Pad by a degree: a stop sitting exactly on the end of a straight route
+    // gives a zero-width box on one axis, and floating point should not decide
+    // whether two edges touch.
+    const overlaps = r[0] <= s[2] + 1 && s[0] <= r[2] + 1 && r[1] <= s[3] + 1 && s[1] <= r[3] + 1;
+    return { overlaps, route: r.map((n) => Math.round(n)), stops: s.map((n) => Math.round(n)) };
+  });
+  check(`${type}: the route is drawn where the journey goes`,
+    geo ? geo.overlaps : false,
+    geo ? `route [${geo.route}] vs stops [${geo.stops}]` : "no route or stops to compare");
 
   /*
    * THE FREEZE. Mapbox reads camera options with `'pitch' in options`, so a key

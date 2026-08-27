@@ -177,7 +177,23 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     tagline: "The great migration, the Delta and the gorilla forests, camp by camp",
     base: process.env.NEXT_PUBLIC_SAFARI_ATLAS_BASE || "/maps/safari",
     sampleRegions: ["EASTAFRICA", "OKAVANGO", "ZAMBEZI", "GREATAPES"],
-    color: "#c9812f",
+    /*
+     * Jacaranda, and it is a correction rather than a preference.
+     *
+     * Safari shipped as ochre #c9812f, which put it 18.0 CIELAB ΔE from rail's
+     * copper #e08d5f — the closest pair in this table by a clear margin, the
+     * next being hotel/yacht at 22.3. Two collections that sit together under
+     * "By Land", drawn as lines on the same dark globe and listed adjacently in
+     * the legend, were the two nobody could tell apart. The warm band was
+     * simply full: rail 22°, ochre 30°, yacht 43°, hotel 50°.
+     *
+     * The empty band is violet, and it is 45.1 ΔE from its nearest neighbour
+     * (cruise's blue) — twice the separation of the tightest surviving pair —
+     * at L* 62, which holds up as a line over dark terrain. Purple is not a
+     * savanna colour, but the jacarandas of Pretoria, Harare and Nairobi are
+     * the reason it is not an arbitrary one either.
+     */
+    color: "#b57edc",
     count: 269,
     order: 8,
     intent: "land",
@@ -362,6 +378,22 @@ const ROUTE_VERB: Partial<Record<OfferingType, string>> = {
   cruise: "Cruise",
   worldcruise: "Cruise",
   train: "Ride",
+  /*
+   * "Track", because it is the safari word and because the collection had no
+   * word at all.
+   *
+   * Missing from this table, safari drew routes but never offered the control
+   * that traces and frames one — routeVerbLong() returned null, so the card's
+   * button was never rendered and `npm run verify:atlas-ui` could not find a
+   * card with a route on the only collection whose routes had just been fixed.
+   * Every other route collection has a verb; this was the sixth.
+   *
+   * Not "Fly": the legs are light aircraft between airstrips AND Land Cruisers
+   * between camps, and naming one of the two would describe half the journey.
+   * Tracking is what you do on the ground once you land, and it is the verb a
+   * traveller already associates with the product.
+   */
+  safari: "Track",
 };
 
 /** "Sail the route" — the card action. Null where a collection has no routes. */

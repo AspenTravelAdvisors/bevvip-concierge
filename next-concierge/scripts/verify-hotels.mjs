@@ -19,33 +19,21 @@
  *   node scripts/verify-hotels.mjs
  */
 
-import { readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { buildAdapters } from "./lib/adapters-build.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BUILD = join(ROOT, ".adapters-build");
 
 /**
- * Compile the REAL adapters, the same way verify-adapters.mjs does, so this
+ * Compile the REAL adapters, the same way every other verifier does, so this
  * exercises shipped code rather than a second copy that could drift.
  * tsconfig.adapters.json already globs lib/atlas/adapters/*.ts, so hotel.ts and
  * hotel-regions.ts come along without touching it.
  */
-rmSync(BUILD, { recursive: true, force: true });
-execFileSync("npx", ["tsc", "-p", "tsconfig.adapters.json"], { cwd: ROOT, stdio: "inherit" });
-const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-  e.isDirectory() ? walk(join(dir, e.name)) : e.name.endsWith(".js") ? [join(dir, e.name)] : []);
-for (const file of walk(BUILD)) {
-  writeFileSync(file, readFileSync(file, "utf8")
-    .replace(/from "@\/lib\/atlas\/geo"/g, 'from "../geo.js"')
-    // dates.js is CommonJS and outside tsconfig.adapters.json's rootDir, so
-    // tsc never copies it here — point at the real file. Keep in step with
-    // verify-adapters.mjs and verify-deeplinks.mjs, which repeat this block.
-    .replace(/from "@\/lib\/atlas\/dates"/g, 'from "../../lib/atlas/dates.js"')
-    .replace(/from "(\.\/[a-zA-Z-]+)"/g, 'from "$1.js"'));
-}
+buildAdapters(ROOT);
 
 const mod = (n) => import(pathToFileURL(join(BUILD, "adapters", n)).href);
 const { adaptHotels, HOTEL_DESCRIPTOR } = await mod("hotel.js");

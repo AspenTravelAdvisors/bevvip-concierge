@@ -23,34 +23,16 @@
  * vacuous — for jet it changes 107 of 141 trips.
  */
 
-import { readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { buildAdapters } from "./lib/adapters-build.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BUILD = join(ROOT, ".adapters-build");
 
-/** Compile the REAL adapters so this tests shipped code, not a transcription. */
-function buildAdapters() {
-  rmSync(BUILD, { recursive: true, force: true });
-  execFileSync("npx", ["tsc", "-p", "tsconfig.adapters.json"], { cwd: ROOT, stdio: "inherit" });
-  // tsc resolves neither the @/ alias nor the .js extensions Node's ESM loader
-  // needs. Rewrite in-process so this behaves the same on macOS and Linux.
-  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? walk(join(dir, e.name)) : e.name.endsWith(".js") ? [join(dir, e.name)] : []);
-  for (const file of walk(BUILD)) {
-    writeFileSync(file, readFileSync(file, "utf8")
-      .replace(/from "@\/lib\/atlas\/geo"/g, 'from "../geo.js"')
-      // dates.js is CommonJS and outside rootDir, so tsc never copies it into
-      // the build — point at the real file two levels up instead. Node's ESM
-      // loader reads its named exports through cjs-module-lexer, which handles
-      // the static `module.exports = { ... }` object it ends with.
-      .replace(/from "@\/lib\/atlas\/dates"/g, 'from "../../lib/atlas/dates.js"')
-      .replace(/from "(\.\/[a-zA-Z]+)"/g, 'from "$1.js"'));
-  }
-}
-buildAdapters();
+
+buildAdapters(ROOT);
 
 const mod = (n) => import(pathToFileURL(join(BUILD, "adapters", n)).href);
 const { adaptTrain, TRAIN_DESCRIPTOR } = await mod("train.js");

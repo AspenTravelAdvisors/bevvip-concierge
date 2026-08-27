@@ -1,0 +1,3102 @@
+{
+ "_meta": {
+  "purpose": "Safari lodges from the hotel atlas, joined to safari journeys by coordinate proximity. Built by scripts/build-safari-camps.mjs; do not hand-edit.",
+  "built": "derived — see scripts/build-safari-camps.mjs",
+  "radiusKm": 25,
+  "lodgesInCategory": 72,
+  "lodgesInSafariCountries": 32,
+  "journeysWithCamps": 199,
+  "journeysTotal": 269,
+  "campsMatched": 22
+ },
+ "radiusKm": 25,
+ "totals": {
+  "category": 72,
+  "inSafariCountries": 32
+ },
+ "CAMPS": {
+  "h_02484": {
+   "n": "Xigera Safari Lodge",
+   "house": null,
+   "country": "Botswana",
+   "ll": [
+    -19.3169,
+    22.926
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16013997_2_0_0731.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01207": {
+   "n": "Mahali Mzuri",
+   "house": "Virgin Hotels Collection",
+   "country": "Kenya",
+   "ll": [
+    -1.34584,
+    35.2039
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12948588_2_0_0809.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01349": {
+   "n": "Mukwa River Lodge",
+   "house": null,
+   "country": "Zambia",
+   "ll": [
+    -17.805163,
+    25.685646
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18218779_2_0_0816.webp",
+   "rooms": 8,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_02374": {
+   "n": "Victoria Falls River Lodge",
+   "house": null,
+   "country": "Zimbabwe",
+   "ll": [
+    -17.9318,
+    25.8256
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15588570_2_0_0807.webp",
+   "rooms": 19,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00537": {
+   "n": "Elewana the Manor at Ngorongoro",
+   "house": "Minor Hotels",
+   "country": "Tanzania",
+   "ll": [
+    -2.97531,
+    35.4504
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15493511_2_0_0819.webp",
+   "rooms": 19,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_01778": {
+   "n": "Singita - Singita Grumeti",
+   "house": "Singita",
+   "country": "Tanzania",
+   "ll": [
+    -2.15399,
+    34.6857
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4176_2_0_0818.webp",
+   "rooms": 31,
+   "perks": [
+    "Daily breakfast",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_00594": {
+   "n": "Fairmont Mara Safari Club",
+   "house": "Accor",
+   "country": "Kenya",
+   "ll": [
+    -1.23185,
+    35.0051
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11398249_2_0_0814.webp",
+   "rooms": 38,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_01409": {
+   "n": "Ol Jogi Wildlife Conservancy",
+   "house": null,
+   "country": "Kenya",
+   "ll": [
+    0.025387,
+    37.0676
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16114504_2_0_0821.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_02339": {
+   "n": "Tswalu Kalahari",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -27.1987,
+    22.4789
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15254553_2_0_0809.webp",
+   "rooms": 14,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_00212": {
+   "n": "Belmond Safaris",
+   "house": null,
+   "country": "Botswana",
+   "ll": [
+    -19.979453,
+    23.426614
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_v6164459": {
+   "n": "Savute Elephant Lodge, A Belmond Safari",
+   "house": "Belmond ",
+   "country": "Botswana",
+   "ll": [
+    -18.5683,
+    24.067
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/2376776_2_30_0815.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01417": {
+   "n": "One&Only Gorilla's Nest",
+   "house": "One&Only Resorts ",
+   "country": "Rwanda",
+   "ll": [
+    -1.43207,
+    29.5666
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16122880_2_0_0807.webp",
+   "rooms": 21,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01782": {
+   "n": "Singita - Singita Volcanoes National Park",
+   "house": "Singita",
+   "country": "Rwanda",
+   "ll": [
+    -1.43207,
+    29.5666
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16117027_2_0_0810.webp",
+   "rooms": 9,
+   "perks": [
+    "Daily breakfast",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_01781": {
+   "n": "Singita - Singita Sabi Sand",
+   "house": "Singita",
+   "country": "South Africa",
+   "ll": [
+    -24.9279,
+    31.5249
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4369_2_24_0819.webp",
+   "rooms": 24,
+   "perks": [
+    "Daily breakfast",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_01181": {
+   "n": "Lion Sands Game Reserve",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.9723,
+    31.5312
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4024_2_0_0814.webp",
+   "rooms": 46,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 1
+  },
+  "h_01212": {
+   "n": "MalaMala Game Reserve",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.7566,
+    31.6411
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4522_2_21_0730.webp",
+   "rooms": 33,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Airport transfer"
+   ],
+   "promo": 0
+  },
+  "h_02327": {
+   "n": "Tintswalo Safari",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.6977,
+    31.5201
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4575_2_34_0727.webp",
+   "rooms": 13,
+   "perks": [
+    "Daily breakfast",
+    "Spa treatment",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_01021": {
+   "n": "Jack's Camp",
+   "house": null,
+   "country": "Botswana",
+   "ll": [
+    -20.4507,
+    24.8093
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16149694_2_0_0810.webp",
+   "rooms": 9,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_01673": {
+   "n": "Royal Malewane",
+   "house": "The Royal Portfolio",
+   "country": "South Africa",
+   "ll": [
+    -24.541,
+    31.1574
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4401_2_0_0818.webp",
+   "rooms": 22,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_02345": {
+   "n": "Ulusaba Private Game Reserve",
+   "house": "Virgin Hotels Collection",
+   "country": "South Africa",
+   "ll": [
+    -24.4167,
+    31.4175
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4629_2_0_0819.webp",
+   "rooms": 20,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01020": {
+   "n": "Jabulani Safari Relais & Châteaux",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.3183,
+    30.9697
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4423_2_45_0825.webp",
+   "rooms": 11,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_01729": {
+   "n": "Shamwari Private Game Reserve",
+   "house": "One&Only Resorts ",
+   "country": "South Africa",
+   "ll": [
+    -33.4779,
+    26.0362
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15980889_2_0_0824.webp",
+   "rooms": 68,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  }
+ },
+ "BYTRIP": {
+  "11918145": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 16,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 16,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 16,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 16,
+    "km": 24.8
+   }
+  ],
+  "11922921": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 24.8
+   }
+  ],
+  "11973120": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 3,
+    "km": 23.2
+   },
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 7,
+    "km": 17.4
+   }
+  ],
+  "11978310": [
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 6,
+    "km": 17.4
+   }
+  ],
+  "11995951": [
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 8,
+    "km": 17.4
+   }
+  ],
+  "12647663": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 24.8
+   }
+  ],
+  "12648102": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 24.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 21.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 10,
+    "km": 19.9
+   },
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 13,
+    "km": 1.1
+   }
+  ],
+  "12709528": [
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 1,
+    "km": 1.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "12709563": [
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 1,
+    "km": 1.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "14405830": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 3,
+    "km": 23.2
+   }
+  ],
+  "14957132": [
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 6,
+    "km": 17.4
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 9,
+    "km": 23.9
+   }
+  ],
+  "15172759": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 4,
+    "km": 24.8
+   }
+  ],
+  "15211658": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 9,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 9,
+    "km": 16.2
+   }
+  ],
+  "15246170": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 1,
+    "km": 23.2
+   }
+  ],
+  "15272131": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 2,
+    "km": 23.2
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "15272308": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 4,
+    "km": 23.2
+   }
+  ],
+  "15387348": [
+   {
+    "id": "h_01409",
+    "stop": "Naro Moru",
+    "day": 2,
+    "km": 22.1
+   },
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 10,
+    "km": 23.2
+   }
+  ],
+  "15389436": [
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 3,
+    "km": 1
+   },
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 9,
+    "km": 23.2
+   }
+  ],
+  "15668137": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 4,
+    "km": 23.9
+   }
+  ],
+  "15668185": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "15669013": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "15669024": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 5,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 5,
+    "km": 16.2
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 11,
+    "km": 23.9
+   }
+  ],
+  "15673237": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "15673242": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 5,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 5,
+    "km": 16.2
+   }
+  ],
+  "15673271": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 8,
+    "km": 19.9
+   }
+  ],
+  "15674922": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   }
+  ],
+  "15686143": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 6,
+    "km": 23.9
+   }
+  ],
+  "15686151": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "15686176": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 22.4
+   }
+  ],
+  "15687376": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 24.8
+   }
+  ],
+  "15687389": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 2,
+    "km": 19.9
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 9,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 3.4
+   }
+  ],
+  "15699709": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 6,
+    "km": 23.9
+   }
+  ],
+  "15701153": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   }
+  ],
+  "15702363": [
+   {
+    "id": "h_00594",
+    "stop": "Mara North Conservancy",
+    "day": 4,
+    "km": 9.8
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "15710535": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 24.8
+   }
+  ],
+  "15730440": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "15739524": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 7,
+    "km": 23.2
+   }
+  ],
+  "15751549": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 24.8
+   }
+  ],
+  "15751890": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 11,
+    "km": 24.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 14,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 14,
+    "km": 21.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 17,
+    "km": 19.9
+   }
+  ],
+  "15776971": [
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 6,
+    "km": 17.4
+   }
+  ],
+  "15777015": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 3,
+    "km": 23.2
+   }
+  ],
+  "15785228": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 1,
+    "km": 24.8
+   }
+  ],
+  "16114633": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 13,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 13,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 13,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 13,
+    "km": 24.8
+   }
+  ],
+  "16297109": [
+   {
+    "id": "h_02339",
+    "stop": "Tswalu Game Reserve",
+    "day": 3,
+    "km": 12
+   }
+  ],
+  "16297936": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "16301673": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 12,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 13,
+    "km": 0.8
+   }
+  ],
+  "16301676": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 2,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 2,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 2,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 2,
+    "km": 24.8
+   }
+  ],
+  "16533558": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 5,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 5,
+    "km": 16.2
+   }
+  ],
+  "16626491": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   }
+  ],
+  "16626526": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 1,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 1,
+    "km": 16.2
+   }
+  ],
+  "16628139": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "16628140": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "16628141": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "16628887": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 1,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 1,
+    "km": 16.2
+   }
+  ],
+  "16628892": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "16628895": [
+   {
+    "id": "h_v6164459",
+    "stop": "Savute",
+    "day": 1,
+    "km": 1.1
+   }
+  ],
+  "16628898": [
+   {
+    "id": "h_01021",
+    "stop": "Makgadikgadi Pans National Park",
+    "day": 1,
+    "km": 6
+   }
+  ],
+  "16628902": [
+   {
+    "id": "h_01021",
+    "stop": "Makgadikgadi Pans National Park",
+    "day": 1,
+    "km": 6
+   }
+  ],
+  "16630483": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   }
+  ],
+  "16857151": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   },
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 5,
+    "km": 1.1
+   }
+  ],
+  "16857152": [
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 1,
+    "km": 1.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18061582": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 22.4
+   }
+  ],
+  "18092022": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 10,
+    "km": 19.6
+   }
+  ],
+  "18104198": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 1,
+    "km": 18.1
+   }
+  ],
+  "18104364": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   }
+  ],
+  "18107045": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18107046": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18107102": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 22.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 11,
+    "km": 19.9
+   }
+  ],
+  "18107126": [
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 3.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18107132": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "18107133": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "18114408": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18114409": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18114414": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18114415": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18230568": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 22.4
+   }
+  ],
+  "18230586": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18230587": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 11,
+    "km": 19.6
+   }
+  ],
+  "18230588": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 8,
+    "km": 19.6
+   }
+  ],
+  "18230663": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   }
+  ],
+  "18230725": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 6,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 6,
+    "km": 16.2
+   }
+  ],
+  "18230727": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 3,
+    "km": 19.6
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 9,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 9,
+    "km": 16.2
+   }
+  ],
+  "18338097": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18338099": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18338100": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "18338579": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 3,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "18338591": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 10,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 10,
+    "km": 19.8
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 17,
+    "km": 18.1
+   }
+  ],
+  "18344817": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18345112": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 8,
+    "km": 19.9
+   },
+   {
+    "id": "h_01021",
+    "stop": "Makgadikgadi Pans National Park",
+    "day": 12,
+    "km": 6
+   },
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 15,
+    "km": 1.1
+   }
+  ],
+  "18346151": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 8,
+    "km": 19.6
+   }
+  ],
+  "18358548": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 6,
+    "km": 23.2
+   }
+  ],
+  "18360200": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   }
+  ],
+  "18360201": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18360214": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 3,
+    "km": 23.2
+   }
+  ],
+  "18360283": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 8,
+    "km": 23.9
+   }
+  ],
+  "18360363": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "18360991": [
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 0.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18361073": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 21.1
+   }
+  ],
+  "18361132": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 21.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 11,
+    "km": 19.9
+   }
+  ],
+  "18362041": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18363205": [
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 5,
+    "km": 17.4
+   }
+  ],
+  "18363882": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 6,
+    "km": 23.9
+   }
+  ],
+  "18363897": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 4,
+    "km": 23.9
+   },
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 6,
+    "km": 23.2
+   }
+  ],
+  "18364254": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18365627": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18375050": [
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 2,
+    "km": 3.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   },
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 12,
+    "km": 1.1
+   }
+  ],
+  "18379282": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 2,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 22.4
+   },
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "18383217": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "18383983": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   }
+  ],
+  "18383989": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 22.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 11,
+    "km": 19.9
+   }
+  ],
+  "18383993": [
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 3.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18384197": [
+   {
+    "id": "h_02339",
+    "stop": "Tswalu Game Reserve",
+    "day": 4,
+    "km": 12
+   },
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "18386586": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "18391235": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 7,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 21.1
+   }
+  ],
+  "18407050": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18473611": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 4,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   }
+  ],
+  "18473617": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 2,
+    "km": 18.1
+   },
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 5,
+    "km": 9.1
+   }
+  ],
+  "18473628": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18473632": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18474761": [
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "18475653": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18479807": [
+   {
+    "id": "h_01207",
+    "stop": "Maasai Mara",
+    "day": 2,
+    "km": 17.4
+   },
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 5,
+    "km": 23.2
+   }
+  ],
+  "18488737": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18515262": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 12,
+    "km": 19.6
+   }
+  ],
+  "18521705": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18521706": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18521708": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   }
+  ],
+  "18521709": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 4,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   }
+  ],
+  "18521712": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   }
+  ],
+  "18521713": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18535178": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 22.4
+   }
+  ],
+  "18535182": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 22.4
+   }
+  ],
+  "18535586": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 10,
+    "km": 19.6
+   }
+  ],
+  "18535590": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   }
+  ],
+  "18535591": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18535592": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 22.4
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 13,
+    "km": 19.6
+   }
+  ],
+  "18535650": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18535651": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 12,
+    "km": 19.6
+   }
+  ],
+  "18537234": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 7,
+    "km": 19.9
+   }
+  ],
+  "18562114": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18565358": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18567330": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18572609": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "18572614": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   }
+  ],
+  "18572850": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18573955": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18574009": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 22.4
+   }
+  ],
+  "18574019": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18574061": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   }
+  ],
+  "18574114": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 9,
+    "km": 19.6
+   }
+  ],
+  "18574257": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 22.4
+   }
+  ],
+  "18574380": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   }
+  ],
+  "18574382": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 10,
+    "km": 18.1
+   }
+  ],
+  "18574393": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18574399": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 7,
+    "km": 19.9
+   }
+  ],
+  "18575489": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   }
+  ],
+  "18575629": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18575676": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18575679": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18575680": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   }
+  ],
+  "18575691": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 4,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 4,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 7,
+    "km": 19.9
+   }
+  ],
+  "18579968": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 6,
+    "km": 23.9
+   }
+  ],
+  "18579970": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 6,
+    "km": 23.9
+   }
+  ],
+  "18580069": [
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 1,
+    "km": 1.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   }
+  ],
+  "18580071": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   },
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 12,
+    "km": 1.1
+   }
+  ],
+  "18580117": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 5,
+    "km": 23.9
+   }
+  ],
+  "18586269": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 5,
+    "km": 23.9
+   }
+  ],
+  "18586273": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 4,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 4,
+    "km": 19.8
+   }
+  ],
+  "18587276": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18587277": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
+  "18587619": [
+   {
+    "id": "h_01729",
+    "stop": "Shamwari Private Reserve",
+    "day": 6,
+    "km": 0.2
+   }
+  ],
+  "18587818": [
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 9,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 9,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 9,
+    "km": 23.9
+   }
+  ],
+  "18587863": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   }
+  ],
+  "18587864": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18591514": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18591739": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 2,
+    "km": 18.1
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 5,
+    "km": 23.9
+   }
+  ],
+  "18591740": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 2,
+    "km": 18.1
+   }
+  ],
+  "18591741": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 4,
+    "km": 23.9
+   }
+  ],
+  "18593107": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 19.8
+   }
+  ],
+  "18597276": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18597537": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   }
+  ],
+  "18597738": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 9,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 9,
+    "km": 19.8
+   }
+  ],
+  "18597755": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18597896": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 6,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 6,
+    "km": 22.4
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18597936": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 22.4
+   }
+  ],
+  "18597969": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 19.8
+   }
+  ],
+  "18598047": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 22.4
+   }
+  ],
+  "18598516": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   }
+  ],
+  "18598519": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 2,
+    "km": 16.2
+   }
+  ],
+  "18598520": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 4,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 4,
+    "km": 19.8
+   }
+  ],
+  "18598837": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   }
+  ],
+  "18598843": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18600221": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   }
+  ],
+  "18600223": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 4,
+    "km": 16.2
+   }
+  ],
+  "18600711": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18600961": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18600969": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 21.1
+   }
+  ],
+  "18600974": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
+   }
+  ],
+  "18601052": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 19,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 19,
+    "km": 16.2
+   }
+  ]
+ }
+}

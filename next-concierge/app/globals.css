@@ -3916,6 +3916,31 @@ button.card-book {
 .atlas-card--stay .ac-note--offer {
   color: #b8e09a;
 }
+
+/* Safari's card note is neither a perk nor an offer — it is a pointer into
+   another collection — so it takes the atlas's own jacaranda rather than the
+   gold, and leads with a flag that says which claim is being made. */
+.atlas-collection--safari .atlas-card--stay .ac-note {
+  color: #c9a7e6;
+}
+.sf-camp-flag {
+  margin-right: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(181, 126, 220, 0.16);
+  color: #d8bff0;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* The collection-level link, in the row that already carries the count. */
+.sf-lodges {
+  color: #c9a7e6;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.sf-lodges:hover { text-decoration: underline; }
 /* Two lines of the supplier's description, clamped. */
 .atlas-card--stay .ac-summary {
   margin: 4px 0 0;
@@ -5164,6 +5189,41 @@ button.card-book {
 .jd-day { flex: 0 0 52px; color: var(--ink-dim, #9c998f); }
 .jd-stop { color: var(--ink, #e8e5dc); }
 .jd-included { margin: 6px 0 0; padding-left: 18px; font-size: 12px; line-height: 1.55; color: var(--ink-dim, #b9b6ad); }
+
+/* The camps on a safari route — the one block in this dossier that links out
+   of the collection, so it is a list of TARGETS and reads like the hotel
+   cards it lands on rather than like the itinerary above it. */
+.jd-camps-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-dim, #9c998f);
+}
+.jd-camps { list-style: none; margin: 8px 0 0; padding: 0; }
+.jd-camps li + li { margin-top: 6px; }
+.jd-camp {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid rgba(181, 126, 220, 0.28);
+  border-radius: 7px;
+  background: rgba(181, 126, 220, 0.07);
+  text-decoration: none;
+}
+.jd-camp:hover { border-color: rgba(181, 126, 220, 0.6); background: rgba(181, 126, 220, 0.13); }
+.jd-camp img, .jd-camp-empty {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+}
+.jd-camp-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.jd-camp-name { font-size: 12px; color: var(--ink, #e8e5dc); }
+.jd-camp-meta { font-size: 11px; color: var(--ink-dim, #9c998f); }
+.jd-camp-perks { font-size: 11px; color: #c9a7e6; }
 .jd-book {
   display: inline-block;
   margin-top: 14px;

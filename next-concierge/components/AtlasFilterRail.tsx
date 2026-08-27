@@ -309,14 +309,25 @@ export default function AtlasFilterRail({
       const counts = new Map<string, number>();
       for (const o of offerings) {
         const raw = o.attributes?.[f.key];
-        const v = Array.isArray(raw) ? raw[0] : raw;
-        if (!v) continue;
+        /*
+         * EVERY value, not just the first.
+         *
+         * This read `raw[0]` — which was correct while the only plural axis in
+         * the app was hotels' hidden `region=`, an axis with no menu to
+         * populate. The wildlife axis is plural AND visible: a journey tagged
+         * ["Elephant", "Lion"] would have offered itself as an option under
+         * Elephant only, and counted zero towards Lion, while matchesOffering()
+         * happily matched it on both. The menu and the filter would have
+         * disagreed about the same record — a count of 3 opening a list of 11.
+         */
+        const values = (Array.isArray(raw) ? raw : [raw]).filter(Boolean) as string[];
+        if (!values.length) continue;
         const others: AtlasFilterState = {
           ...shown,
           facets: { ...(shown.facets || {}), [f.key]: new Set<string>() },
         };
         if (!matchesOffering(o, others, d, today)) continue;
-        counts.set(v, (counts.get(v) || 0) + 1);
+        for (const v of values) counts.set(v, (counts.get(v) || 0) + 1);
       }
       out[f.key] = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
     }

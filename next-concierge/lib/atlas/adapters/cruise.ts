@@ -33,6 +33,7 @@
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
 import { norm } from "./search";
 import { endFrom } from "@/lib/atlas/dates";
+import { detectWildlife, WILDLIFE_FACET, WILDLIFE_FACET_KEY } from "@/lib/atlas/wildlife";
 import type { AtlasFilterDescriptor, AtlasOffering, AtlasStop } from "./types";
 
 export const CRUISE_DESCRIPTOR: AtlasFilterDescriptor = {
@@ -49,6 +50,19 @@ export const CRUISE_DESCRIPTOR: AtlasFilterDescriptor = {
   supportsPromotionFilter: true,
   idPrefix: "cr_",
   requiresStartDate: true, // `null >= today` is false — dateless rows drop out
+  /*
+   * Wildlife, the same axis the safari atlas declares and for a stronger
+   * reason: on an expedition sailing the animals ARE the itinerary. Nobody
+   * books the Antarctic Peninsula for the peninsula, and "which sailings see
+   * polar bears" is a question this atlas could not answer at all before —
+   * region says Arctic, month says July, and neither distinguishes a Svalbard
+   * bear voyage from a Norwegian fjords cruise leaving the same week.
+   *
+   * See lib/atlas/wildlife.ts. Coverage is 656 of 3,662 sailings, because it
+   * tags only what the operator's own description names, and 1,275 of these
+   * rows carry no description at all.
+   */
+  facets: [WILDLIFE_FACET],
 };
 
 export interface RawCruiseSailings {
@@ -146,6 +160,18 @@ export function adaptCruise(
 
     const monthKey = start ? `${start.slice(0, 4)}-${start.slice(5, 7)}` : null;
 
+    /*
+     * What this sailing says it sees.
+     *
+     * The port names are deliberately NOT in the haystack the detector reads.
+     * They are the geography argument again: "Seal Bay" and "Elephant Island"
+     * are place names, and tagging a South Shetlands sailing for elephants
+     * because it calls at Elephant Island is exactly the false promise
+     * lib/atlas/wildlife.ts refuses to make. Only the operator's own words
+     * count.
+     */
+    const wildlife = detectWildlife([name, get("description")].filter(Boolean).join(" "));
+
     out.push({
       id: sid,
       idAliases: [sid, `${CRUISE_DESCRIPTOR.idPrefix}${sid}`],
@@ -190,7 +216,10 @@ export function adaptCruise(
       })(),
       url: slug ? `${urlBase}${sid}/${slug}` : null,
       world: false,
-      searchText: norm([name, operator, ship, region].filter(Boolean).join(" ")),
+      attributes: wildlife.length ? { [WILDLIFE_FACET_KEY]: wildlife } : undefined,
+      // The animals join the haystack too, so typing "penguin" and picking
+      // Penguin from the menu are the same question with the same answer.
+      searchText: norm([name, operator, ship, region, ...wildlife].filter(Boolean).join(" ")),
     });
   }
 

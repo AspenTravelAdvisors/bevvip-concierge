@@ -17,6 +17,7 @@
 
 import { fromLatLngPair, isFinitePair, type LngLat } from "@/lib/atlas/geo";
 import { norm } from "./search";
+import { detectWildlife, WILDLIFE_FACET_KEY } from "@/lib/atlas/wildlife";
 import type { AtlasFilterDescriptor, AtlasOffering, AtlasStop } from "./types";
 
 export interface RawJourneyBrand { short?: string; domain?: string; color?: string; glyph?: string }
@@ -230,8 +231,30 @@ export function adaptJourney(
     // every itinerary stop name.
     const regionNames = regions.map((k) => REGIONS[k]?.name).filter(Boolean) as string[];
     const cityNames = cities.map((c) => c.n).filter(Boolean) as string[];
+
+    /*
+     * ── The wildlife axis, when the collection asks for it ──────────────────
+     *
+     * Declaring the facet IS the opt-in: a collection that wants "what will I
+     * see" adds one line to its descriptor and gets the attribute, the rail
+     * control, the live counts and the `?wildlife=` deep link. Rail and jet
+     * declare nothing and pay nothing — the detector never runs for them.
+     *
+     * It reads the SUPPLIER's prose, not the geography. See lib/atlas/wildlife.ts
+     * for why "the Serengeti therefore has lions" is a claim this refuses to
+     * make on an operator's behalf.
+     */
+    const wantsWildlife = (d.facets ?? []).some((f) => f.key === WILDLIFE_FACET_KEY);
+    const wildlife = wantsWildlife
+      ? detectWildlife([trip.n, trip.description, ...names, ...(trip.included ?? [])].filter(Boolean).join(" "))
+      : [];
+
     const searchText = norm(
-      [trip.n, brandLabel, trip.d, ...regionNames, ...cityNames, ...names]
+      // The animals join the haystack as well as the facet: a traveller who
+      // types "gorilla" into the search box is asking the same question as one
+      // who picks Gorilla from the menu, and before this only the journeys with
+      // the word in their TITLE answered it.
+      [trip.n, brandLabel, trip.d, ...regionNames, ...cityNames, ...names, ...wildlife]
         .filter(Boolean)
         .join(" "),
     );
@@ -262,6 +285,9 @@ export function adaptJourney(
       itinerary: itineraryRanges(trip),
       url: trip.u || null,
       world: !!trip.world,
+      // Only written when the collection declared the facet — an attribute no
+      // facet names is dead weight the filter layer will never read.
+      attributes: wildlife.length ? { [WILDLIFE_FACET_KEY]: wildlife } : undefined,
       searchText,
     });
   });

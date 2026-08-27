@@ -22,30 +22,15 @@
  *   - minDays/maxDays round-trip, and a junk or zero bound leaves that end open
  */
 
-import { readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { buildAdapters } from "./lib/adapters-build.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BUILD = join(ROOT, ".adapters-build");
 
-function build() {
-  rmSync(BUILD, { recursive: true, force: true });
-  execFileSync("npx", ["tsc", "-p", "tsconfig.adapters.json"], { cwd: ROOT, stdio: "inherit" });
-  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? walk(join(dir, e.name)) : e.name.endsWith(".js") ? [join(dir, e.name)] : []);
-  for (const f of walk(BUILD)) {
-    writeFileSync(f, readFileSync(f, "utf8")
-      .replace(/from "@\/lib\/atlas\/geo"/g, 'from "../geo.js"')
-      // dates.js is CommonJS and outside tsconfig.adapters.json's rootDir, so
-      // tsc never copies it here — point at the real file. Keep in step with
-      // verify-adapters.mjs and verify-hotels.mjs, which repeat this block.
-      .replace(/from "@\/lib\/atlas\/dates"/g, 'from "../../lib/atlas/dates.js"')
-      .replace(/from "(\.\/[a-zA-Z]+)"/g, 'from "$1.js"'));
-  }
-}
-build();
+buildAdapters(ROOT);
 
 const mod = (n) => import(pathToFileURL(join(BUILD, "adapters", n)).href);
 const { parseDeepLink, toSearchParams, findBrand, findRegionKey, REGION_ALIASES } = await mod("params.js");

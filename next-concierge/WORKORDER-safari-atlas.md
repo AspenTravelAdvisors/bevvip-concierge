@@ -389,12 +389,148 @@ itinerary will never string-match, and they are 4km apart.
 
 ---
 
+## Phase 4 — What shipped after the first pass, and what it found
+
+Phase 3 landed the collection; browsing it turned up four defects and one
+missing axis. All five are fixed.
+
+### 4.1 · The routes were drawn on the wrong continent
+
+`routeFor()` in `AtlasSafari.tsx` read the feed's `ll` — `[lat, lng]`, the
+convention every atlas's `ROUTES` and `REGIONS` use — and handed it straight to
+Mapbox, which reads `[lng, lat]`. The Namibia circuit, `[-22.57, 17.08]`, drew
+as latitude 17 / longitude −22: a triangle in the Atlantic off Cape Verde.
+Every one of the 269 journeys was wrong the same way.
+
+It now draws `o.path`, which `journey.ts` has already run through
+`fromLatLngPair()`, in itinerary order — the same source `AtlasJet` uses.
+
+**Nothing in the suite could have caught this**, which is the more useful part
+of the finding. `verify:atlas-regions` checks the DATA, and the data was
+correct; `verify:atlas-ui` drove a real browser and asserted a route was
+painted, layers existed and the camera got finite numbers — all true of a route
+in the wrong ocean. `verify:atlas-ui` now compares the drawn route's bounding
+box against the bounding box of the stops the same click emitted. The two
+sources are derived independently (stops from the adapter, route from the
+collection's own `routeFor`), so a transposition on either side pulls them
+apart. Verified by reintroducing the bug: that one assertion goes red and the
+other five stay green.
+
+### 4.2 · Safari and rail were the two colours nobody could tell apart
+
+Ochre `#c9812f` sat **18.0 CIELAB ΔE** from rail's copper `#e08d5f` — the
+closest pair in `ATLASES`, against a next-closest of 22.3 (hotel/yacht) — and
+the two collections sit together under *By Land*, adjacent in the legend, drawn
+as lines on the same dark globe. The warm band was full: rail 22°, safari 30°,
+yacht 43°, hotel 50°.
+
+Safari is now jacaranda `#b57edc`, 45.1 ΔE from its nearest neighbour, at L* 62.
+`AtlasShell`'s overlay table also kept its own hand-copied literal per
+collection; it now reads `ATLASES[type].color`, so the globe legend and the
+atlas accent cannot disagree again.
+
+### 4.3 · The safari atlas had no route verb
+
+`ROUTE_VERB` in `atlas-config.ts` had five collections. Safari was not one of
+them, so `routeVerbLong()` returned null and the card never rendered the control
+that traces and frames a journey — on the only collection whose routes had just
+been fixed. It is `Track` — not `Fly`, because the legs are light aircraft
+*and* Land Cruisers, and naming one describes half the journey.
+
+### 4.4 · The camps, joined — the thing this collection exists for
+
+`scripts/build-safari-camps.mjs` joins the `Lodge / Safari` properties in the
+hotel atlas to safari itinerary stops within **25km**, and ships the result as
+`public/maps/safari/camps.json` (48 KB, against 992 KB for the whole hotel
+atlas). **22 camps sit on 199 of the 269 journeys.**
+
+- Matched on coordinate, never on name: the hotel feed says
+  `Singita - Singita Grumeti` and the tour feed says `Singita Grumeti Reserves`,
+  4km apart and unmatchable by any string metric that does not also pair things
+  that are not the same camp.
+- Its own file, not a field on the itinerary: the two inputs are rebuilt by two
+  independent syncs, and a derived field both of them own goes stale on
+  whichever runs second. `npm run verify:safari-camps` gates it.
+- The dossier says *"our camps along this route"* and never *"you sleep here"* —
+  four of our Sabi Sand lodges are within 25km of the single stop
+  `Sabi Sand Game Reserve`, and the feed does not name which one the operator
+  booked.
+
+The count in the old adapter comment — **166 safari lodges** — was the pre-fix
+figure, from when `deriveCategory()` was still filing Ecotourism hotels
+(a palazzo on the Grand Canal among them) as lodges. The category has held
+**72** since 0.1, of which **32** are in countries these journeys visit. Both
+numbers are now derived by the build; nothing types either.
+
+### 4.5 · Wildlife — the axis a safari traveller actually arrives with
+
+Region, brand, month and length are the four axes every journey atlas shares,
+and not one of them is *what will I see*. `lib/atlas/wildlife.ts` reads the
+supplier's own prose and tags each journey with the animals it names.
+
+- **147 of 269** safari journeys carry at least one tag, across 30 options.
+  `?wildlife=Gorilla` returns 27 — including *Bisate & all its Beauty*, which
+  has no gorilla in its title and is entirely about them.
+- Reused, unchanged, by the expedition cruise atlas: **682 of 3,662** sailings,
+  where the wildlife *is* the product. Declaring the facet is the whole opt-in;
+  rail and jet declare nothing and pay nothing.
+- It refuses to infer from geography. The Serengeti obviously has lions, and
+  tagging it for them would be inventing a claim the operator did not make.
+- Two bugs found while building it, both now fixed at the source:
+  - English names many animals after other animals. Run naively over the
+    expedition feed it produced **Lion 111** (88 sea lions, 23 made of stone —
+    Delos's Terrace of the Lions, the Sphinx's "body of a lion") and
+    **Elephant 40**, every one of them *"Weddell and elephant seals"*. Compound
+    names are now rewritten to the animal they are actually about *before*
+    matching — "sea lions" → seal — so the sighting is kept and filed correctly
+    rather than suppressed.
+  - `facetOptions` in `AtlasFilterRail` counted only `raw[0]` of a plural
+    attribute. Correct while the only plural axis was hotels' hidden `region=`;
+    with a visible plural axis the menu and the filter disagreed about the same
+    record — a count of 3 opening a list of 11.
+
+### 4.6 · Operators seeded ahead of the crawl
+
+`merge-virtuoso-journeys.mjs` **drops** any tour whose company matches no key in
+the atlas's `BRANDS` table (`unmatchedBrand`), so a missing entry is not a
+missing logo — it is a missing journey, selected and downloaded and thrown away.
+
+Natural Habitat was already there (4 journeys). **Tauck**, **Giltedge Africa**
+and **Remote Lands** are now seeded in `itinerary.base.json` and named in
+`SAFARI_OPERATOR`, so the first crawl that reaches `api.virtuoso.com` brings
+them in branded. None appears in the stored feed today because that feed is the
+pre-egress slice, which only ever looked for `Rail` and private-jet names —
+their absence is an artefact of what was fetched, not of what Virtuoso sells.
+Remote Lands already carries 24 journeys in the jet atlas, where its brand key
+has existed all along.
+
+### 4.7 · Three copies of one build step, and the one that broke
+
+`verify-adapters`, `verify-deeplinks` and `verify-hotels` each carried their own
+copy of the tsc-output rewrite, each with a comment telling the reader to keep
+it in step with the other two, and each listing the importable `lib/atlas`
+modules **by hand** — a list on which `geo` was the only name. Adding
+`wildlife.ts` broke two of the three with a bare `ERR_MODULE_NOT_FOUND` naming a
+package called `"@/lib"`. They now share `scripts/lib/adapters-build.mjs`, whose
+rule is the one that was always true: `rootDir` is `lib/atlas`, so every
+compiled module sits one directory above `adapters/`. Nothing needs listing.
+
+---
+
 ## Definition of done
 
-- [ ] `node scripts/audit-listings.mjs --strict` passes (all ▸ findings at zero)
-- [ ] Phase 1 facet findings written into this file
-- [ ] `npm run verify` green — `verify:atlas-regions` and `verify:route-order` cover the new atlas automatically once it is in `ATLASES`
-- [ ] `/atlas/safari` renders, filters by region, and traces a route
-- [ ] Camps underlay resolves to the hotel dossier
-- [ ] `collectionsHeadline()` counts the new collection and matches what ships
-- [ ] `data/answers/hotels.js` safari page links to a *filtered* atlas with a derived count
+- [x] `node scripts/audit-listings.mjs --strict` passes (all ▸ findings at zero)
+- [ ] Phase 1 facet findings written into this file — still blocked on egress
+- [x] `npm run verify` green for everything this touches — `verify:adapters`,
+      `verify:deeplinks`, `verify:hotels`, `verify:atlas-regions`,
+      `verify:route-order`, `verify:listings`, `verify:safari-camps` and
+      `verify:atlas-ui` all pass. (`verify:route-flight` fails on a hop with no
+      geometry — confirmed failing on a clean checkout of `main` too, and
+      untouched by this work.)
+- [x] `/atlas/safari` renders, filters by region, and traces a route — proved in
+      a real browser by `ATLAS_UI_TYPES=safari npm run verify:atlas-ui`
+- [x] Camps resolve to the hotel dossier, from the journey file
+- [x] `collectionsHeadline()` counts the new collection and matches what ships
+      (10,828 claimed, 10,828 held)
+- [x] `data/answers/hotels.js` safari page links to a *filtered* atlas with a
+      derived count, and the atlas links back

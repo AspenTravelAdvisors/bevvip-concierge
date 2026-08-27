@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { campHref, type SafariCamp } from "@/lib/atlas/safari-camps";
 
 /** What every collection can supply, whatever its own feed calls things. */
 export interface JourneyRecord {
@@ -34,6 +35,21 @@ export interface JourneyRecord {
   offers?: { name?: string | null; endDate?: string | null; exclusive?: boolean; description?: string | null }[];
   /** Where to book — the advisor-attributed supplier link. */
   href?: string | null;
+  /*
+   * ── The camps, safari only ───────────────────────────────────────────────
+   *
+   * The one field here that is not the supplier's own copy. Every other
+   * collection's stops are cities and airports; a safari's stops are reserves,
+   * and we sell the lodges inside them. This is that join, and it is optional
+   * because six of the seven collections have nothing to put in it.
+   *
+   * Read lib/atlas/safari-camps.ts before changing how this renders: the data
+   * supports "our camps along this route" and does NOT support "you sleep
+   * here", and the difference is load-bearing.
+   */
+  camps?: SafariCamp[];
+  /** How near a camp had to be to a stop to be listed, for the note. */
+  campRadiusKm?: number | null;
 }
 
 export default function JourneyDossier({
@@ -53,6 +69,8 @@ export default function JourneyDossier({
   }, [close]);
 
   const stops = (record.itinerary ?? []).filter((s) => s && (s.name || s.sea));
+  const camps = record.camps ?? [];
+  const radius = record.campRadiusKm ?? 25;
   const offers = (record.offers ?? []).filter((o) => o && o.name);
   const included = (record.included ?? []).filter(Boolean);
 
@@ -111,6 +129,47 @@ export default function JourneyDossier({
                 </li>
               ))}
             </ol>
+          </>
+        )}
+
+        {camps.length > 0 && (
+          <>
+            <p className="jd-label">Our Camps Along This Route</p>
+            {/* The claim, stated. Without it a reader takes the list for the
+                booked accommodation, which the tour feed never tells us. */}
+            <p className="jd-camps-note">
+              Properties we hold VIP perks on, within {radius}km of this
+              itinerary&rsquo;s stops. Which camp a departure uses is set by the
+              operator &mdash; ask and we will confirm it.
+            </p>
+            <ul className="jd-camps">
+              {camps.map((c) => (
+                <li key={c.id}>
+                  <a href={campHref(c)} className="jd-camp">
+                    {c.thumb ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={c.thumb} alt="" loading="lazy" />
+                    ) : (
+                      <span className="jd-camp-empty" />
+                    )}
+                    <span className="jd-camp-text">
+                      <span className="jd-camp-name">{c.name}</span>
+                      <span className="jd-camp-meta">
+                        {[
+                          c.house,
+                          c.day != null ? `Day ${c.day}` : null,
+                          c.stop ? `near ${c.stop}` : null,
+                          c.rooms ? `${c.rooms} rooms` : null,
+                        ].filter(Boolean).join(" · ")}
+                      </span>
+                      {c.perks.length > 0 && (
+                        <span className="jd-camp-perks">{c.perks.join(" · ")}</span>
+                      )}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </>
         )}
 

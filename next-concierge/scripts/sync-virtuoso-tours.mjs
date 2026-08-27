@@ -66,7 +66,26 @@ const SAFARI_COUNTRIES = new Set(['Kenya', 'Tanzania', 'Botswana', 'South Africa
 
 const SAFARI_WILDLIFE = /safari|big five|game (drive|reserve)|gorilla|serengeti|masai|maasai|okavango|kruger|wildlife/i;
 
-const SAFARI_OPERATOR = /abercrombie|wilderness|andbeyond|and beyond|ker & downey|ker and downey|artisans of leisure|african travel|singita|great plains|micato|roar africa|extraordinary journeys|natural habitat|journeys by design/i;
+/*
+ * The houses this atlas sells.
+ *
+ * Kept in step with BRANDS in data/atlas/safari/itinerary.base.json, and the
+ * two have to move together in that order: this regex decides what the crawl
+ * KEEPS, and the BRANDS table decides what the merge can then place. A tour
+ * selected here whose company matches no brand key is counted as
+ * `unmatchedBrand` and dropped — selected, downloaded, and thrown away.
+ *
+ * Tauck, Giltedge and Remote Lands are listed although the current feed
+ * contains none of them: the stored slice is the pre-egress crawl, which only
+ * ever looked for "Rail" and private-jet names, so their absence is an
+ * artefact of what was fetched rather than of what Virtuoso sells. Tauck and
+ * Giltedge sell East and Southern African safaris directly; Remote Lands is an
+ * Asia house that already carries 24 journeys in the jet atlas and sells
+ * Africa alongside it. Naming them now means the first crawl that reaches
+ * api.virtuoso.com brings them in branded, instead of selecting them and
+ * discarding them on the next line.
+ */
+const SAFARI_OPERATOR = /abercrombie|wilderness|andbeyond|and beyond|ker & downey|ker and downey|artisans of leisure|african travel|singita|great plains|micato|roar africa|extraordinary journeys|natural habitat|journeys by design|tauck|giltedge|gilt edge|remote lands/i;
 
 const isSafari = row =>
   (row.countries ?? []).some(c => SAFARI_COUNTRIES.has(c))

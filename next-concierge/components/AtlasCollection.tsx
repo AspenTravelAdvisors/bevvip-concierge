@@ -123,6 +123,21 @@ interface Props {
    * one filled button per card, and it is the one that starts a booking.
    */
   cardPrimary?: (o: AtlasOffering) => React.ReactNode;
+  /**
+   * One collection-level link or note, beside the result count.
+   *
+   * Not a card slot: this describes the COLLECTION, not an offering, and there
+   * is exactly one place a traveller looks for that — the line that already
+   * says how many results there are. Safari uses it to point at the safari
+   * lodges in the hotel atlas, which are the other half of the same holiday
+   * and live in a different collection; no journey card can carry that link,
+   * because it is not about any one journey.
+   *
+   * It renders in the rail on desktop and in the sort bar on phones, which are
+   * the two places the count itself renders. Keep it to a few words — it is
+   * sharing a row with the count, the sort control and Share.
+   */
+  aside?: React.ReactNode;
   /*
    * ── The stay card ────────────────────────────────────────────────────────
    *
@@ -311,7 +326,7 @@ const fmtDay = (iso?: string | null) =>
 export default function AtlasCollection({
   type, descriptor, load, accent, initialStyle, initialGlobe, cardAction,
   cardPrimary, onVisibleIds, photoreal = false, detailFor,
-  cardCrumb, cardNote, cardSummary, cardMedia, markOverMedia,
+  cardCrumb, cardNote, cardSummary, cardMedia, markOverMedia, aside,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -1247,6 +1262,7 @@ export default function AtlasCollection({
           shareLabel={shared ? "Link copied" : "Share"}
           trailing={
             <>
+              {aside}
               {filtered.length > CARD_LIMIT && (
                 <span className="atlas-showing">first {CARD_LIMIT}</span>
               )}
@@ -1316,7 +1332,7 @@ export default function AtlasCollection({
         line all describing the same result set. On phones the rail collapses to
         a Filters pill with no room for them, so they keep this bar.
       */}
-      {sortModes.length > 1 && (
+      {(sortModes.length > 1 || aside) && (
         <div className="atlas-sortbar">
           {/* Say so when the list is truncated. 120 of 3,239 was silent before,
               which made "where did the sailing I just saw go?" unanswerable. */}
@@ -1325,6 +1341,8 @@ export default function AtlasCollection({
               ? `Showing the first ${CARD_LIMIT} of ${filtered.length.toLocaleString()}`
               : ""}
           </span>
+          {aside}
+          {sortModes.length > 1 && (
           <label className="atlas-sort">
             <span>Sort</span>
             <select
@@ -1337,6 +1355,7 @@ export default function AtlasCollection({
               ))}
             </select>
           </label>
+          )}
         </div>
       )}
 

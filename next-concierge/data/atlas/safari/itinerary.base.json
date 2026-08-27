@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "The curated half of the safari atlas. BRANDS and REGIONS are ours; TRIPS and ROUTES are rebuilt from the Virtuoso tours feed by scripts/merge-virtuoso-journeys.mjs and are empty here on purpose.",
-  "brandNote": "One key per house, not per country arm. The API lists andBeyond five times (Botswana, South Africa, Kenya, Tanzania, Rwanda) and Abercrombie & Kent six; a traveller is choosing andBeyond, not andBeyond Botswana.",
+  "brandNote": "One key per house, not per country arm. The API lists andBeyond five times (Botswana, South Africa, Kenya, Tanzania, Rwanda) and Abercrombie & Kent six; a traveller is choosing andBeyond, not andBeyond Botswana. A house is listed here BEFORE it has journeys on purpose: merge-virtuoso-journeys.mjs drops any tour whose company matches no key in this table (`unmatchedBrand`), so a missing entry is not a missing logo, it is a missing journey. Tauck, Giltedge and Remote Lands are seeded for that reason — the current feed is the pre-egress slice, which never crawled them.",
   "regionNote": "Anchors are the region's centre of gravity for game-viewing, not its capital: the Mara-Serengeti ecosystem rather than Nairobi, the Delta rather than Gaborone. scripts/merge-virtuoso-journeys.mjs tags each stop with the nearest anchor within 2,500km."
  },
  "BRANDS": {
@@ -12,7 +12,10 @@
   "artisans": { "short": "Artisans of Leisure", "domain": "artisansofleisure.com", "color": "#7a5a86" },
   "kerdowney": { "short": "Ker & Downey", "domain": "kerdowney.com", "color": "#5b4a2e" },
   "micato": { "short": "Micato Safaris", "domain": "micato.com", "color": "#a8432c" },
-  "nathab": { "short": "Natural Habitat", "domain": "nathab.com", "color": "#2f6b4f" }
+  "nathab": { "short": "Natural Habitat", "domain": "nathab.com", "color": "#2f6b4f" },
+  "tauck": { "short": "Tauck", "domain": "tauck.com", "color": "#2f6f9e" },
+  "giltedge": { "short": "Giltedge Africa", "domain": "giltedge.travel", "color": "#b7902f" },
+  "remotelands": { "short": "Remote Lands", "domain": "remotelands.com", "color": "#3c4b52" }
  },
  "REGIONS": {
   "EASTAFRICA": { "name": "Kenya, Tanzania & the Great Migration", "ab": "East Africa", "coord": [-2.5, 35.5] },

@@ -109,44 +109,50 @@ const STREET_ZOOM = 13.5;
 const ROUTES_ENABLED = true;
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
-// Master atlas overlays: cruise / jet / yacht / world-cruise / rail / villa
-// region pins, each from its own live app data. Colors stay distinguishable on
-// the dark globe.
+// Master atlas overlays: cruise / jet / yacht / world-cruise / rail / safari /
+// villa region pins, each from its own live app data.
+//
+// The colour is READ from the registry, never copied. It used to be a literal
+// per entry, which meant the globe's legend and /atlas/<type>'s own accent were
+// two hand-kept copies of one decision — and the safari recolour found them
+// already one edit away from disagreeing. lib/atlas-config.ts is where a
+// collection's colour is decided; distinguishability on the dark globe is
+// argued there, next to the other seven.
 type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise" | "train" | "safari" | "villa";
 const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; data: string }> = {
   cruise: {
     label: "Expedition Cruises",
-    color: "#5aa9e6",
+    color: ATLASES.cruise.color,
     url: ATLASES.cruise.base,
     data: `${ATLASES.cruise.base}/atlas-meta.json`,
   },
   jet: {
     label: "Private Jet Expeditions",
-    color: "#dfe5f2",
+    color: ATLASES.jet.color,
     url: ATLASES.jet.base,
     data: `${ATLASES.jet.base}/itinerary.json`,
   },
   yacht: {
     label: "Luxury Hotel Yachts",
-    color: "#e0b84a",
+    color: ATLASES.yacht.color,
     url: ATLASES.yacht.base,
     data: `${ATLASES.yacht.base}/itinerary.json`,
   },
   safari: {
     label: "Safari Journeys",
-    color: "#c9812f",
+    color: ATLASES.safari.color,
     url: ATLASES.safari.base,
     data: `${ATLASES.safari.base}/itinerary.json`,
   },
   worldcruise: {
     label: "World Cruises",
-    color: "#45d6c2",
+    color: ATLASES.worldcruise.color,
     url: ATLASES.worldcruise.base,
     data: `${ATLASES.worldcruise.base}/itinerary.json`,
   },
   train: {
     label: "Rail Journeys",
-    color: "#e08d5f",
+    color: ATLASES.train.color,
     url: ATLASES.train.base,
     data: `${ATLASES.train.base}/itinerary.json`,
   },
@@ -156,7 +162,7 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
   // natively, so the shared ?region= click-through works unchanged.
   villa: {
     label: "Private Villas",
-    color: "#a8d08d",
+    color: ATLASES.villa.color,
     url: ATLASES.villa.base,
     data: "/api/villas/search?view=overlay",
   },
