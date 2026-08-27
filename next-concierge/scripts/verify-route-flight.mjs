@@ -69,9 +69,10 @@ const body = between(
 const constDecls = [
   "SPAN_FLAT_LNG", "SPAN_FLAT_LAT", "FLY_ARRIVE_MS", "FLY_SETTLE_MS",
   "FLY_DWELL_MS", "FLY_LEG_BASE_MS", "FLY_LEG_PER_ZOOM_MS", "FLY_LEG_MIN_MS",
-  "FLY_LEG_MAX_MS", "FLY_TOTAL_MS", "FLY_MAX_CALLS", "FLY_STOP_ZOOM_MIN",
-  "FLY_STOP_ZOOM_MAX", "FLY_MIN_CALLS", "FLY_CRUISE_PAD", "FLY_MIN_CLIMB",
+  "FLY_LEG_MAX_MS", "FLY_VOYAGE_MS", "FLY_MAX_CALLS", "FLY_STOP_ZOOM_MIN",
+  "FLY_STOP_ZOOM_MAX", "FLY_CRUISE_PAD", "FLY_MIN_CLIMB",
   "FLY_PACE", "FLY_PAN_MIN_MS", "FLY_RAMP", "FLY_PITCH", "FLY_CRUISE_PITCH", "FLY_FULL_CLIMB", "FLY_MAX_LAT",
+  "FLY_WEEK_DAYS", "FLY_MAX_WEEKS", "FLY_WEEK_CLIMB", "FLY_SAMPLES", "FLY_SMOOTH", "FLY_SMOOTH_MAX",
 ];
 // SPAN_FLAT_* live inside the map effect and the FLY_* ones at module scope, so
 // each is grabbed by name rather than by a range that would swallow the file.
@@ -107,7 +108,8 @@ writeFileSync(
     `  let projGlobe: boolean = dep.projGlobe;\n` +
     `${body}\n` +
     `  return { flyRoute, endFlight, flattenIfCircumnavigation, canFrameFlat, spanOf,\n` +
-    `    framingLat, frameSpan, routeHops,\n` +
+    `    framingLat, frameSpan, routeHops, readingZoom, departurePoint,\n` +
+    `    framesFromDeparture, frameDeparture,\n` +
     `    state: () => ({ projGlobe, flying: flyingRef.current }) };\n` +
     `}\n`,
 );
@@ -421,7 +423,7 @@ function furthestFromLine(points, legs) {
   // The budget.
   const end = track[track.length - 1].t + K.FLY_DWELL_MS + K.FLY_SETTLE_MS;
   check("a nine-call world tour runs to a watchable length",
-    end <= K.FLY_TOTAL_MS, `${(end / 1000).toFixed(1)}s`);
+    end <= K.FLY_VOYAGE_MS, `${(end / 1000).toFixed(1)}s`);
 
   const moves = h.log.filter((l) => ["flyTo", "easeTo", "fitBounds"].includes(l));
   check("the landing is the last camera command, not the second to last",
@@ -430,6 +432,57 @@ function furthestFromLine(points, legs) {
   check("hands the route back at full strength", h.paint.get("fr_rail.line-opacity") === 0.92);
   check("leaves nothing lit", h.filters.get("fs_now") === JSON.stringify(["==", ["get", "n"], "—"]));
   check("leaves no timer or frame running", h.pending() === 0 && !h.flyingRef.current);
+}
+
+{
+  /*
+   * ── The departure view ──────────────────────────────────────────────────
+   *
+   * A jet expedition that circles the planet has no whole-route framing worth
+   * showing: fitting its box is the world at minimum zoom, with the route off
+   * both edges and nothing to say where the journey starts. It is shown from
+   * its departure instead — and the flight puts the camera back on that same
+   * view when it finishes, so pressing Fly is a round trip rather than a
+   * one-way ticket to wherever the aircraft happened to stop.
+   */
+  const depart = RTW[0].at;
+  const h = harness({ legs: route(RTW), stops: RTW });
+  check("a round-the-world jet route is one no frame can hold",
+    h.api.framesFromDeparture(h.api.spanOf([{ coordinates: flat(route(RTW)) }])));
+  check("…and a Mediterranean one is not",
+    !h.api.framesFromDeparture(h.api.spanOf([{ coordinates: flat(route(MED)) }])));
+
+  // The view a traced route rests at, before anything is flown.
+  h.api.frameDeparture(2400);
+  check("tracing it puts the camera on the first departure",
+    dist(h.camera.center, depart) < 1,
+    `centred at ${h.camera.center.map((n) => n.toFixed(1)).join(", ")} vs ${depart.join(", ")}`);
+  check("…at a height where the departure is somewhere, not a dot on a planet",
+    h.camera.zoom >= K.FLY_STOP_ZOOM_MIN && h.camera.zoom <= K.FLY_STOP_ZOOM_MAX,
+    `zoom ${h.camera.zoom.toFixed(2)}`);
+  check("…and level, because this is a view to read rather than a shot",
+    h.camera.pitch === 0);
+
+  // …and the view it comes back to when the flight is over.
+  const f = harness({ legs: route(RTW), stops: RTW });
+  f.api.flyRoute();
+  f.tick(RUN);
+  check("the flight lands back on the departure it opened from",
+    dist(f.camera.center, depart) < 1 && Math.abs(f.camera.zoom - f.track[0].zoom) < 0.01,
+    `ended at ${f.camera.center.map((n) => n.toFixed(1)).join(", ")} zoom ${f.camera.zoom.toFixed(2)}, opened at zoom ${f.track[0].zoom.toFixed(2)}`);
+
+  // The collections that do want the whole journey back still get it.
+  const many = stopsOf(
+    Array.from({ length: 20 }, (_, i) => [`Port ${i + 1}`, -170 + i * 17, 20 * Math.sin(i / 2)]),
+  );
+  const w = harness({ legs: route(many), stops: many, type: "worldcruise" });
+  check("a world cruise still pulls back to the whole voyage",
+    !w.api.framesFromDeparture(w.api.spanOf([{ coordinates: flat(route(many)) }])));
+  w.api.flyRoute();
+  w.tick(RUN);
+  check("…and its flight ends on the voyage, not on its first port",
+    dist(w.camera.center, many[0].at) > 20,
+    `ended ${dist(w.camera.center, many[0].at).toFixed(0)}° from ${many[0].name}`);
 }
 
 {
@@ -524,7 +577,7 @@ function furthestFromLine(points, legs) {
   // hundred milliseconds late by construction and that is not a budget failure.
   const slack = 17 * h.labels.length * 2;
   check("a thirty-four port world cruise thins its landings rather than running to two minutes",
-    h.labels.length <= K.FLY_MAX_CALLS && end <= K.FLY_TOTAL_MS + slack,
+    h.labels.length <= K.FLY_MAX_CALLS && end <= K.FLY_VOYAGE_MS + slack,
     `${h.labels.length} of ${many.length} calls, ${(end / 1000).toFixed(1)}s`);
   check("…keeping the first and the last", h.labels[0].text.startsWith("1.") &&
     h.labels[h.labels.length - 1].text.startsWith(`${many.length}.`));

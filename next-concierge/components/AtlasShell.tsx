@@ -3438,6 +3438,92 @@ export default function AtlasShell({
         }
 
         /**
+         * The altitude a route is read at, from the scale of its own legs.
+         *
+         * A private jet's calls are a continent apart and a rail journey's are
+         * an hour apart, and one altitude cannot read both: at the jet's, a
+         * Highland line is a smudge; at the railway's, a Pacific crossing is an
+         * afternoon of open water. So the height comes from the route's own
+         * median leg — close enough to study the stops on a coastal cruise,
+         * high enough to place a city on a world tour — bounded at both ends so
+         * it stays a view of somewhere.
+         *
+         * Shared by the flight (which reads every call from this height) and by
+         * the departure framing below, so the view a traced jet route opens at
+         * is the same view its flight opens at, and the same one it lands back
+         * on.
+         */
+        function readingZoom(hops: RouteHop[]): number {
+          const legZooms = hops.map((h) => zoomToFit(spanOf([{ coordinates: h.pts }]), FLY_CRUISE_PAD));
+          const median = [...legZooms].sort((a, b) => a - b)[Math.floor(legZooms.length / 2)];
+          return Math.max(
+            FLY_STOP_ZOOM_MIN,
+            Math.min(FLY_STOP_ZOOM_MAX, Number.isFinite(median) ? median : FLY_STOP_ZOOM_MIN),
+          );
+        }
+
+        /**
+         * Is this a route to be shown from where it LEAVES rather than in full?
+         *
+         * A jet expedition that circles the planet has no useful whole-route
+         * framing. Fitting its bounding box is the whole world at minimum zoom
+         * — a route running off both edges, no city legible, and nothing to say
+         * where the journey starts. What a traveller opening "Around the World
+         * by Private Jet" wants first is the airfield it leaves from, with the
+         * first legs heading out of frame.
+         *
+         * Gated on the SAME spans as flattenIfCircumnavigation, because they
+         * answer the same question about the same geometry: past these, the
+         * frame cannot hold the route. Regional jet tours are under the gate and
+         * keep the whole-route framing — a Mediterranean itinerary already shows
+         * its departure, as stop 1 of a route you can read end to end.
+         *
+         * Jets only. Deliberate: a world cruise's pull-back to the whole voyage
+         * is the point of a world cruise, and the flight's weekly beat (see
+         * FLY_WEEK_CLIMB) is built around showing it.
+         */
+        function framesFromDeparture(s: Span): boolean {
+          if (type !== "jet") return false;
+          return s.hi - s.lo > SPAN_FLAT_LNG || s.latHi - s.latLo > SPAN_FLAT_LAT;
+        }
+
+        /**
+         * Where the journey begins, in the frame the route is drawn in.
+         *
+         * Taken from the chained hops rather than the raw legs: source order is
+         * not travel order (route-frame chains and orients them), so the first
+         * coordinate of the first supplied leg is not reliably the departure.
+         * `fallback` covers a fit with no route behind it at all.
+         */
+        function departurePoint(fallback?: [number, number] | null): [number, number] | null {
+          for (const h of routeHops()) if (h.pts.length) return h.pts[0];
+          return fallback ?? null;
+        }
+
+        /**
+         * Put the camera on the departure and leave it there.
+         *
+         * Level and untilted — this is the view the traced route rests at,
+         * before the Fly button is pressed and after it has finished, so it is
+         * the same view in both places.
+         */
+        function frameDeparture(duration: number, fallback?: [number, number] | null): boolean {
+          const at = departurePoint(fallback);
+          if (!at) return false;
+          const zoom = readingZoom(routeHops());
+          map.easeTo({
+            center: [at[0], framingLat(at[1], zoom)],
+            zoom,
+            pitch: 0,
+            bearing: 0,
+            duration,
+            essential: true,
+          });
+          setTilted(false);
+          return true;
+        }
+
+        /**
          * Distance in degrees, longitude scaled by latitude.
          *
          * The longitude difference is wrapped to the shorter way round, and
@@ -3567,23 +3653,9 @@ export default function AtlasShell({
             };
           };
 
-          /* ── The reading altitude follows the scale of the journey ───────
-           *
-           * A private jet's calls are a continent apart and a rail journey's
-           * are an hour apart, and one altitude cannot read both: at the jet's,
-           * a Highland line is a smudge; at the railway's, a Pacific crossing
-           * is an afternoon of open water. So the height a call is read from
-           * comes from the route's own median leg — close enough to study the
-           * stops on a coastal cruise, high enough to place a city on a world
-           * tour — bounded at both ends so it stays a view of somewhere.
-           */
-          const spans = hops.map((h) => spanOf([{ coordinates: h.pts }]));
-          const legZooms = spans.map((sp) => zoomToFit(sp, FLY_CRUISE_PAD));
-          const median = [...legZooms].sort((a, b) => a - b)[Math.floor(legZooms.length / 2)];
-          const stopZoom = Math.max(
-            FLY_STOP_ZOOM_MIN,
-            Math.min(FLY_STOP_ZOOM_MAX, Number.isFinite(median) ? median : FLY_STOP_ZOOM_MIN),
-          );
+          // See readingZoom: the height a call is read from, taken from the
+          // route's own median leg.
+          const stopZoom = readingZoom(hops);
 
           /* ── Build the legs ─────────────────────────────────────────────── */
 
@@ -4007,6 +4079,17 @@ export default function AtlasShell({
          * flight has just spent its length making.
          */
         function settleAfterFlight(s: Span) {
+          /*
+           * A route with no whole-route framing does not get one at the end of
+           * its flight either. It goes back to the view it was traced at — the
+           * departure — which is also the view the flight opened on, so the
+           * nine seconds read as a round trip rather than as a camera that ends
+           * up somewhere new. See framesFromDeparture.
+           */
+          if (framesFromDeparture(s) && frameDeparture(FLY_SETTLE_MS)) {
+            endFlight();
+            return;
+          }
           const w = node.clientWidth, h = node.clientHeight;
           const z = Math.max(
             map.getMinZoom(),
@@ -4062,6 +4145,16 @@ export default function AtlasShell({
           for (const l of rawLegs) for (const c of l.coordinates) all.push(c);
           const window = framePoints(all);
           const legs = [{ coordinates: window }];
+          /*
+           * A jet expedition that circles the planet is shown from its
+           * departure instead of being fitted whole — see framesFromDeparture.
+           *
+           * Before the flatten, and instead of it: flattening exists to get a
+           * whole span into the frame, and this framing is the decision NOT to
+           * try. Leaving the projection alone also keeps this view identical to
+           * the one the flight lands back on, which is the point of it.
+           */
+          if (framesFromDeparture(spanOf(legs)) && frameDeparture(REVEAL_MS, window[0] ?? null)) return;
           const flattened = flattenIfCircumnavigation(legs);
           const run = () => {
             try {

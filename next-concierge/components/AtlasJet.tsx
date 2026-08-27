@@ -129,9 +129,11 @@ export default function AtlasJet() {
       // Platinum, from the jet atlas's own --accent: #dfe5f2.
       accent="#dfe5f2"
       // Satellite, and back on the GLOBE. Flat was a blanket fix for a problem
-      // only round-the-world itineraries have; those now flatten themselves
-      // when traced (see flattenIfCircumnavigation), so a Mediterranean jet
-      // tour keeps the globe it deserves.
+      // only round-the-world itineraries have, and those no longer ask the
+      // frame to hold them at all: a traced jet route too wide to fit is shown
+      // from its departure instead (see framesFromDeparture), at an altitude
+      // where the projection is not the question. A Mediterranean jet tour
+      // keeps the globe it deserves, framed end to end.
       initialStyle="satellite"
     />
   );
