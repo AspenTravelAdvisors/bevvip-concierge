@@ -80,7 +80,26 @@ function deriveCategory(v, fallback) {
   if (exp.has('Ski') || feat.has('Ski-in/Ski-out')) return 'Mountain / Ski';
   if (type === 'Spa') return 'Spa / Wellness Resort';
   if (exp.has('Beach') || feat.has('Private Beach')) return 'Beach Resort';
-  if (exp.has('Ecotourism')) return 'Lodge / Safari';
+  /*
+   * Ecotourism is NOT a second door into 'Lodge / Safari'.
+   *
+   * It used to be, and it was the widest rule in the function: 94 of the 166
+   * properties in that category arrived through it, against 68 that carry the
+   * supplier's own propertyType of 'Lodge, Ranch, Camp'. The two claims are not
+   * the same. 'Lodge, Ranch, Camp' is the supplier saying this is a camp;
+   * Ecotourism is the supplier saying this property has a sustainability story,
+   * which a Venetian palazzo can perfectly well have — and Ca' Sagredo, on the
+   * Grand Canal, was filed as a safari lodge on the strength of it. So were
+   * 1 Hotel Nashville, twelve Italian properties and eight French ones.
+   *
+   * That mattered beyond the map: data/answers/hotels.js sells this exact
+   * category as "safari and wilderness lodges", so more than half of what the
+   * page counted was neither.
+   *
+   * Ecotourism survives as a TAG (deriveTags reads every experience), which is
+   * where a cross-cutting attribute belongs. A property that is genuinely a
+   * wilderness lodge says so in its propertyType and is caught above.
+   */
   if (exp.has('City Life') || exp.has('Landmarks')) return 'City Hotel';
   if (exp.has('Wellness') && exp.has('Seclusion')) return 'Spa / Wellness Resort';
   if (exp.size) return 'Resort / Leisure';

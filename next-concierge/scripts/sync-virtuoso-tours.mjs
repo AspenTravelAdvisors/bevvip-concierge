@@ -23,6 +23,7 @@ import path from 'node:path';
 import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
 import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
+import { text, prose, clip } from '../lib/virtuoso/text.mjs';
 
 loadEnv();
 
@@ -50,14 +51,9 @@ const JET_NAME = /\b(private jet|by air\b|by private air|jet expedition|jet expe
 
 // ---------- helpers ----------
 
-const text = html => String(html ?? '')
-  .replace(/<br\s*\/?>/gi, ' ').replace(/<\/(p|li|div|h\d)>/gi, ' ').replace(/<[^>]+>/g, '')
-  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;|&rsquo;/g, "'")
-  .replace(/&quot;|&ldquo;|&rdquo;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-  .replace(/\s+/g, ' ').trim();
-
-const clip = (s, n) => (s && s.length > n ? `${s.slice(0, n).replace(/\s+\S*$/, '')}…` : s);
 const day = d => (d ? String(d).slice(0, 10) : null);
+/** Comparison key: punctuation and case carry no meaning in a supplier's title. */
+const slugKey = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '');
 const num = v => { const n = Number(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 
 function place(raw) {
@@ -102,7 +98,9 @@ function normalize(row, detail, kinds) {
       placeFull: String(p.portName ?? '').trim() || null,
       lat: coord(p.portLatitude, p.portLongitude)[0],
       lng: coord(p.portLatitude, p.portLongitude)[1],
-      note: clip(text(p.stopDescription), 240) || null,
+      // prose(), not text(): a stop with no description is honest, a stop
+      // whose description is `border-collapse:collapse` is not. See text.mjs.
+      note: clip(prose(p.stopDescription), 240) || null,
     }))
     .filter(p => p.place);
 
@@ -153,6 +151,51 @@ function normalize(row, detail, kinds) {
     images: (d.imageLibraryItems ?? []).slice(0, 4).map(i => i.url).filter(Boolean),
     supplierLogo: d.supplierLogo || null,
   };
+}
+
+/*
+ * The same product listed twice — and NOT the same journey departing twice.
+ *
+ * The distinction is the whole function. "Australia by Private Jet" ships three
+ * times, and it is tempting to read that as a feed problem: same operator, same
+ * title, same eleven days. It is not. They are the 2026, 2027 and 2028
+ * departures, sold separately, bookable separately, and each carries its own
+ * `travelDates` window — which is what the card prints, so a traveller looking
+ * at three of them is looking at three real choices and can tell them apart.
+ * Collapsing on name would delete 21 of the 42 rows that exist for exactly that
+ * reason, and would quietly retire next year's inventory every time this ran.
+ *
+ * A duplicate is therefore a record matching another on operator, title, length
+ * AND departure window. Three groups meet that bar today: two identical records
+ * of "Chasing the Aurora" departing 8 Mar 2027, two of the Belmond Cornwall
+ * service over the same season, and two of the Canadian Rockies circle tour
+ * where one carries thirteen itinerary stops and the other eleven.
+ *
+ * Which is the tiebreak: keep the record with the most placeable stops, because
+ * the only thing distinguishing two records of one product is how completely
+ * the operator filled one of them in. Ties fall to the lower id, so a rebuild
+ * is deterministic and a shared link keeps resolving to the same journey.
+ */
+function dedupe(tours) {
+  const key = t => [
+    slugKey(t.name), slugKey(t.company), slugKey(t.lengthLabel),
+    t.startDate ?? '', t.endDate ?? '',
+  ].join('|');
+
+  const best = new Map();
+  let dropped = 0;
+  for (const t of tours) {
+    const k = key(t);
+    const prev = best.get(k);
+    if (!prev) { best.set(k, t); continue; }
+    dropped++;
+    const better = t.stopCount !== prev.stopCount
+      ? (t.stopCount > prev.stopCount ? t : prev)
+      : (String(t.id) < String(prev.id) ? t : prev);
+    best.set(k, better);
+  }
+  if (dropped) console.log(`dedupe: dropped ${dropped} duplicate listing${dropped === 1 ? '' : 's'} (same operator, title, length and departure window)`);
+  return [...best.values()];
 }
 
 function readCache() {
@@ -242,9 +285,9 @@ async function main() {
     }
   }
 
-  const feed = ids
+  const feed = dedupe(ids
     .map(id => { const s = selected.get(id); return normalize(s.row, cache.get(id)?.detail, s.kinds); })
-    .filter(t => t.name)
+    .filter(t => t.name))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const byKind = {};

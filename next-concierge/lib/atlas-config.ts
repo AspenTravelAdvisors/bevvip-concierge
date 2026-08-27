@@ -108,7 +108,12 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_HOTEL_ATLAS_BASE || "/maps/hotel",
     sampleRegions: ["Caribbean", "Mediterranean", "Alps", "Southeast Asia"],
     color: "#e6d488",
-    count: 2382,
+    // Verified against the shipped feed by scripts/audit-listings.mjs, which
+    // npm run verify runs: this said 2,382 while luxury-hotels.json held 2,240,
+    // so the home page headline counted 142 hotels the atlas cannot plot. The
+    // number stays hand-kept — it is an editorial figure, not a raw row count —
+    // but it is no longer hand-kept AND unchecked.
+    count: 2240,
     order: 1,
     intent: "stay",
     views: [

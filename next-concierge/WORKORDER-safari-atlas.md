@@ -1,12 +1,14 @@
 # Work Order — The Safari Atlas (the eighth collection, and the first that joins a stay to a journey)
 
 **Goal:** Ship `/atlas/safari` from Virtuoso `/v2/tours` + the camps already in
-`/v2/hotels`, and fix the four listing defects that stand in front of it.
+`/v2/hotels`, and fix the listing defects that stand in front of it.
 
 **Owner:** Cowork / Claude Code
 **Repo:** `bevvip-concierge/next-concierge`
 **Created:** 2026-08-27
-**Blocked on:** nothing structural. Phase 2 needs `VIRTUOSO_API_*` in `.env.local`.
+**Blocked on:** Phase 0 is done. Phases 1–2 need `api.virtuoso.com` on the
+session's network egress allowlist — the credentials are in place but every call
+is refused by the proxy before it leaves the container.
 
 Every number below is reproducible: `node scripts/audit-listings.mjs`.
 
@@ -70,10 +72,18 @@ TCS are all already in our BRANDS tables.
 
 ---
 
-## Phase 0 — Fix what the safari atlas would inherit (do this first, it stands alone)
+## Phase 0 — Fix what the safari atlas would inherit — **DONE**
 
 These are four defects in code we control. Two of them are load-bearing for
 Phase 3; all four are worth fixing whether or not safari ships.
+
+**All four are fixed.** `npm run verify:listings` gates the two that are fully
+landed; 272 records of CSS damage and 3 duplicate rows are fixed at source but
+still sit in the stored feed, because only a Virtuoso crawl can repair them —
+the audit prints them under "awaiting re-sync" and never gates them.
+
+One correction to what this file originally said: **there were 3 duplicates,
+not 24.** See 0.3.
 
 ### 0.1 · `Lodge / Safari` is 57% not-safari — and it is the label we sell
 
@@ -100,7 +110,7 @@ holds 166), more than half of what it counts is not a lodge, and the link
 carries **no filter** — it opens the full 2,240-hotel atlas and leaves the
 reader to find them.
 
-**Fix:** split the category. `Lodge, Ranch, Camp` keeps `Lodge / Safari`;
+**Fixed.** Split the category. `Lodge, Ranch, Camp` keeps `Lodge / Safari`;
 Ecotourism-without-a-lodge-type falls through to the category its other
 signals earn (most land in `Resort / Leisure`), and `Ecotourism` stays a *tag*,
 which is what it always was.
@@ -129,9 +139,9 @@ not the **contents** of elements whose contents were never prose. Suppliers
 paste itinerary days out of Word, which brings its stylesheet inline, so
 `<style>p {margin:0px}</style>` survives tag-stripping as literal text.
 
-**Fix:** drop `<style>`, `<script>` and their contents before stripping tags,
-and hoist the shared `text()` into `lib/virtuoso/` so the three copies cannot
-drift. Safari itineraries come from the same endpoint and would arrive with the
+**Fixed.** `lib/virtuoso/text.mjs` now drops `<style>`, `<script>` and their
+contents before stripping tags, and all four copies of the helper import it.
+`prose()` refuses to publish a stylesheet as a description at all. Safari itineraries come from the same endpoint and would arrive with the
 same 10% of their prose replaced by CSS.
 
 ```js
@@ -141,21 +151,30 @@ const text = html => String(html ?? '')
   …
 ```
 
-### 0.3 · 24 journeys are listed more than once
+### 0.3 · 3 journeys are listed twice — and 39 that look identical are not
 
-18 journeys ship 2–3 times. *Southern Africa by Private Air* appears three
-times at 13, 13 and 14 days. *International Intrigue* appears three times
-differing only in whether the supplier typed `|`, `I` or `:`. *Australia by
-Private Jet* three times, all 11 days. Nothing downstream collapses them, so the
-jet atlas shows a traveller the same trip three times in a row.
+**This is the finding the first pass got wrong, and the error mattered.**
 
-**Fix:** in `sync-virtuoso-tours.mjs`, group by
-`(nameKey, company, lengthLabel)` and keep the record with the most itinerary
-stops. Note that these are genuinely distinct `productId`s upstream — usually
-one departure season per record — so the *right* long-term fix is to fold them
-into one listing with several departures, the way the cruise feed already
-handles sailings. Collapsing to one is the correct interim behaviour, and it is
-what a traveller expects a "journey" to mean.
+Grouping on the title says there are 24 duplicates. There are 3. *Australia by
+Private Jet* appears three times because A&K sells a 2026, a 2027 and a 2028
+departure of it; *India by Private Jet* likewise; *Southern Africa by Private
+Air* the same. Each carries its own `travelDates` window, each is separately
+bookable, and `whenLabelFor()` already prints that window on the card — so a
+traveller looking at three of them is looking at three real choices and can tell
+them apart. Collapsing on name would have deleted 21 rows of live inventory and
+quietly retired next year's departures on every sync.
+
+A duplicate has to match on operator, title, length **and departure window**.
+Three groups meet that bar: two records of *Chasing the Aurora* both departing
+8 Mar 2027, two of the Belmond Cornwall service over one season, and two of the
+Canadian Rockies circle tour where one carries 13 itinerary stops and the other
+11. The tiebreak is stop count, then the lower id, so a rebuild is deterministic
+and a shared link keeps resolving to the same journey.
+
+`dedupe()` in `sync-virtuoso-tours.mjs`. Verified against the shipped feed:
+226 → 223, all 39 genuine departures survive, idempotent, order-independent.
+The audit reports both numbers side by side, so a future selector change that
+starts eating departures shows up as a drop rather than silently.
 
 ### 0.4 · The home page overstates the collection by 142
 
@@ -165,8 +184,9 @@ the seven are exact. `hotel` says **2,382**; `luxury-hotels.json` ships
 **2,240**. The headline therefore claims 10,965 vetted stays and journeys over
 a dataset of 10,823.
 
-**Fix:** correct it to 2,240 now, and add the check to `npm run verify` —
-`scripts/audit-listings.mjs` already performs it. A hand-kept number is a
+**Fixed.** Corrected to 2,240 and gated by `npm run verify:listings`. The same
+pass caught four more stale counts in the `data/answers/` copy (2,501 hotels,
+3,542 sailings) and a fifth defect nobody had looked for — see 0.6. A hand-kept number is a
 reasonable choice here (the counts are editorial, not raw feed rows); a
 hand-kept number nobody checks is not.
 
@@ -182,9 +202,31 @@ hand: `Four Seasons Hotel Cairo` → `Four Seasons Hotel Cairo at Nile Plaza`,
 most of them; a few pairs are false (`Hotel Bristol` → `Grand Hotel Bristol Spa
 Resort`) and need the city check to reject.
 
+### 0.6 · The map a visitor loads can silently disagree with the feed — **found while verifying 0.1**
+
+Recategorising the 94 properties moved `data/atlas/hotel/luxury-hotels.json` to
+72 lodges. Resolving the new answers-page link through the real adapter returned
+**166** — because the browser does not read that file. It fetches
+`public/maps/hotel/hotel-points.json`, built from it by `npm run
+build:hotel-points` in `prebuild`. The server-side count was right, the map a
+visitor actually loads still filtered the old categories, and the Venetian
+palazzo the whole fix was about was still in the safari list.
+
+Prebuild would have caught it on deploy. Nothing caught it in the working tree,
+which is where it is still a one-line fix. The audit now compares the two copies
+category by category and gates on any disagreement — verified by restoring the
+stale copy and watching `--strict` go red.
+
 ---
 
-## Phase 1 — Learn what is actually in the catalogue
+## Phase 1 — Learn what is actually in the catalogue — **BLOCKED ON EGRESS**
+
+Credentials are in place and load correctly. `api.virtuoso.com` is **not on this
+environment's network allowlist**, so every call returns
+`403 Host not in allowlist` from the egress proxy before it reaches Virtuoso —
+which means the credentials themselves are still unverified. Add the host to the
+environment's egress settings, or run the sync somewhere that can reach it.
+Everything below is unchanged and still the first thing to do.
 
 **Do not write the selector before running this.** The `travelStyles`
 vocabulary visible in our slice is six values (`Rail`, `Private`, `Group`,

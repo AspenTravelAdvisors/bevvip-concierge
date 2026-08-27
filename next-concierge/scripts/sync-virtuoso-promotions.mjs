@@ -17,6 +17,7 @@ import path from 'node:path';
 import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
 import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
+import { text, clip } from '../lib/virtuoso/text.mjs';
 
 loadEnv();
 
@@ -35,15 +36,7 @@ const OUT_FILE = path.join(repoRoot, 'data/atlas/shared/virtuoso-promotions.json
 
 const MAX_DESCRIPTION = 600;
 
-const text = html => String(html ?? '')
-  .replace(/<br\s*\/?>/gi, ' ')
-  .replace(/<\/(p|li|div|h\d)>/gi, ' ')
-  .replace(/<[^>]+>/g, '')
-  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;|&rsquo;/g, "'")
-  .replace(/&quot;|&ldquo;|&rdquo;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-  .replace(/\s+/g, ' ').trim();
 
-const clip = (s, n) => (s && s.length > n ? `${s.slice(0, n).replace(/\s+\S*$/, '')}…` : s);
 
 /** Promotions carry location as "City|State|Country", not the hotels' JSON blob. */
 function parseLocation(raw) {

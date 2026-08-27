@@ -305,7 +305,7 @@ export const expeditionAnswers = [
       {
         h2: "Side by side",
         table: {
-          caption: "Fleet figures from operator materials; sailing counts from our atlas, July 2026 (3,542 tracked expedition departures).",
+          caption: "Fleet figures from operator materials; sailing counts from our atlas, July 2026 (3,662 tracked expedition departures).",
           columns: ["", "Lindblad–Nat Geo", "Ponant", "Silversea Expeditions"],
           rows: [
             ["Sailings tracked in our atlas", "1,194", "588", "177"],

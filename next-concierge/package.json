@@ -24,7 +24,7 @@
     "verify:deeplinks": "node scripts/verify-deeplinks.mjs",
     "verify:hotels": "node scripts/verify-hotels.mjs",
     "verify:villas": "node scripts/verify-villas.mjs",
-    "verify": "npm run check && npm run verify:virtuoso && npm run verify:adapters && npm run verify:deeplinks && npm run verify:hotels && npm run verify:photoreal && npm run verify:villas && npm run verify:offering-shape && npm run verify:intents && npm run verify:ports && npm run verify:landmask && npm run verify:sea-routes && npm run verify:route-order && npm run verify:route-flight && npm run verify:cruise-regions && npm run verify:atlas-regions && npm run verify:ambient-tour && npm run verify:atlas-handoff",
+    "verify": "npm run check && npm run verify:virtuoso && npm run verify:adapters && npm run verify:deeplinks && npm run verify:hotels && npm run verify:photoreal && npm run verify:villas && npm run verify:offering-shape && npm run verify:intents && npm run verify:ports && npm run verify:landmask && npm run verify:sea-routes && npm run verify:route-order && npm run verify:route-flight && npm run verify:cruise-regions && npm run verify:atlas-regions && npm run verify:ambient-tour && npm run verify:atlas-handoff && npm run verify:listings",
     "verify:offering-shape": "node scripts/verify-offering-shape.mjs",
     "verify:intents": "node scripts/verify-intents.mjs",
     "verify:ambient-tour": "node scripts/verify-ambient-tour.mjs",
@@ -44,7 +44,9 @@
     "sync:virtuoso-promotions": "node scripts/sync-virtuoso-promotions.mjs",
     "sync:virtuoso-cruises": "node scripts/sync-virtuoso-cruises.mjs",
     "sync:virtuoso-tours": "node scripts/sync-virtuoso-tours.mjs",
-    "merge:virtuoso-journeys": "node scripts/merge-virtuoso-journeys.mjs"
+    "merge:virtuoso-journeys": "node scripts/merge-virtuoso-journeys.mjs",
+    "audit:listings": "node scripts/audit-listings.mjs",
+    "verify:listings": "node scripts/audit-listings.mjs --strict"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

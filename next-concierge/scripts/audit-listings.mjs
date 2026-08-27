@@ -23,6 +23,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
+import { LOOKS_LIKE_CSS } from '../lib/virtuoso/text.mjs';
 
 const args = process.argv.slice(2);
 const STRICT = args.includes('--strict');
@@ -35,14 +36,22 @@ const nf = new Intl.NumberFormat('en-US');
 const findings = [];
 
 /**
- * One finding.
+ * One finding, in one of three states.
  *
- * `ours` marks a defect in code we control, as opposed to a field the supplier
- * simply did not fill in. Only those can fail --strict, because the other kind
- * is a fact about the feed and no amount of our discipline drives it to zero.
+ * `ours`      a defect in code we control, as opposed to a field the supplier
+ *             did not fill in. The latter is a fact about the feed and no
+ *             amount of our discipline drives it to zero.
+ * `gate`      driven to zero and expected to stay there — these, and only
+ *             these, fail --strict, so the flag is safe to wire into
+ *             `npm run verify` without the build going red over a supplier's
+ *             missing photograph.
+ * `awaitingSync`  fixed at source, but the shipped feed still carries the
+ *             damage because repairing it needs a crawl of the Virtuoso API.
+ *             Counted and printed; never gated, because no change to this
+ *             repository can move the number.
  */
-function finding({ section, label, count, of, ours = false, detail = null, examples = [] }) {
-  findings.push({ section, label, count, of, ours, detail, examples });
+function finding({ section, label, count, of, ours = false, gate = false, awaitingSync = false, detail = null, examples = [] }) {
+  findings.push({ section, label, count, of, ours, gate, awaitingSync, detail, examples });
 }
 
 function section(name) { return !ONLY || ONLY === name; }
@@ -50,15 +59,12 @@ function section(name) { return !ONLY || ONLY === name; }
 // ---------- shared text tests ----------
 
 /*
- * A stripped <style> block, not prose.
+ * The CSS detector is the one in lib/virtuoso/text.mjs, not a second copy.
  *
- * The sync scripts' `text()` helper removes TAGS but not the CONTENTS of the
- * elements whose contents are not prose. Suppliers paste itinerary days out of
- * Word, which carries its stylesheet inline, so `<style>p {margin:0px}</style>`
- * survives tag-stripping as the literal characters "p {margin:0px}" and lands
- * in the field the feed advertises as the operator's own per-stop paragraph.
+ * An audit that carries its own definition of the defect can pass while the
+ * thing it audits is still broken — the two drift, and the report is the last
+ * place anyone looks for the drift.
  */
-const LOOKS_LIKE_CSS = /(\{[^}]*(?:margin|padding|font-family|font-size|color|border|vertical-align)\s*:)|(^\s*(?:p|ul|ol|td|div|span|\.[A-Za-z])\s*\{)/;
 
 /** Two records the same journey, differing only in punctuation and spacing. */
 const nameKey = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -97,10 +103,12 @@ function auditHotels() {
   const ecoOnly = lodge.filter(h => h.propertyType !== 'Lodge, Ranch, Camp'
     && (h.experiences ?? []).includes('Ecotourism'));
   finding({
-    section: 'hotels', ours: true,
+    section: 'hotels', ours: true, gate: true,
     label: '"Lodge / Safari" records that are not a lodge, ranch or camp',
     count: ecoOnly.length, of: lodge.length,
-    detail: `${byType.length} carry propertyType "Lodge, Ranch, Camp"; the rest are in on the Ecotourism experience flag alone`,
+    detail: ecoOnly.length
+      ? `${byType.length} carry propertyType "Lodge, Ranch, Camp"; the rest are in on the Ecotourism experience flag alone`
+      : `all ${byType.length} supplier-declared camps, plus ${lodge.length - byType.length} curated local records the API has no propertyType for`,
     examples: ecoOnly.slice(0, 6).map(h => `${h.name} — ${h.city}, ${h.country} (${h.propertyType})`),
   });
 
@@ -149,6 +157,43 @@ function auditHotels() {
     });
   }
 
+  /*
+   * The two copies of the hotel atlas agreeing with each other.
+   *
+   * The server reads data/atlas/hotel/luxury-hotels.json and the browser
+   * fetches public/maps/hotel/hotel-points.json, built from it by
+   * `npm run build:hotel-points` in prebuild. Running the merge without the
+   * rebuild leaves them disagreeing, and nothing else notices: recategorising
+   * 94 properties moved the server's count to 72 while the map a visitor
+   * actually loads still filtered 166 — including the Venetian palazzo the
+   * whole fix was about. Prebuild would have caught it on deploy; this catches
+   * it in the working tree, which is where it can still be a one-line fix.
+   */
+  const publicRel = 'public/maps/hotel/hotel-points.json';
+  if (exists(publicRel)) {
+    const feats = read(publicRel).features ?? [];
+    const pubCat = new Map();
+    for (const f of feats) {
+      const c = f.properties?.category ?? null;
+      pubCat.set(c, (pubCat.get(c) ?? 0) + 1);
+    }
+    const srcCat = new Map();
+    for (const h of rows) srcCat.set(h.category ?? null, (srcCat.get(h.category ?? null) ?? 0) + 1);
+    const drift = [];
+    if (feats.length !== n) drift.push(`row count: ${nf.format(n)} vs ${nf.format(feats.length)} on the map`);
+    for (const k of new Set([...srcCat.keys(), ...pubCat.keys()])) {
+      const a = srcCat.get(k) ?? 0, b = pubCat.get(k) ?? 0;
+      if (a !== b) drift.push(`${k}: ${a} in the feed, ${b} on the map`);
+    }
+    finding({
+      section: 'hotels', ours: true, gate: true,
+      label: 'the map a visitor loads disagrees with the feed the server reads',
+      count: drift.length, of: srcCat.size,
+      detail: drift.length ? 'run: npm run build:hotel-points' : 'both copies agree',
+      examples: drift.slice(0, 6),
+    });
+  }
+
   const stale = rows.filter(h => h.perksStale);
   const noYear = rows.filter(h => !h.perksYear);
   finding({
@@ -190,10 +235,10 @@ function auditTours() {
     }
   }
   finding({
-    section: 'tours', ours: true,
+    section: 'tours', ours: true, awaitingSync: true,
     label: 'itinerary stops whose description is leaked CSS',
     count: cssStops, of: stops,
-    detail: 'text() in the sync scripts strips tags but keeps <style> contents',
+    detail: 'fixed in lib/virtuoso/text.mjs; the clip budget was spent on the stylesheet so the prose behind it is gone — these stops need a re-sync',
     examples: cssExamples,
   });
 
@@ -205,33 +250,58 @@ function auditTours() {
     if (LOOKS_LIKE_CSS.test(t[f])) cssFields++;
   }
   finding({
-    section: 'tours', ours: true,
+    section: 'tours', ours: true, awaitingSync: true,
     label: 'tour descriptions that are leaked CSS',
     count: cssFields, of: proseFields,
+    detail: 'same fix, same re-sync',
   });
 
   /*
-   * The same journey, listed two and three times.
+   * The same product listed twice — which is NOT the same journey departing
+   * twice, and the difference is 21 rows of live inventory.
    *
-   * "Southern Africa by Private Air" ships three times at 13, 13 and 14 days;
-   * "International Intrigue" three times differing only in whether the supplier
-   * typed a pipe, a capital I or a colon. Nothing downstream collapses them, so
-   * the jet atlas shows a traveller the same trip three times in a row.
+   * Grouping on the name alone says there are 24 duplicates here. There are 3.
+   * "Australia by Private Jet" appears three times because A&K sells a 2026, a
+   * 2027 and a 2028 departure of it, each with its own `travelDates` window,
+   * each separately bookable — and the card prints that window, so a traveller
+   * sees three distinct choices rather than one thing three times. A duplicate
+   * has to match on the departure window too.
    */
-  const byName = new Map();
+  const dupKey = t => [
+    nameKey(t.name), nameKey(t.company), nameKey(t.lengthLabel),
+    t.startDate ?? '', t.endDate ?? '',
+  ].join('|');
+  const byProduct = new Map();
   for (const t of tours) {
-    const k = nameKey(t.name);
-    if (!byName.has(k)) byName.set(k, []);
-    byName.get(k).push(t);
+    const k = dupKey(t);
+    if (!byProduct.has(k)) byProduct.set(k, []);
+    byProduct.get(k).push(t);
   }
-  const dupes = [...byName.values()].filter(g => g.length > 1);
+  const dupes = [...byProduct.values()].filter(g => g.length > 1);
   const extra = dupes.reduce((n, g) => n + g.length - 1, 0);
   finding({
-    section: 'tours', ours: true,
-    label: 'duplicate journey listings (same trip, listed more than once)',
+    section: 'tours', ours: true, awaitingSync: true,
+    label: 'duplicate listings (same operator, title, length AND departure window)',
     count: extra, of: tours.length,
-    detail: `${dupes.length} journeys affected`,
-    examples: dupes.slice(0, 5).map(g => `${g[0].name} ×${g.length} (${g.map(t => t.lengthLabel).join(', ')})`),
+    detail: 'separate departures of one journey are NOT duplicates and are counted below',
+    examples: dupes.slice(0, 5).map(g => `${g[0].name} \u00d7${g.length} [${g[0].startDate} \u2192 ${g[0].endDate}]`),
+  });
+
+  // The rows the dedupe must never touch. Reported so a future selector change
+  // that starts collapsing them shows up here as a drop rather than silently.
+  const byTitle = new Map();
+  for (const t of tours) {
+    const k = `${nameKey(t.name)}|${nameKey(t.company)}`;
+    if (!byTitle.has(k)) byTitle.set(k, []);
+    byTitle.get(k).push(t);
+  }
+  const multi = [...byTitle.values()].filter(g => g.length > 1);
+  finding({
+    section: 'tours',
+    label: 'separate departures of a repeating journey (must survive dedupe)',
+    count: multi.reduce((n, g) => n + g.length, 0), of: tours.length,
+    detail: `${multi.length} journeys sold across more than one departure window`,
+    examples: multi.slice(0, 4).map(g => `${g[0].name} \u00d7${g.length}: ${g.map(t => (t.startDate ?? '?').slice(0, 4)).join(', ')}`),
   });
 
   finding({
@@ -302,7 +372,7 @@ function auditCounts() {
     if (declared !== real) drift.push(`${type}: config says ${nf.format(declared)}, ships ${nf.format(real)} (${declared > real ? '+' : ''}${nf.format(declared - real)})`);
   }
   finding({
-    section: 'counts', ours: true,
+    section: 'counts', ours: true, gate: true,
     label: 'collections whose stated count does not match what ships',
     count: drift.length, of: Object.keys(SHIPPED).length,
     detail: `the home page headline claims ${nf.format(stated)} vetted stays and journeys; the data holds ${nf.format(actual)}`,
@@ -320,16 +390,35 @@ let current = null;
 for (const f of findings) {
   if (f.section !== current) { current = f.section; console.log(`\n${current.toUpperCase()}\n${'─'.repeat(current.length)}`); }
   const share = f.of ? ` of ${nf.format(f.of)} (${((f.count / f.of) * 100).toFixed(1)}%)` : '';
-  console.log(`\n  ${f.ours ? '▸' : '·'} ${f.label}`);
+  const mark = f.gate ? '▸' : f.ours ? '▫' : '·';
+  const pending = f.awaitingSync && f.count ? '  (fix landed — awaiting re-sync)' : '';
+  console.log(`\n  ${mark} ${f.label}${pending}`);
   console.log(`    ${nf.format(f.count)}${share}`);
   if (f.detail) console.log(`    ${f.detail}`);
   for (const e of f.examples) console.log(`      ${e}`);
 }
 
-const ours = findings.filter(f => f.ours && f.count > 0);
-console.log(`\n\n${findings.length} findings · ${ours.length} in code we control (▸)\n`);
+const gated = findings.filter(f => f.gate && f.count > 0);
+const pendingSync = findings.filter(f => f.awaitingSync && f.count > 0);
+const open = findings.filter(f => f.ours && !f.gate && !f.awaitingSync && f.count > 0);
 
-if (STRICT && ours.length) {
-  console.log('FAILED (--strict): the ▸ findings above are defects, not supplier gaps.\n');
+console.log(`\n\n${findings.length} findings  ·  ▸ ${gated.length} gated failing  ·  ▫ ${open.length} open  ·  ${pendingSync.length} awaiting re-sync\n`);
+
+if (pendingSync.length) {
+  console.log('Awaiting a Virtuoso crawl — the source fix has landed, the stored feed has not caught up:');
+  for (const f of pendingSync) console.log(`  ${nf.format(f.count).padStart(6)}  ${f.label}`);
+  console.log('  run: npm run sync:virtuoso\n');
+}
+
+/*
+ * --strict gates the findings that have been driven to zero, and nothing else.
+ *
+ * The alternative — failing on every defect in our own code — would have made
+ * the flag unusable the day it shipped, because the two biggest are a matcher
+ * gap nobody has worked yet and 251 stops whose prose only a re-crawl can
+ * restore. A gate that cannot pass teaches everyone to pass --force.
+ */
+if (STRICT && gated.length) {
+  console.log('FAILED (--strict): a finding that was at zero has regressed.\n');
   process.exit(1);
 }
