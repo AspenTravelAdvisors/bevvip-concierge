@@ -14,7 +14,7 @@ export const journeyAnswers = [
       "How travel advisors are paid, when they cost nothing extra, when fees apply, and the benefit math at 2,500 luxury hotels — an honest answer to the most-asked question in luxury travel.",
     updated: UPDATED,
     answer: [
-      "For luxury hotels, cruises and villas: no — in most cases you pay the same published rate you'd find yourself, the supplier pays the advisor a commission from its marketing budget, and the advisor's programs add benefits on top. At the 2,501 hotels in our atlas, an advisor booking layers upgrade priority, daily breakfast, and property credits (typically $100+) onto the hotel's own flexible rate — value the DIY booking simply doesn't receive. On expedition cruises and villas the rate parity works the same way.",
+      "For luxury hotels, cruises and villas: no — in most cases you pay the same published rate you'd find yourself, the supplier pays the advisor a commission from its marketing budget, and the advisor's programs add benefits on top. At the 2,240 hotels in our atlas, an advisor booking layers upgrade priority, daily breakfast, and property credits (typically $100+) onto the hotel's own flexible rate — value the DIY booking simply doesn't receive. On expedition cruises and villas the rate parity works the same way.",
       "Where fees do exist, they're for labor, not access: many advisors (ours included) charge planning fees for complex multi-stop itineraries, air-ticketing, or bespoke trip design — disclosed up front, often credited against the trip. The scenario where DIY genuinely wins is narrow: prepaid nonrefundable discount rates, points redemptions, and opaque-channel gambles, all of which trade away flexibility, benefits, or certainty.",
     ],
     sections: [
@@ -61,7 +61,7 @@ export const journeyAnswers = [
       },
       {
         q: "How does the advisor relationship work?",
-        a: "The Guide (our AI concierge) helps you explore the atlas — 2,501 hotels, 3,542 expedition sailings, 3,902 villas — and a human advisor takes over for pricing, program benefits, and the booking itself. Ask The Guide anything; it will tell you when a human should take the wheel.",
+        a: "The Guide (our AI concierge) helps you explore the atlas — 2,240 hotels, 3,662 expedition sailings, 3,902 villas — and a human advisor takes over for pricing, program benefits, and the booking itself. Ask The Guide anything; it will tell you when a human should take the wheel.",
       },
     ],
     related: [

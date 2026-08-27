@@ -1,6 +1,11 @@
 // Answer pages — luxury hotels. Counts cited in copy were computed from
-// data/atlas/hotel/luxury-hotels.json (2,501 properties, 2,361 with documented
+// data/atlas/hotel/luxury-hotels.json (2,240 properties, 2,073 with documented
 // VIP upgrade terms) on the `updated` date.
+//
+// These are prose, so they are a dated snapshot rather than a live figure —
+// but scripts/audit-listings.mjs now checks the collection counts the site
+// states out loud, which is how the safari numbers below were caught after
+// deriveCategory stopped filing Ecotourism hotels as lodges (166 -> 72).
 
 const UPDATED = "2026-07-21";
 
@@ -123,7 +128,7 @@ export const hotelAnswers = [
     related: [
       { href: "/answers/four-seasons-preferred-partner-benefits", label: "The Four Seasons–specific version" },
       { href: "/answers/do-travel-advisors-cost-more", label: "Do travel advisors cost more than booking yourself?" },
-      { href: "/atlas/hotel", label: "Browse the 2,501-property hotel atlas" },
+      { href: "/atlas/hotel", label: "Browse the 2,240-property hotel atlas" },
     ],
   },
 
@@ -377,10 +382,10 @@ export const hotelAnswers = [
     question: "What are the best safari lodges you can book with VIP perks?",
     title: "Best Safari Lodges Bookable With VIP Perks",
     description:
-      "The standout lodges among the 61 safari and wilderness properties in our atlas — Botswana, Kenya, South Africa and beyond — and what advisor booking adds on safari.",
+      "The standout lodges among the 72 safari and wilderness properties in our atlas — 32 of them in Botswana, Kenya, South Africa and their neighbours — and what advisor booking adds on safari.",
     updated: UPDATED,
     answer: [
-      "From the 61 safari and wilderness lodges in our atlas, the ones we send travelers to first: Jack's Camp in Botswana's Makgadikgadi (the great eccentric — Kalahari meerkats, desert-Baroque tents), Belmond's Botswana camps in the Okavango, Bushmans Kloof in the Cederberg (rock art, no malaria, family-friendly South Africa), Elewana Loisaba Tented Camp on Kenya's Laikipia plateau, and the Fairmont pair — Mara Safari Club and Mount Kenya Safari Club — for the classic Kenya circuit with big-hotel polish.",
+      "From the 72 safari and wilderness lodges in our atlas — 32 in Africa, the rest wilderness camps and ranches on other continents — the ones we send travelers to first: Jack's Camp in Botswana's Makgadikgadi (the great eccentric — Kalahari meerkats, desert-Baroque tents), Belmond's Botswana camps in the Okavango, Bushmans Kloof in the Cederberg (rock art, no malaria, family-friendly South Africa), Elewana Loisaba Tented Camp on Kenya's Laikipia plateau, Londolozi and Singita in the Sabi Sand, and Fairmont Mara Safari Club for the Mara circuit with big-hotel polish.",
       "On safari, advisor value is less about breakfast credits (everything's included anyway) and more about the itinerary spine: which camps combine, private-vehicle guarantees, guide requests, charter logistics between airstrips, and the green-season pricing that halves rates in months that are often better game viewing than the brochure months.",
     ],
     sections: [
@@ -397,7 +402,7 @@ export const hotelAnswers = [
           ],
         },
         paras: [
-          "The 61 'lodge/safari' tagged properties also include wilderness lodges beyond Africa — Clayoquot in British Columbia, Blancaneaux in Belize, Cristalino in the Brazilian Amazon, Huka Lodge in New Zealand — for travelers who want the safari rhythm (guides, wild luxury, all-inclusive days) on other continents.",
+          "The 72 'lodge/safari' properties also include wilderness lodges beyond Africa — Clayoquot in British Columbia, Blancaneaux in Belize, Explora in Patagonia and the Atacama, Huka Lodge in New Zealand — for travelers who want the safari rhythm (guides, wild luxury, all-inclusive days) on other continents.",
         ],
       },
       {
@@ -426,7 +431,7 @@ export const hotelAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/hotel", label: "All 61 safari & wilderness lodges on the atlas map" },
+      { href: "/atlas/hotel?category=Lodge+%2F+Safari", label: "All 72 safari & wilderness lodges on the atlas map" },
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "How advisor booking works at lodges" },
     ],
   },

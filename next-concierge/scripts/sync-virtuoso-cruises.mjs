@@ -24,6 +24,7 @@ import path from 'node:path';
 import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
 import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
+import { text, prose, clip } from '../lib/virtuoso/text.mjs';
 
 loadEnv();
 
@@ -82,13 +83,6 @@ const SELECTIONS = [
 
 // ---------- helpers ----------
 
-const text = html => String(html ?? '')
-  .replace(/<br\s*\/?>/gi, ' ').replace(/<\/(p|li|div|h\d)>/gi, ' ').replace(/<[^>]+>/g, '')
-  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;|&rsquo;/g, "'")
-  .replace(/&quot;|&ldquo;|&rdquo;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-  .replace(/\s+/g, ' ').trim();
-
-const clip = (s, n) => (s && s.length > n ? `${s.slice(0, n).replace(/\s+\S*$/, '')}…` : s);
 const day = d => (d ? String(d).slice(0, 10) : null);
 
 /** startLocation / endLocation arrive as a stringified JSON blob. */
