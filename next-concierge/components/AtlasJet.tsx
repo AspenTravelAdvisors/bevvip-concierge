@@ -130,10 +130,11 @@ export default function AtlasJet() {
       accent="#dfe5f2"
       // Satellite, and back on the GLOBE. Flat was a blanket fix for a problem
       // only round-the-world itineraries have, and those no longer ask the
-      // frame to hold them at all: a traced jet route too wide to fit is shown
-      // from its departure instead (see framesFromDeparture), at an altitude
-      // where the projection is not the question. A Mediterranean jet tour
-      // keeps the globe it deserves, framed end to end.
+      // frame to hold them at all: a traced jet route too wide to fit turns the
+      // globe until its departure is in view instead of trying to fit the whole
+      // itinerary onto a rectangle (see framesFromDeparture). The sphere is the
+      // point there, not a compromise. A Mediterranean jet tour keeps the same
+      // globe, framed end to end.
       initialStyle="satellite"
     />
   );

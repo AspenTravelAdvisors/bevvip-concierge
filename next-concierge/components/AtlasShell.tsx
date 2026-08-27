@@ -3448,10 +3448,9 @@ export default function AtlasShell({
          * high enough to place a city on a world tour — bounded at both ends so
          * it stays a view of somewhere.
          *
-         * Shared by the flight (which reads every call from this height) and by
-         * the departure framing below, so the view a traced jet route opens at
-         * is the same view its flight opens at, and the same one it lands back
-         * on.
+         * Extracted from flyRoute so the height has a name: it is the one
+         * number that decides how a whole itinerary reads, and it was buried
+         * three screens inside the function that spends it.
          */
         function readingZoom(hops: RouteHop[]): number {
           const legZooms = hops.map((h) => zoomToFit(spanOf([{ coordinates: h.pts }]), FLY_CRUISE_PAD));
@@ -3463,14 +3462,21 @@ export default function AtlasShell({
         }
 
         /**
-         * Is this a route to be shown from where it LEAVES rather than in full?
+         * Is this a route to be framed from where it LEAVES rather than fitted?
          *
-         * A jet expedition that circles the planet has no useful whole-route
-         * framing. Fitting its bounding box is the whole world at minimum zoom
-         * — a route running off both edges, no city legible, and nothing to say
-         * where the journey starts. What a traveller opening "Around the World
-         * by Private Jet" wants first is the airfield it leaves from, with the
-         * first legs heading out of frame.
+         * A jet expedition that circles the planet has no whole-route framing
+         * worth showing. Fitting its bounding box is the world at minimum zoom
+         * — the route off both edges, and nothing on screen to say where the
+         * journey starts. What a traveller opening "Around the World by Private
+         * Jet" wants to see is roughly where in the world it goes AND which
+         * coast it leaves from, and those are not the same camera.
+         *
+         * So the view stays wide — see departureZoom — and it is the CENTRE
+         * that moves: the globe is turned until the departure sits in frame,
+         * off to one side, with the journey running away across the face of it.
+         * Centring on the departure instead is the mistake this replaced: every
+         * round-the-world itinerary happens to leave from North America, so
+         * every one of them opened on the same picture of the United States.
          *
          * Gated on the SAME spans as flattenIfCircumnavigation, because they
          * answer the same question about the same geometry: past these, the
@@ -3487,6 +3493,64 @@ export default function AtlasShell({
           return s.hi - s.lo > SPAN_FLAT_LNG || s.latHi - s.latLo > SPAN_FLAT_LAT;
         }
 
+        /** The zoom at which the whole sphere sits inside the box. */
+        function globeFitZoom(): number {
+          return Math.log2((Math.min(node.clientWidth, node.clientHeight) * 0.92) / 162.97);
+        }
+
+        /**
+         * How much closer than the whole globe a departure view sits.
+         *
+         * One step. The whole sphere in the box is the view that says nothing —
+         * a route round the limb and continents too small to place a city on.
+         * One zoom level in halves the width of the world on screen, which is
+         * enough to read a departure as "the Pacific Northwest" rather than as
+         * "North America" while still showing an ocean's worth of where it is
+         * going. Two steps is a country, and that is the framing this replaced.
+         *
+         * Capped, because the step is a step from a fit that grows with the box:
+         * on a very large monitor the globe already fills a lot of pixels and
+         * another level in would land back on a continent.
+         */
+        const DEPART_ZOOM_IN = 1;
+        const DEPART_ZOOM_MAX = 3.4;
+        function departureZoom(): number {
+          return Math.max(
+            map.getMinZoom(),
+            Math.min(DEPART_ZOOM_MAX, globeFitZoom() + DEPART_ZOOM_IN),
+          );
+        }
+
+        /**
+         * Half the frame, across — the longitude counterpart of halfFrameLat.
+         *
+         * Same two projections and the same reason they differ: mercator puts a
+         * fixed number of degrees in the frame at a zoom, while a globe shows an
+         * arc that runs out at the limb however far you pull back. Using the
+         * mercator figure on a globe overstates the frame badly at low zoom,
+         * which is exactly where the departure framing lives — it would place a
+         * departure "a quarter of the way in from the edge" somewhere round the
+         * back of the planet.
+         */
+        function halfFrameLng(zoom: number): number {
+          if (projGlobe) {
+            const diameter = 162.97 * 2 ** zoom;
+            return (Math.asin(Math.min(1, node.clientWidth / diameter)) * 180) / Math.PI;
+          }
+          return frameDegAt(zoom) / 2;
+        }
+
+        /**
+         * How far in from the edge of the frame the departure is placed.
+         *
+         * Far enough in to be legible — on a globe the outer edge is the limb,
+         * where a coastline is edge-on and a label is unreadable — and far
+         * enough OUT that the frame is plainly showing the journey rather than
+         * the departure. A quarter in is the compromise: the camera sits half
+         * way between the departure and the far side of the frame.
+         */
+        const DEPART_INSET = 0.25;
+
         /**
          * Where the journey begins, in the frame the route is drawn in.
          *
@@ -3501,18 +3565,60 @@ export default function AtlasShell({
         }
 
         /**
-         * Put the camera on the departure and leave it there.
+         * Turn the globe until the departure is in frame, and leave it there.
          *
-         * Level and untilted — this is the view the traced route rests at,
-         * before the Fly button is pressed and after it has finished, so it is
-         * the same view in both places.
+         * The camera is pushed off the departure in the direction the journey
+         * goes — the mean of the route's own points — so the departure ends up
+         * on the near side of the frame and the itinerary fills the rest of it.
+         * A route that leaves Seattle westward puts Seattle to the right with
+         * the Pacific ahead; one that leaves Lisbon eastward puts Lisbon to the
+         * left. Neither is centred, which is the point: they are different
+         * journeys and they should not open on the same picture.
+         *
+         * Level and untilted — this is the view a traced route rests at, before
+         * the Fly button is pressed and after it has finished, so it is the same
+         * view in both places.
          */
         function frameDeparture(duration: number, fallback?: [number, number] | null): boolean {
+          const hops = routeHops();
           const at = departurePoint(fallback);
           if (!at) return false;
-          const zoom = readingZoom(routeHops());
+          const zoom = departureZoom();
+          const halfLng = halfFrameLng(zoom);
+          const halfLat = halfFrameLat(at[1], zoom);
+
+          /*
+           * Which way the journey goes, as a unit vector.
+           *
+           * Longitude is scaled by latitude to measure it — 30° of longitude at
+           * 60°N is half the ground it is at the equator, and without the scale
+           * a northerly route reads as an easterly one. The route's mean point
+           * rather than its next stop: one hop can set off in a direction the
+           * journey does not keep, and this is choosing where to stand, not
+           * where to look.
+           */
+          const k = Math.cos((at[1] * Math.PI) / 180) || 1;
+          let dx = 0, dy = 0, n = 0;
+          for (const h of hops) for (const c of h.pts) { dx += c[0] - at[0]; dy += c[1] - at[1]; n++; }
+          const len = n ? Math.hypot((dx / n) * k, dy / n) : 0;
+          const ux = len > 0 ? (dx / n) * k / len : 0;
+          const uy = len > 0 ? (dy / n) / len : 0;
+
+          /*
+           * Push the camera off the departure until the departure sits
+           * DEPART_INSET in from the frame's edge along whichever axis the
+           * journey runs. Half-frames differ per axis, so the reach is whichever
+           * one the direction runs out of first — the inset is measured on the
+           * edge the departure is actually approaching.
+           */
+          const reach = Math.min(
+            Math.abs(ux) > 1e-6 ? halfLng / Math.abs(ux) : Infinity,
+            Math.abs(uy) > 1e-6 ? halfLat / Math.abs(uy) : Infinity,
+          );
+          const push = Number.isFinite(reach) ? reach * (1 - 2 * DEPART_INSET) : 0;
+
           map.easeTo({
-            center: [at[0], framingLat(at[1], zoom)],
+            center: [at[0] + ux * push, framingLat(at[1] + uy * push, zoom)],
             zoom,
             pitch: 0,
             bearing: 0,
@@ -4090,11 +4196,7 @@ export default function AtlasShell({
             endFlight();
             return;
           }
-          const w = node.clientWidth, h = node.clientHeight;
-          const z = Math.max(
-            map.getMinZoom(),
-            Math.min(9, Math.log2((Math.min(w, h) * 0.92) / 162.97)),
-          );
+          const z = Math.max(map.getMinZoom(), Math.min(9, globeFitZoom()));
           const spanLng = s.hi - s.lo;
           const spanLat = s.latHi - s.latLo;
           // A regional route does not want the whole planet back; frame it.
