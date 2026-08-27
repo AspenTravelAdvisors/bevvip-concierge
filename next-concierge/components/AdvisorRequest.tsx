@@ -162,6 +162,8 @@ function AdvisorForm({
           source,
           brief: context.brief,
           shortlist: context.shortlist,
+          shortlistSource: context.shortlistSource,
+          shortlistTotal: context.shortlistTotal,
           deepLink: context.deepLink,
           contact: { name: name.trim(), email: cleanEmail, phone: phone.trim() },
           notes: notes.trim(),
@@ -197,7 +199,13 @@ function AdvisorForm({
           </button>
         </div>
         <p className="adv-done">
-          An Aspen Travel Advisors specialist has your {context.shortlist.length > 0 ? "shortlist" : "notes"} and
+          An Aspen Travel Advisors specialist has your{" "}
+          {context.shortlist.length === 0
+            ? "notes"
+            : context.shortlistSource === "bucket"
+              ? "bucket list"
+              : "shortlist"}{" "}
+          and
           everything you described. They&rsquo;ll reach you at <b>{email.trim()}</b> within 24
           hours. Keep exploring in the meantime — anything else you find, you can send across the
           same way.
@@ -246,8 +254,16 @@ function AdvisorForm({
           ))}
           {context.shortlist.length > 0 && (
             <div className="adv-brief-row">
-              <span>Shortlist</span>
-              <b>{context.shortlist.join(" · ")}</b>
+              {/* Named for what it IS. A traveller who spent a week building a
+                  bucket list should see their list going, not a generic
+                  "Shortlist" that reads like something we assembled. */}
+              <span>{context.shortlistSource === "bucket" ? "Your bucket list" : "Shortlist"}</span>
+              <b>
+                {context.shortlist.join(" · ")}
+                {context.shortlistTotal > context.shortlist.length
+                  ? ` — and ${context.shortlistTotal - context.shortlist.length} more`
+                  : ""}
+              </b>
             </div>
           )}
         </div>

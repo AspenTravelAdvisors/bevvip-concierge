@@ -43,8 +43,14 @@ interface HandoffBody {
   // whole brief) or "atlas". Changes how an advisor should open the reply.
   source?: string;
   brief?: Brief;
-  // Curated shortlist names the traveler is looking at (from the result cards).
+  // The names travelling with the request. Either the traveler's own bucket
+  // list (a set of decisions, made over days) or the results they happen to be
+  // looking at — `shortlistSource` says which, because an advisor opens those
+  // two replies differently.
   shortlist?: string[];
+  shortlistSource?: "bucket" | "results";
+  // How many the list holds, when more were saved than were sent.
+  shortlistTotal?: number;
   // Living Atlas deep link reproducing the exact subset on the map.
   deepLink?: string | null;
   // Lightly captured so the advisor can actually reach them.
@@ -108,8 +114,14 @@ function composeMessage(body: HandoffBody): string {
   }
 
   if (body.shortlist?.length) {
-    lines.push("— Shortlist on screen —");
-    for (const name of body.shortlist.slice(0, 8)) lines.push(` • ${name}`);
+    const fromBucket = body.shortlistSource === "bucket";
+    const sent = body.shortlist.slice(0, 12);
+    lines.push(fromBucket ? "— Their bucket list —" : "— Shortlist on screen —");
+    for (const name of sent) lines.push(` • ${clip(name, 160)}`);
+    // Saved past what we send: say so rather than letting a list of ten read as
+    // the whole of a list of twenty-six.
+    const total = Number(body.shortlistTotal) || sent.length;
+    if (total > sent.length) lines.push(` • …and ${total - sent.length} more saved`);
     lines.push("");
   }
 
@@ -179,7 +191,8 @@ export async function POST(req: Request) {
     budget: clip(body.brief?.budget, 120),
     style: clip(body.brief?.style, 200),
     considering: clip(body.brief?.considering, 400),
-    shortlist: (body.shortlist ?? []).slice(0, 8).join(", "),
+    shortlist: (body.shortlist ?? []).slice(0, 12).join(", "),
+    shortlistSource: body.shortlistSource === "bucket" ? "bucket-list" : "on-screen",
     deepLink: clip(body.deepLink, 1000),
     pageUrl: clip(body.pageUrl, 500),
     message: composeMessage(body),

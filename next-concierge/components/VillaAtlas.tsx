@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
+import BucketListButton from "./BucketListButton";
 import {
   parseViewParams,
   readStoredStyle,
@@ -1058,6 +1059,28 @@ function VillaCard({ v }: { v: Villa }) {
         {offer && <p className="ac-note ac-note--offer">{offer}</p>}
         {v.summary && <p className="ac-summary">{v.summary}</p>}
         <div className="ac-actions ac-actions--stacked">
+          {/*
+            A villa card's actions are quiet text links, so the save is too —
+            the same control as every other collection, in the register this
+            card speaks in. It leads them because it is the only one that costs
+            nothing and commits to nothing: keep it, then ask, then hand it over.
+          */}
+          <BucketListButton
+            variant="quiet"
+            source="card"
+            item={{
+              type: "villa",
+              id: String(v.id),
+              title: v.name,
+              subtitle: [crumb, stats, v.priceDisplay].filter(Boolean).join("  ·  ") || null,
+              // Villas have no brand — they are one-off houses, which is most
+              // of what distinguishes them from a hotel.
+              brand: null,
+              thumb: v.imageUrl,
+              href,
+              url: null,
+            }}
+          />
           <Link className="ac-link" href={askGuideHref(v)}>
             ✦ Ask The Guide about this villa
           </Link>

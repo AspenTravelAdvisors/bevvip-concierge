@@ -142,3 +142,40 @@ export function askGuide(text: string, source: AskSource = "dock"): boolean {
 export function askGuideHref(text: string, src: string): string {
   return `/?ask=${encodeURIComponent(text.trim())}&src=${encodeURIComponent(src)}`;
 }
+
+/* ── The bucket list ────────────────────────────────────────────────────────
+ *
+ * A saved item is the thinnest subject in the app: title, a where/when line and
+ * maybe a brand, copied in at save time (see lib/bucket-list for why it is
+ * denormalized). It has no `city`/`country`/`category` to compose a question
+ * from, so `place()` cannot be used — passing a villa's "Mustique · Sleeps 8 ·
+ * from $14,000/wk" as a region would produce a sentence nobody wrote.
+ *
+ * Instead the line is carried as context, in the traveller's own reading of it.
+ */
+
+export function askAboutSaved(s: { title: string; subtitle?: string | null; brand?: string | null }): string {
+  const detail = [s.subtitle, s.brand && s.brand !== s.subtitle ? s.brand : null]
+    .filter(Boolean)
+    .join(" · ");
+  return (
+    `Tell me about ${s.title}${detail ? ` (${detail})` : ""}, which I've saved to my bucket list.` +
+    " What is it like, who is it right for, and what should I know before I commit?"
+  );
+}
+
+/**
+ * The question the LIST asks, which no single item can.
+ *
+ * The reason to keep several things in one place is to compare them, and by
+ * the time someone has saved four they are choosing, not browsing. Capped
+ * because a question naming twenty properties is a spreadsheet.
+ */
+export function askAboutBucketList(titles: string[]): string {
+  const named = titles.slice(0, 8);
+  const rest = titles.length - named.length;
+  return (
+    `These are on my bucket list: ${named.join("; ")}${rest > 0 ? `, and ${rest} more` : ""}.` +
+    " How do they compare, which would you put together into one trip, and what would you do first?"
+  );
+}

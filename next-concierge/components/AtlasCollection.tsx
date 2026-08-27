@@ -36,6 +36,7 @@ import { useIsMobile } from "@/lib/use-is-mobile";
 import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
 import { internalAtlasLink, routeVerbLong } from "@/lib/atlas-config";
+import BucketListButton from "./BucketListButton";
 
 /** One drawable leg of a traced route, already in [lng, lat]. */
 export interface RouteLegOut {
@@ -1042,6 +1043,38 @@ export default function AtlasCollection({
   const stayCard = !!(cardMedia || cardCrumb || cardNote || cardSummary);
 
   /**
+   * Where one offering IS, as a single line, for the bucket list.
+   *
+   * `cardCrumb` already answers this on screen, but it is a render prop
+   * returning markup — the saved item needs a string it can still print on a
+   * page that has never loaded this collection's feed. Composed from the same
+   * fields the crumb is built from, so the two never disagree about the place.
+   */
+  const savedPlace = (o: AtlasOffering): string =>
+    [
+      o.attributes?.city as string | undefined,
+      o.country,
+      regionLabels[o.regions[0]] ?? o.regions[0],
+    ]
+      .filter((v, i, arr): v is string => !!v && arr.indexOf(v) === i)
+      .slice(0, 2)
+      .join(" · ");
+
+  /**
+   * The route back to one offering on its own atlas.
+   *
+   * Hotels take `hotel=`, which opens the property's dossier and starts the
+   * orbit on arrival; every other collection narrows on `ids=`. The descriptor
+   * already names the difference (`extraIdParams`), so read it rather than
+   * branching on the type here.
+   */
+  const savedHref = (o: AtlasOffering): string =>
+    internalAtlasLink(
+      type,
+      `?${descriptor.extraIdParams?.[0] ?? "ids"}=${encodeURIComponent(o.id)}`,
+    );
+
+  /**
    * The collection's brand mark for one offering.
    *
    * Look the mark up by whichever field this collection filters on. cruise has
@@ -1510,6 +1543,33 @@ export default function AtlasCollection({
                     </button>
                   );
                 })()}
+                {/*
+                  Put it on the list.
+
+                  Sits with the boxed actions rather than among the text links
+                  because it is the same KIND of thing they are — something the
+                  card does rather than somewhere it goes — but it is outlined
+                  in the neutral line colour, not gold: the gold pair is the
+                  rate search and the property view, and a save should not
+                  compete with the price.
+
+                  The payload is composed here, from what the card is already
+                  showing, so the bucket list can draw this row months later
+                  without re-fetching a feed that may no longer carry it.
+                */}
+                <BucketListButton
+                  source="card"
+                  item={{
+                    type,
+                    id: o.id,
+                    title: o.title,
+                    subtitle: [savedPlace(o), whenLine].filter(Boolean).join("  ·  ") || null,
+                    brand: o.brandLabel || o.operator || o.vessel,
+                    thumb: o.thumb ?? null,
+                    href: savedHref(o),
+                    url: o.url,
+                  }}
+                />
                 {o.url && (
                   <a
                     className="ac-link"

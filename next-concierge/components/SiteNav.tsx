@@ -20,9 +20,11 @@ import { useEffect, useRef, useState } from "react";
 import { COLLECTIONS, collectionPhrase, collectionsByIntent } from "@/lib/atlas-config";
 import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
 import { tourOpened } from "@/lib/analytics";
+import { useBucketCount } from "@/lib/bucket-list";
 
 export default function SiteNav() {
   const pathname = usePathname();
+  const saved = useBucketCount();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -137,6 +139,28 @@ export default function SiteNav() {
       >
         Answers
       </Link>
+
+      {/*
+        The list, with its count.
+
+        Only once there is something in it. An empty "Bucket List (0)" in the
+        header is a permanent reminder of a thing you haven't done, and on a
+        first visit it names a feature the visitor has no reason to want yet —
+        the ♡ on the cards is where the feature introduces itself. Once
+        something is saved the count is the point: it is the only place in the
+        app that says the list is still there, days later, in another tab.
+      */}
+      {saved > 0 && (
+        <Link
+          className="nav-link nav-saved"
+          href="/bucket-list"
+          data-active={pathname?.startsWith("/bucket-list") ? "true" : undefined}
+        >
+          <span className="nav-saved-glyph" aria-hidden="true">♥</span>
+          Bucket List
+          <span className="nav-saved-count">{saved}</span>
+        </Link>
+      )}
 
       {/* The tour used to hijack the "The Guide" tab: on the home page that tab
           swallowed the click and opened a modal instead of navigating. Same

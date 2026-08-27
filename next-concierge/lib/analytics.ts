@@ -34,7 +34,7 @@ export type AskSource =
   | "dossier";
 
 /** Where the advisor form was opened from. */
-export type AdvisorSource = "chat" | "header" | "atlas";
+export type AdvisorSource = "chat" | "header" | "atlas" | "bucketlist";
 
 function emit(event: string, props?: Props) {
   try {
@@ -117,4 +117,41 @@ export function tourOpened() {
 
 export function tourFinished(step: number, total: number) {
   emit("tour_finished", { step, total, completed: step >= total - 1 });
+}
+
+/**
+ * An offering was put on — or taken off — the bucket list.
+ *
+ * This belongs on the funnel, not beside it. A save is the first moment a
+ * traveler commits to a specific property rather than a search, and it is the
+ * step that now feeds `advisor_request_sent`'s shortlist: if saves are rare,
+ * the hand-off is still carrying whatever the last query returned, and the
+ * curation this feature exists for is not happening. `size` is the list's
+ * length after the change, so the numbers say whether anyone builds a LIST or
+ * only ever saves one thing.
+ */
+export function bucketListSaved(type: string, source: BucketSource, size: number) {
+  emit("bucket_list_saved", { type: type || "none", source, size });
+}
+
+export function bucketListRemoved(type: string, source: BucketSource, size: number) {
+  emit("bucket_list_removed", { type: type || "none", source, size });
+}
+
+/** Where a save happened — the same question `AskSource` answers for asks. */
+export type BucketSource =
+  /** A card in a collection's result list, including the villa atlas. */
+  | "card"
+  /** A card in a Guide answer, before any map was opened. */
+  | "guide"
+  /** A map pin's popup. */
+  | "pin"
+  /** The property dossier. */
+  | "dossier"
+  /** The bucket list page itself — removals, and the clear-all. */
+  | "list";
+
+/** Did anyone come back to the list they built? */
+export function bucketListOpened(size: number) {
+  emit("bucket_list_opened", { size });
 }

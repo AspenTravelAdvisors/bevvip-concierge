@@ -9,6 +9,7 @@ import type { NormalizedOffering } from "@/lib/offering-shape";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip } from "@/lib/trip-state";
 import { atlasOpened, bookingClicked } from "@/lib/analytics";
+import BucketListButton from "./BucketListButton";
 
 // The shared trip drives the hotel booking CTAs: bookingLink prices the
 // captured dates and party (tomorrow-night default), and hotel atlas links
@@ -221,9 +222,43 @@ function Card({
     <div className="card-link">{body}</div>
   );
 
+  /*
+   * Save it from the answer, before any map is opened.
+   *
+   * This is the earliest point in the product at which a traveler has picked
+   * one thing out of many — the Guide has just named three, and one of them is
+   * the one they lean towards. Making them open an atlas to keep it turns the
+   * highest-intent moment in the conversation into a navigation problem.
+   *
+   * A Guide result is the thinnest record the app has (the search returns a
+   * card's worth of fields, not a feed row), so the saved item carries what the
+   * card itself is showing and the atlas link it was already going to open.
+   * Without an id there is nothing stable to save AGAINST — the same property
+   * would come back a different item next turn — so the control is withheld.
+   */
+  const savedId = String(result.id ?? "").trim();
+  const savedType = fallbackType ?? (isOfferingType(String(result.type ?? "")) ? (String(result.type) as OfferingType) : null);
+
   return (
     <div className="card">
       {atlasLink}
+      {savedId && savedType && (
+        <BucketListButton
+          variant="icon"
+          source="guide"
+          className="card-save"
+          item={{
+            type: savedType,
+            id: savedId,
+            title: String(result.name || "Untitled"),
+            subtitle: where || null,
+            brand: String(result.brand || result.operator || "") || null,
+            thumb: null,
+            href: href ?? null,
+            url: typeof result.url === "string" ? result.url : null,
+          }}
+        />
+      )}
       <CardBooking result={result} trip={trip} type={fallbackType} />
     </div>
   );

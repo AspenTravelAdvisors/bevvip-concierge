@@ -39,6 +39,7 @@ import {
 } from "@/lib/atlas/geo";
 import { mapStyleFallback, hotel3dOpened, mapEngineChosen } from "@/lib/analytics";
 import { askAboutPin, askGuide, askGuideHref } from "@/lib/atlas/ask";
+import { bucketButtonHtml, handleBucketPopupClick } from "./BucketListButton";
 import Atlas3DLayer, {
   type Atlas3DHandle,
   type Camera3DState,
@@ -2196,6 +2197,31 @@ export default function AtlasShell({
             const askLink =
               `<button type="button" class="iwask" data-ask="${escapeHtml(askAboutPin({ name, region: reg }))}">✦ Ask The Guide</button>`;
             /*
+             * And a way to keep it.
+             *
+             * A pin is where a property is FOUND, and finding one you like on
+             * a globe of 2,382 and then having to remember its name is the
+             * oldest complaint about this map. The popup is built as a string
+             * (Mapbox owns it), so the save is the same delegated `data-*`
+             * pattern as the ask above it — see BucketListButton, which owns
+             * both renderings so their labels cannot drift.
+             */
+            const saveLink = !id
+              ? ""
+              : bucketButtonHtml(
+                  {
+                    type: "hotel",
+                    id,
+                    title: name,
+                    subtitle: reg || null,
+                    brand: null,
+                    thumb: null,
+                    href: `/atlas/hotel?hotel=${encodeURIComponent(id)}`,
+                    url: null,
+                  },
+                  escapeHtml,
+                );
+            /*
              * The popup's headline action is the rate search, not another
              * browse surface.
              *
@@ -2212,7 +2238,7 @@ export default function AtlasShell({
              */
             popup
               .setLngLat(e.lngLat)
-              .setHTML(`<div class="iw">${head}${threeLink}${askLink}</div>`)
+              .setHTML(`<div class="iw">${head}${threeLink}${askLink}${saveLink}</div>`)
               .addTo(map);
             if (id) {
               hotelRateLink(id, name).then((rate) => {
@@ -2226,6 +2252,7 @@ export default function AtlasShell({
                       : "") +
                     threeLink +
                     askLink +
+                    saveLink +
                     `</div>`,
                 );
               });
@@ -4929,9 +4956,18 @@ export default function AtlasShell({
       e.preventDefault();
       if (!askGuide(text, "pin")) window.location.assign(askGuideHref(text, `${type}-pin`));
     };
+    /*
+     * And the save, by the same delegation — the handler and the markup both
+     * live in BucketListButton so a popup's control behaves exactly like a
+     * card's.
+     */
+    const onBucket = (e: Event) => {
+      handleBucketPopupClick(e, "pin");
+    };
     document.addEventListener("click", on3d);
     document.addEventListener("click", onOpenProperty);
     document.addEventListener("click", onAsk);
+    document.addEventListener("click", onBucket);
     window.addEventListener("bevvip:atlas-route", onRoute as EventListener);
     window.addEventListener("bevvip:atlas-plot", onPlot as EventListener);
     window.addEventListener("bevvip:atlas-reset", onReset as EventListener);
@@ -4941,6 +4977,7 @@ export default function AtlasShell({
       document.removeEventListener("click", on3d);
       document.removeEventListener("click", onOpenProperty);
       document.removeEventListener("click", onAsk);
+      document.removeEventListener("click", onBucket);
       window.removeEventListener("bevvip:atlas-route", onRoute as EventListener);
       window.removeEventListener("bevvip:atlas-plot", onPlot as EventListener);
       window.removeEventListener("bevvip:atlas-reset", onReset as EventListener);
@@ -5778,12 +5815,37 @@ function featuredHtml(r: OfferingResult, kind: OfferingType, esc: (s: string) =>
       brand: r.brand || r.operator,
     }),
   );
+  /*
+   * And a way to keep it — on the pin for the thing being SOLD.
+   *
+   * Same argument as the ask above: this is a property The Guide just
+   * recommended, and until now the only things you could do with it were open
+   * an atlas or (for hotels) the photoreal view. A recommendation you cannot
+   * keep is a recommendation you have to remember.
+   */
+  const save = id
+    ? bucketButtonHtml(
+        {
+          type: kind,
+          id,
+          title: r.name || "Recommendation",
+          subtitle: [meta, when].filter(Boolean).join("  ·  ") || null,
+          brand: (r.brand || r.operator) ?? null,
+          thumb: null,
+          href,
+          url: typeof r.url === "string" ? r.url : null,
+        },
+        esc,
+      )
+    : "";
   return (
     `<div class="iw"><div class="iwn">${esc(r.name || "Recommendation")}</div>` +
     `<div class="iwm">${esc([meta, when].filter(Boolean).join("  ·  "))}</div>` +
     three +
     `<a href="${esc(href)}">Open on the atlas →</a>` +
-    `<button type="button" class="iwask" data-ask="${ask}">✦ Ask The Guide</button></div>`
+    `<button type="button" class="iwask" data-ask="${ask}">✦ Ask The Guide</button>` +
+    save +
+    `</div>`
   );
 }
 

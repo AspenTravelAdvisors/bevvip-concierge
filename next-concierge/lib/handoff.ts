@@ -5,7 +5,8 @@
 // visit, so the parsing moved here and both entry points share it.
 
 import { leadTool } from "./guide-meta";
-import type { GuideMeta, GuideTurn } from "./types";
+import { getBucketList } from "./bucket-list";
+import type { GuideMeta, GuideTurn, OfferingType } from "./types";
 
 /**
  * The qualified brief, carried silently in a [[BRIEF: ...]] tag the Guide emits
@@ -26,6 +27,18 @@ export interface AdvisorContext {
   category: string;
   brief: Brief;
   shortlist: string[];
+  /**
+   * Where the shortlist came from.
+   *
+   * "bucket" is a set of decisions the traveller made across sessions;
+   * "results" is whatever the last search happened to return. An advisor reads
+   * those two very differently — the first is "these are the ones", the second
+   * is "this is what they were looking at" — so the difference is carried
+   * rather than flattened, and both the dialog and the email say which it is.
+   */
+  shortlistSource: "bucket" | "results";
+  /** How many items the list actually holds, when more were saved than sent. */
+  shortlistTotal: number;
   deepLink: string | null;
   transcript: string;
 }
@@ -202,13 +215,67 @@ export const HANDOFF_BLURB: Record<string, string> = {
     "An Aspen specialist will take what you've described and come back with specific, priced options.",
 };
 
-/** Assemble everything /api/handoff needs from a live transcript. */
+/**
+ * How many saved items travel with a hand-off.
+ *
+ * The list itself holds up to BUCKET_LIST_MAX; an advisor's opening reply can
+ * act on about ten. Beyond that the email stops being a brief, so the rest are
+ * counted rather than listed — and the deep link and the traveller are both
+ * still there to produce them.
+ */
+const HANDOFF_SAVED_LIMIT = 10;
+
+/**
+ * Which pillar a set of saved items speaks to.
+ *
+ * Only when they agree. A list of six hotels is a hotel enquiry; a list holding
+ * two hotels, a sailing and a villa is trip planning, and calling it "Luxury
+ * Hotels" because hotels happened to be the plurality would put the wrong
+ * specialist on it and open the reply with the wrong blurb.
+ */
+function savedCategory(types: OfferingType[]): string | null {
+  const unique = [...new Set(types)];
+  if (unique.length !== 1) return null;
+  const t = unique[0];
+  if (t === "cruise") return "expedition";
+  return t;
+}
+
+/**
+ * Assemble everything /api/handoff needs.
+ *
+ * THE BUCKET LIST WINS. If the traveller has saved anything, that is the
+ * shortlist — a curated set beats the residue of the last query, which is what
+ * this used to send even when the traveller had spent a week choosing four
+ * specific properties. The transcript's shortlist stays as the fallback for
+ * anyone who hands off without saving, which is still most of them.
+ */
 export function buildAdvisorContext(turns: GuideTurn[], meta?: GuideMeta): AdvisorContext {
   const latest = meta ? { names: shortlistNames(meta), meta } : latestShortlist(turns);
-  return {
-    category: handoffCategory(latest.meta),
-    brief: latestBrief(turns),
+  const saved = getBucketList();
+  const fromResults = {
     shortlist: latest.names,
+    shortlistSource: "results" as const,
+    shortlistTotal: latest.names.length,
+    category: handoffCategory(latest.meta),
+  };
+  const chosen = saved.length
+    ? {
+        shortlist: saved.slice(0, HANDOFF_SAVED_LIMIT).map((i) => i.title),
+        shortlistSource: "bucket" as const,
+        shortlistTotal: saved.length,
+        /*
+         * The saved items decide the category, falling back to the
+         * conversation's only where they do not agree among themselves — the
+         * names being sent and the framing they are sent under have to be
+         * about the same thing.
+         */
+        category: savedCategory(saved.map((i) => i.type)) ?? handoffCategory(latest.meta),
+      }
+    : fromResults;
+  return {
+    ...chosen,
+    brief: latestBrief(turns),
     deepLink: latest.meta?.deepLink ?? null,
     transcript: transcriptText(turns),
   };

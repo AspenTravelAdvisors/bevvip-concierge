@@ -30,6 +30,7 @@ import { hotelBrandDomain } from "@/lib/atlas/adapters/hotel-brands";
 import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import { bookingClicked } from "@/lib/analytics";
 import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
+import BucketListButton from "./BucketListButton";
 import type { TripState } from "@/lib/types";
 
 /** The subset of a hotel record this panel renders. */
@@ -362,6 +363,30 @@ export default function HotelDossier({
         header offers, put where the questions actually occur.
       */}
       <footer className="hd-actions">
+        {/*
+          Keep it, first.
+
+          The dossier is where the property is actually decided — the
+          description, the ratings, the VIP benefits and the photoreal building
+          are all here — and until now the only ways out of that decision were
+          to ask a question or to summon a human. "I want this one, later" had
+          nowhere to go.
+        */}
+        <BucketListButton
+          variant="quiet"
+          source="dossier"
+          className="hd-save"
+          item={{
+            type: "hotel",
+            id,
+            title: name,
+            subtitle: where || null,
+            brand: record?.program || record?.brand || null,
+            thumb: null,
+            href: `/atlas/hotel?hotel=${encodeURIComponent(id)}`,
+            url: record?.bookUrl ?? null,
+          }}
+        />
         <button
           type="button"
           className="hd-ask"
