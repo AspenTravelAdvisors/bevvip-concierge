@@ -16,6 +16,7 @@ const SHARED = ["the", "and", "or", "of", "in", "to", "for"] as const;
 
 /** Per-collection stop-lists, transcribed from each atlas's `words()`. */
 export const STOP_WORDS: Record<string, readonly string[]> = {
+  safari: [...SHARED, "safari", "safaris", "game", "wildlife", "big five", "migration", "gorilla", "bush", "camp", "africa", "african", "luxury"],
   train: [...SHARED, "rail", "train", "trains", "journey", "journeys", "trip", "trips", "tour", "tours", "luxury"],
   jet: [...SHARED, "private", "jet", "jets", "journey", "journeys", "trip", "trips", "tour", "tours", "luxury"],
   yacht: [...SHARED, "cruise", "cruises", "yacht", "yachts", "sailing", "sailings", "voyage", "voyages", "ship", "trip", "trips", "luxury"],

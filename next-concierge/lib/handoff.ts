@@ -181,6 +181,7 @@ export function handoffCategory(meta: GuideMeta | undefined): string {
   if (type === "yacht") return "yacht";
   if (type === "worldcruise") return "worldcruise";
   if (type === "train") return "train";
+  if (type === "safari") return "safari";
   if (type === "villa") return "villa";
   if (type === "cruise") return region === "antarctica" ? "antarctica" : "expedition";
   return "generic";

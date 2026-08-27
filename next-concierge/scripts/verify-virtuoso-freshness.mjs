@@ -77,6 +77,7 @@ for (const { label, file, key } of FEEDS) {
     ['world cruises and grand voyages', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/world/itinerary.json'), 'utf8')).TRIPS.length],
     ['private jet expeditions', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/jet/itinerary.json'), 'utf8')).TRIPS.length],
     ['rail journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/train/itinerary.json'), 'utf8')).TRIPS.length],
+    ['safari journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/safari/itinerary.json'), 'utf8')).TRIPS.length],
   ];
   let drifted = 0;
   for (const [noun, count] of counted) {

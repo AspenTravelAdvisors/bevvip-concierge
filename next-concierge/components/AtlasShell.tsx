@@ -112,7 +112,7 @@ const HOTEL_DENSITY_SOURCE = "hotel-density";
 // Master atlas overlays: cruise / jet / yacht / world-cruise / rail / villa
 // region pins, each from its own live app data. Colors stay distinguishable on
 // the dark globe.
-type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise" | "train" | "villa";
+type OverlayKey = "cruise" | "jet" | "yacht" | "worldcruise" | "train" | "safari" | "villa";
 const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; data: string }> = {
   cruise: {
     label: "Expedition Cruises",
@@ -131,6 +131,12 @@ const OVERLAYS: Record<OverlayKey, { label: string; color: string; url: string; 
     color: "#e0b84a",
     url: ATLASES.yacht.base,
     data: `${ATLASES.yacht.base}/itinerary.json`,
+  },
+  safari: {
+    label: "Safari Journeys",
+    color: "#c9812f",
+    url: ATLASES.safari.base,
+    data: `${ATLASES.safari.base}/itinerary.json`,
   },
   worldcruise: {
     label: "World Cruises",
@@ -5783,6 +5789,7 @@ function overlayMeta(key: OverlayKey, count?: number): string {
   if (key === "worldcruise") return `World Cruises${count ? ` · ${count} voyages calling here` : ""}`;
   if (key === "jet") return `Private Jet Journeys${count ? ` · ${count} journeys` : ""}`;
   if (key === "train") return `Rail Journeys${count ? ` · ${count} departures` : ""}`;
+  if (key === "safari") return `Safari Journeys${count ? ` · ${count} departures` : ""}`;
   if (key === "villa") return `Private Villas${count ? ` · ${count} villas` : ""}`;
   // "sailings", not "charters": these are sold by the cabin like any other
   // cruise. See INTENTS in lib/atlas-config.ts.
@@ -6083,6 +6090,8 @@ async function fetchRouteLines(key: OverlayKey): Promise<LngLat[][]> {
     // that file — see lib/atlas/adapters/rail-geometry.ts and the focused-route
     // layer — so this ambient path is jet-only geometry.
     if (key === "train") return [];
+    // Safari routes are stop-to-stop, like rail: no ambient web of every journey.
+    if (key === "safari") return [];
 
     // jet: an aircraft really does fly the arc, and a straight line between two
     // cities reads as a wire rather than a journey. It needs the antimeridian

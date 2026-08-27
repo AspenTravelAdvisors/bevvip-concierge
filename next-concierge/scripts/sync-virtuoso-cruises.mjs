@@ -118,17 +118,6 @@ const coord = (lat, lng) => {
   return [a, b];
 };
 
-/*
- * Supplier boilerplate is not a description.
- *
- * 1,983 of 4,370 sailings return "This information has not be provided by the
- * supplier." (their typo, not ours) in `cruiseDescription`, and a few return
- * "More information to come." Stored as prose it fills the dossier with an
- * apology and pollutes the guide's search haystack, so it is treated as absent.
- */
-const PLACEHOLDER = /has not be(en)?\s+provided|more information to come|information (is )?not available/i;
-const prose = t => (t && !PLACEHOLDER.test(t) ? t : '');
-
 function normalize(row, detail, atlases) {
   const d = detail ?? {};
   const start = day(row.startDate), end = day(row.endDate);
@@ -182,7 +171,7 @@ function normalize(row, detail, atlases) {
     itinerary,
     portCount: itinerary.filter(p => p.lat != null).length,
 
-    description: prose(clip(text(d.cruiseDescription), 700)),
+    description: clip(prose(d.cruiseDescription), 700),
     // What the fare covers — the dossier's second most useful block after the
     // itinerary. Capped at six: the lists run long and repeat the brand's
     // standard inclusions on every sailing.

@@ -169,6 +169,19 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     order: 6,
     intent: "sea",
   },
+  safari: {
+    type: "safari",
+    label: "Safari journeys atlas",
+    nav: "Safari",
+    nounPlural: "safari journeys",
+    tagline: "The great migration, the Delta and the gorilla forests, camp by camp",
+    base: process.env.NEXT_PUBLIC_SAFARI_ATLAS_BASE || "/maps/safari",
+    sampleRegions: ["EASTAFRICA", "OKAVANGO", "ZAMBEZI", "GREATAPES"],
+    color: "#c9812f",
+    count: 269,
+    order: 8,
+    intent: "land",
+  },
   train: {
     type: "train",
     label: "Rail journeys atlas",
@@ -178,7 +191,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_TRAIN_ATLAS_BASE || "/maps/train",
     sampleRegions: ["BRITAIN", "EUROPE", "CANADA", "EASTASIA"],
     color: "#e08d5f",
-    count: 127,
+    count: 130,
     order: 7,
     intent: "land",
   },
@@ -207,7 +220,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // 141 -> 147: the six Safrans du Monde departures added by
     // scripts/apply-safrans-dates.mjs. Like every count here this is a hand-kept
     // constant over the raw feed, not a live figure — see the note on `count`.
-    count: 122,
+    count: 124,
     order: 3,
     intent: "air",
   },

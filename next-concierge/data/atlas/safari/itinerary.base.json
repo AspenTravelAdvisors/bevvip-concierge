@@ -1,0 +1,27 @@
+{
+ "_meta": {
+  "purpose": "The curated half of the safari atlas. BRANDS and REGIONS are ours; TRIPS and ROUTES are rebuilt from the Virtuoso tours feed by scripts/merge-virtuoso-journeys.mjs and are empty here on purpose.",
+  "brandNote": "One key per house, not per country arm. The API lists andBeyond five times (Botswana, South Africa, Kenya, Tanzania, Rwanda) and Abercrombie & Kent six; a traveller is choosing andBeyond, not andBeyond Botswana.",
+  "regionNote": "Anchors are the region's centre of gravity for game-viewing, not its capital: the Mara-Serengeti ecosystem rather than Nairobi, the Delta rather than Gaborone. scripts/merge-virtuoso-journeys.mjs tags each stop with the nearest anchor within 2,500km."
+ },
+ "BRANDS": {
+  "andbeyond": { "short": "andBeyond", "domain": "andbeyond.com", "color": "#4a5d23" },
+  "wilderness": { "short": "Wilderness", "domain": "wildernessdestinations.com", "color": "#c07a2c" },
+  "ak": { "short": "Abercrombie & Kent", "domain": "abercrombiekent.com", "color": "#1f3a5f" },
+  "africantravel": { "short": "African Travel", "domain": "africantravelinc.com", "color": "#8a6a3b" },
+  "artisans": { "short": "Artisans of Leisure", "domain": "artisansofleisure.com", "color": "#7a5a86" },
+  "kerdowney": { "short": "Ker & Downey", "domain": "kerdowney.com", "color": "#5b4a2e" },
+  "micato": { "short": "Micato Safaris", "domain": "micato.com", "color": "#a8432c" },
+  "nathab": { "short": "Natural Habitat", "domain": "nathab.com", "color": "#2f6b4f" }
+ },
+ "REGIONS": {
+  "EASTAFRICA": { "name": "Kenya, Tanzania & the Great Migration", "ab": "East Africa", "coord": [-2.5, 35.5] },
+  "OKAVANGO": { "name": "Botswana, the Okavango & Namibia", "ab": "Okavango", "coord": [-19.5, 23.0] },
+  "SOUTHERN": { "name": "South Africa & the Cape", "ab": "Southern Africa", "coord": [-26.5, 27.5] },
+  "ZAMBEZI": { "name": "Zambia, Zimbabwe & the Zambezi", "ab": "Zambezi", "coord": [-17.9, 25.9] },
+  "GREATAPES": { "name": "Rwanda, Uganda & the Gorilla Forests", "ab": "Gorilla Country", "coord": [-1.4, 29.7] },
+  "INDIANOCEAN": { "name": "Madagascar, Mozambique & the Indian Ocean", "ab": "Indian Ocean", "coord": [-20.0, 45.0] }
+ },
+ "ROUTES": {},
+ "TRIPS": []
+}

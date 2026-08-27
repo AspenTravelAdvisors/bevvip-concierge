@@ -5066,18 +5066,40 @@ button.card-book {
    The sailing and journey counterpart to the hotel dossier. Same vocabulary as
    `.hd-*` so the two files read alike; a separate prefix because the hotel one
    lives inside a photoreal panel and this does not. */
+/*
+ * Same containment as `.hotel-dossier`, and for the same reason.
+ *
+ * `.atlas-detail` gives this a box inside the map band; without a max-height
+ * and an overflow of its own the panel renders at its natural height — which
+ * for a 245-day world cruise is enormous — and spills down over the card list.
+ * The percentage resolves because the parent is absolutely positioned top to
+ * bottom, so the panel clamps to the map and scrolls inside it.
+ */
 .jd {
-  background: var(--panel, #101216);
-  border: 1px solid #2a2b31;
-  border-radius: 8px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: rgba(12, 12, 14, 0.95);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--gold-dim);
+  border-radius: 14px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
 }
+/* The title and the close button stay put while a long itinerary scrolls under
+   them — a hundred-day voyage otherwise scrolls its own dismiss control away. */
 .jd-head {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   padding: 14px 16px;
   border-bottom: 1px solid #24252b;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(12, 12, 14, 0.97);
 }
 .jd-head h2 {
   margin: 0;
@@ -5493,11 +5515,17 @@ button.card-book {
     flex-direction: column;
     justify-content: flex-end;
   }
-  .hotel-dossier {
+  .hotel-dossier,
+  .jd {
     border-radius: 16px 16px 0 0;
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
+  }
+  /* The sheet reaches the physical bottom, so the journey dossier's last row
+     has to clear the home indicator too. */
+  .atlas-detail .jd .jd-body {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
   /* The sheet now reaches the physical bottom of the screen, so its own last
      row has to clear the home indicator. */

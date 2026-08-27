@@ -10,6 +10,7 @@ import AtlasYacht from "@/components/AtlasYacht";
 import AtlasWorldCruise from "@/components/AtlasWorldCruise";
 import AtlasCruise from "@/components/AtlasCruise";
 import AtlasHotel from "@/components/AtlasHotel";
+import AtlasSafari from "@/components/AtlasSafari";
 
 /**
  * Collections migrated off their standalone iframe onto the shared browse
@@ -28,6 +29,7 @@ const NATIVE_COLLECTIONS: Partial<Record<OfferingType, () => React.ReactElement>
   yacht: () => <AtlasYacht />,
   worldcruise: () => <AtlasWorldCruise />,
   cruise: () => <AtlasCruise />,
+  safari: () => <AtlasSafari />,
 };
 
 // In-app atlas view. Each standalone atlas now lives inside Base Camp as a

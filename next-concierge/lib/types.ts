@@ -2,7 +2,7 @@
 // The frame protocol matches the original Vercel function so either
 // frontend can talk to either backend during the migration.
 
-export type OfferingType = "hotel" | "cruise" | "jet" | "yacht" | "worldcruise" | "train" | "villa";
+export type OfferingType = "hotel" | "cruise" | "jet" | "yacht" | "worldcruise" | "train" | "safari" | "villa";
 
 export interface OfferingResult {
   id?: string;

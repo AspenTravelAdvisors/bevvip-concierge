@@ -669,7 +669,17 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
        */
       waypoints.push({ n: p.place, r: regionForStop(p), ll: [p.lat, p.lng] });
     }
-    if (waypoints.length < 2) continue;
+    /*
+     * One placed stop is enough to be in the atlas; two are needed to draw a line.
+     *
+     * Safari camps in the Okavango all resolve to the same airstrip, so a
+     * five-camp Botswana journey can arrive as five points on one coordinate.
+     * Requiring two distinct waypoints dropped 53 journeys — 35 of them
+     * andBeyond's — for want of a route. A browse surface is not only a route
+     * drawer: the journey keeps its pin, its card and its file, and `routeFor`
+     * declines to invent a line between a place and itself.
+     */
+    if (!waypoints.length) continue;
 
     // The journey's regions are exactly those its drawn stops carry.
     const g = Object.keys(REGIONS).filter(k => waypoints.some(w => w.r === k));
@@ -786,6 +796,7 @@ if (wanted('world')) buildSeaAtlas({ atlas: 'world', baseRel: 'data/atlas/world/
 if (wanted('expedition')) buildExpedition();
 if (wanted('jet')) buildTourAtlas({ atlas: 'jet', kind: 'jet', baseRel: 'data/atlas/jet/itinerary.base.json', outRel: 'data/atlas/jet/itinerary.json', publicRel: 'public/maps/jet/itinerary.json' });
 if (wanted('rail')) buildTourAtlas({ atlas: 'rail', kind: 'rail', baseRel: 'data/atlas/train/itinerary.base.json', outRel: 'data/atlas/train/itinerary.json', publicRel: 'public/maps/train/itinerary.json' });
+if (wanted('safari')) buildTourAtlas({ atlas: 'safari', kind: 'safari', baseRel: 'data/atlas/safari/itinerary.base.json', outRel: 'data/atlas/safari/itinerary.json', publicRel: 'public/maps/safari/itinerary.json' });
 
 for (const line of report) console.log(line);
 if (!CHECK) console.log(`\nwrote ${written.length} files`);

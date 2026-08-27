@@ -66,9 +66,21 @@ export const LOOKS_LIKE_CSS =
   /(\{[^}]*(?:margin|padding|font-family|font-size|border|vertical-align|text-align)\s*:)|(^\s*[.#]?[A-Za-z][\w.#-]*\s*\{)/;
 
 /** The supplier's prose, or null where what came back was a stylesheet. */
+/*
+ * Supplier boilerplate is not prose either.
+ *
+ * 1,983 of 4,370 sailings answer `cruiseDescription` with "This information has
+ * not be provided by the supplier." (their typo), and others with "More
+ * information to come." Stored as description it fills a dossier with an
+ * apology and pollutes the guide's search haystack, so it is treated as absent
+ * for the same reason a stylesheet is.
+ */
+const PLACEHOLDER = /has not be(en)?\s+provided|more information to come|information (is )?not available/i;
+
 export function prose(html) {
   const s = text(html);
-  return s && !LOOKS_LIKE_CSS.test(s) ? s : null;
+  if (!s || LOOKS_LIKE_CSS.test(s) || PLACEHOLDER.test(s)) return null;
+  return s;
 }
 
 /** Trim to `n` characters on a word boundary, with an ellipsis. */

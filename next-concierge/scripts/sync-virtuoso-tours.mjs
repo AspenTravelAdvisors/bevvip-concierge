@@ -49,6 +49,30 @@ const OUT_FILE = path.join(repoRoot, 'data/atlas/shared/virtuoso-tours.json');
  */
 const JET_NAME = /\b(private jet|by air\b|by private air|jet expedition|jet experience|air cruise|jet by day)\b/i;
 
+/*
+ * What belongs in the safari atlas.
+ *
+ * Three tests, all of which must pass. Country because a safari is a place
+ * before it is a style; wildlife because those countries also sell wine tours
+ * and Cape Town city breaks; and operator because the catalogue's African
+ * wildlife tours run from Globus and G Adventures coaches up to andBeyond and
+ * Wilderness, and this atlas sits with the other five, not below them.
+ *
+ * Loosening any one of the three is a business decision, not a bug — dropping
+ * the operator test alone takes it from 273 journeys to 591.
+ */
+const SAFARI_COUNTRIES = new Set(['Kenya', 'Tanzania', 'Botswana', 'South Africa', 'Namibia',
+  'Zambia', 'Zimbabwe', 'Rwanda', 'Uganda', 'Malawi', 'Mozambique', 'Madagascar', 'Ethiopia']);
+
+const SAFARI_WILDLIFE = /safari|big five|game (drive|reserve)|gorilla|serengeti|masai|maasai|okavango|kruger|wildlife/i;
+
+const SAFARI_OPERATOR = /abercrombie|wilderness|andbeyond|and beyond|ker & downey|ker and downey|artisans of leisure|african travel|singita|great plains|micato|roar africa|extraordinary journeys|natural habitat|journeys by design/i;
+
+const isSafari = row =>
+  (row.countries ?? []).some(c => SAFARI_COUNTRIES.has(c))
+  && ((row.experiences ?? []).includes('Wildlife & Nature') || SAFARI_WILDLIFE.test(row.name ?? ''))
+  && SAFARI_OPERATOR.test(row.company ?? '');
+
 // ---------- helpers ----------
 
 const day = d => (d ? String(d).slice(0, 10) : null);
@@ -77,17 +101,6 @@ const coord = (lat, lng) => {
   if (a === 0 && b === 0) return [null, null];
   return [a, b];
 };
-
-/*
- * Supplier boilerplate is not a description.
- *
- * 1,983 of 4,370 sailings return "This information has not be provided by the
- * supplier." (their typo, not ours) in `cruiseDescription`, and a few return
- * "More information to come." Stored as prose it fills the dossier with an
- * apology and pollutes the guide's search haystack, so it is treated as absent.
- */
-const PLACEHOLDER = /has not be(en)?\s+provided|more information to come|information (is )?not available/i;
-const prose = t => (t && !PLACEHOLDER.test(t) ? t : '');
 
 function normalize(row, detail, kinds) {
   const d = detail ?? {};
@@ -147,7 +160,7 @@ function normalize(row, detail, kinds) {
      * blurb is on every one — so the fallback is the difference between a jet
      * dossier that reads well and one that is blank half the time.
      */
-    description: prose(clip(text(d.tourDescription), 700)) || prose(clip(text(d.asSeenInTravelFolioDescription), 700)),
+    description: clip(prose(d.tourDescription), 700) || clip(prose(d.asSeenInTravelFolioDescription), 700),
     folioDescription: clip(text(d.asSeenInTravelFolioDescription), 500),
     folioInTheKnow: clip(text(d.asSeenInTravelFolioInTheKnow), 300),
     included: (d.whatIsIncludedItems ?? []).map(text).filter(Boolean).slice(0, 8),
@@ -269,11 +282,12 @@ async function main() {
     const kinds = [];
     if ((row.travelStyles ?? []).includes('Rail')) kinds.push('rail');
     if (JET_NAME.test(row.name ?? '')) kinds.push('jet');
+    if (isSafari(row)) kinds.push('safari');
     if (kinds.length) selected.set(String(row.id), { row, kinds });
   }
-  const counts = { jet: 0, rail: 0 };
+  const counts = { jet: 0, rail: 0, safari: 0 };
   for (const s of selected.values()) for (const k of s.kinds) counts[k]++;
-  console.log(`selected ${selected.size} tours — jet ${counts.jet}, rail ${counts.rail}`);
+  console.log(`selected ${selected.size} tours — jet ${counts.jet}, rail ${counts.rail}, safari ${counts.safari}`);
 
   const ids = [...selected.keys()].slice(0, LIMIT || undefined);
 
