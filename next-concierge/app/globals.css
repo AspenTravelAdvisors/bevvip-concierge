@@ -5154,6 +5154,27 @@ button.card-book {
   text-decoration: none;
 }
 .jd-book:hover { border-color: #a98a3e; }
+/* The days at the embarkation port — a question the supplier's file never
+   answers, sitting quieter than the booking link it precedes. */
+.jd-ask {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--line, #2a2a2c);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-dim, #b9b6ad);
+  font-family: var(--sans);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.jd-ask:hover {
+  color: #f0dca6;
+  border-color: #7a6228;
+}
 
 .hd-offers {
   list-style: none;
@@ -5294,6 +5315,24 @@ button.card-book {
   color: var(--sub);
 }
 .hotel-dossier .hd-advisor:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-dim);
+}
+/* "What is there to do here" — a real second question on this screen, but not
+   a competing one, so it reads at the advisor button's weight rather than the
+   gold ask's. */
+.hotel-dossier .hd-days {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--sub);
+}
+.hotel-dossier .hd-days:hover {
   color: var(--gold-light);
   border-color: var(--gold-dim);
 }

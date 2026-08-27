@@ -46,5 +46,8 @@ ANTHROPIC_API_KEY=sk-ant-... npm run dev
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | no | Render the Living Atlas globe |
 | `GOOGLE_MAPS_API_KEY` | no* | Google Maps JS key for the hotel map iframe (served via `/api/hotel/config`). *Required for the hotel map to render tiles. |
 | `NEXT_PUBLIC_*_ATLAS_BASE` | no | Override the in-app atlas handoff path (default internal `/maps/<type>`; see `lib/atlas-config.ts`) |
+| `PROJECT_EXPEDITION_TOKEN` | no* | Things to do — tours, private guides and day experiences from Project Expedition (`lib/experiences.js`, the Guide's `search_experiences` tool). *Unset means the Guide answers every "what is there to do here" with an advisor hand-off instead of real experiences. |
+| `PE_API_BASE` | no | Project Expedition API base. **Defaults to staging** (`https://apistage.projectexpedition.com/v1`) — production deployments must set this to the live base, or they are showing staging inventory. |
+| `PE_TIMEOUT_MS` | no | Abort a Project Expedition call after this many ms (default 8000; a country pull is ~2 MB and a cold function adds connect + TLS). |
 
 All atlas inventory and query logic is served in-process from `data/atlas/` + `lib/atlas/` — this app has no runtime dependency on the external `*.vercel.app` atlas deployments.

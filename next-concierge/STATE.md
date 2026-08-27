@@ -1827,3 +1827,106 @@ The rail and yacht figures are not calls being dropped: they are exactly the
 consecutive same-port repeats — a second night in one place — which have no hop
 to fly and so no landing to make. Collapsing consecutive repeats in the source
 data gives 99% and 93%, the same numbers. Every distinct call is landed on.
+
+## Things to do — the Project Expedition layer, surfaced (2026-08-27)
+
+The eighth thing the Guide can answer, and the only one that was finished,
+working, deployed, and effectively unreachable. Written down here because it
+never was: before today it appeared in no state doc, no README env row, no nav,
+no card, no button, and no chip.
+
+**What the layer is.** `lib/experiences.js` calls Project Expedition's
+`/return_tours` and returns real tours, private guides and day experiences for a
+place — Private and Elevate picks (the advisor's own recommendations) first,
+then a few from the broader catalogue. It is exposed to the model as a second
+Anthropic tool, `search_experiences`, beside `search_offerings`
+(`app/api/guide/route.ts`). It is **discovery, not booking**: pricing and
+`booking_meta` are dropped on purpose and no checkout URL is ever returned.
+
+**Why it stayed hidden.** Three gates, two of them deliberate and correct, one
+of them an oversight that made the other two fatal:
+
+1. `lib/guide-prompt.js` told the model never to deliver experiences unasked.
+   Right call — an advisor who answers a hotel question with an activity list
+   stops sounding like an advisor, and each call is a country-sized catalogue
+   pull (~2 MB, 8s timeout) that would tax every reply to serve a minority.
+2. `route.ts` keeps experiences out of `toolMeta`, so they never become result
+   cards, map pins, a deep link, or an advisor CTA. Also right: a record with no
+   price and no booking path must not render like inventory that has both. Only
+   the area hotels the tool returns alongside are pushed into the pipeline.
+3. **Nothing anywhere said the question could be asked.** The only door was a
+   traveller typing "what is there to do in Ushuaia" unprompted, in a product
+   whose empty state teaches "Antarctica in January" — destination plus season.
+   Nobody phrases it that way here.
+
+Gate 3 is what shipped as fixed. Gates 1 and 2 still stand.
+
+**The three doors now open, in order of expected intent:**
+
+- **Journey dossier** (`components/JourneyDossier.tsx`) — the days at the
+  embarkation port. Every voyage and journey has one or two on the front of it,
+  the supplier's file covers none of them, and this is the layer's strongest
+  case: `record.from` (or the first landfall) becomes the ask.
+- **Hotel dossier** (`components/HotelDossier.tsx`) — the days around a stay,
+  asked from the screen where the traveller is already reading about one
+  property. Hidden when the record carries no city.
+- **Chat, under any reply that returned results** (`ChatMoves` in
+  `components/GuideChat.tsx`) — a second move beside the advisor CTA, built
+  deterministically from `leadPlace()` rather than emitted by the model, because
+  a model-emitted offer appears only when the model remembers to emit it, which
+  is how a working feature became unreachable in the first place. Suppressed on
+  a reply that *is* an experiences answer.
+
+All three compose the question through `askAboutDays()` in `lib/atlas/ask.ts`
+and deliver it down the existing ask path (in place where a chat is mounted,
+`/?ask=` where one is not). The wording carries place and country explicitly,
+because the model — not `normalizeCountry` — is what parses them into the tool
+call.
+
+`leadPlace()` (`lib/guide-meta.ts`) decides whether the chat offer appears at
+all, and the null case is the load-bearing half: `search_offerings` takes a
+marquee `region` key as well as a place, and "what is there to do in Antarctica"
+is a worse question than no question. Order is named place → a returned result's
+city → `places[]`. The city outranks `places[]` on purpose: that field holds
+colloquial *areas* ("the Amalfi Coast", "the Cotswolds"), which are the right
+input for a hotel search and the wrong subject for a day — a day is spent in a
+town, and "a few days in Amalfi Coast" gives away that a machine wrote the
+traveller's own sentence.
+
+**The prompt now distinguishes delivering from offering.** The model still may
+not call the tool unasked. It may close a reply that landed a real stay or
+departure with one short sentence leaving the door open ("if it helps, I can
+look at what there is to do around Positano") and then stop — at most once a
+conversation, never on consecutive replies, never in place of the answer they
+came for.
+
+**Measurement, which did not exist.** `experiences_asked` (with `source`:
+chat-move / hotel-dossier / journey-dossier) and `experiences_returned` (total,
+preferred, unavailable) in `lib/analytics.ts`. The counts ride to the client on
+`GuideMeta.experiences` — deliberately *beside* `tools`, not in it, so a
+prose-only record can never reach `leadTool` and become a card. A run of zeroes
+in `preferred` means we are promoting the generic catalogue rather than the
+curated half, which is an argument about the feed, not about placement.
+
+### ⚠ Two things to confirm in production before judging the numbers
+
+1. **`PE_API_BASE` defaults to staging.** Unless production sets it to the live
+   base, every one of these doors leads to staging inventory.
+2. **`PROJECT_EXPEDITION_TOKEN` may not be set in production at all.** If it is
+   not, `search_experiences` degrades gracefully — the Guide says the catalogue
+   is unreachable and offers an advisor — which is correct behaviour and also
+   indistinguishable, from the outside, from the feature working badly. Both
+   vars are now in the README env table.
+
+### Not proposed, and deliberately so
+
+**No experiences pillar, and no experience cards.** The Safari Atlas earns
+`/atlas/safari` because the camp *is* the waypoint — a bookable thing with
+geometry, where both feeds describe the same journey from both ends. Project
+Expedition is the opposite shape: no route, no coordinates, no pricing, no
+booking path by design, and a country-level pull with place matching done
+client-side. `WORKORDER-safari-atlas.md` rejects culinary, wellness and cultural
+tours as "route-only… an eighth variation on the jet atlas"; this fails that
+test harder. Safari is a pillar; Project Expedition is texture — what fills the
+days between the bookable things. Surfacing it like a pillar is what would make
+it look cheap.

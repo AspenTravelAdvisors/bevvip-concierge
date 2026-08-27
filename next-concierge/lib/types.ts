@@ -62,10 +62,32 @@ export interface TripState {
   updatedAt: string;           // ISO timestamp
 }
 
+/**
+ * What a search_experiences call found, when a turn made one.
+ *
+ * Deliberately OUTSIDE `tools`. The experiences themselves stay prose-only —
+ * they carry no pricing and no booking path, so they must never become cards
+ * or a map plot (see app/api/guide/route.ts). But the funnel needs to know the
+ * call happened and what came back, and the chat needs to know not to re-offer
+ * a question it has just answered. A summary beside the tool list gives both
+ * without putting a non-bookable record anywhere near leadTool.
+ */
+export interface ExperiencesMeta {
+  /** Experiences that matched, before the per-group limit. */
+  total: number;
+  /** How many of those were Private or Elevate — the advisor's picks. */
+  preferredCount: number;
+  /** The catalogue could not be reached, or is not configured. */
+  unavailable: boolean;
+  /** The place asked about, as the Guide resolved it. */
+  place?: string | null;
+}
+
 export interface GuideMeta {
   deepLink: string | null;
   chartRegion: string | null;
   tools: GuideToolMeta[];
+  experiences?: ExperiencesMeta | null;
   stopReason?: string;
 }
 

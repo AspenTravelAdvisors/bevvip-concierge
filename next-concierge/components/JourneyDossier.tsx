@@ -16,6 +16,8 @@
  */
 
 import { useEffect, useRef } from "react";
+import { askAboutDays, askGuide, askGuideHref } from "@/lib/atlas/ask";
+import { experiencesAsked } from "@/lib/analytics";
 
 /** What every collection can supply, whatever its own feed calls things. */
 export interface JourneyRecord {
@@ -57,6 +59,23 @@ export default function JourneyDossier({
   const included = (record.included ?? []).filter(Boolean);
 
   const where = [record.from, record.to].filter(Boolean).join(" → ");
+
+  /*
+   * The days before the ship sails.
+   *
+   * This is the strongest case in the app for the things-to-do layer, and the
+   * one nobody sells: every voyage and every journey has a day or two at the
+   * embarkation port on the front of it — Ushuaia, Reykjavík, Longyearbyen —
+   * and the supplier's file covers none of them. The Guide can, with real
+   * tours and private guides, so the port becomes the ask. Falls back to the
+   * first landfall when the record carries no departure port, and renders
+   * nothing when it carries neither.
+   */
+  const embark =
+    record.from || stops.find((s) => !s.sea && s.name)?.name || "";
+  const daysText = embark
+    ? askAboutDays({ place: embark, anchor: record.title, when: "before" })
+    : "";
   const meta = [
     record.operator,
     record.ship,
@@ -121,6 +140,21 @@ export default function JourneyDossier({
               {included.map((x, i) => <li key={i}>{x}</li>)}
             </ul>
           </>
+        )}
+
+        {daysText && (
+          <button
+            type="button"
+            className="jd-ask"
+            onClick={() => {
+              experiencesAsked("journey-dossier", embark);
+              if (!askGuide(daysText, "dossier")) {
+                window.location.assign(askGuideHref(daysText, "journey-dossier"));
+              }
+            }}
+          >
+            ✦ What is there to do in {embark} beforehand?
+          </button>
         )}
 
         {record.href && (
