@@ -109,7 +109,8 @@ writeFileSync(
     `${body}\n` +
     `  return { flyRoute, endFlight, flattenIfCircumnavigation, canFrameFlat, spanOf,\n` +
     `    framingLat, frameSpan, routeHops, readingZoom, departurePoint,\n` +
-    `    framesFromDeparture, frameDeparture,\n` +
+    `    framesFromDeparture, frameDeparture, departureZoom, halfFrameLng,\n` +
+    `    globeFitZoom,\n` +
     `    state: () => ({ projGlobe, flying: flyingRef.current }) };\n` +
     `}\n`,
 );
@@ -439,14 +440,21 @@ function furthestFromLine(points, legs) {
    * ── The departure view ──────────────────────────────────────────────────
    *
    * A jet expedition that circles the planet has no whole-route framing worth
-   * showing: fitting its box is the world at minimum zoom, with the route off
-   * both edges and nothing to say where the journey starts. It is shown from
-   * its departure instead — and the flight puts the camera back on that same
-   * view when it finishes, so pressing Fly is a round trip rather than a
-   * one-way ticket to wherever the aircraft happened to stop.
+   * showing: fitting its box is the world at minimum zoom, the route off both
+   * edges, nothing on screen to say where the journey starts. So the view stays
+   * wide and the GLOBE is turned instead, until the departure sits in frame off
+   * to one side with the journey running away across the face of it.
+   *
+   * Centring on the departure is the mistake this replaced: every round-the-
+   * world itinerary leaves from North America, so every one of them opened on
+   * the same picture of the United States.
+   *
+   * Read on a desktop-sized box, because the thing under test is where a wide
+   * view is pointed and a phone band is at minimum zoom whatever you do.
    */
+  const DESK = { w: 1200, h: 700 };
   const depart = RTW[0].at;
-  const h = harness({ legs: route(RTW), stops: RTW });
+  const h = harness({ legs: route(RTW), stops: RTW, box: DESK });
   check("a round-the-world jet route is one no frame can hold",
     h.api.framesFromDeparture(h.api.spanOf([{ coordinates: flat(route(RTW)) }])));
   check("…and a Mediterranean one is not",
@@ -454,33 +462,43 @@ function furthestFromLine(points, legs) {
 
   // The view a traced route rests at, before anything is flown.
   h.api.frameDeparture(2400);
-  check("tracing it puts the camera on the first departure",
-    dist(h.camera.center, depart) < 1,
-    `centred at ${h.camera.center.map((n) => n.toFixed(1)).join(", ")} vs ${depart.join(", ")}`);
-  check("…at a height where the departure is somewhere, not a dot on a planet",
-    h.camera.zoom >= K.FLY_STOP_ZOOM_MIN && h.camera.zoom <= K.FLY_STOP_ZOOM_MAX,
-    `zoom ${h.camera.zoom.toFixed(2)}`);
+  const zoom = h.camera.zoom;
+  const half = h.api.halfFrameLng(zoom);
+  const off = Math.abs(h.camera.center[0] - depart[0]);
+  check("tracing it stays wide — a step in from the whole globe, not a country",
+    zoom > h.api.globeFitZoom() + 0.5 && zoom < K.FLY_STOP_ZOOM_MIN - 1,
+    `zoom ${zoom.toFixed(2)} against a whole globe at ${h.api.globeFitZoom().toFixed(2)}`);
+  check("…with the departure in frame, well clear of the limb",
+    off < half * 0.8, `${off.toFixed(0)}° off centre, half a frame is ${half.toFixed(0)}°`);
+  check("…and NOT centred on it, so nine itineraries do not open on one view",
+    off > half * 0.2, `${off.toFixed(0)}° off centre`);
+  check("…pushed the way the journey goes, so the route fills the frame",
+    h.camera.center[0] < depart[0],
+    `Seattle at ${depart[0]}° leaves westward, centre at ${h.camera.center[0].toFixed(0)}°`);
   check("…and level, because this is a view to read rather than a shot",
     h.camera.pitch === 0);
 
   // …and the view it comes back to when the flight is over.
-  const f = harness({ legs: route(RTW), stops: RTW });
+  const f = harness({ legs: route(RTW), stops: RTW, box: DESK });
   f.api.flyRoute();
   f.tick(RUN);
-  check("the flight lands back on the departure it opened from",
-    dist(f.camera.center, depart) < 1 && Math.abs(f.camera.zoom - f.track[0].zoom) < 0.01,
-    `ended at ${f.camera.center.map((n) => n.toFixed(1)).join(", ")} zoom ${f.camera.zoom.toFixed(2)}, opened at zoom ${f.track[0].zoom.toFixed(2)}`);
+  check("the flight lands back on the view it was traced at",
+    dist(f.camera.center, h.camera.center) < 0.01 && Math.abs(f.camera.zoom - zoom) < 0.01,
+    `ended at ${f.camera.center.map((n) => n.toFixed(1)).join(", ")} zoom ${f.camera.zoom.toFixed(2)}, traced at ${h.camera.center.map((n) => n.toFixed(1)).join(", ")} zoom ${zoom.toFixed(2)}`);
+  check("…which is wider than the height it read its calls from",
+    f.camera.zoom < f.track[0].zoom - 1,
+    `settled at ${f.camera.zoom.toFixed(2)}, read at ${f.track[0].zoom.toFixed(2)}`);
 
   // The collections that do want the whole journey back still get it.
   const many = stopsOf(
     Array.from({ length: 20 }, (_, i) => [`Port ${i + 1}`, -170 + i * 17, 20 * Math.sin(i / 2)]),
   );
-  const w = harness({ legs: route(many), stops: many, type: "worldcruise" });
+  const w = harness({ legs: route(many), stops: many, type: "worldcruise", box: DESK });
   check("a world cruise still pulls back to the whole voyage",
     !w.api.framesFromDeparture(w.api.spanOf([{ coordinates: flat(route(many)) }])));
   w.api.flyRoute();
   w.tick(RUN);
-  check("…and its flight ends on the voyage, not on its first port",
+  check("…and its flight ends on the voyage, not beside its first port",
     dist(w.camera.center, many[0].at) > 20,
     `ended ${dist(w.camera.center, many[0].at).toFixed(0)}° from ${many[0].name}`);
 }
