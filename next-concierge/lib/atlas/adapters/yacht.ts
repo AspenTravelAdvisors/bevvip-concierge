@@ -26,6 +26,8 @@ export const YACHT_DESCRIPTOR: AtlasFilterDescriptor = {
   brandParam: "brand",
   supportsRegionExclusion: false, // no exRegions= on voyages
   supportsVesselFilter: true, // ships=
+  // Live Virtuoso offers ride on these records since the migration.
+  supportsPromotionFilter: true,
   idPrefix: "yc_",
 };
 

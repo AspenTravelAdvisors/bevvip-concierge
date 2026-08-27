@@ -108,7 +108,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_HOTEL_ATLAS_BASE || "/maps/hotel",
     sampleRegions: ["Caribbean", "Mediterranean", "Alps", "Southeast Asia"],
     color: "#e6d488",
-    count: 2382,
+    count: 2240,
     order: 1,
     intent: "stay",
     views: [

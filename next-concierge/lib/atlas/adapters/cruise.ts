@@ -45,6 +45,8 @@ export const CRUISE_DESCRIPTOR: AtlasFilterDescriptor = {
   brandParam: "operator",
   supportsRegionExclusion: false,
   supportsVesselFilter: true,
+  // Live Virtuoso offers ride on these records since the migration.
+  supportsPromotionFilter: true,
   idPrefix: "cr_",
   requiresStartDate: true, // `null >= today` is false — dateless rows drop out
 };
@@ -118,6 +120,13 @@ export function adaptCruise(
     // Supplier photograph; the column was appended by the Virtuoso merge, so an
     // older feed without it simply yields null.
     const image = (get("image") as string) || null;
+    /*
+     * Offers arrive as a JSON string in a column, because sailings.json is
+     * columnar and a nested array has nowhere else to live. Only the presence
+     * matters here — the dossier parses the detail.
+     */
+    let hasPromotion = false;
+    try { hasPromotion = JSON.parse(String(get("offers") ?? "[]")).length > 0; } catch { hasPromotion = false; }
     const start = (get("start") as string) || null;
     const nights = get("nights");
     const region = REGION_BY_ID[sid] || correctedRegionName(String(get("region") ?? ""), name);
@@ -143,6 +152,7 @@ export function adaptCruise(
       collection: "cruise",
       title: name,
       thumb: image,
+      hasPromotion,
       brand: null, // cruise has no brand concept
       brandLabel: operator,
       operator,

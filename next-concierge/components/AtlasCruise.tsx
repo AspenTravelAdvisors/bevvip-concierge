@@ -24,8 +24,9 @@
  *             `ships.json` stays enrichment-only, as that work order intends.
  */
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import AtlasCollection from "./AtlasCollection";
+import JourneyDossier, { type JourneyRecord } from "./JourneyDossier";
 import {
   adaptCruise,
   CRUISE_DESCRIPTOR,
@@ -70,6 +71,40 @@ export default function AtlasCruise() {
     ]);
 
     const offerings = adaptCruise(sailings, meta, routes, regionOverrides);
+
+    /*
+     * Records for the dossier, from the columnar feed.
+     *
+     * sailings.json is `{schema, rows}` rather than objects, so the columns are
+     * resolved by name once and the day-by-day stops come from the routes file
+     * the map is already using.
+     */
+    const col: Record<string, number> = {};
+    (sailings.schema ?? []).forEach((n: string, i: number) => { col[n] = i; });
+    recordsRef.current = new Map((sailings.rows ?? []).map((r: unknown[]) => {
+      const cell = (i: number) => (r[i] == null ? "" : String(r[i]));
+      const id = String(r[col.id] ?? "");
+      // `itinerary-routes.json` is `{ _meta, routes }`, not a bare map.
+      const days = routes.routes?.[id] ?? [];
+      let offers: JourneyRecord["offers"] = [];
+      try { offers = JSON.parse(cell(col.offers) || "[]"); } catch { offers = []; }
+      return [id, {
+        title: cell(col.name) || "Sailing",
+        operator: cell(col.operator) || null,
+        ship: cell(col.ship) || null,
+        dates: cell(col.start) || null,
+        days: Number(cell(col.nights)) || null,
+        description: cell(col.description) || null,
+        itinerary: days.map((d) => ({
+          day: d.d ?? null,
+          name: (d.p ?? []).map((p) => p[0]).filter(Boolean).join(", ") || null,
+          sea: !(d.p ?? []).length,
+        })),
+        included: [],
+        offers,
+        href: null,
+      } as JourneyRecord];
+    }));
 
     // cruise's region is a SCALAR display name already ("Hawaii & Tahiti"),
     // corrected from the itinerary's ports by the overlay — so it is its own
@@ -122,8 +157,19 @@ export default function AtlasCruise() {
     );
   }, []);
 
+
+  /** Sailing files, held from the feed the map already loaded. */
+  const recordsRef = useRef<Map<string, JourneyRecord>>(new Map());
+
+  const detailFor = useCallback((o: AtlasOffering, { close }: { close: () => void }) => {
+    const rec = recordsRef.current.get(String(o.id));
+    if (!rec) return null;
+    return <JourneyDossier record={rec} close={close} />;
+  }, []);
+
   return (
     <AtlasCollection
+      detailFor={detailFor}
       cardMedia={cardMedia}
       // The brand mark rides on the photograph, as it does on the hotel cards.
       markOverMedia

@@ -82,6 +82,17 @@ const coord = (lat, lng) => {
   return [a, b];
 };
 
+/*
+ * Supplier boilerplate is not a description.
+ *
+ * 1,983 of 4,370 sailings return "This information has not be provided by the
+ * supplier." (their typo, not ours) in `cruiseDescription`, and a few return
+ * "More information to come." Stored as prose it fills the dossier with an
+ * apology and pollutes the guide's search haystack, so it is treated as absent.
+ */
+const PLACEHOLDER = /has not be(en)?\s+provided|more information to come|information (is )?not available/i;
+const prose = t => (t && !PLACEHOLDER.test(t) ? t : '');
+
 function normalize(row, detail, kinds) {
   const d = detail ?? {};
 
@@ -133,7 +144,12 @@ function normalize(row, detail, kinds) {
     itinerary,
     stopCount: itinerary.filter(p => p.lat != null).length,
 
-    description: clip(text(d.tourDescription), 700),
+    /*
+     * `tourDescription` is present on only 193 of 226 journeys, while the folio
+     * blurb is on every one — so the fallback is the difference between a jet
+     * dossier that reads well and one that is blank half the time.
+     */
+    description: prose(clip(text(d.tourDescription), 700)) || prose(clip(text(d.asSeenInTravelFolioDescription), 700)),
     folioDescription: clip(text(d.asSeenInTravelFolioDescription), 500),
     folioInTheKnow: clip(text(d.asSeenInTravelFolioInTheKnow), 300),
     included: (d.whatIsIncludedItems ?? []).map(text).filter(Boolean).slice(0, 8),

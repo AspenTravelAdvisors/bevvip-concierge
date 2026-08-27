@@ -22,8 +22,9 @@
  *             more here than anywhere except cruise.
  */
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import AtlasCollection from "./AtlasCollection";
+import JourneyDossier, { type JourneyRecord } from "./JourneyDossier";
 import { adaptWorldCruise, WORLDCRUISE_DESCRIPTOR } from "@/lib/atlas/adapters/worldcruise";
 import { loadSeaRoutes } from "@/lib/atlas/adapters/sea-geometry";
 import type { RawVoyageAtlas } from "@/lib/atlas/adapters/voyage";
@@ -48,6 +49,22 @@ export default function AtlasWorldCruise() {
     ]);
 
     const offerings = adaptWorldCruise(raw);
+
+    // Keep the raw trips for the dossier, keyed the way the adapter keys ids.
+    recordsRef.current = new Map((raw.TRIPS ?? []).map((t) => [String(t.id), {
+      title: t.title ?? "Voyage",
+      operator: (raw.BRANDS?.[t.brand as string]?.short) ?? null,
+      ship: t.ship ?? null,
+      dates: t.dates ?? null,
+      days: (t as { days?: number }).days ?? null,
+      from: t.from ?? null,
+      to: t.to ?? null,
+      description: (t as { description?: string }).description ?? null,
+      itinerary: (t.itin ?? []).map((s) => ({ day: s.d ?? null, name: s.n ?? null, sea: !s.n })),
+      included: [],
+      offers: (t as { promotions?: JourneyRecord["offers"] }).promotions ?? [],
+      href: t.u ?? null,
+    } as JourneyRecord]));
     const regionLabels: Record<string, string> = {};
     for (const [key, r] of Object.entries(raw.REGIONS || {})) {
       regionLabels[key] = r?.name || key;
@@ -96,8 +113,24 @@ export default function AtlasWorldCruise() {
     );
   }, []);
 
+
+  /*
+   * Records for the dossier, captured while the feed is already in hand.
+   *
+   * The atlas downloads the whole itinerary to draw the map, so the file for a
+   * voyage is in memory before anyone asks for it.
+   */
+  const recordsRef = useRef<Map<string, JourneyRecord>>(new Map());
+
+  const detailFor = useCallback((o: AtlasOffering, { close }: { close: () => void }) => {
+    const rec = recordsRef.current.get(String(o.id));
+    if (!rec) return null;
+    return <JourneyDossier record={rec} close={close} />;
+  }, []);
+
   return (
     <AtlasCollection
+      detailFor={detailFor}
       cardMedia={cardMedia}
       // The brand mark rides on the photograph, as it does on the hotel cards.
       markOverMedia

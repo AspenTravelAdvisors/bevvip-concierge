@@ -24,8 +24,9 @@
  * instead of east across the Pacific.
  */
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import AtlasCollection from "./AtlasCollection";
+import JourneyDossier, { type JourneyRecord } from "./JourneyDossier";
 import { adaptJet, JET_DESCRIPTOR } from "@/lib/atlas/adapters/jet";
 import type { RawJourneyAtlas } from "@/lib/atlas/adapters/journey";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
@@ -49,6 +50,25 @@ export default function AtlasJet() {
     });
 
     const offerings = adaptJet(raw);
+
+    // Keep the raw journeys for the dossier.
+    recordsRef.current = new Map((raw.TRIPS ?? []).map((t, i) => [
+      String(t.id ?? i),
+      {
+        title: t.n ?? "Journey",
+        operator: raw.BRANDS?.[t.b ?? ""]?.short ?? null,
+        ship: t.train ?? null,
+        dates: t.win ?? t.d ?? null,
+        days: t.days ?? null,
+        from: t.from ?? null,
+        to: t.to ?? null,
+        description: t.description ?? null,
+        itinerary: (t.itin ?? []).map((s) => ({ day: s.d ?? null, name: s.n ?? null, sea: false })),
+        included: t.included ?? [],
+        offers: t.promotions ?? [],
+        href: t.u ?? null,
+      } as JourneyRecord,
+    ]));
     const regionLabels: Record<string, string> = {};
     for (const [key, r] of Object.entries(raw.REGIONS || {})) {
       regionLabels[key] = r?.name || key;
@@ -118,8 +138,24 @@ export default function AtlasJet() {
     );
   }, []);
 
+
+  /*
+   * Records for the dossier, captured while the feed is already in hand.
+   *
+   * The atlas downloads the whole itinerary to draw the map, so the file for a
+   * voyage is in memory before anyone asks for it.
+   */
+  const recordsRef = useRef<Map<string, JourneyRecord>>(new Map());
+
+  const detailFor = useCallback((o: AtlasOffering, { close }: { close: () => void }) => {
+    const rec = recordsRef.current.get(String(o.id));
+    if (!rec) return null;
+    return <JourneyDossier record={rec} close={close} />;
+  }, []);
+
   return (
     <AtlasCollection
+      detailFor={detailFor}
       cardMedia={cardMedia}
       // The brand mark rides on the photograph, as it does on the hotel cards.
       markOverMedia

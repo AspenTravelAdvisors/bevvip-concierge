@@ -124,6 +124,17 @@ const coord = (lat, lng) => {
   return [a, b];
 };
 
+/*
+ * Supplier boilerplate is not a description.
+ *
+ * 1,983 of 4,370 sailings return "This information has not be provided by the
+ * supplier." (their typo, not ours) in `cruiseDescription`, and a few return
+ * "More information to come." Stored as prose it fills the dossier with an
+ * apology and pollutes the guide's search haystack, so it is treated as absent.
+ */
+const PLACEHOLDER = /has not be(en)?\s+provided|more information to come|information (is )?not available/i;
+const prose = t => (t && !PLACEHOLDER.test(t) ? t : '');
+
 function normalize(row, detail, atlases) {
   const d = detail ?? {};
   const start = day(row.startDate), end = day(row.endDate);
@@ -177,7 +188,11 @@ function normalize(row, detail, atlases) {
     itinerary,
     portCount: itinerary.filter(p => p.lat != null).length,
 
-    description: clip(text(d.cruiseDescription), 700),
+    description: prose(clip(text(d.cruiseDescription), 700)),
+    // What the fare covers — the dossier's second most useful block after the
+    // itinerary. Capped at six: the lists run long and repeat the brand's
+    // standard inclusions on every sailing.
+    included: (d.whatIsIncludedItems ?? []).map(text).filter(Boolean).slice(0, 6),
     // Offers ride along on the cruise record rather than needing the promotions join.
     promotions: (d.promotions ?? []).map(p => ({
       name: String(p.promotionName ?? '').trim(),
@@ -215,6 +230,9 @@ function normalize(row, detail, atlases) {
 const CACHED_DETAIL_FIELDS = [
   'cruiseName', 'shipName', 'cruiseLength', 'cruiseDescription', 'itineraryPoints',
   'sailings', 'promotions', 'cruiseImagePath', 'companyName', 'productId',
+  // Added after the first crawl, so it stays empty until a record is refetched —
+  // the nightly sync fills it in as departures roll over.
+  'whatIsIncludedItems',
 ];
 const slimDetail = d => {
   if (!d) return null;

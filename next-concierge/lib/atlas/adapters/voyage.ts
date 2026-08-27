@@ -46,6 +46,10 @@ export interface RawVoyageTrip {
   u?: string;
   /** Port calls; `{s:1}` marks a sea day and carries no name. */
   itin?: { n?: string; d?: number; s?: number }[];
+  /* Written by scripts/merge-virtuoso-journeys.mjs, for the card and the dossier. */
+  image?: string | null;
+  description?: string | null;
+  promotions?: { name?: string | null; endDate?: string | null; exclusive?: boolean; description?: string | null }[];
 }
 export interface RawVoyageAtlas {
   BRANDS?: Record<string, RawVoyageBrand>;
@@ -129,7 +133,8 @@ export function adaptVoyage(
       collection: d.collection,
       title: trip.title || "Voyage",
       // Supplier photograph, from the Virtuoso sync.
-      thumb: (trip as { image?: string | null }).image || null,
+      thumb: trip.image || null,
+      hasPromotion: Boolean(trip.promotions?.length),
       brand: brandKey,
       brandLabel,
       operator: trip.operator || brandLabel,

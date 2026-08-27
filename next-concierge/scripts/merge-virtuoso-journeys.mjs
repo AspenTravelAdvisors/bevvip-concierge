@@ -46,6 +46,37 @@ const report = [];
 const written = [];
 
 /*
+ * Live supplier offers for the journey collections.
+ *
+ * The same feed the hotel merge reads, filtered to the types these atlases carry
+ * — 168 cruise, 86 tour, 26 package. As with hotels the only join available is
+ * the company name, because a promotion carries no product id pointing back at
+ * the sailing or journey it belongs to. Sea sailings ALSO carry their own
+ * `promotions` array from the cruise detail; that one is per-sailing and better,
+ * so it wins where it exists and this fills the rest.
+ */
+const PROMO_FILE = 'data/atlas/shared/virtuoso-promotions.json';
+const PROMOTIONS = exists(PROMO_FILE) ? (read(PROMO_FILE).promotions ?? []) : [];
+const promoKey = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const today = new Date().toISOString().slice(0, 10);
+const promosByCompany = new Map();
+for (const p of PROMOTIONS) {
+  if (/hotel|resort|property/i.test(p.type ?? '')) continue;      // those belong to the hotel atlas
+  if (p.endDate && p.endDate < today) continue;
+  const k = promoKey(p.company);
+  if (!k) continue;
+  if (!promosByCompany.has(k)) promosByCompany.set(k, []);
+  promosByCompany.get(k).push(p);
+}
+/** Offers for an operator, soonest to expire first. */
+const promosForCompany = company => (promosByCompany.get(promoKey(company)) ?? [])
+  .slice()
+  .sort((a, b) => (a.endDate ?? '9999').localeCompare(b.endDate ?? '9999'))
+  .slice(0, 3)
+  .map(p => ({ name: p.name, endDate: p.endDate, exclusive: p.exclusive, description: p.description }));
+
+/*
  * Hero photographs for the journeys the API supplies none for.
  *
  * Harvested by scripts/harvest-journey-photos.mjs from the operator's own page
@@ -308,7 +339,8 @@ function buildSeaAtlas({ atlas, baseRel, outRel, publicRel }) {
       u: c.path ? `https://www.virtuoso.com/advisor/brianharris${c.path}` : null,
       image: cardImage(c.image) ?? null,
       description: c.description || null,
-      promotions: c.promotions ?? [],
+      // Per-sailing offers first; the operator's live promotions otherwise.
+      promotions: (c.promotions?.length ? c.promotions : promosForCompany(c.line)) ?? [],
       itin,
     });
   }
@@ -343,10 +375,14 @@ function buildExpedition() {
     // The supplier's photograph, so the expedition cards can show one like the
     // other atlases. Appended rather than inserted: the schema is read by index.
     cardImage(c.image) ?? '',
+    // The dossier's prose and the offers on it. Appended like `image`, so the
+    // index-read schema keeps working for anything that has not been updated.
+    c.description ?? '',
+    JSON.stringify((c.promotions?.length ? c.promotions : promosForCompany(c.line)) ?? []),
   ]);
 
   writePair('data/atlas/cruise/sailings.json', 'public/maps/cruise/sailings.json',
-    { schema: [...base.schema.filter(c => c !== 'image'), 'image'],
+    { schema: [...base.schema.filter(c => !['image', 'description', 'offers'].includes(c)), 'image', 'description', 'offers'],
       urlBase: base.urlBase, productBase: base.productBase, rows });
 
   /*
@@ -709,6 +745,8 @@ function buildTourAtlas({ atlas, kind, baseRel, outRel, publicRel }) {
       ...(dep.kind === 'fixed' ? {} : { onDemand: true }),
       win: t.travelDates ?? null,
       description: t.description || null,
+      included: t.included ?? [],
+      promotions: promosForCompany(t.company),
       itin,
       route: String(t.id),
     });

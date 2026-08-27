@@ -21,6 +21,8 @@ export const TRAIN_DESCRIPTOR: AtlasFilterDescriptor = {
   // rail's world=1 is the named-train view, not a round-the-world one
   worldLabel: "Legendary Trains",
   supportsVesselFilter: false, // rail has no ship filter
+  // Live Virtuoso offers ride on these records since the migration.
+  supportsPromotionFilter: true,
   idPrefix: "rj_",
   // Only back-fill regions when the curated g[] is empty (jet overrides more
   // aggressively). No current trip needs it, but a feed refresh could.

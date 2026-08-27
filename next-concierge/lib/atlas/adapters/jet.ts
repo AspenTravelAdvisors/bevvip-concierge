@@ -29,6 +29,8 @@ export const JET_DESCRIPTOR: AtlasFilterDescriptor = {
   brandParam: "brand",
   supportsRegionExclusion: true,
   supportsVesselFilter: false,
+  // Live Virtuoso offers ride on these records since the migration.
+  supportsPromotionFilter: true,
   idPrefix: "jt_",
   // An explicit route OVERRIDES the curated g[] here, unlike rail.
   regionDerivation: "whenRouted",

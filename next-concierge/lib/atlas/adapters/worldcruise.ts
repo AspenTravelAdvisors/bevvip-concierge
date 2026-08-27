@@ -24,6 +24,8 @@ export const WORLDCRUISE_DESCRIPTOR: AtlasFilterDescriptor = {
   brandParam: "brand",
   supportsRegionExclusion: false,
   supportsVesselFilter: true,
+  // Live Virtuoso offers ride on these records since the migration.
+  supportsPromotionFilter: true,
   idPrefix: "wc_",
 };
 

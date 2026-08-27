@@ -5062,6 +5062,99 @@ button.card-book {
 /* The room breakdown. Name on its own line, the size/bed/occupancy under it. */
 /* Current offers. Loudest block in the dossier after the name — it is the only
    part with a deadline on it. */
+/* ── The journey dossier ─────────────────────────────────────────────────────
+   The sailing and journey counterpart to the hotel dossier. Same vocabulary as
+   `.hd-*` so the two files read alike; a separate prefix because the hotel one
+   lives inside a photoreal panel and this does not. */
+.jd {
+  background: var(--panel, #101216);
+  border: 1px solid #2a2b31;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.jd-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #24252b;
+}
+.jd-head h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--ink, #e8e5dc);
+}
+.jd-meta, .jd-where, .jd-dates {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--ink-dim, #9c998f);
+}
+.jd-where { color: #c8bf9f; }
+.jd-close {
+  background: none;
+  border: none;
+  color: var(--ink-dim, #9c998f);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  align-self: flex-start;
+}
+.jd-close:hover { color: var(--ink, #e8e5dc); }
+.jd-body { padding: 14px 16px; }
+.jd-desc {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-dim, #b9b6ad);
+}
+.jd-label {
+  margin: 14px 0 4px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-light, #e3c98a);
+}
+.jd-label:first-child { margin-top: 0; }
+/* Offers, matching the hotel dossier's treatment. */
+.jd-offers { list-style: none; margin: 6px 0 0; padding: 0; }
+.jd-offers li { margin-bottom: 10px; padding-left: 10px; border-left: 2px solid #7a6228; }
+.jd-offer-name { display: block; font-size: 13px; color: #e3c98a; }
+.jd-offer-excl {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 5px;
+  border: 1px solid #7a6228;
+  border-radius: 4px;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #f0dca6;
+}
+.jd-offer-desc { display: block; font-size: 12px; line-height: 1.45; color: var(--ink-dim, #9c998f); }
+.jd-offer-until { display: block; margin-top: 2px; font-size: 11px; color: #9c8a5e; }
+/* The day-by-day list. A sea day is dimmed rather than hidden: the gap between
+   two ports is part of the shape of a voyage. */
+.jd-itin { list-style: none; margin: 6px 0 0; padding: 0; }
+.jd-itin li { display: flex; gap: 10px; font-size: 12px; line-height: 1.6; }
+.jd-itin li.sea .jd-stop { color: #6f6d67; font-style: italic; }
+.jd-day { flex: 0 0 52px; color: var(--ink-dim, #9c998f); }
+.jd-stop { color: var(--ink, #e8e5dc); }
+.jd-included { margin: 6px 0 0; padding-left: 18px; font-size: 12px; line-height: 1.55; color: var(--ink-dim, #b9b6ad); }
+.jd-book {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 7px 13px;
+  border: 1px solid #7a6228;
+  border-radius: 6px;
+  background: rgba(122, 98, 40, 0.22);
+  color: #f0dca6;
+  font-size: 12px;
+  text-decoration: none;
+}
+.jd-book:hover { border-color: #a98a3e; }
+
 .hd-offers {
   list-style: none;
   margin: 6px 0 0;

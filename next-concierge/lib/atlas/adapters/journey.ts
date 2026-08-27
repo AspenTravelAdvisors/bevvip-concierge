@@ -43,6 +43,11 @@ export interface RawJourneyTrip {
   mks?: string[];
   depCount?: number;
   guideId?: string;
+  /* Written by scripts/merge-virtuoso-journeys.mjs, for the card and the dossier. */
+  img?: string | null;
+  description?: string | null;
+  included?: string[];
+  promotions?: { name?: string | null; endDate?: string | null; exclusive?: boolean; description?: string | null }[];
 }
 export interface RawJourneyAtlas {
   BRANDS?: Record<string, RawJourneyBrand>;
@@ -237,7 +242,8 @@ export function adaptJourney(
       collection: d.collection,
       title: trip.n || "Journey",
       // Supplier photograph, from the Virtuoso sync.
-      thumb: (trip as { img?: string | null }).img || null,
+      thumb: trip.img || null,
+      hasPromotion: Boolean(trip.promotions?.length),
       brand: brandKey,
       brandLabel,
       operator: brandLabel,
