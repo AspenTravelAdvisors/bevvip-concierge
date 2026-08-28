@@ -20,7 +20,13 @@ import {
   searchOfferings,
 } from "@/lib/search-offerings.js";
 import { SEARCH_EXPERIENCES_TOOL, searchExperiences } from "@/lib/experiences.js";
-import type { ChatMessage, GuideFrame, GuideMeta, GuideToolMeta } from "@/lib/types";
+import type {
+  ChatMessage,
+  ExperiencesMeta,
+  GuideFrame,
+  GuideMeta,
+  GuideToolMeta,
+} from "@/lib/types";
 import { corsHeaders } from "@/lib/guide-cors";
 import { leadTool } from "@/lib/guide-meta";
 import { isRateLimited } from "@/lib/rate-limit";
@@ -111,8 +117,11 @@ export async function POST(req: Request) {
       const send: Send = (frame) =>
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(frame)}\n\n`));
       try {
-        const { toolMeta, stopReason } = await runGuideTurnStream({ messages, send });
-        send({ type: "meta", ...summarizeMeta(toolMeta), stopReason });
+        const { toolMeta, experiences, stopReason } = await runGuideTurnStream({
+          messages,
+          send,
+        });
+        send({ type: "meta", ...summarizeMeta(toolMeta, experiences), stopReason });
         send({ type: "done" });
       } catch (err) {
         console.error("Guide error:", err);
@@ -139,13 +148,23 @@ async function runGuideTurnStream({
 }: {
   messages: ChatMessage[];
   send: Send;
-}): Promise<{ text: string; toolMeta: GuideToolMeta[]; stopReason: string }> {
+}): Promise<{
+  text: string;
+  toolMeta: GuideToolMeta[];
+  experiences: ExperiencesMeta | null;
+  stopReason: string;
+}> {
   const client = new Anthropic();
   const convo: Anthropic.MessageParam[] = messages.map((m) => ({
     role: m.role,
     content: m.content,
   }));
   const toolMeta: GuideToolMeta[] = [];
+  // The experiences summary rides beside the tool list rather than in it —
+  // prose-only records must not reach the card / map / hand-off pipeline. It is
+  // what tells the funnel the call happened and the chat not to re-offer a
+  // question it just answered.
+  let experiences: ExperiencesMeta | null = null;
   const latestUserText = latestUserContent(messages);
   let text = "";
 
@@ -214,7 +233,14 @@ async function runGuideTurnStream({
             results: (result as GuideToolMeta)?.results || [],
           } as GuideToolMeta);
         } else if (tu.name === "search_experiences") {
-          const hotels = (result as { hotels?: GuideToolMeta })?.hotels;
+          const r = (result || {}) as {
+            hotels?: GuideToolMeta;
+            total?: number;
+            preferredCount?: number;
+            unavailable?: boolean;
+            error?: unknown;
+          };
+          const hotels = r.hotels;
           if (hotels && (hotels.results?.length ?? 0) > 0) {
             toolMeta.push({
               ...hotels,
@@ -222,6 +248,18 @@ async function runGuideTurnStream({
               results: hotels.results || [],
             } as GuideToolMeta);
           }
+          // Summarize the experiences half for the client. Last call wins: a
+          // turn that searched twice was refining, and the refinement is the
+          // one the reply is built on.
+          experiences = {
+            total: Number(r.total) || 0,
+            preferredCount: Number(r.preferredCount) || 0,
+            // A thrown call lands here as { error } — that is the catalogue
+            // being unreachable, not the catalogue being empty, and the two
+            // must not read the same in the numbers.
+            unavailable: !!r.unavailable || !!r.error,
+            place: String((tu.input as Record<string, unknown>)?.place || "") || null,
+          };
         }
         toolResults.push({
           type: "tool_result",
@@ -235,10 +273,15 @@ async function runGuideTurnStream({
       continue;
     }
 
-    return { text: text.trim(), toolMeta, stopReason: data.stop_reason || "end_turn" };
+    return {
+      text: text.trim(),
+      toolMeta,
+      experiences,
+      stopReason: data.stop_reason || "end_turn",
+    };
   }
 
-  return { text: text.trim(), toolMeta, stopReason: "max_tool_rounds" };
+  return { text: text.trim(), toolMeta, experiences, stopReason: "max_tool_rounds" };
 }
 
 // One model round, with backoff on transient overload. We only retry when the
@@ -306,7 +349,10 @@ function latestUserContent(messages: ChatMessage[]): string {
 }
 
 // Bubble up the most relevant Atlas handoff for the client (map plot + button).
-function summarizeMeta(toolMeta: GuideToolMeta[]): GuideMeta {
+function summarizeMeta(
+  toolMeta: GuideToolMeta[],
+  experiences: ExperiencesMeta | null = null,
+): GuideMeta {
   const tools: GuideToolMeta[] = toolMeta.map((t) => ({
     input: t.input,
     type: t.type,
@@ -329,5 +375,6 @@ function summarizeMeta(toolMeta: GuideToolMeta[]): GuideMeta {
     deepLink: lead ? (lead.deepLink ?? null) : null,
     chartRegion: lead ? (lead.chartRegion ?? null) : null,
     tools,
+    experiences,
   };
 }

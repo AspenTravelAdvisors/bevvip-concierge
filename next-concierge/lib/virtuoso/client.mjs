@@ -35,8 +35,11 @@ async function fetchNoMaintenance(url, init, path) {
   if (res.status >= 300 && res.status < 400) {
     const to = res.headers.get('location') ?? '';
     if (MAINTENANCE_HOST.test(to)) throw new MaintenanceError(path);
-    // Any other redirect is followed once, normally.
-    return fetch(to || url, init);
+    // Any other redirect is followed once, normally. Resolved against the
+    // request URL, because Location is allowed to be a relative path and a bare
+    // `fetch('/v2/hotel?…')` throws "Failed to parse URL" — which would surface
+    // as a client bug rather than as the redirect it is.
+    return fetch(to ? new URL(to, url) : url, init);
   }
   return res;
 }
@@ -49,7 +52,25 @@ function credentials() {
   const missing = Object.entries({ VIRTUOSO_API_USER: user, VIRTUOSO_API_KEY: key, VIRTUOSO_API_AES_KEY: aesKey, VIRTUOSO_API_AES_IV: aesIv })
     .filter(([, v]) => !v).map(([k]) => k);
   if (missing.length) throw new Error(`Missing Virtuoso credentials: ${missing.join(', ')}. Set them in .env.local or as CI secrets.`);
-  return { user, key, aesKey: Buffer.from(aesKey, 'base64'), aesIv: Buffer.from(aesIv, 'base64') };
+
+  /*
+   * Check the key sizes here, where the answer is legible.
+   *
+   * AES-256-CBC wants a 32-byte key and a 16-byte IV. Get either wrong and
+   * `createCipheriv` throws "Invalid key length" from inside the crypto module,
+   * or — worse, when the length happens to be right but the value is not —
+   * nothing throws at all and the API answers the bodyless 500 that means
+   * "missing parameter" OR "decryption failed" OR "malformed JSON" and never
+   * says which. That ambiguity is the single most expensive thing about this
+   * API, so the one failure that CAN be identified locally is identified here.
+   */
+  const decoded = { VIRTUOSO_API_AES_KEY: [Buffer.from(aesKey, 'base64'), 32], VIRTUOSO_API_AES_IV: [Buffer.from(aesIv, 'base64'), 16] };
+  const wrong = Object.entries(decoded)
+    .filter(([, [buf, want]]) => buf.length !== want)
+    .map(([name, [buf, want]]) => `${name} decodes to ${buf.length} bytes, expected ${want}`);
+  if (wrong.length) throw new Error(`Virtuoso credentials are malformed: ${wrong.join('; ')}. Both must be base64.`);
+
+  return { user, key, aesKey: decoded.VIRTUOSO_API_AES_KEY[0], aesIv: decoded.VIRTUOSO_API_AES_IV[0] };
 }
 
 function authToken({ key, aesKey, aesIv }) {

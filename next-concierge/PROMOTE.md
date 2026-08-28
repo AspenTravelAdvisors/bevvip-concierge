@@ -16,10 +16,10 @@ the promotion is done.)
 - **The Guide is Claude-only.** Chat is served by the route handler at
   `app/api/guide/route.ts` (Claude tool-use via `@anthropic-ai/sdk`). The
   legacy OpenAI proxy (`api/chat.js`) has been **deleted** from the repo.
-- **The root `vercel.json` is irrelevant in production.** Its
-  `"outputDirectory": "public"` and `api/guide.js` function config only matter
-  when Root Directory is the repo root — i.e. the rollback path below. Leave it
-  as-is; it is the safety net, not the live config.
+- **There is no longer a legacy app to fall back to.** `public/`, `api/*` and
+  the root `vercel.json` have been deleted from the repository. Rolling back
+  now means promoting an earlier *deployment*, not changing the Root Directory
+  — see the rollback section below.
 
 ## Production configuration (Vercel project settings)
 
@@ -35,8 +35,16 @@ the promotion is done.)
   | `CLAUDE_MODEL` | leave unset unless overriding (default `claude-sonnet-4-6`) | no |
   | `NEXT_PUBLIC_MAPBOX_TOKEN` | the Mapbox public token (same one the old app used) | no — globe falls back gracefully if absent |
   | `GUIDE_MODEL_ATTEMPTS` | leave unset (default 4) — retries on transient Claude overloads | no |
+  | `GOOGLE_MAPS_API_KEY` | Google Maps JS key, served via `/api/hotel/config` | no — required only for the hotel map tiles |
 
   See `next-concierge/README.md` for the full env var table.
+
+- **The `VIRTUOSO_API_*` credentials do not belong here.** They are used only by
+  the nightly sync, which runs in GitHub Actions and commits its output, so they
+  live as **repository secrets** — `VIRTUOSO_API_USER`, `VIRTUOSO_API_KEY`,
+  `VIRTUOSO_API_AES_KEY`, `VIRTUOSO_API_AES_IV`. Vercel builds committed data
+  and never calls the supplier. Adding them to Vercel would spread a secret with
+  nothing to gain.
 
 ## Verify production
 
@@ -58,14 +66,22 @@ Quick tell-tales that the new build is live:
 - Page source references `/_next/static/...` assets.
 - The document response carries `X-Powered-By: Next.js`.
 
-## Rollback to the legacy static app (if needed)
+## Rollback
 
-Nothing here overwrites the old app — `public/` + `api/guide.js` still exist at
-the repo root — so a rollback is just a redeploy.
+The legacy static app is **gone** — `public/`, `api/*` and the root
+`vercel.json` were deleted once this app had been live long enough to trust, so
+the old "set Root Directory back to `/`" escape hatch no longer works. Setting
+it back now builds nothing.
 
-- **Fastest:** Vercel → Deployments → pick the last known-good *old static*
-  deployment → **Promote to Production**. Instant revert, no code changes.
-- **Config revert:** Settings → General → Root Directory → set back to `/`
-  (root) → redeploy `main`. Vercel then builds the legacy `public/` app using
-  the root `vercel.json` (`outputDirectory: public`, `api/guide.js`). Note the
-  legacy chat lacks the Next.js route's overload-retry handling.
+Roll back by deployment instead:
+
+- **Fastest:** Vercel → Deployments → pick the last known-good deployment of
+  **this** app → **Promote to Production**. Instant, no code changes.
+- **By commit:** revert on `main` and let Vercel rebuild. Note that `prebuild`
+  re-runs the Virtuoso merges, so a revert of application code still deploys
+  against the currently committed supplier data — reverting the data is a
+  separate revert of the `virtuoso-sync[bot]` commits.
+
+If a rollback is ever needed because the *data* is wrong rather than the code,
+`scripts/verify-virtuoso-delta.mjs` is the gate that should have caught it;
+widen what it covers rather than restoring a static app that no longer exists.

@@ -30,6 +30,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { createSeaRouter, rdp, MASK_BYTES } from "../lib/atlas/sea-router.mjs";
+import { steadyStamp } from "./lib/steady-stamp.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MASK = path.join(ROOT, "data/atlas/shared/landmask.bin");
@@ -229,7 +230,7 @@ for (const [type, feats] of byTypeFeatures) {
   const collection = {
     type: "FeatureCollection",
     _meta: {
-      generatedAt: new Date().toISOString(),
+      generatedAt: null,        // filled by steadyStamp below, in this position
       generator: "scripts/build-sea-routes.mjs",
       collection: type,
       simplifyEps: SIMPLIFY_EPS,
@@ -238,8 +239,11 @@ for (const [type, feats] of byTypeFeatures) {
     },
     features: feats,
   };
-  const json = `${JSON.stringify(collection)}\n`;
   const name = `sea-routes-${type}.json`;
+  // The stamp is taken from the first copy and used for both, so the two never
+  // disagree by the millisecond between two writes — and stays put entirely when
+  // the routes have not moved. See scripts/lib/steady-stamp.mjs.
+  const json = `${JSON.stringify(steadyStamp(path.join(OUT_PUBLIC_DIR, name), collection))}\n`;
   for (const dir of [OUT_PUBLIC_DIR, OUT_DATA_DIR]) {
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, name), json);

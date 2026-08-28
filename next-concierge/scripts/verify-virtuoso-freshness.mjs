@@ -38,10 +38,19 @@ const human = d => (d < 1 ? `${Math.round(d * 24)}h` : `${d.toFixed(1)}d`);
 
 let failed = false;
 let worst = 0;
+// Feeds that have no check to age at all. A feed nobody has ever synced is not
+// "fine so far": it is the one state this file exists to catch, and it used to
+// print a warning and then be absorbed into a green summary, because only feeds
+// WITH a recorded check ever reached the verdict below.
+const unchecked = [];
 
 for (const { label, file, key } of FEEDS) {
   const full = path.join(repoRoot, file);
-  if (!fs.existsSync(full)) { console.warn(`  absent   ${label} — never synced (${file})`); continue; }
+  if (!fs.existsSync(full)) {
+    console.warn(`  absent   ${label} — never synced (${file})`);
+    unchecked.push(`${label} (no feed file)`);
+    continue;
+  }
 
   const entry = status.feeds?.[key];
   const checked = age(entry?.lastChecked);
@@ -50,6 +59,7 @@ for (const { label, file, key } of FEEDS) {
 
   if (checked == null) {
     console.warn(`  unknown  ${label} — no check recorded; run npm run sync:virtuoso`);
+    unchecked.push(`${label} (no check recorded)`);
     continue;
   }
   worst = Math.max(worst, checked);
@@ -77,11 +87,11 @@ for (const { label, file, key } of FEEDS) {
     ['world cruises and grand voyages', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/world/itinerary.json'), 'utf8')).TRIPS.length],
     ['private jet expeditions', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/jet/itinerary.json'), 'utf8')).TRIPS.length],
     ['rail journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/train/itinerary.json'), 'utf8')).TRIPS.length],
-    ['safari journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/safari/itinerary.json'), 'utf8')).TRIPS.length],
+    ['safari and wildlife journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/safari/itinerary.json'), 'utf8')).TRIPS.length],
   ];
   let drifted = 0;
   for (const [noun, count] of counted) {
-    const stated = Number(new RegExp(`nounPlural: "${noun.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}"[\\s\\S]*?count: (\\d+)`).exec(config)?.[1] ?? 0);
+    const stated = Number(new RegExp(`nounPlural: "${noun.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]*?count: (\\d+)`).exec(config)?.[1] ?? 0);
     let actual; try { actual = count(); } catch { continue; }
     if (!stated) { console.warn(`  note     no count found for "${noun}" in lib/atlas-config.ts`); continue; }
     if (stated !== actual) { console.warn(`  drift    "${noun}" advertises ${stated}; the feed holds ${actual}`); drifted++; }
@@ -92,5 +102,17 @@ for (const { label, file, key } of FEEDS) {
 if (failed) {
   console.error('\nVirtuoso data is stale. Refresh it with: npm run sync:virtuoso');
   process.exit(1);
+}
+if (unchecked.length) {
+  // Never claim the set is current while part of it has never been looked at.
+  const list = unchecked.join(', ');
+  if (STRICT) {
+    console.error(`\nNever synced: ${list}. Run: npm run sync:virtuoso`);
+    process.exit(1);
+  }
+  const current = FEEDS.length - unchecked.length;
+  const age = current ? ` (oldest check ${human(worst)} ago)` : '';
+  console.warn(`\n${current} of ${FEEDS.length} Virtuoso feeds are current${age}. Never synced: ${list}.`);
+  process.exit(0);
 }
 console.log(`\nVirtuoso feeds are current (oldest check ${human(worst)} ago).`);

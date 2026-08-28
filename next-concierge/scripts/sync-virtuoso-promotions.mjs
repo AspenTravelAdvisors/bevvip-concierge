@@ -17,6 +17,7 @@ import path from 'node:path';
 import { loadEnv, repoRoot } from '../lib/virtuoso/env.mjs';
 import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
+import { readNdjsonCache } from '../lib/virtuoso/ndjson-cache.mjs';
 import { text, clip } from '../lib/virtuoso/text.mjs';
 
 loadEnv();
@@ -73,40 +74,9 @@ function normalize(row, detail) {
   };
 }
 
-function readCache() {
-  if (!fs.existsSync(CACHE_FILE) || FORCE) return new Map();
-  const entries = new Map();
-  /*
-   * Streamed, not slurped. The cruise cache reached 1.35GB and
-   * `readFileSync(..., 'utf8')` threw ERR_STRING_TOO_LONG at Node's 512MB
-   * string ceiling — the crawl had completed and the sync could not read its
-   * own cache back.
-   */
-  let carry = '';
-  const fd = fs.openSync(CACHE_FILE, 'r');
-  const buf = Buffer.allocUnsafe(1 << 20);
-  try {
-    let read;
-    while ((read = fs.readSync(fd, buf, 0, buf.length, null)) > 0) {
-      carry += buf.toString('utf8', 0, read);
-      let nl;
-      while ((nl = carry.indexOf(String.fromCharCode(10))) >= 0) {
-        const line = carry.slice(0, nl);
-        carry = carry.slice(nl + 1);
-        if (!line.trim()) continue;
-        try { const rec = JSON.parse(line); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn line */ }
-      }
-    }
-    if (carry.trim()) {
-      try { const rec = JSON.parse(carry); if (rec?.id) entries.set(String(rec.id), rec); } catch { /* torn tail */ }
-    }
-  } finally { fs.closeSync(fd); }
-  return entries;
-}
-
 async function main() {
   fs.mkdirSync(CACHE_DIR, { recursive: true });
-  const cache = readCache();
+  const cache = readNdjsonCache(CACHE_FILE, { force: FORCE });
   console.log(`cache: ${cache.size} promotion details on disk`);
 
   let catalog;
@@ -164,7 +134,7 @@ async function main() {
     },
     promotions: feed.sort((a, b) => (a.endDate ?? '').localeCompare(b.endDate ?? '')),
   };
-  const moved = writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'promotions', arrayKey: 'promotions' });
+  writeFeed(path.relative(repoRoot, OUT_FILE), out, { label: 'promotions', arrayKey: 'promotions' });
   console.log(`\nwrote ${path.relative(repoRoot, OUT_FILE)} — ${feed.length} promotions`);
   console.log(`  by type: ${Object.entries(byType).map(([k, n]) => `${k} ${n}`).join(' · ')}`);
   console.log(`  with description: ${feed.filter(p => p.description).length} · exclusive: ${feed.filter(p => p.exclusive).length}`);

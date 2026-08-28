@@ -1827,3 +1827,280 @@ The rail and yacht figures are not calls being dropped: they are exactly the
 consecutive same-port repeats — a second night in one place — which have no hop
 to fly and so no landing to make. Collapsing consecutive repeats in the source
 data gives 99% and 93%, the same numbers. Every distinct call is landed on.
+
+## Things to do — the Project Expedition layer, surfaced (2026-08-27)
+
+The eighth thing the Guide can answer, and the only one that was finished,
+working, deployed, and effectively unreachable. Written down here because it
+never was: before today it appeared in no state doc, no README env row, no nav,
+no card, no button, and no chip.
+
+**What the layer is.** `lib/experiences.js` calls Project Expedition's
+`/return_tours` and returns real tours, private guides and day experiences for a
+place — Private and Elevate picks (the advisor's own recommendations) first,
+then a few from the broader catalogue. It is exposed to the model as a second
+Anthropic tool, `search_experiences`, beside `search_offerings`
+(`app/api/guide/route.ts`). It is **discovery, not booking**: pricing and
+`booking_meta` are dropped on purpose and no checkout URL is ever returned.
+
+**Why it stayed hidden.** Three gates, two of them deliberate and correct, one
+of them an oversight that made the other two fatal:
+
+1. `lib/guide-prompt.js` told the model never to deliver experiences unasked.
+   Right call — an advisor who answers a hotel question with an activity list
+   stops sounding like an advisor, and each call is a country-sized catalogue
+   pull (~2 MB, 8s timeout) that would tax every reply to serve a minority.
+2. `route.ts` keeps experiences out of `toolMeta`, so they never become result
+   cards, map pins, a deep link, or an advisor CTA. Also right: a record with no
+   price and no booking path must not render like inventory that has both. Only
+   the area hotels the tool returns alongside are pushed into the pipeline.
+3. **Nothing anywhere said the question could be asked.** The only door was a
+   traveller typing "what is there to do in Ushuaia" unprompted, in a product
+   whose empty state teaches "Antarctica in January" — destination plus season.
+   Nobody phrases it that way here.
+
+Gate 3 is what shipped as fixed. Gates 1 and 2 still stand.
+
+**The three doors now open, in order of expected intent:**
+
+- **Journey dossier** (`components/JourneyDossier.tsx`) — the days at the
+  embarkation port. Every voyage and journey has one or two on the front of it,
+  the supplier's file covers none of them, and this is the layer's strongest
+  case: `record.from` (or the first landfall) becomes the ask.
+- **Hotel dossier** (`components/HotelDossier.tsx`) — the days around a stay,
+  asked from the screen where the traveller is already reading about one
+  property. Hidden when the record carries no city.
+- **Chat, under any reply that returned results** (`ChatMoves` in
+  `components/GuideChat.tsx`) — a second move beside the advisor CTA, built
+  deterministically from `leadPlace()` rather than emitted by the model, because
+  a model-emitted offer appears only when the model remembers to emit it, which
+  is how a working feature became unreachable in the first place. Suppressed on
+  a reply that *is* an experiences answer.
+
+All three compose the question through `askAboutDays()` in `lib/atlas/ask.ts`
+and deliver it down the existing ask path (in place where a chat is mounted,
+`/?ask=` where one is not). The wording carries place and country explicitly,
+because the model — not `normalizeCountry` — is what parses them into the tool
+call.
+
+`leadPlace()` (`lib/guide-meta.ts`) decides whether the chat offer appears at
+all, and the null case is the load-bearing half: `search_offerings` takes a
+marquee `region` key as well as a place, and "what is there to do in Antarctica"
+is a worse question than no question. Order is named place → a returned result's
+city → `places[]`. The city outranks `places[]` on purpose: that field holds
+colloquial *areas* ("the Amalfi Coast", "the Cotswolds"), which are the right
+input for a hotel search and the wrong subject for a day — a day is spent in a
+town, and "a few days in Amalfi Coast" gives away that a machine wrote the
+traveller's own sentence.
+
+**The prompt now distinguishes delivering from offering.** The model still may
+not call the tool unasked. It may close a reply that landed a real stay or
+departure with one short sentence leaving the door open ("if it helps, I can
+look at what there is to do around Positano") and then stop — at most once a
+conversation, never on consecutive replies, never in place of the answer they
+came for.
+
+**Measurement, which did not exist.** `experiences_asked` (with `source`:
+chat-move / hotel-dossier / journey-dossier) and `experiences_returned` (total,
+preferred, unavailable) in `lib/analytics.ts`. The counts ride to the client on
+`GuideMeta.experiences` — deliberately *beside* `tools`, not in it, so a
+prose-only record can never reach `leadTool` and become a card. A run of zeroes
+in `preferred` means we are promoting the generic catalogue rather than the
+curated half, which is an argument about the feed, not about placement.
+
+### ⚠ Two things to confirm in production before judging the numbers
+
+1. **`PE_API_BASE` defaults to staging.** Unless production sets it to the live
+   base, every one of these doors leads to staging inventory.
+2. **`PROJECT_EXPEDITION_TOKEN` may not be set in production at all.** If it is
+   not, `search_experiences` degrades gracefully — the Guide says the catalogue
+   is unreachable and offers an advisor — which is correct behaviour and also
+   indistinguishable, from the outside, from the feature working badly. Both
+   vars are now in the README env table.
+
+### Not proposed, and deliberately so
+
+**No experiences pillar, and no experience cards.** The Safari Atlas earns
+`/atlas/safari` because the camp *is* the waypoint — a bookable thing with
+geometry, where both feeds describe the same journey from both ends. Project
+Expedition is the opposite shape: no route, no coordinates, no pricing, no
+booking path by design, and a country-level pull with place matching done
+client-side. `WORKORDER-safari-atlas.md` rejects culinary, wellness and cultural
+tours as "route-only… an eighth variation on the jet atlas"; this fails that
+test harder. Safari is a pillar; Project Expedition is texture — what fills the
+days between the bookable things. Surfacing it like a pillar is what would make
+it look cheap.
+
+
+## Virtuoso is the supplier of record (2026-08-25 → 08-28)
+
+The atlases used to be curated files with an AI's guesses filling the gaps. They
+are now the Virtuoso Partner API's facts with our curation layered on top, and
+the division of authority is the whole design: **Virtuoso owns what a property
+or a journey IS** — name, place, coordinates, category, amenities, photographs,
+the year-stamped benefits — and **we own what Virtuoso has no opinion about** —
+Cadence programme membership, ranking, the marquee region the map filters on,
+booking links, advisor curation.
+
+Protocol, and the traps that cost real time, are in
+`Master Documents/Virtuoso_API_Reference.md`. The three that shape the code:
+the login parameter is `user` and not `apiUser`; every kind of failure answers
+with a bodyless 500 that never says which kind; and **bearer tokens are
+single-use**, arriving at the top level of each response as `token`. That last
+one forbids parallelism outright, so `lib/virtuoso/client.mjs` serializes every
+call through one promise chain. A full hotel detail crawl is ~2,000 sequential
+calls at ~800ms — half an hour — which is why every sync caches to NDJSON and
+resumes.
+
+**What is synced** (`data/atlas/`, committed, never fetched at request time):
+
+| feed | records | what it decides |
+|---|---|---|
+| hotels | 2,073 | the hotel atlas's facts, perks and photography |
+| promotions | 2,028 | live supplier offers, joined to a property by company name |
+| cruises | 4,465 | the expedition atlas, day by day |
+| tours | 505 | the jet, rail and safari atlases |
+
+**What it produced.** `luxury-hotels.json` holds 2,240 properties: 1,925
+upgraded from Virtuoso, 148 newly added, 167 local-only partners, 381 duplicates
+folded away and 2 junk records removed. 995 categories were corrected — the old
+classifier had put 73% of everything into "City Hotel" and found 15 ski
+properties where the supplier flags 99. 1,922 perk lists and 1,923 photographs
+now come from the supplier rather than from us. The journey atlases grew
+against their curated bases: yacht 374 → 467, world 250 → 303, expedition
+3,542 → 3,662, and safari 0 → 274. Jet and rail shrank (147 → 124, 135 → 130)
+because the supplier's catalogue is the authority on what is still sold; the 27
+bespoke jet journeys with no supplier record are kept deliberately.
+
+**The data is committed, not fetched.** Every supplier change lands as a
+reviewable diff, because these files carry a lot of hand-curation and a supplier
+quietly dropping records is invisible without one.
+`.github/workflows/virtuoso-sync.yml` runs the whole chain at 09:00 UTC, each
+crawl `continue-on-error` so a bad night for sailings cannot throw away a good
+hotel refresh, with the NDJSON cache carried between runs so a night that cannot
+finish resumes rather than restarts.
+
+**Three guards stand between an unattended crawl and production**, because
+nobody is watching at 3am: `merge-virtuoso-journeys.mjs` refuses a feed under
+90% detail coverage and refuses again if any atlas would lose more than a
+quarter of its journeys; `verify-virtuoso-delta.mjs` refuses a hotel count that
+falls more than 10%; and `verify-virtuoso-freshness.mjs` judges staleness on
+when a feed was last **checked**, not when it last **changed**, so a quiet
+fortnight at the supplier reads as healthy and a week of failing syncs does not.
+
+### The review pass (2026-08-28) — what was wrong
+
+**`npm run verify` had been silently disabled for a day.** The hotel merge gate
+byte-compared its output against the committed file — but three fields in that
+file are decided by the date the merge runs, not by anything a supplier sent:
+`promotions` and `hasPromotion` filter offers on today, and `perksStale`
+compares the supplier's benefit year against this one. The morning after an
+offer expired, the gate reported the file stale with nothing having changed, and
+everything behind it in the `&&` chain never ran. (The perk-year half had not
+bitten yet; it would have, on 1 January.) The gate now compares the parts the
+feeds actually own and reports calendar drift as the note it is. The deploy
+re-merges on every build, so the live site was never affected.
+
+**And `npm run verify` was an `&&` chain, so it hid its own findings.** That
+is the right shape for a build and the wrong one for a verification suite: the
+checks are independent claims about different parts of the atlas, and stopping
+at the first failure meant a false positive at the front took sixteen real
+checks down with it — one of which was genuinely red, and had been for a
+fortnight (the route-flight assertion below). It now
+runs through `scripts/verify-all.mjs`: every check runs, and the failures are
+named together at the end. `npm run verify:bail` keeps the old fail-fast
+behaviour, and `node scripts/verify-all.mjs <substring>` runs a subset.
+
+**Four generated files churned every night on their timestamps alone.**
+`hotel-aliases.json`, `virtuoso-id-map.json`, the sea-route collections and the
+cruise-region overlay each stamped the moment their generator ran, so the tree
+was already dirty before the nightly job asked git whether anything had moved —
+which is why the job's "No supplier changes today" branch could never fire, and
+why a real change arrived buried among four noisy ones. `scripts/lib/steady-stamp.mjs`
+now keeps the previous stamp when nothing else would change, the same way
+`lib/virtuoso/write-feed.mjs` already did for the feeds themselves.
+
+**The nightly job never rebuilt the safari camps.** `build:safari-camps` reads
+`luxury-hotels.json` and `safari/itinerary.json`, both of which the job rebuilds,
+but the job did not then rebuild `public/maps/safari/camps.json` from them.
+`verify:safari-camps` byte-compares, so the first night that moved a camp would
+have turned the suite red for everyone. Added to the workflow.
+
+**The freshness check called a half-checked set current.** A feed with no
+recorded check at all warned and then `continue`d, never reaching the verdict,
+so the summary read "Virtuoso feeds are current" while hotels and promotions had
+never recorded one — the precise failure the file was written to catch. It now
+carries them into the verdict, and `--strict` fails on them. Its drift check
+also looked for a noun (`"safari journeys"`) that `atlas-config.ts` does not use,
+so the safari headline count was never actually verified; and its regex escape
+was inert (the character class closed early), which cost nothing only because no
+noun contains a metacharacter.
+
+**The four sync scripts carried four byte-identical copies** of the streaming
+NDJSON cache reader — the one that exists because the cruise cache reached
+1.35GB and `readFileSync` threw at Node's 512MB string ceiling. That is a fix
+that lands in three files and not the fourth; it is now
+`lib/virtuoso/ndjson-cache.mjs`.
+
+**A test outlived the decision it encoded.** `verify:route-flight` had been red
+since `dbd82c0`, which noted it and left it. The claim that failed was "a hop
+with no geometry is left out, not cut across" — and the code was right, not the
+test. Both positions sound correct, which is why this is worth writing down:
+route-frame leaves a hop it has no line for EMPTY on purpose, because a straight
+stroke between two ports claims a route the ship does not take. The camera is
+not under that constraint — it draws nothing, it only travels — and the
+alternative to travelling is silently not calling at a port the itinerary lists,
+leaving a hole in the numbering that reads as a data error. Around 15% of
+expedition stops carry no coordinate, so that is the common case.
+
+`fillGaps` (in `routeHops`) made that change on 2026-08-25 in `9611c35`, hours
+after `ddf25a3` wrote the assertion — and the test should have gone red that
+afternoon. It did not, because the verifier was crashing before it reached a
+single assertion, having drifted off two renamed constants. By the time
+`dbd82c0` repaired it, the failure looked like a pre-existing mystery rather
+than the direct consequence of a deliberate change made the same day. Two gates
+failing at once (that crash, then the `&&` chain) is what turned a half-day
+inconsistency into a fortnight of red.
+
+The assertion now states what the flight actually does: a hop with no geometry
+is flown direct, and its call is still landed on. It is measured against bowed
+legs, so cutting the corner on a hop that *does* have geometry still lands 6°
+off and fails — the useful half of the original claim is kept.
+
+**The shrink guard covered one file out of eleven.**
+`verify-virtuoso-delta.mjs` is the last gate before the unattended job commits,
+and it checked `luxury-hotels.json` and nothing else — so a night where
+`/v2/cruises` answered with an empty catalogue would have erased 4,465 sailings,
+committed them, and deployed. It now covers all four raw feeds and all six
+journey atlases. Limits are per feed and the reasons are real rather than
+generous: 10% by default, 30% for promotions because campaigns expire in batches
+on fixed dates, 25% for the journey atlases because departures sail (matching
+`MAX_ATLAS_SHRINK` in the merge, which asks the same question of a different
+baseline — the curated base rather than what is committed and serving).
+
+Checked against four deliberate breaks before shipping: an emptied cruise feed
+refuses at 100%, a 20% short tour crawl refuses, a 20% promotions drop passes as
+the campaign expiry it looks like, and growth always passes.
+
+One feed over its limit blocks the WHOLE commit, including feeds that refreshed
+perfectly. That is deliberate, and it is the opposite of the `continue-on-error`
+stance the crawl steps take, for a reason worth stating: a crawl that fails
+publishes nothing new, while a crawl that succeeds with half a catalogue
+publishes a deletion. Blocking costs a day of freshness; not blocking costs live
+inventory.
+
+### Still open
+
+- **The hotel and promotion feeds have no recorded check.** Both files are on
+  disk and current in content, but neither has run through `write-feed.mjs`
+  since the status file was introduced, so freshness cannot speak for them.
+  One successful nightly run fixes it; until then the verifier says so out loud
+  rather than rounding up to green.
+- **`Master Documents/BeVvip_API_Integration_Strategy.md` describes an
+  architecture that no longer exists** — `api/prompt.js`, `api/chat.js`,
+  `public/index.html`, the `<!--BEVVIP_HOTELS-->` comment tag, and TravelWits as
+  the live-rate source. It carries a status note now, but a note is not a plan:
+  its central argument — the language model must never be the rate source — is
+  exactly what the Virtuoso work implements, and somebody should rewrite the
+  document around what was actually built. The same goes for the stack sections
+  of the two project master documents.

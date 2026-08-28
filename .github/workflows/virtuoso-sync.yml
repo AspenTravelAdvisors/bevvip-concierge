@@ -106,9 +106,21 @@ jobs:
           npm run merge:virtuoso-journeys
           npm run fix:ports
           npm run build:hotel-points
+          npm run build:safari-camps
           npm run build:sea-routes
           npm run build:cruise-regions
 
+      # The last gate before anything is committed, and the only one that sees
+      # both what the supplier sent and what is already live. It covers all four
+      # raw feeds and all six journey atlases, not just the hotel atlas — an
+      # empty /v2/cruises response used to sail past it untouched.
+      #
+      # Note the trade-off it makes deliberately: one feed over its limit blocks
+      # the WHOLE commit, including feeds that refreshed perfectly. That is the
+      # opposite of the continue-on-error stance the crawls take above, and it is
+      # the right way round — a crawl that fails publishes nothing new, while a
+      # crawl that succeeds with half a catalogue publishes a deletion. Blocking
+      # costs a day of freshness; not blocking costs live inventory.
       - name: Refuse an implausible shrink
         working-directory: next-concierge
         run: node scripts/verify-virtuoso-delta.mjs
@@ -117,24 +129,48 @@ jobs:
         working-directory: next-concierge
         run: npm run verify:hotels
 
+      # This step always commits, and that is deliberate.
+      #
+      # The heartbeat in virtuoso-sync-status.json moves every night by design:
+      # it records that the sync RAN, which is the fact
+      # verify-virtuoso-freshness.mjs judges the data on. Leave it uncommitted on
+      # a quiet night and the last recorded check never advances, so a job that
+      # is working perfectly reads as ageing after a week and stale after a
+      # month. The old "No supplier changes today" branch could not fire anyway —
+      # the heartbeat had already dirtied the tree by the time it was tested — so
+      # what it really cost was an honest subject line.
+      #
+      # Both facts are kept instead: the data is committed either way, and the
+      # subject says which kind of night it was.
       - name: Commit the refreshed data
         run: |
-          if git diff --quiet; then
-            echo "No supplier changes today."
+          DATA="next-concierge/data/atlas next-concierge/public/maps"
+          HEARTBEAT="next-concierge/data/atlas/shared/virtuoso-sync-status.json"
+
+          git config user.name  "virtuoso-sync[bot]"
+          git config user.email "virtuoso-sync@users.noreply.github.com"
+          git add -A -- $DATA
+
+          if git diff --cached --quiet -- $DATA ":(exclude)$HEARTBEAT"; then
+            SUBJECT="Virtuoso sync: no supplier changes"
+          else
+            SUBJECT="Refresh Virtuoso data"
+          fi
+
+          if git diff --cached --quiet -- $DATA; then
+            echo "Nothing to commit — the sync produced no writes at all."
             exit 0
           fi
-          # Read the run's own record of what it touched. The feeds no longer
-          # carry a per-run timestamp — that is exactly what stopped this job
-          # committing every night whether or not anything moved — so the status
-          # file is the authority on what was checked and what actually changed.
+
+          # Read the run's own record of what it touched. The feeds carry no
+          # per-run timestamp — that is what stopped every night looking like a
+          # change — so the status file is the authority on what was checked and
+          # what actually moved.
           SUMMARY=$(cd next-concierge && node -e "
             const s = require('./data/atlas/shared/virtuoso-sync-status.json');
             const lines = Object.entries(s.feeds ?? {}).map(([k, f]) =>
               \`\${k}: \${f.count ?? '?'} records, last changed \${(f.lastChanged ?? '').slice(0, 16)}\`);
             process.stdout.write(lines.join('\n') || 'No feed status recorded.');
           ")
-          git config user.name  "virtuoso-sync[bot]"
-          git config user.email "virtuoso-sync@users.noreply.github.com"
-          git add next-concierge/data/atlas next-concierge/public/maps
-          git commit -m "Refresh Virtuoso data" -m "Automated nightly sync from the Virtuoso Partner API." -m "$SUMMARY"
+          git commit -m "$SUBJECT" -m "Automated nightly sync from the Virtuoso Partner API." -m "$SUMMARY"
           git push

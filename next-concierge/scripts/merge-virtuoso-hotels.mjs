@@ -18,6 +18,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { cardImage } from '../lib/virtuoso/media.mjs';
+import { steadyStamp } from './lib/steady-stamp.mjs';
 
 const CHECK = process.argv.includes('--check');
 const D = path.join(repoRoot, 'data/atlas/hotel');
@@ -351,20 +352,68 @@ for (const [drop, keep] of dropped) {
 const out = JSON.stringify(merged, null, 1);
 const outPath = path.join(D, 'luxury-hotels.json');
 
+/*
+ * What the gate compares: everything the supplier feeds decide, and nothing the
+ * calendar does.
+ *
+ * Three fields here are derived from the date the merge runs rather than from
+ * anything a supplier sent — `promotions` and `hasPromotion` filter offers on
+ * today, and `perksStale` compares the benefit year against this one. So a merge
+ * run the morning after an offer lapses, or on the first of January, produces a
+ * different file from the one in git with no input having changed at all.
+ *
+ * Byte-comparing the two turned `npm run verify` red on its own — and while the
+ * suite was an `&&` chain, that took every check after it down with it,
+ * silently, for as long as nobody looked past the first failure. (The chain is
+ * gone too; see scripts/verify-all.mjs.)
+ *
+ * So an expired offer is not staleness, and the gate holds the merge to the
+ * parts the feeds actually own. Calendar drift is reported as the note it is.
+ * Nothing is lost by that: `prebuild` re-runs this merge on every deploy, so the
+ * live site is always filtered as of the build, not as of the last commit.
+ */
+const CALENDAR_DERIVED = ['promotions', 'hasPromotion', 'perksStale'];
+const withoutCalendar = doc => JSON.stringify(doc.map((h) => {
+  const rest = { ...h };
+  for (const k of CALENDAR_DERIVED) delete rest[k];
+  return rest;
+}));
+
 if (CHECK) {
-  const current = fs.existsSync(outPath) ? fs.readFileSync(outPath, 'utf8') : '';
-  if (current !== out) { console.error('luxury-hotels.json is stale — run: node scripts/merge-virtuoso-hotels.mjs'); process.exit(1); }
-  console.log(`ok — ${merged.length} properties`);
+  let current = null;
+  try { current = JSON.parse(fs.readFileSync(outPath, 'utf8')); } catch { current = null; }
+  if (!Array.isArray(current)) {
+    console.error('luxury-hotels.json is missing, unreadable, or not an array — run: node scripts/merge-virtuoso-hotels.mjs');
+    process.exit(1);
+  }
+  if (withoutCalendar(current) !== withoutCalendar(merged)) {
+    console.error('luxury-hotels.json is stale — run: node scripts/merge-virtuoso-hotels.mjs');
+    process.exit(1);
+  }
+  const calendarMoved = JSON.stringify(current, null, 1) !== out;
+  console.log(`ok — ${merged.length} properties${calendarMoved ? ' (offers or perk years have moved on with the date; the deploy re-merges them)' : ''}`);
   process.exit(0);
 }
 
 fs.writeFileSync(outPath, out);
 fs.writeFileSync(path.join(D, 'travelwits-overlay.json'), JSON.stringify(tw, null, 1));
 fs.writeFileSync(path.join(D, 'hotel-fit.json'), JSON.stringify(newFit, null, 1));
-fs.writeFileSync(path.join(D, 'hotel-aliases.json'), JSON.stringify({
-  _meta: { purpose: 'Old ids folded into a surviving record by de-duplication. Kept so existing deep links still resolve.', generated: new Date().toISOString() },
-  aliases: Object.fromEntries(dropped),
-}, null, 1));
+/*
+ * The alias ledger keeps its old stamp when the aliases have not moved.
+ *
+ * This file is committed, and stamping it with the run time made it differ
+ * after every merge — every nightly sync and every deploy — whether or not a
+ * single id had been folded away. That is the churn `lib/virtuoso/write-feed.mjs`
+ * exists to prevent, and it also defeats the nightly job's own "no supplier
+ * changes today" test, which asks git whether anything moved.
+ */
+{
+  const aliasPath = path.join(D, 'hotel-aliases.json');
+  fs.writeFileSync(aliasPath, JSON.stringify(steadyStamp(aliasPath, {
+    _meta: { purpose: 'Old ids folded into a surviving record by de-duplication. Kept so existing deep links still resolve.' },
+    aliases: Object.fromEntries(dropped),
+  }, 'generated'), null, 1));
+}
 
 console.log(`luxury-hotels.json — ${merged.length} properties`);
 console.log(`  ${stats.upgraded} upgraded from Virtuoso · ${stats.added} newly added · ${stats.localOnly} local-only partners`);

@@ -1,5 +1,9 @@
 # BeVvip Project Management Master Document
 
+> **Superseded.** v3 replaced this document, and v3 itself now carries a status
+> note about how much of its stack section has since been rebuilt. Kept for
+> history. Current state of the code: `next-concierge/STATE.md`.
+
 ## Plain-English Project Brief
 
 **What the app does**  

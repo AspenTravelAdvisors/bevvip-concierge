@@ -10,3 +10,6 @@ next-env.d.ts
 .photoreal-build/
 scripts/cache/virtuoso/
 scripts/cache/naturalearth/
+
+# stray typecheck output from `tsc ... > .tsc-check.log`
+.tsc-check.log

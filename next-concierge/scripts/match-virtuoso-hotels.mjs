@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
+import { steadyStamp } from './lib/steady-stamp.mjs';
 
 const args = process.argv.slice(2);
 const CHECK = args.includes('--check');
@@ -646,7 +647,7 @@ for (const [localId, vid] of Object.entries(overrides)) {
 const doc = {
   _meta: {
     purpose: 'Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.',
-    generated: new Date().toISOString(),
+    generated: null,     // filled by steadyStamp below — see scripts/lib/steady-stamp.mjs
     feedSynced: feedDoc._meta?.lastSynced ?? null,
     localCount: local.length,
     feedCount: feed.length,
@@ -674,8 +675,12 @@ if (CHECK) {
 }
 
 const DUMP = (() => { const i = args.indexOf('--dump'); return i >= 0 ? args[i + 1] : null; })();
-if (DUMP) fs.writeFileSync(path.resolve(DUMP), JSON.stringify(doc, null, 1));
-if (!DRY) fs.writeFileSync(MAP_FILE, JSON.stringify(doc, null, 1));
+// The stamp says when the MAP last moved, not when this script last ran: the
+// nightly sync re-matches every night, and a file that differs every night is a
+// file whose diff says nothing. See scripts/lib/steady-stamp.mjs.
+const stamped = steadyStamp(MAP_FILE, doc, 'generated');
+if (DUMP) fs.writeFileSync(path.resolve(DUMP), JSON.stringify(stamped, null, 1));
+if (!DRY) fs.writeFileSync(MAP_FILE, JSON.stringify(stamped, null, 1));
 console.log(DRY ? `[dry run, ledger not written] ${summary}` : summary);
 
 if (REPORT) {

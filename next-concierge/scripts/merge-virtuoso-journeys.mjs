@@ -431,9 +431,18 @@ function buildExpedition() {
     routes[c.id] = days;
   }
 
+  /*
+   * No generated-at stamp on this file.
+   *
+   * It is committed, the nightly sync rewrites it every night, and
+   * fix-port-locations edits it again straight afterwards — so a stamp here can
+   * only ever be "when the job last ran", which is already recorded once, in
+   * data/atlas/shared/virtuoso-sync-status.json. Carried on the file itself it
+   * just makes 4MB of routes differ every night whether a single stop moved or
+   * not. Nothing reads it. The counts below are the facts worth keeping.
+   */
   writePair(null, 'public/maps/cruise/data/itinerary-routes.json', {
     _meta: {
-      generatedAt: new Date().toISOString(),
       sourceFile: 'data/atlas/shared/virtuoso-cruises.json',
       routeCount: Object.keys(routes).length,
       placedStops: placed,
