@@ -982,11 +982,12 @@ main.page {
   flex: none;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
 }
-.atlas-legend .lgi.off {
-  opacity: 0.4;
-}
-.atlas-legend .lgi.off span {
-  text-decoration: line-through;
+/* Pushed back, not switched off. The strike-through that used to live here
+   said "removed", which is what the map used to do and no longer does — the
+   collection is still drawn, still clickable, just quiet. Dimmer text is the
+   honest match for a dimmer layer. */
+.atlas-legend .lgi.dim {
+  opacity: 0.45;
 }
 /* The isolated row. Solo is a positive state — "this is what you are looking
    at" — so it gets the emphasis and the dimmed rows carry the consequence. */
@@ -3356,11 +3357,8 @@ button.card-book {
   0%, 100% { opacity: 0.35; }
   50% { opacity: 1; }
 }
-/* "Hidden" must be legible as a state, not just as dimmer text. */
-.atlas-legend .lgi.off span {
-  text-decoration: line-through;
-  text-decoration-color: var(--muted);
-}
+/* The focused row carries the state; the rest simply recede with the layers
+   they name, so they need nothing beyond the opacity above. */
 
 /* ── Atlas frame: the same chrome around three different map products ──── */
 .atlas-frame-wrap {

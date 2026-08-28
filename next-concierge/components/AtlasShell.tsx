@@ -109,6 +109,35 @@ const STREET_ZOOM = 13.5;
 const ROUTES_ENABLED = true;
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
+/**
+ * What the rest of the map fades to when one collection is being looked at.
+ *
+ * Not zero. Isolating Luxury Hotel Yachts used to HIDE the other seven, which
+ * answered "which pins are yachts" and destroyed the answer to "near what" —
+ * 467 dots on an empty ocean, with nothing left to place them against. A pin's
+ * meaning is largely its neighbourhood. Muted, the world stays legible and the
+ * gesture reads as reversible rather than destructive.
+ *
+ * 0.16 is low enough that the focused collection is unmistakable at a glance
+ * and high enough that a dense field still describes a coastline.
+ */
+const MUTE_OPACITY = 0.16;
+/** Long enough to read as a fade, short enough not to feel like a page load. */
+const MUTE_MS = 320;
+/** One sonar cycle on a focused collection. Matches the result-pin rhythm. */
+const SOLO_PULSE_MS = 2600;
+/**
+ * The most pins we will pulse at once.
+ *
+ * The plotted-result pulse works because it rings about a dozen dots. Ringing
+ * a few thousand is not a highlight, it is a strobe — so the animation is a
+ * privilege of collections small enough for it to mean something, measured on
+ * the feed that actually arrived rather than assumed from the type. (Overlay
+ * pins are per-REGION, so in practice every overlay qualifies and the 2,240
+ * individual hotel dots, which have no pin source at all, do not.)
+ */
+const SOLO_PULSE_MAX_PINS = 400;
+
 // Master atlas overlays: cruise / jet / yacht / world-cruise / rail / safari /
 // villa region pins, each from its own live app data.
 //
@@ -1162,7 +1191,7 @@ export default function AtlasShell({
   }, [bootGone, mapReady]);
 
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
-  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const [muted, setMuted] = useState<Set<string>>(new Set());
   const [styleKey, setStyleKey] = useState<StyleKey>(initialStyle ?? "satellite");
   const [is3D, setIs3D] = useState(initialGlobe ?? true);
   /**
@@ -1322,8 +1351,17 @@ export default function AtlasShell({
   /** Transient "✓ Link copied" confirmation for the built-in share path. */
   const [shared, setShared] = useState(false);
   const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
-  const hiddenRef = useRef(hidden);
-  hiddenRef.current = hidden;
+  const mutedRef = useRef(muted);
+  mutedRef.current = muted;
+  /**
+   * The one collection being looked at, for the map closure.
+   *
+   * Derived from `muted` in render (see soloKey) and mirrored here rather than
+   * stored, so the pulse cannot end up ringing a collection the mute set does
+   * not agree is focused. Assigned below the derivation, which is why this is
+   * a bare ref rather than another piece of state.
+   */
+  const soloRef = useRef<string | null>(null);
   /**
    * Ambient route lines are muted while ONE thing is being looked at.
    *
@@ -1361,6 +1399,9 @@ export default function AtlasShell({
     let cameraClaimed = false;
     let pulseRAF = 0;
     let pulsing = false;
+    /** The collection whose pins are currently ringing, and its frame loop. */
+    let soloPulsing = "";
+    let soloRAF = 0;
     // Ambient auto-tour. `tourArmed` is one-way: the tour gets exactly one
     // chance per mount, so a refit or a projection toggle can never restart a
     // demonstration the visitor has already sat through (or already dismissed
@@ -1993,6 +2034,83 @@ export default function AtlasShell({
           pulseRAF = requestAnimationFrame(pulseStep);
         }
 
+        /*
+         * The focused collection's own sonar, borrowed from the result pins.
+         *
+         * The mute answers "which of these are yachts". It does not answer
+         * "where did they go" — 467 pins can be bright and still be off in a
+         * corner of the frame, and the traveller has just told us that is the
+         * only thing they want to see. A ring travelling out from each pin is
+         * the movement that finds them, and it is the movement this map already
+         * uses to mean "here is what you asked for".
+         *
+         * It rides on the collection's existing pin source: one stroke-only
+         * layer added under the glow while a collection is soloed, removed when
+         * it is not. No second source, no second feed.
+         */
+        function soloPulseStep(now: number) {
+          if (!soloPulsing) return;
+          soloRAF = requestAnimationFrame(soloPulseStep);
+          const ring = "t_" + soloPulsing + "_ring";
+          if (document.hidden || !map.getLayer(ring)) return;
+          const t = (now % SOLO_PULSE_MS) / SOLO_PULSE_MS; // 0→1 each cycle
+          const ease = 1 - (1 - t) * (1 - t); // races out, then coasts
+          try {
+            map.setPaintProperty(ring, "circle-radius", 6 + ease * 20);
+            map.setPaintProperty(ring, "circle-stroke-opacity", (1 - t) * 0.55);
+            // The glow breathes underneath on its own slower rhythm, the same
+            // two-part figure the result pins use.
+            const breathe = 0.5 + 0.5 * Math.sin((now / SOLO_PULSE_MS) * Math.PI);
+            const glow = "t_" + soloPulsing + "_glow";
+            if (map.getLayer(glow)) {
+              map.setPaintProperty(glow, "circle-radius", 9 + breathe * 5);
+              map.setPaintProperty(glow, "circle-opacity", 0.18 + breathe * 0.16);
+            }
+          } catch { /* mid-restyle: layers momentarily gone */ }
+        }
+        function stopSoloPulse() {
+          const was = soloPulsing;
+          soloPulsing = "";
+          cancelAnimationFrame(soloRAF);
+          if (!was) return;
+          const ring = "t_" + was + "_ring";
+          if (map.getLayer(ring)) {
+            try { map.removeLayer(ring); } catch { /* already gone */ }
+          }
+          AUTHORED.delete(ring);
+          // Hand the glow back exactly as authored — the animation has been
+          // writing over its radius and opacity for as long as it ran.
+          const glow = "t_" + was + "_glow";
+          try { map.setPaintProperty(glow, "circle-radius", 9); } catch { /* gone */ }
+          dimLayer(map, glow, mutedRef.current.has(was));
+        }
+        function startSoloPulse(key: string) {
+          if (soloPulsing === key) return;
+          stopSoloPulse();
+          if (!key) return;
+          // Reduced motion gets the mute and nothing that moves. That is still
+          // a complete answer to the gesture, which is why this can simply
+          // decline rather than needing a static substitute.
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          const src = "t_" + key;
+          const feats = overlayFeats[key as OverlayKey];
+          if (!map.getSource(src) || !feats || feats.length > SOLO_PULSE_MAX_PINS) return;
+          const cfg = OVERLAYS[key as OverlayKey];
+          if (!cfg) return;
+          // Explicitly under its own glow rather than at the collection's band:
+          // stackBefore would put the ring above the pin it is meant to ring.
+          addLayer(map, {
+            id: src + "_ring", type: "circle", source: src,
+            paint: {
+              "circle-radius": 6, "circle-color": "rgba(0,0,0,0)",
+              "circle-stroke-color": cfg.color, "circle-stroke-width": 1.5,
+              "circle-stroke-opacity": 0.55,
+            },
+          }, map.getLayer(src + "_glow") ? src + "_glow" : undefined);
+          soloPulsing = key;
+          soloRAF = requestAnimationFrame(soloPulseStep);
+        }
+
         // ── Layer painting (re-run on every style.load so basemap switches keep
         //    their layers) ───────────────────────────────────────────────────
         function paintHotel() {
@@ -2047,13 +2165,30 @@ export default function AtlasShell({
                 map.setPaintProperty("hotel-heat", "heatmap-opacity-transition", { duration: 900 });
                 map.setPaintProperty("hotel-dots", "circle-opacity-transition", { duration: 900 });
                 map.setPaintProperty("hotel-dots", "circle-stroke-opacity-transition", { duration: 900 });
-                map.setPaintProperty("hotel-heat", "heatmap-opacity", heatOpacity);
-                map.setPaintProperty("hotel-dots", "circle-opacity", dotOpacity);
-                map.setPaintProperty("hotel-dots", "circle-stroke-opacity", 1);
+                restPaint(map, "hotel-heat", "heatmap-opacity", heatOpacity);
+                restPaint(map, "hotel-dots", "circle-opacity", dotOpacity);
+                restPaint(map, "hotel-dots", "circle-stroke-opacity", 1);
               } catch { /* mid-restyle: layers momentarily gone */ }
             });
+          } else {
+            /*
+             * The resting opacity, pushed rather than assumed.
+             *
+             * plotResults calls paintHotel() to "re-tint ambient field dimmer"
+             * once a shortlist is on the map, and that call did nothing at all:
+             * addLayer no-ops on a layer that already exists, and the only code
+             * that wrote an opacity lived in the fadeIn branch, which by then
+             * is false. So `subsetActive`'s 0.12 was computed on every plot and
+             * never applied — the hotel field stayed at full strength under the
+             * results it was supposed to give way to.
+             */
+            try {
+              map.setPaintProperty("hotel-dots", "circle-opacity-transition", { duration: MUTE_MS });
+            } catch { /* mid-restyle: layers momentarily gone */ }
+            restPaint(map, "hotel-dots", "circle-opacity", dotOpacity);
+            restPaint(map, "hotel-heat", "heatmap-opacity", heatOpacity);
           }
-          applyHidden("hotel");
+          applyMute("hotel");
         }
 
         function paintOverlay(key: OverlayKey) {
@@ -2077,7 +2212,7 @@ export default function AtlasShell({
             id: src + "_dot", type: "circle", source: src,
             paint: { "circle-radius": 5, "circle-color": cfg.color, "circle-stroke-color": "#0b0e14", "circle-stroke-width": 1.2 },
           }, at);
-          applyHidden(key);
+          applyMute(key);
         }
 
         function paintFeatured() {
@@ -2116,6 +2251,12 @@ export default function AtlasShell({
           if (lastFocusLegs.current.length) {
             focusRouteRef.current?.paint(lastFocusLegs.current, lastFocusStops.current);
           }
+          // So is a focused collection. The restyle took its ring with every
+          // other layer we own, and the animation would keep running against a
+          // layer that no longer exists — a basemap switch would quietly end
+          // the pulse while the legend still claimed the collection was solo.
+          const solo = soloRef.current;
+          if (solo) { soloPulsing = ""; startSoloPulse(solo); }
         }
 
         function paintRoutesForKey(key: OverlayKey) {
@@ -2164,17 +2305,32 @@ export default function AtlasShell({
               "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.95, ROUTE_ZOOM, 0.82],
             },
           }, rAt);
-          // Visibility: above the route gate, type not hidden, nothing focused.
-          const vis = routeVis(map.getZoom(), key);
+          // Visibility: above the route gate, nothing focused. The legend's
+          // own state reaches these lines as a fade, not a switch.
+          const vis = routeVis(map.getZoom());
           [src + "_shadow", src + "_line"].forEach((id) => {
             if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
           });
+          // Routes arrive on a zoom, long after the legend may have been used.
+          // Without this they would come in at full strength under a muted
+          // collection's faded pins.
+          applyMute(key);
         }
 
-        /** The single source of truth for whether a collection's routes draw. */
-        function routeVis(z: number, key: string): "visible" | "none" {
+        /**
+         * The single source of truth for whether a collection's routes draw.
+         *
+         * The legend is no longer part of this answer. It used to be — a muted
+         * collection's routes were switched off entirely — which was right when
+         * the legend hid things and wrong now that it dims them: the pins would
+         * fade to 16% while the lines under them vanished outright, two
+         * different statements about one collection. The legend fades routes
+         * along with everything else it owns (see applyMute); this gate is back
+         * to what its name says, the zoom threshold and the focused-route mute.
+         */
+        function routeVis(z: number): "visible" | "none" {
           if (ambientMutedRef.current) return "none";
-          return z >= routeGate && !hiddenRef.current.has(key) ? "visible" : "none";
+          return z >= routeGate ? "visible" : "none";
         }
 
         /** Mute/unmute ambient routes and repaint what is already on the map. */
@@ -2183,7 +2339,7 @@ export default function AtlasShell({
           ambientMutedRef.current = on;
           const z = map.getZoom();
           overlayKeys.forEach((key) => {
-            const vis = routeVis(z, key);
+            const vis = routeVis(z);
             ["r_" + key + "_shadow", "r_" + key + "_line"].forEach((id) => {
               if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
             });
@@ -2202,11 +2358,17 @@ export default function AtlasShell({
           );
         }
 
-        function applyHidden(key: string) {
-          const off = hiddenRef.current.has(key);
-          layerIdsFor(key).forEach((id) => {
-            if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", off ? "none" : "visible");
-          });
+        /**
+         * Push the legend's state onto one collection: full strength, or muted.
+         *
+         * Nothing is hidden here any more. `visibility` is left to the route
+         * zoom gate alone, so a collection the traveller has pushed into the
+         * background is still on the map, still clickable, still telling them
+         * where they are.
+         */
+        function applyMute(key: string) {
+          const dim = mutedRef.current.has(key);
+          layerIdsFor(key).forEach((id) => dimLayer(map, id, dim));
         }
 
         // ── Click wiring (once; tolerant of layers re-created on restyle) ─────
@@ -4384,7 +4546,7 @@ export default function AtlasShell({
               loadRoutes();
             } else if (routesFetched) {
               overlayKeys.forEach((key) => {
-                const vis = routeVis(z, key);
+                const vis = routeVis(z);
                 ["r_" + key + "_shadow", "r_" + key + "_line"].forEach((id) => {
                   if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
                 });
@@ -4971,6 +5133,7 @@ export default function AtlasShell({
               ["featured-pulse", "featured-glow", "featured-dot"].forEach((id) => { if (map.getLayer(id)) map.removeLayer(id); });
               try { (map as MBMap).removeSource("featured"); } catch { /* noop */ }
             }
+            stopSoloPulse();
             paintHotel(); // restore full ambient opacity
             ambientPadding();
             // Starting the session over hands the camera back to the ambience —
@@ -4982,18 +5145,23 @@ export default function AtlasShell({
           applyLayers() {
             const z = map.getZoom();
             for (const { key } of LEGEND) {
-              const off = hiddenRef.current.has(key);
+              const dim = mutedRef.current.has(key);
               for (const id of layerIdsFor(key)) {
                 if (!map.getLayer(id)) continue;
-                // Route layers answer to the zoom gate as well as the legend;
-                // point layers answer to the legend alone.
-                const vis = id.startsWith("r_")
-                  ? routeVis(z, key)
-                  : off ? "none" : "visible";
-                try { map.setLayoutProperty(id, "visibility", vis); }
-                catch { /* mid-restyle: layers momentarily gone */ }
+                // Visibility is the zoom gate's business only. What the legend
+                // does now is fade — see MUTE_OPACITY.
+                if (id.startsWith("r_")) {
+                  try { map.setLayoutProperty(id, "visibility", routeVis(z)); }
+                  catch { /* mid-restyle: layers momentarily gone */ }
+                }
+                dimLayer(map, id, dim);
               }
             }
+            // The pulse follows the focus, and only the focus: it is started
+            // and stopped from here so there is one place that knows which
+            // collection is being looked at, rather than a second latch beside
+            // the muted set that could disagree with it.
+            startSoloPulse(soloRef.current ?? "");
           },
         };
         apiRef.current = api;
@@ -5039,6 +5207,7 @@ export default function AtlasShell({
       // the route drawing inside wireHandlers().
       focusRouteRef.current?.stopFly();
       cancelAnimationFrame(pulseRAF);
+      cancelAnimationFrame(soloRAF);
       stopFlowRef.current?.();
       stopFlowRef.current = null;
       clearTimeout(loadTimeout);
@@ -5361,38 +5530,43 @@ export default function AtlasShell({
   }, [isFull]);
 
   /**
-   * The legend is a SOLO control, not seven independent switches.
+   * The legend is a FOCUS control, not eight independent switches.
    *
-   * Hiding one collection out of seven barely changes a globe with 2,501
-   * hotels on it — nobody browsing the home map wants "everything except the
-   * jets". What they want is "just the yachts", and reaching that through
-   * toggles cost six clicks. So a click isolates: the row you press stays, the
-   * rest go. Pressing the isolated row again (or "Show all") brings them back,
-   * which keeps the gesture reversible with the same finger that made it.
+   * Turning one collection off barely changes a globe carrying 2,240 hotels —
+   * nobody browsing the home map wants "everything except the jets". What they
+   * want is "just the yachts", and reaching that through toggles cost seven
+   * clicks. So a click focuses: the row you press comes forward, the rest fall
+   * back. Pressing it again (or "Show all") returns them, which keeps the
+   * gesture reversible with the same finger that made it.
    *
-   * `hidden` remains the single source of truth exactly as before — solo is
-   * only a different way of computing it — so every repaint path that already
-   * reads hiddenRef (style.load, the route gate, ambient muting) keeps working
-   * untouched.
+   * "Fall back", not "disappear". The rest of the map is muted to MUTE_OPACITY
+   * and the focused collection's pins ring — two halves of one answer, and
+   * neither is sufficient alone. The mute says which pins are yachts; the ring
+   * says where they are, which matters most exactly when there are few of them
+   * and they are somewhere off in the corner of the frame.
+   *
+   * `muted` remains the single source of truth — focus is only a different way
+   * of computing it — so every repaint path that reads mutedRef (style.load,
+   * the painters, the plot) keeps working untouched.
    */
   function soloLayer(key: string) {
-    setHidden((prev) => {
+    setMuted((prev) => {
       const isSolo = !prev.has(key) && prev.size === legendKeys.length - 1;
       return isSolo ? new Set() : new Set(legendKeys.filter((k) => k !== key));
     });
   }
 
   function showAllLayers() {
-    setHidden(new Set());
+    setMuted(new Set());
   }
 
   // Push the legend's state onto the map. An effect rather than a call inside
-  // the click handler because `hidden` is set functionally above — the handler
+  // the click handler because `muted` is set functionally above — the handler
   // does not know what it produced, and the map must follow the state that
   // actually landed.
   useEffect(() => {
     apiRef.current?.applyLayers();
-  }, [hidden]);
+  }, [muted]);
 
   const showFallback = !token || mapFailed;
   // Every collection, always — see the note on the legend below. On a
@@ -5401,14 +5575,15 @@ export default function AtlasShell({
   const legendRows = scope === "all" ? LEGEND : LEGEND.filter((it) => it.key === type);
   const legendKeys = legendRows.map((it) => it.key);
   /**
-   * The one collection currently isolated, if any — derived from `hidden`
+   * The one collection currently isolated, if any — derived from `muted`
    * rather than stored, so there is still exactly one source of truth and no
    * way for a "soloed" highlight to disagree with what the globe is drawing.
    */
   const soloKey =
-    legendKeys.length > 1 && hidden.size === legendKeys.length - 1
-      ? legendKeys.find((k) => !hidden.has(k)) ?? null
+    legendKeys.length > 1 && muted.size === legendKeys.length - 1
+      ? legendKeys.find((k) => !muted.has(k)) ?? null
       : null;
+  soloRef.current = soloKey;
 
   return (
     <div ref={shellRef} className={`atlas-map${isFull ? " fs" : ""}${photorealOn ? " photoreal" : ""}`}>
@@ -5703,13 +5878,13 @@ export default function AtlasShell({
             <div className="lgcap">Collections</div>
             {legendRows.map((it) => {
               const pending = !loaded.has(it.key);
-              const off = hidden.has(it.key);
+              const dim = muted.has(it.key);
               const solo = soloKey === it.key;
               return (
                 <button
                   key={it.key}
                   type="button"
-                  className={`lgi${off ? " off" : ""}${solo ? " solo" : ""}${pending ? " pending" : ""}`}
+                  className={`lgi${dim ? " dim" : ""}${solo ? " solo" : ""}${pending ? " pending" : ""}`}
                   aria-pressed={solo}
                   disabled={pending}
                   onClick={() => soloLayer(it.key)}
@@ -5717,8 +5892,8 @@ export default function AtlasShell({
                     pending
                       ? "Still loading"
                       : solo
-                        ? "Show every collection again"
-                        : `Show only ${it.label}`
+                        ? "Bring every collection forward again"
+                        : `Focus on ${it.label}`
                   }
                 >
                   <i style={{ background: it.color }} />
@@ -5734,7 +5909,7 @@ export default function AtlasShell({
                 type="button"
                 className="lgall"
                 onClick={showAllLayers}
-                disabled={!hidden.size}
+                disabled={!muted.size}
               >
                 Show all
               </button>
@@ -6285,7 +6460,98 @@ async function fetchHotelPage(offset: number, limit: number): Promise<{ total?: 
 
 // ── Mapbox loader + minimal typings ────────────────────────────────────────
 
+/**
+ * What each layer was authored to look like, by id.
+ *
+ * Muting a collection rewrites its opacity; un-muting has to put back the exact
+ * expression it replaced, and several of those are zoom interpolations the
+ * layer was born with rather than constants anything else remembers. Recorded
+ * on every addLayer call — including the ones that no-op because the layer is
+ * already there, since paintHotel recomputes its resting opacity from
+ * `subsetActive` and the newer value is the one a restore should use.
+ */
+const AUTHORED = new Map<string, { type: string; paint: Record<string, unknown> }>();
+
+/** The opacity properties a mute touches, per layer type. */
+const DIM_PROPS: Record<string, string[]> = {
+  circle: ["circle-opacity", "circle-stroke-opacity"],
+  line: ["line-opacity"],
+  heatmap: ["heatmap-opacity"],
+};
+
+/**
+ * An opacity value, scaled — keeping camera expressions camera expressions.
+ *
+ * The tempting one-liner is `["*", value, f]`, and Mapbox rejects it: for
+ * camera-only properties (heatmap-opacity among them) `["zoom"]` has to be the
+ * input of the OUTERMOST interpolate or step. So scale the output stops in
+ * place instead and hand back an expression of the same shape.
+ */
+function scaleOpacity(value: unknown, f: number): unknown {
+  if (typeof value === "number") return value * f;
+  if (Array.isArray(value) && value[0] === "interpolate") {
+    const out = value.slice(0, 3);
+    for (let i = 3; i < value.length; i += 2) {
+      out.push(value[i], (value[i + 1] as number) * f);
+    }
+    return out;
+  }
+  // An expression shape we did not author. A flat mute is still the right
+  // answer visually, and guessing at its structure is not.
+  return value == null ? f : f;
+}
+
+/**
+ * Set a layer's RESTING value for a property, and remember it as authored.
+ *
+ * For the handful of properties that are not final at addLayer time. The hotel
+ * field breathes in from nothing, so its spec says `circle-opacity: 0` and a
+ * frame later the real zoom ramp is written over it — which means the record
+ * addLayer took is of a transient, and the first un-mute would have restored
+ * the field to invisible. Anything whose resting value is decided after the
+ * layer exists has to come through here.
+ *
+ * Not for animation frames: a pulse writes opacity dozens of times a second and
+ * none of those values is what the layer should return to.
+ */
+function restPaint(map: MBMap, id: string, prop: string, value: unknown) {
+  const spec = AUTHORED.get(id);
+  if (spec) spec.paint[prop] = value;
+  try { map.setPaintProperty(id, prop, value); } catch { /* mid-restyle */ }
+}
+
+/** Fade one layer down to the mute, or back to exactly what it was. */
+function dimLayer(map: MBMap, id: string, dim: boolean) {
+  const spec = AUTHORED.get(id);
+  if (!spec || !map.getLayer(id)) return;
+  for (const prop of DIM_PROPS[spec.type] ?? []) {
+    // A property the layer never set is at the Mapbox default, which is 1 for
+    // every opacity here. Restoring it to 1 is therefore also correct.
+    const base = spec.paint[prop] ?? 1;
+    try {
+      map.setPaintProperty(id, prop + "-transition", { duration: MUTE_MS });
+      map.setPaintProperty(id, prop, dim ? scaleOpacity(base, MUTE_OPACITY) : base);
+    } catch { /* mid-restyle: layers momentarily gone */ }
+  }
+}
+
 function addLayer(map: MBMap, spec: Record<string, unknown>, before?: string) {
+  AUTHORED.set(spec.id as string, {
+    type: spec.type as string,
+    /*
+     * A COPY, and this is the whole correctness of un-muting.
+     *
+     * Keeping the reference makes the record a live view of the layer's current
+     * paint rather than of the paint it was born with, and every later
+     * setPaintProperty — a mute, a pulse frame — rewrites the value the restore
+     * is supposed to put back. The symptom is that "Show all" leaves the map
+     * muted at whatever it was last faded to, and it only shows up against an
+     * implementation that stores the spec by reference. A one-level copy is
+     * enough: the values are expressions we replace wholesale, never edit in
+     * place.
+     */
+    paint: { ...((spec.paint ?? {}) as Record<string, unknown>) },
+  });
   if (map.getLayer(spec.id as string)) return;
   /*
    * Standard-family styles light OUR layers with the scene lighting model, so

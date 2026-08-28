@@ -198,7 +198,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
   safari: {
     type: "safari",
     label: "Safari & wildlife atlas",
-    nav: "Safari",
+    nav: "Safari Journeys",
     nounPlural: "safari and wildlife journeys",
     /*
      * The tagline moved off Africa with the collection.
@@ -207,8 +207,14 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
      * camp", which described the atlas exactly while its selector required an
      * African country — and became a promise the collection no longer keeps the
      * moment a Nat Hab Alaska bear camp or a White Desert Antarctic season is in
-     * it. The nav label stays "Safari" because that is the word a traveller
-     * arrives with; the tagline is where the wider truth goes.
+     * it. "Safari" is still the word a traveller arrives with, which is why it
+     * leads the nav label; the tagline is where the wider truth goes.
+     *
+     * The label itself is "Safari Journeys", matching the map legend. It was
+     * the bare noun while every other collection in the menu named a product —
+     * Rail Journeys, World Cruises, Private Jet Expeditions — so it read as a
+     * theme sitting in a list of things you can book, and the globe and the
+     * menu called the same collection two different names.
      */
     tagline: "Where the wildlife is — the migration and the Delta, the ice and the rainforest",
     base: process.env.NEXT_PUBLIC_SAFARI_ATLAS_BASE || "/maps/safari",

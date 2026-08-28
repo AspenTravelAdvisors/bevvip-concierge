@@ -33,7 +33,7 @@
     fire(type, e) { if (window.__stub.trace) window.__stub.trace.push(type); const L = listeners.get(this); (L[type] || []).slice().forEach((f) => { try { f(e || { type }); } catch (err) { console.error("[stub] handler threw for " + type, err); window.__stubErrors.push(String(err && err.stack || err)); } }); }
   }
   window.__stubErrors = [];
-  window.__stub = { sources: {}, layers: {}, camera: {}, calls: [] };
+  window.__stub = { sources: {}, layers: {}, order: [], camera: {}, calls: [] };
   class Map extends Evented {
     constructor(opts) {
       super();
@@ -73,9 +73,37 @@
     addSource(id, s) { window.__stub.sources[id] = s.data; }
     getSource(id) { const S = window.__stub.sources; return id in S ? { setData: (d) => { S[id] = d; } } : undefined; }
     removeSource(id) { delete window.__stub.sources[id]; }
-    addLayer(spec) { window.__stub.layers[spec.id] = spec; }
+    /*
+     * Layer ORDER is modelled, not just membership.
+     *
+     * `layers` is a bag keyed by id and answers "is it there"; z-order is the
+     * other half of what the shell asks Mapbox for, and it is the half that
+     * decides whether a jet pin is visible over a hotel cluster. `order` is the
+     * real stack, bottom-up, and addLayer honours beforeId the way Mapbox does
+     * (insert BENEATH the named layer; throw if it is not there — the throw is
+     * what AtlasShell's fallback exists for).
+     */
+    addLayer(spec, before) {
+      const O = window.__stub.order;
+      window.__stub.layers[spec.id] = spec;
+      const at = O.indexOf(spec.id);
+      if (at >= 0) O.splice(at, 1);
+      if (before != null) {
+        const i = O.indexOf(before);
+        if (i < 0) throw new Error("no layer " + before);
+        O.splice(i, 0, spec.id);
+        return;
+      }
+      O.push(spec.id);
+    }
     getLayer(id) { return window.__stub.layers[id]; }
-    removeLayer(id) { delete window.__stub.layers[id]; }
+    getStyle() { return { layers: window.__stub.order.map((id) => window.__stub.layers[id]) }; }
+    removeLayer(id) {
+      delete window.__stub.layers[id];
+      const O = window.__stub.order;
+      const i = O.indexOf(id);
+      if (i >= 0) O.splice(i, 1);
+    }
     setPaintProperty(id, k, v) { const l = window.__stub.layers[id]; if (l) (l.paint = l.paint || {})[k] = v; }
     setLayoutProperty(id, k, v) { const l = window.__stub.layers[id]; if (l) (l.layout = l.layout || {})[k] = v; }
     setFilter(id, f) { const l = window.__stub.layers[id]; if (l) l.filter = f; }

@@ -50,8 +50,16 @@ function between(open, close) {
 // let two of the three drift.
 const ranking = between("const Z_ORDER:", "// Selectable Mapbox basemaps");
 // The real inserter, including its fall back to the top when a beforeId has
-// gone. A stub of this would be the one line most worth getting wrong.
-const inserter = between("function addLayer(map: MBMap", "function setFog(");
+// gone. A stub of this would be the one line most worth getting wrong. Sliced
+// from AUTHORED because addLayer records into it on the way past; the muting
+// helpers that come along in the range are inert here (verify-legend-focus is
+// where they are exercised) and cost only the two constants they close over.
+const inserter = between("const AUTHORED = new Map<", "function setFog(");
+const muteConsts = ["MUTE_OPACITY", "MUTE_MS"].map((n) => {
+  const m = new RegExp(`^const ${n} = [\\d.]+;$`, "m").exec(SRC);
+  if (!m) throw new Error(`verify-layer-order: ${n} moved or changed shape`);
+  return m[0];
+}).join("\n");
 
 copyFileSync(join(ROOT, "lib/atlas-config.ts"), join(OUT, "atlas-config.ts"));
 copyFileSync(join(ROOT, "lib/types.ts"), join(OUT, "types.ts"));
@@ -60,7 +68,7 @@ writeFileSync(
   `/* eslint-disable */\n` +
     `import { COLLECTIONS } from "./atlas-config.js";\n` +
     `type MBMap = any;\n` +
-    `${ranking}\n${inserter}\n` +
+    `${muteConsts}\n${ranking}\n${inserter}\n` +
     `export { Z_ORDER, collectionOfLayer, stackBefore, addLayer, COLLECTIONS };\n`,
 );
 
