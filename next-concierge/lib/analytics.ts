@@ -26,6 +26,8 @@ export type AskSource =
   | "deeplink"
   | "dock"
   | "quickreply"
+  /** A next-move button under a results block. */
+  | "move"
   /** A map pin's popup — hotel field, or a plotted recommendation. */
   | "pin"
   /** A card in a collection's result list. */
@@ -154,4 +156,31 @@ export type BucketSource =
 /** Did anyone come back to the list they built? */
 export function bucketListOpened(size: number) {
   emit("bucket_list_opened", { size });
+}
+
+/* ── Things to do ───────────────────────────────────────────────────────────
+ *
+ * The Project Expedition layer (lib/experiences.js) has been in the build,
+ * working, since it was written, reachable only by a traveller typing "what is
+ * there to do in X" unprompted — so nobody knows whether it has ever run in
+ * production. That is the argument for measuring it before promoting it: these
+ * two events say whether the new entry points get used, and whether the
+ * catalogue answers when they do.
+ *
+ * `experiences_asked` fires on the offer being taken, and its `source` says
+ * which door worked. `experiences_returned` fires on what came back —
+ * `preferred` is the count of Private/Elevate picks, the advisor's own
+ * recommendations, and a run of zeroes there means we are promoting the
+ * generic catalogue rather than the curated half.
+ */
+
+/** Which door a "what is there to do" ask came through. */
+export type ExperienceSource = "chat-move" | "hotel-dossier" | "journey-dossier";
+
+export function experiencesAsked(source: ExperienceSource, place: string) {
+  emit("experiences_asked", { source, place: place || "none" });
+}
+
+export function experiencesReturned(total: number, preferred: number, unavailable: boolean) {
+  emit("experiences_returned", { total, preferred, unavailable });
 }

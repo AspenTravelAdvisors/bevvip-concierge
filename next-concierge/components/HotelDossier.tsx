@@ -27,8 +27,8 @@ import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip } from "@/lib/trip-state";
 import { programDomain } from "@/lib/atlas/adapters/hotel-programs";
 import { hotelBrandDomain } from "@/lib/atlas/adapters/hotel-brands";
-import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
-import { bookingClicked } from "@/lib/analytics";
+import { askAboutDays, askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
+import { bookingClicked, experiencesAsked } from "@/lib/analytics";
 import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
 import BucketListButton from "./BucketListButton";
 import type { TripState } from "@/lib/types";
@@ -189,6 +189,26 @@ export default function HotelDossier({
         trip,
       )
     : null;
+
+  /*
+   * The other question a traveller has on this screen.
+   *
+   * "Tell me about this hotel" is the one the dossier already answers; "and
+   * what would we do with the days?" is the one it has never offered, though
+   * the Guide can answer it with real tours and private guides. The city is
+   * right here, which is exactly what that lookup needs, so the ask goes out
+   * fully formed rather than making someone retype a place the page knows.
+   * Hidden when the record has no city to name.
+   */
+  const daysPlace = record?.city || record?.adminRegion || "";
+  const daysText = daysPlace
+    ? askAboutDays({
+        place: daysPlace,
+        country: record?.country,
+        anchor: name,
+        when: "around",
+      })
+    : "";
 
   const askText = askAboutProperty({
     name,
@@ -398,6 +418,20 @@ export default function HotelDossier({
         >
           ✦ Ask The Guide about this hotel
         </button>
+        {daysText && (
+          <button
+            type="button"
+            className="hd-days"
+            onClick={() => {
+              experiencesAsked("hotel-dossier", daysPlace);
+              if (!askGuide(daysText, "dossier")) {
+                window.location.assign(askGuideHref(daysText, "hotel-dossier"));
+              }
+            }}
+          >
+            What is there to do in {daysPlace}?
+          </button>
+        )}
         <button
           type="button"
           className="hd-advisor"

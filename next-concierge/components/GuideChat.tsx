@@ -19,9 +19,17 @@ import {
   loadConversation,
   saveConversation,
 } from "@/lib/conversation-store";
-import { askSent, resultsReturned, tourOpened, type AskSource } from "@/lib/analytics";
+import {
+  askSent,
+  experiencesAsked,
+  experiencesReturned,
+  resultsReturned,
+  tourOpened,
+  type AskSource,
+} from "@/lib/analytics";
 import { collectionsSummary } from "@/lib/atlas-config";
-import { registerGuideHost } from "@/lib/atlas/ask";
+import { askAboutDays, registerGuideHost } from "@/lib/atlas/ask";
+import { leadPlace } from "@/lib/guide-meta";
 import { openAdvisor, ADVISOR_CTA, ADVISOR_SLA } from "./AdvisorRequest";
 import ResultCards from "./ResultCards";
 
@@ -260,6 +268,13 @@ export default function GuideChat() {
               String(lead?.type ?? ""),
               (meta.tools ?? []).reduce((n, t) => n + (t.results?.length ?? 0), 0),
             );
+            if (meta.experiences) {
+              experiencesReturned(
+                meta.experiences.total ?? 0,
+                meta.experiences.preferredCount ?? 0,
+                !!meta.experiences.unavailable,
+              );
+            }
             // Broadcast to the Living Atlas so it fits + satellites the results —
             // unless the session was reset out from under this stream.
             if (typeof window !== "undefined" && genRef.current === gen) {
@@ -579,7 +594,9 @@ function Message({
             </div>
           </div>
         )}
-        {hasResults && turn.meta && <ChatMoves meta={turn.meta} turns={turns} busy={busy} />}
+        {hasResults && turn.meta && (
+          <ChatMoves meta={turn.meta} turns={turns} busy={busy} onPick={onPick} />
+        )}
       </div>
     </div>
   );
@@ -596,7 +613,36 @@ function Message({
 // Now: one label, every time, opening the one shared dialog. The category still
 // speaks — through HANDOFF_BLURB, in the explanation, where specificity helps
 // instead of costing recognition.
-function ChatMoves({ meta, turns, busy }: { meta: GuideMeta; turns: Turn[]; busy: boolean }) {
+function ChatMoves({
+  meta,
+  turns,
+  busy,
+  onPick,
+}: {
+  meta: GuideMeta;
+  turns: Turn[];
+  busy: boolean;
+  onPick: (text: string, source: AskSource) => void;
+}) {
+  /*
+   * The second move: the days on the ground.
+   *
+   * The Guide can ground real tours and private guides at a destination
+   * (search_experiences → Project Expedition), and the model is told not to
+   * deliver them unasked — an advisor who answers a hotel question with an
+   * activity list stops sounding like an advisor, and the call is a country-
+   * sized catalogue pull that would tax every reply to serve a minority of
+   * them. So the traveller still does the asking; this just makes the question
+   * visible, one tap, on the screen where the place is already named.
+   *
+   * Deterministic rather than prompted, because a model-emitted offer appears
+   * only when the model remembers to emit it — which is how a working feature
+   * came to be unreachable in the first place. Suppressed when the reply IS an
+   * experiences answer: offering what you just gave reads as a bug.
+   */
+  const days = meta.experiences ? null : leadPlace(meta.tools);
+  const daysAsk = days ? askAboutDays({ place: days.place, country: days.country }) : "";
+
   return (
     <div className="moves">
       <button
@@ -607,6 +653,19 @@ function ChatMoves({ meta, turns, busy }: { meta: GuideMeta; turns: Turn[]; busy
       >
         {ADVISOR_CTA}
       </button>
+      {days && daysAsk && (
+        <button
+          type="button"
+          className="move"
+          disabled={busy}
+          onClick={() => {
+            experiencesAsked("chat-move", days.place);
+            onPick(daysAsk, "move");
+          }}
+        >
+          What is there to do in {days.place}?
+        </button>
+      )}
       <span className="moves-hint">{ADVISOR_SLA} Nothing is booked until you say so.</span>
     </div>
   );

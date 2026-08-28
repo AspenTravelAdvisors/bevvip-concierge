@@ -179,3 +179,58 @@ export function askAboutBucketList(titles: string[]): string {
     " How do they compare, which would you put together into one trip, and what would you do first?"
   );
 }
+
+/* ── The days on the ground ─────────────────────────────────────────────────
+ *
+ * The Guide can ground real things to do at a destination — tours, private
+ * guides, day experiences — through `search_experiences` (lib/experiences.js,
+ * Project Expedition). That tool answers well and has been effectively
+ * unreachable, because the only door into it is a traveller typing "what is
+ * there to do in Ushuaia" unprompted, in a product whose every prompt teaches
+ * "name a destination and a season". Nobody phrases it that way here.
+ *
+ * These builders are that door, from the two screens where the question is
+ * already in the traveller's head: a property they are reading about, and a
+ * departure they are looking at with unplanned days on either end of it. The
+ * wording matters — the Guide's prompt opens this tool on an explicit ask
+ * ("what is there to do", "how to fill the days"), so the sentence says that
+ * plainly and carries the place and country the catalogue pull needs.
+ */
+
+export interface DaysSubject {
+  /** The city, port, or area the days are spent in. */
+  place: string;
+  country?: string | null;
+  /** What the days hang off: a property, a sailing, a journey. */
+  anchor?: string | null;
+  /**
+   * How the days sit against the anchor. "around" is a stay; "before"/"after"
+   * are the embarkation and disembarkation days of a journey, which is where
+   * this is most useful — every voyage has them and nobody plans them.
+   */
+  when?: "around" | "before" | "after";
+}
+
+export function askAboutDays(s: DaysSubject): string {
+  // The place is the whole question. A country on its own ("a few days in
+  // Italy") is not a day anyone can plan, and it is the query most likely to
+  // come back with a shapeless national catalogue — so no place, no ask.
+  const named = (s.place || "").trim();
+  if (!named) return "";
+  const where = [named, s.country && s.country !== named ? s.country : null]
+    .filter(Boolean)
+    .join(", ");
+
+  const tail =
+    " What is there to do there — tours, private guides, the kind of afternoon" +
+    " worth planning rather than the obvious sights?";
+
+  if (s.anchor && (s.when === "before" || s.when === "after")) {
+    const side = s.when === "before" ? "before" : "after";
+    return (
+      `We'll have a couple of days in ${where} ${side} ${s.anchor}.${tail}`
+    );
+  }
+  if (s.anchor) return `We'll be staying at ${s.anchor} in ${where}.${tail}`;
+  return `We'll have a few days in ${where}.${tail}`;
+}
