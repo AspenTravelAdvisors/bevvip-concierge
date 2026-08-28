@@ -2104,3 +2104,127 @@ inventory.
   exactly what the Virtuoso work implements, and somebody should rewrite the
   document around what was actually built. The same goes for the stack sections
   of the two project master documents.
+
+## The crawlable surface — entity pages and live answers (2026-08-28)
+
+The Virtuoso work made the atlas true. It did not make any of it **readable**,
+and that gap is the whole of this change.
+
+Before it: the answers surface was 24 hand-written pages, the sitemap held 147
+URLs, and the 2,240 properties behind every claim on those pages existed for a
+crawler only as a number in a sentence. The map is a client component, the
+property dossier fetches `/api/hotel/luxury-hotels/:id`, and `robots.txt`
+disallows `/api/` — so the supplier's own descriptions, the coordinates, the
+room counts, the year-stamped benefits and the live promotions were all
+invisible to search and to answer engines alike. A page whose entire claim is
+first-hand knowledge of specific hotels could not name one.
+
+### 1. Every property is a page
+
+`/hotels` → `/hotels/<country>` → `/hotels/<country>/<property>`, server-rendered
+from the merged feed, with `Hotel` + `BreadcrumbList` JSON-LD. 400 prebuilt at
+deploy across as many countries as possible, the rest on ISR for a day — the
+arrangement the villa detail pages already use. The sitemap went from 147 URLs
+to 2,504.
+
+Slugs are assigned once for the whole feed, not computed per record, and the one
+collision in the catalogue (two Oberoi Beach Resorts both addressed "Hurghada,
+Egypt") is broken by our stable `id`, lowest keeps the clean slug. That ordering
+is the point: a new colliding property cannot take an existing property's URL
+away, so a bookmarked link stays a link.
+
+Two things are deliberately NOT in the markup, and both are the kind of omission
+worth writing down so nobody adds them back as an improvement:
+
+- **`aggregateRating`.** The feed carries `reviews.total` and
+  `recommendedPercent` for 1,599 properties. They are Virtuoso ADVISOR reviews,
+  collected by the supplier, and "% who recommend" is not a rating on a scale.
+  Claiming them as our star rating is the kind of rich result that gets a site's
+  structured data ignored wholesale. The number is shown to a reader in prose,
+  with its source named, and kept out of the JSON-LD.
+- **`offers` / `priceRange`.** We hold no rates. The architecture's central rule
+  is that the language model is never the rate source; markup is not an
+  exception to it.
+
+### 2. The answers stopped stating counts and started asking for them
+
+`data/answers/*.js` no longer types numbers. `{{hotels:program=Marriott STARS}}`
+is a query against the shipped feed, resolved when the page renders
+(`lib/seo/facts.mjs` holds the semantics and no data; the Next pages and
+`scripts/verify-seo.mjs` are two loaders for one implementation).
+
+The drift this fixed had already happened, everywhere, in published and indexed
+copy: STARS 103 → 59, Bellini Club 22 → 3, Mandarin Oriental Fan Club 34 → 4,
+Virtuoso 1,970 → 1,866, Italy 244 → 217, and — the one where the classifier had
+been wrong rather than the supplier — **15 ski properties where the feed flags
+94**. Every one of those sentences was live on a page built to be quoted.
+
+Two other things each answer can now carry:
+
+- **`capsule`** — 40-90 words that answer the question standing alone, before
+  the long-form lead. It is what the `acceptedAnswer` says, and the selector the
+  `Article` block's `speakable` names. All 24 have one.
+- **`evidence`** — a query whose results render as a table of REAL properties,
+  each linked to its own page, with an `ItemList` of them in JSON-LD. This is
+  the part only the Virtuoso sync makes possible: a claim about "the Preferred
+  Partner properties" now arrives with the properties, and the sentence and the
+  table cannot disagree because they are the same query.
+
+### 3. One publisher, defined once
+
+`lib/seo/site.js` defines the agency and the site as `@id`-addressable nodes,
+emitted in the root layout on every page; everything else references them.
+`lib/answers.js` used to describe the publisher inline in `faqJsonLd`, a fourth
+spelling of "Aspen Travel Advisors" with nothing tying it to the other three.
+Schema moved to `lib/seo/answer-schema.js` so the registry stays free of the
+atlas — `robots.js` and `sitemap.js` import it and must not load the feed.
+
+Also added: `/llms.txt` (what is first-hand here, what is ours, and — loudly —
+that we hold no rates, so any price attributed to this site is invented), and
+`components/SiteFooter.tsx`, which is not decoration: every route into the
+inventory ran through SiteNav's Explore menu, which renders its links only after
+a click, so a crawler landing anywhere found three links and a map canvas. The
+footer goes in the document routes rather than the layout, because `.app` is
+pinned to `100dvh` and never scrolls — a footer there takes a strip off the map
+on every page.
+
+### 4. `verify:seo`, and why it is in the nightly job
+
+Three failures here are silent, and the third one bit during this very change:
+
+1. **A token that resolves to zero.** `{{hotels:program=Marriot STARS}}` — one
+   't' — is a valid query for a programme nothing is filed under. It resolves,
+   cleanly, to "0", and publishes "our atlas tracks 0 properties under Marriott
+   STARS". Caught by count, not by exception.
+2. **An evidence query matching nothing** — the claim keeps its sentence and
+   loses its table.
+3. **A surface that forgets to resolve at all.** The detail page resolved its
+   record and the answers index did not, so `/answers` and `/llms.txt` published
+   `{{hotels:program=Virtuoso}}` in their link summaries while the pages behind
+   those links read correctly. Resolving-is-possible and every-surface-resolves
+   are different claims; the second is only answerable from the built output, so
+   the check walks `.next/server/app` when a build is present and says out loud
+   when it is not. Every prose consumer now reads through `resolvedAnswers()` /
+   `resolvedAnswer()` rather than the raw registry.
+
+It runs in `npm run verify` and also as its own step in
+`.github/workflows/virtuoso-sync.yml`, after the shrink gate. That is the
+reason it exists twice: the published copy is now made of queries against the
+feed that job replaces, so a supplier retiring a programme breaks a sentence
+without touching a line of code, at 09:00 UTC, with nobody watching.
+
+### Still open here
+
+- **Villa and sailing counts are still typed.** `{{hotels:…}}` covers the hotel
+  feed and `{{collection:…}}` covers the shipped totals; "1,541 villas that
+  sleep eight or more under $2,000" and "555 Antarctic departures" are still
+  prose snapshots, because a villa or sailing term would pull the 7.3MB villa
+  file and the 4.9MB sailings file into the answers bundle. Worth doing behind
+  a build-time facts artifact rather than a live import.
+- **Only hotels have entity pages.** The same argument applies to the 3,662
+  sailings, the 467 yacht departures and the 274 safari journeys — all of which
+  now carry supplier detail nothing links to.
+- **`generateStaticParams` prebuilds 400 of 2,240.** Round-robin across
+  countries, so coverage is wide rather than deep. If crawl logs show ISR misses
+  on first crawl, raise it; the build already generates 681 pages in a few
+  minutes.

@@ -3,7 +3,9 @@
 // surface of the site, so no client JS is required to read any of it.
 
 import Link from "next/link";
-import { ALL_ANSWERS, answersByCategory, SITE_URL } from "@/lib/answers";
+import { SITE_URL } from "@/lib/answers";
+import { resolvedAnswers, resolvedAnswersByCategory } from "@/lib/seo/answer-facts";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title: "Answers — Straight Answers to the Questions Luxury Travelers Ask",
@@ -13,7 +15,10 @@ export const metadata = {
 };
 
 export default function AnswersIndex() {
-  const groups = answersByCategory();
+  // Resolved, not raw: these descriptions carry the same {{…}} fact tokens the
+  // pages do, and an unresolved token in a link summary is published text.
+  const groups = resolvedAnswersByCategory();
+  const ALL_ANSWERS = resolvedAnswers();
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -59,6 +64,7 @@ export default function AnswersIndex() {
           </ul>
         </section>
       ))}
+      <SiteFooter />
     </div>
   );
 }

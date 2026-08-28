@@ -75,43 +75,10 @@ export function answersByCategory() {
   }));
 }
 
-// FAQPage JSON-LD: the page's own question (answered by the lead paragraphs)
-// plus its FAQ items — the shape answer engines lift citations from.
-export function faqJsonLd(a) {
-  const main = [
-    {
-      "@type": "Question",
-      name: a.question,
-      acceptedAnswer: { "@type": "Answer", text: a.answer.join(" ") },
-    },
-    ...a.faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  ];
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: main,
-    url: `${SITE_URL}/answers/${a.slug}`,
-    dateModified: a.updated,
-    publisher: {
-      "@type": "Organization",
-      name: "Aspen Travel Advisors",
-      url: "https://aspentraveladvisors.com",
-    },
-  };
-}
-
-export function breadcrumbJsonLd(a) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Expedition Bucket List", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Answers", item: `${SITE_URL}/answers` },
-      { "@type": "ListItem", position: 3, name: a.question, item: `${SITE_URL}/answers/${a.slug}` },
-    ],
-  };
-}
+// JSON-LD for these pages lives in lib/seo/answer-schema.js.
+//
+// It used to live here, and it described the publisher inline — a fourth
+// spelling of "Aspen Travel Advisors" with no `@id` tying it to the three
+// others. Schema that references the site's identity graph belongs beside that
+// graph; this file is the registry, and robots.js and sitemap.js import it, so
+// it stays free of the atlas and of the identity nodes.

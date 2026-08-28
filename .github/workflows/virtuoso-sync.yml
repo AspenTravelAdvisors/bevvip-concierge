@@ -129,6 +129,18 @@ jobs:
         working-directory: next-concierge
         run: npm run verify:hotels
 
+      # The published copy is now made of queries against the feed this job just
+      # replaced, so a sync can break a sentence without touching a line of
+      # code: retire a programme and "{{hotels:program=Rosewood Elite}}" starts
+      # resolving to zero, in an indexed page whose whole value is being
+      # quotable. verify:seo re-resolves every token and every evidence query
+      # against the new data and refuses a run that would publish an empty
+      # claim. It belongs here rather than only in `npm run verify`, because
+      # this is the only path that changes the data with nobody watching.
+      - name: Verify the answer copy still says something true
+        working-directory: next-concierge
+        run: npm run verify:seo
+
       # This step always commits, and that is deliberate.
       #
       # The heartbeat in virtuoso-sync-status.json moves every night by design:

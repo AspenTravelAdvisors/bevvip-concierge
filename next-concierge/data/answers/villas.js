@@ -13,6 +13,8 @@ export const villaAnswers = [
     description:
       "371 Caribbean villas sleeping 12 or more, from $458/night — St. Martin, St. Lucia, Barbados, BVI and beyond, with real from-rates and how to choose an island for a big group.",
     updated: UPDATED,
+    capsule:
+      "The Caribbean islands with the deepest inventory of villas sleeping 12 or more are St. Martin (the Terres Basses estate zone), Barbados' west coast, St. Lucia's Cap Estate, the Dominican Republic's resort peninsulas and the British Virgin Islands. For a dozen guests a villa routinely costs less per bedroom than two hotel rooms.",
     answer: [
       "Our villa atlas currently holds 371 Caribbean villas that sleep 12 or more guests, with from-rates starting under $500 a night — proof that a villa for a dozen people routinely costs less per bedroom than two hotel rooms. The islands with the deepest big-group inventory are St. Martin (especially the Terres Basses estate zone), Barbados' west coast, St. Lucia's Cap Estate, the Dominican Republic's resort peninsulas, and the British Virgin Islands.",
       "For groups of twelve, the honest starting shortlist from the data: Tamarind Villa in St. Lucia (sleeps 14, 7 bedrooms, from $499/night), La Maison L'Ile in St. Martin (sleeps 12, from $458), Loblolly in the BVI (sleeps 14, from $728), Casabella in Barbados (sleeps 12, from $750), and Alizee in St. Martin, which stretches to 18 guests from $930. All are staffed or serviced, and all book through your advisor with the supplier's concierge included.",
@@ -85,6 +87,8 @@ export const villaAnswers = [
     description:
       "Running the real numbers on a 10-person family trip: five hotel rooms vs. one staffed villa, using live from-rates from 3,902 tracked villas — plus when the resort is still worth it.",
     updated: UPDATED,
+    capsule:
+      "For ten people the villa usually wins by a wide margin: five luxury-resort rooms at $700–$1,200 each run $3,500–$6,000 a night, while villas sleeping eight or more are widely available under $2,000 a night in total. Add a private chef at $200–$300 a day and the villa still lands at a third to a half of the resort bill.",
     answer: [
       "For ten people, the villa usually wins the arithmetic by a wide margin: five luxury-resort rooms at $700–$1,200 each run $3,500–$6,000 a night, while our atlas holds 1,541 villas that sleep eight or more for under $2,000 a night total — hundreds of them under $1,000. Add a private chef (roughly $200–$300/day plus groceries) and the villa still typically lands at a third to a half of the resort bill, with a kitchen, laundry, and no one sleeping on a rollaway.",
       "The resort wins on different axes: kids' clubs and instant friends for children, restaurants without decisions, service that materializes without being organized, and — non-trivially — nobody in the family is the de facto innkeeper. The honest answer is usually a split trip: villa for the together-time, two resort nights at the end for the towel-boy decompression.",
@@ -146,6 +150,8 @@ export const villaAnswers = [
     description:
       "1,541 villas under $2,000 a night sleeping eight or more — where they cluster (Colorado, Hawaii, Italy, Barbados, St. Martin) and how to pick well at this price point.",
     updated: UPDATED,
+    capsule:
+      "Villas that sleep eight or more under $2,000 a night are the sweet spot of the market, and the inventory clusters in Colorado ski country, Hawaii, Italy, Florida, France and the value Caribbean — Barbados, St. Martin and St. Barths. Per person per night that is a private staffed house below the price of a mid-tier hotel room.",
     answer: [
       "This is the sweetest spot in the villa market: our atlas currently lists 1,541 villas that sleep eight or more with from-rates under $2,000 a night — which per-person, per-night puts a private staffed house below a mid-tier hotel room. The inventory clusters where you'd hope: Colorado ski country (200 villas — Vail, Beaver Creek, Breckenridge), Hawaii (189), Italy (112 — Tuscany and points south), Florida (108), France (93), and the Caribbean's value islands, led by Barbados (73), St. Martin (69) and — at the style end — St. Barths (54).",
       "At this price the skill isn't finding a villa; it's filtering 1,541 of them. The three questions that do most of the work: walk-to-something or gated-privacy? staffed-daily or weekly-service? and — the one people skip — how far is the beach/lift/town in minutes, not miles.",

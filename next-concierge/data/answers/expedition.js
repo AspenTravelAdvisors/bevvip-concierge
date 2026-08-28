@@ -14,6 +14,8 @@ export const expeditionAnswers = [
     description:
       "How to pick a first Antarctica cruise: fly-the-Drake vs. sailing, which month, which ship size, and which operators we recommend — from a fleet of 555 tracked Antarctic sailings.",
     updated: UPDATED,
+    capsule:
+      "For a first Antarctica trip, book a 10–12 day Antarctic Peninsula expedition on a ship carrying 200 guests or fewer, departing in December or January. Choose Lindblad–National Geographic, Quark or Aurora for the adventure-forward version, or Silversea, Seabourn or Ponant if the polar day should end with a butler and a wine list.",
     answer: [
       "For a first Antarctica trip, book a classic 10–12 day Antarctic Peninsula expedition on a ship carrying 200 guests or fewer, in December or January, with an operator whose expedition team — not just the ship — is the product: Lindblad–National Geographic, Quark, or Aurora for the adventure-forward version; Silversea, Seabourn or Ponant if you want the polar day to end with a butler and a proper wine list.",
       "Skip the longer South Georgia + Falklands combinations the first time (magnificent, but 18–23 days), and decide early on the one question that shapes everything else: sail the Drake Passage both ways, or fly over it from Punta Arenas and board in Antarctica. The Expedition Bucket List atlas currently tracks 555 Antarctic departures across eight expedition lines, so there is almost always a sailing that fits your dates.",
@@ -93,6 +95,8 @@ export const expeditionAnswers = [
     description:
       "Guide-to-guest ratios compared across 29 luxury expedition ships — Quark Ultramarine, Aurora, Lindblad, Seabourn, Silversea and more, with published expedition-team sizes.",
     updated: UPDATED,
+    capsule:
+      "Quark's Ultramarine carries the deepest expedition bench in the polar fleet — 37 guides for 199 guests, roughly one per 5–6 — followed by Aurora Expeditions at about 1:7 and Quark's smaller ships at 1:7–1:9. Lindblad–National Geographic runs about 1:9 but adds a certified photo instructor and an undersea team on every polar sailing.",
     answer: [
       "Among the major polar fleets, Quark's Ultramarine carries the deepest bench — a 37-person expedition team for 199 guests, roughly one guide per 5–6 guests — followed by Aurora Expeditions (about 1:7 on Greg Mortimer and Sylvia Earle) and Quark's smaller ships at about 1:7–1:9. Lindblad–National Geographic runs about one naturalist per 9–10 guests but supplements the ratio with specialists: a certified photo instructor on every polar sailing and an undersea team on many.",
       "In the Galápagos the math is regulated: the national park requires at least one licensed naturalist per 16 guests, and the luxury fleet beats it — Silver Origin advertises about 1:10, and Aqua Mare's 16-guest superyacht runs private-guide territory.",
@@ -161,6 +165,8 @@ export const expeditionAnswers = [
     description:
       "The expedition lines and itineraries serious photographers should book: Lindblad's Nat Geo photo program, light seasons in Antarctica and the Arctic, and which ships help (or hurt) your shooting.",
     updated: UPDATED,
+    capsule:
+      "For a photography-led expedition, book Lindblad–National Geographic: a certified photo instructor sails every departure, National Geographic photographers join selected ones, and the onboard culture is built around the craft. Ponant and Silversea offer better light-to-luxury ratios; Quark's helicopters on Ultramarine buy aerial angles nothing else in the fleet can reach.",
     answer: [
       "Lindblad–National Geographic is the category leader for photographers: a certified photo instructor sails on every expedition, National Geographic photographers join select departures, and the onboard culture — lectures, editing help, gear lockers, an undersea team feeding you footage — is built around the craft. If your trip is primarily a photography trip, start there.",
       "Beyond the brand, book for light and access: Antarctica in late February–March (low golden light, whales, no midnight glare), Svalbard in June–July for polar bears on pack ice, and the Galápagos any month for wildlife that refuses to move away from your lens. Prefer ships under 200 guests — more landings, longer landings — and itineraries with Zodiac-cruising days, which put you at water level where the pictures are.",
@@ -225,6 +231,8 @@ export const expeditionAnswers = [
     description:
       "The smallest ships in the luxury expedition fleet, from a 16-guest Galápagos superyacht to 138-guest polar ships — and the IAATO rules that make ship size the most important booking decision in Antarctica.",
     updated: UPDATED,
+    capsule:
+      "The smallest true luxury expedition ships are Aqua Mare (16 guests), National Geographic Islander II (48) and Silver Origin (100) in the Galápagos; and in polar waters National Geographic Orion (102), Aurora's Sylvia Earle and Greg Mortimer (about 130), Quark's Ocean Explorer (134) and Lindblad's Endurance and Resolution (138). Under 200 guests is where landings stop being rotated.",
     answer: [
       "The smallest true luxury expedition vessels are Aqua Mare (16 guests, Galápagos), National Geographic Islander II (48, Galápagos), Silver Origin (100, Galápagos), and in polar waters National Geographic Orion (102), Aurora's Sylvia Earle and Greg Mortimer (about 130), Quark's Ocean Explorer (134) and Lindblad's NG Endurance and NG Resolution (138).",
       "Size is not a taste question in Antarctica — it's arithmetic. IAATO rules allow a maximum of 100 guests ashore at any moment and bar ships over 500 guests from landing anyone at all. A 130-guest ship can put essentially everyone ashore in one go, twice a day; a 450-guest ship rotates you through the same window. Under 200 guests is the line that keeps the continent unrationed.",
@@ -297,6 +305,8 @@ export const expeditionAnswers = [
     description:
       "An advisor's honest comparison of the three most-asked-about luxury expedition lines: who each one is actually for, how the ships differ, and how to choose between them.",
     updated: UPDATED,
+    capsule:
+      "Lindblad–National Geographic is the expedition with the best faculty, Ponant the one with the best kitchen, and Silversea the one with the best butler. All three run the same itineraries under the same IAATO rules; travelers regret them for culture rather than quality — booking Lindblad wanting champagne, or Silversea wanting a second lecture on krill.",
     answer: [
       "Shortest honest version: Lindblad–National Geographic is the expedition with the best faculty, Ponant is the expedition with the best kitchen, and Silversea is the expedition with the best butler. All three are excellent; nobody regrets any of them for the itinerary. People regret them for the culture — booking Lindblad wanting champagne, or Silversea wanting a second lecture on krill.",
       "Choose Lindblad if the point of the trip is to understand what you're looking at. Choose Ponant if you want the wilderness delivered in French — cuisine, cellar, design — and access to Le Commandant Charcot, the only luxury icebreaker that reaches the North Pole. Choose Silversea if you want polar expedition logistics wrapped in the same suite-and-butler service you'd get on their classic fleet, with door-to-door pricing and a fly-the-Drake option.",
@@ -305,7 +315,7 @@ export const expeditionAnswers = [
       {
         h2: "Side by side",
         table: {
-          caption: "Fleet figures from operator materials; sailing counts from our atlas, July 2026 (3,662 tracked expedition departures).",
+          caption: "Fleet figures from operator materials; sailing counts from our atlas ({{collection:cruise}} tracked expedition departures).",
           columns: ["", "Lindblad–Nat Geo", "Ponant", "Silversea Expeditions"],
           rows: [
             ["Sailings tracked in our atlas", "1,194", "588", "177"],
@@ -365,6 +375,8 @@ export const expeditionAnswers = [
     description:
       "Choosing a luxury Galápagos operator: Lindblad's three-ship program, Silversea's Silver Origin, and Aqua Mare's 16-guest superyacht — itineraries, guide ratios, and who each suits.",
     updated: UPDATED,
+    capsule:
+      "The Galápagos choice is a size choice. Lindblad–National Geographic runs the deepest program with the strongest naturalist bench on ships of 48 and 96 guests. Silversea's 100-guest Silver Origin is the plushest purpose-built ship in the archipelago. Aqua Expeditions' 16-guest Aqua Mare is the closest thing to a private Galápagos.",
     answer: [
       "The Galápagos choice is really a size choice. Lindblad–National Geographic runs the deepest program in the islands (635 departures tracked in our atlas across ships of 48 and 96 guests) with the strongest naturalist bench and family programming. Silversea's Silver Origin (100 guests) is the plushest purpose-built ship in the archipelago — butlers, a 1:10 guide ratio, Ecuadorian fine dining. Aqua Expeditions' Aqua Mare takes 16 guests on a genuine superyacht: the closest thing to a private Galápagos.",
       "Wildlife access is effectively identical — the national park assigns every vessel fixed itineraries and licensed naturalists, and the animals are equally indifferent to everyone. You're choosing the vessel you return to at lunch, not the islands you see.",
@@ -427,6 +439,8 @@ export const expeditionAnswers = [
     description:
       "How the three great Arctic itineraries differ — polar bears in Svalbard, ice-fjord Greenland, and the historic Northwest Passage — and which to book first, from 416 tracked Arctic sailings.",
     updated: UPDATED,
+    capsule:
+      "Book Svalbard first: it concentrates the most Arctic per day — bears on pack ice, walrus haul-outs, bird cliffs, glacier fronts — into a 7–10 day circumnavigation from Longyearbyen. Greenland is the scenery trip, best at 9–14 days. The Northwest Passage is the 17–24 day expedition-of-a-lifetime tier, and the one to leave for last.",
     answer: [
       "Book Svalbard first. It concentrates the most Arctic per day — polar bears hunting on pack ice, walrus haul-outs, bird cliffs, glacier fronts — into a 7–10 day circumnavigation from an easy gateway (Longyearbyen, three hours from Oslo). Greenland is the scenery trip: the biggest fjords, icebergs and Inuit settlements, best as a 9–14 day west-coast or east-coast run. The Northwest Passage is the expedition-of-a-lifetime tier: 17–24 days of genuine route-finding through Canadian High Arctic history, for travelers who've already done a polar trip and want the real thing.",
       "Our atlas currently tracks 416 Arctic-region departures, with the season compressed into roughly May–September — Svalbard bears peak June–July, Greenland light peaks August, and the Passage runs late August–September when the ice opens.",
@@ -489,6 +503,8 @@ export const expeditionAnswers = [
     description:
       "Which operators and ships offer sea kayaking, overnight ice camping, submarine dives and helicopter flightseeing in Antarctica — with capacity limits and booking lead times.",
     updated: UPDATED,
+    capsule:
+      "Kayaking is offered by nearly every serious Antarctic operator, but in small paid programs of 10–16 paddlers that sell out months ahead. Overnight ice camping is reliably run by Quark and Aurora. Submersibles are Seabourn's — Venture and Pursuit each carry two six-guest subs. Helicopters are Quark's, on Ultramarine.",
     answer: [
       "Kayaking is offered by nearly every serious operator — Quark, Aurora, Lindblad, Silversea, Seabourn, Ponant and others — but only in small paid programs (often 10–16 paddlers per sailing) that sell out months ahead. Overnight ice camping is rarer: Quark and Aurora are the reliable names. Submersibles are Seabourn's card — Venture and Pursuit each carry two six-guest subs. Helicopters are Quark's — Ultramarine carries two, flying heli-hiking and flightseeing programs nothing else in the fleet can match.",
       "The rule across all of it: adventure options are capacity-capped, weather-dependent, and booked at reservation time, not on board. If the polar plunge is the only add-on you want, relax — everyone offers that, weather permitting, free.",
@@ -549,6 +565,8 @@ export const expeditionAnswers = [
     description:
       "Whether luxury expedition lines like Seabourn, Silversea and Ponant deliver a genuine expedition compared with Quark, Aurora and Lindblad — what you gain, what you trade.",
     updated: UPDATED,
+    capsule:
+      "Yes, the luxury expedition ships are real expedition ships: Seabourn's and Silversea's carry 20-plus-person expedition teams, proper Zodiac fleets and ice-classed hulls, and land guests under the same IAATO rules as anyone else. What they trade is opportunism — 200–264 guests means rotated landings and a service schedule that sits less easily with weather that changes by the hour.",
     answer: [
       "Yes — it's real. Seabourn's and Silversea's expedition ships carry 20-plus-person expedition teams, proper Zodiac fleets and PC6 ice-classed hulls, and they land you on the same beaches under the same IAATO rules as anyone else. The penguins do not check your thread count. What the luxury tier trades is a degree of expedition opportunism: bigger ships (200–264 guests) mean rotated landings, and a service schedule built around dinner sits less comfortably with 'the bears are here NOW' than a field-first operation like Quark or Aurora.",
       "The honest framing isn't real vs. fake — it's expedition-first vs. comfort-first, and where you want the compromise to land on the days when weather forces one.",

@@ -13,8 +13,10 @@ export const journeyAnswers = [
     description:
       "How travel advisors are paid, when they cost nothing extra, when fees apply, and the benefit math at 2,500 luxury hotels — an honest answer to the most-asked question in luxury travel.",
     updated: UPDATED,
+    capsule:
+      "No. For luxury hotels, cruises and villas you pay the same published rate, the supplier pays the advisor a commission out of its marketing budget, and the advisor's programs add benefits on top — upgrade priority, daily breakfast and property credits typically worth $100 or more a night. Complex custom itineraries are the exception, where a planning fee is normal.",
     answer: [
-      "For luxury hotels, cruises and villas: no — in most cases you pay the same published rate you'd find yourself, the supplier pays the advisor a commission from its marketing budget, and the advisor's programs add benefits on top. At the 2,240 hotels in our atlas, an advisor booking layers upgrade priority, daily breakfast, and property credits (typically $100+) onto the hotel's own flexible rate — value the DIY booking simply doesn't receive. On expedition cruises and villas the rate parity works the same way.",
+      "For luxury hotels, cruises and villas: no — in most cases you pay the same published rate you'd find yourself, the supplier pays the advisor a commission from its marketing budget, and the advisor's programs add benefits on top. At the {{collection:hotel}} hotels in our atlas, an advisor booking layers upgrade priority, daily breakfast, and property credits (typically $100+) onto the hotel's own flexible rate — value the DIY booking simply doesn't receive. On expedition cruises and villas the rate parity works the same way.",
       "Where fees do exist, they're for labor, not access: many advisors (ours included) charge planning fees for complex multi-stop itineraries, air-ticketing, or bespoke trip design — disclosed up front, often credited against the trip. The scenario where DIY genuinely wins is narrow: prepaid nonrefundable discount rates, points redemptions, and opaque-channel gambles, all of which trade away flexibility, benefits, or certainty.",
     ],
     sections: [
@@ -61,7 +63,7 @@ export const journeyAnswers = [
       },
       {
         q: "How does the advisor relationship work?",
-        a: "The Guide (our AI concierge) helps you explore the atlas — 2,240 hotels, 3,662 expedition sailings, 3,902 villas — and a human advisor takes over for pricing, program benefits, and the booking itself. Ask The Guide anything; it will tell you when a human should take the wheel.",
+        a: "The Guide (our AI concierge) helps you explore the atlas — {{collection:hotel}} hotels, {{collection:cruise}} expedition sailings, {{collection:villa}} villas — and a human advisor takes over for pricing, program benefits, and the booking itself. Ask The Guide anything; it will tell you when a human should take the wheel.",
       },
     ],
     related: [
@@ -79,15 +81,17 @@ export const journeyAnswers = [
     description:
       "The 250 world cruise and grand voyage departures we track across 13 lines — Regent, Silversea, Seabourn, Crystal, Oceania, Viking, Cunard and more — with realistic pricing and the 12–24 month booking reality.",
     updated: UPDATED,
+    capsule:
+      "A full circumnavigation runs 110–180 days and is sold by roughly a dozen lines, from Princess and Holland America at the accessible end through Viking and Oceania in the middle to Regent, Silversea, Seabourn and Crystal at the top. Most guests sail a 15–60 day segment instead. Book 18–24 months ahead; the best cabins go at launch.",
     answer: [
-      "Our world-cruise atlas currently tracks 250 world cruises and grand voyages across 13 lines — Oceania, Azamara, Regent, Viking, Crystal, Silversea, Seabourn, Holland America, Princess, Explora, Cunard, Windstar and Lindblad. Full circumnavigations run roughly 110–180 days (the current longest in our data: Oceania Vista's 245-day Epic Global Adventure); most lines also sell them in 15–60 day segments, which is how the majority of guests actually experience them.",
+      "Our world-cruise atlas currently tracks {{collection:worldcruise}} world cruises and grand voyages across 13 lines — Oceania, Azamara, Regent, Viking, Crystal, Silversea, Seabourn, Holland America, Princess, Explora, Cunard, Windstar and Lindblad. Full circumnavigations run roughly 110–180 days (the current longest in our data: Oceania Vista's 245-day Epic Global Adventure); most lines also sell them in 15–60 day segments, which is how the majority of guests actually experience them.",
       "Money, honestly: entry-level full world cruises start around $40,000–$60,000 per person (Princess, Holland America, mainstream Cunard cabins); the premium tier (Oceania, Viking, Azamara) runs roughly $60,000–$100,000; and the luxury all-inclusives (Regent, Silversea, Seabourn, Crystal, Explora) begin near $100,000 and climb past $400,000 in top suites. Book 12–24 months out — the best cabins on marquee sailings sell on opening day, with past-guest waitlists ahead of you.",
     ],
     sections: [
       {
         h2: "Which line fits which circumnavigator",
         table: {
-          caption: "From the 250 world-cruise departures in our atlas, July 2026.",
+          caption: "From the {{collection:worldcruise}} world-cruise departures in our atlas.",
           columns: ["Tier", "Lines", "Who it's for"],
           rows: [
             ["Luxury all-inclusive", "Regent, Silversea, Seabourn, Crystal, Explora", "Everything-in fares (air, excursions, gratuities on some); suite living for four months"],
@@ -137,9 +141,11 @@ export const journeyAnswers = [
     description:
       "The great sleeper trains ranked and compared — Venice Simplon-Orient-Express, La Dolce Vita, Belmond's Scotland and Peru trains, Rocky Mountaineer and Asia's classics — from 135 tracked rail journeys.",
     updated: UPDATED,
+    capsule:
+      "The luxury rail canon: the Venice Simplon-Orient-Express for the definitive one-night journey, La Dolce Vita Orient Express for Italy, Belmond's Royal Scotsman for the Highlands and Andean Explorer for Peru, Rovos Rail and the Blue Train in South Africa, Japan's ballot-only Seven Stars and Shiki-shima, and the Glacier Express Excellence Class through the Alps.",
     answer: [
       "The canon, ranked by how often they reward the fare: the Venice Simplon-Orient-Express (Belmond) remains the definitive one-night masterpiece — Paris/London to Venice in 1920s carriages, the single best first luxury train; La Dolce Vita Orient Express is the new Italian counterpoint, running Rome-based loops in midcentury-modern style; Belmond's Royal Scotsman (Highlands, whisky, 40 guests) and Andean Explorer (Cusco–Titicaca–Arequipa, the highest luxury sleeper on earth) own their landscapes; and Rocky Mountaineer (daylight-only, hotel nights) is the right answer for the Canadian Rockies and travelers who want scenery without sleeping on rails.",
-      "Our rail atlas tracks 135 luxury rail journeys and rail-centered itineraries worldwide — including Japan by rail (where the ultra-exclusive Seven Stars and Shiki-shima run by ballot), the Alps by Glacier Express Excellence Class, and multi-country itineraries that thread trains into a larger trip, which is how we most often deploy them.",
+      "Our rail atlas tracks {{collection:train}} luxury rail journeys and rail-centered itineraries worldwide — including Japan by rail (where the ultra-exclusive Seven Stars and Shiki-shima run by ballot), the Alps by Glacier Express Excellence Class, and multi-country itineraries that thread trains into a larger trip, which is how we most often deploy them.",
     ],
     sections: [
       {
@@ -193,8 +199,10 @@ export const journeyAnswers = [
     description:
       "Private crewed charter vs. the new hotel-brand yachts — Four Seasons Yachts, Ritz-Carlton Yacht Collection, Aman at sea, Orient Express Corinthian — costs, control and which fits your group.",
     updated: UPDATED,
+    capsule:
+      "Book a hotel-brand yacht cruise — Ritz-Carlton, Four Seasons, Orient Express — when you want yacht life without yacht responsibility, at roughly $1,500–$4,000 a night for two. Charter privately when the group is the point: a crewed six-cabin yacht runs $150,000–$400,000 a week plus about 30–35% in expenses, and the itinerary, chef and guest list answer to you.",
     answer: [
-      "Book the yacht cruise when you want yacht life without yacht responsibility: the hotel-brand fleet — Ritz-Carlton Yacht Collection, Four Seasons Yachts, Orient Express's Corinthian, and Aman's forthcoming Amanclipper era — sells suite-level cabins from roughly $1,500–$4,000 per night for two, with restaurants, spas, marinas off the stern and zero decisions required. Our yacht atlas tracks 374 sailings across these four brands. Charter privately when the group is the point: a crewed 6-cabin yacht for 8–12 guests runs about $150,000–$400,000+ per week plus roughly 30–35% for fuel, food, dockage and gratuity (the APA) — which per-person, per-night lands surprisingly close to two top suites on a brand yacht, except the itinerary, the chef and the guest list answer to you.",
+      "Book the yacht cruise when you want yacht life without yacht responsibility: the hotel-brand fleet — Ritz-Carlton Yacht Collection, Four Seasons Yachts, Orient Express's Corinthian, and Aman's forthcoming Amanclipper era — sells suite-level cabins from roughly $1,500–$4,000 per night for two, with restaurants, spas, marinas off the stern and zero decisions required. Our yacht atlas tracks {{collection:yacht}} sailings across these four brands. Charter privately when the group is the point: a crewed 6-cabin yacht for 8–12 guests runs about $150,000–$400,000+ per week plus roughly 30–35% for fuel, food, dockage and gratuity (the APA) — which per-person, per-night lands surprisingly close to two top suites on a brand yacht, except the itinerary, the chef and the guest list answer to you.",
       "Rule of thumb: fewer than 6 people or a first taste of yacht travel → the brand yachts. Eight-plus people, a milestone, or strong opinions about anchorages → charter.",
     ],
     sections: [

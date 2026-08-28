@@ -51,7 +51,8 @@
     "sync:virtuoso-tours": "node scripts/sync-virtuoso-tours.mjs",
     "merge:virtuoso-journeys": "node scripts/merge-virtuoso-journeys.mjs",
     "audit:listings": "node scripts/audit-listings.mjs",
-    "verify:listings": "node scripts/audit-listings.mjs --strict"
+    "verify:listings": "node scripts/audit-listings.mjs --strict",
+    "verify:seo": "node scripts/verify-seo.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

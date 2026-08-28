@@ -1,17 +1,30 @@
 // /answers/[slug] — one question, answered. Statically generated for every
-// registered answer; the full text (lead answer, sections, tables, FAQs) is
-// server-rendered HTML with FAQPage + BreadcrumbList JSON-LD so answer
-// engines can read and cite it without executing anything.
+// registered answer; the full text (capsule, lead answer, sections, tables,
+// live evidence, FAQs) is server-rendered HTML with FAQPage + Article +
+// BreadcrumbList + ItemList JSON-LD so answer engines can read and cite it
+// without executing anything.
+//
+// Two things changed when Virtuoso became the supplier of record:
+//
+//   1. The copy no longer hard-codes counts. `{{hotels:program=Marriott
+//      STARS}}` is resolved from the shipped feed at render, so a sentence
+//      cannot outlive the number in it.
+//   2. An answer can carry an `evidence` query, and the page renders the actual
+//      properties that satisfy it — named, linked to their own pages, and
+//      counted. A claim about "the Preferred Partner properties" now arrives
+//      with the properties.
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { answerParams, SITE_URL } from "@/lib/answers";
 import {
-  getAnswer,
-  answerParams,
   faqJsonLd,
+  articleJsonLd,
   breadcrumbJsonLd,
-  SITE_URL,
-} from "@/lib/answers";
+  evidenceJsonLd,
+} from "@/lib/seo/answer-schema";
+import { answerEvidence, resolvedAnswer } from "@/lib/seo/answer-facts";
+import SiteFooter from "@/components/SiteFooter";
 
 export const dynamicParams = false;
 
@@ -21,7 +34,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const a = getAnswer(slug);
+  const a = resolvedAnswer(slug);
   if (!a) return {};
   return {
     title: a.title,
@@ -32,6 +45,7 @@ export async function generateMetadata({ params }) {
       description: a.description,
       type: "article",
       url: `${SITE_URL}/answers/${a.slug}`,
+      modifiedTime: a.updated,
     },
   };
 }
@@ -60,10 +74,60 @@ function AnswerTable({ table }) {
   );
 }
 
+/**
+ * The properties behind the claim.
+ *
+ * Deliberately a table of entities rather than prose: every row links to a page
+ * that carries the supplier's own description, coordinates, benefit list and
+ * live offers, which is what turns a general answer into one an engine can
+ * follow to a specific, checkable fact.
+ */
+function Evidence({ evidence }) {
+  return (
+    <section className="answers-evidence">
+      <h2>{evidence.h2}</h2>
+      {evidence.note && <p>{evidence.note}</p>}
+      <div className="answers-table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Where</th>
+              <th>Rooms</th>
+              <th>Benefits listed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {evidence.rows.map((r) => (
+              <tr key={r.id}>
+                <th scope="row">
+                  <Link href={r.href}>{r.name}</Link>
+                </th>
+                <td>{r.where}</td>
+                <td>{r.rooms ?? "—"}</td>
+                <td>{r.perks || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {evidence.total > evidence.shown && (
+        <p className="answers-evidence-more">
+          Showing {evidence.shown} of {evidence.total.toLocaleString("en-US")} matching
+          properties in the atlas.
+        </p>
+      )}
+    </section>
+  );
+}
+
 export default async function AnswerPage({ params }) {
   const { slug } = await params;
-  const a = getAnswer(slug);
+  const a = resolvedAnswer(slug);
   if (!a) notFound();
+
+  const evidence = answerEvidence(a);
+  const evidenceLd = evidenceJsonLd(a, evidence);
 
   return (
     <article className="answers-wrap answers-article">
@@ -73,8 +137,18 @@ export default async function AnswerPage({ params }) {
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(a)) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(a)) }}
       />
+      {evidenceLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(evidenceLd) }}
+        />
+      )}
 
       <nav className="answers-crumbs">
         <Link href="/answers">Answers</Link>
@@ -85,9 +159,14 @@ export default async function AnswerPage({ params }) {
       <h1>{a.question}</h1>
       <p className="answers-updated">
         By Aspen Travel Advisors · Last verified{" "}
-        <time dateTime={a.updated}>{a.updated}</time> · Grounded in the{" "}
-        <Link href="/atlas/hotel">Expedition Bucket List atlas</Link>
+        <time dateTime={a.updated}>{a.updated}</time> · Counts drawn live from the{" "}
+        <Link href="/hotels">Virtuoso-sourced atlas</Link>
       </p>
+
+      {/* The extractable answer: one paragraph, no preamble, no link needed to
+          understand it. Marked with its own class because that selector is what
+          the Article block's `speakable` names. */}
+      {a.capsule && <p className="answers-capsule">{a.capsule}</p>}
 
       <div className="answers-lead">
         {a.answer.map((p, i) => (
@@ -111,6 +190,8 @@ export default async function AnswerPage({ params }) {
           )}
         </section>
       ))}
+
+      {evidence && evidence.rows.length > 0 && <Evidence evidence={evidence} />}
 
       <section className="answers-faq">
         <h2>Frequently asked</h2>
@@ -140,6 +221,7 @@ export default async function AnswerPage({ params }) {
           VIP benefits included.
         </p>
       </aside>
+      <SiteFooter />
     </article>
   );
 }

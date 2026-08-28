@@ -7,6 +7,7 @@ import IntroTour from "@/components/IntroTour";
 import SiteNav from "@/components/SiteNav";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { SITE_URL, SITE_LABEL } from "@/lib/answers";
+import { siteGraphJsonLd } from "@/lib/seo/site";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -56,6 +57,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://api.mapbox.com" />
         <link rel="preload" as="script" href={MAPBOX_JS} />
         <link rel="preload" as="style" href={MAPBOX_CSS} />
+        {/* The publisher, defined once for the whole site. Every other JSON-LD
+            block — answers, hotel pages, destination hubs — references this
+            node by @id rather than describing the agency again, so an engine
+            reading any two pages knows they have the same author. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteGraphJsonLd()) }}
+        />
         <div className="app">
           {/* Three proper nouns, and no more: Expedition Bucket List (the
               product), Aspen Travel Advisors (the agency standing behind it),

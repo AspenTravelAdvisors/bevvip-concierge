@@ -6150,3 +6150,83 @@ button.atlas-cta {
     padding: 6px 0;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Answer capsules, evidence tables, hotel entity pages, site footer
+   — the crawlable surface (2026-08-28).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The capsule is the extractable answer: one paragraph, before the long-form
+   lead, written so it stands alone in a search result or a spoken answer. It
+   is set apart visually because it is set apart semantically — the Article
+   block's `speakable` names this exact selector. */
+.answers-capsule {
+  border-left: 2px solid var(--gold-light);
+  background: rgba(201, 168, 76, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 0 0 22px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.answers-evidence {
+  margin-top: 34px;
+}
+.answers-evidence-more {
+  color: var(--muted);
+  font-size: 13px;
+  margin: -8px 0 0;
+}
+
+/* Hotel entity pages reuse the answers typography wholesale — same column, same
+   tables, same crumb rail — because they answer the same kind of question about
+   a narrower subject. */
+.hotel-hero {
+  display: block;
+  width: 100%;
+  max-width: 820px;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  margin: 0 0 24px;
+  background: var(--panel);
+}
+.hotel-destinations {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px 22px;
+}
+.hotel-destinations li {
+  margin: 0;
+}
+
+/* The footer exists for a reason the design did not previously have: every
+   route into the atlas ran through a client-side menu that only renders its
+   links once opened, so a crawler landing on the home page found three links
+   and a map. These are the same destinations, in HTML, on every page. */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 22px clamp(16px, 4vw, 44px) 30px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-bottom: 10px;
+}
+.site-footer a {
+  color: var(--sub);
+}
+.site-footer p {
+  margin: 0;
+  max-width: 760px;
+  line-height: 1.6;
+}
