@@ -668,16 +668,37 @@ function furthestFromLine(points, legs) {
     g.track.every((p) => p.at[1] > -60),
     `southernmost camera latitude ${Math.min(...g.track.map((p) => p.at[1])).toFixed(0)}°`);
 
-  // A hop with no geometry at all. The old code closed the gap with a straight
-  // line; the flight should simply not have that leg.
-  const holed = route(RTW).filter((l) => l.hop !== 4);
-  const k = harness({ legs: holed, stops: RTW });
+  /*
+   * A hop with no geometry at all — flown DIRECT, and its call still landed on.
+   *
+   * This assertion used to demand the opposite: that the flight simply not have
+   * that leg. `fillGaps` (routeHops, AtlasShell) reversed it deliberately and
+   * this test was not moved with it, which is worth spelling out because the
+   * two positions both sound right.
+   *
+   * route-frame leaves such a hop empty on purpose: a straight stroke between
+   * two ports is a claim about a route the ship does not take, and the atlas
+   * would rather show a gap than a lie. But the CAMERA is not under that
+   * constraint — it draws nothing, it only travels — and the alternative to
+   * travelling is silently not calling at a port the itinerary lists, leaving a
+   * hole in the numbering ("7. Day 19 · Marrakesh") that reads as a data error.
+   * Roughly 15% of expedition stops carry no coordinate, so this is the common
+   * case, not the exotic one.
+   *
+   * The legs are BOWED, which is what keeps the claim falsifiable: cutting the
+   * corner on a hop that does have geometry lands 6° off the drawn line. Only
+   * the one filled hop may be flown straight, so it is measured against the
+   * direct line the flight is entitled to take there and nothing else.
+   */
+  const bowedHoled = route(RTW, { bow: 6 }).filter((l) => l.hop !== 4);
+  const flown = [...bowedHoled, { mode: "primary", coordinates: [RTW[3].at, RTW[4].at] }];
+  const k = harness({ legs: bowedHoled, stops: RTW });
   k.api.flyRoute();
   k.tick(RUN);
-  const holedWorst = furthestFromLine(k.track.map((p) => p.at), holed);
-  check("a hop with no geometry is left out, not cut across",
-    holedWorst < 0.6 && k.labels.length === holed.length + 1,
-    `${k.labels.length} calls over ${holed.length} drawn hops, worst ${holedWorst.toFixed(2)}° off`);
+  const holedWorst = furthestFromLine(k.track.map((p) => p.at), flown);
+  check("a hop with no geometry is flown direct, and its call still landed on",
+    holedWorst < 0.6 && k.labels.length === RTW.length,
+    `${k.labels.length} of ${RTW.length} calls landed, worst ${holedWorst.toFixed(2)}° off the flown route`);
   check("…and the calls after the gap still carry their own names",
     k.labels.every((l) => {
       const n = Number(l.text.split(".")[0]);

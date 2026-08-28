@@ -180,7 +180,33 @@ detour stays under 4x great-circle. 6/6 pass. Note it asserts on *interior*
 segments: a route starts and ends at a port, and at 0.1 deg a port is a land
 cell, so the first and last segments always "hit land" by construction.
 
-### Still open from D1
+**A test outlived the decision it encoded.** `verify:route-flight` had been red
+since `dbd82c0`, which noted it and left it. The claim that failed was "a hop
+with no geometry is left out, not cut across" — and the code was right, not the
+test. Both positions sound correct, which is why this is worth writing down:
+route-frame leaves a hop it has no line for EMPTY on purpose, because a straight
+stroke between two ports claims a route the ship does not take. The camera is
+not under that constraint — it draws nothing, it only travels — and the
+alternative to travelling is silently not calling at a port the itinerary lists,
+leaving a hole in the numbering that reads as a data error. Around 15% of
+expedition stops carry no coordinate, so that is the common case.
+
+`fillGaps` (in `routeHops`) made that change on 2026-08-25 in `9611c35`, hours
+after `ddf25a3` wrote the assertion — and the test should have gone red that
+afternoon. It did not, because the verifier was crashing before it reached a
+single assertion, having drifted off two renamed constants. By the time
+`dbd82c0` repaired it, the failure looked like a pre-existing mystery rather
+than the direct consequence of a deliberate change made the same day. Two gates
+failing at once (that crash, then the `&&` chain) is what turned a half-day
+inconsistency into a fortnight of red.
+
+The assertion now states what the flight actually does: a hop with no geometry
+is flown direct, and its call is still landed on. It is measured against bowed
+legs, so cutting the corner on a hop that *does* have geometry still lands 6°
+off and fails — the useful half of the original claim is kept.
+
+### Still open
+ from D1
 
 - **The three served landmask copies stay for now.** `public/maps/{cruise,
   yacht,worldcruise}/data/landmask.bin` are still fetched by those Leaflet
@@ -1901,7 +1927,8 @@ re-merges on every build, so the live site was never affected.
 is the right shape for a build and the wrong one for a verification suite: the
 checks are independent claims about different parts of the atlas, and stopping
 at the first failure meant a false positive at the front took sixteen real
-checks down with it — one of which was genuinely red (see "Still open"). It now
+checks down with it — one of which was genuinely red, and had been for a
+fortnight (the route-flight assertion below). It now
 runs through `scripts/verify-all.mjs`: every check runs, and the failures are
 named together at the end. `npm run verify:bail` keeps the old fail-fast
 behaviour, and `node scripts/verify-all.mjs <substring>` runs a subset.
@@ -1939,13 +1966,6 @@ that lands in three files and not the fourth; it is now
 
 ### Still open
 
-- **`verify:route-flight` is red**, and has been since `dbd82c0`, which says so
-  in its own commit message and left it. The claim that fails is "a hop with no
-  geometry is left out, not cut across": the flight makes 9 calls over 7 drawn
-  hops and cuts 3.23° across the gap, showing a journey the map underneath is
-  not drawing. Note the assertion next to it — which passes — wants all nine
-  calls named, so the two encode different answers to what a missing hop should
-  do. That question needs deciding before the fix.
 - **The hotel and promotion feeds have no recorded check.** Both files are on
   disk and current in content, but neither has run through `write-feed.mjs`
   since the status file was introduced, so freshness cannot speak for them.
@@ -1958,6 +1978,8 @@ that lands in three files and not the fourth; it is now
 - **`Master Documents/BeVvip_API_Integration_Strategy.md` describes an
   architecture that no longer exists** — `api/prompt.js`, `api/chat.js`,
   `public/index.html`, the `<!--BEVVIP_HOTELS-->` comment tag, and TravelWits as
-  the live-rate source. Its central argument (the language model must never be
-  the rate source) is what the Virtuoso work implements; the file should be
-  rewritten around that, or marked historical.
+  the live-rate source. It carries a status note now, but a note is not a plan:
+  its central argument — the language model must never be the rate source — is
+  exactly what the Virtuoso work implements, and somebody should rewrite the
+  document around what was actually built. The same goes for the stack sections
+  of the two project master documents.
