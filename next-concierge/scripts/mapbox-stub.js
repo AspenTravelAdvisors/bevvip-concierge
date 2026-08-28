@@ -118,6 +118,9 @@
     addTo() { window.__stub.labelOpen = this._html; return this; }
     remove() { window.__stub.labelOpen = null; return this; }
     isOpen() { return !!window.__stub.labelOpen; }
+    // The ambient tour's caption fades out on a class rather than vanishing.
+    addClassName(c) { (this._cls = this._cls || new Set()).add(c); return this; }
+    removeClassName(c) { this._cls?.delete(c); return this; }
   }
   class LngLatBounds {
     constructor() { this.w = 180; this.s = 90; this.e = -180; this.n = -90; }

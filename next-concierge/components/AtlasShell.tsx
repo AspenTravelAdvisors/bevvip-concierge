@@ -121,6 +121,22 @@ const SPIN_RATE = 0.045;
  */
 const SPIN_EASE_MS = 900;
 /**
+ * How long the rotation takes to come back to a standstill when the ambient
+ * tour asks for the camera.
+ *
+ * The mirror of SPIN_EASE_MS, and the other half of the hiccup at the START of
+ * the tour. The globe was turning at its full 2.7°/s and the tour simply
+ * cancelled the animation frame: the planet stopped dead on one frame and set
+ * off toward the first stop on the next, which is a velocity step in one
+ * direction followed by a velocity step in the other. Easing the rotation down
+ * first means the leg begins from a globe that is already still, so the two
+ * motions meet at zero instead of colliding.
+ *
+ * Paid for out of TOUR_LEAD_MS rather than added to it — the globe is still
+ * rotating throughout, so this is the tail of the lead-in, not a new phase.
+ */
+const SPIN_OUT_MS = 700;
+/**
  * Fraction of the remaining tilt the globe sheds per frame while it turns.
  *
  * The tour ends over the Rockies, so the camera is left around 37°N — and
@@ -177,17 +193,28 @@ const SPIN_LEVEL_MIN = 0.004;
  *
  * `since` is milliseconds since the rotation started, which is what makes the
  * ease-in possible without a second piece of state living beside `spinning`.
+ *
+ * `gate` is the spin-DOWN, 1 while the globe is simply turning and falling to 0
+ * across SPIN_OUT_MS once the tour has asked for the camera. It multiplies the
+ * ease-in rather than replacing it, so a rotation interrupted before it reached
+ * full speed decelerates from wherever it actually got to.
  */
 function spinFrame(
   c: { lng: number; lat: number },
   since: number,
+  gate = 1,
 ): { lng: number; lat: number } {
   const ramp = Math.min(1, Math.max(0, since / SPIN_EASE_MS));
-  // Ease out: quick to get going, then settling onto the steady rate, so the
-  // first turn reads as the planet picking up its rotation rather than a cut.
-  // BOTH motions ride it — a levelling that started at full speed under a
-  // rotation that eased in was the whole remaining jolt.
-  const eased = 1 - (1 - ramp) * (1 - ramp);
+  // Smoothstep, not the ease-out this used to be. Both curves leave a
+  // standstill at zero SPEED, which is what the ease-out was chosen for — but
+  // an ease-out's ACCELERATION is at its highest on the very first frame, so
+  // the globe still snapped into motion and merely did it from zero. That is
+  // the lurch at the END of the tour: the camera sits on the last caption for a
+  // beat and a half and then jerks into a rotation. Smoothstep is flat at both
+  // ends, so the turn grows out of the stillness and settles onto the steady
+  // rate with no corner at either join. BOTH motions ride it — a levelling that
+  // started at full speed under a rotation that eased in was the rest of it.
+  const eased = ramp * ramp * (3 - 2 * ramp) * gate;
   // Capped while the tilt is large, exponential once it is small, and a floor
   // to land on: a steady swing that eases onto the equator instead of braking
   // into it. Clamped at zero, so the globe can neither overshoot into the other
@@ -198,6 +225,21 @@ function spinFrame(
     eased;
   const lat = lat0 > 0 ? Math.max(0, lat0 - step) : Math.min(0, lat0 + step);
   return { lng: c.lng - SPIN_RATE * eased, lat };
+}
+
+/**
+ * The spin-DOWN, as a multiplier for spinFrame's `gate`: 1 at the instant the
+ * tour asks for the camera, 0 by SPIN_OUT_MS later.
+ *
+ * The same smoothstep as the ease-in, played backwards, so the rotation leaves
+ * its steady rate as gently as it arrived at it and reaches a standstill with
+ * no corner at either end. Pure and at module scope for the same reason
+ * spinFrame is: this is a claim about motion, and the only way to check one is
+ * to play it forward.
+ */
+function spinOutGate(since: number): number {
+  const r = 1 - Math.min(1, Math.max(0, since / SPIN_OUT_MS));
+  return r * r * (3 - 2 * r);
 }
 
 /**
@@ -784,28 +826,103 @@ const TOUR_STOPS: TourStop[] = [
 ];
 
 /**
- * How long the camera takes to swing to each stop, and how long it rests there.
+ * Latitude the camera actually centres on, which is not the stop's own.
  *
- * These are a BUDGET, not a taste. The Guide is held back until the tour ends
+ * Centring on a place at 64°S puts the pole in the middle of the frame and the
+ * visible hemisphere becomes mostly ice and edge — the globe stops reading as a
+ * globe. Damping toward the equator keeps the sphere legible while still
+ * bringing the place comfortably into view; the clamp is the backstop for
+ * anywhere further out than our own stops go.
+ *
+ * At module scope, beside the itinerary, because it is half of where the camera
+ * goes and tourLegMs below needs it to know how far a leg travels.
+ */
+function tourLat(lat: number) {
+  return Math.max(-52, Math.min(52, lat * 0.72));
+}
+
+/**
+ * How long a leg takes: from the arc it actually covers, not a flat number.
+ *
+ * A single duration for every leg is most of why the tour read as strange. Its
+ * legs are nothing like each other — the approach onto Amanzoe is about 23° of
+ * arc, the Antarctic Peninsula up to the Rockies is about 101° — so a flat
+ * 2400ms each meant the camera crossed the world at anything from 10°/s to
+ * 42°/s and changed pace at every stop. A constant DURATION is a wildly varying
+ * SPEED, and speed is what the eye reads.
+ *
+ * Base plus a rate, rather than pure distance: a leg timed only by how far it
+ * goes arrives before a short hop has registered as a move at all. The base is
+ * the beat a move needs to be seen as one; the rate is the part that keeps the
+ * pace even. Across the shipped itinerary this comes to ~9.4s of travel against
+ * the 9.6s of flat legs it replaces — the same run, spent proportionally.
+ */
+const TOUR_LEG_BASE_MS = 900;
+const TOUR_LEG_PER_DEG_MS = 22;
+const TOUR_LEG_MIN_MS = 1400;
+const TOUR_LEG_MAX_MS = 3400;
+function tourLegMs(
+  from: { lng: number; lat: number },
+  to: { lng: number; lat: number },
+): number {
+  // Shortest way round, which is the way the camera will actually go.
+  const dLng = Math.abs((((to.lng - from.lng) % 360) + 540) % 360 - 180);
+  const dLat = to.lat - from.lat;
+  // A degree of longitude is not a degree of arc except at the equator, and the
+  // itinerary runs from 27°N to 46°S. Weighting by the latitude the camera
+  // travels through is what stops a polar leg being timed as though it were a
+  // tropical one of the same longitude span.
+  const midLat = (((from.lat + to.lat) / 2) * Math.PI) / 180;
+  const arc = Math.hypot(dLng * Math.cos(midLat), dLat);
+  return Math.max(
+    TOUR_LEG_MIN_MS,
+    Math.min(TOUR_LEG_MAX_MS, TOUR_LEG_BASE_MS + arc * TOUR_LEG_PER_DEG_MS),
+  );
+}
+
+/**
+ * The curve every leg is flown on.
+ *
+ * Mapbox's default is CSS `ease`, whose first frame is already at 40% of the
+ * move's average speed. Out of a dead stop that is a pop, and the tour makes
+ * one at every stop — including the first, which is the one that reads as the
+ * tour "starting badly". Smoothstep is flat at both ends: a leg grows out of
+ * the stillness it began in and settles back into stillness at the far end, so
+ * the dwell and the travel join without a seam.
+ */
+const tourEase = (t: number) => t * t * (3 - 2 * t);
+
+/**
+ * How long the camera rests on each stop.
+ *
+ * This is a BUDGET, not a taste. The Guide is held back until the tour ends
  * (see the "bevvip:tour-ended" broadcast in finishTour / abortTour), so every
  * millisecond here is a millisecond the visitor is looking at a product they
  * cannot yet type into. At the original 3400/2600 the whole run was 25.7s,
  * which is not a demonstration, it is a wait.
  *
- * 2400/1600 puts the full run at ~17.7s and the first pin at 4.1s. The dwell is
- * short on purpose: the captions are one line each, and a line you have already
- * read does not become more persuasive by staying on screen.
+ * With the legs above the full run is ~17.5s and the first pin lands at 3.1s.
+ * The dwell is short on purpose: the captions are one line each, and a line you
+ * have already read does not become more persuasive by staying on screen.
  */
-const TOUR_TRAVEL_MS = 2400;
 const TOUR_DWELL_MS = 1600;
 /**
- * Idle spin before the first pin drops.
+ * Idle spin before the tour reaches for the camera.
  *
  * Not zero. The globe arriving and immediately being driven somewhere reads as
  * a canned animation; a beat of plain rotation first establishes that the map
  * is live, so the tour reads as the map doing something rather than as a video.
+ *
+ * 1000, down from 1700, because SPIN_OUT_MS now sits on the end of it: the
+ * globe still turns for 1.7s before the first leg, it just spends the last
+ * 0.7s of that slowing down instead of running flat into a hard stop.
  */
-const TOUR_LEAD_MS = 1700;
+const TOUR_LEAD_MS = 1000;
+/** How long a stop takes to leave when the camera does. See leaveStop. */
+const TOUR_CAP_FADE_MS = 260;
+/** The pin's resting opacities, named so the fade has something to return to. */
+const TOUR_GLOW_OPACITY = 0.16;
+const TOUR_DOT_OPACITY = 0.98;
 
 /**
  * How long the globe takes to swing onto a result.
@@ -1476,6 +1593,11 @@ export default function AtlasShell({
     let spinRAF = 0;
     /** When the current rotation started — the ease-in's zero. See spinFrame. */
     let spinFrom = 0;
+    /**
+     * When the rotation was asked to stop — the spin-DOWN's zero, 0 when it is
+     * not stopping. See spinDown / SPIN_OUT_MS.
+     */
+    let spinOutFrom = 0;
     let spinning = false;
     /**
      * Something outranked the ambience and owns the camera from here on.
@@ -1690,7 +1812,11 @@ export default function AtlasShell({
           if (!w || !h) return;
           const z = Math.log2((Math.min(w, h) * 0.92) / 162.97);
           homeZoom = Math.max(map.getMinZoom(), Math.min(z, 5));
-          map.setZoom(homeZoom);
+          // Only when it actually moves the camera. setZoom is instantaneous,
+          // and the finished tour calls this on its way into the resumed
+          // rotation — where the camera is already at homeZoom, and an
+          // unconditional command is a cut waiting for a rounding error.
+          if (Math.abs(map.getZoom() - homeZoom) > 0.005) map.setZoom(homeZoom);
           // A tilted camera at globe scale is a smeared horizon, not a view.
           // This is the resting frame, so level it — an explicit camera command
           // at a known moment, NOT a pitch-follows-zoom rule.
@@ -1708,6 +1834,7 @@ export default function AtlasShell({
          */
         function haltSpin() {
           spinning = false;
+          spinOutFrom = 0;
           cancelAnimationFrame(spinRAF);
           /*
            * NOT the route flight. This is the difference between stopping the
@@ -1750,18 +1877,39 @@ export default function AtlasShell({
         function spinStep(now: number) {
           if (!spinning) return;
           if (projGlobe && !subsetActive && map.getZoom() <= homeZoom + 0.4 && !document.hidden) {
-            map.setCenter(spinFrame(map.getCenter(), now - spinFrom));
+            const gate = spinOutFrom ? spinOutGate(now - spinOutFrom) : 1;
+            map.setCenter(spinFrame(map.getCenter(), now - spinFrom, gate));
           }
           spinRAF = requestAnimationFrame(spinStep);
         }
         function startSpin() {
           if (spinning || !projGlobe) return;
           spinning = true;
+          spinOutFrom = 0;
           // The ease-in and the levelling both measure from here, so a spin
           // that resumes after the tour gets the same gentle start as the one
           // the globe arrived with.
           spinFrom = performance.now();
           spinRAF = requestAnimationFrame(spinStep);
+        }
+        /**
+         * Bring the rotation to a stop over SPIN_OUT_MS rather than dropping it
+         * on a frame boundary.
+         *
+         * Only the tour uses this, and only to take the camera for itself. An
+         * INTERRUPTION still stops the globe instantly, through haltSpin: a
+         * hand on the planet has to be answered on the frame it lands, and a
+         * globe that coasts for another two thirds of a second after you grab
+         * it is the map arguing with you. Continuity is for the choreography;
+         * a visitor outranks it.
+         *
+         * Deliberately advisory — the caller keeps its own timer for when the
+         * spin is done. requestAnimationFrame does not run in a backgrounded
+         * tab, so hanging the tour's start off this reaching zero would strand
+         * the tour, and the Guide with it, on a page nobody was looking at.
+         */
+        function spinDown() {
+          if (spinning && !spinOutFrom) spinOutFrom = performance.now();
         }
 
         // ── Ambient auto-tour ────────────────────────────────────────────────
@@ -1798,6 +1946,8 @@ export default function AtlasShell({
           try { window.dispatchEvent(new Event("bevvip:tour-ended")); } catch { /* SSR/JSDOM */ }
         }
 
+        /** The exit fade's timer — see leaveStop. Cleared by every tour exit. */
+        let tourCapTimer = 0;
         const tourPins: { at: [number, number]; name: string }[] = [];
         const tourCap = new mapboxgl.Popup({
           closeButton: false,
@@ -1819,12 +1969,17 @@ export default function AtlasShell({
           };
           if (!map.getSource("tour-pins")) map.addSource("tour-pins", { type: "geojson", data });
           else map.getSource("tour-pins")?.setData(data);
+          // The opacity transitions are what make a pin arrive and leave rather
+          // than blink: Mapbox tweens a paint property it is given a transition
+          // for, so leaveStop can simply set the opacity to 0 and let the pin
+          // fade out under a camera that has already started moving.
           addLayer(map, {
             id: "tour_glow", type: "circle", source: "tour-pins",
             paint: {
               "circle-radius": 13,
               "circle-color": "#e6d488",
-              "circle-opacity": 0.16,
+              "circle-opacity": TOUR_GLOW_OPACITY,
+              "circle-opacity-transition": { duration: TOUR_CAP_FADE_MS, delay: 0 },
               "circle-blur": 0.7,
             },
           });
@@ -1835,9 +1990,22 @@ export default function AtlasShell({
               "circle-color": "#f3ead2",
               "circle-stroke-color": "#0b0e14",
               "circle-stroke-width": 1.4,
-              "circle-opacity": 0.98,
+              "circle-opacity": TOUR_DOT_OPACITY,
+              "circle-opacity-transition": { duration: TOUR_CAP_FADE_MS, delay: 0 },
             },
           });
+          // addLayer is add-once, so a second stop reuses the layers the first
+          // one created — and would inherit the zero opacity leaveStop left on
+          // them. Restore it here, where a pin is being shown by definition.
+          fadeTourPins(true);
+        }
+
+        /** Fade the pin layers in on arrival, out as the camera leaves. */
+        function fadeTourPins(visible: boolean) {
+          try {
+            map.setPaintProperty("tour_glow", "circle-opacity", visible ? TOUR_GLOW_OPACITY : 0);
+            map.setPaintProperty("tour_dot", "circle-opacity", visible ? TOUR_DOT_OPACITY : 0);
+          } catch { /* mid-restyle: layers momentarily gone */ }
         }
 
         function clearTourPins() {
@@ -1848,25 +2016,51 @@ export default function AtlasShell({
         }
 
         function showTourPin(stop: TourStop) {
-          // Only the visible stop gets a tour pin. The previous one is removed
-          // at the same moment the next caption appears, so stale tour dots can
-          // never sit on the map as clickable-looking artifacts.
+          // Only the visible stop gets a tour pin. The previous one left with
+          // the camera (see leaveStop), so stale tour dots can never sit on the
+          // map as clickable-looking artifacts; this is the belt to that
+          // braces, for a leg short enough that the exit is still in flight.
+          clearTimeout(tourCapTimer);
           clearTourPins();
           tourPins.push({ at: stop.at, name: stop.name });
           paintTourPins();
+          // The popup is removed between stops, so its entrance animation
+          // replays on its own; this only matters if a leg was short enough for
+          // the exit to still be in flight.
+          try { tourCap.removeClassName("leaving"); } catch { /* popup optional */ }
         }
 
         /**
-         * Latitude the camera actually centres on, which is not the stop's own.
+         * Take the stop off the map as the camera leaves it.
          *
-         * Centring on a place at 64°S puts the pole in the middle of the frame
-         * and the visible hemisphere becomes mostly ice and edge — the globe
-         * stops reading as a globe. Damping toward the equator keeps the sphere
-         * legible while still bringing the place comfortably into view; the
-         * clamp is the backstop for anywhere further out than our own stops go.
+         * The caption used to stay up for the whole leg. It is a Mapbox popup
+         * anchored to a lngLat, so it stayed glued to the stop the camera was
+         * flying AWAY from — smearing across the world for the length of the
+         * leg, off one edge of the screen and, on arrival, replaced in place by
+         * the next stop's text as a straight substitution. That is the "strange
+         * tweening" in the middle of the tour: the pin and its label are the
+         * only things on screen that aren't the map, and they were being
+         * dragged rather than shown.
+         *
+         * So each stop now leaves when the camera does, over the same quarter
+         * second, and each arrival gets its own entrance. The globe travels
+         * clean in between.
          */
-        function tourLat(lat: number) {
-          return Math.max(-52, Math.min(52, lat * 0.72));
+        function leaveStop() {
+          clearTimeout(tourCapTimer);
+          fadeTourPins(false);
+          try { tourCap.addClassName("leaving"); } catch { /* popup optional */ }
+          tourCapTimer = window.setTimeout(() => {
+            try { tourCap.remove(); } catch { /* popup optional */ }
+            clearTourPins();
+          }, TOUR_CAP_FADE_MS);
+        }
+
+        /** Same, but now — an interruption gets no choreography. */
+        function dropStop() {
+          clearTimeout(tourCapTimer);
+          try { tourCap.remove(); } catch { /* popup optional */ }
+          clearTourPins();
         }
 
         /**
@@ -1887,12 +2081,12 @@ export default function AtlasShell({
           tourDismissed = true; // one-way; nothing re-arms the tour this mount
           clearTimeout(tourTimer); // kills the lead-in as well as a leg in flight
           clearTimeout(tourPaintTimer); // …and a leg waiting on tiles
+          clearTimeout(tourCapTimer); // …and a caption still fading out
           // Before anything else: an interrupted tour must still free the
           // stage. The visitor just told us they are engaged — that is the
           // moment to hand them the composer, not to withhold it.
           announceTourEnd();
-          try { tourCap.remove(); } catch { /* popup optional */ }
-          clearTourPins();
+          dropStop();
           if (!tourActive) return; // dismissed before it ever took the camera
           tourActive = false;
           // Stop the camera where it is rather than letting the in-flight ease
@@ -1943,11 +2137,24 @@ export default function AtlasShell({
             tourStep--;
             return;
           }
+          // The stop the camera is leaving goes with it, over the first quarter
+          // second of the leg. Nothing to do on the first leg, where there is
+          // no stop on the map yet.
+          if (tourStep > 1) leaveStop();
+          const to = { lng: stop.at[0], lat: tourLat(stop.at[1]) };
+          // Timed by the arc it covers, so every leg is flown at about the same
+          // speed — see tourLegMs. Measured from where the camera actually is,
+          // which on the first leg is wherever the idle spin left the globe.
+          // The fallback is the old flat leg: if the camera will not say where
+          // it is, the itinerary still has to be paced at something.
+          let travel = TOUR_LEG_BASE_MS + TOUR_LEG_PER_DEG_MS * 60;
+          try { travel = tourLegMs(map.getCenter(), to); } catch { /* camera optional */ }
           try {
             map.easeTo({
-              center: [stop.at[0], tourLat(stop.at[1])],
+              center: [to.lng, to.lat],
               zoom: homeZoom,
-              duration: TOUR_TRAVEL_MS,
+              duration: travel,
+              easing: tourEase,
               essential: true,
             });
           } catch { /* camera optional */ }
@@ -1970,15 +2177,18 @@ export default function AtlasShell({
               } catch { /* caption optional */ }
               tourTimer = window.setTimeout(tourNext, TOUR_DWELL_MS);
             });
-          }, TOUR_TRAVEL_MS);
+          }, travel);
         }
 
         function finishTour() {
           tourActive = false;
           clearTimeout(tourTimer);
           clearTimeout(tourPaintTimer);
-          try { tourCap.remove(); } catch { /* popup optional */ }
-          clearTourPins();
+          // The last stop leaves the way every other one did, over the same
+          // quarter second, while the globe is already turning again. It used
+          // to blink out on the frame the rotation started — two abrupt things
+          // at once, which is most of what "a hiccup at the end" was.
+          leaveStop();
           // Run to completion and the globe returns to the resting state it
           // came from — including the latitude it came from, which fitGlobe
           // does not restore. Only an interaction leaves it frozen — that
@@ -1990,6 +2200,11 @@ export default function AtlasShell({
           // stop and a much slower constant rotation end to end — the jump at
           // the end of the tour. One motion instead: the globe starts turning
           // and rights itself while it turns.
+          //
+          // fitGlobe is a setZoom/setPitch, i.e. instantaneous, so it would be
+          // a cut if it ever moved anything here. It does not: every leg eases
+          // to homeZoom and the tour never tilts, and fitGlobe now checks
+          // before it writes.
           fitGlobe();
           startSpin();
           // The globe is turning again and nothing is being narrated — the beat
@@ -2049,12 +2264,26 @@ export default function AtlasShell({
             whenPainted(() => {
               if (cancelled || tourDismissed) return;
               if (focused || subsetActive || !projGlobe) { standDown(); return; }
-              // haltSpin, NOT stopSpin: the tour taking the camera is not the
-              // camera being taken FROM the tour. See haltSpin.
-              haltSpin();
-              tourActive = true;
-              tourStep = 0;
-              tourNext();
+              // Ease the rotation down rather than cutting it, and start the
+              // first leg from the standstill it arrives at. Before this the
+              // globe went from a full 2.7°/s westward to nothing on one frame
+              // and set off toward Amanzoe on the next — the hiccup at the
+              // start of the tour, and the one place in the whole run where two
+              // camera motions met at a non-zero speed.
+              //
+              // The timer, not the animation frame, is what starts the tour:
+              // rAF does not run in a backgrounded tab, and a tour that never
+              // starts is a Guide that never appears.
+              spinDown();
+              tourTimer = window.setTimeout(() => {
+                if (cancelled || tourDismissed) return;
+                // haltSpin, NOT stopSpin: the tour taking the camera is not the
+                // camera being taken FROM the tour. See haltSpin.
+                haltSpin();
+                tourActive = true;
+                tourStep = 0;
+                tourNext();
+              }, SPIN_OUT_MS);
             });
           }, TOUR_LEAD_MS);
         }
@@ -6659,6 +6888,9 @@ interface MBPopup {
   setHTML(html: string): MBPopup;
   addTo(map: MBMap): MBPopup;
   isOpen(): boolean;
+  /** The tour's caption exit animation rides a class. See leaveStop. */
+  addClassName(name: string): void;
+  removeClassName(name: string): void;
   remove(): void;
 }
 interface MBBounds {
@@ -6695,6 +6927,11 @@ interface MBMap {
     bearing?: number;
     zoom?: number;
     duration?: number;
+    /**
+     * Progress curve, 0→1. Mapbox's default starts at 40% of the move's average
+     * speed, which pops out of a standstill; the tour supplies its own.
+     */
+    easing?: (t: number) => number;
     essential?: boolean;
   }): void;
   /**

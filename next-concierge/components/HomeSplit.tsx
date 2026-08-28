@@ -32,7 +32,7 @@ const WIDTH_KEY = "bevvip.basecamp.guideW";
  * page with no way to type and no indication anything was wrong. The failure
  * has to be a slightly early panel, never a missing one.
  *
- * Comfortably longer than the ~17.7s tour so it never pre-empts a healthy run,
+ * Comfortably longer than the ~17.5s tour so it never pre-empts a healthy run,
  * and short enough that a broken one costs a few seconds rather than the visit.
  */
 const TOUR_WAIT_CAP_MS = 22000;
@@ -63,7 +63,7 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
   // whether. The reasoning that put the composer on screen at load stands
   // unchanged: on a 390px screen the visitor should land able to type, and the
   // globe is beautiful but is not the thing being sold. What changed is that
-  // there is now a ~17.7s ambient tour narrating the inventory, and on a phone
+  // there is now a ~17.5s ambient tour narrating the inventory, and on a phone
   // the sheet covers the half of the map the tour is drawing on.
   //
   // So the sheet still arrives on its own, unprompted, at "half" — it is just

@@ -1191,10 +1191,29 @@ main.page {
     transform: none;
   }
 }
+/* The exit. A caption used to be removed on the frame the camera left — and at
+   the end of the tour, on the frame the globe started turning again, so two
+   abrupt things happened at once. It leaves over the same quarter second the
+   pin fades out in (TOUR_CAP_FADE_MS in AtlasShell), under a camera that has
+   already begun to move. Faster than the entrance and without the travel:
+   arriving is the moment worth animating, leaving is just getting out of the
+   way. */
+.atlas-tourcap.leaving .mapboxgl-popup-content {
+  animation: tourcap-out 260ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+@keyframes tourcap-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 /* Reduced-motion mode skips the tour choreography and leaves no temporary pins,
    but neutralise the caption entrance anyway in case a caption is ever shown. */
 @media (prefers-reduced-motion: reduce) {
-  .atlas-tourcap .mapboxgl-popup-content {
+  .atlas-tourcap .mapboxgl-popup-content,
+  .atlas-tourcap.leaving .mapboxgl-popup-content {
     animation: none;
   }
 }
