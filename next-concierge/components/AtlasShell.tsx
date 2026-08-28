@@ -109,6 +109,97 @@ const STREET_ZOOM = 13.5;
 const ROUTES_ENABLED = true;
 const HOTEL_DENSITY_SOURCE = "hotel-density";
 
+/** Degrees of longitude the resting globe turns per frame, at full speed. */
+const SPIN_RATE = 0.045;
+/**
+ * How long the rotation takes to reach that speed from a standstill.
+ *
+ * The globe used to begin turning at full rate on the frame the spin started,
+ * which is a velocity step from zero — visible, and most visible at the end of
+ * the ambient tour, where the camera has been sitting still on the last caption
+ * for a beat and a half before it snaps into motion.
+ */
+const SPIN_EASE_MS = 900;
+/**
+ * Fraction of the remaining tilt the globe sheds per frame while it turns.
+ *
+ * The tour ends over the Rockies, so the camera is left around 37°N — and
+ * fitGlobe restores zoom and pitch but never latitude. The globe used to be
+ * swung back to the equator by a separate 1.1s ease that ran BEFORE the spin
+ * started: a fast arc (roughly 34°/second) decelerating to a dead stop, then
+ * rotation snapping on at 2.7°/second. Two easings meeting at zero velocity
+ * with an order-of-magnitude speed change across the join — which is the jump.
+ *
+ * Levelling inside the spin makes it one continuous motion instead: the globe
+ * simply keeps turning and rights itself as it goes, with nothing to hand off
+ * between. This factor governs the FINAL approach, where an exponential decay
+ * is the right shape — it arrives asymptotically instead of stopping dead.
+ */
+const SPIN_LEVEL_PER_FRAME = 0.03;
+/**
+ * …and the most latitude a single frame may shed, which is what keeps the
+ * levelling from being its own jump.
+ *
+ * An uncapped exponential is fastest at the instant it starts, which is exactly
+ * backwards here: measured against the real page, shedding 3% of 37° a frame
+ * peaked at 39.7°/second — as violent as the swing it replaced, just no longer
+ * discontinuous. The globe is supposed to be TURNING, and righting itself as an
+ * aside; a correction fifteen times faster than the rotation is the main event.
+ *
+ * 0.12°/frame is 7.2°/second, under three times the rotation, and it rides the
+ * same ease-in — so the motion begins at zero rather than at full tilt-speed.
+ * The steepest frame the tour can leave (52°, the tourLat clamp) is level in
+ * about nine seconds. Nothing waits on it: the Guide is already on screen.
+ */
+const SPIN_LEVEL_MAX = 0.12;
+/**
+ * …and the least, so the last of the tilt is walked off rather than snapped.
+ *
+ * An exponential never arrives, so it needs a floor to land on zero — and the
+ * obvious floor, "close enough, call it zero", is a jump of its own: a frame
+ * that had been moving 0.0015° suddenly moves the whole remaining 0.05°, which
+ * is thirty times the speed of the frame before it. Small enough to see? No.
+ * But it is the same mistake as the one this whole change is about, and a rule
+ * with an exception at the end is worse than a rule.
+ *
+ * A floor of 0.004°/frame walks the final fraction of a degree off in about
+ * half a second, decelerating the whole way, and the clamp at zero means it
+ * lands exactly.
+ */
+const SPIN_LEVEL_MIN = 0.004;
+
+/**
+ * One frame of the ambient spin: where the camera goes next.
+ *
+ * Pure, and at module scope, because it is the whole of what the resting globe
+ * DOES and it is the kind of motion that can only be judged by playing it
+ * forward — see scripts/verify-ambient-tour.mjs, which runs it frame by frame.
+ *
+ * `since` is milliseconds since the rotation started, which is what makes the
+ * ease-in possible without a second piece of state living beside `spinning`.
+ */
+function spinFrame(
+  c: { lng: number; lat: number },
+  since: number,
+): { lng: number; lat: number } {
+  const ramp = Math.min(1, Math.max(0, since / SPIN_EASE_MS));
+  // Ease out: quick to get going, then settling onto the steady rate, so the
+  // first turn reads as the planet picking up its rotation rather than a cut.
+  // BOTH motions ride it — a levelling that started at full speed under a
+  // rotation that eased in was the whole remaining jolt.
+  const eased = 1 - (1 - ramp) * (1 - ramp);
+  // Capped while the tilt is large, exponential once it is small, and a floor
+  // to land on: a steady swing that eases onto the equator instead of braking
+  // into it. Clamped at zero, so the globe can neither overshoot into the other
+  // hemisphere nor be nudged off an equator it is already sitting on.
+  const lat0 = c.lat;
+  const step =
+    Math.min(Math.max(Math.abs(lat0) * SPIN_LEVEL_PER_FRAME, SPIN_LEVEL_MIN), SPIN_LEVEL_MAX) *
+    eased;
+  const lat = lat0 > 0 ? Math.max(0, lat0 - step) : Math.min(0, lat0 + step);
+  return { lng: c.lng - SPIN_RATE * eased, lat };
+}
+
 /**
  * What the rest of the map fades to when one collection is being looked at.
  *
@@ -1383,6 +1474,8 @@ export default function AtlasShell({
     if (!token || !mapEl.current) return;
     let cancelled = false;
     let spinRAF = 0;
+    /** When the current rotation started — the ease-in's zero. See spinFrame. */
+    let spinFrom = 0;
     let spinning = false;
     /**
      * Something outranked the ambience and owns the camera from here on.
@@ -1417,9 +1510,6 @@ export default function AtlasShell({
     // one on the clock, one on the network — and abortTour has to cancel both.
     let tourPaintTimer = 0;
     let tourStep = 0;
-    // The swing back to the equator after the tour finishes. Effect-scoped so
-    // an unmount mid-swing can cancel it. See settleToEquator.
-    let settleTimer = 0;
     let ready = false;
     let focused = false;
     let restyling = false;
@@ -1640,14 +1730,15 @@ export default function AtlasShell({
            */
         }
         function stopSpin() {
+          // Stopping the rotation stops the levelling with it — a hand on the
+          // globe leaves it exactly where the visitor put it, tilt included.
+          // That used to need an explicit cancelSettle() beside this call,
+          // because the swing back to the equator was a timer of its own that
+          // outlived the spin it was supposed to precede.
           haltSpin();
           // One-way for the rest of this mount: the resting state must not be
           // restored on top of whatever just took the camera. See cameraClaimed.
           cameraClaimed = true;
-          // …and outranks the swing back to the equator that follows it. Without
-          // this a visitor who grabbed the globe during the settle would be
-          // fighting an ease they can't see the reason for.
-          cancelSettle();
           // Anything that outranks the idle spin outranks the ambient tour.
           // Every such path already funnels through here — the interaction
           // listeners below, plotResults, markFocusPlace, fitFocusRoute, the
@@ -1656,62 +1747,21 @@ export default function AtlasShell({
           // forward reference safe.
           abortTour();
         }
-        function spinStep() {
+        function spinStep(now: number) {
           if (!spinning) return;
           if (projGlobe && !subsetActive && map.getZoom() <= homeZoom + 0.4 && !document.hidden) {
-            const c = map.getCenter();
-            map.setCenter({ lng: c.lng - 0.045, lat: c.lat });
+            map.setCenter(spinFrame(map.getCenter(), now - spinFrom));
           }
           spinRAF = requestAnimationFrame(spinStep);
         }
         function startSpin() {
           if (spinning || !projGlobe) return;
           spinning = true;
-          spinStep();
-        }
-
-        /**
-         * How long the globe takes to swing back to the equator after the tour.
-         *
-         * Short — this is a return to rest, not a fifth stop. Long enough to
-         * read as the planet settling rather than as a cut.
-         */
-        const SETTLE_MS = 1100;
-        /** Give up the settle and leave the camera exactly where it is. */
-        function cancelSettle() {
-          if (!settleTimer) return;
-          clearTimeout(settleTimer);
-          settleTimer = 0;
-          try { map.stop(); } catch { /* camera optional */ }
-        }
-        /**
-         * Level the globe back onto the equator, then hand it to `then`.
-         *
-         * The tour's last stop is a Canadian one, so it leaves the camera near
-         * 37°N — and fitGlobe only restores zoom and pitch, never latitude. The
-         * idle spin that resumed after it therefore turned a planet tipped
-         * toward the north pole, which is not the resting frame the globe
-         * ARRIVED in and reads as the tour having left something behind.
-         *
-         * The spin is deliberately not started until the swing lands: spinStep
-         * writes the centre every frame, so starting both at once would have
-         * the rotation and the ease overwriting each other's centre.
-         */
-        function settleToEquator(then: () => void) {
-          const c = map.getCenter();
-          if (Math.abs(c.lat) < 1) { then(); return; } // already level
-          try {
-            map.easeTo({
-              center: [c.lng, 0],
-              zoom: homeZoom,
-              duration: SETTLE_MS,
-              essential: true,
-            });
-          } catch { then(); return; }
-          settleTimer = window.setTimeout(() => {
-            settleTimer = 0;
-            then();
-          }, SETTLE_MS);
+          // The ease-in and the levelling both measure from here, so a spin
+          // that resumes after the tour gets the same gentle start as the one
+          // the globe arrived with.
+          spinFrom = performance.now();
+          spinRAF = requestAnimationFrame(spinStep);
         }
 
         // ── Ambient auto-tour ────────────────────────────────────────────────
@@ -1933,8 +1983,15 @@ export default function AtlasShell({
           // came from — including the latitude it came from, which fitGlobe
           // does not restore. Only an interaction leaves it frozen — that
           // stillness is the map acknowledging you took the wheel.
+          //
+          // The return to the equator is the SPIN's job now, not a separate
+          // ease before it (see spinFrame). It used to swing back over 1.1s and
+          // hand over to the rotation on arrival, which put a fast arc, a dead
+          // stop and a much slower constant rotation end to end — the jump at
+          // the end of the tour. One motion instead: the globe starts turning
+          // and rights itself while it turns.
           fitGlobe();
-          settleToEquator(startSpin);
+          startSpin();
           // The globe is turning again and nothing is being narrated — the beat
           // the Guide slides in on.
           announceTourEnd();
@@ -4794,7 +4851,7 @@ export default function AtlasShell({
         const reportView = () => {
           // A flight writes the camera every frame, and each write ends a move:
           // reporting all of them would rebuild the Share view sixty times a
-          // second for nine seconds. The settle at the end reports once.
+          // second for nine seconds. The landing at the end reports once.
           if (flyingRef.current) return;
           try {
             const c = map.getCenter();
@@ -5214,7 +5271,6 @@ export default function AtlasShell({
       clearTimeout(styleWatchdog);
       clearTimeout(tourTimer);
       clearTimeout(tourPaintTimer);
-      clearTimeout(settleTimer);
       ro?.disconnect();
       apiRef.current = null;
       mapRef.current?.remove();

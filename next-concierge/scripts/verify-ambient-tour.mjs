@@ -66,6 +66,21 @@ const tourBody = between("        let tourEndAnnounced", "        // ── Resu
 // banners was tempting and wrong: they sit at module scope, hundreds of lines
 // above the tour body that shares its banner text, so the range quietly
 // swallowed a third of the component.
+// The resting globe's own motion, sliced whole: the constants, then the pure
+// frame function they feed. It is at module scope precisely so this can play it
+// forward — a rotation that eases in and a tilt that decays are claims about
+// motion over time, and nothing static can check them.
+const spinDecl = (() => {
+  const consts = ["SPIN_RATE", "SPIN_EASE_MS", "SPIN_LEVEL_PER_FRAME", "SPIN_LEVEL_MAX", "SPIN_LEVEL_MIN"]
+    .map((name) => {
+      const m = new RegExp(`^const ${name} = [\\d.]+;$`, "m").exec(SRC);
+      if (!m) throw new Error(`verify-ambient-tour: ${name} moved or changed shape`);
+      return m[0];
+    })
+    .join("\n");
+  return `${consts}\n${between("function spinFrame(", "\n/**\n * What the rest of the map fades to")}`;
+})();
+
 const constDecls = ["TOUR_TRAVEL_MS", "TOUR_DWELL_MS", "TOUR_LEAD_MS"]
   .map((name) => {
     const m = new RegExp(`^const ${name} = \\d+;$`, "m").exec(SRC);
@@ -93,7 +108,7 @@ const midTravel = (n) =>
 const DEPS = [
   "map", "mapboxgl", "escapeHtml", "addLayer", "homeZoom", "cancelled",
   "focused", "subsetActive", "projGlobe", "ambientTour", "fitGlobe",
-  "startSpin", "haltSpin", "settleToEquator", "window", "document", "clearTimeout",
+  "startSpin", "haltSpin", "window", "document", "clearTimeout",
   "requestAnimationFrame",
 ];
 
@@ -101,6 +116,7 @@ writeFileSync(
   join(OUT, "tour.ts"),
   `/* eslint-disable */\n` +
     `${stopsDecl}\n${constDecls}\n` +
+    `${spinDecl}\nexport { spinFrame };\n` +
     `export function makeTour(dep: any) {\n` +
     `  const { ${DEPS.join(", ")} } = dep;\n` +
     `  let tourArmed = false, tourActive = false, tourDismissed = false;\n` +
@@ -118,7 +134,7 @@ execFileSync("npx", [
   "--moduleResolution", "bundler", "--skipLibCheck",
 ], { cwd: ROOT, stdio: "inherit" });
 
-const { makeTour } = await import(pathToFileURL(join(OUT, "tour.js")).href);
+const { makeTour, spinFrame } = await import(pathToFileURL(join(OUT, "tour.js")).href);
 
 // ── A fake map and a fake clock ─────────────────────────────────────────────
 function harness(opts = {}) {
@@ -182,7 +198,6 @@ function harness(opts = {}) {
     // The swing back to the equator that a finished tour hands the globe
     // through. Modelled with a real delay, not a synchronous pass-through, so
     // "the spin resumes only once the globe is level again" is actually tested.
-    settleToEquator: (then) => { log.push("settle"); setTimeout_(then, 1100); },
     window: {
       setTimeout: setTimeout_,
       matchMedia: (q) => ({ matches: q.includes("reduced-motion") ? !!opts.reduced : false }),
@@ -242,12 +257,12 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   check("clears tour pins on natural finish", h.api.state().pins === 0);
   check("resumes the idle spin on natural finish",
     h.log.filter((l) => l === "startSpin").length === 1);
-  // The last stop is at 51°N and fitGlobe only restores zoom and pitch, so
-  // without the settle the globe resumed spinning tipped toward the pole —
-  // a resting state it never arrived in.
-  check("returns to the equator before the spin resumes",
-    h.log.indexOf("settle") >= 0 && h.log.indexOf("settle") < h.log.indexOf("startSpin"),
-    h.log.filter((l) => ["fitGlobe", "settle", "startSpin"].includes(l)).join(" → "));
+  // The globe returns to the equator inside the rotation now, so there is no
+  // second ease between the last caption and the spin — the thing to assert
+  // here is that nothing sits in between them at all.
+  check("nothing comes between the last caption and the rotation",
+    h.log.filter((l) => ["fitGlobe", "startSpin"].includes(l)).join(" → ") === "fitGlobe → startSpin",
+    h.log.filter((l) => ["fitGlobe", "startSpin"].includes(l)).join(" → "));
   check("leaves no timer running afterwards", h.pending() === 0);
 }
 
@@ -428,6 +443,104 @@ const RUN = 60000; // longer than any itinerary, so "then nothing else happens" 
   const lastPin = h.log.map((l, i) => (l.startsWith("pin ") ? i : -1)).filter((i) => i >= 0).pop();
   check("hands off after the last pin, on the resumed spin",
     spinIdx > lastPin && h.ended.length === 1);
+}
+
+/*
+ * ── The hand-off itself ────────────────────────────────────────────────────
+ *
+ * The complaint that produced this section: "a pretty strong jump at the end of
+ * the auto tour to the globe spinning". It was a velocity discontinuity, and it
+ * was invisible to every check here, because all of them assert about ORDER —
+ * which function ran after which — and none about MOTION. The globe swung back
+ * to the equator over 1.1 seconds (about 34°/s), decelerated to a dead stop,
+ * and then rotation began at a constant 2.7°/s: two easings meeting at zero
+ * with an order of magnitude between their speeds.
+ *
+ * There is no way to see that in a log of call names. So play the frames.
+ */
+{
+  const FPS = 60;
+  const MS = 1000 / FPS;
+  /** Run the spin from a starting camera for `secs`, returning every frame. */
+  const play = (lat, secs) => {
+    const frames = [];
+    let c = { lng: 0, lat };
+    for (let i = 0; i < secs * FPS; i++) {
+      c = spinFrame(c, i * MS);
+      frames.push(c);
+    }
+    return frames;
+  };
+
+  // 52° is the steepest the tour can leave: tourLat clamps there, and the last
+  // stop (Rocky Mountaineer, 51.2°N) is the one that gets near it.
+  /** Degrees of arc a frame covers, per second — what the eye actually reads. */
+  const speeds = (frames, lat0) =>
+    frames.map((f, i) => {
+      const prev = i ? frames[i - 1] : { lng: 0, lat: lat0 };
+      return Math.hypot(Math.abs(f.lng - prev.lng), Math.abs(f.lat - prev.lat)) * FPS;
+    });
+
+  // 52° is the steepest the tour can leave: tourLat clamps there, and the last
+  // stop (Rocky Mountaineer, 51.2°N) is the one that gets near it.
+  const run = play(52, 14);
+  const lats = run.map((f) => f.lat);
+  const sp = speeds(run, 52);
+  const steadySpin = 0.045 * FPS; // 2.7°/s, the resting rotation
+
+  // ── THE COMPLAINT, as a number ────────────────────────────────────────────
+  // The globe is meant to be TURNING and righting itself as an aside. Both the
+  // old settle (34°/s, braking to a stop) and the first attempt at levelling
+  // inside the spin (39.7°/s, measured on the real page) had the correction
+  // running an order of magnitude faster than the rotation it was hiding
+  // inside — which is what reads as a jump however continuous the maths is.
+  check("the return to the equator never outruns the rotation it rides in",
+    Math.max(...sp) < steadySpin * 3.5,
+    `peaks at ${Math.max(...sp).toFixed(1)}°/s against a ${steadySpin.toFixed(1)}°/s spin`);
+
+  check("…and starts from a standstill, not at full speed",
+    sp[0] < Math.max(...sp) / 20,
+    `first frame ${sp[0].toFixed(3)}°/s`);
+
+  // No frame may be faster than the one before it once the ease-in is done:
+  // the whole motion decelerates onto the resting spin and never surges.
+  const easeFrames = Math.ceil((900 / 1000) * FPS);
+  check("…decelerating from there, never surging",
+    sp.slice(easeFrames + 1).every((v, i) => v <= sp[easeFrames + i] + 1e-9),
+    `${sp[easeFrames].toFixed(2)} → ${sp[sp.length - 1].toFixed(2)}°/s`);
+
+  const level = lats.findIndex((l) => Math.abs(l) < 1);
+  check("the globe does reach level, from the steepest tilt the tour can leave",
+    level > 0 && level / FPS < 12,
+    level > 0 ? `${(level / FPS).toFixed(1)}s from 52°` : "never levels");
+
+  check("…monotonically, never overshooting the equator",
+    lats.every((l, i) => l >= 0 && (i === 0 || l <= lats[i - 1])),
+    `${lats[lats.length - 1].toFixed(3)}° at rest`);
+
+  const step = (i) => Math.abs(run[i].lng - run[i - 1].lng);
+  const steady = step(run.length - 1);
+  check("the rotation reaches full speed, so the globe is not left crawling",
+    Math.abs(steady - 0.045) < 1e-6,
+    `${steady.toFixed(4)}°/frame`);
+
+  const west = run.every((f, i) => i === 0 || f.lng < run[i - 1].lng);
+  check("…always westward, at a rate that never drops",
+    west && run.slice(2).every((_, i) => step(i + 2) >= step(i + 1) - 1e-9),
+    west ? "monotone" : "reverses");
+
+  // A globe already at rest must not be nudged off the equator by the levelling.
+  const flat = play(0, 1);
+  check("a level globe is left level",
+    flat.every((f) => f.lat === 0),
+    `${flat[flat.length - 1].lat}`);
+
+  // Southern latitudes level the same way. The Antarctic stop is at -64.5°,
+  // and an interruption there leaves the camera below the equator.
+  const south = play(-46, 14).map((f) => f.lat);
+  check("a southern tilt levels the same way",
+    south.every((l) => l <= 0) && Math.abs(south[south.length - 1]) < 1,
+    `${south[south.length - 1].toFixed(3)}°`);
 }
 
 rmSync(OUT, { recursive: true, force: true });
