@@ -8,8 +8,8 @@ import type { OfferingType } from "./types";
 /**
  * The four things a traveller is actually choosing between.
  *
- * Grouped by how you travel, not by our inventory taxonomy: somewhere to stay,
- * then air / sea / land. "Journeys by rail and air" used to bundle jets and
+ * Grouped by how you travel, not by our inventory taxonomy: air, sea and land,
+ * then somewhere to stay. "Journeys by rail and air" used to bundle jets and
  * trains into one heading, which put a round-the-world jet expedition and a
  * Scottish sleeper under the same label — the same mistake, one level up, that
  * the flat seven-item list made.
@@ -28,11 +28,25 @@ export type IntentKey = "stay" | "air" | "sea" | "land";
  * expedition or a world cruise — so "charters" named the wrong product at the
  * wrong price.
  */
+/*
+ * Group order is commercial, not conceptual: air, then sea, then land, then
+ * the places to stay.
+ *
+ * "Places to stay" led because it is the biggest pile of records — 6,142 of
+ * them — and record count is the one thing a browse menu should NOT be sorted
+ * by here. We sell private aviation. A visitor scanning Explore top-down met
+ * 2,240 hotels before they met the single collection the agency exists to
+ * book, and hotels are the lowest standalone transaction on the list.
+ *
+ * So the groups now run in descending order of what a booking is worth to us,
+ * and the stays sit last as what they actually are on this product: the
+ * foundation layer everything else is anchored to, not the opening offer.
+ */
 export const INTENTS: { key: IntentKey; label: string }[] = [
-  { key: "stay", label: "Places to stay" },
   { key: "air", label: "By Air" },
   { key: "sea", label: "By Sea" },
   { key: "land", label: "By Land" },
+  { key: "stay", label: "Places to stay" },
 ];
 
 export interface AtlasConfig {
@@ -85,13 +99,25 @@ export interface AtlasConfig {
    */
   views?: { key: string; label: string; query: string; blurb: string }[];
   /**
-   * Order everywhere the collections are listed: where-you-stay first, then
-   * air, sea and land, each group by how often travelers ask for it.
-   * Deliberately NOT alphabetical and NOT raw record count — a visitor scans
-   * this list looking for their own intent, not our inventory table.
+   * Rank, and it means two things that used to be decided separately: where a
+   * collection sits in every list, AND how high it stacks on the globe.
    *
-   * This is browse order, and the prose helpers no longer piggyback on it:
-   * `collectionsSummary` / `collectionsCompact` now pick the three largest
+   * The ranking is commercial. 1 is the primary revenue driver and 8 is the
+   * base layer, running: private jet expeditions, hotel yachts, safari, then
+   * expedition and world cruises, rail, villas, hotels. It is deliberately NOT
+   * alphabetical, NOT record count (that would put 3,902 villas above 124 jet
+   * expeditions — exactly backwards for an agency that sells private aviation),
+   * and no longer "how often travelers ask for it", which was a proxy for
+   * volume and therefore for the same wrong answer.
+   *
+   * On the map this is z-order, top-down: rank 1 draws ABOVE rank 8, so the
+   * jets' glowing white markers can never be masked by a dense hotel cluster.
+   * AtlasShell derives the stacking from this field rather than from its own
+   * OVERLAYS key order, so the menu and the globe cannot disagree — see
+   * `stackBefore` there.
+   *
+   * This is browse order, and the prose helpers do not piggyback on it:
+   * `collectionsSummary` / `collectionsCompact` pick the three largest
    * collections by `count` explicitly, so reordering the menu can never
    * quietly change which numbers the home page leads with.
    */
@@ -114,7 +140,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // number stays hand-kept — it is an editorial figure, not a raw row count —
     // but it is no longer hand-kept AND unchecked.
     count: 2240,
-    order: 1,
+    order: 8,
     intent: "stay",
     views: [
       {
@@ -140,7 +166,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["Caribbean", "United States", "Europe", "Mexico"],
     color: "#a8d08d",
     count: 3902,
-    order: 2,
+    order: 7,
     intent: "stay",
   },
   cruise: {
@@ -153,7 +179,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["Antarctica", "Galapagos", "Arctic", "Northwest Passage"],
     color: "#5aa9e6",
     count: 3662,
-    order: 5,
+    order: 4,
     intent: "sea",
   },
   worldcruise: {
@@ -166,7 +192,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["MED", "CARIB", "AUNZ", "EASTASIA"],
     color: "#45d6c2",
     count: 303,
-    order: 6,
+    order: 5,
     intent: "sea",
   },
   safari: {
@@ -209,7 +235,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // returns will be substantially larger, since the pre-egress slice never
     // looked outside Africa at all.
     count: 274,
-    order: 8,
+    order: 3,
     intent: "land",
   },
   train: {
@@ -222,7 +248,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["BRITAIN", "EUROPE", "CANADA", "EASTASIA"],
     color: "#e08d5f",
     count: 130,
-    order: 7,
+    order: 6,
     intent: "land",
   },
   yacht: {
@@ -235,7 +261,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     sampleRegions: ["MED", "CARIB", "ASIA"],
     color: "#e0b84a",
     count: 467,
-    order: 4,
+    order: 2,
     intent: "sea",
   },
   jet: {
@@ -251,7 +277,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     // scripts/apply-safrans-dates.mjs. Like every count here this is a hand-kept
     // constant over the raw feed, not a live figure — see the note on `count`.
     count: 124,
-    order: 3,
+    order: 1,
     intent: "air",
   },
 };

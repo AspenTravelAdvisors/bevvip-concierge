@@ -112,6 +112,13 @@ const HOTEL_DENSITY_SOURCE = "hotel-density";
 // Master atlas overlays: cruise / jet / yacht / world-cruise / rail / safari /
 // villa region pins, each from its own live app data.
 //
+// The KEY ORDER of this object is not the drawing order and must not be read as
+// one. Stacking comes from the registry's `order` (see Z_ORDER / stackBefore
+// below), because overlay pins paint on arrival — one fetch per collection, in
+// parallel — so before this the globe's z-order was literally whichever feed
+// the network returned first, and the jets could land under the hotels on a
+// slow connection and over them on a fast one.
+//
 // The colour is READ from the registry, never copied. It used to be a literal
 // per entry, which meant the globe's legend and /atlas/<type>'s own accent were
 // two hand-kept copies of one decision — and the safari recolour found them
@@ -213,6 +220,49 @@ const LEGEND: { key: string; label: string; color: string }[] = COLLECTIONS.map(
   label: OVERLAYS[c.type as OverlayKey]?.label ?? c.nav,
   color: c.color,
 }));
+
+/**
+ * Z-order on the globe, from the same `order` that ranks the Explore menu.
+ *
+ * Rank 1 (private jet expeditions) draws on top; rank 8 (VIP hotels) is the
+ * base layer. A collection's pins and its route lines share its rank, so a
+ * collection stacks as one band rather than pins-then-all-routes.
+ */
+const Z_ORDER: Record<string, number> = Object.fromEntries(
+  COLLECTIONS.map((c) => [c.type as string, c.order]),
+);
+
+/** Which collection a map layer belongs to; null for basemap and chrome. */
+function collectionOfLayer(id: string): string | null {
+  if (id === "hotel-heat" || id === "hotel-dots") return "hotel";
+  const m = /^[tr]_([a-z]+)_/.exec(id);
+  return m && m[1] in Z_ORDER ? m[1] : null;
+}
+
+/**
+ * The layer `key` must be inserted BEFORE (i.e. underneath) to land at its rank.
+ *
+ * Scans the live style bottom-up for the first layer that outranks `key` and
+ * returns it; undefined means nothing outranks it and it goes on top. Cheap
+ * enough to run per layer — this fires a handful of times per style load, not
+ * per frame — and it is what makes arrival order irrelevant: however late a
+ * feed lands, its pins slot into the same place in the stack.
+ *
+ * Plotted results (`featured-*`) always win. They are the answer to a question
+ * the traveller just asked, so nothing ambient may cover them, and a late feed
+ * arriving after a plot used to do exactly that.
+ */
+function stackBefore(map: MBMap, key: string): string | undefined {
+  const rank = Z_ORDER[key];
+  if (rank == null) return undefined;
+  const layers = map.getStyle?.()?.layers ?? [];
+  for (const l of layers) {
+    if (l.id.startsWith("featured-")) return l.id;
+    const owner = collectionOfLayer(l.id);
+    if (owner && Z_ORDER[owner] < rank) return l.id;
+  }
+  return undefined;
+}
 
 // Selectable Mapbox basemaps surfaced via the style menu. Each carries its own
 // fog so the globe atmosphere stays in key with the basemap.
@@ -971,7 +1021,17 @@ export default function AtlasShell({
 }: Props) {
   const allInventory = scope === "all";
   const showsHotel = allInventory || type === "hotel";
-  const overlayKeys = (Object.keys(OVERLAYS) as OverlayKey[]).filter((k) => allInventory || type === k);
+  /*
+   * Overlay collections, LOWEST rank first — the order a full repaint paints
+   * them in, so a straight run through this array already produces the right
+   * stack. `stackBefore` covers the other path (feeds arriving out of order);
+   * this covers the cheap one.
+   */
+  const overlayKeys = COLLECTIONS
+    .map((c) => c.type as string)
+    .filter((k): k is OverlayKey => k in OVERLAYS)
+    .filter((k) => allInventory || type === k)
+    .reverse();
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || FALLBACK_TOKEN;
   const mapEl = useRef<HTMLDivElement>(null);
@@ -1948,6 +2008,10 @@ export default function AtlasShell({
           // longer gate first paint), so the very first paint breathes them in
           // instead of popping. Basemap-switch repaints stay instant.
           const fadeIn = !hotelRevealed && !map.getLayer("hotel-dots");
+          // Rank 8: the base layer, under every other collection. The hotel
+          // feed is the biggest and usually lands last, so without this the
+          // densest field on the globe painted itself over everything else.
+          const hAt = stackBefore(map, "hotel");
           addLayer(map, {
             id: "hotel-heat", type: "heatmap", source: HOTEL_DENSITY_SOURCE, maxzoom: 4.35,
             paint: {
@@ -1962,7 +2026,7 @@ export default function AtlasShell({
                 1, "rgba(255,247,213,0.68)",
               ],
             },
-          });
+          }, hAt);
           addLayer(map, {
             id: "hotel-dots", type: "circle", source: HOTEL_DENSITY_SOURCE, minzoom: HOTEL_DOT_MIN_ZOOM,
             paint: {
@@ -1974,7 +2038,7 @@ export default function AtlasShell({
               "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 2.45, 0.45, 7, 1.1],
               "circle-blur": 0,
             },
-          });
+          }, hAt);
           if (fadeIn) {
             hotelRevealed = true;
             requestAnimationFrame(() => {
@@ -2000,14 +2064,19 @@ export default function AtlasShell({
           if (!map.getSource(src)) {
             map.addSource(src, { type: "geojson", data: { type: "FeatureCollection", features: feats } });
           }
+          // Slot this collection at its rank instead of on top of whatever has
+          // arrived so far — see stackBefore. Read once: adding the glow does
+          // not change where the dot belongs, and re-scanning would put the dot
+          // under the glow it is supposed to sit on.
+          const at = stackBefore(map, key);
           addLayer(map, {
             id: src + "_glow", type: "circle", source: src,
             paint: { "circle-radius": 9, "circle-color": cfg.color, "circle-opacity": 0.18, "circle-blur": 0.8 },
-          });
+          }, at);
           addLayer(map, {
             id: src + "_dot", type: "circle", source: src,
             paint: { "circle-radius": 5, "circle-color": cfg.color, "circle-stroke-color": "#0b0e14", "circle-stroke-width": 1.2 },
-          });
+          }, at);
           applyHidden(key);
         }
 
@@ -2067,11 +2136,16 @@ export default function AtlasShell({
           } else {
             map.getSource(src)?.setData(data);
           }
+          // Routes ride at their collection's rank, same as its pins: a jet
+          // route belongs above a hotel cluster for the same reason a jet pin
+          // does. (They used to all paint above every pin, which meant a rail
+          // line crossed the jets.)
+          const rAt = stackBefore(map, key);
           addLayer(map, {
             id: src + "_shadow", type: "line", source: src,
             layout: { "line-join": "round", "line-cap": "round" },
             paint: { "line-color": "#000010", "line-width": 3.2, "line-opacity": 0.22 },
-          });
+          }, rAt);
           addLayer(map, {
             id: src + "_line", type: "line", source: src,
             layout: { "line-join": "round", "line-cap": "round" },
@@ -2089,7 +2163,7 @@ export default function AtlasShell({
               "line-dasharray": [6, 1.6],
               "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.95, ROUTE_ZOOM, 0.82],
             },
-          });
+          }, rAt);
           // Visibility: above the route gate, type not hidden, nothing focused.
           const vis = routeVis(map.getZoom(), key);
           [src + "_shadow", src + "_line"].forEach((id) => {
@@ -6211,7 +6285,7 @@ async function fetchHotelPage(offset: number, limit: number): Promise<{ total?: 
 
 // ── Mapbox loader + minimal typings ────────────────────────────────────────
 
-function addLayer(map: MBMap, spec: Record<string, unknown>) {
+function addLayer(map: MBMap, spec: Record<string, unknown>, before?: string) {
   if (map.getLayer(spec.id as string)) return;
   /*
    * Standard-family styles light OUR layers with the scene lighting model, so
@@ -6237,7 +6311,13 @@ function addLayer(map: MBMap, spec: Record<string, unknown>) {
     if (paint[prop] == null) paint[prop] = 1;
     spec.paint = paint;
   }
-  try { map.addLayer(spec); } catch { /* layer skipped */ }
+  // `before` is advisory: a layer named by stackBefore can vanish between the
+  // scan and the insert (a restyle mid-flight), and Mapbox throws on a missing
+  // beforeId. Falling back to the top is the old behaviour, not a new failure.
+  try { map.addLayer(spec, before); }
+  catch {
+    try { map.addLayer(spec); } catch { /* layer skipped */ }
+  }
 }
 
 function setFog(map: MBMap, fog: Record<string, unknown>) {
@@ -6318,8 +6398,10 @@ interface MBMap {
   addSource(id: string, src: unknown): void;
   getSource(id: string): { setData(d: unknown): void } | undefined;
   removeSource(id: string): void;
-  addLayer(spec: Record<string, unknown>): void;
+  addLayer(spec: Record<string, unknown>, beforeId?: string): void;
   getLayer(id: string): unknown;
+  /** Optional: absent on the verify stubs, so stackBefore guards with `?.`. */
+  getStyle?(): { layers?: { id: string }[] } | undefined;
   removeLayer(id: string): void;
   setPaintProperty(id: string, prop: string, val: unknown): void;
   setLayoutProperty(id: string, prop: string, val: unknown): void;
