@@ -1,5 +1,17 @@
 # BeVvip Project Management Master Document
 
+> **Status note added 2026-08-28 — the stack section is out of date.**
+>
+> "Stack being used", "Major features" and "What is working" below describe the
+> legacy static app (`public/index.html`, the `api/chat.js` OpenAI proxy, the
+> hidden `BEVVIP_HOTELS` payload). All of that has been deleted. The live site is
+> the Next.js app in `next-concierge/`, the guide is Claude-only, and hotel,
+> cruise and tour inventory now comes from the Virtuoso Partner API rather than
+> from the model. The business brief, positioning and routing sections still
+> hold.
+>
+> Current state of the code: `next-concierge/STATE.md`.
+
 ## Plain-English Project Brief
 
 **What the app does**  

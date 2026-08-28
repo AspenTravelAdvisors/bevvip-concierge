@@ -1,5 +1,23 @@
 # BeVvip — TravelWits API Integration Strategy & Code-Change Plan
 
+> **Status note added 2026-08-28 — read this as history, not as a plan.**
+>
+> This document was written in May 2026, against a codebase that no longer
+> exists: `public/index.html`, `api/prompt.js`, `api/chat.js`, the
+> `<!--BEVVIP_HOTELS-->` comment tag and the OpenAI proxy have all been deleted.
+> The live application is the Next.js app in `next-concierge/`, and the supplier
+> integration that shipped is **Virtuoso**, not TravelWits.
+>
+> What survives intact is its central argument — §4's "the LLM never sees,
+> invents, or displays a protected rate. It produces *intent* and *prose*. The
+> backend produces *rates*." That is exactly what the Virtuoso work implements:
+> supplier truth is crawled, committed and merged at build time, and the guide
+> searches it rather than inventing it. Sections 6 and 7, which name specific
+> files and endpoints, describe a system that has been replaced.
+>
+> Current state of the code: `next-concierge/STATE.md`. Current supplier
+> protocol: `Virtuoso_API_Reference.md`.
+
 **Prepared:** May 31, 2026
 **Scope:** Full system — Custom GPT + standalone Vercel app + advisor layer
 **Trigger:** TravelWits (the engine behind VipTravelAi.com) is adding an API for real-time hotel/cruise rates, availability, and booking.

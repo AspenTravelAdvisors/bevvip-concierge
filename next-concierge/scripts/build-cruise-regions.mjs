@@ -40,6 +40,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { portRegion } from "./port-region.mjs";
+import { steadyStamp } from "./lib/steady-stamp.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SAILINGS = path.join(ROOT, "data/atlas/cruise/sailings.json");
@@ -288,7 +289,7 @@ const changed = decided.filter((d) => d.region !== d.feed).length;
 
 const overlay = {
   _meta: {
-    generatedAt: new Date().toISOString(),
+    generatedAt: null,          // filled by steadyStamp below, in this position
     generator: "scripts/build-cruise-regions.mjs",
     sailings: decided.length,
     corrected: changed,
@@ -379,7 +380,10 @@ if (CHECK) {
 } else if (DRY) {
   console.log("\n--dry-run: nothing written");
 } else {
-  for (const f of OVERLAY_OUT) { writeFileSync(f, serialize(overlay)); console.log(`\nwrote ${path.relative(ROOT, f)}`); }
+  // One stamp for both copies, and only when the regions actually moved — the
+  // nightly sync re-derives this every night. See scripts/lib/steady-stamp.mjs.
+  const stampedOverlay = steadyStamp(OVERLAY_OUT[0], overlay);
+  for (const f of OVERLAY_OUT) { writeFileSync(f, serialize(stampedOverlay)); console.log(`\nwrote ${path.relative(ROOT, f)}`); }
   const metas = META_OUT.map(nextMeta);
   reportMetaDrift(metas);
   META_OUT.forEach((f, i) => { writeFileSync(f, serialize(metas[i])); console.log(`wrote ${path.relative(ROOT, f)}`); });

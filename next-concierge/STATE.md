@@ -1827,3 +1827,137 @@ The rail and yacht figures are not calls being dropped: they are exactly the
 consecutive same-port repeats — a second night in one place — which have no hop
 to fly and so no landing to make. Collapsing consecutive repeats in the source
 data gives 99% and 93%, the same numbers. Every distinct call is landed on.
+
+## Virtuoso is the supplier of record (2026-08-25 → 08-28)
+
+The atlases used to be curated files with an AI's guesses filling the gaps. They
+are now the Virtuoso Partner API's facts with our curation layered on top, and
+the division of authority is the whole design: **Virtuoso owns what a property
+or a journey IS** — name, place, coordinates, category, amenities, photographs,
+the year-stamped benefits — and **we own what Virtuoso has no opinion about** —
+Cadence programme membership, ranking, the marquee region the map filters on,
+booking links, advisor curation.
+
+Protocol, and the traps that cost real time, are in
+`Master Documents/Virtuoso_API_Reference.md`. The three that shape the code:
+the login parameter is `user` and not `apiUser`; every kind of failure answers
+with a bodyless 500 that never says which kind; and **bearer tokens are
+single-use**, arriving at the top level of each response as `token`. That last
+one forbids parallelism outright, so `lib/virtuoso/client.mjs` serializes every
+call through one promise chain. A full hotel detail crawl is ~2,000 sequential
+calls at ~800ms — half an hour — which is why every sync caches to NDJSON and
+resumes.
+
+**What is synced** (`data/atlas/`, committed, never fetched at request time):
+
+| feed | records | what it decides |
+|---|---|---|
+| hotels | 2,073 | the hotel atlas's facts, perks and photography |
+| promotions | 2,028 | live supplier offers, joined to a property by company name |
+| cruises | 4,465 | the expedition atlas, day by day |
+| tours | 505 | the jet, rail and safari atlases |
+
+**What it produced.** `luxury-hotels.json` holds 2,240 properties: 1,925
+upgraded from Virtuoso, 148 newly added, 167 local-only partners, 381 duplicates
+folded away and 2 junk records removed. 995 categories were corrected — the old
+classifier had put 73% of everything into "City Hotel" and found 15 ski
+properties where the supplier flags 99. 1,922 perk lists and 1,923 photographs
+now come from the supplier rather than from us. The journey atlases grew
+against their curated bases: yacht 374 → 467, world 250 → 303, expedition
+3,542 → 3,662, and safari 0 → 274. Jet and rail shrank (147 → 124, 135 → 130)
+because the supplier's catalogue is the authority on what is still sold; the 27
+bespoke jet journeys with no supplier record are kept deliberately.
+
+**The data is committed, not fetched.** Every supplier change lands as a
+reviewable diff, because these files carry a lot of hand-curation and a supplier
+quietly dropping records is invisible without one.
+`.github/workflows/virtuoso-sync.yml` runs the whole chain at 09:00 UTC, each
+crawl `continue-on-error` so a bad night for sailings cannot throw away a good
+hotel refresh, with the NDJSON cache carried between runs so a night that cannot
+finish resumes rather than restarts.
+
+**Three guards stand between an unattended crawl and production**, because
+nobody is watching at 3am: `merge-virtuoso-journeys.mjs` refuses a feed under
+90% detail coverage and refuses again if any atlas would lose more than a
+quarter of its journeys; `verify-virtuoso-delta.mjs` refuses a hotel count that
+falls more than 10%; and `verify-virtuoso-freshness.mjs` judges staleness on
+when a feed was last **checked**, not when it last **changed**, so a quiet
+fortnight at the supplier reads as healthy and a week of failing syncs does not.
+
+### The review pass (2026-08-28) — what was wrong
+
+**`npm run verify` had been silently disabled for a day.** The hotel merge gate
+byte-compared its output against the committed file — but three fields in that
+file are decided by the date the merge runs, not by anything a supplier sent:
+`promotions` and `hasPromotion` filter offers on today, and `perksStale`
+compares the supplier's benefit year against this one. The morning after an
+offer expired, the gate reported the file stale with nothing having changed, and
+everything behind it in the `&&` chain never ran. (The perk-year half had not
+bitten yet; it would have, on 1 January.) The gate now compares the parts the
+feeds actually own and reports calendar drift as the note it is. The deploy
+re-merges on every build, so the live site was never affected.
+
+**And `npm run verify` was an `&&` chain, so it hid its own findings.** That
+is the right shape for a build and the wrong one for a verification suite: the
+checks are independent claims about different parts of the atlas, and stopping
+at the first failure meant a false positive at the front took sixteen real
+checks down with it — one of which was genuinely red (see "Still open"). It now
+runs through `scripts/verify-all.mjs`: every check runs, and the failures are
+named together at the end. `npm run verify:bail` keeps the old fail-fast
+behaviour, and `node scripts/verify-all.mjs <substring>` runs a subset.
+
+**Four generated files churned every night on their timestamps alone.**
+`hotel-aliases.json`, `virtuoso-id-map.json`, the sea-route collections and the
+cruise-region overlay each stamped the moment their generator ran, so the tree
+was already dirty before the nightly job asked git whether anything had moved —
+which is why the job's "No supplier changes today" branch could never fire, and
+why a real change arrived buried among four noisy ones. `scripts/lib/steady-stamp.mjs`
+now keeps the previous stamp when nothing else would change, the same way
+`lib/virtuoso/write-feed.mjs` already did for the feeds themselves.
+
+**The nightly job never rebuilt the safari camps.** `build:safari-camps` reads
+`luxury-hotels.json` and `safari/itinerary.json`, both of which the job rebuilds,
+but the job did not then rebuild `public/maps/safari/camps.json` from them.
+`verify:safari-camps` byte-compares, so the first night that moved a camp would
+have turned the suite red for everyone. Added to the workflow.
+
+**The freshness check called a half-checked set current.** A feed with no
+recorded check at all warned and then `continue`d, never reaching the verdict,
+so the summary read "Virtuoso feeds are current" while hotels and promotions had
+never recorded one — the precise failure the file was written to catch. It now
+carries them into the verdict, and `--strict` fails on them. Its drift check
+also looked for a noun (`"safari journeys"`) that `atlas-config.ts` does not use,
+so the safari headline count was never actually verified; and its regex escape
+was inert (the character class closed early), which cost nothing only because no
+noun contains a metacharacter.
+
+**The four sync scripts carried four byte-identical copies** of the streaming
+NDJSON cache reader — the one that exists because the cruise cache reached
+1.35GB and `readFileSync` threw at Node's 512MB string ceiling. That is a fix
+that lands in three files and not the fourth; it is now
+`lib/virtuoso/ndjson-cache.mjs`.
+
+### Still open
+
+- **`verify:route-flight` is red**, and has been since `dbd82c0`, which says so
+  in its own commit message and left it. The claim that fails is "a hop with no
+  geometry is left out, not cut across": the flight makes 9 calls over 7 drawn
+  hops and cuts 3.23° across the gap, showing a journey the map underneath is
+  not drawing. Note the assertion next to it — which passes — wants all nine
+  calls named, so the two encode different answers to what a missing hop should
+  do. That question needs deciding before the fix.
+- **The hotel and promotion feeds have no recorded check.** Both files are on
+  disk and current in content, but neither has run through `write-feed.mjs`
+  since the status file was introduced, so freshness cannot speak for them.
+  One successful nightly run fixes it; until then the verifier says so out loud
+  rather than rounding up to green.
+- **`verify-virtuoso-delta.mjs` guards hotels only.** The journey atlases have
+  their own 25% shrink guard inside the merge, but the raw cruise, tour and
+  promotion feeds have none. A supplier returning an empty catalogue on those
+  would be committed and deployed.
+- **`Master Documents/BeVvip_API_Integration_Strategy.md` describes an
+  architecture that no longer exists** — `api/prompt.js`, `api/chat.js`,
+  `public/index.html`, the `<!--BEVVIP_HOTELS-->` comment tag, and TravelWits as
+  the live-rate source. Its central argument (the language model must never be
+  the rate source) is what the Virtuoso work implements; the file should be
+  rewritten around that, or marked historical.
