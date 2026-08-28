@@ -110,6 +110,17 @@ jobs:
           npm run build:sea-routes
           npm run build:cruise-regions
 
+      # The last gate before anything is committed, and the only one that sees
+      # both what the supplier sent and what is already live. It covers all four
+      # raw feeds and all six journey atlases, not just the hotel atlas — an
+      # empty /v2/cruises response used to sail past it untouched.
+      #
+      # Note the trade-off it makes deliberately: one feed over its limit blocks
+      # the WHOLE commit, including feeds that refreshed perfectly. That is the
+      # opposite of the continue-on-error stance the crawls take above, and it is
+      # the right way round — a crawl that fails publishes nothing new, while a
+      # crawl that succeeds with half a catalogue publishes a deletion. Blocking
+      # costs a day of freshness; not blocking costs live inventory.
       - name: Refuse an implausible shrink
         working-directory: next-concierge
         run: node scripts/verify-virtuoso-delta.mjs

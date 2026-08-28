@@ -180,33 +180,7 @@ detour stays under 4x great-circle. 6/6 pass. Note it asserts on *interior*
 segments: a route starts and ends at a port, and at 0.1 deg a port is a land
 cell, so the first and last segments always "hit land" by construction.
 
-**A test outlived the decision it encoded.** `verify:route-flight` had been red
-since `dbd82c0`, which noted it and left it. The claim that failed was "a hop
-with no geometry is left out, not cut across" — and the code was right, not the
-test. Both positions sound correct, which is why this is worth writing down:
-route-frame leaves a hop it has no line for EMPTY on purpose, because a straight
-stroke between two ports claims a route the ship does not take. The camera is
-not under that constraint — it draws nothing, it only travels — and the
-alternative to travelling is silently not calling at a port the itinerary lists,
-leaving a hole in the numbering that reads as a data error. Around 15% of
-expedition stops carry no coordinate, so that is the common case.
-
-`fillGaps` (in `routeHops`) made that change on 2026-08-25 in `9611c35`, hours
-after `ddf25a3` wrote the assertion — and the test should have gone red that
-afternoon. It did not, because the verifier was crashing before it reached a
-single assertion, having drifted off two renamed constants. By the time
-`dbd82c0` repaired it, the failure looked like a pre-existing mystery rather
-than the direct consequence of a deliberate change made the same day. Two gates
-failing at once (that crash, then the `&&` chain) is what turned a half-day
-inconsistency into a fortnight of red.
-
-The assertion now states what the flight actually does: a hop with no geometry
-is flown direct, and its call is still landed on. It is measured against bowed
-legs, so cutting the corner on a hop that *does* have geometry still lands 6°
-off and fails — the useful half of the original claim is kept.
-
-### Still open
- from D1
+### Still open from D1
 
 - **The three served landmask copies stay for now.** `public/maps/{cruise,
   yacht,worldcruise}/data/landmask.bin` are still fetched by those Leaflet
@@ -1964,6 +1938,53 @@ NDJSON cache reader — the one that exists because the cruise cache reached
 that lands in three files and not the fourth; it is now
 `lib/virtuoso/ndjson-cache.mjs`.
 
+**A test outlived the decision it encoded.** `verify:route-flight` had been red
+since `dbd82c0`, which noted it and left it. The claim that failed was "a hop
+with no geometry is left out, not cut across" — and the code was right, not the
+test. Both positions sound correct, which is why this is worth writing down:
+route-frame leaves a hop it has no line for EMPTY on purpose, because a straight
+stroke between two ports claims a route the ship does not take. The camera is
+not under that constraint — it draws nothing, it only travels — and the
+alternative to travelling is silently not calling at a port the itinerary lists,
+leaving a hole in the numbering that reads as a data error. Around 15% of
+expedition stops carry no coordinate, so that is the common case.
+
+`fillGaps` (in `routeHops`) made that change on 2026-08-25 in `9611c35`, hours
+after `ddf25a3` wrote the assertion — and the test should have gone red that
+afternoon. It did not, because the verifier was crashing before it reached a
+single assertion, having drifted off two renamed constants. By the time
+`dbd82c0` repaired it, the failure looked like a pre-existing mystery rather
+than the direct consequence of a deliberate change made the same day. Two gates
+failing at once (that crash, then the `&&` chain) is what turned a half-day
+inconsistency into a fortnight of red.
+
+The assertion now states what the flight actually does: a hop with no geometry
+is flown direct, and its call is still landed on. It is measured against bowed
+legs, so cutting the corner on a hop that *does* have geometry still lands 6°
+off and fails — the useful half of the original claim is kept.
+
+**The shrink guard covered one file out of eleven.**
+`verify-virtuoso-delta.mjs` is the last gate before the unattended job commits,
+and it checked `luxury-hotels.json` and nothing else — so a night where
+`/v2/cruises` answered with an empty catalogue would have erased 4,465 sailings,
+committed them, and deployed. It now covers all four raw feeds and all six
+journey atlases. Limits are per feed and the reasons are real rather than
+generous: 10% by default, 30% for promotions because campaigns expire in batches
+on fixed dates, 25% for the journey atlases because departures sail (matching
+`MAX_ATLAS_SHRINK` in the merge, which asks the same question of a different
+baseline — the curated base rather than what is committed and serving).
+
+Checked against four deliberate breaks before shipping: an emptied cruise feed
+refuses at 100%, a 20% short tour crawl refuses, a 20% promotions drop passes as
+the campaign expiry it looks like, and growth always passes.
+
+One feed over its limit blocks the WHOLE commit, including feeds that refreshed
+perfectly. That is deliberate, and it is the opposite of the `continue-on-error`
+stance the crawl steps take, for a reason worth stating: a crawl that fails
+publishes nothing new, while a crawl that succeeds with half a catalogue
+publishes a deletion. Blocking costs a day of freshness; not blocking costs live
+inventory.
+
 ### Still open
 
 - **The hotel and promotion feeds have no recorded check.** Both files are on
@@ -1971,10 +1992,6 @@ that lands in three files and not the fourth; it is now
   since the status file was introduced, so freshness cannot speak for them.
   One successful nightly run fixes it; until then the verifier says so out loud
   rather than rounding up to green.
-- **`verify-virtuoso-delta.mjs` guards hotels only.** The journey atlases have
-  their own 25% shrink guard inside the merge, but the raw cruise, tour and
-  promotion feeds have none. A supplier returning an empty catalogue on those
-  would be committed and deployed.
 - **`Master Documents/BeVvip_API_Integration_Strategy.md` describes an
   architecture that no longer exists** — `api/prompt.js`, `api/chat.js`,
   `public/index.html`, the `<!--BEVVIP_HOTELS-->` comment tag, and TravelWits as
