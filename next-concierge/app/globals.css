@@ -3496,13 +3496,18 @@ button.card-book {
 /* Atlas filter rail — shared by the five collections ported off Leaflet.
    Reuses .villa-filters for the row itself (see AtlasFilterRail.tsx); these
    are the two additions that row did not already have. */
-/* The result-side group: count · "first 120" · Sort · Share · Reset. One
-   auto-margin on the group, rather than one on each item — the old
-   `margin-left: auto` on .atlas-count meant everything after it had to fit in
-   whatever the filters had left, and when it didn't, it wrapped. */
-.villa-filters /* Special offers toggle. Reads as a filter at rest and as a claim when on —
-   the gold is the same accent the VIP language uses everywhere else. */
+/* Special offers toggle. Reads as a filter at rest and as a claim when on —
+   the gold is the same accent the VIP language uses everywhere else.
+
+   Top level, NOT `.villa-filters .atlas-promo`: the same button is in the
+   phone drawer, which is not that row, and a descendant selector left it there
+   with no styling at all — a white native button in the middle of a dark
+   sheet. */
 .atlas-promo {
+  /* Every surface of this button is declared below, so drop the native bezel
+     rather than let Safari draw its own underneath. */
+  -webkit-appearance: none;
+  appearance: none;
   border: 1px solid #4a412a;
   background: rgba(28, 24, 14, 0.7);
   color: #c8bf9f;
@@ -3522,6 +3527,10 @@ button.card-book {
   border-color: #a98a3e;
   color: #f0dca6;
 }
+/* The result-side group: count · "first 120" · Sort · Share · Reset. One
+   auto-margin on the group, rather than one on each item — the old
+   `margin-left: auto` on .atlas-count meant everything after it had to fit in
+   whatever the filters had left, and when it didn't, it wrapped. */
 .atlas-railend {
   display: flex;
   align-items: center;
@@ -3645,6 +3654,13 @@ button.card-book {
 }
 /* In the phone drawer the wheels are the control, so they sit in the flow. */
 .atlas-dayspop.inline {
+  /* Three rows here rather than five. On desktop the wheel is a popover with
+     the whole window behind it; in the drawer it is one control among nine in
+     a column already taller than the screen, and at five rows it took a third
+     of the sheet to show two rows of context nobody reads. Three still turns
+     like a dial — one row above the band, one below — and gives the sheet back
+     68px. Row height is unchanged, so the pick still lands where it did. */
+  --wheel-h: calc(var(--wheel-row) * 3);
   position: static;
   width: 100%;
   padding: 4px 0 0;
@@ -4482,7 +4498,12 @@ button.card-book {
   right: 0;
   bottom: 0;
   z-index: 50;
+  /* dvh, not vh: on iOS `vh` is the height with the browser toolbars RETRACTED,
+     so a sheet sized against it while the toolbar is showing runs its footer —
+     Reset and Apply — under that toolbar. dvh is the viewport as it currently
+     stands. The vh line stays as the fallback for anything without dvh. */
   max-height: 86vh;
+  max-height: 86dvh;
   display: flex;
   flex-direction: column;
   background: var(--panel, var(--card));
@@ -4500,10 +4521,29 @@ button.card-book {
 }
 .atlas-sheetbody {
   overflow-y: auto;
+  /* The scroll needs a floor to shrink to; without it the column can refuse to
+     go below its content and the sheet grows past its cap instead. */
+  min-height: 0;
   padding: 8px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+/*
+ * Nothing in the sheet gets squeezed to make the column fit — it SCROLLS.
+ *
+ * This is not a tidy-up. A column flex item shrinks by default, and the sheet's
+ * content is taller than 86vh on every phone, so the browser looks for the
+ * difference somewhere. Chromium takes it from nothing (a control's automatic
+ * minimum size is its content), but Safari happily shrinks a <select> below
+ * its own text: the border and the 11px padding are kept, the content box
+ * collapses — to about 10px of a 16px line on a 6.9" phone — and every dropdown
+ * label in the drawer is served sliced in half. The inputs beside them, which
+ * Safari does not shrink, stayed the right height, which is what made it look
+ * like a font bug rather than a layout one.
+ */
+.atlas-sheetbody > * {
+  flex: none;
 }
 /* Full-width controls in the sheet — a wrapping row is unusable on a phone. */
 .atlas-sheetbody select,
@@ -4539,6 +4579,14 @@ button.card-book {
 .atlas-sheetbody .atlas-wheelbox {
   width: 34vw;
   max-width: 150px;
+}
+/* The toggle is sized for a row of 12px selects on desktop; in the drawer it
+   is a full-width row among 44px controls, and a 30px one reads as an
+   afterthought and is a poor thumb target besides. */
+.atlas-sheetbody .atlas-promo {
+  padding: 12px 14px;
+  font-size: 13.5px;
+  border-radius: 9px;
 }
 /* The generic sheet rule gives every input a bordered box; the wheel rows are
    not inputs, and the band is already the control's edge. */
