@@ -5,6 +5,7 @@ import { expeditionAnswers } from "@/data/answers/expedition";
 import { hotelAnswers } from "@/data/answers/hotels";
 import { villaAnswers } from "@/data/answers/villas";
 import { journeyAnswers } from "@/data/answers/journeys";
+import { safariAnswers } from "@/data/answers/safari";
 
 /**
  * Canonical origin for absolute URLs in metadata, sitemap, robots and JSON-LD.
@@ -48,6 +49,7 @@ export const ALL_ANSWERS = [
   ...hotelAnswers,
   ...villaAnswers,
   ...journeyAnswers,
+  ...safariAnswers,
 ];
 
 const BY_SLUG = new Map(ALL_ANSWERS.map((a) => [a.slug, a]));
@@ -60,8 +62,20 @@ export function answerParams() {
   return ALL_ANSWERS.map((a) => ({ slug: a.slug }));
 }
 
-// Category display order for the index page.
-export const CATEGORY_ORDER = ["Expedition", "Hotels", "Villas", "Voyages", "Rails", "Yachts", "Planning"];
+/**
+ * Category display order for the index page — and, because of how
+ * answersByCategory() uses it, the list of categories that can appear AT ALL.
+ *
+ * That second job is the dangerous one. The filter below drops any category not
+ * named here, silently: an answer with `category: "Safari"` still built its own
+ * page and still reached the sitemap, but never appeared on /answers, so nothing
+ * linked to it. A hand-kept list that decides what exists is the same shape as
+ * the bug that kept safari out of the sitemap's atlas list and out of
+ * audit-listings' SHIPPED table. `verify:seo` now fails on a category that is
+ * not in this array, so adding one is a build error rather than a silent
+ * orphan.
+ */
+export const CATEGORY_ORDER = ["Expedition", "Safari", "Hotels", "Villas", "Voyages", "Rails", "Yachts", "Planning"];
 
 export function answersByCategory() {
   const groups = new Map();

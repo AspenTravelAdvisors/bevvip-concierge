@@ -12,8 +12,15 @@ const jet = require("./journeys");
 const yacht = require("./sailings");
 const worldcruise = require("./cruises-world");
 const train = require("./trains");
+const safari = require("./safaris");
 
-const BACKENDS = { hotel, cruise, jet, yacht, worldcruise, train };
+// Villas are deliberately absent: they are served by lib/villas.js through
+// searchVillasChannel, which is a different contract (party size, bedrooms,
+// nightly ceiling) rather than the shared region/month/brand grammar. Safari
+// was absent for no reason at all — it shipped as the eighth atlas with pins,
+// a colour, a page and a menu entry, and no backend, so queryAtlas("safari")
+// threw and every safari question in the Guide fell through to hotels.
+const BACKENDS = { hotel, cruise, jet, yacht, worldcruise, train, safari };
 
 function backendFor(type) {
   const b = BACKENDS[String(type || "").trim()];

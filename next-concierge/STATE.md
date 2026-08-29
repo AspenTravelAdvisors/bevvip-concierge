@@ -2329,3 +2329,96 @@ in this file; `audit-listings.mjs` documents its own version of it in `SHIPPED`.
   countries, so coverage is wide rather than deep. If crawl logs show ISR misses
   on first crawl, raise it; the build already generates 681 pages in a few
   minutes.
+
+
+## Safari was on the map and outside the product (2026-08-28)
+
+Safari shipped as the eighth atlas with everything visible: pins on the home
+globe, its own colour in the registry, `/atlas/safari`, an entry in the Explore
+menu, 274 journeys in the feed, a camps layer built nightly. What it never got
+was a **query backend**. `lib/atlas/index.js` registered six:
+
+    const BACKENDS = { hotel, cruise, jet, yacht, worldcruise, train };
+
+so `queryAtlas("safari")` threw `unknown atlas type: safari`, `safari` was not
+in the `search_offerings` tool enum, and `dispatchSearchOfferings` had no branch
+for it. Its last line is:
+
+    // Unknown type -> treat as hotel search rather than erroring.
+    return searchHotels(input, fetchImpl);
+
+Right instinct for an unknown type, wrong outcome for a real one. **A traveller
+asking The Guide for a Botswana safari got a shortlist of LODGES** — the 72
+`Lodge / Safari` properties in the hotel atlas — and never an itinerary, because
+the 274 itineraries were unreachable from the tool. No error, no empty result,
+no gap a reader would notice: a confident answer from the wrong atlas, while the
+right atlas's pins sat on the globe behind the chat panel.
+
+This is the third time the same shape of failure has appeared in this file, and
+every time it has been safari: missing from `audit-listings.mjs`'s `SHIPPED`
+table, missing from the sitemap's hand-kept atlas list, missing from the
+dispatcher. A collection that ships in eight places and is registered in seven
+looks complete from every direction except the one nobody checks.
+
+### What was added
+
+- **`lib/atlas/safaris.js`** — the sibling of `trains.js` over the safari feed.
+  Same journey shape (both are `adaptJourney` collections), three differences,
+  all the feed's: no named vessel; 268 of 274 journeys are on-demand with a
+  booking window rather than a date, so the `onDemand` exemptions carry nearly
+  the whole collection; and no `mq` stamp, so marquee keys derive from the
+  region tag.
+- **Registered** in `lib/atlas/index.js`, with a note on why villa is still
+  absent (it has a different contract — party size, bedrooms, nightly ceiling —
+  and is served by `searchVillasChannel`).
+- **`safari` in the tool enum**, a dispatch branch with a lodge sidecar, and
+  `/api/safari-journeys` in `ATLAS_PATHS`. The sidecar ranks on `wildlife`
+  rather than `uhnw`, because the stay that pairs with a Botswana itinerary is
+  a camp and `uhnw` returns city palaces.
+- **A safari pillar in the prompt.** The old line filed safaris as advisor-only
+  alongside buyouts, which was true when it was written and had been false since
+  the atlas shipped. Seven pillars became eight. The new text also says plainly
+  that safari is two questions — the ITINERARY (type safari) and the LODGE (type
+  hotel) — and that a good answer calls both.
+
+### The bug the split haystack caught
+
+`country=Namibia` returned **81** journeys against **17** that are actually in
+Namibia. Cause: one shared search haystack that included the region family's
+vocabulary, and `REGION_HAY.OKAVANGO` contains "namibia" because the region is
+"Botswana, the Okavango & Namibia" — so every Okavango journey answered a
+Namibia question. The Guide would have named Botswana itineraries as Namibia
+options, which is precisely what its own prompt forbids: *"only present a
+category when the returned records genuinely reach the destination."*
+
+Now two haystacks. `country=` reads the journey's own geography (name, brand,
+country, from, to, stops) and returns 20 — the 17 plus three that genuinely
+start or call in Namibia. `q=` reads that plus the region words, so "the
+Serengeti" and "Victoria Falls" still find what they describe. A region family
+is a good search hint and a bad country.
+
+### Answers
+
+`data/answers/safari.js`, and a **Safari category** that could not previously
+exist. `answersByCategory()` renders `CATEGORY_ORDER.filter(c => groups.has(c))`
+— so an answer whose category is not in that hand-kept array is dropped from
+`/answers` silently, keeping its own page and its sitemap entry and losing the
+only thing that links to it. `verify:seo` now fails on an unknown category, so
+adding one is a build error rather than an orphan. The existing safari-lodge
+answer moved from Hotels to Safari and gained a link to the itinerary half it
+never had.
+
+### Still open here
+
+- **`{{hotels:…}}` is still the only fact term.** The safari answers state
+  itinerary counts (274, and the per-country split) as prose from `UPDATED`,
+  because the fact engine reads the hotel feed only. `lib/seo/journeys.js` now
+  normalizes and indexes every journey collection, so a build-time facts
+  artifact that both the pages and `verify-seo` can read is the shape of the
+  fix.
+- **`region=kenya` returns 111, not 74.** The safari atlas's own region tag is
+  EASTAFRICA = "Kenya, Tanzania & the Great Migration", so a region filter
+  answers with the family. That is the collection's own taxonomy and the same
+  behaviour rail has; the prompt routes country names to `country=` (74) and
+  reserves `region=` for the fourteen marquee keys, so the Guide should not hit
+  it. Worth watching in transcripts rather than pre-emptively splitting.

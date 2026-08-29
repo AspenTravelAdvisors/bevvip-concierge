@@ -443,7 +443,10 @@ export const hotelAnswers = [
 
   {
     slug: "best-safari-lodges-with-vip-perks",
-    category: "Hotels",
+    // Filed under Safari, not Hotels. It is about the 72 Lodge / Safari
+    // properties, but the reader asking it is planning a safari, and until the
+    // Safari category existed there was nowhere else to put it.
+    category: "Safari",
     question: "What are the best safari lodges you can book with VIP perks?",
     title: "Best Safari Lodges Bookable With VIP Perks",
     description:
@@ -507,6 +510,8 @@ export const hotelAnswers = [
     },
     related: [
       { href: "/atlas/hotel?category=Lodge+%2F+Safari", label: "All {{hotels:category=Lodge / Safari}} safari & wilderness lodges on the atlas map" },
+      { href: "/journeys/safari", label: "The other half: every safari itinerary, day by day" },
+      { href: "/answers/which-safari-operator-should-you-book", label: "Which operator to book the trip through" },
       { href: "/answers/virtuoso-perks-vs-booking-direct", label: "How advisor booking works at lodges" },
     ],
   },

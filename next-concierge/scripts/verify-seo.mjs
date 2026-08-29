@@ -311,7 +311,36 @@ for (const a of answers) {
 }
 ok();
 
-// ── 7. nothing publishes a template ─────────────────────────────────────────
+// ── 7. every answer's category can actually appear ──────────────────────────
+/*
+ * answersByCategory() renders `CATEGORY_ORDER.filter(c => groups.has(c))`, so a
+ * category not in that array is dropped from /answers without a word. The
+ * answer keeps its own page and its sitemap entry and loses the only thing
+ * linking to it.
+ *
+ * That is not hypothetical: it is why writing the first safari answer needed
+ * CATEGORY_ORDER edited too, and why nothing would have said so.
+ */
+const registryCategories = new Set(
+  (registrySrc.match(/CATEGORY_ORDER = \[([^\]]*)\]/)?.[1] ?? '')
+    .split(',')
+    .map(part => part.trim().replace(/^["']|["']$/g, ''))
+    .filter(Boolean),
+);
+ok();
+if (!registryCategories.size) {
+  fail('categories', 'could not parse CATEGORY_ORDER out of lib/answers.js');
+}
+for (const a of answers) {
+  if (!registryCategories.has(a.category)) {
+    fail(
+      a.slug,
+      `category "${a.category}" is not in CATEGORY_ORDER, so the answer never appears on /answers`,
+    );
+  }
+}
+
+// ── 8. nothing publishes a template ─────────────────────────────────────────
 /*
  * The checks above prove the tokens CAN be resolved. They do not prove every
  * surface that renders answer prose actually resolves them, and that is a

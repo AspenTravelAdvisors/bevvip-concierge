@@ -58,6 +58,10 @@ const OFFERINGS_ENDPOINTS = {
     base: process.env.ATLAS_TRAIN_URL || "/maps/train",
     path: "/api/rail-journeys",
   },
+  safari: {
+    base: process.env.ATLAS_SAFARI_URL || "/maps/safari",
+    path: "/api/safari-journeys",
+  },
 };
 
 // In-process replacement for the old per-atlas HTTP APIs. The Guide still builds
@@ -72,6 +76,7 @@ const ATLAS_PATHS = {
   "/api/yacht-sailings": "yacht",
   "/api/world-cruises": "worldcruise",
   "/api/rail-journeys": "train",
+  "/api/safari-journeys": "safari",
 };
 async function atlasFetch(rawUrl) {
   const u = new URL(String(rawUrl), "http://internal.atlas");
@@ -110,6 +115,9 @@ const EXTENDED_REGION_NATIVE = {
   jet:         { alaska: false, caribbean: false, "northwest passage": false },
   yacht:       { alaska: false, caribbean: false, "northwest passage": false },
   train:       { alaska: true,  caribbean: false, "northwest passage": false },
+  // The safari atlas declares ALASKA as one of its own region tags (the Great
+  // Bear Rainforest and the brown-bear journeys), so it filters natively.
+  safari:      { alaska: true,  caribbean: false, "northwest passage": false },
 };
 // Marquee keys that are also real countries the atlases filter via country=, so
 // a "country" value naming one must not be rerouted to the region filter.
@@ -471,6 +479,10 @@ export const SEARCH_OFFERINGS_TOOL = {
     "Ordinary (non-world) Luxury Cruises by those lines remain advisor-led outside the live inventory. " +
     "Type train searches live luxury rail journeys (Venice Simplon-Orient-Express, Royal Scotsman, " +
     "Rocky Mountaineer, Eastern & Oriental Express, and rail tours worldwide). " +
+    "Type safari searches 274 guided safari itineraries — Botswana and the Okavango, Kenya and Tanzania and the Great Migration, " +
+    "South Africa and the Cape, the Zambezi, gorilla trekking in Rwanda and Uganda, plus bear, tiger and polar journeys — " +
+    "from operators including andBeyond, Wilderness, Abercrombie & Kent, Ker & Downey, Micato, Natural Habitat and Tauck. " +
+    "Nearly all are on-demand departures with a booking window rather than a fixed date. " +
     "Type villa searches 3,900+ private villas and vacation homes worldwide (Caribbean, US, Europe, " +
     "Mexico and beyond) — whole-property rentals filtered by destination, party size (sleeps), " +
     "bedrooms, and nightly-rate ceiling. Villas are advisor-arranged: no live availability or " +
@@ -487,9 +499,9 @@ export const SEARCH_OFFERINGS_TOOL = {
         // channel (see OPEN WAYS TO VISIT and UHNW BREADTH in the prompt) so
         // each category is searched on its own terms and only the ones that
         // genuinely reach the destination are surfaced.
-        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "villa"],
+        enum: ["hotel", "cruise", "jet", "yacht", "worldcruise", "train", "safari", "villa"],
         description:
-          "Which channel to search. One channel per call: to cover several, call this tool once per channel. Use hotel for stays, including private-island resorts. Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Use villa for private villa or vacation-home rentals — whole-property stays, often for larger parties. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
+          "Which channel to search. One channel per call: to cover several, call this tool once per channel. Use hotel for stays, including private-island resorts and safari LODGES. Use cruise for Expedition Cruise or luxury hotel yacht language. Use worldcruise for world cruises, grand voyages, world cruise segments, and circumnavigations by sea. Use train for rail journeys, luxury trains, scenic railways, or any named train (Orient Express, Royal Scotsman, Rocky Mountaineer). Use safari for guided safari ITINERARIES — a Botswana or Kenya trip, gorilla trekking, the Great Migration, a bear or tiger trip — which is a different question from which lodge to sleep in; a strong safari answer usually calls safari for the trip and hotel for the camps. Use villa for private villa or vacation-home rentals — whole-property stays, often for larger parties. Ordinary Luxury Cruises such as Regent Seven Seas and Crystal should route to an advisor, not current inventory.",
       },
       q: {
         type: "string",
@@ -1274,7 +1286,9 @@ async function relatedHotelsForCompanion(lead, type, fetchImpl) {
   }
 
   // ── Quality / brand plan ────────────────────────────────────────────────
-  const intent = type === "cruise" ? "wildlife" : "uhnw"; // jet/yacht/worldcruise -> highest
+  // Safari joins cruise on "wildlife": the stay that pairs with a Botswana
+  // itinerary is a camp, and ranking it by uhnw returns city palaces.
+  const intent = type === "cruise" || type === "safari" ? "wildlife" : "uhnw"; // jet/yacht/worldcruise -> highest
   const sameBrand = type === "yacht" ? hotelBrandForYachtBrand(lead.brand || lead.operator) : "";
   base.set("intent", intent);
   base.set("limit", "3");
@@ -2069,6 +2083,18 @@ async function dispatchSearchOfferings(input = {}, opts = {}) {
     // Rail journeys bookend with the strongest stays in the origin city.
     const r = await searchOfferingsByType(type, input, fetchImpl, null, { supplierCap: openSupplierCap });
     const related = await sailingRelatedHotels(r.results, fetchImpl, "train");
+    return related.length ? { ...r, related } : r;
+  }
+  if (type === "safari") {
+    // Safari journeys bookend with lodges the same way rail bookends with city
+    // hotels — and here the pairing is the actual trip: a Botswana itinerary
+    // plus the camps it stays in is the answer, where either alone is half of
+    // one. Until this branch existed, `type: "safari"` fell through to the
+    // "unknown type" line at the bottom of this function and came back as a
+    // hotel shortlist, so the 274 itineraries were unreachable from the Guide
+    // while their pins sat on the home globe.
+    const r = await searchOfferingsByType(type, input, fetchImpl, null, { supplierCap: openSupplierCap });
+    const related = await sailingRelatedHotels(r.results, fetchImpl, "safari");
     return related.length ? { ...r, related } : r;
   }
   // Unknown type -> treat as hotel search rather than erroring.
