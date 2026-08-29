@@ -5128,6 +5128,19 @@ button.card-book {
   text-align: center;
   color: var(--sub);
 }
+/* The supplier's own film. 16:9 is what every one of them is shot in, and
+   declaring it means the panel does not reflow when the metadata finally
+   arrives — nothing is fetched until the traveller presses play. */
+.hotel-dossier .hd-film {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 6px 0 0;
+  border: 1px solid var(--gold-dim);
+  border-radius: 11px;
+  background: #000;
+  object-fit: cover;
+}
 .hotel-dossier .hd-label {
   margin: 16px 0 2px;
   font-size: 10.5px;

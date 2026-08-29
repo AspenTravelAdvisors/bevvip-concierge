@@ -19,6 +19,7 @@ import { writeFeed } from '../lib/virtuoso/write-feed.mjs';
 import { createClient } from '../lib/virtuoso/client.mjs';
 import { readNdjsonCache } from '../lib/virtuoso/ndjson-cache.mjs';
 import { text, clip } from '../lib/virtuoso/text.mjs';
+import { playableVideo } from '../lib/virtuoso/media.mjs';
 
 loadEnv();
 
@@ -63,11 +64,18 @@ const selected = (arr, key = 'label') =>
 
 const num = v => { const n = Number(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 
+/** A URL only if it is not a video — see the partition in normalize(). */
+const still = url => (url && !playableVideo(url) ? url : null);
+
 // Suppliers publish far more than a card or a dossier can use — one property
 // ships 836 images and another 44 room types. Uncapped, the feed lands at 35MB,
 // too heavy to commit or bundle. The full payload stays in the local cache; what
 // gets committed is what the site actually renders.
 const MAX_IMAGES = 8;
+// Films are shorter and rarer than stills — 1,157 properties have one, almost
+// none have several — and each is a megabyte the traveller may never press
+// play on, so the dossier offers what a supplier led with rather than a reel.
+const MAX_VIDEOS = 3;
 const MAX_ROOM_TYPES = 6;
 const MAX_SUMMARY = 700;
 
@@ -81,6 +89,21 @@ function parseLocation(raw) {
 function normalize(summary, detail) {
   const d = detail ?? {};
   const loc = parseLocation(summary?.location);
+
+  /*
+   * Split the property's media by what it IS, not by which field it came in.
+   *
+   * `supplierVideos` is where the films are meant to live, but the image
+   * library is a supplier-filled bucket and an .mp4 in it would otherwise be
+   * handed to the card as a photograph. Partitioning here means neither slot
+   * can ever be given the wrong kind of file — see lib/virtuoso/media.mjs.
+   */
+  const library = d.imageLibraryItems ?? [];
+  const stills = library.filter(i => !playableVideo(i?.url));
+  const films = [...new Set([
+    ...(d.supplierVideos ?? []).map(v => playableVideo(v?.webContentURL)),
+    ...library.map(i => playableVideo(i?.url)),
+  ].filter(Boolean))];
   const reviews = (() => {
     try { const r = JSON.parse(d.reviewsInfoJson || '{}');
       return r.TotalReviews ? { total: r.TotalReviews, recommendedPercent: Number(r.TotalRecommendedPercent) || null } : null; }
@@ -137,10 +160,17 @@ function normalize(summary, detail) {
     folioDescription: text(d.asSeenInTravelFolioDescription),
     folioInTheKnow: text(d.asSeenInTravelFolioInTheKnow),
 
-    image: d.defaultImageUrl || summary.defaultImageUrl || null,
-    images: (d.imageLibraryItems ?? []).slice(0, MAX_IMAGES).map(i => ({ url: i.url, caption: i.caption || null })),
-    imageCount: (d.imageLibraryItems ?? []).length,
-    video: d.supplierVideos?.[0]?.webContentURL || null,
+    // The hero still. Guarded the same way the library is: a supplier that
+    // nominates a film as its default image would otherwise put an .mp4 in
+    // every card's <img> and on the property's own social preview.
+    image: still(d.defaultImageUrl) || still(summary.defaultImageUrl) || null,
+    images: stills.slice(0, MAX_IMAGES).map(i => ({ url: i.url, caption: i.caption || null })),
+    imageCount: stills.length,
+    // Every playable film the property published, from both places the API
+    // keeps them — `supplierVideos` and whatever turned up in the image
+    // library. One per property is the norm; the cap is for the exceptions.
+    videos: films.slice(0, MAX_VIDEOS),
+    videoCount: films.length,
 
     nearestAirport: d.nearestAirportDescription || null,
     nearestAirportMiles: d.nearestAirportDistanceInMiles ?? null,

@@ -57,3 +57,56 @@ export function journeyPhotoKey(trip) {
     .replace(/^-+|-+$/g, '');
   return `${route}::${title}`;
 }
+
+/*
+ * Not every "photo" the supplier sends is a photograph.
+ *
+ * The API reference files `supplierVideos[]` under the hotel record's Photos
+ * block alongside `defaultImageUrl` and `imageLibraryItems[]`, and 1,157 of the
+ * 2,073 properties carry one — a minute of the property filming itself, which
+ * is the most persuasive thing in the media library and the one piece of it
+ * nothing downstream has ever seen. ICE Portal serves them as plain .mp4 off
+ * media.virtuoso.com.
+ *
+ * Two rules, and the reason for each:
+ *
+ *   A video URL must never reach an <img>. The image library is stills today,
+ *   but nothing in the contract says it stays that way, and one .mp4 in that
+ *   array renders as a broken card. So the sync partitions the library by what
+ *   the URL actually is rather than by which field it arrived in.
+ *
+ *   A URL that is not a video FILE must never reach a <video>. A supplier
+ *   pointing at a YouTube page or a player embed is a link, not a source, and
+ *   <video src="…/watch?v=…"> is a black rectangle with a broken play button.
+ *   Those are dropped: showing nothing is honest, showing a dead player is not.
+ */
+
+/** Containers a browser plays natively in <video>, with no player and no plugin. */
+const PLAYABLE_VIDEO = /\.(mp4|m4v|webm|ogv)(?:[?#]|$)/i;
+
+/**
+ * `url` when it is a video file a browser can play, else null.
+ *
+ * Deliberately strict about the scheme too: these end up as a `src` on a page
+ * served over https, where an http source is blocked as mixed content anyway.
+ */
+export function playableVideo(url) {
+  const u = typeof url === 'string' ? url.trim() : '';
+  if (!u.startsWith('https://')) return null;
+  return PLAYABLE_VIDEO.test(u) ? u : null;
+}
+
+/**
+ * The playable films on one normalized hotel record from the supplier feed.
+ *
+ * Reads `videos`, which is what the sync writes now, and falls back to the
+ * singular `video` the feed carried before it. The fallback is not ceremony:
+ * a full detail crawl is half an hour of single-use tokens, so without it the
+ * films already sitting in the committed feed would stay invisible until the
+ * next nightly sync happened to run.
+ */
+export function feedVideos(v) {
+  const raw = Array.isArray(v?.videos) ? v.videos : v?.video ? [v.video] : [];
+  const urls = raw.map(x => playableVideo(typeof x === 'string' ? x : x?.url)).filter(Boolean);
+  return [...new Set(urls)];
+}

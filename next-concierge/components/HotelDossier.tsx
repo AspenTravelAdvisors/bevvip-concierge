@@ -28,7 +28,7 @@ import { getTrip, onTrip } from "@/lib/trip-state";
 import { programDomain } from "@/lib/atlas/adapters/hotel-programs";
 import { hotelBrandDomain } from "@/lib/atlas/adapters/hotel-brands";
 import { askAboutDays, askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
-import { bookingClicked, experiencesAsked } from "@/lib/analytics";
+import { bookingClicked, experiencesAsked, propertyFilmPlayed } from "@/lib/analytics";
 import { openAdvisor, ADVISOR_CTA_COLD } from "./AdvisorRequest";
 import BucketListButton from "./BucketListButton";
 import type { TripState } from "@/lib/types";
@@ -48,6 +48,15 @@ interface HotelRecord {
   bookUrl?: string | null;
   bookPassword?: string | null;
   tw?: { hotelId?: string | number; lat?: number; lon?: number; label?: string } | null;
+  /**
+   * The property's media: the card-sized still, and the supplier's own films.
+   *
+   * `videos` are plain .mp4 sources, already filtered to what a browser can
+   * play (lib/virtuoso/media.mjs) — anything that needed a third-party player
+   * never reaches the feed, so these can go straight onto a <video> tag.
+   */
+  thumb?: string | null;
+  videos?: string[] | null;
   /** Virtuoso's editorial copy and insider note, and the room breakdown. */
   description?: string | null;
   inTheKnow?: string | null;
@@ -172,6 +181,7 @@ export default function HotelDossier({
   const inTheKnow = record?.inTheKnow || null;
   const rooms = (record?.rooms || []).filter((r) => r && r.name);
   const offers = (record?.promotions || []).filter((o) => o && o.name);
+  const films = (record?.videos || []).filter(Boolean);
   const forbes = record?.fit?.forbesRating;
   const aaa = record?.fit?.aaaDiamondRating;
   const logo = record ? logoFor(record) : null;
@@ -309,6 +319,36 @@ export default function HotelDossier({
             </a>
           )}
           {booking?.note && <p className="hd-code">{booking.note}</p>}
+
+          {/*
+            The property's own film — below the booking button, deliberately.
+
+            Everything above it is a decision the traveller can act on, and the
+            standalone panel's rule was that the rate link never falls below the
+            fold. A minute of the property is the best thing in the supplier's
+            media library and still not worth pushing the money-maker down for.
+
+            `preload="none"` because most people will never press play: the
+            poster is the same card photograph this property already loaded, so
+            the block costs nothing until it is wanted.
+          */}
+          {films.length > 0 && (
+            <>
+              <p className="hd-label">{films.length > 1 ? "Property Films" : "Property Film"}</p>
+              {films.map((src) => (
+                <video
+                  key={src}
+                  className="hd-film"
+                  src={src}
+                  poster={record.thumb || undefined}
+                  controls
+                  preload="none"
+                  playsInline
+                  onPlay={() => propertyFilmPlayed(record.id)}
+                />
+              ))}
+            </>
+          )}
 
           {offers.length > 0 && (
             <>

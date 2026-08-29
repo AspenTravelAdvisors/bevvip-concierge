@@ -100,6 +100,18 @@ export function hotel3dOpened(hotelId: string, source: "card" | "popup" | "engin
 }
 
 /**
+ * A traveller pressed play on a property's own film.
+ *
+ * The films have been sitting in the supplier feed since the first crawl with
+ * nothing on the site able to reach them, so there is no prior on whether
+ * anyone wants them. This is the number that decides whether the dossier keeps
+ * offering one — and, if it is high, whether the card should say there is one.
+ */
+export function propertyFilmPlayed(hotelId: string) {
+  emit("property_film_played", { hotelId });
+}
+
+/**
  * The photoreal engine was chosen on a map that offers it.
  *
  * `hotel_3d_opened` counts arrivals at ONE property's view; this counts someone

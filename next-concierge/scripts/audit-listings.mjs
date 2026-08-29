@@ -25,6 +25,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { LOOKS_LIKE_CSS } from '../lib/virtuoso/text.mjs';
+import { playableVideo } from '../lib/virtuoso/media.mjs';
 
 // The hotel overlays are CommonJS (they are shared with the in-process atlas
 // backends, which are). This is the same bridge scripts/verify-seo.mjs uses.
@@ -212,6 +213,29 @@ function auditHotels() {
     section: 'hotels',
     label: 'hotels with no photograph',
     count: rows.filter(h => !h.thumb).length, of: n,
+  });
+
+  finding({
+    section: 'hotels',
+    label: 'hotels whose supplier published a film of the property',
+    count: rows.filter(h => (h.videos ?? []).length).length, of: n,
+    detail: 'played in the dossier; the card stays a still',
+  });
+
+  /*
+   * A film in a still's slot is a broken card, and the feed carries both now.
+   *
+   * The image library is a supplier-filled bucket: the day one of them files an
+   * .mp4 in it, `thumb` and `images` are handed to an <img> that renders
+   * nothing. The sync partitions by what the URL is rather than which field it
+   * arrived in (lib/virtuoso/media.mjs), so this is zero and stays zero.
+   */
+  const misfiled = rows.filter(h => [h.thumb, ...(h.images ?? [])].some(u => playableVideo(u)));
+  finding({
+    section: 'hotels', ours: true, gate: true,
+    label: 'still-image slots holding a video file',
+    count: misfiled.length, of: n,
+    examples: misfiled.slice(0, 6).map(h => `${h.name} — ${h.thumb}`),
   });
 }
 

@@ -17,7 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
-import { cardImage } from '../lib/virtuoso/media.mjs';
+import { cardImage, feedVideos } from '../lib/virtuoso/media.mjs';
 import { steadyStamp } from './lib/steady-stamp.mjs';
 
 const CHECK = process.argv.includes('--check');
@@ -164,7 +164,7 @@ for (const start of [...dropped.keys()]) {
 const JUNK = /^iceportal hotel test/i;
 
 const merged = [];
-const stats = { upgraded: 0, localOnly: 0, added: 0, dropped: 0, junk: 0, categoryChanged: 0, perksReplaced: 0, photos: 0 };
+const stats = { upgraded: 0, localOnly: 0, added: 0, dropped: 0, junk: 0, categoryChanged: 0, perksReplaced: 0, photos: 0, films: 0 };
 
 for (const h of base) {
   if (JUNK.test(h.name)) { stats.junk++; continue; }
@@ -185,6 +185,7 @@ for (const h of base) {
   if (category !== h.category) stats.categoryChanged++;
   if (v.perks.length) stats.perksReplaced++;
   if (v.image) stats.photos++;
+  if (feedVideos(v).length) stats.films++;
 
   merged.push({
     id: h.id,
@@ -252,6 +253,16 @@ for (const h of base) {
     // feed, looked up by vid when a dossier needs it.
     images: (v.images ?? []).slice(0, 3).map(i => i.url).filter(Boolean),
     imageCount: v.imageCount ?? 0,
+    /*
+     * The property's own film, where the supplier published one.
+     *
+     * The sync has captured these since the first crawl and the merge dropped
+     * them on the floor, so 1,157 properties have had a minute of themselves
+     * sitting in the supplier feed that nothing on the site could reach. The
+     * dossier plays them; the card does not, because a list of 120 hotels is
+     * not a place to start loading 120 videos.
+     */
+    videos: feedVideos(v),
     propertyType: v.propertyType ?? null,
     numberOfRooms: v.numberOfRooms ?? null,
     nearestAirport: v.nearestAirport ?? null,
@@ -294,7 +305,7 @@ for (const v of feedDoc.hotels) {
     hasPromotion: promosFor(v).length > 0,
     bookUrl: 'https://www.VipTravelAi.com', bookPassword: 'VIP',
     thumb: cardImage(v.image), images: (v.images ?? []).slice(0, 3).map(i => i.url).filter(Boolean),
-    imageCount: v.imageCount ?? 0,
+    imageCount: v.imageCount ?? 0, videos: feedVideos(v),
     propertyType: v.propertyType ?? null, numberOfRooms: v.numberOfRooms ?? null,
     nearestAirport: v.nearestAirport ?? null, nearestAirportMiles: v.nearestAirportMiles ?? null,
     experiences: v.experiences ?? [], vibes: v.vibes ?? [], sustainability: v.sustainability ?? [],
@@ -418,6 +429,7 @@ fs.writeFileSync(path.join(D, 'hotel-fit.json'), JSON.stringify(newFit, null, 1)
 console.log(`luxury-hotels.json — ${merged.length} properties`);
 console.log(`  ${stats.upgraded} upgraded from Virtuoso · ${stats.added} newly added · ${stats.localOnly} local-only partners`);
 console.log(`  ${stats.dropped} duplicates folded away · ${stats.junk} junk records removed`);
+console.log(`  ${stats.photos} with a supplier photograph · ${stats.films} with a supplier film`);
 console.log(`  ${stats.categoryChanged} categories corrected · ${stats.perksReplaced} perk lists from supplier · ${stats.photos} photos attached`);
 {
   const withDesc = merged.filter(h => h.description).length;

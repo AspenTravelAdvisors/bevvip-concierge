@@ -2524,3 +2524,52 @@ the sea routes on every marketing lander, silently.
 The note has been corrected in place. This is the second time in this file a
 "still open" item has been stale in a direction that would cause a regression if
 acted on, which is an argument for reading the code before the note.
+
+## The supplier's films, which nothing could reach (2026-08-29)
+
+The Virtuoso API reference files `supplierVideos[]` under the hotel record's
+**Photos** block, next to `defaultImageUrl` and `imageLibraryItems[]` — some of
+what the supplier calls a photo is a minute of the property filming itself.
+`sync-virtuoso-hotels.mjs` had been capturing one per property since the first
+crawl. `merge-virtuoso-hotels.mjs` never carried it, so **1,157 of 2,073
+properties have had a film sitting in the committed feed that no surface on the
+site could reach.** They are ICE Portal .mp4s off media.virtuoso.com.
+
+**The films now reach the dossier.** `videos` rides on the merged record, so
+`/api/hotel/luxury-hotels/:id` serves it without a route change (`enriched()`
+spreads the record) and `HotelDossier` plays it: `preload="none"`, the card
+photograph as the poster, 16:9 declared in CSS so the panel does not reflow when
+the metadata lands. Nothing is fetched until someone presses play, and
+`property_film_played` is the number that says whether anyone does.
+
+**Below the booking button, deliberately.** The standalone panel's rule was that
+the rate link never falls below the fold, and the best thing in the media
+library is still not worth pushing the money-maker down for.
+
+**Not on the card.** A list of 120 hotels is not a place to start loading 120
+videos. If the play rate argues for it later, the card can say a film exists
+without carrying one.
+
+**The part that is a guard rather than a feature.** The split is now by what a
+URL IS, not by which field it arrived in (`playableVideo` in
+`lib/virtuoso/media.mjs`). The image library is a supplier-filled bucket: the
+day one .mp4 is filed in it, `thumb` and `images` hand an unplayable file to an
+`<img>` and the card renders broken. The sync partitions the library and guards
+`defaultImageUrl` the same way, and `audit-listings --strict` gates
+"still-image slots holding a video file" at zero. The reverse rule matters as
+much — a URL that is not a video FILE never reaches a `<video>`. A supplier
+pointing at a player page would render a black rectangle with a dead play
+button, so those are dropped: showing nothing is honest, showing a broken player
+is not.
+
+The feed field went singular `video` → capped `videos[]`, and `feedVideos()`
+reads either. That fallback is not ceremony: a detail crawl is half an hour of
+single-use tokens, so without it the films already in the committed feed would
+have stayed invisible until the next nightly sync happened to run.
+
+**Verified.** All 24 checks in `npm run verify` pass; the merge reports 1,157
+records carrying a film; and the dossier was driven in a real browser at
+`/atlas/hotel?hotel=h_00003` — the "Property Film" section renders with the
+supplier source, the property photograph as poster and `preload="none"`. The
+media host is unreachable from the build sandbox, so **playback itself has not
+been watched** — worth one look on a machine that can reach media.virtuoso.com.
