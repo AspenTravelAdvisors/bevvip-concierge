@@ -136,9 +136,14 @@ export function featuredHotelParams(limit = 400) {
   return picked.map((h) => ({ destination: h.destination, slug: h.slug }));
 }
 
-/** Sitemap entries for every property and every destination hub. */
+/**
+ * The whole hotel tree for the sitemap — the root hub, every country, every
+ * property. It owns the root deliberately: when app/sitemap.js also listed the
+ * hubs, /villas and /journeys each shipped twice in one file.
+ */
 export function hotelSitemapEntries() {
   return [
+    { url: `${SITE_URL}/hotels`, priority: 0.9 },
     ...hotelDestinations().map((d) => ({
       url: `${SITE_URL}/hotels/${d.destination}`,
       priority: 0.6,

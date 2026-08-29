@@ -74,6 +74,7 @@ export const villaAnswers = [
     ],
     related: [
       { href: "/atlas/villa", label: "Search all 371 Caribbean 12+ villas on the map" },
+      { href: "/villas", label: "Every villa in the atlas, by destination" },
       { href: "/answers/villa-vs-resort-for-a-family-of-10", label: "Villa vs. resort for a family of 10 — the cost math" },
       { href: "/answers/best-villas-under-2000-that-sleep-8", label: "Best villas under $2,000 that sleep 8+" },
     ],
@@ -139,6 +140,7 @@ export const villaAnswers = [
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "The Caribbean big-group shortlist with real rates" },
       { href: "/answers/best-villas-under-2000-that-sleep-8", label: "1,541 villas under $2,000 that sleep 8+" },
       { href: "/atlas/villa", label: "Search the villa atlas map" },
+      { href: "/villas", label: "Every villa in the atlas, by destination" },
     ],
   },
 
@@ -202,6 +204,7 @@ export const villaAnswers = [
     ],
     related: [
       { href: "/atlas/villa", label: "Filter the 1,541 on the villa atlas map" },
+      { href: "/villas", label: "Every villa in the atlas, by destination" },
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "Caribbean villas for 12+ guests" },
       { href: "/answers/villa-vs-resort-for-a-family-of-10", label: "Villa vs. resort cost math" },
     ],

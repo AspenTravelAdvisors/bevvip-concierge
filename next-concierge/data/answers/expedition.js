@@ -81,6 +81,7 @@ export const expeditionAnswers = [
     ],
     related: [
       { href: "/atlas/cruise", label: "Browse all 555 Antarctic sailings in the expedition atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "Which expedition ships have the highest guide ratio?" },
       { href: "/answers/smallest-luxury-expedition-ships", label: "Smallest luxury expedition ships — why under 200 guests matters" },
       { href: "/answers/antarctica-kayaking-camping-submersibles", label: "Which Antarctica cruises let you kayak, camp, or dive in a submersible?" },
@@ -154,6 +155,7 @@ export const expeditionAnswers = [
       { href: "/answers/smallest-luxury-expedition-ships", label: "Smallest luxury expedition ships" },
       { href: "/answers/best-expedition-cruises-for-photographers", label: "Best expedition cruises for photographers" },
       { href: "/atlas/cruise", label: "Search all expedition sailings" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -220,6 +222,7 @@ export const expeditionAnswers = [
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/answers/best-arctic-expedition-svalbard-greenland-northwest-passage", label: "Svalbard vs. Greenland vs. Northwest Passage" },
       { href: "/atlas/cruise", label: "Find a photography-season sailing in the atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -294,6 +297,7 @@ export const expeditionAnswers = [
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "Which ships carry the deepest expedition teams" },
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/atlas/cruise", label: "Expedition atlas — every tracked sailing" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -364,6 +368,7 @@ export const expeditionAnswers = [
       { href: "/answers/galapagos-lindblad-vs-silversea-vs-aqua", label: "Galápagos: Lindblad vs. Silversea vs. Aqua" },
       { href: "/answers/luxury-vs-classic-expedition-cruising", label: "Is luxury expedition 'real' expedition cruising?" },
       { href: "/atlas/cruise", label: "Compare their sailings in the expedition atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -428,6 +433,7 @@ export const expeditionAnswers = [
       { href: "/answers/ponant-vs-lindblad-vs-silversea-expeditions", label: "Ponant vs. Lindblad vs. Silversea overall" },
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "Guide ratios across the expedition fleet" },
       { href: "/atlas/cruise", label: "All 1,084 Galápagos sailings in the atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -492,6 +498,7 @@ export const expeditionAnswers = [
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/answers/best-expedition-cruises-for-photographers", label: "Best expedition cruises for photographers" },
       { href: "/atlas/cruise", label: "416 Arctic sailings in the expedition atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -554,6 +561,7 @@ export const expeditionAnswers = [
       { href: "/answers/which-expedition-ships-have-the-highest-guide-ratio", label: "The teams that run these programs — guide ratios compared" },
       { href: "/answers/best-antarctica-expedition-for-first-timers", label: "Best Antarctica expedition for first-timers" },
       { href: "/atlas/cruise", label: "Find sailings with the add-ons in the atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 
@@ -622,6 +630,7 @@ export const expeditionAnswers = [
       { href: "/answers/ponant-vs-lindblad-vs-silversea-expeditions", label: "Ponant vs. Lindblad vs. Silversea head-to-head" },
       { href: "/answers/antarctica-kayaking-camping-submersibles", label: "Who offers kayaking, camping and submersibles" },
       { href: "/atlas/cruise", label: "Compare both tiers in the expedition atlas" },
+      { href: "/journeys/cruise", label: "Every expedition itinerary, day by day, with all its departures" },
     ],
   },
 ];

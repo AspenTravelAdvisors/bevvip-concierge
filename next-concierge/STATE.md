@@ -2213,17 +2213,118 @@ reason it exists twice: the published copy is now made of queries against the
 feed that job replaces, so a supplier retiring a programme breaks a sentence
 without touching a line of code, at 09:00 UTC, with nobody watching.
 
+## The rest of the atlas gets pages too (2026-08-28, same day)
+
+The hotel work above left five collections and the villas out. They are in now,
+and two of the three decisions are worth keeping written down.
+
+### One page per ITINERARY, not per departure
+
+`/journeys/<collection>/<slug>`, six collections, **1,991 pages carrying 4,960
+departures**. The obvious implementation — a page per sailing — is the wrong
+one, and not marginally: the cruise feed holds 3,662 sailings across 902
+distinct operator-plus-itinerary pairs, and "Exploring Galápagos" alone appears
+235 times, identical but for a date. That is 235 near-duplicate pages, which is
+the fastest way to have the whole tree discounted.
+
+So a page is an itinerary and the departures are a table on it — better for a
+reader too, because "when does this run" becomes a question one page answers
+completely instead of 235 pages answering it once each. Yacht collapses 467 →
+347 the same way. The other four barely collapse at all (train 130 → 128), which
+is itself the evidence that the key is the right one.
+
+`verify:seo` asserts the collapse rather than assuming it: if departures-per-page
+ever falls below 1.2 the grouping has stopped grouping — a supplier appending
+the sail date to the title would do it — and the tree has quietly become
+near-duplicate pages again. Measured today: 2.5.
+
+The pages run the REAL adapters (`adaptCruise` / `adaptVoyage` / `adaptJourney`),
+so a page and the map agree about what a journey is; the three prose fields the
+adapters do not carry (description, what's included, the offers) are read back
+off the raw record. The verifier compiles those same adapters through
+`scripts/lib/adapters-build.mjs`, the way `verify-adapters` and `verify-hotels`
+already do, rather than transcribing the grouping rule into a second copy.
+
+### The villa pages already existed. Nothing linked to them.
+
+3,902 villa detail pages have been live since the villa atlas shipped, and they
+had **no JSON-LD at all** — a page carrying a name, a place, a coordinate, a
+sleeps and a bedroom count published none of it in a machine-readable form —
+and **114 of them were in the sitemap**. The other 3,788 were rendered,
+addressable, and unreachable: worse than absent, because they cost render budget
+and returned nothing.
+
+Both fixed: `VacationRental` + `BreadcrumbList` on the detail pages, and
+`/villas` → `/villas/<destination>` hubs above them. The detail URLs are
+deliberately NOT moved to sit under `/villas/…`. They are live, indexed and
+linked; a tidier address for 3,902 pages that already answer would 404 every one
+of the old ones.
+
+Two omissions in the villa markup, and the second was a real bug caught in
+review of the rendered output:
+
+- **No `geo` for the 236 villas placed on a locality centroid.** The page says
+  in prose that the location is approximate; a `GeoCoordinates` node claiming a
+  town square is the villa is a worse lie in markup than in a sentence.
+- **No `addressCountry`, at all.** The first draft mapped the feed's
+  `destination` onto it and published `"addressCountry": "Florida"`. That field
+  mixes four levels of geography across its 62 values — countries ("South
+  Africa"), US states ("Florida"), Mexican resort towns ("Punta Mita"), Canadian
+  provinces ("British Columbia") — and `region` is a marketing bucket. We do not
+  hold a country for a villa, so the markup no longer claims one.
+
+### `country` stopped being a facet and became an address
+
+The hotel pages made `country` a public URL, and `audit-listings.mjs` now
+reports what that exposed — four checks, in `--section countries`:
+case-and-accent variants splitting a country across two hubs ("Turks And Caicos
+Islands" 10 / "Turks and Caicos" 1); cities claimed by two countries (a signal,
+not a verdict — Bodrum is a duplicate, Naples and Cambridge are two real
+places); one ISO code under two country names (certain: VNM holds both "Vietnam"
+and "Da Nang"); and countries no property has a city in ("Various", three
+residence programmes).
+
+Reported, not repaired, and specifically NOT canonicalised in
+`lib/seo/hotels.js`: folding "Turkey" into "Türkiye" for the page would give
+`/hotels/turkiye` 24 properties while `/atlas/hotel?country=Turkey` still showed
+2. A page and a map disagreeing about what a country contains is a worse defect
+than the one it fixes. The repair belongs in a ledger applied at load, the way
+`hotel-aliases.json` and `place-aliases.json` are, so both surfaces see it.
+
+An earlier draft of the last check flagged any country value that also names a
+city, and called Singapore, Anguilla, Saint Barthélemy and French Polynesia
+errors. They are city-states and territories where the names genuinely coincide.
+Having no city at all is the tell that survives.
+
+### Where the sitemap ended up
+
+**147 URLs → 8,354.** 2,240 properties and 117 country hubs, 1,991 itineraries
+and 6 collection hubs, 3,902 villas and 62 destination hubs, 24 answers, 8
+atlases, three roots. 1.45MB — inside Google's 50MB / 50,000-URL limits with
+room to spare, so it stays one file.
+
+Two fixes fell out of reading the generated XML rather than the code. `/villas`
+and `/journeys` each shipped twice, because `app/sitemap.js` listed the roots AND
+each entry function emitted its own; the entry functions now own their whole
+trees, roots included. And the atlas list in `core` was hand-kept, named seven
+collections, and had never been updated when safari shipped as the eighth — the
+one atlas whose inventory was actively growing was the one not being listed. It
+derives from `COLLECTIONS` now. That is the third time this exact failure appears
+in this file; `audit-listings.mjs` documents its own version of it in `SHIPPED`.
+
 ### Still open here
 
-- **Villa and sailing counts are still typed.** `{{hotels:…}}` covers the hotel
+- **Villa and sailing counts are still typed in answer copy.** `{{hotels:…}}` covers the hotel
   feed and `{{collection:…}}` covers the shipped totals; "1,541 villas that
   sleep eight or more under $2,000" and "555 Antarctic departures" are still
   prose snapshots, because a villa or sailing term would pull the 7.3MB villa
   file and the 4.9MB sailings file into the answers bundle. Worth doing behind
   a build-time facts artifact rather than a live import.
-- **Only hotels have entity pages.** The same argument applies to the 3,662
-  sailings, the 467 yacht departures and the 274 safari journeys — all of which
-  now carry supplier detail nothing links to.
+- **The fact engine still only knows hotels.** `{{hotels:…}}` queries the hotel
+  feed; there is no `{{journeys:…}}`, because a journey term would pull every
+  route feed and 3.6MB of cruise geometry into the answers bundle. The journey
+  data is now normalized and indexed in `lib/seo/journeys.js`, so the shape of
+  the fix is clear — a build-time facts artifact both can read.
 - **`generateStaticParams` prebuilds 400 of 2,240.** Round-robin across
   countries, so coverage is wide rather than deep. If crawl logs show ISR misses
   on first crawl, raise it; the build already generates 681 pages in a few

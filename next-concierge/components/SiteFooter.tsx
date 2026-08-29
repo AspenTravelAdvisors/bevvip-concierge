@@ -25,6 +25,8 @@ export default function SiteFooter() {
         <Link href="/">The Guide</Link>
         <Link href="/answers">Answers</Link>
         <Link href="/hotels">Hotels A–Z</Link>
+        <Link href="/villas">Villas A–Z</Link>
+        <Link href="/journeys">Journeys A–Z</Link>
         {COLLECTIONS.map((c) => (
           <Link key={c.type} href={`/atlas/${c.type}`}>
             {c.nav}

@@ -15,6 +15,8 @@
 import { SITE_URL } from "@/lib/answers";
 import { resolvedAnswers } from "@/lib/seo/answer-facts";
 import { hotelCount, hotelDestinations } from "@/lib/seo/hotels";
+import { journeyCollections } from "@/lib/seo/journeys";
+import { villaCount, villaDestinations } from "@/lib/seo/villas";
 import { AGENCY_NAME, AGENCY_URL, VIRTUOSO_ADVISOR_URL } from "@/lib/seo/site";
 import { COLLECTIONS } from "@/lib/atlas-config";
 
@@ -28,6 +30,8 @@ export function GET() {
   // template from a fact.
   const ALL_ANSWERS = resolvedAnswers();
   const destinations = hotelDestinations();
+  const journeys = journeyCollections();
+  const villaDests = villaDestinations();
   const collections = COLLECTIONS.map(
     (c) => `- **${c.label}** — ${nf.format(c.count)} ${c.nounPlural}, at ${SITE_URL}/atlas/${c.type}`,
   ).join("\n");
@@ -80,7 +84,32 @@ ${answers}
 
 ${topDestinations}
 
-## Collections
+## Villas (${nf.format(villaCount())} properties, one page each)
+
+- [Every destination](${SITE_URL}/villas)
+
+${villaDests
+  .slice(0, 20)
+  .map((d) => `- [${d.destination}](${SITE_URL}/villas/${d.destinationSlug}) — ${nf.format(d.count)}`)
+  .join("\n")}
+
+## Journeys (one page per ITINERARY, not per departure)
+
+A page under /journeys is one itinerary with every departure of it listed. That
+is deliberate and worth knowing when citing: one expedition itinerary can carry
+two hundred sailing dates, and the dates are a table on the page rather than two
+hundred near-identical pages.
+
+- [All collections](${SITE_URL}/journeys)
+
+${journeys
+  .map(
+    (c) =>
+      `- [${c.label}](${SITE_URL}/journeys/${c.type}) — ${nf.format(c.itineraries)} itineraries, ${nf.format(c.departures)} departures`,
+  )
+  .join("\n")}
+
+## Collections, on the map
 
 ${collections}
 

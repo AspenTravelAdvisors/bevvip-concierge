@@ -388,11 +388,131 @@ function auditCounts() {
   });
 }
 
+// ---------- the country field, now that it mints URLs ----------
+
+/*
+ * `country` used to be a filter facet. Since /hotels/<country>/<property> it is
+ * also a public address, and a bad value is no longer a slightly wrong dropdown
+ * — it is a page, and two spellings of one country are two thin pages where
+ * there should be one good one.
+ *
+ * Four checks, and it is worth being exact about what each can and cannot see,
+ * because the second is a SIGNAL rather than a verdict:
+ *
+ *   1. Case and accent variants ("Turks And Caicos Islands" / "Turks and
+ *      Caicos"). Certain: same letters, same place.
+ *   2. Two countries claiming one city. Catches the transliteration pairs a
+ *      letter-fold cannot — "Turkey" and "Türkiye" both hold Bodrum — but it
+ *      also fires on Naples (Italy and Florida), Cambridge (England and
+ *      Massachusetts) and Victoria (Canada and the Seychelles), which are two
+ *      real places sharing a name. So it lists rather than judges.
+ *   3. One ISO country code under two country names. Certain, and it is what
+ *      catches "Da Nang" filed as a country of its own under VNM.
+ *   4. A country no property has a city in — the placeholder "Various".
+ *
+ * An earlier draft of (4) flagged any country value that also names a city, and
+ * called Singapore, Anguilla, Saint Barthélemy and French Polynesia errors.
+ * They are city-states and territories where the two names genuinely coincide.
+ * Having no city at all is the tell that survives.
+ *
+ * Reported rather than repaired, and deliberately NOT canonicalised in
+ * lib/seo/hotels.js. Merging "Turkey" into "Türkiye" for the page would give
+ * /hotels/turkiye 24 properties while /atlas/hotel?country=Turkey still showed
+ * 2 — the page and the map disagreeing about what a country contains, which is
+ * a worse defect than the one it fixes. The repair belongs in a ledger applied
+ * at load, the way hotel-aliases.json and place-aliases.json are, so that both
+ * surfaces see it.
+ */
+function auditCountries() {
+  if (!section('countries')) return;
+  const hotels = read('data/atlas/hotel/luxury-hotels.json');
+  const ci = s => String(s ?? '').trim();
+  const fold = s => ci(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]+/g, '');
+
+  const byCountry = new Map();
+  const citiesOf = new Map();
+  const countriesOfCity = new Map();
+  for (const h of hotels) {
+    const c = ci(h.country);
+    byCountry.set(c, [...(byCountry.get(c) || []), h]);
+    const city = fold(h.city);
+    if (!city) continue;
+    citiesOf.set(city, ci(h.city));
+    countriesOfCity.set(city, (countriesOfCity.get(city) || new Set()).add(c));
+  }
+  const label = name => `${name} (${byCountry.get(name).length})`;
+
+  // 1. Same letters, different typing.
+  const families = new Map();
+  for (const name of byCountry.keys()) {
+    const key = fold(name).replace(/islands?$/, '');
+    families.set(key, [...(families.get(key) || []), name]);
+  }
+  const variants = [...families.values()].filter(names => names.length > 1);
+  finding({
+    section: 'countries', ours: false,
+    label: 'countries the feed spells more than one way, each minting its own hub page',
+    count: variants.length, of: byCountry.size,
+    detail: 'the properties divide between the spellings, so neither /hotels/<country> holds the country',
+    examples: variants.map(names => names.map(label).join('  vs  ')),
+  });
+
+  // 2. One city, two countries. A signal — see the note above.
+  const shared = [...countriesOfCity.entries()]
+    .filter(([, set]) => set.size > 1)
+    .map(([city, set]) => `${citiesOf.get(city)}: ${[...set].map(label).join(' / ')}`);
+  finding({
+    section: 'countries', ours: false,
+    label: 'cities claimed by two countries — a duplicate spelling, or two real places sharing a name',
+    count: shared.length, of: countriesOfCity.size,
+    detail: 'worth reading rather than fixing blind: Naples and Cambridge are on this list legitimately, Bodrum is not',
+    examples: shared,
+  });
+
+  // 3. One ISO code, two country names. Certain, because the code is the
+  //    supplier's own answer to "which country is this in".
+  const byCode = new Map();
+  for (const h of hotels) {
+    const code = ci(h.countryCode);
+    if (!code) continue;
+    byCode.set(code, (byCode.get(code) || new Set()).add(ci(h.country)));
+  }
+  const codeClash = [...byCode.entries()]
+    .filter(([, set]) => set.size > 1)
+    .map(([code, set]) => `${code}: ${[...set].map(label).join(' / ')}`);
+  finding({
+    section: 'countries', ours: false,
+    label: 'one ISO country code filed under two country names',
+    count: codeClash.length, of: byCode.size,
+    detail: "the code is the supplier's own answer to which country a property is in, so a second name under it is a disagreement with itself",
+    examples: codeClash,
+  });
+
+  // 4. A country nothing is located in.
+  //
+  //    Deliberately NOT "the country value also names a city" — that rule
+  //    reads Singapore, Anguilla, Saint Barthélemy and French Polynesia as
+  //    errors, and they are city-states and territories where the country and
+  //    the city genuinely share a name. Having no city at ALL is the honest
+  //    tell for a placeholder.
+  const placeless = [...byCountry.entries()].filter(
+    ([, list]) => list.length && list.every(h => !ci(h.city)),
+  );
+  finding({
+    section: 'countries', ours: false,
+    label: 'country values nothing is actually located in',
+    count: placeless.length, of: byCountry.size,
+    detail: 'no property under these has a city either — they are portfolio listings, and each one is a live /hotels/<slug> hub',
+    examples: placeless.map(([name, list]) => `${label(name)} — ${list.map(h => h.name).join(', ')}`),
+  });
+}
+
 // ---------- report ----------
 
 auditHotels();
 auditTours();
 auditCounts();
+auditCountries();
 
 let current = null;
 for (const f of findings) {

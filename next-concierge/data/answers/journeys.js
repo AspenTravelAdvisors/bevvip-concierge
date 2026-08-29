@@ -127,7 +127,8 @@ export const journeyAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/worldcruise", label: "Browse all 250 voyages in the world-cruise atlas" },
+      { href: "/atlas/worldcruise", label: "Browse all {{collection:worldcruise}} voyages in the world-cruise atlas" },
+      { href: "/journeys/worldcruise", label: "Every world cruise itinerary, day by day" },
       { href: "/answers/luxury-vs-classic-expedition-cruising", label: "Prefer landings to sea days? Expedition cruising compared" },
       { href: "/answers/do-travel-advisors-cost-more", label: "Why world cruises are the most advisor-shaped purchase in travel" },
     ],
@@ -186,7 +187,8 @@ export const journeyAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/train", label: "All 135 rail journeys in the rail atlas" },
+      { href: "/atlas/train", label: "All {{collection:train}} rail journeys in the rail atlas" },
+      { href: "/journeys/train", label: "Every rail itinerary, with what each fare includes" },
       { href: "/answers/world-cruises-compared", label: "The sea-going equivalent: world cruises compared" },
     ],
   },
@@ -244,7 +246,8 @@ export const journeyAnswers = [
       },
     ],
     related: [
-      { href: "/atlas/yacht", label: "All 374 brand-yacht sailings in the yacht atlas" },
+      { href: "/atlas/yacht", label: "All {{collection:yacht}} brand-yacht sailings in the yacht atlas" },
+      { href: "/journeys/yacht", label: "Every yacht itinerary, with its departures" },
       { href: "/answers/world-cruises-compared", label: "Longer at sea: world cruises compared" },
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "The land-based alternative for big groups" },
     ],

@@ -7,7 +7,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IBM_Plex_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/answers";
 import { getVillaBySlug, featuredVillaParams } from "@/lib/villas.js";
+import { villaJsonLd, villaBreadcrumbJsonLd } from "@/lib/seo/villas";
+import SiteFooter from "@/components/SiteFooter";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -26,9 +29,20 @@ export async function generateMetadata({ params }) {
   const { destination, slug } = await params;
   const v = getVillaBySlug(destination, slug);
   if (!v) return {};
+  const where = [v.location, v.destination].filter(Boolean).join(", ");
   return {
     title: `${v.name} · Villa Atlas`,
-    description: v.summary || `${v.name}, a private villa in ${v.location}, ${v.destination}.`,
+    description: v.summary || `${v.name}, a private villa in ${where}.`,
+    alternates: {
+      canonical: `${SITE_URL}/atlas/villa/${v.destinationSlug}/${v.slug}`,
+    },
+    openGraph: {
+      title: v.name,
+      description: v.summary || `${v.name}, a private villa in ${where}.`,
+      type: "website",
+      url: `${SITE_URL}/atlas/villa/${v.destinationSlug}/${v.slug}`,
+      images: v.imageUrl ? [v.imageUrl] : undefined,
+    },
   };
 }
 
@@ -67,7 +81,23 @@ export default async function VillaDetailPage({ params }) {
 
   return (
     <div className={`villa-atlas villa-detail ${mono.variable}`}>
+      {/* The first structured data these pages have ever carried. A villa page
+          knows the name, the place, the coordinate (where it is the villa's
+          own), the sleeps and the bedroom count, and published none of it in a
+          form a machine reads. See lib/seo/villas.js for what is deliberately
+          left out — the "from" rate, and the geo of the 236 villas placed on a
+          locality centroid. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(villaJsonLd(v)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(villaBreadcrumbJsonLd(v)) }}
+      />
       <nav className="villa-crumbs mono">
+        <Link href="/villas">Villas</Link>
+        {" / "}
         <Link href="/atlas/villa">Villa Atlas</Link>
         {v.region && (
           <>
@@ -158,6 +188,7 @@ export default async function VillaDetailPage({ params }) {
           </p>
         )}
       </div>
+      <SiteFooter />
     </div>
   );
 }

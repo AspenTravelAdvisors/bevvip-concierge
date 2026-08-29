@@ -28,10 +28,12 @@ import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { makeFacts, UnknownFactTerm } from '../lib/seo/facts.mjs';
+import { buildAdapters } from './lib/adapters-build.mjs';
 
 const require = createRequire(import.meta.url);
 const read = rel => JSON.parse(fs.readFileSync(path.join(repoRoot, rel), 'utf8'));
 
+const nfCheck = new Intl.NumberFormat('en-US');
 const failures = [];
 const fail = (what, detail) => failures.push(`${what}: ${detail}`);
 let checks = 0;
@@ -172,19 +174,144 @@ if (seen.size !== hotels.length) {
   fail('hotel-urls', `${hotels.length} properties produced ${seen.size} URLs`);
 }
 
-// Internal links the answers make into the hotel pages must land somewhere.
-const destinations = new Set([...seen.keys()].map(k => k.split('/')[0]));
+// ── 5. journey URLs are unique, and no itinerary page would be empty ────────
+/*
+ * The journey pages run the REAL adapters, so this check does too — compiled
+ * through the same helper verify-adapters and verify-hotels use, rather than a
+ * transcription of the grouping rule that would drift from the page the first
+ * time either changed.
+ *
+ * What it is actually protecting: the grouping key. A page is one itinerary and
+ * the departures are a table on it, because the cruise feed holds 3,662
+ * sailings across 902 itineraries and "Exploring Galápagos" alone repeats 235
+ * times. If the key ever stopped collapsing those — a supplier appending the
+ * sail date to the title would do it — the tree would silently become 3,662
+ * near-duplicate pages, which is the failure mode the design exists to avoid.
+ * So the ratio is asserted, not assumed.
+ */
+const ADAPTERS = buildAdapters(repoRoot);
+const adapterUrl = name => pathToFileURL(path.join(ADAPTERS, 'adapters', `${name}.js`)).href;
+
+const { adaptCruise } = await import(adapterUrl('cruise'));
+const { adaptWorldCruise } = await import(adapterUrl('worldcruise'));
+const { adaptYacht } = await import(adapterUrl('yacht'));
+const { adaptTrain } = await import(adapterUrl('train'));
+const { adaptJet } = await import(adapterUrl('jet'));
+const { adaptSafari } = await import(adapterUrl('safari'));
+
+const JOURNEYS = {
+  cruise: () =>
+    adaptCruise(
+      read('data/atlas/cruise/sailings.json'),
+      read('data/atlas/cruise/atlas-meta.json'),
+      read('public/maps/cruise/data/itinerary-routes.json'),
+      read('data/atlas/cruise/region-overrides.json'),
+    ),
+  worldcruise: () => adaptWorldCruise(read('data/atlas/world/itinerary.json')),
+  yacht: () => adaptYacht(read('data/atlas/yacht/itinerary.json')),
+  train: () => adaptTrain(read('data/atlas/train/itinerary.json')),
+  jet: () => adaptJet(read('data/atlas/jet/itinerary.json')),
+  safari: () => adaptSafari(read('data/atlas/safari/itinerary.json')),
+};
+
+let journeyPages = 0;
+let journeyDepartures = 0;
+for (const [collection, adapt] of Object.entries(JOURNEYS)) {
+  const offerings = adapt();
+  const groups = new Map();
+  for (const o of offerings) {
+    const key = `${o.brandLabel || o.operator || ''}|${o.title}`;
+    groups.set(key, [...(groups.get(key) || []), o]);
+  }
+  ok();
+  journeyPages += groups.size;
+  journeyDepartures += offerings.length;
+
+  // Slugs, derived the same way lib/seo/journeys.js derives them.
+  const taken = new Set();
+  for (const [key, list] of groups) {
+    const [operator, title] = key.split('|');
+    const base = slugify([operator, title].filter(Boolean).join(' ')) || slugify(list[0].id);
+    const slug = taken.has(base) ? `${base}-${slugify(list[0].id)}` : base;
+    if (taken.has(slug)) {
+      fail('journey-urls', `two itineraries resolve to /journeys/${collection}/${slug} after the id tiebreak`);
+    }
+    taken.add(slug);
+    if (!base) fail('journey-urls', `${collection} itinerary "${title}" has no usable slug`);
+  }
+
+  // An itinerary page with neither a route nor a description is a page with a
+  // heading and a date on it. Those are worth knowing about by count.
+  const empty = [...groups.values()].filter(
+    list => !list.some(o => (o.itinerary || []).length || (o.stops || []).length),
+  );
+  if (empty.length) {
+    const share = empty.length / groups.size;
+    if (share > 0.25) {
+      fail(
+        'journey-content',
+        `${collection}: ${empty.length} of ${groups.size} itineraries have no route at all (${Math.round(share * 100)}%)`,
+      );
+    }
+  }
+}
+
+// The collapse itself. Departures per page below this and the grouping has
+// stopped grouping; the measured value across the six collections is ~2.5.
+ok();
+if (journeyDepartures / journeyPages < 1.2) {
+  fail(
+    'journey-grouping',
+    `${nfCheck.format(journeyDepartures)} departures collapsed to only ${nfCheck.format(journeyPages)} pages — ` +
+      'the itinerary key has stopped collapsing repeats, and the tree is now near-duplicate pages',
+  );
+}
+
+// ── 6. villa detail URLs are reachable from a hub ───────────────────────────
+/*
+ * 3,902 villa detail pages existed with 114 of them in the sitemap and nothing
+ * linking to the rest. The hubs fix that, and this asserts the fix: every villa
+ * must belong to a destination the hub tree actually renders.
+ */
+const villaFeed = read('data/villas-of-distinction.json');
+const villaRows = villaFeed.villas ?? Object.values(villaFeed).find(Array.isArray) ?? [];
+const villaDestinations = new Set(
+  villaRows.map(v => v?.destination?.slug).filter(Boolean),
+);
+ok();
+const orphanVillas = villaRows.filter(v => !v?.destination?.slug);
+if (orphanVillas.length) {
+  fail(
+    'villa-hubs',
+    `${orphanVillas.length} villas have no destination slug, so no hub page can link to them`,
+  );
+}
+
+/*
+ * Internal links the answers make into the entity trees must land somewhere.
+ *
+ * This started as a hotel-only check and was wrong to stay that way for even
+ * one commit: the moment the answers gained /journeys and /villas links, an
+ * unchecked href was an unchecked href. A link into a hub that renders no page
+ * is a 404 published in a page built to be cited.
+ */
+const hotelDestinations = new Set([...seen.keys()].map(k => k.split('/')[0]));
+const HUBS = [
+  [/^\/hotels\/([^/?#]+)$/, hotelDestinations, 'a country with no properties'],
+  [/^\/journeys\/([^/?#]+)$/, new Set(Object.keys(JOURNEYS)), 'a collection that does not exist'],
+  [/^\/villas\/([^/?#]+)$/, villaDestinations, 'a destination with no villas'],
+];
 for (const a of answers) {
   for (const r of a.related || []) {
-    const m = /^\/hotels\/([^/?#]+)$/.exec(r.href || '');
-    if (m && !destinations.has(m[1])) {
-      fail(a.slug, `related link ${r.href} points at a country with no properties`);
+    for (const [re, known, why] of HUBS) {
+      const m = re.exec(r.href || '');
+      if (m && !known.has(m[1])) fail(a.slug, `related link ${r.href} points at ${why}`);
     }
   }
 }
 ok();
 
-// ── 5. nothing publishes a template ─────────────────────────────────────────
+// ── 7. nothing publishes a template ─────────────────────────────────────────
 /*
  * The checks above prove the tokens CAN be resolved. They do not prove every
  * surface that renders answer prose actually resolves them, and that is a
@@ -226,6 +353,8 @@ if (fs.existsSync(BUILT)) {
 const nf = new Intl.NumberFormat('en-US');
 console.log(
   `verify:seo — ${answers.length} answers, ${nf.format(hotels.length)} hotel URLs, ` +
+  `${nf.format(journeyPages)} journey pages from ${nf.format(journeyDepartures)} departures, ` +
+  `${nf.format(villaRows.length)} villas in ${villaDestinations.size} destinations, ` +
   `${Object.keys(collections).length} collections, ${checks} checks run`,
 );
 if (failures.length) {
