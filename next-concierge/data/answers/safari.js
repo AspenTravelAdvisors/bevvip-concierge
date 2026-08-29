@@ -8,10 +8,14 @@
 // would have been dropped from /answers without a word. Both are fixed; these
 // are the first two answers that could exist.
 //
-// Counts are queries (lib/seo/facts.mjs), not typed numbers. The hotel-atlas
-// terms cover the LODGES; the itinerary counts in the prose come from the
-// safari journey atlas, which the fact engine does not read yet — those are
-// stated as of `UPDATED` and are the reason this module has one.
+// Counts are queries (lib/seo/facts.mjs), not typed numbers — both halves now.
+// `{{hotels:…}}` queries the hotel feed for the LODGES; `{{journeys:…}}` and
+// `{{departures:…}}` query data/atlas/shared/journey-facts.json for the
+// ITINERARIES. The two journey tokens exist because both numbers are true and
+// they differ: safari holds 250 itineraries and 274 departures, expedition
+// cruise 902 and 3,662. Writing the departure count and linking to the
+// itinerary pages is the kind of near-miss that makes a page look wrong to
+// somebody checking it.
 
 const UPDATED = "2026-08-28";
 
@@ -28,7 +32,7 @@ export const safariAnswers = [
       "Book Wilderness or andBeyond when you want the operator to own the camps you sleep in, which is what buys consistency and access in Botswana and the Okavango. Book Abercrombie & Kent or Micato for East Africa logistics and scheduled departures, and Ker & Downey or Artisans of Leisure when the itinerary should be built around you rather than chosen from a list.",
     answer: [
       "The distinction that matters is whether the operator owns the camps. Wilderness and andBeyond do: their itineraries move you between their own properties, which is why their Botswana and Okavango trips run so smoothly and why their guiding is consistent from camp to camp. Abercrombie & Kent and Micato do not own most of the camps but own the logistics — the charters, the ground teams, the airport fixers — which is what East Africa actually runs on, and why they dominate Kenya and Tanzania. Ker & Downey, Artisans of Leisure and Remote Lands sit at the bespoke end: fewer scheduled departures, more of a trip designed around your dates.",
-      "Our atlas holds 274 safari itineraries across those operators, and the concentration tells you where each is strongest: Abercrombie & Kent 80, Wilderness 44, African Travel 40, andBeyond 33, Artisans of Leisure 31, Ker & Downey 27, Micato 11. Nearly all of them — 268 of 274 — are on-demand departures with a booking window rather than a fixed date, which is the single most useful thing to know before you start: you are choosing a trip shape, not a seat on a departure.",
+      "Our atlas holds {{journeys:collection=safari}} safari itineraries across those operators, and the concentration tells you where each is strongest: Abercrombie & Kent {{journeys:collection=safari&operator=Abercrombie %26 Kent}}, Wilderness {{journeys:collection=safari&operator=Wilderness}}, African Travel {{journeys:collection=safari&operator=African Travel}}, andBeyond {{journeys:collection=safari&operator=andBeyond}}, Artisans of Leisure {{journeys:collection=safari&operator=Artisans of Leisure}}, Ker & Downey {{journeys:collection=safari&operator=Ker %26 Downey}}, Micato {{journeys:collection=safari&operator=Micato Safaris}}. Almost all of them — {{journeys:collection=safari&onDemand=true}} of {{journeys:collection=safari}} — are on-demand departures with a booking window rather than a fixed date, which is the single most useful thing to know before you start: you are choosing a trip shape, not a seat on a departure.",
     ],
     sections: [
       {
@@ -73,7 +77,7 @@ export const safariAnswers = [
       },
       {
         q: "Why do almost none of these have fixed departure dates?",
-        a: "268 of the 274 itineraries in our atlas are on-demand: the operator publishes a booking window and builds your dates inside it. Scheduled small-group departures exist (A&K and Micato run them) but they are the minority. It means you are choosing a trip shape first and dates second, which is the opposite of how cruise shopping works.",
+        a: "{{journeys:collection=safari&onDemand=true}} of the {{journeys:collection=safari}} itineraries in our atlas are on-demand: the operator publishes a booking window and builds your dates inside it. Scheduled small-group departures exist (A&K and Micato run them) but they are the minority. It means you are choosing a trip shape first and dates second, which is the opposite of how cruise shopping works.",
       },
       {
         q: "Does booking through an advisor cost more?",
@@ -100,7 +104,7 @@ export const safariAnswers = [
       "Choose Kenya for spectacle and value, and for the Great Migration between July and October. Choose Botswana for exclusivity, water-based game viewing in the Okavango and the fewest other vehicles, at the highest cost. Choose South Africa for a first safari with children, a malaria-free option, and the easiest pairing with a city and a coastline.",
     answer: [
       "Kenya is the highest-density, best-value first safari: the Masai Mara concentrates more game into fewer hours than anywhere else on the list, the Great Migration crosses between July and October, and the conservancies bordering the reserve deliver Mara game viewing with a fraction of the vehicles. Botswana is the exclusivity trade: the Okavango Delta sells low-density concessions where you may not see another vehicle all day, plus mokoro and boat game viewing nothing else offers, at meaningfully higher cost. South Africa is the easiest first safari — malaria-free reserves exist, the Sabi Sand delivers reliable leopard, and Cape Town and the winelands sit at the end of a short flight, which is why it is the one that works with children and with sceptical partners.",
-      "Our atlas holds 274 safari itineraries, concentrated exactly where you would expect: Kenya 54, Tanzania 50, Botswana 46, South Africa 40, Zambia 19, Namibia 17, Rwanda 16, Zimbabwe 10. On the lodge side it holds {{hotels:category=Lodge / Safari}} safari and wilderness properties: {{hotels:category=Lodge / Safari&country=South Africa}} in South Africa, {{hotels:category=Lodge / Safari&country=Botswana}} in Botswana, {{hotels:category=Lodge / Safari&country=Kenya}} in Kenya — which is itself a useful signal about where the private-reserve lodge market is deepest, and where the good beds are independently owned rather than filed under a preferred-partner programme.",
+      "Our atlas holds {{journeys:collection=safari}} safari itineraries, concentrated exactly where you would expect: Kenya {{journeys:collection=safari&country=Kenya}}, Tanzania {{journeys:collection=safari&country=Tanzania}}, Botswana {{journeys:collection=safari&country=Botswana}}, South Africa {{journeys:collection=safari&country=South Africa}}, Zambia {{journeys:collection=safari&country=Zambia}}, Namibia {{journeys:collection=safari&country=Namibia}}, Rwanda {{journeys:collection=safari&country=Rwanda}}, Zimbabwe {{journeys:collection=safari&country=Zimbabwe}}. On the lodge side it holds {{hotels:category=Lodge / Safari}} safari and wilderness properties: {{hotels:category=Lodge / Safari&country=South Africa}} in South Africa, {{hotels:category=Lodge / Safari&country=Botswana}} in Botswana, {{hotels:category=Lodge / Safari&country=Kenya}} in Kenya — which is itself a useful signal about where the private-reserve lodge market is deepest, and where the good beds are independently owned rather than filed under a preferred-partner programme.",
     ],
     sections: [
       {

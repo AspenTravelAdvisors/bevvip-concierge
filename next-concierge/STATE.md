@@ -182,12 +182,18 @@ cell, so the first and last segments always "hit land" by construction.
 
 ### Still open from D1
 
-- **The three served landmask copies stay for now.** `public/maps/{cruise,
-  yacht,worldcruise}/data/landmask.bin` are still fetched by those Leaflet
-  atlases, which are live until D3 retires them. The canonical copy the build
-  reads is `data/atlas/shared/landmask.bin`. Delete the served three in D3, not
-  before — the work order's "no landmask fetched by any browser" is a D3
-  condition, and the globe already fetches none.
+- **The three served landmask copies stay — permanently, as it turns out.**
+  `public/maps/{cruise,yacht,worldcruise}/data/landmask.bin` (765KB each) are
+  fetched by those Leaflet atlases. This note used to end "delete the served
+  three in D3"; **do not.** D3 shipped keeping the standalone pages as two
+  deliberate escape hatches, which supersedes that plan: `?legacy=1` is the
+  documented fallback if the Maps key or the tiles are unavailable, and
+  `?hero=1` — the ambient embeds the marketing landers use — renders the iframe
+  even for migrated collections, because the landers want a bare map rather
+  than a filter rail. Both paths are in `app/atlas/[type]/page.tsx`. Deleting
+  the copies would blank the sea routes on every marketing lander, silently.
+  The canonical copy the build reads is `data/atlas/shared/landmask.bin`; the
+  duplication is the price of the escape hatch and is worth it.
 - The work order's expectation that Alexandria -> Barcelona is "a clean arc" is
   wrong: the straight line clips southern Sardinia near Cagliari, and
   `legGeometry` tests the straight line (not the bezier) when deciding whether
@@ -2096,14 +2102,15 @@ inventory.
   since the status file was introduced, so freshness cannot speak for them.
   One successful nightly run fixes it; until then the verifier says so out loud
   rather than rounding up to green.
-- **`Master Documents/BeVvip_API_Integration_Strategy.md` describes an
-  architecture that no longer exists** — `api/prompt.js`, `api/chat.js`,
-  `public/index.html`, the `<!--BEVVIP_HOTELS-->` comment tag, and TravelWits as
-  the live-rate source. It carries a status note now, but a note is not a plan:
-  its central argument — the language model must never be the rate source — is
-  exactly what the Virtuoso work implements, and somebody should rewrite the
-  document around what was actually built. The same goes for the stack sections
-  of the two project master documents.
+- ~~**`Master Documents/BeVvip_API_Integration_Strategy.md` describes an
+  architecture that no longer exists.**~~ **Closed 2026-08-28.** The replacement
+  is `Master Documents/BeVvip_Supplier_Architecture.md`: division of authority,
+  the nightly pipeline and its four guards, the overlay ledgers, the query
+  layer, the crawlable surfaces, and what is deliberately absent. The May
+  document keeps its status note and is now explicitly history — it is still
+  worth reading for *why* the rule in §1 exists, which is the half that
+  survived. The stack sections of the two project master documents are still
+  stale and are the remaining piece of this item.
 
 ## The crawlable surface — entity pages and live answers (2026-08-28)
 
@@ -2422,3 +2429,98 @@ never had.
   behaviour rail has; the prompt routes country names to `country=` (74) and
   reserves `region=` for the fourteen marquee keys, so the Guide should not hit
   it. Worth watching in transcripts rather than pre-emptively splitting.
+
+
+## Closing out the open items (2026-08-28)
+
+Four things were carried as open in this file and in the work orders. Three are
+closed; the fourth turned out to be a trap.
+
+### The country ledger — closed
+
+`country` stopped being a filter facet the day `/hotels/<country>/<property>`
+shipped, and the audit found four countries spelled two ways, each minting its
+own thin hub page: Turkey (2) beside Türkiye (22), Turks and Caicos (1) beside
+Turks And Caicos Islands (10), a case variant of Saint Vincent, and "Da Nang"
+filed as a country.
+
+The evidence that these are typos and not distinctions is in the data:
+**every minority spelling is a pre-merge `source: local` record carrying no
+countryCode, while the majority spelling carries the supplier's ISO.** Da Nang
+is the exception and the strongest case — it carries VNM, so the feed
+contradicts itself rather than us contradicting the feed.
+
+`data/atlas/hotel/country-overrides.json` + `lib/atlas/country-overrides.js`,
+applied at load. 117 countries → 113. Two deliberate non-actions are written
+into the ledger: **Macau is not folded into China** despite sharing CHN, because
+it has its own ISO code in the world, its own visa regime and its own market;
+and the three "Various" portfolio listings (no city, address literally
+"Various", placeholder coordinates — the Mandarin Oriental entry sits in the
+Gulf of Tonkin) keep their atlas records and get no address page, because a page
+claiming an address for them would be inventing one. 2,240 → 2,237 property
+pages.
+
+**`lib/atlas/hotel-overlays.js` is the part worth keeping.** `applyProgramOverrides`
+had four call sites — the API, the map builder, the entity pages, the verifier —
+each of which a new overlay had to be added to by hand, with nothing failing
+when one was missed. The symptom would have been the page and the map
+disagreeing about what a country contains, which is the precise defect the
+ledger was written to avoid creating. There is one function now.
+
+`audit-listings.mjs --section countries` reads the feed THROUGH the overlays, so
+it reports what is LEFT rather than what is already fixed — a report that can
+never go green is a report people stop reading. What is left is seven cities
+that two countries legitimately share (Naples, Cambridge, Victoria).
+
+### The journey facts artifact — closed
+
+`{{hotels:…}}` was the only fact term, so the journey copy still typed its
+numbers. A `{{journeys:…}}` term could not read the route feeds directly:
+counting rows would have pulled every atlas plus 3.6MB of cruise route geometry
+into the answers bundle.
+
+`scripts/build-journey-facts.mjs` precomputes the countable fields —
+`data/atlas/shared/journey-facts.json`, 1,991 rows, one per ITINERARY — using
+`lib/seo/journey-key.mjs`, the same grouping the `/journeys` pages serve from.
+That module is itself a fix: the grouping rule had three copies within a day of
+being written (the pages, the verifier, and now the generator), and a verifier
+carrying its own definition of the thing it verifies can pass while the thing is
+broken.
+
+**Two journey tokens, not one.** `{{journeys:…}}` counts itineraries — pages,
+the thing a reader browses. `{{departures:…}}` counts sailing dates behind them.
+Safari is 250 and 274; expedition cruise is 902 and 3,662. Writing the departure
+count and linking to the itinerary pages is the near-miss that makes a page look
+wrong to somebody checking it.
+
+Two gates: `verify:journey-facts` byte-compares the artifact against the feeds,
+and `verify:seo` asserts the per-collection counts so the failure message names
+which collection moved. Both wired into `prebuild`, `sync:virtuoso`, the nightly
+workflow and `verify-all`.
+
+One grammar bug found writing the first tokens: `&` separates terms, so
+`operator=Abercrombie & Kent` parsed as a term called " Kent" and failed the
+build. Values now accept `%26`, query-string style, and the parse error says so.
+
+### The safari work order — closed
+
+`WORKORDER-safari-atlas.md` still read **BLOCKED ON EGRESS** months after the
+crawl ran. Marked shipped, with the 403 kept as a historical note because that
+block can recur, and with the outcome recorded: 274 journeys against the
+300–800 the phase predicted, well above the ~120 floor that would have triggered
+a re-scope.
+
+### The landmask copies — NOT a cleanup, and acting on the note would have broken production
+
+D1 left `public/maps/{cruise,yacht,worldcruise}/data/landmask.bin` with a note
+saying "delete the served three in D3". **Do not.** D3 shipped keeping the
+standalone pages as two deliberate escape hatches, which supersedes that plan:
+`?legacy=1` is the documented fallback if the Maps key or the tiles are
+unavailable, and **`?hero=1` — the ambient embeds the marketing landers use —
+renders the iframe even for migrated collections**, because the landers want a
+bare map rather than a filter rail. Deleting the three copies would have blanked
+the sea routes on every marketing lander, silently.
+
+The note has been corrected in place. This is the second time in this file a
+"still open" item has been stale in a direction that would cause a regression if
+acted on, which is an argument for reading the code before the note.

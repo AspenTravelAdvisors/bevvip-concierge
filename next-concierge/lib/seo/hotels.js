@@ -15,14 +15,15 @@
 // Server-only. Never import from a "use client" file: it pulls the 11MB feed.
 
 import rawHotels from "@/data/atlas/hotel/luxury-hotels.json";
-import { applyProgramOverrides } from "@/lib/atlas/program-overrides.js";
+import { applyHotelOverlays } from "@/lib/atlas/hotel-overlays.js";
+import { isNotAPlace } from "@/lib/atlas/country-overrides.js";
 import { SITE_URL } from "@/lib/answers";
 import { orgRef } from "@/lib/seo/site";
 
-// The same overlay the API and the map apply, for the same reason: a property's
-// program is decided in one place or the page and the atlas disagree about what
-// it is.
-const HOTELS = applyProgramOverrides(rawHotels);
+// The same overlays the API and the map apply, through the same function, for
+// the same reason: a property's programme and its country are each decided in
+// ONE place, or the page and the atlas disagree about what a country contains.
+const HOTELS = applyHotelOverlays(rawHotels);
 
 const fold = (s) =>
   String(s == null ? "" : s)
@@ -53,6 +54,21 @@ function buildIndex() {
   const ordered = [...HOTELS].sort((a, b) => String(a.id).localeCompare(String(b.id)));
 
   for (const h of ordered) {
+    /*
+     * Three records get no page, and it is the honest outcome rather than a
+     * gap: Mandarin Oriental Exclusive Homes, Rocco Forte Private Villas and
+     * The Ritz-Carlton Residences are filed under the country "Various", have
+     * no city, an address that reads literally "Various", and placeholder
+     * coordinates — the Mandarin Oriental entry sits in the Gulf of Tonkin.
+     * They are portfolio listings spanning many countries.
+     *
+     * An address page for a property with no address is a page that invents
+     * one, and /hotels/various is a country hub for a country. They stay in the
+     * atlas and stay searchable; they are simply not addressable. See
+     * data/atlas/hotel/country-overrides.json.
+     */
+    if (isNotAPlace(h.country)) continue;
+
     const destination = slugify(h.country) || "worldwide";
     const base = slugify([h.name, h.city].filter(Boolean).join(" ")) || slugify(h.id);
     let slug = base;

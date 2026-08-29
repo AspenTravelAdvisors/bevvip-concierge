@@ -22,8 +22,13 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { LOOKS_LIKE_CSS } from '../lib/virtuoso/text.mjs';
+
+// The hotel overlays are CommonJS (they are shared with the in-process atlas
+// backends, which are). This is the same bridge scripts/verify-seo.mjs uses.
+const require = createRequire(import.meta.url);
 
 const args = process.argv.slice(2);
 const STRICT = args.includes('--strict');
@@ -425,7 +430,28 @@ function auditCounts() {
  */
 function auditCountries() {
   if (!section('countries')) return;
-  const hotels = read('data/atlas/hotel/luxury-hotels.json');
+  /*
+   * Read the feed THROUGH the overlays, not raw.
+   *
+   * A quality report that keeps reporting defects already fixed is a report
+   * people stop reading. data/atlas/hotel/country-overrides.json resolves four
+   * duplicate spellings; auditing the raw feed would list all four forever, and
+   * the finding that actually matters — a NEW one arriving in tomorrow's sync —
+   * would be the fifth line of a list everyone had learned to skip.
+   *
+   * The ledger's own contents are printed above the findings instead, so what
+   * it covers stays visible without being counted as outstanding.
+   */
+  const { applyHotelOverlays } = require('../lib/atlas/hotel-overlays.js');
+  const ledger = read('data/atlas/hotel/country-overrides.json');
+  const hotels = applyHotelOverlays(read('data/atlas/hotel/luxury-hotels.json'));
+  finding({
+    section: 'countries', ours: true,
+    label: 'country spellings already resolved by the ledger',
+    count: (ledger.rules || []).length, of: (ledger.rules || []).length,
+    detail: 'data/atlas/hotel/country-overrides.json — applied at load, so the page and the map agree',
+    examples: (ledger.rules || []).map(r => `${r.from} -> ${r.to} (${r.records})`),
+  });
   const ci = s => String(s ?? '').trim();
   const fold = s => ci(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]+/g, '');
 
@@ -465,7 +491,7 @@ function auditCountries() {
     section: 'countries', ours: false,
     label: 'cities claimed by two countries — a duplicate spelling, or two real places sharing a name',
     count: shared.length, of: countriesOfCity.size,
-    detail: 'worth reading rather than fixing blind: Naples and Cambridge are on this list legitimately, Bodrum is not',
+    detail: 'worth reading rather than fixing blind — every entry left is two real places sharing a name (Naples, Cambridge, Victoria); the duplicates it found, Bodrum and Providenciales, are in the ledger now',
     examples: shared,
   });
 
@@ -477,14 +503,24 @@ function auditCountries() {
     if (!code) continue;
     byCode.set(code, (byCode.get(code) || new Set()).add(ci(h.country)));
   }
+  /*
+   * A country the ledger deliberately KEEPS is not a finding.
+   *
+   * Macau shares CHN in this feed and is not folded into China: it has its own
+   * ISO code in the world, its own visa regime and its own hotel market, and
+   * travellers search it by name. Counting it as outstanding forever would
+   * teach the reader to skip this check, which is the only way a real one
+   * arrives unnoticed.
+   */
+  const kept = new Set((ledger.notPlaces || []).filter(n => n.keep).map(n => ci(n.country)));
   const codeClash = [...byCode.entries()]
-    .filter(([, set]) => set.size > 1)
+    .filter(([, set]) => [...set].filter(name => !kept.has(name)).length > 1)
     .map(([code, set]) => `${code}: ${[...set].map(label).join(' / ')}`);
   finding({
     section: 'countries', ours: false,
     label: 'one ISO country code filed under two country names',
     count: codeClash.length, of: byCode.size,
-    detail: "the code is the supplier's own answer to which country a property is in, so a second name under it is a disagreement with itself",
+    detail: "the code is the supplier's own answer to which country a property is in, so a second name under it is a disagreement with itself. Deliberate exceptions are marked `keep` in country-overrides.json and not counted here",
     examples: codeClash,
   });
 
@@ -502,7 +538,7 @@ function auditCountries() {
     section: 'countries', ours: false,
     label: 'country values nothing is actually located in',
     count: placeless.length, of: byCountry.size,
-    detail: 'no property under these has a city either — they are portfolio listings, and each one is a live /hotels/<slug> hub',
+    detail: 'no property under these has a city either — portfolio listings rather than located properties. Already excluded from the /hotels entity tree via country-overrides.json `notPlaces`, so this is a standing note rather than a live defect; a NEW value appearing here is the thing to act on',
     examples: placeless.map(([name, list]) => `${label(name)} — ${list.map(h => h.name).join(', ')}`),
   });
 }

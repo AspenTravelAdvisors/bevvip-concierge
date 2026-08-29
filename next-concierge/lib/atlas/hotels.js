@@ -15,14 +15,16 @@ const hotelFit = require("../../data/atlas/hotel/hotel-fit.json");
 const { rankItems } = require("./supplier-fit");
 const { preferredScore, preferredTier } = require("./preferred-overlay");
 const { travelWitsFor } = require("./travelwits-overlay");
-const { applyProgramOverrides } = require("./program-overrides");
+const { applyHotelOverlays } = require("./hotel-overlays");
 const { aliasText } = require("./place-aliases");
 
-// Program membership is corrected once, at load, so `program=` filtering, the
-// `q` haystack, the cards and the preferred-partner ranking all see the same
-// value the map does. See lib/atlas/program-overrides.js for why this is an
-// overlay rather than an edit to the feed.
-const hotels = applyProgramOverrides(rawHotels);
+// Program membership and country spelling are corrected once, at load, so
+// `program=` filtering, the `q` haystack, the cards, the preferred-partner
+// ranking and the /hotels pages all see the same values the map does. See
+// lib/atlas/hotel-overlays.js for why they go through one function, and
+// program-overrides.js / country-overrides.js for why each is an overlay
+// rather than an edit to the feed.
+const hotels = applyHotelOverlays(rawHotels);
 
 const ci = (s) => String(s == null ? "" : s).toLowerCase().trim();
 const fold = (s) => ci(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "");

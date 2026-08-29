@@ -32,7 +32,7 @@
 
 import { SITE_URL } from "@/lib/answers";
 import { orgRef } from "@/lib/seo/site";
-import { slugify } from "@/lib/seo/hotels";
+import { groupItineraries } from "@/lib/seo/journey-key.mjs";
 
 import { adaptCruise } from "@/lib/atlas/adapters/cruise";
 import { adaptWorldCruise } from "@/lib/atlas/adapters/worldcruise";
@@ -175,35 +175,24 @@ function buildCollection(type) {
   const offerings = meta.adapt();
   const extras = meta.extras();
 
-  const groups = new Map();
-  for (const o of offerings) {
-    const operator = o.brandLabel || o.operator || null;
-    const key = `${operator || ""}|${o.title}`;
-    const g = groups.get(key) || {
-      collection: type,
-      title: o.title,
-      operator,
-      departures: [],
-      regions: new Set(),
-      vessels: new Set(),
-      countries: new Set(),
-    };
-    g.departures.push(o);
-    for (const r of o.regions || []) g.regions.add(r);
-    if (o.vessel) g.vessels.add(o.vessel);
-    if (o.country) g.countries.add(o.country);
-    groups.set(key, g);
-  }
-
-  const ordered = [...groups.values()].sort((a, b) =>
-    String(a.departures[0].id).localeCompare(String(b.departures[0].id)),
-  );
+  // Grouping and slugs come from lib/seo/journey-key.mjs, which the facts
+  // generator and verify-seo also use — one rule, three readers.
+  const ordered = groupItineraries(offerings);
 
   const bySlug = new Map();
   for (const g of ordered) {
-    const base = slugify([g.operator, g.title].filter(Boolean).join(" ")) ||
-      slugify(g.departures[0].id);
-    const slug = bySlug.has(base) ? `${base}-${slugify(g.departures[0].id)}` : base;
+    const slug = g.slug;
+    const regions = new Set();
+    const vessels = new Set();
+    const countries = new Set();
+    for (const o of g.departures) {
+      for (const r of o.regions || []) regions.add(r);
+      if (o.vessel) vessels.add(o.vessel);
+      if (o.country) countries.add(o.country);
+    }
+    g.regions = regions;
+    g.vessels = vessels;
+    g.countries = countries;
 
     // The departure that best represents the itinerary: the one the adapters
     // gave the most itinerary rows, because a route with more named calls is

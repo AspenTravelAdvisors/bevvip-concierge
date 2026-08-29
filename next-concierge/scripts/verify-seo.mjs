@@ -29,6 +29,7 @@ import { pathToFileURL } from 'node:url';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { makeFacts, UnknownFactTerm } from '../lib/seo/facts.mjs';
 import { buildAdapters } from './lib/adapters-build.mjs';
+import { groupItineraries } from '../lib/seo/journey-key.mjs';
 
 const require = createRequire(import.meta.url);
 const read = rel => JSON.parse(fs.readFileSync(path.join(repoRoot, rel), 'utf8'));
@@ -41,8 +42,13 @@ const ok = () => { checks += 1; };
 
 // ── the data, loaded the way the scripts do rather than the way Next does ───
 const rawHotels = read('data/atlas/hotel/luxury-hotels.json');
-const { applyProgramOverrides } = require('../lib/atlas/program-overrides.js');
-const hotels = applyProgramOverrides(rawHotels);
+const { applyHotelOverlays } = require('../lib/atlas/hotel-overlays.js');
+const { isNotAPlace } = require('../lib/atlas/country-overrides.js');
+// The same exclusion lib/seo/hotels.js makes. Applying the overlays here and
+// not the exclusion would leave this script deriving 2,240 slugs against the
+// page tree's 2,237 — a verifier drifting from the code it verifies, which is
+// worse than no verifier.
+const hotels = applyHotelOverlays(rawHotels).filter(h => !isNotAPlace(h.country));
 
 /*
  * Collection totals come from the shipped datasets, not from atlas-config.ts.
@@ -70,7 +76,10 @@ const collections = Object.fromEntries(
     .map(([type, [rel, pick]]) => [type, pick(read(rel))]),
 );
 
-const facts = makeFacts(hotels, collections);
+const journeyFacts = fs.existsSync(path.join(repoRoot, 'data/atlas/shared/journey-facts.json'))
+  ? read('data/atlas/shared/journey-facts.json')
+  : { rows: [] };
+const facts = makeFacts(hotels, collections, journeyFacts.rows);
 
 // ── the answers, via the module list lib/answers.js actually imports ────────
 const registrySrc = fs.readFileSync(path.join(repoRoot, 'lib/answers.js'), 'utf8');
@@ -216,43 +225,62 @@ const JOURNEYS = {
 
 let journeyPages = 0;
 let journeyDepartures = 0;
+const artifactByCollection = new Map();
+for (const row of journeyFacts.rows || []) {
+  artifactByCollection.set(row.c, [...(artifactByCollection.get(row.c) || []), row]);
+}
+
 for (const [collection, adapt] of Object.entries(JOURNEYS)) {
   const offerings = adapt();
-  const groups = new Map();
-  for (const o of offerings) {
-    const key = `${o.brandLabel || o.operator || ''}|${o.title}`;
-    groups.set(key, [...(groups.get(key) || []), o]);
-  }
+  // The SHARED grouping rule, not a transcription of it. This script used to
+  // carry its own copy of the key and the slug tie-break, which is a verifier
+  // that can pass while the thing it verifies is broken.
+  const groups = groupItineraries(offerings);
   ok();
-  journeyPages += groups.size;
+  journeyPages += groups.length;
   journeyDepartures += offerings.length;
 
-  // Slugs, derived the same way lib/seo/journeys.js derives them.
   const taken = new Set();
-  for (const [key, list] of groups) {
-    const [operator, title] = key.split('|');
-    const base = slugify([operator, title].filter(Boolean).join(' ')) || slugify(list[0].id);
-    const slug = taken.has(base) ? `${base}-${slugify(list[0].id)}` : base;
-    if (taken.has(slug)) {
-      fail('journey-urls', `two itineraries resolve to /journeys/${collection}/${slug} after the id tiebreak`);
+  for (const g of groups) {
+    if (taken.has(g.slug)) {
+      fail('journey-urls', `two itineraries resolve to /journeys/${collection}/${g.slug} after the id tiebreak`);
     }
-    taken.add(slug);
-    if (!base) fail('journey-urls', `${collection} itinerary "${title}" has no usable slug`);
+    taken.add(g.slug);
+    if (!g.slug) fail('journey-urls', `${collection} itinerary "${g.title}" has no usable slug`);
   }
 
   // An itinerary page with neither a route nor a description is a page with a
   // heading and a date on it. Those are worth knowing about by count.
-  const empty = [...groups.values()].filter(
-    list => !list.some(o => (o.itinerary || []).length || (o.stops || []).length),
+  const empty = groups.filter(
+    g => !g.departures.some(o => (o.itinerary || []).length || (o.stops || []).length),
   );
   if (empty.length) {
-    const share = empty.length / groups.size;
+    const share = empty.length / groups.length;
     if (share > 0.25) {
       fail(
         'journey-content',
-        `${collection}: ${empty.length} of ${groups.size} itineraries have no route at all (${Math.round(share * 100)}%)`,
+        `${collection}: ${empty.length} of ${groups.length} itineraries have no route at all (${Math.round(share * 100)}%)`,
       );
     }
+  }
+
+  /*
+   * The artifact must agree with the feeds it was generated from.
+   *
+   * journey-facts.json is committed, and the copy that ships is whatever was
+   * last generated — so a sync that moves inventory leaves the answer copy
+   * counting yesterday's itineraries while the pages serve today's. That is
+   * the exact failure the fact tokens were introduced to end, reintroduced one
+   * level up. `npm run verify:journey-facts` byte-compares; this asserts the
+   * number, per collection, so the message names which one moved.
+   */
+  const fromArtifact = (artifactByCollection.get(collection) || []).length;
+  ok();
+  if (fromArtifact !== groups.length) {
+    fail(
+      'journey-facts',
+      `${collection}: the artifact holds ${fromArtifact} itineraries, the feed now yields ${groups.length} — run npm run build:journey-facts`,
+    );
   }
 }
 

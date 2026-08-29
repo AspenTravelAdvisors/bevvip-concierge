@@ -11,7 +11,7 @@ const OUT = path.join(ROOT, "public", "maps", "hotel", "hotel-points.json");
 // Same program overlay the query layer applies (lib/atlas/hotels.js), so the
 // map's "Brand / Program" facet and the API cannot disagree about which program
 // a property belongs to.
-const { applyProgramOverrides } = require("../lib/atlas/program-overrides.js");
+const { applyHotelOverlays } = require("../lib/atlas/hotel-overlays.js");
 // Umbrella-resort search names (Snowmass Village -> Aspen). Carried onto the
 // point as `alias` so the map's own q haystack and the native adapter's
 // searchText both see it without either re-reading the feed.
@@ -22,7 +22,7 @@ const { aliasText } = require("../lib/atlas/place-aliases.js");
 // what the card renders. Costs ~9 KB gzipped across 2,475 hotels.
 const { hotelPerks } = require("../lib/atlas/hotel-perks.js");
 
-const hotels = applyProgramOverrides(JSON.parse(fs.readFileSync(SOURCE, "utf8")));
+const hotels = applyHotelOverlays(JSON.parse(fs.readFileSync(SOURCE, "utf8")));
 
 const features = hotels
   .map((h) => {

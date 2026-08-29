@@ -15,6 +15,12 @@
 > searches it rather than inventing it. Sections 6 and 7, which name specific
 > files and endpoints, describe a system that has been replaced.
 >
+> **The replacement now exists: `BeVvip_Supplier_Architecture.md`**, which
+> describes what was actually built — the division of authority, the nightly
+> pipeline and its four guards, the query layer, the crawlable surfaces, and
+> what is deliberately absent. Read that for the plan; read this for why the
+> plan says what it says.
+>
 > Current state of the code: `next-concierge/STATE.md`. Current supplier
 > protocol: `Virtuoso_API_Reference.md`.
 

@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "purpose": "Canonical country for a hotel record, where the feed spells one country two ways or files something that is not a country at all.",
+    "why": "Since /hotels/<country>/<property>, `country` is a public URL and not just a filter facet. Two spellings are two thin hub pages where there should be one good one, and neither holds the country's inventory. Applied as an overlay rather than edited into luxury-hotels.json so it survives a feed re-import, the same discipline program-overrides.json and port-overrides.json follow.",
+    "evidence": "Every minority spelling below is a pre-merge `source: local` record carrying NO countryCode, while the majority spelling carries the supplier's ISO code. Da Nang is the exception and the clearest case of all: it has VNM, so the feed disagrees with itself.",
+    "casing": "The canonical value keeps the feed's own casing (`Turks And Caicos Islands`, not `Turks and Caicos Islands`). Virtuoso owns what a property IS, country included; this ledger resolves a DISAGREEMENT between two records, it does not restyle the supplier's answer where the supplier has only given one.",
+    "audit": "scripts/audit-listings.mjs --section countries reports what is left."
+  },
+  "rules": [
+    {
+      "from": "Turkey",
+      "to": "Türkiye",
+      "records": 2,
+      "because": "Two local records with no ISO code, both in Bodrum, against 22 supplier records under Türkiye carrying TUR. Bodrum appeared under both countries."
+    },
+    {
+      "from": "Turks and Caicos",
+      "to": "Turks And Caicos Islands",
+      "records": 1,
+      "because": "One local record with no ISO code, in Providenciales, against 10 supplier records carrying TCA. Providenciales appeared under both."
+    },
+    {
+      "from": "Saint Vincent and the Grenadines",
+      "to": "Saint Vincent And The Grenadines",
+      "records": 1,
+      "because": "A case variant of a single supplier record carrying VCT."
+    },
+    {
+      "from": "Da Nang",
+      "to": "Vietnam",
+      "records": 2,
+      "because": "A city filed as a country. Both records carry countryCode VNM, which is the supplier's own answer to which country they are in, so the feed contradicts itself here rather than us contradicting the feed."
+    }
+  ],
+  "notPlaces": [
+    {
+      "country": "Various",
+      "records": 3,
+      "because": "Mandarin Oriental Exclusive Homes, Rocco Forte Private Villas and The Ritz-Carlton Residences are portfolio listings spanning many countries, not located properties: no city, address literally 'Various', and placeholder coordinates (the Mandarin Oriental entry sits in the Gulf of Tonkin). They stay in the atlas and stay searchable — they are real products — but they get no /hotels address page, because a page claiming an address for them would be inventing one.",
+      "effect": "excluded from the /hotels entity tree (no property page, no country hub, no sitemap entry); untouched everywhere else"
+    },
+    {
+      "country": "Macau (SAR)",
+      "records": 4,
+      "keep": true,
+      "because": "Deliberately NOT folded into China, though it shares the CHN code in the feed. Macau has its own ISO code in the world (MAC), its own visa regime and its own hotel market, and travellers search it by name. This is a case where the supplier's code is the blunter instrument and its country name is the better one."
+    }
+  ]
+}

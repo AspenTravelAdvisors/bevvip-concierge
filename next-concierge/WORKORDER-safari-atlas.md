@@ -6,9 +6,20 @@
 **Owner:** Cowork / Claude Code
 **Repo:** `bevvip-concierge/next-concierge`
 **Created:** 2026-08-27
-**Blocked on:** Phase 0 is done. Phases 1–2 need `api.virtuoso.com` on the
-session's network egress allowlist — the credentials are in place but every call
-is refused by the proxy before it leaves the container.
+**Status: SHIPPED, 2026-08-28.** The egress block below was resolved and every
+phase ran. The atlas holds **274 safari journeys** across 20 operators and 12
+region tags; `/atlas/safari` is live, `public/maps/safari/camps.json` is rebuilt
+nightly, and 250 itinerary pages serve at `/journeys/safari`.
+
+**The one thing shipping did not include, and it took a day to notice:** the
+collection had no query backend. `lib/atlas/index.js` registered six, so
+`queryAtlas("safari")` threw, `safari` was not in the `search_offerings` tool
+enum, and every safari question in The Guide fell through to
+`searchHotels` — a lodge shortlist where an itinerary belonged, with no error
+anywhere. `lib/atlas/safaris.js` closes it. See STATE.md, "Safari was on the map
+and outside the product". The lesson is in the shape of the miss: a collection
+that ships in eight places and is registered in seven looks complete from every
+direction except the one nobody checks.
 
 Every number below is reproducible: `node scripts/audit-listings.mjs`.
 
@@ -219,14 +230,24 @@ stale copy and watching `--strict` go red.
 
 ---
 
-## Phase 1 — Learn what is actually in the catalogue — **BLOCKED ON EGRESS**
+## Phase 1 — Learn what is actually in the catalogue — **DONE**
 
-Credentials are in place and load correctly. `api.virtuoso.com` is **not on this
-environment's network allowlist**, so every call returns
-`403 Host not in allowlist` from the egress proxy before it reaches Virtuoso —
-which means the credentials themselves are still unverified. Add the host to the
-environment's egress settings, or run the sync somewhere that can reach it.
-Everything below is unchanged and still the first thing to do.
+> Historical note, kept because the block was real and may recur: this phase sat
+> blocked because `api.virtuoso.com` was not on the session's network egress
+> allowlist, so every call returned `403 Host not in allowlist` from the proxy
+> before it reached Virtuoso — which meant the credentials could not be verified
+> either. If a future session sees that 403, this is what it is. The host was
+> allowlisted, the crawl ran, and the outcome is below.
+
+**Outcome:** the selection landed at **274 journeys**, against the 300–800 this
+phase predicted and comfortably above the ~120 floor that would have triggered a
+re-scope to Phase 3b. The region taxonomy the selector produced is the sixteen
+tags in `data/atlas/safari/itinerary.json`'s `REGIONS`, of which twelve carry
+journeys today — `ANTARCTIC`, `HIGHARCTIC`, `CHURCHILL` and `PATAGONIA` are
+declared and unused, which `lib/atlas/safaris.js` maps anyway so the first
+journey filed under one is not a silent zero.
+
+Everything below is the original brief, kept as written.
 
 **Do not write the selector before running this.** The `travelStyles`
 vocabulary visible in our slice is six values (`Rail`, `Private`, `Group`,

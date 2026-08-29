@@ -109,6 +109,7 @@ jobs:
           npm run build:safari-camps
           npm run build:sea-routes
           npm run build:cruise-regions
+          npm run build:journey-facts
 
       # The last gate before anything is committed, and the only one that sees
       # both what the supplier sent and what is already live. It covers all four

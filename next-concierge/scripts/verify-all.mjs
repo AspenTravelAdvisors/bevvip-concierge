@@ -44,6 +44,7 @@ const CHECKS = [
   'verify:ambient-tour',
   'verify:atlas-handoff',
   'verify:listings',
+  'verify:journey-facts',
   'verify:seo',
 ];
 

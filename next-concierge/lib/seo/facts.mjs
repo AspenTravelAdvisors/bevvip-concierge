@@ -70,26 +70,69 @@ const TERMS = {
   roomsMax: (h, v) => Number.isFinite(h.numberOfRooms) && h.numberOfRooms <= Number(v),
 };
 
+/**
+ * The same idea over the journey artifact (data/atlas/shared/journey-facts.json).
+ *
+ * A separate table because the vocabularies genuinely differ: a hotel has a
+ * programme and a category, a journey has an operator and a length, and folding
+ * them into one namespace would mean `{{hotels:operator=…}}` silently matching
+ * nothing. Short keys because 1,991 rows ship in the bundle — see the generator.
+ */
+const JOURNEY_TERMS = {
+  collection: (j, v) => fold(j.c) === v,
+  operator: (j, v) => fold(j.o) === v,
+  country: (j, v) => hasFolded(j.co, v),
+  region: (j, v) => hasFolded(j.r, v),
+  vessel: (j, v) => hasFolded(j.v, v),
+  title: (j, v) => new RegExp(`(^|[^a-z0-9])${escapeRe(v)}`).test(fold(j.t)),
+  daysMin: (j, v) => Number.isFinite(j.d) && j.d >= Number(v),
+  daysMax: (j, v) => Number.isFinite(j.d) && j.d <= Number(v),
+  world: (j, v) => Boolean(j.w) === (v !== "false"),
+  onDemand: (j, v) => Boolean(j.od) === (v !== "false"),
+  promo: (j, v) => Boolean(j.p) === (v !== "false"),
+};
+
 export class UnknownFactTerm extends Error {}
 
-/** `"country=Italy&experience=Wellness"` -> a predicate. `"*"` matches all. */
-export function parseSpec(spec) {
+/**
+ * `"country=Italy&experience=Wellness"` -> a predicate. `"*"` matches all.
+ *
+ * A value containing an ampersand is percent-escaped, query-string style:
+ * `operator=Abercrombie %26 Kent`. That is not decoration — `&` is the term
+ * separator, so "Abercrombie & Kent" and "Ker & Downey" parsed as a term called
+ * " Kent" and failed the build the first time they were written. Escaping is
+ * the smallest fix that keeps the spec readable; the alternative was a second
+ * separator nobody would remember.
+ */
+export function parseSpec(spec, terms = TERMS) {
   const raw = String(spec || "").trim();
   if (!raw || raw === "*") return () => true;
+  const decode = (v) => {
+    try {
+      return decodeURIComponent(v);
+    } catch {
+      return v; // a stray % is a literal, not a parse error
+    }
+  };
   const tests = raw.split("&").map((part) => {
     const at = part.indexOf("=");
-    if (at < 0) throw new UnknownFactTerm(`term "${part}" is not key=value`);
-    const key = part.slice(0, at).trim();
-    const value = fold(part.slice(at + 1));
-    const test = TERMS[key];
-    if (!test) {
+    if (at < 0) {
       throw new UnknownFactTerm(
-        `unknown term "${key}" — known: ${Object.keys(TERMS).join(", ")}`,
+        `term "${part}" is not key=value` +
+          (part.trim() ? ' — an ampersand inside a value must be written %26' : ""),
       );
     }
-    return (h) => test(h, value);
+    const key = part.slice(0, at).trim();
+    const value = fold(decode(part.slice(at + 1)));
+    const test = terms[key];
+    if (!test) {
+      throw new UnknownFactTerm(
+        `unknown term "${key}" — known: ${Object.keys(terms).join(", ")}`,
+      );
+    }
+    return (row) => test(row, value);
   });
-  return (h) => tests.every((t) => t(h));
+  return (row) => tests.every((t) => t(row));
 }
 
 const SORTS = {
@@ -108,8 +151,9 @@ const SORTS = {
  * audit-listings.mjs already gates against lib/atlas-config.ts, so a token and
  * the home-page headline cannot drift apart either.
  */
-export function makeFacts(hotels, collections = {}) {
+export function makeFacts(hotels, collections = {}, journeys = []) {
   const rows = Array.isArray(hotels) ? hotels : [];
+  const journeyRows = Array.isArray(journeys) ? journeys : [];
 
   function select(spec, { limit = 0, sort = "name" } = {}) {
     const match = parseSpec(spec);
@@ -121,6 +165,28 @@ export function makeFacts(hotels, collections = {}) {
   }
 
   const count = (spec) => rows.filter(parseSpec(spec)).length;
+
+  const JOURNEY_SORTS = {
+    departures: (a, b) => b.n - a.n,
+    days: (a, b) => (b.d || 0) - (a.d || 0),
+    shortest: (a, b) => (a.d || Number.MAX_SAFE_INTEGER) - (b.d || Number.MAX_SAFE_INTEGER),
+    title: (a, b) => String(a.t).localeCompare(String(b.t)),
+  };
+
+  function selectJourneys(spec, { limit = 0, sort = "departures" } = {}) {
+    const match = parseSpec(spec, JOURNEY_TERMS);
+    const out = journeyRows.filter(match);
+    const cmp = JOURNEY_SORTS[sort];
+    if (!cmp) throw new UnknownFactTerm(`unknown journey sort "${sort}"`);
+    out.sort(cmp);
+    return limit > 0 ? out.slice(0, limit) : out;
+  }
+
+  const countJourneys = (spec) => journeyRows.filter(parseSpec(spec, JOURNEY_TERMS)).length;
+
+  /** Departures behind the matching itineraries, which is the other honest count. */
+  const countDepartures = (spec) =>
+    journeyRows.filter(parseSpec(spec, JOURNEY_TERMS)).reduce((n, j) => n + j.n, 0);
 
   /**
    * Replace every `{{…}}` token in a string.
@@ -139,6 +205,13 @@ export function makeFacts(hotels, collections = {}) {
       const kind = at < 0 ? String(body).trim() : body.slice(0, at).trim();
       const arg = at < 0 ? "" : body.slice(at + 1).trim();
       if (kind === "hotels") return nf.format(count(arg));
+      // Two journey tokens, because both numbers are true and they differ by a
+      // factor of two and a half. `journeys:` counts ITINERARIES — pages, the
+      // thing a reader browses. `departures:` counts sailing dates behind them.
+      // Writing "3,662 expedition sailings" and linking to 902 pages is the
+      // kind of near-miss that makes a page look wrong to someone checking.
+      if (kind === "journeys") return nf.format(countJourneys(arg));
+      if (kind === "departures") return nf.format(countDepartures(arg));
       if (kind === "collection") {
         const n = collections[arg];
         if (!Number.isFinite(n)) {
@@ -162,5 +235,10 @@ export function makeFacts(hotels, collections = {}) {
     return node;
   }
 
-  return { count, select, resolve, resolveDeep, total: rows.length };
+  return {
+    count, select, resolve, resolveDeep,
+    countJourneys, countDepartures, selectJourneys,
+    total: rows.length,
+    totalJourneys: journeyRows.length,
+  };
 }
