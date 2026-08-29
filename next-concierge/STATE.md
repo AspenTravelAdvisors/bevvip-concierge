@@ -2550,10 +2550,22 @@ the operator's short name, logo domain, colour and blurb in both copies of
 `atlas-meta.json`, the ship in both copies of `ships.json`, and `gauguin` in
 `normalizedCruiseOperator` so the guide resolves "the Gauguin" to the line. The
 sailings themselves arrive with the next `virtuoso-sync` run (09:00 UTC), which
-commits them like any other refresh; nothing here fabricates inventory. The one
-thing to confirm after that first sync is the hull's spelling in the feed's
-`ship` column — `ships.json` joins on the exact string `Paul Gauguin`, and an
-`m/s` prefix would silently cost the enrichment (not the sailings).
+commits them like any other refresh; nothing here fabricates inventory.
+
+**The first sync landed 2026-08-29 (`1025f40`): 84 sailings, 2026-09-05 through
+2028-12-27, all 84 carrying a day-by-day route.** 79 file under Hawaii & Tahiti,
+which was the thinnest real region on the map at 38; the other five are the 2027
+repositioning season — Fiji/Tonga/Cook Islands, the Fiji–Bali and Australia–Fiji
+crossings, and one Singapore–Darwin run that the overlay correctly files under
+Asia & Mekong. The operator string is `Paul Gauguin Cruises`, matching the
+atlas-meta key exactly, so the rail renders it.
+
+The hull's spelling was the open question, and the feed answered it: **`m/s Paul
+Gauguin`, not `Paul Gauguin`.** `ships.json` joins on the exact string, so the
+entry was corrected in both copies — with the plain name it parsed as one
+unmatched catalog ship and the enrichment (guests, ice class) silently never
+reached the ship rail. `expandedCatalogShipNames` splits on ` / ` with spaces,
+so the `m/s` prefix does not accidentally split into two ships.
 
 **The operator rail now counts what loaded.** It had been reading
 `OPERATORS[].count` from `atlas-meta`, which is a snapshot of whichever import
