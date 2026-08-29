@@ -1006,10 +1006,19 @@ function boot(a){
 
   /* ── operator filter rail ────────────────────────────────────────────── */
   const opList=document.getElementById('opList');
-  Object.keys(OPERATORS).sort((x,y)=>OPERATORS[y].count-OPERATORS[x].count).forEach(name=>{
-    const m=OPERATORS[name];const row=document.createElement('div');row.className='op';
+  /* The rail counts the sailings that actually loaded, not OPERATORS[].count.
+     That field is a snapshot of whichever import last wrote atlas-meta and
+     drifts every time the feed moves — it totals 3,542 against 3,662 rows
+     today — and it is the only number a traveller sees beside the line's name.
+     Operators the feed carries nothing for are left out rather than rendered as
+     a "0 sailings" row that filters to nothing: a line is added to
+     scripts/sync-virtuoso-cruises.mjs and given its short name, logo and colour
+     in atlas-meta before its first sync brings any sailings in. */
+  const opCount=name=>((a.byOperator.get(name)||[]).length);
+  Object.keys(OPERATORS).filter(name=>opCount(name)>0).sort((x,y)=>opCount(y)-opCount(x)).forEach(name=>{
+    const m=OPERATORS[name],n=opCount(name);const row=document.createElement('div');row.className='op';
     const txt=document.createElement('div');
-    txt.innerHTML='<div class="nm">'+esc(m.short)+'</div><div class="ct">'+m.count+' sailing'+(m.count!==1?'s':'')+'</div>';
+    txt.innerHTML='<div class="nm">'+esc(m.short)+'</div><div class="ct">'+n+' sailing'+(n!==1?'s':'')+'</div>';
     const dot=document.createElement('div');dot.className='dot';dot.style.background=m.color;
     row.appendChild(logoEl(name));row.appendChild(txt);row.appendChild(dot);
     row.dataset.operator=name;

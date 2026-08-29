@@ -408,6 +408,9 @@ function normalizedCruiseOperator(raw) {
   if (/^swan( hellenic)?$/.test(v)) return "Swan Hellenic";
   if (/^silver ?seas?$/.test(v)) return "Silversea";
   if (/^seabourn/.test(v)) return "Seabourn";
+  // The line is "Paul Gauguin Cruises" and the ship is the "Paul Gauguin";
+  // travelers name either, and a good many just say "the Gauguin".
+  if (/\bgauguin\b/.test(v)) return "Paul Gauguin Cruises";
   return "";
 }
 

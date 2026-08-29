@@ -2524,3 +2524,42 @@ the sea routes on every marketing lander, silently.
 The note has been corrected in place. This is the second time in this file a
 "still open" item has been stale in a direction that would cause a regression if
 acted on, which is an argument for reading the code before the note.
+
+## Paul Gauguin joins the Expedition Atlas (2026-08-29)
+
+Paul Gauguin Cruises is now an eleventh line in the expedition selection. It was
+already an approved partner everywhere except the map — `paul-gauguin` sits in
+`brand-profiles.json` and `advisor-overlay.json` with `appliesTo: ['cruise',
+'yacht']` — while the atlas it applies to had never carried a sailing of it.
+
+**Selected on the line alone, not crossed with a cruise type.** Every other
+expedition line is `cruiselines × cruisetypes: Expedition`. Paul Gauguin is a
+330-guest luxury small ship with a watersports marina rather than an ice-class
+hull with a zodiac fleet, and the catalogue types it that way, so the same cross
+would have returned little or nothing. `SELECTIONS` in
+`scripts/sync-virtuoso-cruises.mjs` therefore holds a second `atlas:
+'expedition'` entry with no type filter — safe for this line in a way it would
+not be for Silversea or Seabourn, because one ship sailing nothing but French
+Polynesia and the South Pacific has no mass-market half to filter out. It lands
+in Hawaii & Tahiti (38 sailings today, the thinnest real region on the map) and
+in Australia, NZ & South Pacific on the Fiji and Tonga itineraries; both regions
+already exist and `port-region.mjs` already files French Polynesia correctly.
+
+**What is in this commit and what arrives on its own.** The curation ships here —
+the operator's short name, logo domain, colour and blurb in both copies of
+`atlas-meta.json`, the ship in both copies of `ships.json`, and `gauguin` in
+`normalizedCruiseOperator` so the guide resolves "the Gauguin" to the line. The
+sailings themselves arrive with the next `virtuoso-sync` run (09:00 UTC), which
+commits them like any other refresh; nothing here fabricates inventory. The one
+thing to confirm after that first sync is the hull's spelling in the feed's
+`ship` column — `ships.json` joins on the exact string `Paul Gauguin`, and an
+`m/s` prefix would silently cost the enrichment (not the sailings).
+
+**The operator rail now counts what loaded.** It had been reading
+`OPERATORS[].count` from `atlas-meta`, which is a snapshot of whichever import
+last wrote that file and had drifted badly — 3,542 against 3,662 rows in total,
+Quark 109 against 168, Aqua 516 against 377 — and that number is the only figure
+a traveller sees beside a line's name. `public/maps/cruise/index.html` now takes
+both the count and the sort order from `byOperator`, and skips operators the
+feed carries nothing for, which is what keeps Paul Gauguin out of the rail as a
+"0 sailings" row for the one night between this commit and its first sync.

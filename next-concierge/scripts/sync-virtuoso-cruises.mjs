@@ -7,7 +7,9 @@
 // selection happens SERVER-side: each atlas is a set of cruise lines crossed
 // with a cruise type or a length band, which the API filters natively
 // (`cruiselines`, `cruisetypes`, `lengths` — all AND together). That takes the
-// crawl from 59,000 to roughly 4,500.
+// crawl from 59,000 to roughly 4,500. An atlas may be built from more than one
+// selection, which is how a line the API types differently still reaches the
+// right map (see Paul Gauguin below).
 //
 // The brand sets are deliberate editorial choices, not an accident of what was
 // harvestable — the expedition atlas is expedition operators, the yacht atlas is
@@ -59,6 +61,30 @@ const SELECTIONS = [
       'HX Expeditions', 'Seabourn', 'Silversea', 'Atlas Ocean Voyages', 'Swan Hellenic',
       'Quark Expeditions', 'Aurora Expeditions'],
     params: { cruisetypes: 'Expedition' },
+  },
+  /*
+   * Paul Gauguin joins the expedition atlas WITHOUT the type filter.
+   *
+   * The line is an approved partner already (`paul-gauguin` in
+   * data/atlas/shared/brand-profiles.json and advisor-overlay.json, both
+   * `appliesTo: ['cruise', 'yacht']`), and its South Pacific programme is the
+   * hole in the expedition map: Hawaii & Tahiti carries 38 sailings today, one
+   * of the thinnest real regions on it, and French Polynesia is where this line
+   * lives. What it is not is an ice-class ship with an expedition team, and the
+   * catalogue types it accordingly — a luxury small ship, not `Expedition` — so
+   * crossing it with the filter above would return little or nothing, which is
+   * why it is selected on the line alone. (If a crawl ever shows the line typed
+   * `Expedition`, folding it into the list above is equivalent and tidier.)
+   *
+   * Taking the whole line is safe here in a way it would not be for Silversea
+   * or Seabourn, whose catalogues are mostly conventional ocean cruising: Paul
+   * Gauguin is one 330-guest ship that sails nothing but French Polynesia and
+   * the wider South Pacific, so there is no mass-market half to filter out.
+   */
+  {
+    atlas: 'expedition',
+    lines: ['Paul Gauguin Cruises'],
+    params: {},
   },
   {
     atlas: 'yacht',
