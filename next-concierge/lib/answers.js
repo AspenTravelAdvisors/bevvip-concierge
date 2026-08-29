@@ -16,27 +16,29 @@ import { safariAnswers } from "@/data/answers/safari";
  * pointed somewhere else entirely: three spellings of one address, none of
  * them checked against the others. layout.tsx now imports this.
  *
- * Naming note: this is the ADDRESS, not the brand. The wordmark above it still
- * reads "Expedition Bucket List" and still links to expeditionbucketlist.com —
- * a visitor who clicks a brand expects the brand. Only the line underneath,
- * which is this app's own front door, changed.
+ * The address is a subdomain of the brand, which is the point. The wordmark
+ * above the URL in the header reads "Expedition Bucket List" and links to
+ * expeditionbucketlist.com; this app is the Guide that lives under it. The two
+ * standalone domains it used to answer on — theaitravelguide.com and
+ * thetravelguideai.com — named nothing the visitor had already been told, so
+ * every arrival had to learn a second brand. They now 308 here; see the alias
+ * list in next.config.ts, which must stay in step with this constant.
  */
-export const SITE_URL = "https://theaitravelguide.com";
+export const SITE_URL = "https://guide.expeditionbucketlist.com";
 
 /**
- * The same address, cased for a human to read: "TheAiTravelGuide.com".
+ * The same address, cased for a human to read: "Guide.ExpeditionBucketList.com".
  *
- * Domains are case-insensitive and an all-lowercase run of nineteen letters is
- * not — "theaitravelguide.com" makes a reader parse "thea", "itravel". The
- * capitals are word boundaries, and they are the whole reason this is a
- * separate constant rather than `new URL(SITE_URL).host`.
+ * Domains are case-insensitive and a long lowercase run is not — the capitals
+ * are word boundaries, and they are the whole reason this is a separate
+ * constant rather than `new URL(SITE_URL).host`.
  *
  * The assertion below is what keeps it a display variant rather than a second
  * source of truth: change one and the build fails until you change the other.
  * That is not hypothetical here — the header used to read "TheTravelGuideAi",
  * the right words in the wrong order, and nothing anywhere noticed.
  */
-export const SITE_LABEL = "TheAiTravelGuide.com";
+export const SITE_LABEL = "Guide.ExpeditionBucketList.com";
 
 if (SITE_LABEL.toLowerCase() !== new URL(SITE_URL).host.toLowerCase()) {
   throw new Error(
