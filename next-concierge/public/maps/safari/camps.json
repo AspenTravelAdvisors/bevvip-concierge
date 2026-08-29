@@ -4,17 +4,34 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 72,
-  "lodgesInSafariCountries": 32,
-  "journeysWithCamps": 201,
-  "journeysTotal": 274,
-  "campsMatched": 24
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 226,
+  "journeysTotal": 448,
+  "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 72,
-  "inSafariCountries": 32
+  "inSafariCountries": 68
  },
  "CAMPS": {
+  "h_00327": {
+   "n": "Capella Ubud, Bali",
+   "house": "Capella Hotel Group",
+   "country": "Indonesia",
+   "ll": [
+    -8.44829,
+    115.268
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15769589_2_47_0814.webp",
+   "rooms": 23,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
   "h_02484": {
    "n": "Xigera Safari Lodge",
    "house": null,
@@ -116,23 +133,6 @@
    ],
    "promo": 1
   },
-  "h_00594": {
-   "n": "Fairmont Mara Safari Club",
-   "house": "Accor",
-   "country": "Kenya",
-   "ll": [
-    -1.23185,
-    35.0051
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11398249_2_0_0814.webp",
-   "rooms": 38,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Early check-in"
-   ],
-   "promo": 0
-  },
   "h_01409": {
    "n": "Ol Jogi Wildlife Conservancy",
    "house": null,
@@ -143,6 +143,23 @@
    ],
    "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16114504_2_0_0821.webp",
    "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_00594": {
+   "n": "Fairmont Mara Safari Club",
+   "house": "Accor",
+   "country": "Kenya",
+   "ll": [
+    -1.23185,
+    35.0051
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11398249_2_0_0814.webp",
+   "rooms": 38,
    "perks": [
     "Daily breakfast",
     "Room upgrade",
@@ -166,36 +183,6 @@
     "Spa treatment"
    ],
    "promo": 0
-  },
-  "h_00212": {
-   "n": "Belmond Safaris",
-   "house": null,
-   "country": "Botswana",
-   "ll": [
-    -19.979453,
-    23.426614
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [],
-   "promo": 0
-  },
-  "h_v6164459": {
-   "n": "Savute Elephant Lodge, A Belmond Safari",
-   "house": "Belmond ",
-   "country": "Botswana",
-   "ll": [
-    -18.5683,
-    24.067
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/2376776_2_30_0815.webp",
-   "rooms": 12,
-   "perks": [
-    "Daily breakfast",
-    "Property credit",
-    "Room upgrade"
-   ],
-   "promo": 1
   },
   "h_01417": {
    "n": "One&Only Gorilla's Nest",
@@ -229,6 +216,108 @@
     "Early check-in"
    ],
    "promo": 1
+  },
+  "h_00077": {
+   "n": "Amankora",
+   "house": "Aman",
+   "country": "Bhutan",
+   "ll": [
+    27.4716,
+    89.6386
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4115_2_0_0814.webp",
+   "rooms": 76,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_01788": {
+   "n": "Six Senses Bhutan",
+   "house": "IHG Hotels & Resorts",
+   "country": "Bhutan",
+   "ll": [
+    27.4191,
+    89.6623
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15456706_2_0_0809.webp",
+   "rooms": 82,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00971": {
+   "n": "Inkaterra Machu Picchu Pueblo Hotel",
+   "house": null,
+   "country": "Peru",
+   "ll": [
+    -13.157,
+    -72.5233
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3773_2_0_0817.webp",
+   "rooms": 80,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 1
+  },
+  "h_01673": {
+   "n": "Royal Malewane",
+   "house": "The Royal Portfolio",
+   "country": "South Africa",
+   "ll": [
+    -24.541,
+    31.1574
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4401_2_0_0818.webp",
+   "rooms": 22,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_02345": {
+   "n": "Ulusaba Private Game Reserve",
+   "house": "Virgin Hotels Collection",
+   "country": "South Africa",
+   "ll": [
+    -24.4167,
+    31.4175
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4629_2_0_0819.webp",
+   "rooms": 20,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01020": {
+   "n": "Jabulani Safari Relais & Châteaux",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.3183,
+    30.9697
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4423_2_45_0825.webp",
+   "rooms": 11,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
   },
   "h_01781": {
    "n": "Singita - Singita Sabi Sand",
@@ -288,7 +377,7 @@
     -24.6977,
     31.5201
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4575_2_34_0727.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4575_2_34_0828.webp",
    "rooms": 13,
    "perks": [
     "Daily breakfast",
@@ -297,15 +386,62 @@
    ],
    "promo": 0
   },
-  "h_00327": {
-   "n": "Capella Ubud, Bali",
-   "house": "Capella Hotel Group",
-   "country": "Indonesia",
+  "h_v6164459": {
+   "n": "Savute Elephant Lodge, A Belmond Safari",
+   "house": "Belmond ",
+   "country": "Botswana",
    "ll": [
-    -8.44829,
-    115.268
+    -18.5683,
+    24.067
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15769589_2_47_0814.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/2376776_2_30_0815.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00212": {
+   "n": "Belmond Safaris",
+   "house": null,
+   "country": "Botswana",
+   "ll": [
+    -19.979453,
+    23.426614
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_00532": {
+   "n": "El Silencio Lodge & Spa -  Relais & Chateaux",
+   "house": null,
+   "country": "Costa Rica",
+   "ll": [
+    9.99827,
+    -84.2041
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6160093_2_0_0829.webp",
+   "rooms": 24,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01643": {
+   "n": "Rosewood Cape Kidnappers",
+   "house": "Rosewood Hotels & Resorts",
+   "country": "New Zealand",
+   "ll": [
+    -39.6675,
+    177.032
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3879_2_0_0820.webp",
    "rooms": 23,
    "perks": [
     "Daily breakfast",
@@ -313,6 +449,74 @@
     "Room upgrade"
    ],
    "promo": 0
+  },
+  "h_00226": {
+   "n": "Blanket Bay",
+   "house": null,
+   "country": "New Zealand",
+   "ll": [
+    -44.8629,
+    168.389
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4018_2_0_0810.webp",
+   "rooms": 17,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_01654": {
+   "n": "Rosewood Matakauri",
+   "house": "Rosewood Hotels & Resorts",
+   "country": "New Zealand",
+   "ll": [
+    -44.9448,
+    168.441
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6655737_2_0_0821.webp",
+   "rooms": 16,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00941": {
+   "n": "Huka Lodge, Beckons",
+   "house": "Beckons",
+   "country": "New Zealand",
+   "ll": [
+    -38.6541,
+    176.086
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4548_2_47_0805.webp",
+   "rooms": 22,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_02020": {
+   "n": "The Kinloch Manor & Villas",
+   "house": null,
+   "country": "New Zealand",
+   "ll": [
+    -38.6497,
+    175.932
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15783239_2_26_0824.webp",
+   "rooms": 14,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   },
   "h_01021": {
    "n": "Jack's Camp",
@@ -331,56 +535,90 @@
    ],
    "promo": 0
   },
-  "h_01673": {
-   "n": "Royal Malewane",
-   "house": "The Royal Portfolio",
-   "country": "South Africa",
+  "h_01437": {
+   "n": "Otahuna Lodge",
+   "house": null,
+   "country": "New Zealand",
    "ll": [
-    -24.541,
-    31.1574
+    -43.6579,
+    172.584
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4401_2_0_0818.webp",
-   "rooms": 22,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4020_2_0_0813.webp",
+   "rooms": 7,
    "perks": [
     "Daily breakfast",
     "$100 credit",
-    "Early check-in"
+    "Room upgrade"
    ],
    "promo": 1
   },
-  "h_02345": {
-   "n": "Ulusaba Private Game Reserve",
-   "house": "Virgin Hotels Collection",
-   "country": "South Africa",
+  "h_01374": {
+   "n": "Nayara Tented Camp",
+   "house": "Nayara Resorts",
+   "country": "Costa Rica",
    "ll": [
-    -24.4167,
-    31.4175
+    10.505,
+    -84.689
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4629_2_0_0819.webp",
-   "rooms": 20,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0_0820.webp",
+   "rooms": 30,
    "perks": [
     "Daily breakfast",
-    "Property credit",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01858": {
+   "n": "Stillpoint Lodge",
+   "house": null,
+   "country": "United States",
+   "ll": [
+    59.5925,
+    -151.232
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15974094_2_53_0817.webp",
+   "rooms": 14,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
     "Room upgrade"
    ],
    "promo": 0
   },
-  "h_01020": {
-   "n": "Jabulani Safari Relais & Châteaux",
+  "h_02341": {
+   "n": "Tutka Bay Lodge - Within the Wild",
    "house": null,
-   "country": "South Africa",
+   "country": "United States",
    "ll": [
-    -24.3183,
-    30.9697
+    59.473764,
+    -151.48401
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4423_2_45_0825.webp",
-   "rooms": 11,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15407936_2_26_0809.webp",
+   "rooms": 5,
    "perks": [
     "Daily breakfast",
-    "Room upgrade",
-    "Spa treatment"
+    "$100 credit",
+    "Room upgrade"
    ],
    "promo": 0
+  },
+  "h_02334": {
+   "n": "Treetops Lodge & Estate",
+   "house": null,
+   "country": "New Zealand",
+   "ll": [
+    -38.216765,
+    176.159132
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4322_2_0_0824.webp",
+   "rooms": 13,
+   "perks": [
+    "Daily breakfast",
+    "$300 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   },
   "h_01729": {
    "n": "Shamwari Private Game Reserve",
@@ -399,49 +637,48 @@
    ],
    "promo": 0
   },
-  "h_01374": {
-   "n": "Nayara Tented Camp",
-   "house": "Nayara Resorts",
-   "country": "Costa Rica",
+  "h_00563": {
+   "n": "Explora Atacama",
+   "house": "Explora",
+   "country": "Chile",
    "ll": [
-    10.505,
-    -84.689
+    -22.9181,
+    -68.2046
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0_0820.webp",
-   "rooms": 30,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/2198675_2_0_0829.webp",
+   "rooms": 50,
    "perks": [
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
    ],
+   "promo": 0
+  },
+  "h_00166": {
+   "n": "Awasi Atacama - Relais & Chateaux",
+   "house": "Awasi Lodges",
+   "country": "Chile",
+   "ll": [
+    -22.9179,
+    -68.291
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/1690769_2_23_0809.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
    "promo": 1
   }
  },
  "BYTRIP": {
-  "11918145": [
+  "11866871": [
    {
-    "id": "h_01781",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 16,
-    "km": 1.9
-   },
-   {
-    "id": "h_01181",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 16,
-    "km": 6.2
-   },
-   {
-    "id": "h_01212",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 16,
-    "km": 22.7
-   },
-   {
-    "id": "h_02327",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 16,
-    "km": 24.8
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 4,
+    "km": 16.2
    }
   ],
   "11922921": [
@@ -470,36 +707,6 @@
     "km": 24.8
    }
   ],
-  "11973120": [
-   {
-    "id": "h_00594",
-    "stop": "Maasai Mara National Reserve",
-    "day": 3,
-    "km": 23.2
-   },
-   {
-    "id": "h_01207",
-    "stop": "Maasai Mara",
-    "day": 7,
-    "km": 17.4
-   }
-  ],
-  "11978310": [
-   {
-    "id": "h_01207",
-    "stop": "Maasai Mara",
-    "day": 6,
-    "km": 17.4
-   }
-  ],
-  "11995951": [
-   {
-    "id": "h_01207",
-    "stop": "Maasai Mara",
-    "day": 8,
-    "km": 17.4
-   }
-  ],
   "12647663": [
    {
     "id": "h_01781",
@@ -526,56 +733,6 @@
     "km": 24.8
    }
   ],
-  "12648102": [
-   {
-    "id": "h_01781",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 4,
-    "km": 1.9
-   },
-   {
-    "id": "h_01181",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 4,
-    "km": 6.2
-   },
-   {
-    "id": "h_01212",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 4,
-    "km": 22.7
-   },
-   {
-    "id": "h_02327",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 4,
-    "km": 24.8
-   },
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 7,
-    "km": 0.8
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 7,
-    "km": 21.1
-   },
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 10,
-    "km": 19.9
-   },
-   {
-    "id": "h_00212",
-    "stop": "Maun",
-    "day": 13,
-    "km": 1.1
-   }
-  ],
   "12709528": [
    {
     "id": "h_00212",
@@ -590,28 +747,6 @@
     "km": 19.9
    }
   ],
-  "12709563": [
-   {
-    "id": "h_00212",
-    "stop": "Maun",
-    "day": 1,
-    "km": 1.1
-   },
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 1,
-    "km": 19.9
-   }
-  ],
-  "14405830": [
-   {
-    "id": "h_00594",
-    "stop": "Maasai Mara National Reserve",
-    "day": 3,
-    "km": 23.2
-   }
-  ],
   "14957132": [
    {
     "id": "h_01207",
@@ -624,6 +759,14 @@
     "stop": "Serengeti National Park",
     "day": 9,
     "km": 23.9
+   }
+  ],
+  "15135782": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 12,
+    "km": 16.2
    }
   ],
   "15172759": [
@@ -652,20 +795,6 @@
     "km": 24.8
    }
   ],
-  "15211658": [
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 9,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 9,
-    "km": 16.2
-   }
-  ],
   "15246170": [
    {
     "id": "h_00594",
@@ -686,14 +815,6 @@
     "stop": "Serengeti National Park",
     "day": 7,
     "km": 23.9
-   }
-  ],
-  "15272308": [
-   {
-    "id": "h_00594",
-    "stop": "Maasai Mara National Reserve",
-    "day": 4,
-    "km": 23.2
    }
   ],
   "15387348": [
@@ -902,20 +1023,6 @@
     "km": 23.9
    }
   ],
-  "15701153": [
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 2,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 2,
-    "km": 16.2
-   }
-  ],
   "15702363": [
    {
     "id": "h_00594",
@@ -998,58 +1105,6 @@
     "km": 24.8
    }
   ],
-  "15751890": [
-   {
-    "id": "h_01781",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 11,
-    "km": 1.9
-   },
-   {
-    "id": "h_01181",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 11,
-    "km": 6.2
-   },
-   {
-    "id": "h_01212",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 11,
-    "km": 22.7
-   },
-   {
-    "id": "h_02327",
-    "stop": "Sabi Sand Game Reserve",
-    "day": 11,
-    "km": 24.8
-   },
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 14,
-    "km": 0.8
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 14,
-    "km": 21.1
-   },
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 17,
-    "km": 19.9
-   }
-  ],
-  "15776971": [
-   {
-    "id": "h_01207",
-    "stop": "Maasai Mara",
-    "day": 6,
-    "km": 17.4
-   }
-  ],
   "15777015": [
    {
     "id": "h_00594",
@@ -1084,29 +1139,103 @@
     "km": 24.8
    }
   ],
-  "16114633": [
+  "15856770": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 21.1
+   },
+   {
+    "id": "h_00212",
+    "stop": "Maun",
+    "day": 10,
+    "km": 1.1
+   }
+  ],
+  "15875066": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 8,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 8,
+    "km": 16.2
+   }
+  ],
+  "15875892": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   }
+  ],
+  "16233336": [
+   {
+    "id": "h_00532",
+    "stop": "San Jose",
+    "day": 1,
+    "km": 16
+   },
+   {
+    "id": "h_01374",
+    "stop": "Arenal Volcano National Park",
+    "day": 4,
+    "km": 7.3
+   }
+  ],
+  "16278386": [
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 2,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 2,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 2,
+    "km": 23.9
+   },
    {
     "id": "h_01781",
     "stop": "Sabi Sand Game Reserve",
-    "day": 13,
+    "day": 4,
     "km": 1.9
    },
    {
     "id": "h_01181",
     "stop": "Sabi Sand Game Reserve",
-    "day": 13,
+    "day": 4,
     "km": 6.2
    },
    {
     "id": "h_01212",
     "stop": "Sabi Sand Game Reserve",
-    "day": 13,
+    "day": 4,
     "km": 22.7
    },
    {
     "id": "h_02327",
     "stop": "Sabi Sand Game Reserve",
-    "day": 13,
+    "day": 4,
     "km": 24.8
    }
   ],
@@ -1172,6 +1301,22 @@
     "km": 24.8
    }
   ],
+  "16393117": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 12,
+    "km": 16.2
+   }
+  ],
+  "16523580": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 5,
+    "km": 16.2
+   }
+  ],
   "16533558": [
    {
     "id": "h_01417",
@@ -1184,6 +1329,32 @@
     "stop": "Volcanoes National Park",
     "day": 5,
     "km": 16.2
+   }
+  ],
+  "16565158": [
+   {
+    "id": "h_00941",
+    "stop": "Taupo",
+    "day": 3,
+    "km": 3.3
+   },
+   {
+    "id": "h_02020",
+    "stop": "Taupo",
+    "day": 3,
+    "km": 13.6
+   },
+   {
+    "id": "h_01437",
+    "stop": "Christchurch",
+    "day": 7,
+    "km": 14.4
+   },
+   {
+    "id": "h_01654",
+    "stop": "Queenstown",
+    "day": 12,
+    "km": 24.9
    }
   ],
   "16626491": [
@@ -1292,32 +1463,134 @@
     "km": 19.9
    }
   ],
-  "16857151": [
+  "16662681": [
    {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 3,
-    "km": 19.9
+    "id": "h_02334",
+    "stop": "Rotorua",
+    "day": 5,
+    "km": 11.4
    },
    {
-    "id": "h_00212",
-    "stop": "Maun",
-    "day": 5,
-    "km": 1.1
+    "id": "h_01654",
+    "stop": "Queenstown",
+    "day": 9,
+    "km": 24.9
    }
   ],
-  "16857152": [
+  "16672912": [
    {
-    "id": "h_00212",
-    "stop": "Maun",
+    "id": "h_02339",
+    "stop": "Tswalu Game Reserve",
+    "day": 4,
+    "km": 12
+   }
+  ],
+  "16674831": [
+   {
+    "id": "h_00563",
+    "stop": "San Pedro de Atacama",
     "day": 1,
-    "km": 1.1
+    "km": 1.2
    },
    {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
+    "id": "h_00166",
+    "stop": "San Pedro de Atacama",
     "day": 1,
-    "km": 19.9
+    "km": 9.4
+   }
+  ],
+  "16903171": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "16903174": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   }
+  ],
+  "16903175": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   }
+  ],
+  "16919369": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "16919378": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 22.4
    }
   ],
   "18061582": [
@@ -1346,6 +1619,28 @@
     "stop": "Ngorongoro",
     "day": 10,
     "km": 19.6
+   }
+  ],
+  "18100045": [
+   {
+    "id": "h_00327",
+    "stop": "Ubud",
+    "day": 8,
+    "km": 5.8
+   }
+  ],
+  "18103430": [
+   {
+    "id": "h_00077",
+    "stop": "Thimphu",
+    "day": 8,
+    "km": 4
+   },
+   {
+    "id": "h_01788",
+    "stop": "Thimphu",
+    "day": 8,
+    "km": 9.4
    }
   ],
   "18104198": [
@@ -1596,6 +1891,128 @@
     "km": 16.2
    }
   ],
+  "18295007": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 3,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "18295011": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 3,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "18295014": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   }
+  ],
+  "18295015": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   }
+  ],
+  "18295028": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 22.4
+   }
+  ],
+  "18301934": [
+   {
+    "id": "h_00077",
+    "stop": "Paro",
+    "day": 10,
+    "km": 22.3
+   },
+   {
+    "id": "h_01788",
+    "stop": "Paro",
+    "day": 10,
+    "km": 24.3
+   }
+  ],
+  "18325781": [
+   {
+    "id": "h_00532",
+    "stop": "San Jose",
+    "day": 1,
+    "km": 16
+   }
+  ],
   "18338097": [
    {
     "id": "h_01409",
@@ -1666,6 +2083,14 @@
     "km": 18.1
    }
   ],
+  "18341861": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 11,
+    "km": 23.9
+   }
+  ],
   "18344817": [
    {
     "id": "h_02484",
@@ -1726,14 +2151,6 @@
     "km": 19.6
    }
   ],
-  "18358548": [
-   {
-    "id": "h_00594",
-    "stop": "Maasai Mara National Reserve",
-    "day": 6,
-    "km": 23.2
-   }
-  ],
   "18360200": [
    {
     "id": "h_01207",
@@ -1748,14 +2165,6 @@
     "stop": "Ngorongoro",
     "day": 4,
     "km": 19.6
-   }
-  ],
-  "18360214": [
-   {
-    "id": "h_00594",
-    "stop": "Maasai Mara National Reserve",
-    "day": 3,
-    "km": 23.2
    }
   ],
   "18360283": [
@@ -1848,6 +2257,14 @@
     "km": 19.9
    }
   ],
+  "18363151": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 9,
+    "km": 16.2
+   }
+  ],
   "18363205": [
    {
     "id": "h_01207",
@@ -1938,6 +2355,14 @@
     "stop": "Maun",
     "day": 12,
     "km": 1.1
+   }
+  ],
+  "18375302": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 6,
+    "km": 16.2
    }
   ],
   "18379282": [
@@ -2072,6 +2497,20 @@
     "km": 23.9
    }
   ],
+  "18385770": [
+   {
+    "id": "h_01858",
+    "stop": "Homer",
+    "day": 1,
+    "km": 15.7
+   },
+   {
+    "id": "h_02341",
+    "stop": "Homer",
+    "day": 1,
+    "km": 17.8
+   }
+  ],
   "18386586": [
    {
     "id": "h_00537",
@@ -2084,6 +2523,22 @@
     "stop": "Masai Mara National Reserve",
     "day": 11,
     "km": 18.1
+   }
+  ],
+  "18386593": [
+   {
+    "id": "h_00327",
+    "stop": "Ubud",
+    "day": 1,
+    "km": 5.8
+   }
+  ],
+  "18386596": [
+   {
+    "id": "h_00327",
+    "stop": "Denpasar",
+    "day": 1,
+    "km": 23.1
    }
   ],
   "18391235": [
@@ -2104,6 +2559,20 @@
     "stop": "Victoria Falls",
     "day": 10,
     "km": 21.1
+   }
+  ],
+  "18403529": [
+   {
+    "id": "h_01858",
+    "stop": "Homer",
+    "day": 7,
+    "km": 15.7
+   },
+   {
+    "id": "h_02341",
+    "stop": "Homer",
+    "day": 7,
+    "km": 17.8
    }
   ],
   "18407050": [
@@ -2252,6 +2721,38 @@
     "stop": "Ngorongoro",
     "day": 12,
     "km": 19.6
+   }
+  ],
+  "18515626": [
+   {
+    "id": "h_01643",
+    "stop": "Te Awanga",
+    "day": 2,
+    "km": 5.7
+   },
+   {
+    "id": "h_00226",
+    "stop": "Glenorchy",
+    "day": 11,
+    "km": 1.5
+   },
+   {
+    "id": "h_01654",
+    "stop": "Glenorchy",
+    "day": 11,
+    "km": 11.5
+   },
+   {
+    "id": "h_00941",
+    "stop": "Taupo",
+    "day": 15,
+    "km": 3.3
+   },
+   {
+    "id": "h_02020",
+    "stop": "Taupo",
+    "day": 15,
+    "km": 13.6
    }
   ],
   "18521705": [
@@ -2464,6 +2965,26 @@
     "km": 19.9
    }
   ],
+  "18545233": [
+   {
+    "id": "h_00327",
+    "stop": "Bali",
+    "day": 5,
+    "km": 13
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   }
+  ],
   "18562114": [
    {
     "id": "h_01207",
@@ -2558,26 +3079,6 @@
     "km": 19.6
    }
   ],
-  "18574257": [
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 6,
-    "km": 19.9
-   },
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 9,
-    "km": 3.4
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 9,
-    "km": 22.4
-   }
-  ],
   "18574380": [
    {
     "id": "h_01207",
@@ -2634,6 +3135,14 @@
     "stop": "Okavango Delta",
     "day": 3,
     "km": 19.9
+   }
+  ],
+  "18575517": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 3,
+    "km": 16.2
    }
   ],
   "18575629": [
@@ -2752,6 +3261,26 @@
     "km": 23.9
    }
   ],
+  "18580348": [
+   {
+    "id": "h_00327",
+    "stop": "Bali",
+    "day": 4,
+    "km": 13
+   },
+   {
+    "id": "h_00077",
+    "stop": "Paro",
+    "day": 10,
+    "km": 22.3
+   },
+   {
+    "id": "h_01788",
+    "stop": "Paro",
+    "day": 10,
+    "km": 24.3
+   }
+  ],
   "18586269": [
    {
     "id": "h_01778",
@@ -2838,6 +3367,34 @@
     "stop": "Okavango Delta",
     "day": 1,
     "km": 19.9
+   }
+  ],
+  "18589218": [
+   {
+    "id": "h_00077",
+    "stop": "Paro",
+    "day": 7,
+    "km": 22.3
+   },
+   {
+    "id": "h_01788",
+    "stop": "Paro",
+    "day": 7,
+    "km": 24.3
+   }
+  ],
+  "18589279": [
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
    }
   ],
   "18591514": [
@@ -3146,6 +3703,54 @@
     "stop": "Volcanoes National Park",
     "day": 19,
     "km": 16.2
+   }
+  ],
+  "18602050": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "18603828": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 22.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 11,
+    "km": 19.9
+   }
+  ],
+  "18603829": [
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 3.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
    }
   ]
  }

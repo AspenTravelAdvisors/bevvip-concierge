@@ -1,8 +1,8 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-08-27T19:43:53.981Z",
-  "feedSynced": "2026-08-25T22:45:32.488Z",
+  "generated": "2026-08-29T19:01:22.636Z",
+  "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2073,
   "matchedCount": 2306
@@ -936,6 +936,12 @@
    "how": "name+country",
    "localName": "Banyan Tree Phuket",
    "virtuosoName": "Banyan Tree Phuket"
+  },
+  "h_00192": {
+   "vid": "15577185",
+   "how": "name+country",
+   "localName": "Banyan Tree Puebla",
+   "virtuosoName": "Banyan Tree Puebla"
   },
   "h_00193": {
    "vid": "15492967",
@@ -9498,12 +9504,6 @@
    "how": "name+country",
    "localName": "The Madrid EDITION",
    "virtuosoName": "The Madrid EDITION"
-  },
-  "h_02058": {
-   "vid": "6163835",
-   "how": "name+country",
-   "localName": "The Manor On Van Horn Estate",
-   "virtuosoName": "The Manor On Van Horn Estate"
   },
   "h_02059": {
    "vid": "6164466",
@@ -23792,36 +23792,6 @@
    ]
   },
   {
-   "id": "h_00192",
-   "name": "Banyan Tree Puebla",
-   "city": "Puebla",
-   "country": "Mexico",
-   "reason": "name matches but the nearest is 305 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "6164536",
-     "name": "Banyan Tree Cabo Marques",
-     "city": "Acapulco",
-     "km": 305.2,
-     "how": "contained"
-    },
-    {
-     "vid": "13647228",
-     "name": "Banyan Tree Mayakoba",
-     "city": "Riviera Maya",
-     "km": 1181,
-     "how": "contained"
-    },
-    {
-     "vid": "18220209",
-     "name": "Banyan Tree Veya Valle de Guadalupe",
-     "city": "Baja California",
-     "km": 2396.1,
-     "how": "contained"
-    }
-   ]
-  },
-  {
    "id": "h_00488",
    "name": "Delamar West Hartford",
    "city": "West Hartford",
@@ -24668,13 +24638,6 @@
    "program": "Cadence Individual Partner"
   },
   {
-   "id": "h_00192",
-   "name": "Banyan Tree Puebla",
-   "city": "Puebla",
-   "country": "Mexico",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_00212",
    "name": "Belmond Safaris",
    "city": "Maun",
@@ -25517,6 +25480,13 @@
   {
    "id": "h_02057",
    "name": "The Manor On Golden Pond",
+   "city": "Holderness",
+   "country": "United States",
+   "program": "Virtuoso"
+  },
+  {
+   "id": "h_02058",
+   "name": "The Manor On Van Horn Estate",
    "city": "Holderness",
    "country": "United States",
    "program": "Virtuoso"
