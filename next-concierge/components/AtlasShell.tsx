@@ -3446,12 +3446,15 @@ export default function AtlasShell({
          * screen). Not clamped to minZoom — both callers care about the
          * unclamped answer.
          */
-        function zoomToFitBox(s: Span): number {
+        function zoomToFitBox(s: Span, opts?: { globeLng?: boolean }): number {
           const ins = fitInsets();
           const w = node.clientWidth - ins.left - ins.right;
           const h = node.clientHeight - ins.top - ins.bottom;
           if (!(w > 0) || !(h > 0)) return map.getMinZoom();
-          const spanLng = Math.max(s.hi - s.lo, 0.01);
+          const k = opts?.globeLng
+            ? Math.max(0.35, Math.abs(Math.cos((((s.latLo + s.latHi) / 2) * Math.PI) / 180)))
+            : 1;
+          const spanLng = Math.max((s.hi - s.lo) * k, 0.01);
           const zx = Math.log2((w * 360) / (spanLng * 512));
           const dy = Math.max(Math.abs(mercY(s.latHi) - mercY(s.latLo)), 1e-4);
           const zy = Math.log2(h / (dy * 512));
@@ -3891,6 +3894,8 @@ export default function AtlasShell({
         const GLOBE_VIEW_ZOOM = 2.0;
         const GLOBE_VIEW_LAT = 40;
         const POLE_GUARD = 6;
+        const POLAR_FRAME_LAT = 82;
+        const POLAR_FRAME_SPAN = 35;
         /**
          * Degrees of latitude between the centre of the frame and its top edge.
          *
@@ -3924,6 +3929,13 @@ export default function AtlasShell({
           return Math.max(-cap, Math.min(cap, lat));
         }
 
+        function needsPoleFrame(s: Span, zoom: number): boolean {
+          if (!projGlobe) return false;
+          if (zoom <= GLOBE_VIEW_ZOOM) return true;
+          return Math.max(Math.abs(s.latLo), Math.abs(s.latHi)) >= POLAR_FRAME_LAT ||
+            s.latHi - s.latLo >= POLAR_FRAME_SPAN;
+        }
+
         /**
          * Put a span on screen: fitBounds' framing, corrected away from a pole.
          *
@@ -3937,14 +3949,15 @@ export default function AtlasShell({
         function frameSpan(s: Span, opts: { duration: number; maxZoom?: number; pitch?: number }) {
           const maxZoom = opts.maxZoom ?? 9;
           const cLat = (s.latLo + s.latHi) / 2;
-          const z = Math.min(maxZoom, zoomToFitBox(s));
-          const framed = framingLat(cLat, z);
+          const globeLng = projGlobe;
+          const z = Math.min(maxZoom, zoomToFitBox(s, { globeLng }));
+          const framed = needsPoleFrame(s, z) ? framingLat(cLat, z) : cLat;
           const half = Math.max(s.latHi - framed, framed - s.latLo);
           const zoom = Math.max(
             map.getMinZoom(),
             Math.min(maxZoom, zoomToFitBox({
               lo: s.lo, hi: s.hi, latLo: framed - half, latHi: framed + half,
-            })),
+            }, { globeLng })),
           );
           /*
            * The keys are built conditionally, and that is not tidiness.

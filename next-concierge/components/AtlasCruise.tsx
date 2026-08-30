@@ -116,7 +116,7 @@ export default function AtlasCruise() {
         })),
         included: [],
         offers,
-        href: null,
+        href: cell(col.slug) && sailings.urlBase ? `${sailings.urlBase}${id}/${cell(col.slug)}` : null,
         stays: gatewaysRef.current.forTrip(id),
       } as JourneyRecord];
     }));
