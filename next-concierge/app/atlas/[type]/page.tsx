@@ -46,13 +46,33 @@ export function generateStaticParams() {
     .map((type) => ({ type }));
 }
 
+/*
+ * The atlas shells are noindex, follow.
+ *
+ * Every one of them is a full-bleed map: a client component or an iframe whose
+ * entire content arrives after JS runs. What a crawler is served is a title, a
+ * header and an empty stage — a thin page, eight times over, sitting on top of
+ * the hub tree at /hotels, /villas and /journeys that says the same things in
+ * text a crawler can read. Indexing them competes with those hubs using the
+ * weakest version of the same content.
+ *
+ * `follow` is the half that matters and is easy to get wrong: these pages are
+ * still crawled and their links still carry, so nothing below them is orphaned
+ * by this. And it is `robots` metadata rather than a robots.txt Disallow for
+ * the same reason — a URL blocked from crawling can still be indexed from
+ * inbound links, because the crawler never reads the noindex telling it not to.
+ */
+const ATLAS_ROBOTS = { index: false, follow: true } as const;
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ type: string }>;
 }): Promise<Metadata> {
   const { type } = await params;
-  return isOfferingType(type) ? { title: ATLASES[type].label } : {};
+  return isOfferingType(type)
+    ? { title: ATLASES[type].label, robots: ATLAS_ROBOTS }
+    : { robots: ATLAS_ROBOTS };
 }
 
 export default async function AtlasPage({

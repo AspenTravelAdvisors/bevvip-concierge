@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import Link from "next/link";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import AdvisorRequest from "@/components/AdvisorRequest";
 import IntroTour from "@/components/IntroTour";
 import SiteNav from "@/components/SiteNav";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
-import { SITE_URL, SITE_LABEL } from "@/lib/answers";
+import { SITE_URL } from "@/lib/answers";
 import { siteGraphJsonLd } from "@/lib/seo/site";
 import "./globals.css";
 
@@ -75,13 +74,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               decode step and returned nothing. The map is now "the atlas",
               lowercase, everywhere. */}
           <header className="site">
-            {/* Two destinations stacked, because they are two different places:
-                the mark and the wordmark are the BRAND and still go out to
-                expeditionbucketlist.com, while the line under them is the
-                address of this app and goes to its home. Keeping the wordmark's
-                external link is the point — the visitor who clicks a brand
-                expects the brand, and the app's own URL is the thing that
-                should bring them back here. */}
+            {/* One destination. The mark and the wordmark are the BRAND and go
+                out to expeditionbucketlist.com — the visitor who clicks a brand
+                expects the brand.
+
+                A second line used to sit under the wordmark carrying this app's
+                own address as a link home. It is gone: the app now lives at a
+                subdomain of the brand it was spelling out, so the line said the
+                brand's name twice, once in a serif wordmark and once in 9.5px
+                uppercase tracking. The wrapper below stays as the header's
+                layout hook. */}
             <div className="brand">
               <a
                 className="brand-face"
@@ -102,14 +104,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Expedition <b>Bucket List</b>
                 </span>
               </a>
-              {/* Rendered from SITE_LABEL rather than typed, because typing it
-                  is exactly how this line came to read "TheTravelGuideAi.com"
-                  — the right words in the wrong order, pointing at a domain
-                  nothing else in the app used. It can no longer disagree with
-                  the canonical origin. */}
-              <Link className="brand-url" href="/">
-                {SITE_LABEL}
-              </Link>
             </div>
             <span className="tag">
               Private travel [BETA], powered by{" "}

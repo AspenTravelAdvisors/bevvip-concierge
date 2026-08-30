@@ -1,7 +1,33 @@
+import type { Metadata } from "next";
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
 import { collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/lib/atlas-config";
+
+/**
+ * The home page's canonical, which did not exist.
+ *
+ * Every other indexable route sets `alternates.canonical` in its own metadata
+ * and the root layout sets none — so the one page with the most inbound links
+ * shipped no <link rel="canonical"> at all. That is not a cosmetic gap: the
+ * origin is reachable as `/`, with a trailing-slash variant, and with whatever
+ * query string the atlas's own Share button appends (?style, ?flat, ?@lat,lng),
+ * and each of those is a separate URL to a crawler with nothing telling it
+ * which one is the page.
+ *
+ * It is declared HERE rather than as a default in the root layout, and that is
+ * the whole design decision. A canonical on the layout is inherited by every
+ * descendant that does not override it, which would have pointed /atlas/hotel
+ * and /atlas/villa at the home page — telling a crawler the atlas shells are
+ * duplicates of `/` rather than pages of their own. Route-level is the only
+ * altitude at which "this page is the home page" is a true statement.
+ *
+ * The relative "/" resolves against `metadataBase` in app/layout.tsx, which is
+ * SITE_URL, which is NEXT_PUBLIC_SITE_URL. One origin, one place to change it.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // The landing page: The Guide docked over a populated globe.
 //

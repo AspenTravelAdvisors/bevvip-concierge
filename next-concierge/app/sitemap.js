@@ -5,13 +5,15 @@
 // property, every itinerary, every villa, and a hub above each. Answer pages
 // carry their content's last-verified date.
 //
-// The villa half is the correction worth noting: 3,902 villa detail pages have
-// existed since the villa atlas shipped and only the 114 featured ones were
-// ever listed here. The other 3,788 were rendered, reachable by URL, and
-// invisible.
+// Villas are the exception, and the reason is worth stating because this file
+// once went the other way. 3,902 villa detail pages existed with 114 of them
+// listed here and nothing linking to the rest; the fix was hubs at /villas and
+// /villas/<destination>, which is what a crawler is now pointed at. The detail
+// pages under /atlas/villa are noindex, follow and are NOT listed — they are
+// one template over one feed, 3,902 times, and the hubs above them say the same
+// thing in text. Reachable, crawled, followed, deliberately not submitted.
 
 import { ALL_ANSWERS, SITE_URL } from "@/lib/answers";
-import { COLLECTIONS } from "@/lib/atlas-config";
 import { hotelSitemapEntries } from "@/lib/seo/hotels";
 import { journeySitemapEntries } from "@/lib/seo/journeys";
 import { villaSitemapEntries } from "@/lib/seo/villas";
@@ -19,19 +21,17 @@ import { villaSitemapEntries } from "@/lib/seo/villas";
 export default function sitemap() {
   const now = new Date();
 
+  // The eight /atlas/<type> shells used to be listed here, derived from
+  // COLLECTIONS. They are gone, along with the 3,902 /atlas/villa/<destination>
+  // /<slug> detail pages that villaSitemapEntries() used to append — all of it
+  // now carries `robots: { index: false, follow: true }` at the page, and a
+  // sitemap entry for a noindexed URL is a request to index a page that answers
+  // "no". The pages are still crawled and still link onward; what a crawler is
+  // being pointed AT is the hub tree that says the same things in readable
+  // text. See the note in app/atlas/[type]/page.tsx.
   const core = [
     { url: `${SITE_URL}/`, lastModified: now, priority: 1 },
     { url: `${SITE_URL}/answers`, lastModified: now, priority: 0.9 },
-    // Derived from the registry, not typed. The hand-kept list this replaces
-    // named seven collections and the atlas ships eight — safari shipped after
-    // it was written and was never added, so the one atlas whose inventory was
-    // actively growing was the one not being listed. That is the same failure
-    // audit-listings.mjs documents in its own SHIPPED table.
-    ...COLLECTIONS.map((c) => ({
-      url: `${SITE_URL}/atlas/${c.type}`,
-      lastModified: now,
-      priority: 0.8,
-    })),
   ];
 
   const answers = ALL_ANSWERS.map((a) => ({

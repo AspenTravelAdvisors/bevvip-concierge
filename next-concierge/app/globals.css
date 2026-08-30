@@ -58,13 +58,16 @@ header.site {
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, #0c0c0e, #09090b);
 }
-/* Brand lockup: mark + wordmark on top (→ expeditionbucketlist.com), this
-   app's address beneath (→ /), indented to sit under the wordmark. */
+/* Brand lockup: mark + wordmark (→ expeditionbucketlist.com).
+   This was a two-row column — wordmark on top, the app's own address beneath
+   it — so it carried `flex-direction: column`, `align-items: flex-start` and a
+   3px row gap. The address line is gone and none of those three describe one
+   child: the gap has nothing to fall between and the column axis has nothing to
+   stack. `display: flex` is all that is left doing work, shrink-wrapping the
+   box to the wordmark so the header's own row gap sets the distance to the
+   tagline. */
 header.site .brand {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
 }
 header.site .brand-face {
   display: flex;
@@ -92,27 +95,11 @@ header.site .mark {
   color: var(--text);
   text-decoration: none;
 }
-header.site .brand-url {
-  /* Aligns under the wordmark: logo width (40) + the face's gap (11). */
-  margin-left: 51px;
-  font-size: 9.5px;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
 header.site .brand-face:hover {
   text-decoration: none;
 }
 header.site .brand-face:hover b {
   color: var(--gold-light);
-}
-header.site .brand-url:hover {
-  color: var(--gold-light);
-  text-decoration: none;
 }
 header.site .mark b {
   color: var(--gold);
@@ -1537,12 +1524,6 @@ main.page {
   header.site .brand-logo {
     width: 34px;
     height: 34px;
-  }
-
-  header.site .brand-url {
-    margin-left: 43px; /* 34 logo + 9 gap */
-    font-size: 9px;
-    letter-spacing: 1.2px;
   }
 
   header.site .tag {

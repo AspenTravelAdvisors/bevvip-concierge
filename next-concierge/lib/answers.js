@@ -16,33 +16,32 @@ import { safariAnswers } from "@/data/answers/safari";
  * pointed somewhere else entirely: three spellings of one address, none of
  * them checked against the others. layout.tsx now imports this.
  *
- * Naming note: this is the ADDRESS, not the brand. The wordmark above it still
- * reads "Expedition Bucket List" and still links to expeditionbucketlist.com —
- * a visitor who clicks a brand expects the brand. Only the line underneath,
- * which is this app's own front door, changed.
- */
-export const SITE_URL = "https://theaitravelguide.com";
-
-/**
- * The same address, cased for a human to read: "TheAiTravelGuide.com".
+ * It reads NEXT_PUBLIC_SITE_URL so the host is deployment configuration rather
+ * than source. The literal that used to sit here was theaitravelguide.com, and
+ * moving to guide.expeditionbucketlist.com meant editing a string that eleven
+ * modules import — the exact shape of change that gets done in nine of them.
+ * The fallback is the production host, so a build with no env set is correct
+ * rather than merely non-crashing; the env var is what lets a preview or a
+ * staging host emit its own absolute URLs instead of production's.
  *
- * Domains are case-insensitive and an all-lowercase run of nineteen letters is
- * not — "theaitravelguide.com" makes a reader parse "thea", "itravel". The
- * capitals are word boundaries, and they are the whole reason this is a
- * separate constant rather than `new URL(SITE_URL).host`.
- *
- * The assertion below is what keeps it a display variant rather than a second
- * source of truth: change one and the build fails until you change the other.
- * That is not hypothetical here — the header used to read "TheTravelGuideAi",
- * the right words in the wrong order, and nothing anywhere noticed.
+ * Naming note: this is the ADDRESS, not the brand. The wordmark in the header
+ * reads "Expedition Bucket List" and links to expeditionbucketlist.com — a
+ * visitor who clicks a brand expects the brand. The line that used to sit
+ * beneath it spelling out this app's own address is gone: the app is now a
+ * subdomain of that same brand, so the line said the same name twice.
  */
-export const SITE_LABEL = "TheAiTravelGuide.com";
+const RAW_SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://guide.expeditionbucketlist.com";
 
-if (SITE_LABEL.toLowerCase() !== new URL(SITE_URL).host.toLowerCase()) {
-  throw new Error(
-    `SITE_LABEL (${SITE_LABEL}) and SITE_URL (${SITE_URL}) name different addresses`,
-  );
-}
+/*
+ * Trailing slashes are stripped here rather than trusted to whoever typed the
+ * env var. Every consumer builds `${SITE_URL}/answers` — one trailing slash in
+ * a Vercel dashboard field and the whole sitemap ships doubled slashes, which
+ * is a different URL to a crawler and a self-inflicted duplicate of every page.
+ * `new URL` also fails the build here, at import, if the value is not an
+ * absolute origin — better than metadataBase throwing halfway through a render.
+ */
+export const SITE_URL = new URL(RAW_SITE_URL).origin;
 
 export const ALL_ANSWERS = [
   ...expeditionAnswers,

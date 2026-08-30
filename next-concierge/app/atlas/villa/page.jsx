@@ -25,6 +25,12 @@ export const metadata = {
   title: "Villa Atlas",
   description:
     "3,900+ private villas and vacation homes worldwide, arranged by your Aspen Travel Advisor. VIP travel benefits, zero membership fees.",
+  // Noindex, follow — the same call as the other seven atlas shells, for the
+  // same reason: this is a browse surface whose results are paginated client
+  // side, and /villas is the crawlable version of it. See the note in
+  // app/atlas/[type]/page.tsx. Following still matters here: the links out of
+  // this page are how the detail pages are reached.
+  robots: { index: false, follow: true },
 };
 
 // Read only the params the villa search understands; everything else is noise.

@@ -57,6 +57,22 @@ export function villaDestinations() {
 export const getVillaDestination = (slug) =>
   villaDestinations().find((d) => d.destinationSlug === slug) || null;
 
+/**
+ * The villa hubs — and only the hubs.
+ *
+ * The 3,902 detail entries that used to be the third line of this array are
+ * gone. They are noindex, follow at the page (see the note in
+ * app/atlas/villa/[destination]/[slug]/page.jsx), and submitting a URL that
+ * answers noindex is a contradiction a crawler resolves by spending budget to
+ * be told no — 3,902 times, in a file whose other 716 entries are pages we do
+ * want read.
+ *
+ * This is NOT a return to the state described at the top of this file. Back
+ * then 114 villas were listed and the other 3,788 were unreachable: nothing
+ * linked to them at all. The hubs below link to every one of them, and `follow`
+ * keeps those links carrying. What changed is what gets submitted for indexing,
+ * not what can be reached.
+ */
 export function villaSitemapEntries() {
   return [
     { url: `${SITE_URL}/villas`, priority: 0.9 },
@@ -64,7 +80,6 @@ export function villaSitemapEntries() {
       url: `${SITE_URL}/villas/${d.destinationSlug}`,
       priority: 0.6,
     })),
-    ...all().map((v) => ({ url: `${SITE_URL}${villaPath(v)}`, priority: 0.4 })),
   ];
 }
 

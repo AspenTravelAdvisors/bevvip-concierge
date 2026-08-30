@@ -36,6 +36,29 @@ export async function generateMetadata({ params }) {
     alternates: {
       canonical: `${SITE_URL}/atlas/villa/${v.destinationSlug}/${v.slug}`,
     },
+    /*
+     * Noindex, follow — 3,902 pages taken out of the index deliberately.
+     *
+     * These are generated from one feed through one template: the same stat
+     * row, the same two ask-The-Guide links, the same footer, and a summary
+     * that is the supplier's own copy where there is one at all. At this volume
+     * that is a thin-content pattern, and a crawler that meets 3,902 of them
+     * spends its budget there rather than on the pages worth ranking. The
+     * destination hubs at /villas/<destination> are those pages: they carry the
+     * same inventory as text, grouped, in numbers a crawler can read.
+     *
+     * `follow` keeps every outbound link live, so nothing this page points at
+     * is orphaned by the directive. The self-canonical above is left in place
+     * on purpose — noindex takes precedence over it, and if these pages are
+     * ever admitted back to the index the correct canonical is already there
+     * rather than something to remember to re-add.
+     *
+     * The pages themselves stay: they are live URLs, linked from the hubs and
+     * from The Guide's answers, and a traveller following one still lands on a
+     * real page. This changes what search does with them, not whether they
+     * exist. The sitemap drops them for the same reason — see app/sitemap.js.
+     */
+    robots: { index: false, follow: true },
     openGraph: {
       title: v.name,
       description: v.summary || `${v.name}, a private villa in ${where}.`,
