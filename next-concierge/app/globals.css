@@ -5211,18 +5211,6 @@ button.card-book {
   line-height: 1.55;
   color: var(--ink-dim, #b9b6ad);
 }
-.jd-details {
-  display: inline-block;
-  margin: -2px 0 2px;
-  padding: 6px 11px;
-  border: 1px solid #7a6228;
-  border-radius: 6px;
-  background: rgba(122, 98, 40, 0.16);
-  color: #f0dca6;
-  font-size: 12px;
-  text-decoration: none;
-}
-.jd-details:hover { border-color: #a98a3e; }
 .jd-label {
   margin: 14px 0 4px;
   font-size: 10px;

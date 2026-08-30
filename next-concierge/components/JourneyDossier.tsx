@@ -134,12 +134,6 @@ export default function JourneyDossier({
       <div className="jd-body">
         {record.description && <p className="jd-desc">{record.description}</p>}
 
-        {record.href && (
-          <a className="jd-details" href={record.href} target="_blank" rel="noopener noreferrer">
-            View details ↗
-          </a>
-        )}
-
         {/* Offers before the itinerary: a limited-time offer is the only part
             of this file with a deadline attached to it. */}
         {offers.length > 0 && (
