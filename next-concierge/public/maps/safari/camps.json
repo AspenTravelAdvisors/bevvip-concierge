@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 72,
   "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 226,
-  "journeysTotal": 448,
+  "journeysWithCamps": 227,
+  "journeysTotal": 447,
   "campsMatched": 39
  },
  "radiusKm": 25,
@@ -815,6 +815,14 @@
     "stop": "Serengeti National Park",
     "day": 7,
     "km": 23.9
+   }
+  ],
+  "15272308": [
+   {
+    "id": "h_00594",
+    "stop": "Maasai Mara National Reserve",
+    "day": 4,
+    "km": 23.2
    }
   ],
   "15387348": [
@@ -2273,14 +2281,6 @@
     "km": 17.4
    }
   ],
-  "18363882": [
-   {
-    "id": "h_01778",
-    "stop": "Serengeti National Park",
-    "day": 6,
-    "km": 23.9
-   }
-  ],
   "18363897": [
    {
     "id": "h_01778",
@@ -3077,6 +3077,26 @@
     "stop": "Ngorongoro",
     "day": 9,
     "km": 19.6
+   }
+  ],
+  "18574257": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 22.4
    }
   ],
   "18574380": [

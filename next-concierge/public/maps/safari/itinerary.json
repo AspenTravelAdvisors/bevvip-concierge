@@ -1527,6 +1527,64 @@
     ]
    }
   ],
+  "15265067": [
+   {
+    "n": "Buenos Aires",
+    "r": null,
+    "ll": [
+     -34.5875,
+     -58.6725
+    ]
+   },
+   {
+    "n": "Iguazu Falls",
+    "r": "AMAZONIA",
+    "ll": [
+     -25.675,
+     -54.425
+    ]
+   },
+   {
+    "n": "Salta",
+    "r": null,
+    "ll": [
+     -24.7833,
+     -65.4167
+    ]
+   },
+   {
+    "n": "Cafayate",
+    "r": null,
+    "ll": [
+     -26.0766,
+     -65.9764
+    ]
+   },
+   {
+    "n": "Salta",
+    "r": null,
+    "ll": [
+     -24.7833,
+     -65.4167
+    ]
+   },
+   {
+    "n": "Cafayate",
+    "r": null,
+    "ll": [
+     -26.0766,
+     -65.9764
+    ]
+   },
+   {
+    "n": "Buenos Aires",
+    "r": null,
+    "ll": [
+     -34.5875,
+     -58.6725
+    ]
+   }
+  ],
   "15269038": [
    {
     "n": "Quito",
@@ -1626,6 +1684,24 @@
     "ll": [
      -3.425,
      37.075
+    ]
+   }
+  ],
+  "15272308": [
+   {
+    "n": "Masai Mara",
+    "r": "EASTAFRICA",
+    "ll": [
+     -1.9759,
+     36.3686
+    ]
+   },
+   {
+    "n": "Maasai Mara National Reserve",
+    "r": "EASTAFRICA",
+    "ll": [
+     -1.425,
+     34.925
     ]
    }
   ],
@@ -4106,40 +4182,6 @@
     "ll": [
      -1.9536,
      30.0606
-    ]
-   }
-  ],
-  "16535324": [
-   {
-    "n": "Buenos Aires",
-    "r": null,
-    "ll": [
-     -34.5875,
-     -58.6725
-    ]
-   },
-   {
-    "n": "Iguassu Falls",
-    "r": "AMAZONIA",
-    "ll": [
-     -25.5177,
-     -54.57
-    ]
-   },
-   {
-    "n": "Buenos Aires",
-    "r": null,
-    "ll": [
-     -34.5875,
-     -58.6725
-    ]
-   },
-   {
-    "n": "Rio De Janeiro",
-    "r": null,
-    "ll": [
-     -22.8833,
-     -43.2
     ]
    }
   ],
@@ -6985,32 +7027,6 @@
     ]
    }
   ],
-  "18230954": [
-   {
-    "n": "Antananarivo",
-    "r": "INDIANOCEAN",
-    "ll": [
-     -18.9167,
-     47.5167
-    ]
-   },
-   {
-    "n": "Morondava",
-    "r": "INDIANOCEAN",
-    "ll": [
-     -20.2847,
-     44.3176
-    ]
-   },
-   {
-    "n": "Isalo National Park",
-    "r": "INDIANOCEAN",
-    "ll": [
-     -22.575,
-     45.325
-    ]
-   }
-  ],
   "18241074": [
    {
     "n": "Lisbon",
@@ -9567,48 +9583,6 @@
     ]
    }
   ],
-  "18361363": [
-   {
-    "n": "Casablanca",
-    "r": null,
-    "ll": [
-     33.5931,
-     -7.6164
-    ]
-   },
-   {
-    "n": "Fez",
-    "r": null,
-    "ll": [
-     34.0528,
-     -4.9828
-    ]
-   },
-   {
-    "n": "Erfoud",
-    "r": null,
-    "ll": [
-     31.4361,
-     -4.2328
-    ]
-   },
-   {
-    "n": "Ouarzazate",
-    "r": null,
-    "ll": [
-     30.9217,
-     -6.9175
-    ]
-   },
-   {
-    "n": "Marrakech",
-    "r": null,
-    "ll": [
-     31.6333,
-     -8
-    ]
-   }
-  ],
   "18362041": [
    {
     "n": "Johannesburg",
@@ -9758,48 +9732,6 @@
     "ll": [
      42.975,
      144.375
-    ]
-   }
-  ],
-  "18363882": [
-   {
-    "n": "Arusha",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.3678,
-     36.6333
-    ]
-   },
-   {
-    "n": "Tarangire National Park",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.775,
-     36.025
-    ]
-   },
-   {
-    "n": "Ngorongoro Crater",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.2089,
-     35.4628
-    ]
-   },
-   {
-    "n": "Serengeti National Park",
-    "r": "EASTAFRICA",
-    "ll": [
-     -2.3328,
-     34.5667
-    ]
-   },
-   {
-    "n": "Arusha",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.3678,
-     36.6333
     ]
    }
   ],
@@ -13742,6 +13674,24 @@
     "ll": [
      -3.15,
      35.475
+    ]
+   }
+  ],
+  "18574257": [
+   {
+    "n": "Okavango Delta",
+    "r": "OKAVANGO",
+    "ll": [
+     -19.25,
+     22.75
+    ]
+   },
+   {
+    "n": "Victoria Falls",
+    "r": "ZAMBEZI",
+    "ll": [
+     -17.9244,
+     25.8566
     ]
    }
   ],
@@ -17789,7 +17739,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -18814,7 +18764,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -19062,62 +19012,6 @@
     }
    ],
    "route": "18521712"
-  },
-  {
-   "id": "18363882",
-   "n": "A&K Sanctuary Tanzania Safari",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363882/aksanctuarytanzaniasafari",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Arusha, Tanzania",
-   "to": "Arusha, Tanzania",
-   "country": "Tanzania",
-   "world": false,
-   "mks": [
-    "2026-08",
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 25 Dec 2026",
-   "description": "The Serengeti is where the annual Great Migration of a million or more herd animals begins, and you will spend three nights in the thick of it at Kichakani Camp, an A&K Sanctuary. Combine this life-affirming experience with sublime stays at Swala Camp, an A&K Sanctuary in Tarangire National Park, and Ngorongoro Crater Camp, an A&K Sanctuary, where iconic species wander against the emerald-green backdrop of a volcanic caldera.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$1,835 value) Arusha/Tarangire/Manyara/Serengeti/Arusha"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Arusha"
-    },
-    {
-     "d": 2,
-     "n": "Tarangire National Park"
-    },
-    {
-     "d": 4,
-     "n": "Ngorongoro Crater"
-    },
-    {
-     "d": 6,
-     "n": "Serengeti National Park"
-    },
-    {
-     "d": 1,
-     "n": "Arusha"
-    }
-   ],
-   "route": "18363882"
   },
   {
    "id": "18360201",
@@ -23232,7 +23126,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Cape Town, South Africa",
    "to": "Cairo, Egypt",
-   "country": "Zambia",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-08",
@@ -23506,7 +23400,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18600961/chobeandtheokavangodeltaanundercanvasadventure",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16612922_2_87_0827.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16612922_2_72_0827.webp",
    "from": "Chobe National Park, Botswana",
    "to": "Okavango Delta, Botswana",
    "country": "Botswana",
@@ -30175,7 +30069,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -34670,6 +34564,78 @@
    "route": "18397020"
   },
   {
+   "id": "15265067",
+   "n": "Nature and Wildlife (Buenos Aires, Esteros, Iguazu and Salta)",
+   "b": "ak",
+   "g": [
+    "AMAZONIA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15265067/natureandwildlifebuenosairesesterosiguazuandsalta",
+   "days": 11,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3285_2_58_0822.webp",
+   "from": "Buenos Aires, Argentina",
+   "to": "Salta, Argentina",
+   "country": "Argentina",
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2027",
+   "description": "Wild at heart: Explore Argentina’s untamed landscapes, from Iberá’s wetlands and Iguassu’s force to Patagonia’s vast wildlife-rich scenery.",
+   "included": [
+    "• 11 overnights • Daily breakfast in Buenos Aires, Iguazu & Salta (dinner at Tango Show) • Full board in Esteros del Iberá • Entrance fees • Hotel taxes and service charges"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Buenos Aires"
+    },
+    {
+     "d": 6,
+     "n": "Iguazu Falls"
+    },
+    {
+     "d": 8,
+     "n": "Salta"
+    },
+    {
+     "d": 9,
+     "n": "Cafayate"
+    },
+    {
+     "d": 8,
+     "n": "Salta"
+    },
+    {
+     "d": 9,
+     "n": "Cafayate"
+    },
+    {
+     "d": 1,
+     "n": "Buenos Aires"
+    }
+   ],
+   "route": "15265067"
+  },
+  {
    "id": "12876010",
    "n": "Nepal in Style with Helicopters",
    "b": "remotelands",
@@ -35767,7 +35733,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Amman, Jordan",
    "to": "Cairo, Egypt",
-   "country": "Jordan",
+   "country": "Egypt",
    "world": false,
    "mks": [
     "2026-09",
@@ -35845,6 +35811,78 @@
     }
    ],
    "route": "18361272"
+  },
+  {
+   "id": "18574257",
+   "n": "Platinum Botswana And Victoria Falls",
+   "b": "africantravel",
+   "g": [
+    "OKAVANGO",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18574257/platinumbotswanaandvictoriafalls",
+   "days": 10,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0812.webp",
+   "from": "",
+   "to": "Victoria Falls, Zambia",
+   "country": "Botswana",
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2027",
+   "description": "African Travel, Inc. is proud to be a preferred partner of Virtuoso. For 50 years, we have been creating extraordinary, handcrafted luxury safari experiences, ensuring immersive and authentic wildlife and cultural encounters across the continent. Our specialty is crafting tailor-made safaris, complemented by exclusive small-group journeys. Whether you prefer a personalized journey or the camaraderie of a small group, African Travel brings the magic of Africa to life in a way that’s uniquely yours. Access Advisor Resources: https://linktr.ee/africantravelvirtuoso",
+   "included": [
+    "Experience an extraordinary luxury safari through Botswana, culminating at the magnificent Victoria Falls. Travel seamlessly by scenic light aircraft between some of the region's most exclusive camps and lodges, where exceptional hospitality, gourmet dining, and personalized service complement unforgettable wildlife encounters, immersive cultural experiences, and remarkably diverse landscapes—from the vast Makgadikgadi Pans and the wildlife-rich Linyanti to the pristine Okavango Delta and the mighty Zambezi River. Highlights: Explore the ancient Makgadikgadi Pans on game drives, unforgettable meerkat encounters, and immersive walks with the Zu/'hoasi Bushmen. Discover the wildlife-rich Linyanti and the pristine Okavango Delta on expertly guided game drives, mokoro excursions, walking safaris, and boat cruises. Experience the awe-inspiring beauty of Victoria Falls and the Zambezi River with guided sightseeing and unforgettable sunset cruises. Enjoy seamless light aircraft transfers, exceptional hospitality, gourmet dining, and stays at some of Botswana's most exclusive luxury camps and lodges."
+   ],
+   "promotions": [
+    {
+     "name": "Extra Night on Safari - Complimentary",
+     "endDate": "2026-09-30",
+     "exclusive": false,
+     "description": "Safari, Your Way - with Added Value Tailor-made journeys give you the freedom to travel where and how you choose—shaped around your interests, pace, and travel style. With expert planning and seamless logistics handled for you, every detail comes together effortlessly. We stay closely connected to what’s new across Africa, including timely opportunities that add value. Explore the best of South Africa with offers featuring a complimentary extra night on safari. These sample itineraries are fully customizable —so the journey fits you perfectly. Cape Town & Shamwari Safari Explore Cape Town…"
+    },
+    {
+     "name": "The Best of South Africa – with an Extra Night Free in Private Reserves",
+     "endDate": "2027-02-28",
+     "exclusive": false,
+     "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $1,000 Per Person on Select Journeys",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "The More You Safari, the More You Save.” With savings of up to $1,000 per person, we make it easy to turn dream safaris into confirmed bookings. From witnessing the Great Migration in the Serengeti National Park to exploring private reserves near Kruger National Park, this promotion delivers strong value across a wide range of itineraries and travel styles—giving advisors a compelling reason to start the conversation now. Click here to download informational flyer. Offer Highlights: Save $500 per person on journeys up to $10,000 Save $750 per person on journeys from $10,001–$18,000 Save…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 6,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 9,
+     "n": "Victoria Falls"
+    }
+   ],
+   "route": "18574257"
   },
   {
    "id": "18407050",
@@ -37616,6 +37654,67 @@
    "route": "15710518"
   },
   {
+   "id": "15272308",
+   "n": "Short and sweet Fly-in Safari, Masai Mara",
+   "b": "andbeyond",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15272308/shortandsweetflyinsafarimasaimara",
+   "days": 4,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/14280199_2_44_0823.webp",
+   "from": "Masai Mara, Kenya",
+   "to": "Maasai Mara National Reserve, Kenya",
+   "country": "Kenya",
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2027",
+   "description": "This exceptional 4-day safari to the world-renowned Masai Mara National Reserve, is perfect for those with shorter leave times or those adding onto an existing itinerary. It provides an interpretive Kenyan safari experience in the beautiful surrounds of a luxury lodge. Here, you will have the opportunity to explore the wonders of this reserve on expertly guided walking safaris and twice-daily game drives, encountering a plethora of wildlife that includes the Big Five and the awe-inspiring Great Migration. This safari offers excellent photographic and birding opportunities as well as various cultural interactions with the charming Masai. HIGHLIGHTS OF THE ITINERARY:  Exploring the renowned…",
+   "included": [
+    "Accommodation All road transfers: Jomo Kenyatta International Airport/Wilson Airport/Jomo Kenyatta International Airport",
+    "Scheduled Flights: Wilson Airport/Masai Mara/Wilson Airport",
+    "Emergency medical evacuation insurance Administration fee"
+   ],
+   "promotions": [
+    {
+     "name": "Milestone Celebrations Offer",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "There’s nothing we love more than sharing your special occasions with when staying with us in honour of your ‘milestone’ birthday or anniversary We believe every moment is worth celebrating, especially a momentous occasion such as your birthday or wedding anniversary. Which is why we’re delighted to share our Milestone Celebrations Offer with you. Stay at any one of our &Beyond lodges or camps and receive a 20% discount on your accommodation when observing either your Anniversary or Birthday OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Masai Mara"
+    },
+    {
+     "d": 4,
+     "n": "Maasai Mara National Reserve"
+    }
+   ],
+   "route": "15272308"
+  },
+  {
    "id": "18574061",
    "n": "Skysafari Kenya",
    "b": "africantravel",
@@ -37911,7 +38010,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -38260,71 +38359,6 @@
    "route": "18230584"
   },
   {
-   "id": "16535324",
-   "n": "South America's Playground: Argentina and Brazil for families",
-   "b": "ak",
-   "g": [
-    "AMAZONIA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16535324/southamericasplaygroundargentinaandbrazilforfamilies",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3285_2_33_0822.webp",
-   "from": "Buenos Aires, Argentina",
-   "to": "Rio De Janeiro, Brazil",
-   "country": "Argentina",
-   "world": false,
-   "mks": [
-    "2026-08",
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12",
-    "2027-01",
-    "2027-02",
-    "2027-03",
-    "2027-04",
-    "2027-05",
-    "2027-06",
-    "2027-07",
-    "2027-08",
-    "2027-09",
-    "2027-10",
-    "2027-11",
-    "2027-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 31 Dec 2027",
-   "description": "South America, distilled: A vibrant journey uniting Buenos Aires’ culture, Iguassu’s raw power and Rio’s legendary landscapes.",
-   "included": [
-    "Transportation by private vehicle with local English-speaking guide",
-    "Meals as indicated",
-    "Excursions and services as listed",
-    "Entrance fees for scheduled sightseeings",
-    "Baggage handling – large cruise luggage contemplated",
-    "24-hour emergency contact service"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Buenos Aires"
-    },
-    {
-     "d": 4,
-     "n": "Iguassu Falls"
-    },
-    {
-     "d": 1,
-     "n": "Buenos Aires"
-    },
-    {
-     "d": 6,
-     "n": "Rio De Janeiro"
-    }
-   ],
-   "route": "16535324"
-  },
-  {
    "id": "15859409",
    "n": "Southern Africa coastline and malaria free safari",
    "b": "giltedge",
@@ -38462,7 +38496,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zimbabwe",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -42208,7 +42242,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -42599,7 +42633,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -42676,7 +42710,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -43991,7 +44025,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-08",
@@ -44057,81 +44091,6 @@
     }
    ],
    "route": "18598047"
-  },
-  {
-   "id": "18230954",
-   "n": "Wild Madagascar",
-   "b": "africantravel",
-   "g": [
-    "INDIANOCEAN"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230954/wildmadagascar",
-   "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_3_0812.webp",
-   "from": "Antananarivo, Madagascar",
-   "to": "Isalo National Park, Madagascar",
-   "country": "Madagascar",
-   "world": false,
-   "mks": [
-    "2026-08",
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12",
-    "2027-01",
-    "2027-02",
-    "2027-03",
-    "2027-04",
-    "2027-05",
-    "2027-06",
-    "2027-07",
-    "2027-08",
-    "2027-09",
-    "2027-10",
-    "2027-11",
-    "2027-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 31 Dec 2027",
-   "description": "African Travel, Inc. is proud to be a preferred partner of Virtuoso. For 50 years, we have been creating extraordinary, handcrafted luxury safari experiences, ensuring immersive and authentic wildlife and cultural encounters across the continent. Our specialty is crafting tailor-made safaris, complemented by exclusive small-group journeys. Whether you prefer a personalized journey or the camaraderie of a small group, African Travel brings the magic of Africa to life in a way that’s uniquely yours. Access Advisor Resources: https://linktr.ee/africantravelvirtuoso",
-   "included": [
-    "Fly between Madagascar's top attractions on a chartered flight and marvel at the island's diverse landscapes and leaping lemurs. Experience its exotic beauty, from the iconic Avenue of the Baobabs with its ancient trees to the surreal Tsingy de Bemaraha, a UNESCO World Heritage site famous for its dramatic limestone spires and unique rock formations. Explore Isalo National Park, one of Madagascar’s most beloved parks, and immerse yourself in its breathtaking natural wonders. Highlights: Explore the Grand Tsingy’s towering limestone formations and spot rare lemurs in this UNESCO World Heritage Site. Discover the iconic Avenue of the Baobabs, where centuries-old trees create a striking landscape at dusk. Experience Isalo National Park, with its stunning scenery and sacred significance to the Bara tribe. Enjoy a sunset visit to Giorgio’s Window, offering panoramic views of Madagascar’s dramatic landscapes."
-   ],
-   "promotions": [
-    {
-     "name": "Extra Night on Safari - Complimentary",
-     "endDate": "2026-09-30",
-     "exclusive": false,
-     "description": "Safari, Your Way - with Added Value Tailor-made journeys give you the freedom to travel where and how you choose—shaped around your interests, pace, and travel style. With expert planning and seamless logistics handled for you, every detail comes together effortlessly. We stay closely connected to what’s new across Africa, including timely opportunities that add value. Explore the best of South Africa with offers featuring a complimentary extra night on safari. These sample itineraries are fully customizable —so the journey fits you perfectly. Cape Town & Shamwari Safari Explore Cape Town…"
-    },
-    {
-     "name": "The Best of South Africa – with an Extra Night Free in Private Reserves",
-     "endDate": "2027-02-28",
-     "exclusive": false,
-     "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
-    },
-    {
-     "name": "Guests Save Up to $1,000 Per Person on Select Journeys",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "The More You Safari, the More You Save.” With savings of up to $1,000 per person, we make it easy to turn dream safaris into confirmed bookings. From witnessing the Great Migration in the Serengeti National Park to exploring private reserves near Kruger National Park, this promotion delivers strong value across a wide range of itineraries and travel styles—giving advisors a compelling reason to start the conversation now. Click here to download informational flyer. Offer Highlights: Save $500 per person on journeys up to $10,000 Save $750 per person on journeys from $10,001–$18,000 Save…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Antananarivo"
-    },
-    {
-     "d": 4,
-     "n": "Morondava"
-    },
-    {
-     "d": 6,
-     "n": "Isalo National Park"
-    }
-   ],
-   "route": "18230954"
   },
   {
    "id": "18597738",
@@ -45040,74 +44999,6 @@
    "route": "16395433"
   },
   {
-   "id": "18361363",
-   "n": "Wonders of Morocco: From Souks to the Sahara",
-   "b": "ak",
-   "g": [],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18361363/wondersofmoroccofromsoukstothesahara",
-   "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Casablanca, Morocco",
-   "to": "Marrakech, Morocco",
-   "country": "Morocco",
-   "world": false,
-   "mks": [
-    "2026-08",
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12",
-    "2027-01",
-    "2027-02",
-    "2027-03",
-    "2027-04",
-    "2027-05",
-    "2027-06",
-    "2027-07",
-    "2027-08",
-    "2027-09",
-    "2027-10",
-    "2027-11",
-    "2027-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 28 Dec 2027",
-   "description": "From medieval Fez to bustling Marrakech, Morocco delights with iconic architecture, intoxicating aromas and uniquely hospitable people. Explore these timeless cities, get a taste of local Berber life in the ruggedly beautiful Atlas Mountains and sleep under the stars at A&K’s Private Desert Camp, nestled among towering Sahara dunes.",
-   "included": [
-    "English-Speaking Resident Tour Director and Local Guides (noted departures feature Spanish-Speaking guides)",
-    "Airport Meet and Greet with Private Transfers",
-    "Travelling Bell Boy® Luggage Handling",
-    "Traveller’s Valet® Laundry Service",
-    "Internet Access",
-    "Entrance Fees, Taxes and All Gratuities Except Resident Tour Director",
-    "24/7 A&K On-Call Support"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Casablanca"
-    },
-    {
-     "d": 2,
-     "n": "Fez"
-    },
-    {
-     "d": 5,
-     "n": "Erfoud"
-    },
-    {
-     "d": 7,
-     "n": "Ouarzazate"
-    },
-    {
-     "d": 9,
-     "n": "Marrakech"
-    }
-   ],
-   "route": "18361363"
-  },
-  {
    "id": "18363151",
    "n": "Wonders of the Galápagos and Machu Picchu",
    "b": "ak",
@@ -45120,7 +45011,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-09",

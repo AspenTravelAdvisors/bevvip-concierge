@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-08-29T19:01:22.636Z",
+  "generated": "2026-08-30T14:22:46.901Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2073,
@@ -26586,7 +26586,7 @@
   {
    "vid": "18565160",
    "name": "W Shanghai-The Bund",
-   "city": "Hongkou",
+   "city": "Shanghai",
    "country": "China"
   },
   {

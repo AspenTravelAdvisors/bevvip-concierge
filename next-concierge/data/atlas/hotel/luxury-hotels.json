@@ -46740,18 +46740,18 @@
   ],
   "promotions": [
    {
-    "id": "18224627",
-    "name": "Stay 4, Pay 3",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "At De L’Europe Amsterdam, every stay is an invitation to experience the city in its most elegant form. Overlooking the Amstel River, our hotel blends heritage with contemporary refinement, offering the perfect starting point for your Amsterdam journey. Spend your days exploring the city’s iconic highlights, from world-class museums and galleries to charming boutiques and picturesque canal-side streets. Pause for a glass of wine on a sunlit terrace, or simply let the city reveal its hidden corners and vibrant character. After a day of discovery, return to De L’Europe. Indulge in fine dining at…"
-   },
-   {
     "id": "18224589",
     "name": "Stay Longer, Save More",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Overlooking the Amstel River, De L’Europe Amsterdam combines historic grandeur with contemporary elegance, offering the ideal setting for an unforgettable city stay. Book a stay of three nights or more and enjoy 20% savings. With this exclusive offer, you have more to explore: world-renowned museums such as the Rijksmuseum and Van Gogh Museum, picturesque canal-side streets, and the city’s vibrant dining and shopping scene. Whether you come for romance, relaxation, or discovery, De L’Europe Amsterdam invites you to make the most of your time in the heart of the city. Reserve your 2026 stay…"
+   },
+   {
+    "id": "18224627",
+    "name": "Stay 4, Pay 3",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "At De L’Europe Amsterdam, every stay is an invitation to experience the city in its most elegant form. Overlooking the Amstel River, our hotel blends heritage with contemporary refinement, offering the perfect starting point for your Amsterdam journey. Spend your days exploring the city’s iconic highlights, from world-class museums and galleries to charming boutiques and picturesque canal-side streets. Pause for a glass of wine on a sunlit terrace, or simply let the city reveal its hidden corners and vibrant character. After a day of discovery, return to De L’Europe. Indulge in fine dining at…"
    }
   ],
   "hasPromotion": true,
@@ -48892,16 +48892,8 @@
    "Slippers",
    "Turn Down Service"
   ],
-  "promotions": [
-   {
-    "id": "18473150",
-    "name": "Verona Opera Festival 2026 Package",
-    "endDate": "2026-08-31",
-    "exclusive": false,
-    "description": "Let yourself be captivated by the timeless elegance of Due Torri Hotel, Verona’s most iconic and prestigious hotel, and prepare to experience the magic of opera under the stars in the evocative setting of the Arena, the world’s most famous open-air theatre. The magic of the Opera under the stars will come alive again thanks to the artistic and technical ensembles of Fondazione Arena with international conductors and artists in the most performed and beloved titles. The Due Torri Hotel has the pleasure to propose to its Guests a special package, available in July and in August. The package…"
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3981_2_0_0802.webp",
@@ -52637,11 +52629,11 @@
     "description": "Special Family Package: From 1 226 € per night for 2 rooms Valid for 2 adults and 2 children less than 18 years old. Stay based on two connecting rooms – A Superior Club and a Deluxe Club room - confirmed at time of booking. This offer includes the complimentary amenities below: * American breakfast daily * Complimentary beverages in the lobbies * Mini-Bar in the room * High Speed Internet * Access to the Fitness Center (steam room, sauna, elliptical trainer & training bike) * Access to the Business Center * Daily newspaper of your clients’ choice * Fresh fruits and flowers every day *…"
    },
    {
-    "id": "16492413",
-    "name": "3 Luxurious Nights in Paris",
+    "id": "16122349",
+    "name": "Nightly Rates",
     "endDate": "2027-12-31",
     "exclusive": true,
-    "description": "Starting for a Superior room at € 2.125 for 3 nights double occupancy: Virtuoso Exclusive Experience Includes: This offer includes the complimentary amenities below: * Round trip transfer in a private car (from/to airport or train station)* * American breakfast daily * Complimentary beverages in the lobbies * Mini-Bar in the room * High Speed Internet * Access to the Fitness Center (steam room, sauna, elliptical trainer & training bike) * Access to the Business Center * Daily newspaper of your clients’ choice * Fresh fruits and flowers every day * Including 10% VAT tax and services (except…"
+    "description": "Nightly Rate: starting at Eur 395 for a Classic Room This offer includes the complimentary amenities: American Breakfast. Complimentary bar in the lobby with champagne, wines, spirits Mini bar in the room Internet Access to the Fitness centre (Steam room and Sauna) Access to the business centre Newspaper of your choice Flowers and fresh fruits every day Including 10% VAT tax, other taxes and service (except city taxes : €11,70 per day and per person) The Virtuoso Amenity : Guest’s choice of red or white wine with a plate of assorted French cheeses, baguette and crackers. Served, at the moment…"
    },
    {
     "id": "16492412",
@@ -84995,13 +84987,6 @@
   ],
   "promotions": [
    {
-    "id": "18230417",
-    "name": "Summer Escape",
-    "endDate": "2026-08-31",
-    "exclusive": false,
-    "description": "With summer in full flight, nothing beats a stay in Capri and calling the island’s chicest address, Hotel La Palma ‘home’. Begin your day with the hotel’s legendary breakfast, before taking advantage of La Palma’s location in the heart of the town to explore. Next stop, La Palma Beach Club, where delicious seaside lunches give way to lounging—punctuated only by dips in the brilliant turquoise of the Tyrrhenian Sea. Evenings unfold at Bianca Rooftop Carne & Crudo, indulging in impeccable seafood platters and the finest cuts accompanied by the iconic La Palma Star Martini, or perhaps the night…"
-   },
-   {
     "id": "18230419",
     "name": "Late Summer Escape",
     "endDate": "2026-10-18",
@@ -87966,18 +87951,18 @@
   ],
   "promotions": [
    {
-    "id": "18086994",
-    "name": "In Love with Florence - Suite Offer",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Located in the historic heart of the city, guests can enjoy an unforgettable Florentine break at Hotel Savoy with our exclusive suite offer. Experience the magnificent hotel and delight in a VIP welcome and complimentary transfer. Fall in love with Florence’s captivating highlights, right on Hotel Savoy’s doorstep. Stay in one of our luxurious suites - from Executive Suite to Duomo Presidential Suite - and get up to 15% off our Best Available Rate, as well as a selection of personalised experiences as part of our Rocco Forte Suite Experience programme. Your stay includes: Up to 15% off best…"
-   },
-   {
     "id": "18086993",
     "name": "In Love with Florence (Rooms & Suites)",
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Between candle-lit dinners and strolls along the Arno, Florence sets the scene for shared moments. Stay in a room or suite and enjoy savings of up to 15%, with complimentary breakfast included. Book a suite for added space and thoughtful details, with tailored amenities and curated cultural experiences through our Suites & Beyond programme. Your stay includes: Daily breakfast for two people Save up to 15% Terms & Conditions: Minimum length of stay and blackout dates apply VAT included Displayed rate is exclusive of city tax Suite benefits: In-suite check-in with welcome amenities…"
+   },
+   {
+    "id": "18086994",
+    "name": "In Love with Florence - Suite Offer",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Located in the historic heart of the city, guests can enjoy an unforgettable Florentine break at Hotel Savoy with our exclusive suite offer. Experience the magnificent hotel and delight in a VIP welcome and complimentary transfer. Fall in love with Florence’s captivating highlights, right on Hotel Savoy’s doorstep. Stay in one of our luxurious suites - from Executive Suite to Duomo Presidential Suite - and get up to 15% off our Best Available Rate, as well as a selection of personalised experiences as part of our Rocco Forte Suite Experience programme. Your stay includes: Up to 15% off best…"
    }
   ],
   "hasPromotion": true,
@@ -103610,16 +103595,8 @@
    "Internet Access",
    "Sitting Area"
   ],
-  "promotions": [
-   {
-    "id": "18492683",
-    "name": "Suite Deal",
-    "endDate": "2026-08-30",
-    "exclusive": false,
-    "description": "Indulge in spacious elegance with stunning lake views. Experience the height of alpine luxury with our exclusive Suite Deal. Enjoy spacious elegance, breathtaking views, and exceptional comfort — all offered at a special rate, designed to make your stay truly unforgettable. Including Kulm breakfast buffet Complimentary Mountain Pass and public transport in the Engadin for every guest, valid for any stay of 2 nights or more. Conditions: On request and subject to availability."
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15551970_2_10_0729.webp",
@@ -140069,16 +140046,8 @@
    "Turn Down Service",
    "Voicemail"
   ],
-  "promotions": [
-   {
-    "id": "18572397",
-    "name": "Summer at Palazzo Fiuggi – Enjoy 10% Off Your Room",
-    "endDate": "2026-08-31",
-    "exclusive": false,
-    "description": "Summer is the ideal season to invest in your health: a time to slow down, move more and restore balance. In the peaceful setting of the Fiuggi hills, where the summer air stays fresh and far from the crowds of overtourism, Palazzo Fiuggi offers a refined sanctuary dedicated to long-term wellbeing. Here, advanced medical expertise, personalised wellness programmes and the natural benefits of Fiuggi’s spring water come together to support healthy ageing from a holistic perspective. To make your summer escape even more rewarding, enjoy 10% off your room when you book your stay at Palazzo Fiuggi…"
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16383205_2_2_0813.webp",
@@ -172470,18 +172439,11 @@
   ],
   "promotions": [
    {
-    "id": "18339936",
-    "name": "A Roman Holiday",
+    "id": "18339932",
+    "name": "Suite Program",
     "endDate": "2026-12-31",
     "exclusive": true,
-    "description": "Stay for a minimum of two nights and enjoy the following special benefits. Inclusions: Return transfers to and from the airport/train station Daily breakfast A welcome apertivo with snacks and canapés In-room bottle of Franciacorta upon arrival Complimentary mini-bar (excluding alcohol) Private 30-minute fitness session experience per stay 10 percent off spa treatments Complimentary room upgrade (subject to availability upon check-in) Early check-in & late check-out (subject to availability)"
-   },
-   {
-    "id": "18339934",
-    "name": "A Suite Affair",
-    "endDate": "2026-12-31",
-    "exclusive": true,
-    "description": "Indulge your senses to enjoy up to 25 percent savings when you stay two nights or more, and the following pampering and foodie experiences plus daily breakfast at BIVIUM Restaurant or in-suite for a spoiling and unforgettable stay. Two Bedroom Mellini Suite and Two Bedroom Lata Suite Roundtrip transfers to and from the airport One in-suite 60’ signature massage In-suite Gin O’clock or mocktail experience In-suite check-in/out Unpacking and packing service Up to 5 pieces of regular garments for pressing per stay And all the extra benefits listed below Deluxe Suites, Terrace Junior Suites,…"
+    "description": "Book a Deluxe Suite - Terrace Junior Suite - Corner Suite - Salviati Suite and receive: •One-way transfer to or from the airport •A bottle of Franciacorta upon arrival •Daily breakfast: in-suite or at BIVIUM Restaurant • Tickets for an exhibition (Palazzo Bonaparte or Gafleria Borghese) • Up to 2 pieces of regular garments for pressing per stay Culinary: •An Italian aperitivo with dry snacks - choose a drink from our Classics •Culinary experience: olive oil or wine tasting Sustainability: •A selection of homemade gifts from the Earth Lab •Private sustainability tour Wellness: •Natural bath or…"
    },
    {
     "id": "18339933",
@@ -172489,6 +172451,13 @@
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Inclusions: Enjoy up to 50 percent savings on the Best Flexible Rate for a connecting or adjacent Deluxe Room when booking a Deluxe Junior Suite, or for a connecting or adjacent Deluxe Room when booking a Deluxe Suite Daily breakfast Welcome Six Senses amenities also for kids Daily kids’ ice cream and mocktails Kids activities: mocktail making and Earth Lab sessions Access to Roman Baths from 16 years"
+   },
+   {
+    "id": "18339934",
+    "name": "A Suite Affair",
+    "endDate": "2026-12-31",
+    "exclusive": true,
+    "description": "Indulge your senses to enjoy up to 25 percent savings when you stay two nights or more, and the following pampering and foodie experiences plus daily breakfast at BIVIUM Restaurant or in-suite for a spoiling and unforgettable stay. Two Bedroom Mellini Suite and Two Bedroom Lata Suite Roundtrip transfers to and from the airport One in-suite 60’ signature massage In-suite Gin O’clock or mocktail experience In-suite check-in/out Unpacking and packing service Up to 5 pieces of regular garments for pressing per stay And all the extra benefits listed below Deluxe Suites, Terrace Junior Suites,…"
    }
   ],
   "hasPromotion": true,
@@ -174705,8 +174674,16 @@
    "Slippers",
    "Wheelchair Accessible"
   ],
-  "promotions": [],
-  "hasPromotion": false,
+  "promotions": [
+   {
+    "id": "18598924",
+    "name": "4th Night Free",
+    "endDate": "2027-04-30",
+    "exclusive": false,
+    "description": "Book the breathtaking Sofitel Kia Ora Moorea Beach Resort with a complimentary 4th night and Virtuoso amenities. Honeymoon and Wedding anniversary gifts amenities on request. Book by October 31, 2026. Travel from November 1, 2026 to April 30, 2027 Black out dates: December 23, 2026 to January 3, 2027"
+   }
+  ],
+  "hasPromotion": true,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16395455_2_0_0815.webp",
@@ -178538,8 +178515,16 @@
    "Slippers",
    "Turn Down Service"
   ],
-  "promotions": [],
-  "hasPromotion": false,
+  "promotions": [
+   {
+    "id": "18404495",
+    "name": "An Intimate Candlelight Dining Experience",
+    "endDate": "2026-10-31",
+    "exclusive": true,
+    "description": "Indulge in an exclusive evening at The Minotaure, our signature fine dining restaurant set beside the tranquil lagoon pool. Under a canopy of stars, experience a beautifully curated candlelight dinner designed for romance, and refined pleasure. Savor a bespoke culinary journey blending contemporary Asian inspiration with international cuisine, thoughtfully paired with selections from our exceptional world wine cellar. Your experience includes a 3-course candlelight dinner for 2 persons, two glasses of Champagne on arrival, a carefully selected bottle of local wine, mineral water, and coffee,…"
+   }
+  ],
+  "hasPromotion": true,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16767574_2_0_0801.webp",
@@ -187194,11 +187179,11 @@
   ],
   "promotions": [
    {
-    "id": "18375832",
-    "name": "Stay Four Longer",
+    "id": "18375828",
+    "name": "In Advance",
     "endDate": "2027-04-30",
     "exclusive": false,
-    "description": "With must-see moments across the capital this season, book a stay at The Connaught and receive a complimentary fourth night. From our position in the heart of Mayfair, London’s landmarks lay at your feet – whether it’s historic Buckingham Palace and storied cathedrals, or the newest collections across the city’s finest museums, galleries and boutiques. As evening falls, your extra night calls for a Michelin-starlit supper from the inimitable Hélène Darroze, followed by Martinis in the Connaught Bar. Offer IncludesFour-night stay for the price of three A host of exceptional inclusions from The…"
+    "description": "For those with sights set on London this season, plan for perfection with a 15% discounted book-ahead rate at The Connaught. From the finest theatre picks to new exhibitions, the capital promises days of discovery. While nights at The Connaught are made for gastronomic experiences and signature moments - like the knock of your personal butler - with all suite stays. Offer includes15% saving on our room-only rate when you book at least 14 days in advance A host of exceptional inclusions when you book a suite Terms & Conditions A full, non-refundable prepayment is required at the time of…"
    },
    {
     "id": "18375831",
@@ -187208,11 +187193,11 @@
     "description": "Offer Includes 10% off our Bed and Breakfast rate in your choice of Adam Suite, Carlos Suite, Classic Grosvenor Suite, Grosvenor Suite, Connaught Suite, Sutherland Suite or Coburg Suite A host of exceptional inclusions from The Connaught Suite Standard Complimentary daily English breakfast for two served in your suite or room, or at Jean-Georges at The Connaught Welcome bottle of Billecart-Salmon Brut Reserve on arrival, chilled to perfection Terms & Conditions Subject to availability; blackout dates apply. Not combinable with any other offers or promotions. Applicable to new reservations…"
    },
    {
-    "id": "18375828",
-    "name": "In Advance",
+    "id": "18375832",
+    "name": "Stay Four Longer",
     "endDate": "2027-04-30",
     "exclusive": false,
-    "description": "For those with sights set on London this season, plan for perfection with a 15% discounted book-ahead rate at The Connaught. From the finest theatre picks to new exhibitions, the capital promises days of discovery. While nights at The Connaught are made for gastronomic experiences and signature moments - like the knock of your personal butler - with all suite stays. Offer includes15% saving on our room-only rate when you book at least 14 days in advance A host of exceptional inclusions when you book a suite Terms & Conditions A full, non-refundable prepayment is required at the time of…"
+    "description": "With must-see moments across the capital this season, book a stay at The Connaught and receive a complimentary fourth night. From our position in the heart of Mayfair, London’s landmarks lay at your feet – whether it’s historic Buckingham Palace and storied cathedrals, or the newest collections across the city’s finest museums, galleries and boutiques. As evening falls, your extra night calls for a Michelin-starlit supper from the inimitable Hélène Darroze, followed by Martinis in the Connaught Bar. Offer IncludesFour-night stay for the price of three A host of exceptional inclusions from The…"
    }
   ],
   "hasPromotion": true,
@@ -193155,16 +193140,8 @@
    "Turn Down Service",
    "Wheelchair Accessible"
   ],
-  "promotions": [
-   {
-    "id": "18379251",
-    "name": "Save 25% at California's No. 1 Resort",
-    "endDate": "2026-08-31",
-    "exclusive": false,
-    "description": "Escape to the historic Inn at Mattei’s Tavern this season and experience why it’s celebrated as California’s premier luxury resort. Save 25% on stays between Sunday and Thursday. Blackout dates apply based on business levels throughout the year."
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16618400_2_0_0816.webp",
@@ -209455,18 +209432,18 @@
   ],
   "promotions": [
    {
-    "id": "16685764",
-    "name": "Stay Longer On Us - 15% off 4-night minimum stay",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "15% off 4-night minimum stay. Includes Virtuoso amenities."
-   },
-   {
     "id": "16654764",
     "name": "Family Suites Breakaway: Kids Stay & Eat for Free (1 Night)",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Breakaway with your family to a beachfront luxury experience at The Ritz-Carlton, Herzliya. You'll create unforgettable memories together while adventuring the beach and coastline attractions. Up to two kids stay and eat for free (supplement applies to third kid). Combinable with Virtuoso exclusive amenities."
+   },
+   {
+    "id": "16685764",
+    "name": "Stay Longer On Us - 15% off 4-night minimum stay",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "15% off 4-night minimum stay. Includes Virtuoso amenities."
    }
   ],
   "hasPromotion": true,
@@ -209580,18 +209557,18 @@
   ],
   "promotions": [
    {
-    "id": "18369800",
-    "name": "Stay a minimum of 2+ nights and receive 25% off for selected room types.",
-    "endDate": "2027-01-31",
-    "exclusive": false,
-    "description": "Stay a minimum of 2+ nights and receive 25% off for selected room types: Deluxe Victoria Harbour Room Grand Victoria Harbour Room Club Deluxe Room Club Deluxe Seaview Room Club Deluxe Victoria Harbour Room Deluxe Suite Deluxe Victoria Harbour Suite Black-out date: 31 December 2026"
-   },
-   {
     "id": "18369799",
     "name": "Enjoy the complimentary 3rd night at The Ritz-Carlton, Hong Kong",
     "endDate": "2027-01-31",
     "exclusive": false,
     "description": "Enjoy the complimentary 3rd night at The Ritz-Carlton, Hong Kong - From Deluxe Suite Book under Virtuoso Rate for three consecutive nights and enjoy the 3rd night complimentary. Inclusive of all Virtuoso benefits including daily breakfast and $USD 100 hotel credit per stay. Please contact hotel reservations at rc.hkgkw.reservations@ritzcarlton.com for rate adjustment. Inclusive of all Virtuoso benefits including daily breakfast and $USD 100 hotel credit per stay. Promotion applied on: Deluxe Suite and Deluxe Harbour View Suite Black-out date: 31 December 2026"
+   },
+   {
+    "id": "18369800",
+    "name": "Stay a minimum of 2+ nights and receive 25% off for selected room types.",
+    "endDate": "2027-01-31",
+    "exclusive": false,
+    "description": "Stay a minimum of 2+ nights and receive 25% off for selected room types: Deluxe Victoria Harbour Room Grand Victoria Harbour Room Club Deluxe Room Club Deluxe Seaview Room Club Deluxe Victoria Harbour Room Deluxe Suite Deluxe Victoria Harbour Suite Black-out date: 31 December 2026"
    }
   ],
   "hasPromotion": true,
@@ -218071,11 +218048,11 @@
   ],
   "promotions": [
    {
-    "id": "16682055",
-    "name": "Hotel Credit offer",
+    "id": "16682053",
+    "name": "Stay 4, Pay 3",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Book one of our luxurious rooms for 3 nights or more and enjoy an extra 100$ hotel credit per stay. Offer subject to availability. Black out date may apply."
+    "description": "Stay a minimum of 4 nights and enjoy one night complimentary. Offer subject to availability. Black out date may apply."
    },
    {
     "id": "16682054",
@@ -218085,11 +218062,11 @@
     "description": "Book one of our unique Junior Suites or Suites for 2 nights or more and enjoy an extra 100$ hotel credit per stay. Offer subject to availability. Black out date may apply."
    },
    {
-    "id": "16682053",
-    "name": "Stay 4, Pay 3",
+    "id": "16682055",
+    "name": "Hotel Credit offer",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Stay a minimum of 4 nights and enjoy one night complimentary. Offer subject to availability. Black out date may apply."
+    "description": "Book one of our luxurious rooms for 3 nights or more and enjoy an extra 100$ hotel credit per stay. Offer subject to availability. Black out date may apply."
    }
   ],
   "hasPromotion": true,
@@ -235960,7 +235937,7 @@
   "program": "Virtuoso",
   "category": "City Hotel",
   "country": "China",
-  "city": "Hongkou",
+  "city": "Shanghai",
   "address": null,
   "postalCode": "200080",
   "lat": 31.2482,
@@ -240746,13 +240723,6 @@
    "Washer/Dryer"
   ],
   "promotions": [
-   {
-    "id": "18479593",
-    "name": "Summer Bliss at Wymara Resort + Villas",
-    "endDate": "2026-08-31",
-    "exclusive": false,
-    "description": "Leave the winter attire behind and spring into flip flops and beach wear. Benefit from Summer Bliss up to 25% off all room categories, excluding 1 bedroom Villas and Multi-Bedroom Villas. This offer applies to new reservations only. Offer can be closed at any time. When available this promotion will be applicable for studios and suites at Wymara Resort, Grace Bay Beach. This promotional rate does not apply to one Bedroom villas and multi-Bedroom Villas at Wymara Villas, Sunset Cove. This offer is not combinable with any other promotional offer or discounted rate. No cash value. Current…"
-   },
    {
     "id": "18125972",
     "name": "Enhanced amenities for Villas & Penthouse",
