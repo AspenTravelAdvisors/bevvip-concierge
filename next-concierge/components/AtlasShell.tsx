@@ -4807,7 +4807,8 @@ export default function AtlasShell({
                 map.flyTo({ center: only, zoom: 14, duration: REVEAL_POINT_MS, essential: true, pitch: TILT_PITCH });
                 setTilted(true);
               } else if (n) {
-                frameSpan(spanOf(legs), { duration: REVEAL_MS });
+                frameSpan(spanOf(legs), { duration: REVEAL_MS, pitch: 0 });
+                setTilted(false);
               }
             } catch { /* fit optional */ }
           };

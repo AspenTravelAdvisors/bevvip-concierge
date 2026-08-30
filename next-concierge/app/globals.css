@@ -3823,6 +3823,15 @@ button.card-book {
   min-height: 0;
   border-radius: 10px;
 }
+/* iPad landscape is wider than the phone breakpoint but still short enough
+   that a 72vh route map plus the atlas chrome can hide the first cards. Keep
+   the desktop rail, just give the results room to appear on the first screen. */
+@media (pointer: coarse) and (orientation: landscape) and (min-width: 681px) and (max-height: 900px) {
+  .atlas-collection:not(.atlas-collection--hotel) .atlas-map {
+    min-height: clamp(240px, 52vh, 440px);
+    min-height: clamp(240px, 52dvh, 440px);
+  }
+}
 /* The rail follows the globe down the page, so filters stay reachable while
    scrolling the results without stealing height from the map. */
 .atlas-collection .villa-filters {
@@ -5202,6 +5211,18 @@ button.card-book {
   line-height: 1.55;
   color: var(--ink-dim, #b9b6ad);
 }
+.jd-details {
+  display: inline-block;
+  margin: -2px 0 2px;
+  padding: 6px 11px;
+  border: 1px solid #7a6228;
+  border-radius: 6px;
+  background: rgba(122, 98, 40, 0.16);
+  color: #f0dca6;
+  font-size: 12px;
+  text-decoration: none;
+}
+.jd-details:hover { border-color: #a98a3e; }
 .jd-label {
   margin: 14px 0 4px;
   font-size: 10px;
