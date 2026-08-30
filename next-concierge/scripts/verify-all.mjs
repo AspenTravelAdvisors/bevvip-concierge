@@ -41,6 +41,7 @@ const CHECKS = [
   'verify:cruise-regions',
   'verify:atlas-regions',
   'verify:safari-camps',
+  'verify:gateway-hotels',
   'verify:ambient-tour',
   'verify:atlas-handoff',
   'verify:listings',

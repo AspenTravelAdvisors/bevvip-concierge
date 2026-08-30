@@ -1,0 +1,4803 @@
+{
+ "_meta": {
+  "purpose": "Hotels from the hotel atlas within 40km of where a rail journeys journey begins and ends — the nights before and after. Built by scripts/build-gateway-hotels.mjs; do not hand-edit.",
+  "built": "derived — see scripts/build-gateway-hotels.mjs",
+  "atlas": "train",
+  "radiusKm": 40,
+  "clusterKm": 15,
+  "journeysTotal": 126,
+  "journeysWithStays": 121,
+  "journeysWithHouse": 52,
+  "gateways": 47,
+  "hotels": 166,
+  "houses": [
+   "Belmond",
+   "Orient Express"
+  ]
+ },
+ "radiusKm": 40,
+ "clusterKm": 15,
+ "HOTELS": {
+  "h_00472": {
+   "n": "Crossbasket Castle",
+   "house": null,
+   "aff": null,
+   "city": "Glasgow",
+   "country": "United Kingdom",
+   "ll": [
+    55.783,
+    -4.12405
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15543946_2_0_0815.webp",
+   "rooms": 51,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00291": {
+   "n": "Cameron House on Loch Lomond",
+   "house": null,
+   "aff": null,
+   "city": "Scotland",
+   "country": "United Kingdom",
+   "ll": [
+    55.9451,
+    -4.56463
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11652963_2_0_0802.webp",
+   "rooms": 208,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_00010": {
+   "n": "100 Princes Street",
+   "house": "Red Carnation Hotel Collection",
+   "aff": null,
+   "city": "Edinburgh, Scotland",
+   "country": "United Kingdom",
+   "ll": [
+    55.9516,
+    -3.20028
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16785841_2_0_0802.webp",
+   "rooms": 30,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01063": {
+   "n": "Kimpton Charlotte Square Hotel",
+   "house": "IHG Hotels & Resorts",
+   "aff": null,
+   "city": "Edinburgh, Scotland",
+   "country": "United Kingdom",
+   "ll": [
+    55.9515,
+    -3.2061
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16000114_2_1_0817.webp",
+   "rooms": 199,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01921": {
+   "n": "The Caledonian Edinburgh",
+   "house": "Hilton Luxury Brands",
+   "aff": null,
+   "city": "Edinburgh, Scotland",
+   "country": "United Kingdom",
+   "ll": [
+    55.949591,
+    -3.207398
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14033213_2_13_0809.webp",
+   "rooms": 235,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00713": {
+   "n": "Gleneagles Townhouse",
+   "house": null,
+   "aff": null,
+   "city": "Edinburgh, Scotland",
+   "country": "United Kingdom",
+   "ll": [
+    55.9541,
+    -3.19168
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16508164_2_0_0823.webp",
+   "rooms": 33,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00135": {
+   "n": "Andaz Tokyo Toranomon Hills",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Tokyo",
+   "country": "Japan",
+   "ll": [
+    35.6833,
+    139.75
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14656837_2_0_0815.webp",
+   "rooms": 164,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01452": {
+   "n": "Palace Hotel Tokyo",
+   "house": null,
+   "aff": null,
+   "city": "Tokyo",
+   "country": "Japan",
+   "ll": [
+    35.6832,
+    139.761
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12991056_2_1_0804.webp",
+   "rooms": 284,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00896": {
+   "n": "Hotel New Otani Tokyo EXECUTIVE HOUSE ZEN",
+   "house": null,
+   "aff": null,
+   "city": "Tokyo",
+   "country": "Japan",
+   "ll": [
+    35.683,
+    139.738
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16383214_2_0_0801.webp",
+   "rooms": 84,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v16589873": {
+   "n": "The Prince Gallery Tokyo Kioicho, a Luxury Collection Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Tokyo",
+   "country": "Japan",
+   "ll": [
+    35.6799,
+    139.738
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16587174_2_0_0827.webp",
+   "rooms": 250,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v18047592": {
+   "n": "The Shilla Seoul",
+   "house": null,
+   "aff": null,
+   "city": "Seoul",
+   "country": "South Korea",
+   "ll": [
+    37.5567,
+    127.006
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/17905642_2_0_0817.webp",
+   "rooms": 464,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_v16143195": {
+   "n": "THE GRAND LOTTE SEOUL - Executive Tower.",
+   "house": null,
+   "aff": null,
+   "city": "Seoul",
+   "country": "South Korea",
+   "ll": [
+    37.565,
+    126.981
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16143189_2_0_0827.webp",
+   "rooms": 278,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_v18385701": {
+   "n": "Fairmont Ambassador Seoul",
+   "house": "Accor",
+   "aff": null,
+   "city": "Seoul",
+   "country": "South Korea",
+   "ll": [
+    37.526,
+    126.928
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18385667_2_0_0815.webp",
+   "rooms": 308,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00445": {
+   "n": "Conrad Seoul",
+   "house": "Hilton Luxury Brands",
+   "aff": null,
+   "city": "Seoul",
+   "country": "South Korea",
+   "ll": [
+    37.5254,
+    126.927
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15683930_2_0_0814.webp",
+   "rooms": 434,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00593": {
+   "n": "Fairmont Le Montreux Palace",
+   "house": "Accor",
+   "aff": null,
+   "city": "Montreux",
+   "country": "Switzerland",
+   "ll": [
+    46.4386,
+    6.9068
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16110422_2_0_0814.webp",
+   "rooms": 236,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00418": {
+   "n": "Clinique La Prairie",
+   "house": null,
+   "aff": null,
+   "city": "Montreux",
+   "country": "Switzerland",
+   "ll": [
+    46.4437,
+    6.88456
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15286673_2_0_0822.webp",
+   "rooms": 38,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00206": {
+   "n": "Beau-Rivage Palace",
+   "house": null,
+   "aff": null,
+   "city": "Lausanne",
+   "country": "Switzerland",
+   "ll": [
+    46.5078,
+    6.63097
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4175_2_3_0824.webp",
+   "rooms": 168,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01678": {
+   "n": "Royal Savoy Hotel & Spa",
+   "house": "Burgenstock Collection",
+   "aff": null,
+   "city": "Lausanne",
+   "country": "Switzerland",
+   "ll": [
+    46.5117,
+    6.62971
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15974328_2_0_0817.webp",
+   "rooms": 196,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01108": {
+   "n": "La Reserve Eden au Lac Zurich",
+   "house": "Michel Reybier Hospitality",
+   "aff": null,
+   "city": "Zurich",
+   "country": "Switzerland",
+   "ll": [
+    47.3628,
+    8.54741
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16151005_2_0_0815.webp",
+   "rooms": 40,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00200": {
+   "n": "Baur au Lac",
+   "house": null,
+   "aff": null,
+   "city": "Zurich",
+   "country": "Switzerland",
+   "ll": [
+    47.3672,
+    8.5393
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4328_2_0_0814.webp",
+   "rooms": 119,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01260": {
+   "n": "Mandarin Oriental Savoy, Zurich",
+   "house": "Mandarin Oriental",
+   "aff": null,
+   "city": "Zurich",
+   "country": "Switzerland",
+   "ll": [
+    47.37,
+    8.53881
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16786074_2_0_0827.webp",
+   "rooms": 80,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01526": {
+   "n": "Park Hyatt Zurich",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Zurich",
+   "country": "Switzerland",
+   "ll": [
+    47.3664,
+    8.53612
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4450_2_0_0814.webp",
+   "rooms": 138,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02498": {
+   "n": "the DOUGLAS, an Autograph Collection Hotel",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Vancouver",
+   "country": "Canada",
+   "ll": [
+    49.2758,
+    -123.114
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15849725_2_2_0809.webp",
+   "rooms": 188,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02467": {
+   "n": "Wedgewood Hotel & Spa",
+   "house": null,
+   "aff": null,
+   "city": "Vancouver",
+   "country": "Canada",
+   "ll": [
+    49.2823,
+    -123.123
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14957561_2_0_0808.webp",
+   "rooms": 83,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01646": {
+   "n": "Rosewood Hotel Georgia",
+   "house": "Rosewood Hotels & Resorts",
+   "aff": null,
+   "city": "Vancouver",
+   "country": "Canada",
+   "ll": [
+    49.2834,
+    -123.119
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/9889788_2_2_0822.webp",
+   "rooms": 156,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01760": {
+   "n": "Shangri-La Vancouver",
+   "house": "Shangri-La",
+   "aff": null,
+   "city": "Vancouver",
+   "country": "Canada",
+   "ll": [
+    49.285786,
+    -123.123703
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_00600": {
+   "n": "Fairmont Palliser",
+   "house": "Fairmont",
+   "aff": null,
+   "city": "Calgary",
+   "country": "Canada",
+   "ll": [
+    51.0443,
+    -114.065
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18074758_2_0_0815.webp",
+   "rooms": 407,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01622": {
+   "n": "Ritz-Carlton Montreal",
+   "house": "Luxury Group at Marriott International",
+   "aff": "Ritz-Carlton",
+   "city": "Montreal",
+   "country": "Canada",
+   "ll": [
+    45.501,
+    -73.5771
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11246586_2_0_0802.webp",
+   "rooms": 129,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00659": {
+   "n": "Four Seasons Hotel Montreal",
+   "house": "Four Seasons Hotels and Resorts",
+   "aff": "Four Seasons",
+   "city": "Montreal",
+   "country": "Canada",
+   "ll": [
+    45.4984,
+    -73.5765
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15881114_2_0_0816.webp",
+   "rooms": 169,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01158": {
+   "n": "Le Mount Stephen",
+   "house": null,
+   "aff": null,
+   "city": "Montreal",
+   "country": "Canada",
+   "ll": [
+    45.4992,
+    -73.5757
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15542901_2_0_0802.webp",
+   "rooms": 90,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00612": {
+   "n": "Fairmont The Queen Elizabeth",
+   "house": "Accor",
+   "aff": null,
+   "city": "Montreal",
+   "country": "Canada",
+   "ll": [
+    45.5006,
+    -73.5685
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4667_2_0_0814.webp",
+   "rooms": 950,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01348": {
+   "n": "Muir, a Luxury Collection Hotel, Halifax",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Halifax",
+   "country": "Canada",
+   "ll": [
+    44.6479,
+    -63.5715
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16287390_2_0_0813.webp",
+   "rooms": 109,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01728": {
+   "n": "Serras Barcelona",
+   "house": null,
+   "aff": null,
+   "city": "Barcelona",
+   "country": "Spain",
+   "ll": [
+    41.3802,
+    2.18083
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15655359_2_0_0814.webp",
+   "rooms": 28,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00727": {
+   "n": "Grand Hotel Central",
+   "house": null,
+   "aff": null,
+   "city": "Barcelona",
+   "country": "Spain",
+   "ll": [
+    41.385,
+    2.17771
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18102186_2_0_0820.webp",
+   "rooms": 146,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01905": {
+   "n": "The Barcelona EDITION",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Barcelona",
+   "country": "Spain",
+   "ll": [
+    41.3859,
+    2.17781
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16921319_2_0_0813.webp",
+   "rooms": 100,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00844": {
+   "n": "Hotel Colón",
+   "house": null,
+   "aff": null,
+   "city": "Barcelona",
+   "country": "Spain",
+   "ll": [
+    41.385002,
+    2.175834
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_v16768337": {
+   "n": "Torel Palace Lisbon",
+   "house": null,
+   "aff": null,
+   "city": "Lisbon",
+   "country": "Portugal",
+   "ll": [
+    38.7185,
+    -9.14013
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16767555_2_0_0801.webp",
+   "rooms": 33,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01456": {
+   "n": "Palacio Ludovice Wine Experience Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Lisbon",
+   "country": "Portugal",
+   "ll": [
+    38.7143,
+    -9.14414
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16930052_2_0_0825.webp",
+   "rooms": 61,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01564": {
+   "n": "Pousada de Lisboa - Praca do Comercio",
+   "house": null,
+   "aff": null,
+   "city": "Lisbon",
+   "country": "Portugal",
+   "ll": [
+    38.7082,
+    -9.13785
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15469516_2_0_0822.webp",
+   "rooms": 90,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02007": {
+   "n": "The Ivens, Autograph Collection",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Lisbon",
+   "country": "Portugal",
+   "ll": [
+    38.7097,
+    -9.14033
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16895775_2_0_0821.webp",
+   "rooms": 86,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Airport transfer"
+   ],
+   "promo": 0
+  },
+  "h_00144": {
+   "n": "Aria Hotel Budapest by Library Hotel Collection",
+   "house": null,
+   "aff": null,
+   "city": "Budapest",
+   "country": "Hungary",
+   "ll": [
+    47.5001,
+    19.0535
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15444625_2_0_0806.webp",
+   "rooms": 49,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00037": {
+   "n": "Al Habtoor Palace Budapest",
+   "house": null,
+   "aff": null,
+   "city": "Budapest",
+   "country": "Hungary",
+   "ll": [
+    47.4974,
+    19.0532
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15262894_2_0_0815.webp",
+   "rooms": 199,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01579": {
+   "n": "Párisi Udvar Hotel Budapest, in The Unbound Collection by Hyatt",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Budapest",
+   "country": "Hungary",
+   "ll": [
+    47.4933,
+    19.055
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18048712_2_0_0828.webp",
+   "rooms": 110,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01051": {
+   "n": "Kempinski Hotel Corvinus Budapest",
+   "house": "Kempinski Hotels",
+   "aff": null,
+   "city": "Budapest",
+   "country": "Hungary",
+   "ll": [
+    47.4972,
+    19.0519
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4029_2_0_0815.webp",
+   "rooms": 350,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01513": {
+   "n": "Park Hyatt Paris-Vendome",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Paris",
+   "country": "France",
+   "ll": [
+    48.8687,
+    2.33068
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4354_2_0_0814.webp",
+   "rooms": 156,
+   "perks": [
+    "Daily breakfast",
+    "$150 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01069": {
+   "n": "Kimpton St. Honoré, Paris",
+   "house": "IHG Hotels & Resorts",
+   "aff": null,
+   "city": "Paris",
+   "country": "France",
+   "ll": [
+    48.8701,
+    2.3307
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16345277_2_28_0822.webp",
+   "rooms": 149,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01621": {
+   "n": "Ritz Paris",
+   "house": "The Ritz",
+   "aff": null,
+   "city": "Paris",
+   "country": "France",
+   "ll": [
+    48.8677,
+    2.3287
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3805_2_19_0731.webp",
+   "rooms": 142,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_00753": {
+   "n": "Grand Hotel du Palais Royal",
+   "house": null,
+   "aff": null,
+   "city": "Paris",
+   "country": "France",
+   "ll": [
+    48.8631,
+    2.33786
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15590471_2_0_0817.webp",
+   "rooms": 59,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01521": {
+   "n": "Park Hyatt Toronto",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Toronto",
+   "country": "Canada",
+   "ll": [
+    43.6693,
+    -79.395
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3732_2_0_0814.webp",
+   "rooms": 219,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01995": {
+   "n": "The Hazelton Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Toronto",
+   "country": "Canada",
+   "ll": [
+    43.6707,
+    -79.3931
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3964_2_0_0731.webp",
+   "rooms": 77,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00008": {
+   "n": "1 Hotel Toronto",
+   "house": "1 Hotel",
+   "aff": null,
+   "city": "Toronto",
+   "country": "Canada",
+   "ll": [
+    43.643042,
+    -79.401618
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_00173": {
+   "n": "BISHA, a Luxury Collection Hotel, Toronto",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Toronto",
+   "country": "Canada",
+   "ll": [
+    43.645296,
+    -79.392447
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15734805_2_0_0813.webp",
+   "rooms": 96,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00211": {
+   "n": "Bellevue Palace",
+   "house": "Michel Reybier Hospitality",
+   "aff": null,
+   "city": "Bern",
+   "country": "Switzerland",
+   "ll": [
+    46.9467,
+    7.44699
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4338_2_0_0824.webp",
+   "rooms": 126,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00908": {
+   "n": "Hotel Schweizerhof Bern & Spa",
+   "house": "Burgenstock Collection",
+   "aff": null,
+   "city": "Bern",
+   "country": "Switzerland",
+   "ll": [
+    46.9488,
+    7.44093
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16122884_2_0_0819.webp",
+   "rooms": 99,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02353": {
+   "n": "VICTORIA-JUNGFRAU Grand Hotel & Spa",
+   "house": "Michel Reybier Hospitality",
+   "aff": null,
+   "city": "Interlaken",
+   "country": "Switzerland",
+   "ll": [
+    46.6867,
+    7.85714
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4440_2_0_0825.webp",
+   "rooms": 216,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v18378979": {
+   "n": "AYANA Komodo Waecicu Beach",
+   "house": null,
+   "aff": null,
+   "city": "Labuan Bajo, Flores",
+   "country": "Indonesia",
+   "ll": [
+    -8.46409,
+    119.872
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18374264_2_0_0815.webp",
+   "rooms": 205,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01598": {
+   "n": "Raffles Singapore",
+   "house": "Accor",
+   "aff": null,
+   "city": "Singapore",
+   "country": "Singapore",
+   "ll": [
+    1.29489,
+    103.854
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4066_2_0_0814.webp",
+   "rooms": 115,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v16675647": {
+   "n": "Fairmont Singapore South Tower",
+   "house": null,
+   "aff": null,
+   "city": "Singapore",
+   "country": "Singapore",
+   "ll": [
+    1.2934,
+    103.853
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16667940_2_1_0804.webp",
+   "rooms": 450,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01280": {
+   "n": "Mandarin Oriental, Singapore",
+   "house": "Mandarin Oriental",
+   "aff": null,
+   "city": "Singapore",
+   "country": "Singapore",
+   "ll": [
+    1.2906,
+    103.858
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0_0820.webp",
+   "rooms": 510,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02189": {
+   "n": "The Ritz-Carlton, Millenia Singapore",
+   "house": "Luxury Group at Marriott International",
+   "aff": "Ritz-Carlton",
+   "city": "Singapore",
+   "country": "Singapore",
+   "ll": [
+    1.29084,
+    103.86
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3812_2_0_0819.webp",
+   "rooms": 608,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01625": {
+   "n": "Rocco Forte House, Piazza di Spagna Roma",
+   "house": "Rocco Forte Hotels",
+   "aff": null,
+   "city": "Rome",
+   "country": "Italy",
+   "ll": [
+    41.9067,
+    12.481
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16021160_2_14_0817.webp",
+   "rooms": 5,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01559": {
+   "n": "Portrait Roma",
+   "house": "Lungarno Collection - Florence, Rome, and Milan",
+   "aff": null,
+   "city": "Rome",
+   "country": "Italy",
+   "ll": [
+    41.9054,
+    12.4804
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4174_2_13_0802.webp",
+   "rooms": 14,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01978": {
+   "n": "The First Roma Dolce",
+   "house": null,
+   "aff": null,
+   "city": "Rome",
+   "country": "Italy",
+   "ll": [
+    41.9071,
+    12.4779
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18048745_2_0_0815.webp",
+   "rooms": 23,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00868": {
+   "n": "Hotel Hassler",
+   "house": null,
+   "aff": null,
+   "city": "Rome",
+   "country": "Italy",
+   "ll": [
+    41.906,
+    12.484
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4140_2_0_0812.webp",
+   "rooms": 82,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01434": {
+   "n": "Orient Express La Minerva",
+   "house": "Accor",
+   "aff": "Orient Express",
+   "city": "Rome",
+   "country": "Italy",
+   "ll": [
+    41.8977,
+    12.4776
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16814908_2_0_0815.webp",
+   "rooms": 93,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v6163631": {
+   "n": "Monasterio, A Belmond Hotel, Cusco",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Cusco",
+   "country": "Peru",
+   "ll": [
+    -13.515,
+    -71.9773
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/2452_2_0_0828.webp",
+   "rooms": 122,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_01458": {
+   "n": "Palacio Nazarenas, A Belmond Hotel, Cusco",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Cuzco",
+   "country": "Peru",
+   "ll": [
+    -13.5148,
+    -71.9769
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11772487_2_0_0801.webp",
+   "rooms": 55,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 1
+  },
+  "h_01463": {
+   "n": "Palacio del Inka, a Luxury Collection Hotel, Cusco",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Cusco",
+   "country": "Peru",
+   "ll": [
+    -13.5208,
+    -71.9764
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14943708_2_0_0806.webp",
+   "rooms": 203,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Airport transfer"
+   ],
+   "promo": 0
+  },
+  "h_01893": {
+   "n": "Tambo del Inka, a Luxury Collection Resort & Spa, Valle Sagrado",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Urubamba",
+   "country": "Peru",
+   "ll": [
+    -13.3127,
+    -72.1183
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6157411_2_0_0829.webp",
+   "rooms": 128,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Airport transfer"
+   ],
+   "promo": 0
+  },
+  "h_01620": {
+   "n": "Rio Sagrado, A Belmond Hotel, Sacred Valley",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Sacred Valley",
+   "country": "Peru",
+   "ll": [
+    -13.2906,
+    -72.1449
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6160141_2_0_0801.webp",
+   "rooms": 23,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_02108": {
+   "n": "The Peninsula Istanbul",
+   "house": "The Peninsula",
+   "aff": null,
+   "city": "Istanbul",
+   "country": "Türkiye",
+   "ll": [
+    41.023,
+    28.9779
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16403612_2_0_0825.webp",
+   "rooms": 177,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02182": {
+   "n": "The Ritz-Carlton, Istanbul",
+   "house": "Luxury Group at Marriott International",
+   "aff": "Ritz-Carlton",
+   "city": "Istanbul",
+   "country": "Türkiye",
+   "ll": [
+    41.0402,
+    28.9926
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3823_2_4_0822.webp",
+   "rooms": 239,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02259": {
+   "n": "The St. Regis Istanbul",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Istanbul",
+   "country": "Türkiye",
+   "ll": [
+    41.0478,
+    28.9928
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15871840_2_14_0823.webp",
+   "rooms": 118,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01502": {
+   "n": "Park Hyatt Istanbul - Macka Palas",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Istanbul",
+   "country": "Türkiye",
+   "ll": [
+    41.0551,
+    28.9829
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/5300660_2_0_0814.webp",
+   "rooms": 90,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01725": {
+   "n": "Sensei Lana'i, A Four Seasons Resort",
+   "house": "Four Seasons Hotels and Resorts",
+   "aff": "Four Seasons",
+   "city": "Lanai City",
+   "country": "United States",
+   "ll": [
+    20.8357,
+    -156.917
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4390_2_1_0829.webp",
+   "rooms": 96,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00679": {
+   "n": "Four Seasons Resort Lana'i",
+   "house": "Four Seasons Hotels and Resorts",
+   "aff": "Four Seasons",
+   "city": "Lanai City",
+   "country": "United States",
+   "ll": [
+    20.7424,
+    -156.897
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4665_2_14_0828.webp",
+   "rooms": 213,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01330": {
+   "n": "Montage Kapalua Bay",
+   "house": "Montage",
+   "aff": null,
+   "city": "Lahaina, Maui",
+   "country": "United States",
+   "ll": [
+    20.999764,
+    -156.666302
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_02148": {
+   "n": "The Ritz-Carlton Maui, Kapalua",
+   "house": "Luxury Group at Marriott International",
+   "aff": "Ritz-Carlton",
+   "city": "Lahaina",
+   "country": "United States",
+   "ll": [
+    21.0026,
+    -156.654
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4188_2_0_0813.webp",
+   "rooms": 466,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00592": {
+   "n": "Fairmont Le Château Frontenac",
+   "house": "Accor",
+   "aff": null,
+   "city": "Québec City",
+   "country": "Canada",
+   "ll": [
+    46.8119,
+    -71.2051
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4240_2_0_0814.webp",
+   "rooms": 611,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00156": {
+   "n": "Auberge Saint-Antoine   -    Relais & Châteaux",
+   "house": "Auberge Resorts",
+   "aff": null,
+   "city": "Québec City",
+   "country": "Canada",
+   "ll": [
+    46.8146,
+    -71.2023
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/10757150_2_3_0817.webp",
+   "rooms": 95,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01253": {
+   "n": "Mandarin Oriental Palace, Luzern",
+   "house": "Mandarin Oriental",
+   "aff": null,
+   "city": "Lucerne",
+   "country": "Switzerland",
+   "ll": [
+    47.0554,
+    8.3196
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3758_2_0_0817.webp",
+   "rooms": 136,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01451": {
+   "n": "Palace Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Nidwalden",
+   "country": "Switzerland",
+   "ll": [
+    46.996748,
+    8.379181
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_02092": {
+   "n": "The Palace",
+   "house": null,
+   "aff": null,
+   "city": "Nidwalden",
+   "country": "Switzerland",
+   "ll": [
+    46.996748,
+    8.379181
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_00395": {
+   "n": "Chenot Palace Weggis",
+   "house": null,
+   "aff": null,
+   "city": "Weggis",
+   "country": "Switzerland",
+   "ll": [
+    47.0295,
+    8.42139
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16386081_2_0_0813.webp",
+   "rooms": 95,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00751": {
+   "n": "Grand Hotel Zermatterhof",
+   "house": null,
+   "aff": null,
+   "city": "Zermatt",
+   "country": "Switzerland",
+   "ll": [
+    46.0198,
+    7.74618
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4307_2_0_0814.webp",
+   "rooms": 69,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01325": {
+   "n": "Mont Cervin Palace Zermatt",
+   "house": "Michel Reybier Hospitality",
+   "aff": null,
+   "city": "Zermatt",
+   "country": "Switzerland",
+   "ll": [
+    46.0229,
+    7.74799
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11651363_2_0_0802.webp",
+   "rooms": 150,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00268": {
+   "n": "CERVO Mountain Resort",
+   "house": null,
+   "aff": null,
+   "city": "Zermatt",
+   "country": "Switzerland",
+   "ll": [
+    46.0219,
+    7.75442
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16503236_2_0_0816.webp",
+   "rooms": 54,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00799": {
+   "n": "Hermitage Hotel & Spa",
+   "house": null,
+   "aff": null,
+   "city": "Breuil-cervinia",
+   "country": "Italy",
+   "ll": [
+    45.9319,
+    7.63048
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15226167_2_0_0808.webp",
+   "rooms": 36,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00846": {
+   "n": "Hotel Continental Oslo",
+   "house": null,
+   "aff": null,
+   "city": "Oslo",
+   "country": "Norway",
+   "ll": [
+    59.9141,
+    10.7333
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14368210_2_10_0814.webp",
+   "rooms": 151,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01831": {
+   "n": "Sommerro",
+   "house": null,
+   "aff": null,
+   "city": "Oslo",
+   "country": "Norway",
+   "ll": [
+    59.9154,
+    10.7207
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16780947_2_0_0815.webp",
+   "rooms": 231,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01970": {
+   "n": "The Excelsior, a Luxury Collection Hotel, Florence",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Florence",
+   "country": "Italy",
+   "ll": [
+    43.7724,
+    11.2455
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4641_2_0_0829.webp",
+   "rooms": 171,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02256": {
+   "n": "The St. Regis Florence",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Florence",
+   "country": "Italy",
+   "ll": [
+    43.7721,
+    11.2451
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4494_2_0_0730.webp",
+   "rooms": 99,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00737": {
+   "n": "Grand Hotel Minerva",
+   "house": null,
+   "aff": null,
+   "city": "Florence",
+   "country": "Italy",
+   "ll": [
+    43.7738,
+    11.249
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18052044_2_0_0817.webp",
+   "rooms": 97,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02114": {
+   "n": "The Place Firenze",
+   "house": null,
+   "aff": null,
+   "city": "Florence",
+   "country": "Italy",
+   "ll": [
+    43.7729,
+    11.2495
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6606805_2_60_0829.webp",
+   "rooms": 20,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02402": {
+   "n": "Villa San Michele, A Belmond Hotel, Florence",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Florence",
+   "country": "Italy",
+   "ll": [
+    43.7822,
+    11.333
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4030_2_0_0818.webp",
+   "rooms": 39,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00132": {
+   "n": "Andaz Prague",
+   "house": "Hyatt Hotels Corporation",
+   "aff": null,
+   "city": "Prague",
+   "country": "Czech Republic",
+   "ll": [
+    50.0855,
+    14.4302
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16597023_2_0_0828.webp",
+   "rooms": 176,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00585": {
+   "n": "Fairmont Golden Prague",
+   "house": "Accor",
+   "aff": null,
+   "city": "Prague",
+   "country": "Czech Republic",
+   "ll": [
+    50.0918,
+    14.4191
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/17900860_2_0_0815.webp",
+   "rooms": 320,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00667": {
+   "n": "Four Seasons Hotel Prague",
+   "house": "Four Seasons Hotels and Resorts",
+   "aff": "Four Seasons",
+   "city": "Prague",
+   "country": "Czech Republic",
+   "ll": [
+    50.0878,
+    14.4144
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3877_2_29_0825.webp",
+   "rooms": 157,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00162": {
+   "n": "Augustine Hotel, Prague",
+   "house": "Kempinski Hotels",
+   "aff": null,
+   "city": "Prague",
+   "country": "Czech Republic",
+   "ll": [
+    50.0891,
+    14.4066
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/258259_2_0_0801.webp",
+   "rooms": 101,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00099": {
+   "n": "Anantara Convento di Amalfi Grand Hotel",
+   "house": "Minor Hotels",
+   "aff": null,
+   "city": "Amalfi",
+   "country": "Italy",
+   "ll": [
+    40.6329,
+    14.5973
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16752134_2_0_0815.webp",
+   "rooms": 52,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00699": {
+   "n": "Furore Grand Hotel - Amalfi Coast",
+   "house": null,
+   "aff": null,
+   "city": "Amalfi Coast",
+   "country": "Italy",
+   "ll": [
+    40.633843,
+    14.602751
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00905": {
+   "n": "Hotel Santa Caterina",
+   "house": null,
+   "aff": null,
+   "city": "Amalfi",
+   "country": "Italy",
+   "ll": [
+    40.6295,
+    14.5927
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4112_2_56_0825.webp",
+   "rooms": 66,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01467": {
+   "n": "Palazzo Avino",
+   "house": null,
+   "aff": null,
+   "city": "Ravello",
+   "country": "Italy",
+   "ll": [
+    40.6497,
+    14.6129
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4312_2_47_0824.webp",
+   "rooms": 43,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00343": {
+   "n": "Caruso, A Belmond Hotel, Amalfi Coast",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Ravello",
+   "country": "Italy",
+   "ll": [
+    40.6515,
+    14.6127
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4565_2_0_0819.webp",
+   "rooms": 50,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00178": {
+   "n": "Baglioni Hotel Luna",
+   "house": "Baglioni Hotels Collection",
+   "aff": null,
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.4332,
+    12.3372
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4005_2_1_0805.webp",
+   "rooms": 91,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02410": {
+   "n": "Violino d'Oro",
+   "house": null,
+   "aff": null,
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.4328,
+    12.3355
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16403572_2_0_0810.webp",
+   "rooms": 32,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01396": {
+   "n": "Nolinski Venezia - Evok Collection",
+   "house": null,
+   "aff": null,
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.433,
+    12.3347
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16930308_2_0_0824.webp",
+   "rooms": 43,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02279": {
+   "n": "The St. Regis Venice",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.4321,
+    12.3351
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4417_2_0_0819.webp",
+   "rooms": 163,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00843": {
+   "n": "Hotel Cipriani, A Belmond Hotel, Venice",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.427,
+    12.3412
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4513_2_0_0819.webp",
+   "rooms": 79,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01435": {
+   "n": "Orient Express Palazzo Dona Giovannelli - A Virtuoso Preview Property",
+   "house": null,
+   "aff": "Orient Express",
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.442616,
+    12.332799
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01465": {
+   "n": "Palais Coburg",
+   "house": null,
+   "aff": null,
+   "city": "Vienna",
+   "country": "Austria",
+   "ll": [
+    48.2059,
+    16.3767
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15552848_2_0_0827.webp",
+   "rooms": 36,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01664": {
+   "n": "Rosewood Vienna",
+   "house": "Rosewood Hotels & Resorts",
+   "aff": null,
+   "city": "Vienna",
+   "country": "Austria",
+   "ll": [
+    48.2096,
+    16.3697
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16568516_2_0_0827.webp",
+   "rooms": 100,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v18385734": {
+   "n": "Mandarin Oriental, Vienna",
+   "house": "Mandarin Oriental",
+   "aff": null,
+   "city": "Vienna",
+   "country": "Austria",
+   "ll": [
+    48.2074,
+    16.3771
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18385677_2_0_0730.webp",
+   "rooms": 138,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00050": {
+   "n": "Almanac Palais Vienna",
+   "house": null,
+   "aff": null,
+   "city": "Vienna",
+   "country": "Austria",
+   "ll": [
+    48.2042,
+    16.377
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18052048_2_0_0822.webp",
+   "rooms": 111,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01848": {
+   "n": "Splendido, A Belmond Hotel, Portofino",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Portofino",
+   "country": "Italy",
+   "ll": [
+    44.3054,
+    9.21018
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4595_2_1_0819.webp",
+   "rooms": 53,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01847": {
+   "n": "Splendido Mare, A Belmond Hotel, Portofino",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Portofino",
+   "country": "Italy",
+   "ll": [
+    44.3033,
+    9.20925
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16177930_2_0_0804.webp",
+   "rooms": 14,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00738": {
+   "n": "Grand Hotel Miramare",
+   "house": null,
+   "aff": null,
+   "city": "Santa Margherita Ligure",
+   "country": "Italy",
+   "ll": [
+    44.3279,
+    9.2151
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4458_2_16_0823.webp",
+   "rooms": 70,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00562": {
+   "n": "Excelsior Palace Portofino Coast",
+   "house": null,
+   "aff": null,
+   "city": "Rapallo",
+   "country": "Italy",
+   "ll": [
+    44.3426,
+    9.22994
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4166_2_0_0814.webp",
+   "rooms": 119,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01588": {
+   "n": "Raffles Europejski Warsaw",
+   "house": "Accor",
+   "aff": null,
+   "city": "Warsaw",
+   "country": "Poland",
+   "ll": [
+    52.242,
+    21.015
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15518195_2_0_0815.webp",
+   "rooms": 106,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00830": {
+   "n": "Hotel Bristol, a Luxury Collection Hotel, Warsaw",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Warsaw",
+   "country": "Poland",
+   "ll": [
+    52.2422,
+    21.0156
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4506_2_0_0827.webp",
+   "rooms": 206,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_v18507427": {
+   "n": "Limelight Hotel Denver",
+   "house": null,
+   "aff": null,
+   "city": "Denver",
+   "country": "United States",
+   "ll": [
+    39.7533,
+    -105.002
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18504260_2_0_0812.webp",
+   "rooms": 200,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02174": {
+   "n": "The Ritz-Carlton, Denver",
+   "house": "Luxury Group at Marriott International",
+   "aff": "Ritz-Carlton",
+   "city": "Denver",
+   "country": "United States",
+   "ll": [
+    39.7498,
+    -104.992
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4097_2_0_0803.webp",
+   "rooms": 205,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v18380679": {
+   "n": "Limelight Boulder",
+   "house": null,
+   "aff": null,
+   "city": "Boulder",
+   "country": "United States",
+   "ll": [
+    40.0105,
+    -105.276
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18377290_2_0_0731.webp",
+   "rooms": 252,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00018": {
+   "n": "ARIA Sky Suites",
+   "house": "MGM Resorts International Operations, Inc.",
+   "aff": null,
+   "city": "Las Vegas",
+   "country": "United States",
+   "ll": [
+    36.108,
+    -115.177
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/5870537_2_0_0829.webp",
+   "rooms": 4004,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00210": {
+   "n": "Bellagio",
+   "house": "MGM Resorts International Operations, Inc.",
+   "aff": null,
+   "city": "Las Vegas",
+   "country": "United States",
+   "ll": [
+    36.1115,
+    -115.175
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4639_2_42_0808.webp",
+   "rooms": 3933,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01950": {
+   "n": "The Cosmopolitan of Las Vegas",
+   "house": "MGM Resorts International Operations, Inc.",
+   "aff": null,
+   "city": "Las Vegas",
+   "country": "United States",
+   "ll": [
+    36.1101,
+    -115.175
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14840683_2_5_0806.webp",
+   "rooms": 3027,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02450": {
+   "n": "Waldorf Astoria Las Vegas",
+   "house": "Hilton Luxury Brands",
+   "aff": null,
+   "city": "Las Vegas",
+   "country": "United States",
+   "ll": [
+    36.1061,
+    -115.174042
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/2071209_2_0_0814.webp",
+   "rooms": 389,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01540": {
+   "n": "Pendry Park City",
+   "house": "Montage International",
+   "aff": null,
+   "city": "Park City",
+   "country": "United States",
+   "ll": [
+    40.6838,
+    -111.556
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16391575_2_0_0815.webp",
+   "rooms": 152,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02460": {
+   "n": "Waldorf Astoria Park City",
+   "house": "Hilton Luxury Brands",
+   "aff": null,
+   "city": "Park City",
+   "country": "United States",
+   "ll": [
+    40.6909,
+    -111.55
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/13794166_2_0_0815.webp",
+   "rooms": 159,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01328": {
+   "n": "Montage Deer Valley",
+   "house": "Montage International",
+   "aff": null,
+   "city": "Park City",
+   "country": "United States",
+   "ll": [
+    40.616,
+    -111.512
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/5528741_2_3_0812.webp",
+   "rooms": 230,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01856": {
+   "n": "Stein Eriksen Lodge Deer Valley",
+   "house": null,
+   "aff": null,
+   "city": "Park City",
+   "country": "United States",
+   "ll": [
+    40.6221,
+    -111.491
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15181356_2_28_0807.webp",
+   "rooms": 184,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00063": {
+   "n": "Aman Venice",
+   "house": "Aman",
+   "aff": "Aman",
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.437,
+    12.3315
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12608627_2_0_0815.webp",
+   "rooms": 24,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01477": {
+   "n": "Palazzo Venart Luxury Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.4413,
+    12.3299
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16752131_2_0_0801.webp",
+   "rooms": 17,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01436": {
+   "n": "Orient Express Venezia",
+   "house": "Accor",
+   "aff": "Orient Express",
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.4425,
+    12.3325
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16814940_2_0_0815.webp",
+   "rooms": 47,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00280": {
+   "n": "Ca' Sagredo Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Venice",
+   "country": "Italy",
+   "ll": [
+    45.4406,
+    12.3347
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3753_2_0_0817.webp",
+   "rooms": 42,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_02392": {
+   "n": "Villa Igiea, a Rocco Forte Hotel",
+   "house": "Rocco Forte Hotels",
+   "aff": null,
+   "city": "Palermo",
+   "country": "Italy",
+   "ll": [
+    38.1449,
+    13.3694
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15974827_2_0_0824.webp",
+   "rooms": 100,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01415": {
+   "n": "One&Only Cape Town",
+   "house": "One&Only Resorts",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9108,
+    18.4195
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4663_2_0_0828.webp",
+   "rooms": 132,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00315": {
+   "n": "Cape Grace, A Fairmont Managed Hotel",
+   "house": "Accor",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9084,
+    18.4205
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4261_2_0_0807.webp",
+   "rooms": 113,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01884": {
+   "n": "Taj Cape Town",
+   "house": "Taj",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9249,
+    18.4198
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/5870530_2_12_0829.webp",
+   "rooms": 176,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_02236": {
+   "n": "The Silo Hotel",
+   "house": "The Royal Portfolio",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9086,
+    18.4227
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15499138_2_0_0731.webp",
+   "rooms": 28,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01343": {
+   "n": "Mount Nelson, A Belmond Hotel, Cape Town",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9316,
+    18.4124
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3392_2_3_0806.webp",
+   "rooms": 198,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_02374": {
+   "n": "Victoria Falls River Lodge",
+   "house": null,
+   "aff": null,
+   "city": "Victoria Falls",
+   "country": "Zimbabwe",
+   "ll": [
+    -17.9318,
+    25.8256
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15588570_2_0_0807.webp",
+   "rooms": 19,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02218": {
+   "n": "The Royal Livingstone Victoria Falls Zambia Hotel by Anantara",
+   "house": "Minor Hotels",
+   "aff": null,
+   "city": "Livingstone",
+   "country": "Zambia",
+   "ll": [
+    -17.918671,
+    25.863776
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4668_2_0_0828.webp",
+   "rooms": 173,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00117": {
+   "n": "Anantara Stanley & Livingstone Victoria Falls Hotel - Virtuoso Preview",
+   "house": "Minor Hotels",
+   "aff": null,
+   "city": "Victoria Falls",
+   "country": "Zimbabwe",
+   "ll": [
+    -18.0044,
+    25.8111
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18241092_2_0_0819.webp",
+   "rooms": 16,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01349": {
+   "n": "Mukwa River Lodge",
+   "house": null,
+   "aff": null,
+   "city": "Livingstone",
+   "country": "Zambia",
+   "ll": [
+    -17.805163,
+    25.685646
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18218779_2_0_0816.webp",
+   "rooms": 8,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_00744": {
+   "n": "Grand Hotel Stockholm",
+   "house": null,
+   "aff": null,
+   "city": "Stockholm",
+   "country": "Sweden",
+   "ll": [
+    59.3296,
+    18.0755
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3759_2_0_0817.webp",
+   "rooms": 273,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02385": {
+   "n": "Villa Dagmar",
+   "house": null,
+   "aff": null,
+   "city": "Stockholm",
+   "country": "Sweden",
+   "ll": [
+    59.3355,
+    18.0778
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16625127_2_0_0815.webp",
+   "rooms": 70,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01196": {
+   "n": "Lydmar Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Stockholm",
+   "country": "Sweden",
+   "ll": [
+    59.3289,
+    18.0781
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14096048_2_0_0805.webp",
+   "rooms": 46,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00917": {
+   "n": "Hotel Vier Jahreszeiten Kempinski Munich",
+   "house": "Kempinski Hotels",
+   "aff": null,
+   "city": "Munich",
+   "country": "Germany",
+   "ll": [
+    48.1389,
+    11.5818
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4246_2_0_0825.webp",
+   "rooms": 297,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01657": {
+   "n": "Rosewood Munich",
+   "house": "Rosewood Hotels & Resorts",
+   "aff": null,
+   "city": "Munich",
+   "country": "Germany",
+   "ll": [
+    48.1411,
+    11.5746
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16641065_2_0_0806.webp",
+   "rooms": 132,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00825": {
+   "n": "Hotel Bayerischer Hof",
+   "house": null,
+   "aff": null,
+   "city": "Munich",
+   "country": "Germany",
+   "ll": [
+    48.1404,
+    11.573
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15473966_2_0_0802.webp",
+   "rooms": 337,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01275": {
+   "n": "Mandarin Oriental, Munich",
+   "house": "Mandarin Oriental",
+   "aff": null,
+   "city": "Munich",
+   "country": "Germany",
+   "ll": [
+    48.1369,
+    11.5809
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3928_2_0_0801.webp",
+   "rooms": 73,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02432": {
+   "n": "W Osaka",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Osaka",
+   "country": "Japan",
+   "ll": [
+    34.6769,
+    135.499
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16764816_2_0_0808.webp",
+   "rooms": 337,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02270": {
+   "n": "The St. Regis Osaka",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Chuo-ku, Osaka",
+   "country": "Japan",
+   "ll": [
+    34.683259,
+    135.501136
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14699100_2_3_0808.webp",
+   "rooms": 160,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_v18395372": {
+   "n": "Patina Osaka",
+   "house": "Capella Hotel Group",
+   "aff": null,
+   "city": "Osaka",
+   "country": "Japan",
+   "ll": [
+    34.6819,
+    135.525
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18391398_2_0_0816.webp",
+   "rooms": 221,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00443": {
+   "n": "Conrad Osaka",
+   "house": "Hilton Luxury Brands",
+   "aff": null,
+   "city": "Osaka",
+   "country": "Japan",
+   "ll": [
+    34.6933,
+    135.495
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15782759_2_0_0814.webp",
+   "rooms": 164,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00374": {
+   "n": "Castiglion del Bosco, A Rosewood Hotel",
+   "house": "Rosewood Hotels & Resorts",
+   "aff": null,
+   "city": "Montalcino",
+   "country": "Italy",
+   "ll": [
+    43.0845,
+    11.4222
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3873_2_1_0827.webp",
+   "rooms": 53,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00229": {
+   "n": "Borgo Finocchieto",
+   "house": null,
+   "aff": null,
+   "city": "Buonconvento",
+   "country": "Italy",
+   "ll": [
+    43.11879,
+    11.460843
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_00371": {
+   "n": "Castello di Velona Resort, Thermal SPA & Winery",
+   "house": null,
+   "aff": null,
+   "city": "Montalcino",
+   "country": "Italy",
+   "ll": [
+    42.9828,
+    11.5365
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15422637_2_0_0806.webp",
+   "rooms": 45,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00366": {
+   "n": "Castello Banfi - Il Borgo",
+   "house": null,
+   "aff": null,
+   "city": "Montalcino",
+   "country": "Italy",
+   "ll": [
+    42.9796,
+    11.3977
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/1690751_2_2_0829.webp",
+   "rooms": 14,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_02451": {
+   "n": "Waldorf Astoria London – Admiralty Arch- A Virtuoso Preview Property",
+   "house": "Hilton Luxury Brands",
+   "aff": null,
+   "city": "London",
+   "country": "United Kingdom",
+   "ll": [
+    51.5068,
+    -0.128658
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18344869_2_0_0829.webp",
+   "rooms": 114,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00462": {
+   "n": "Corinthia London",
+   "house": "Corinthia Hotels",
+   "aff": null,
+   "city": "London",
+   "country": "United Kingdom",
+   "ll": [
+    51.505,
+    -0.126571
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14089788_2_0_0817.webp",
+   "rooms": 279,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01593": {
+   "n": "Raffles London at The OWO",
+   "house": "Accor",
+   "aff": null,
+   "city": "London",
+   "country": "United Kingdom",
+   "ll": [
+    51.5051,
+    -0.125658
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16395467_2_0_0815.webp",
+   "rooms": 120,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_02051": {
+   "n": "The Londoner",
+   "house": null,
+   "aff": null,
+   "city": "London",
+   "country": "United Kingdom",
+   "ll": [
+    51.5099,
+    -0.130485
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16800043_2_0_0815.webp",
+   "rooms": 350,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01920": {
+   "n": "The Cadogan, A Belmond Hotel, London",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "London",
+   "country": "United Kingdom",
+   "ll": [
+    51.497,
+    -0.159286
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15269067_2_0_0829.webp",
+   "rooms": 54,
+   "perks": [
+    "Daily breakfast",
+    "Property credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_01954": {
+   "n": "The Datai Langkawi",
+   "house": null,
+   "aff": null,
+   "city": "Langkawi",
+   "country": "Malaysia",
+   "ll": [
+    6.42283,
+    99.6696
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3963_2_0_0731.webp",
+   "rooms": 121,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  }
+ },
+ "GATES": {
+  "Glasgow": {
+   "n": "Glasgow",
+   "ll": [
+    55.8333,
+    -4.25
+   ],
+   "h": [
+    [
+     "h_00472",
+     9.7
+    ],
+    [
+     "h_00291",
+     23.2
+    ]
+   ]
+  },
+  "Edinburgh": {
+   "n": "Edinburgh",
+   "ll": [
+    55.95,
+    -3.2
+   ],
+   "h": [
+    [
+     "h_00010",
+     0.2
+    ],
+    [
+     "h_01063",
+     0.4
+    ],
+    [
+     "h_01921",
+     0.5
+    ],
+    [
+     "h_00713",
+     0.7
+    ]
+   ]
+  },
+  "Tokyo": {
+   "n": "Tokyo",
+   "ll": [
+    35.6833,
+    139.75
+   ],
+   "h": [
+    [
+     "h_00135",
+     0
+    ],
+    [
+     "h_01452",
+     1
+    ],
+    [
+     "h_00896",
+     1.1
+    ],
+    [
+     "h_v16589873",
+     1.1
+    ]
+   ]
+  },
+  "Seoul": {
+   "n": "Seoul",
+   "ll": [
+    37.5664,
+    127
+   ],
+   "h": [
+    [
+     "h_v18047592",
+     1.2
+    ],
+    [
+     "h_v16143195",
+     1.7
+    ],
+    [
+     "h_v18385701",
+     7.8
+    ],
+    [
+     "h_00445",
+     7.9
+    ]
+   ]
+  },
+  "Montreux": {
+   "n": "Montreux",
+   "ll": [
+    46.4333,
+    6.9167
+   ],
+   "h": [
+    [
+     "h_00593",
+     1
+    ],
+    [
+     "h_00418",
+     2.7
+    ],
+    [
+     "h_00206",
+     23.4
+    ],
+    [
+     "h_01678",
+     23.6
+    ]
+   ]
+  },
+  "Zurich": {
+   "n": "Zurich",
+   "ll": [
+    47.3667,
+    8.55
+   ],
+   "h": [
+    [
+     "h_01108",
+     0.5
+    ],
+    [
+     "h_00200",
+     0.8
+    ],
+    [
+     "h_01260",
+     0.9
+    ],
+    [
+     "h_01526",
+     1
+    ]
+   ]
+  },
+  "Vancouver": {
+   "n": "Vancouver",
+   "ll": [
+    49.25,
+    -123.133
+   ],
+   "h": [
+    [
+     "h_02498",
+     3.2
+    ],
+    [
+     "h_02467",
+     3.7
+    ],
+    [
+     "h_01646",
+     3.9
+    ],
+    [
+     "h_01760",
+     4
+    ]
+   ]
+  },
+  "Calgary": {
+   "n": "Calgary",
+   "ll": [
+    51.0497,
+    -114.07
+   ],
+   "h": [
+    [
+     "h_00600",
+     0.7
+    ]
+   ]
+  },
+  "Montreal": {
+   "n": "Montreal",
+   "ll": [
+    45.5,
+    -73.5833
+   ],
+   "h": [
+    [
+     "h_01622",
+     0.5
+    ],
+    [
+     "h_00659",
+     0.6
+    ],
+    [
+     "h_01158",
+     0.6
+    ],
+    [
+     "h_00612",
+     1.2
+    ]
+   ]
+  },
+  "Halifax": {
+   "n": "Halifax",
+   "ll": [
+    44.65,
+    -63.6
+   ],
+   "h": [
+    [
+     "h_01348",
+     2.3
+    ]
+   ]
+  },
+  "Barcelona": {
+   "n": "Barcelona",
+   "ll": [
+    41.3833,
+    2.1833
+   ],
+   "h": [
+    [
+     "h_01728",
+     0.4
+    ],
+    [
+     "h_00727",
+     0.5
+    ],
+    [
+     "h_01905",
+     0.5
+    ],
+    [
+     "h_00844",
+     0.7
+    ]
+   ]
+  },
+  "Lisbon": {
+   "n": "Lisbon",
+   "ll": [
+    38.7167,
+    -9.1333
+   ],
+   "h": [
+    [
+     "h_v16768337",
+     0.6
+    ],
+    [
+     "h_01456",
+     1
+    ],
+    [
+     "h_01564",
+     1
+    ],
+    [
+     "h_02007",
+     1
+    ]
+   ]
+  },
+  "Budapest": {
+   "n": "Budapest",
+   "ll": [
+    47.5,
+    19.0833
+   ],
+   "h": [
+    [
+     "h_00144",
+     2.2
+    ],
+    [
+     "h_00037",
+     2.3
+    ],
+    [
+     "h_01579",
+     2.3
+    ],
+    [
+     "h_01051",
+     2.4
+    ]
+   ]
+  },
+  "Paris": {
+   "n": "Paris",
+   "ll": [
+    48.8667,
+    2.3333
+   ],
+   "h": [
+    [
+     "h_01513",
+     0.3
+    ],
+    [
+     "h_01069",
+     0.4
+    ],
+    [
+     "h_01621",
+     0.4
+    ],
+    [
+     "h_00753",
+     0.5
+    ]
+   ]
+  },
+  "Toronto": {
+   "n": "Toronto",
+   "ll": [
+    43.675,
+    -79.425
+   ],
+   "h": [
+    [
+     "h_01521",
+     2.5
+    ],
+    [
+     "h_01995",
+     2.6
+    ],
+    [
+     "h_00008",
+     4
+    ],
+    [
+     "h_00173",
+     4.2
+    ]
+   ]
+  },
+  "Berne": {
+   "n": "Berne",
+   "ll": [
+    46.9167,
+    7.4667
+   ],
+   "h": [
+    [
+     "h_00211",
+     3.7
+    ],
+    [
+     "h_00908",
+     4.1
+    ],
+    [
+     "h_02353",
+     39.2
+    ]
+   ]
+  },
+  "Labuan Bajo, Flores": {
+   "n": "Labuan Bajo, Flores",
+   "ll": [
+    -8.5,
+    119.875
+   ],
+   "h": [
+    [
+     "h_v18378979",
+     4
+    ]
+   ]
+  },
+  "Singapore": {
+   "n": "Singapore",
+   "ll": [
+    1.2931,
+    103.856
+   ],
+   "h": [
+    [
+     "h_01598",
+     0.3
+    ],
+    [
+     "h_v16675647",
+     0.3
+    ],
+    [
+     "h_01280",
+     0.4
+    ],
+    [
+     "h_02189",
+     0.5
+    ]
+   ]
+  },
+  "Rome": {
+   "n": "Rome",
+   "ll": [
+    41.9072,
+    12.4804
+   ],
+   "h": [
+    [
+     "h_01625",
+     0.1
+    ],
+    [
+     "h_01559",
+     0.2
+    ],
+    [
+     "h_01978",
+     0.2
+    ],
+    [
+     "h_00868",
+     0.3
+    ],
+    [
+     "h_01434",
+     1.1
+    ]
+   ]
+  },
+  "Cuzco": {
+   "n": "Cuzco",
+   "ll": [
+    -13.5166,
+    -71.9784
+   ],
+   "h": [
+    [
+     "h_v6163631",
+     0.2
+    ],
+    [
+     "h_01458",
+     0.3
+    ],
+    [
+     "h_01463",
+     0.5
+    ],
+    [
+     "h_01893",
+     27.3
+    ],
+    [
+     "h_01620",
+     30.9
+    ]
+   ]
+  },
+  "Istanbul": {
+   "n": "Istanbul",
+   "ll": [
+    41.0138,
+    28.9497
+   ],
+   "h": [
+    [
+     "h_02108",
+     2.6
+    ],
+    [
+     "h_02182",
+     4.6
+    ],
+    [
+     "h_02259",
+     5.2
+    ],
+    [
+     "h_01502",
+     5.4
+    ]
+   ]
+  },
+  "Lanai City": {
+   "n": "Lanai City",
+   "ll": [
+    20.7833,
+    -156.95
+   ],
+   "h": [
+    [
+     "h_01725",
+     6.8
+    ],
+    [
+     "h_00679",
+     7.1
+    ],
+    [
+     "h_01330",
+     38.1
+    ],
+    [
+     "h_02148",
+     39.2
+    ]
+   ]
+  },
+  "Lahaina, Maui": {
+   "n": "Lahaina, Maui",
+   "ll": [
+    21.002,
+    -156.666
+   ],
+   "h": [
+    [
+     "h_01330",
+     0.3
+    ],
+    [
+     "h_02148",
+     1.2
+    ],
+    [
+     "h_01725",
+     32
+    ],
+    [
+     "h_00679",
+     37.5
+    ]
+   ]
+  },
+  "Quebec": {
+   "n": "Quebec",
+   "ll": [
+    46.8,
+    -71.25
+   ],
+   "h": [
+    [
+     "h_00592",
+     3.7
+    ],
+    [
+     "h_00156",
+     4
+    ]
+   ]
+  },
+  "Lucerne": {
+   "n": "Lucerne",
+   "ll": [
+    47.0833,
+    8.2667
+   ],
+   "h": [
+    [
+     "h_01253",
+     5.1
+    ],
+    [
+     "h_01451",
+     12.9
+    ],
+    [
+     "h_02092",
+     12.9
+    ],
+    [
+     "h_00395",
+     13.2
+    ]
+   ]
+  },
+  "Zermatt": {
+   "n": "Zermatt",
+   "ll": [
+    46.0207,
+    7.7491
+   ],
+   "h": [
+    [
+     "h_00751",
+     0.2
+    ],
+    [
+     "h_01325",
+     0.3
+    ],
+    [
+     "h_00268",
+     0.4
+    ],
+    [
+     "h_00799",
+     13.5
+    ]
+   ]
+  },
+  "Oslo": {
+   "n": "Oslo",
+   "ll": [
+    59.9167,
+    10.75
+   ],
+   "h": [
+    [
+     "h_00846",
+     1
+    ],
+    [
+     "h_01831",
+     1.6
+    ]
+   ]
+  },
+  "Florence": {
+   "n": "Florence",
+   "ll": [
+    43.7721,
+    11.2451
+   ],
+   "h": [
+    [
+     "h_01970",
+     0
+    ],
+    [
+     "h_02256",
+     0
+    ],
+    [
+     "h_00737",
+     0.4
+    ],
+    [
+     "h_02114",
+     0.4
+    ],
+    [
+     "h_02402",
+     7.1
+    ]
+   ]
+  },
+  "Prague": {
+   "n": "Prague",
+   "ll": [
+    50.0833,
+    14.4667
+   ],
+   "h": [
+    [
+     "h_00132",
+     2.6
+    ],
+    [
+     "h_00585",
+     3.5
+    ],
+    [
+     "h_00667",
+     3.8
+    ],
+    [
+     "h_00162",
+     4.3
+    ]
+   ]
+  },
+  "Amalfi": {
+   "n": "Amalfi",
+   "ll": [
+    40.6333,
+    14.6
+   ],
+   "h": [
+    [
+     "h_00099",
+     0.2
+    ],
+    [
+     "h_00699",
+     0.2
+    ],
+    [
+     "h_00905",
+     0.7
+    ],
+    [
+     "h_01467",
+     2.1
+    ],
+    [
+     "h_00343",
+     2.3
+    ]
+   ]
+  },
+  "Venice": {
+   "n": "Venice",
+   "ll": [
+    45.4332,
+    12.3372
+   ],
+   "h": [
+    [
+     "h_00178",
+     0
+    ],
+    [
+     "h_02410",
+     0.1
+    ],
+    [
+     "h_01396",
+     0.2
+    ],
+    [
+     "h_02279",
+     0.2
+    ],
+    [
+     "h_00843",
+     0.8
+    ],
+    [
+     "h_01435",
+     1.1
+    ]
+   ]
+  },
+  "Vienna": {
+   "n": "Vienna",
+   "ll": [
+    48.2082,
+    16.3738
+   ],
+   "h": [
+    [
+     "h_01465",
+     0.3
+    ],
+    [
+     "h_01664",
+     0.3
+    ],
+    [
+     "h_v18385734",
+     0.3
+    ],
+    [
+     "h_00050",
+     0.5
+    ]
+   ]
+  },
+  "Portofino": {
+   "n": "Portofino",
+   "ll": [
+    44.3054,
+    9.2102
+   ],
+   "h": [
+    [
+     "h_01848",
+     0
+    ],
+    [
+     "h_01847",
+     0.2
+    ],
+    [
+     "h_00738",
+     2.5
+    ],
+    [
+     "h_00562",
+     4.4
+    ]
+   ]
+  },
+  "Warsaw": {
+   "n": "Warsaw",
+   "ll": [
+    52.2354,
+    21.0095
+   ],
+   "h": [
+    [
+     "h_01588",
+     0.8
+    ],
+    [
+     "h_00830",
+     0.9
+    ]
+   ]
+  },
+  "Denver": {
+   "n": "Denver",
+   "ll": [
+    39.7525,
+    -104.999
+   ],
+   "h": [
+    [
+     "h_v18507427",
+     0.3
+    ],
+    [
+     "h_02174",
+     0.7
+    ],
+    [
+     "h_v18380679",
+     37.2
+    ]
+   ]
+  },
+  "Las Vegas": {
+   "n": "Las Vegas",
+   "ll": [
+    36.11,
+    -115.212
+   ],
+   "h": [
+    [
+     "h_00018",
+     3.2
+    ],
+    [
+     "h_00210",
+     3.3
+    ],
+    [
+     "h_01950",
+     3.3
+    ],
+    [
+     "h_02450",
+     3.4
+    ]
+   ]
+  },
+  "Salt Lake City": {
+   "n": "Salt Lake City",
+   "ll": [
+    40.7242,
+    -111.879
+   ],
+   "h": [
+    [
+     "h_01540",
+     27.6
+    ],
+    [
+     "h_02460",
+     28
+    ],
+    [
+     "h_01328",
+     33.2
+    ],
+    [
+     "h_01856",
+     34.6
+    ]
+   ]
+  },
+  "Venezia": {
+   "n": "Venezia",
+   "ll": [
+    45.4386,
+    12.3267
+   ],
+   "h": [
+    [
+     "h_00063",
+     0.4
+    ],
+    [
+     "h_01477",
+     0.4
+    ],
+    [
+     "h_01436",
+     0.6
+    ],
+    [
+     "h_00280",
+     0.7
+    ],
+    [
+     "h_01435",
+     0.7
+    ],
+    [
+     "h_00843",
+     1.7
+    ]
+   ]
+  },
+  "Palermo": {
+   "n": "Palermo",
+   "ll": [
+    38.1167,
+    13.3667
+   ],
+   "h": [
+    [
+     "h_02392",
+     3.1
+    ]
+   ]
+  },
+  "Cape Town": {
+   "n": "Cape Town",
+   "ll": [
+    -33.9167,
+    18.4167
+   ],
+   "h": [
+    [
+     "h_01415",
+     0.7
+    ],
+    [
+     "h_00315",
+     1
+    ],
+    [
+     "h_01884",
+     1
+    ],
+    [
+     "h_02236",
+     1.1
+    ],
+    [
+     "h_01343",
+     1.7
+    ]
+   ]
+  },
+  "Victoria Falls": {
+   "n": "Victoria Falls",
+   "ll": [
+    -17.9333,
+    25.8333
+   ],
+   "h": [
+    [
+     "h_02374",
+     0.8
+    ],
+    [
+     "h_02218",
+     3.6
+    ],
+    [
+     "h_00117",
+     8.2
+    ],
+    [
+     "h_01349",
+     21.1
+    ]
+   ]
+  },
+  "Stockholm": {
+   "n": "Stockholm",
+   "ll": [
+    59.3333,
+    18.05
+   ],
+   "h": [
+    [
+     "h_00744",
+     1.5
+    ],
+    [
+     "h_02385",
+     1.6
+    ],
+    [
+     "h_01196",
+     1.7
+    ]
+   ]
+  },
+  "Munich": {
+   "n": "Munich",
+   "ll": [
+    48.15,
+    11.5833
+   ],
+   "h": [
+    [
+     "h_00917",
+     1.2
+    ],
+    [
+     "h_01657",
+     1.2
+    ],
+    [
+     "h_00825",
+     1.3
+    ],
+    [
+     "h_01275",
+     1.5
+    ]
+   ]
+  },
+  "Osaka": {
+   "n": "Osaka",
+   "ll": [
+    34.6667,
+    135.5
+   ],
+   "h": [
+    [
+     "h_02432",
+     1.1
+    ],
+    [
+     "h_02270",
+     1.8
+    ],
+    [
+     "h_v18395372",
+     2.8
+    ],
+    [
+     "h_00443",
+     3
+    ]
+   ]
+  },
+  "Montalcino": {
+   "n": "Montalcino",
+   "ll": [
+    43.05,
+    11.4833
+   ],
+   "h": [
+    [
+     "h_00374",
+     6.3
+    ],
+    [
+     "h_00229",
+     7.9
+    ],
+    [
+     "h_00371",
+     8.6
+    ],
+    [
+     "h_00366",
+     10.5
+    ]
+   ]
+  },
+  "London": {
+   "n": "London",
+   "ll": [
+    51.5072,
+    -0.1276
+   ],
+   "h": [
+    [
+     "h_02451",
+     0.1
+    ],
+    [
+     "h_00462",
+     0.3
+    ],
+    [
+     "h_01593",
+     0.3
+    ],
+    [
+     "h_02051",
+     0.4
+    ],
+    [
+     "h_01920",
+     2.5
+    ]
+   ]
+  },
+  "Langkawi": {
+   "n": "Langkawi",
+   "ll": [
+    6.3167,
+    99.85
+   ],
+   "h": [
+    [
+     "h_01954",
+     23.2
+    ]
+   ]
+  }
+ },
+ "BYTRIP": {
+  "14459655": {
+   "pre": "Glasgow",
+   "post": "Edinburgh"
+  },
+  "15411869": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "15414299": {
+   "pre": "Vancouver",
+   "post": "Vancouver"
+  },
+  "15422590": {
+   "pre": "Montreal",
+   "post": "Halifax"
+  },
+  "15694760": {
+   "pre": "Munich",
+   "post": null
+  },
+  "15801915": {
+   "pre": "Zurich",
+   "post": "Lucerne"
+  },
+  "15801918": {
+   "pre": "Lucerne",
+   "post": "Zermatt"
+  },
+  "15801927": {
+   "pre": "Montreux",
+   "post": "Zurich"
+  },
+  "15937723": {
+   "pre": null,
+   "post": "Labuan Bajo, Flores"
+  },
+  "16259951": {
+   "pre": "Warsaw",
+   "post": "Warsaw"
+  },
+  "16264683": {
+   "pre": "Vancouver",
+   "post": null
+  },
+  "16265362": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16265364": {
+   "pre": "Vancouver",
+   "post": "Vancouver"
+  },
+  "16265380": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16265382": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16265779": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16265799": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16265801": {
+   "pre": "Toronto",
+   "post": "Vancouver"
+  },
+  "16265802": {
+   "pre": "Vancouver",
+   "post": "Toronto"
+  },
+  "16265804": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16265809": {
+   "pre": "Halifax",
+   "post": "Vancouver"
+  },
+  "16265810": {
+   "pre": "Vancouver",
+   "post": "Halifax"
+  },
+  "16265811": {
+   "pre": "Toronto",
+   "post": "Quebec"
+  },
+  "16517339": {
+   "pre": null,
+   "post": "Cape Town"
+  },
+  "16517350": {
+   "pre": "Cape Town",
+   "post": null
+  },
+  "16517353": {
+   "pre": null,
+   "post": "Victoria Falls"
+  },
+  "16530773": {
+   "pre": "Oslo",
+   "post": "Oslo"
+  },
+  "16549551": {
+   "pre": "Singapore",
+   "post": "Singapore"
+  },
+  "16870329": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "16883754": {
+   "pre": "Berne",
+   "post": "Zurich"
+  },
+  "16907895": {
+   "pre": "Toronto",
+   "post": "Quebec"
+  },
+  "16921421": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "16921534": {
+   "pre": "Montalcino",
+   "post": "Montalcino",
+   "house": "Orient Express"
+  },
+  "17900338": {
+   "pre": "Paris",
+   "post": "Istanbul",
+   "house": "Belmond"
+  },
+  "17900783": {
+   "pre": "Budapest",
+   "post": "Paris",
+   "house": "Belmond"
+  },
+  "17903466": {
+   "pre": "Singapore",
+   "post": "Singapore"
+  },
+  "17903467": {
+   "pre": "Singapore",
+   "post": "Singapore"
+  },
+  "18047741": {
+   "pre": "Oslo",
+   "post": null
+  },
+  "18087224": {
+   "pre": "Barcelona",
+   "post": "Lisbon"
+  },
+  "18130309": {
+   "pre": "Halifax",
+   "post": "Toronto"
+  },
+  "18140880": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18169105": {
+   "pre": "Venice",
+   "post": "Paris",
+   "house": "Belmond"
+  },
+  "18169138": {
+   "pre": "Paris",
+   "post": "Istanbul",
+   "house": "Belmond"
+  },
+  "18189681": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18189714": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18218760": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18218761": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18218771": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18221485": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18225459": {
+   "pre": "Seoul",
+   "post": "Seoul"
+  },
+  "18226067": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18226109": {
+   "pre": "Toronto",
+   "post": "Quebec"
+  },
+  "18228824": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18230327": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18230329": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18237566": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18237628": {
+   "pre": "Seoul",
+   "post": "Seoul"
+  },
+  "18237630": {
+   "pre": "Seoul",
+   "post": "Tokyo"
+  },
+  "18237631": {
+   "pre": "Seoul",
+   "post": "Seoul"
+  },
+  "18237634": {
+   "pre": "Tokyo",
+   "post": "Seoul"
+  },
+  "18239421": {
+   "pre": "Paris",
+   "post": "Portofino",
+   "house": "Belmond"
+  },
+  "18239634": {
+   "pre": "Rome",
+   "post": "Palermo",
+   "house": "Orient Express"
+  },
+  "18239689": {
+   "pre": "Rome",
+   "post": "Venezia",
+   "house": "Orient Express"
+  },
+  "18241043": {
+   "pre": "Rome",
+   "post": "Venice",
+   "house": "Orient Express"
+  },
+  "18256654": {
+   "pre": "Tokyo",
+   "post": "Tokyo"
+  },
+  "18256656": {
+   "pre": "Tokyo",
+   "post": "Osaka"
+  },
+  "18262679": {
+   "pre": "Palermo",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18262682": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18262696": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18279768": {
+   "pre": "Stockholm",
+   "post": null
+  },
+  "18279776": {
+   "pre": "Oslo",
+   "post": null
+  },
+  "18282979": {
+   "pre": "Rome",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18282982": {
+   "pre": "Venice",
+   "post": "Rome",
+   "house": "Orient Express"
+  },
+  "18300296": {
+   "pre": "Singapore",
+   "post": "Singapore"
+  },
+  "18353329": {
+   "pre": null,
+   "post": "Denver"
+  },
+  "18357357": {
+   "pre": null,
+   "post": "Denver"
+  },
+  "18357359": {
+   "pre": "Denver",
+   "post": null
+  },
+  "18358381": {
+   "pre": "Denver",
+   "post": "Denver"
+  },
+  "18358388": {
+   "pre": "Las Vegas",
+   "post": "Denver"
+  },
+  "18358390": {
+   "pre": null,
+   "post": "Denver"
+  },
+  "18358391": {
+   "pre": "Salt Lake City",
+   "post": "Denver"
+  },
+  "18360265": {
+   "pre": "Las Vegas",
+   "post": "Denver"
+  },
+  "18374949": {
+   "pre": null,
+   "post": "Denver"
+  },
+  "18380630": {
+   "pre": "Rome",
+   "post": "Istanbul",
+   "house": "Orient Express"
+  },
+  "18391993": {
+   "pre": "Cuzco",
+   "post": null,
+   "house": "Belmond"
+  },
+  "18403316": {
+   "pre": "Zurich",
+   "post": "Zurich"
+  },
+  "18479805": {
+   "pre": "Zurich",
+   "post": "Montreux"
+  },
+  "18505444": {
+   "pre": "Zurich",
+   "post": "Lucerne"
+  },
+  "18535387": {
+   "pre": "Budapest",
+   "post": "Paris",
+   "house": "Belmond"
+  },
+  "18535389": {
+   "pre": "Paris",
+   "post": "Amalfi",
+   "house": "Belmond"
+  },
+  "18535391": {
+   "pre": "Istanbul",
+   "post": "Paris",
+   "house": "Belmond"
+  },
+  "18535397": {
+   "pre": "Venice",
+   "post": "Paris",
+   "house": "Belmond"
+  },
+  "18535429": {
+   "pre": "Paris",
+   "post": "Florence",
+   "house": "Belmond"
+  },
+  "18535436": {
+   "pre": "Paris",
+   "post": "Istanbul",
+   "house": "Belmond"
+  },
+  "18535439": {
+   "pre": "Paris",
+   "post": "Vienna",
+   "house": "Belmond"
+  },
+  "18535441": {
+   "pre": "Paris",
+   "post": "Budapest",
+   "house": "Belmond"
+  },
+  "18535446": {
+   "pre": "Paris",
+   "post": "Prague",
+   "house": "Belmond"
+  },
+  "18535455": {
+   "pre": "Prague",
+   "post": "Paris",
+   "house": "Belmond"
+  },
+  "18535506": {
+   "pre": "Paris",
+   "post": "Florence",
+   "house": "Belmond"
+  },
+  "18535511": {
+   "pre": "Paris",
+   "post": "Venice",
+   "house": "Belmond"
+  },
+  "18535748": {
+   "pre": "London",
+   "post": "London",
+   "house": "Belmond"
+  },
+  "18535776": {
+   "pre": "London",
+   "post": "London",
+   "house": "Belmond"
+  },
+  "18535801": {
+   "pre": "London",
+   "post": "London",
+   "house": "Belmond"
+  },
+  "18535934": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18535969": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18535974": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18535978": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18535982": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18535994": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18536021": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18536036": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18536039": {
+   "pre": "Edinburgh",
+   "post": "Edinburgh",
+   "house": "Belmond"
+  },
+  "18536079": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  },
+  "18536082": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  },
+  "18536085": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  },
+  "18536109": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  },
+  "18536110": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  },
+  "18536111": {
+   "pre": "Singapore",
+   "post": "Langkawi",
+   "house": "Belmond"
+  },
+  "18536113": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  },
+  "18578694": {
+   "pre": "Lanai City",
+   "post": "Lahaina, Maui"
+  },
+  "18585957": {
+   "pre": "Singapore",
+   "post": "Singapore",
+   "house": "Belmond"
+  }
+ }
+}

@@ -20,6 +20,7 @@
 import { useCallback, useRef } from "react";
 import AtlasCollection from "./AtlasCollection";
 import JourneyDossier, { type JourneyRecord } from "./JourneyDossier";
+import { indexGateways, NO_GATEWAYS, type GatewayIndex } from "@/lib/atlas/gateway-hotels";
 import { adaptYacht, YACHT_DESCRIPTOR } from "@/lib/atlas/adapters/yacht";
 import { loadSeaRoutes } from "@/lib/atlas/adapters/sea-geometry";
 import type { RawVoyageAtlas } from "@/lib/atlas/adapters/voyage";
@@ -27,6 +28,9 @@ import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 
 export default function AtlasYacht() {
+  /* The hotels at either end — see lib/atlas/gateway-hotels.ts. */
+  const gatewaysRef = useRef<GatewayIndex>(NO_GATEWAYS);
+
   const load = useCallback(async (): Promise<{
     offerings: AtlasOffering[];
     ctx: ParseContext;
@@ -37,15 +41,23 @@ export default function AtlasYacht() {
   }> => {
     // Itinerary and precomputed routes together, as the Leaflet atlas loads its
     // land mask alongside the tiles rather than waiting for a hover.
-    const [raw, seaRoutes] = await Promise.all([
+    const [raw, seaRoutes, gateways] = await Promise.all([
       fetch("/maps/yacht/itinerary.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`yacht itinerary ${r.status}`);
         return r.json() as Promise<RawVoyageAtlas>;
       }),
       loadSeaRoutes("yacht"),
+      // The hotels at either end of the voyage. This is the collection the join
+      // was built for: every yacht here is a hotel house that went to sea, and
+      // the night before an Aman at Sea sailing belongs at Aman Venice, 400m
+      // from the berth. Non-fatal — the map draws without it.
+      fetch("/maps/yacht/gateways.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
     ]);
 
     const offerings = adaptYacht(raw);
+    gatewaysRef.current = indexGateways(gateways);
 
     // Keep the raw trips for the dossier, keyed the way the adapter keys ids.
     recordsRef.current = new Map((raw.TRIPS ?? []).map((t) => [String(t.id), {
@@ -61,6 +73,7 @@ export default function AtlasYacht() {
       included: [],
       offers: (t as { promotions?: JourneyRecord["offers"] }).promotions ?? [],
       href: t.u ?? null,
+      stays: gatewaysRef.current.forTrip(String(t.id)),
     } as JourneyRecord]));
     const regionLabels: Record<string, string> = {};
     for (const [key, r] of Object.entries(raw.REGIONS || {})) {

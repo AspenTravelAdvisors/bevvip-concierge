@@ -5270,6 +5270,71 @@ button.card-book {
 .jd-camp-name { font-size: 12px; color: var(--ink, #e8e5dc); }
 .jd-camp-meta { font-size: 11px; color: var(--ink-dim, #9c998f); }
 .jd-camp-perks { font-size: 11px; color: #c9a7e6; }
+/* The nights either side of a journey — the gateway hotels. Same row shape as
+   the camps above (thumbnail, name, meta, perks), because they are the same
+   object from the same atlas, but in the dossier's own gold rather than
+   safari's jacaranda: five collections share this block and none of them is
+   safari, so it cannot borrow one collection's accent. */
+.jd-stays-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-dim, #9c998f);
+}
+/* "Before — Venice, Italy". A caption under the block's one heading, not a
+   heading of its own: the two ends are halves of one subject. */
+.jd-stays-side {
+  margin: 10px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #d8c98a;
+}
+.jd-stays { list-style: none; margin: 6px 0 0; padding: 0; }
+.jd-stays li + li { margin-top: 6px; }
+.jd-stay {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid rgba(230, 212, 136, 0.24);
+  border-radius: 7px;
+  background: rgba(230, 212, 136, 0.06);
+  text-decoration: none;
+}
+.jd-stay:hover { border-color: rgba(230, 212, 136, 0.55); background: rgba(230, 212, 136, 0.12); }
+/* The journey's own house, which is also why this row sorted first. */
+.jd-stay--house { border-color: rgba(230, 212, 136, 0.5); background: rgba(230, 212, 136, 0.11); }
+.jd-stay img, .jd-stay-empty {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+}
+.jd-stay-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.jd-stay-name { font-size: 12px; color: var(--ink, #e8e5dc); }
+.jd-stay-flag {
+  margin-right: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(230, 212, 136, 0.18);
+  color: #f0dca6;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.jd-stay-meta { font-size: 11px; color: var(--ink-dim, #9c998f); }
+.jd-stay-perks { font-size: 11px; color: #e0cd8b; }
+.jd-stays-more {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #e0cd8b;
+  text-decoration: none;
+}
+.jd-stays-more:hover { text-decoration: underline; }
 .jd-book {
   display: inline-block;
   margin-top: 14px;

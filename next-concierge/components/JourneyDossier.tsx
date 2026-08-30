@@ -17,6 +17,7 @@
 
 import { useEffect, useRef } from "react";
 import { campHref, type SafariCamp } from "@/lib/atlas/safari-camps";
+import { stayHref, cityHref, type GatewaySide, type JourneyStays } from "@/lib/atlas/gateway-hotels";
 import { askAboutDays, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import { experiencesAsked } from "@/lib/analytics";
 
@@ -52,6 +53,21 @@ export interface JourneyRecord {
   camps?: SafariCamp[];
   /** How near a camp had to be to a stop to be listed, for the note. */
   campRadiusKm?: number | null;
+  /*
+   * ── The nights either side, everything except safari ─────────────────────
+   *
+   * The counterpart to `camps`, and the mirror image of it. A safari's stops
+   * ARE beds we sell; a jet expedition's, a voyage's and a rail journey's are
+   * cities, which is why those five collections had nothing to put in the
+   * block above. What they do have is a first stop and a last stop — nobody
+   * flies in on the morning of embarkation — and those two nights are the part
+   * of the journey the supplier's file never covers and we can book outright.
+   *
+   * Read lib/atlas/gateway-hotels.ts before changing how this renders: the
+   * data supports "where to stay before" and does NOT support "this night is
+   * included", and the difference is load-bearing.
+   */
+  stays?: JourneyStays | null;
 }
 
 export default function JourneyDossier({
@@ -72,6 +88,7 @@ export default function JourneyDossier({
 
   const stops = (record.itinerary ?? []).filter((s) => s && (s.name || s.sea));
   const camps = record.camps ?? [];
+  const stays = record.stays ?? null;
   const radius = record.campRadiusKm ?? 25;
   const offers = (record.offers ?? []).filter((o) => o && o.name);
   const included = (record.included ?? []).filter(Boolean);
@@ -192,6 +209,38 @@ export default function JourneyDossier({
           </>
         )}
 
+        {stays && (
+          <>
+            {/* One label for the block, and a caption per end inside it. The
+                dossier's other sections are one heading over one list; this is
+                one subject — the nights either side — that happens to have two
+                halves, and heading it twice made the panel read as two
+                unrelated offers. */}
+            <p className="jd-label">Where to Stay Before &amp; After</p>
+            {/* The claim, stated once — as it is over the camps, and once
+                rather than over each list, because a caveat printed twice in
+                one panel reads as boilerplate instead of as the caveat it is.
+                Without it a reader takes the list for the operator's own
+                pre-tour hotel, which some fares do include and no feed names. */}
+            <p className="jd-stays-note">
+              Where this journey begins and ends, the hotels we hold VIP perks on
+              within {stays.radiusKm}km. The nights either side are not part of
+              the fare &mdash; we book them alongside it.
+            </p>
+            {/* One list for a round trip: "Before & after — Venice" is the true
+                statement for a voyage that returns to its berth, and the same
+                three hotels printed twice is the false-looking one. */}
+            {stays.sameEnds && stays.pre ? (
+              <StaySection caption={"Before & after"} side={stays.pre} stays={stays} />
+            ) : (
+              <>
+                {stays.pre && <StaySection caption="Before" side={stays.pre} stays={stays} />}
+                {stays.post && <StaySection caption="After" side={stays.post} stays={stays} />}
+              </>
+            )}
+          </>
+        )}
+
         {included.length > 0 && (
           <>
             <p className="jd-label">Included</p>
@@ -223,5 +272,80 @@ export default function JourneyDossier({
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * One end of a journey, as a list of beds.
+ *
+ * Deliberately the same shape as the camps list above it — thumbnail, name,
+ * one meta line, the perks — because they are the same object arriving from
+ * the same atlas, and a reader who has learned to read one row should not have
+ * to learn a second. What differs is the claim in the note, and the flag: a
+ * row from the journey's OWN house is first in the list, and says why.
+ */
+function StaySection({
+  caption,
+  side,
+  stays,
+}: {
+  caption: string;
+  side: GatewaySide;
+  stays: JourneyStays;
+}) {
+  const city = side.stays.find((s) => s.city)?.city ?? null;
+  const more = cityHref(city);
+  return (
+    <>
+      <p className="jd-stays-side">
+        {caption}
+        {side.place ? ` — ${side.place}` : ""}
+      </p>
+      <ul className="jd-stays">
+        {side.stays.map((h) => (
+          <li key={h.id}>
+            <a href={stayHref(h)} className={`jd-stay${h.sameHouse ? " jd-stay--house" : ""}`}>
+              {h.thumb ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={h.thumb} alt="" loading="lazy" />
+              ) : (
+                <span className="jd-stay-empty" />
+              )}
+              <span className="jd-stay-text">
+                <span className="jd-stay-name">
+                  {/* Why this row is first, and NOT the house's name: the name
+                      is already the first two words of nearly every hotel this
+                      flag lands on — "Four Seasons  Four Seasons Hotel
+                      Bangkok", "Orient Express  Orient Express Venezia" — so
+                      naming the house here says the same thing twice and says
+                      nothing about the relation. The relation is the news. */}
+                  {h.sameHouse && stays.house && (
+                    <span className="jd-stay-flag" title={`Also ${stays.house}`}>
+                      Same house
+                    </span>
+                  )}
+                  {h.name}
+                </span>
+                <span className="jd-stay-meta">
+                  {[
+                    h.city,
+                    `${h.km < 1 ? "under 1" : Math.round(h.km)}km away`,
+                    h.rooms ? `${h.rooms} rooms` : null,
+                  ].filter(Boolean).join(" · ")}
+                </span>
+                {h.perks.length > 0 && (
+                  <span className="jd-stay-perks">{h.perks.join(" · ")}</span>
+                )}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      {more && (
+        <a className="jd-stays-more" href={more}>
+          Every hotel we hold in {city} ↗
+        </a>
+      )}
+    </>
   );
 }

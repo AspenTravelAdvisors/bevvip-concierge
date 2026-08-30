@@ -27,6 +27,7 @@
 import { useCallback, useRef } from "react";
 import AtlasCollection from "./AtlasCollection";
 import JourneyDossier, { type JourneyRecord } from "./JourneyDossier";
+import { indexGateways, NO_GATEWAYS, type GatewayIndex } from "@/lib/atlas/gateway-hotels";
 import {
   adaptCruise,
   CRUISE_DESCRIPTOR,
@@ -40,6 +41,9 @@ import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 
 export default function AtlasCruise() {
+  /* The hotels at either end — see lib/atlas/gateway-hotels.ts. */
+  const gatewaysRef = useRef<GatewayIndex>(NO_GATEWAYS);
+
   const load = useCallback(async (): Promise<{
     offerings: AtlasOffering[];
     ctx: ParseContext;
@@ -48,7 +52,7 @@ export default function AtlasCruise() {
     brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null }>;
     logoBase?: string;
   }> => {
-    const [sailings, meta, routes, regionOverrides, seaRoutes] = await Promise.all([
+    const [sailings, meta, routes, regionOverrides, seaRoutes, gateways] = await Promise.all([
       fetch("/maps/cruise/sailings.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`cruise sailings ${r.status}`);
         return r.json() as Promise<RawCruiseSailings>;
@@ -68,9 +72,19 @@ export default function AtlasCruise() {
         .then((r) => (r.ok ? (r.json() as Promise<RawCruiseRegionOverrides>) : {}))
         .catch(() => ({} as RawCruiseRegionOverrides)),
       loadSeaRoutes("cruise"),
+      // The hotels at either end of the sailing — the collection where the
+      // night before is least optional and hardest to place. Where the gateway
+      // is a city it is answered well (Reykjavík, Vancouver, Lisbon, Papeete);
+      // where it is Longyearbyen or Puerto Baquerizo Moreno the hotel atlas
+      // holds nothing within reach, and 668 sailings get no block rather than a
+      // wrong one. Non-fatal: without the file the block simply does not render.
+      fetch("/maps/cruise/gateways.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
     ]);
 
     const offerings = adaptCruise(sailings, meta, routes, regionOverrides);
+    gatewaysRef.current = indexGateways(gateways);
 
     /*
      * Records for the dossier, from the columnar feed.
@@ -103,6 +117,7 @@ export default function AtlasCruise() {
         included: [],
         offers,
         href: null,
+        stays: gatewaysRef.current.forTrip(id),
       } as JourneyRecord];
     }));
 

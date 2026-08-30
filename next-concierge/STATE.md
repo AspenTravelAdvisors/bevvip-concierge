@@ -2575,3 +2575,109 @@ a traveller sees beside a line's name. `public/maps/cruise/index.html` now takes
 both the count and the sort order from `byOperator`, and skips operators the
 feed carries nothing for, which is what keeps Paul Gauguin out of the rail as a
 "0 sailings" row for the one night between this commit and its first sync.
+
+## The nights either side — hotel cross-references for the other five (2026-08-30)
+
+`build-safari-camps.mjs` made the case for the safari atlas by joining it to the
+hotel atlas: a safari's itinerary stops are places we also sell, so the journey's
+own file can name the camps on it. The same file said why the other collections
+could not have that — "the jet, rail, yacht and cruise atlases draw routes whose
+stops are cities, not beds."
+
+True of the middle of those journeys. **False at both ends.** A world cruise
+leaves from Venice and a private jet expedition leaves from Seattle, and nobody
+flies in on the morning of embarkation: there is a night before, usually two, and
+a night after at the other end. Those nights are the one part of a voyage we can
+book outright — from the same 2,240 vetted hotels, with the same year-stamped VIP
+perks — and until now the atlas that plots the voyage and the atlas that plots
+the hotel had nothing to say to each other.
+
+### What ships
+
+- **`scripts/build-gateway-hotels.mjs`** → `public/maps/{jet,train,yacht,worldcruise,cruise}/gateways.json`.
+  For every journey, the hotels within **40km** of its first plotted stop and of
+  its last. Wider than the camps' 25km on purpose: that radius measured a lodge
+  against the reserve it sits inside, this one measures a hotel against a city,
+  and the traveller arriving for a departure is arriving by air — Venice's berth
+  to Marco Polo is 13km, Athens to Piraeus 11km. Coverage: jet 122/124, rail
+  121/126, yacht 464/465, world cruise 300/306, expedition cruise 3,643/4,311
+  (the shortfall is not a routing gap — all 668 carry a route; it is 49 gateways
+  with no vetted hotel within 40km, and the list reads like the expedition
+  business itself: Puerto Baquerizo Moreno, Sitka, Juneau, Longyearbyen, Sorong,
+  Tromsø, Broome, Puerto Williams. That is a hole in the hotel atlas, not in
+  this join, and the file now names it.)
+- **Gateways are stored once and shared.** 4,311 expedition sailings leave from
+  113 places; storing Ushuaia's hotels per sailing instead of per place is the
+  difference between a 440KB file and a multi-megabyte one. Shared by NAME, and
+  re-checked by coordinate at 15km, because bare city names are not unique —
+  Victoria is in British Columbia and in the Seychelles, and a gateway that
+  pooled the two would offer a Canadian hotel for an Indian Ocean departure.
+- **Brand affinity, which is the point on four of the five.** Four Seasons
+  Yachts and the Four Seasons Private Jet, Aman at Sea and the Aman Jet
+  Expeditions, the Ritz-Carlton Yacht Collection, Belmond's trains, both Orient
+  Express products: these are hotel houses that went to sea or into the air, and
+  the night before belongs to the house. Aman Venice is 400m from the berth an
+  Aman at Sea voyage sails from. So each gateway carries the nearest four hotels
+  **plus the nearest hotel of every house the collection sells**, and the read
+  side puts the journey's own house first — an FS jet gets the Four Seasons even
+  where it is the ninth-nearest hotel in the city. 464 yacht journeys, 52 rail
+  and 22 jet journeys are house-matched.
+  - Matched on the journey's brand, title AND vessel, because the house is not
+    the operator: the Four Seasons jet expeditions are run by TCS World Travel
+    and say so in the feed's `b`, with the house in the title.
+  - **Explora is the deliberate non-match.** `Explora Journeys` is MSC's cruise
+    line; `Explora Atacama` is a Chilean lodge group. Same word, unrelated
+    companies. An affinity that is only a shared word is worse than none.
+- **`lib/atlas/gateway-hotels.ts`** — the read side, sibling of `safari-camps.ts`
+  and carrying the same kind of note about what the data does and does not
+  license the UI to say. The camps are ON the itinerary; these are the nights
+  either side of it, so the UI may say "where to stay before" and may NOT say
+  the night is included — some fares do include one and no feed names which.
+- **`JourneyDossier`** grows a stays block under the itinerary, in the dossier's
+  own gold rather than safari's jacaranda (five collections share it and none of
+  them is safari). One heading for a round trip — "Where to Stay Before & After
+  — Venice, Italy" — two when the ends differ. Rows link into the hotel atlas
+  with `?hotel=`, which highlights without hiding the neighbours, plus a
+  `?city=` link to the rest.
+- **The house flag says "Same house", not the house's name.** The name is
+  already the first two words of nearly every row it lands on: "Four Seasons ·
+  Four Seasons Hotel Bangkok" says the same thing twice and says nothing about
+  the relation, which is the news.
+
+### The gate
+
+`npm run verify:gateway-hotels` runs the byte-comparison (`--check`, as the camps
+do) and then `scripts/verify-gateway-hotels.mjs`, which imports the **real
+adapters and the real `indexGateways()`** and asserts six things. Every one is a
+mistake this repo has shipped before:
+
+1. Structure — no journey points at a missing gateway, no gateway at a missing
+   hotel, no orphan hotels.
+2. **Geometry, recomputed** from the two coordinates. The safari routes drew on
+   the wrong continent for a release because `ll` is [lat, lng] and the renderer
+   reads [lng, lat]; transposing Washington, D.C. now puts it 14,844km from its own hotels and
+   the arithmetic notices.
+3. **Identity against the adapters.** Each atlas keys its dossier records
+   differently — `String(t.id ?? index)` for the journey family, because 27 jet
+   trips carry no id — and a key convention that drifts produces a file the UI
+   silently never reads. Renaming the keys to `jt_*` turns this red on all 122.
+4. **Ends, derived independently** from the adapted offering's own `path`, so a
+   first/last mix-up or a route resolved by the wrong key fails.
+5. **The affinity, end to end**: where a journey's house has a hotel at its
+   gateway, `forTrip()` must return it first. 411 placements checked, and the
+   suite fails if that number ever reaches zero — every other assertion is
+   conditional, so a table that stopped matching would otherwise pass in silence.
+6. Coverage floors, as on the other feeds, against a silent shrink.
+
+Registered in `verify-all.mjs`, in `prebuild` and in `sync:virtuoso` beside
+`build:safari-camps`. Verified in a real browser on all five collections before
+shipping: the block renders, the rows link, and the Venice sailing offers Orient
+Express Venezia and the Palazzo Dona Giovannelli above Aman Venice.
+
+### Deliberately not done
+
+The Guide and the answer pages do not read these files. `lib/guide-prompt.js`
+and `lib/seo/journeys.js` learned about the safari camps in a separate pass, and
+the same work here — "what would we book you the night before" as a prompt
+pillar and as a line on a journey's entity page — is its own change with its own
+verification. The data and the atlas ship first.

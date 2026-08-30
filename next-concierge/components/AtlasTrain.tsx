@@ -12,6 +12,7 @@
 import { useCallback, useRef } from "react";
 import AtlasCollection from "./AtlasCollection";
 import JourneyDossier, { type JourneyRecord } from "./JourneyDossier";
+import { indexGateways, NO_GATEWAYS, type GatewayIndex } from "@/lib/atlas/gateway-hotels";
 import { adaptTrain, TRAIN_DESCRIPTOR } from "@/lib/atlas/adapters/train";
 import { loadRailGeometry, tripTrackLegs } from "@/lib/atlas/adapters/rail-geometry";
 import type { RawJourneyAtlas } from "@/lib/atlas/adapters/journey";
@@ -19,6 +20,10 @@ import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 
 export default function AtlasTrain() {
+  /* The hotels at either end — see lib/atlas/gateway-hotels.ts. Held in a ref
+     alongside the journey records the dossier reads. */
+  const gatewaysRef = useRef<GatewayIndex>(NO_GATEWAYS);
+
   const load = useCallback(async (): Promise<{
     offerings: AtlasOffering[];
     ctx: ParseContext;
@@ -32,15 +37,21 @@ export default function AtlasTrain() {
     // The itinerary and the track geometry load together, as the Leaflet atlas
     // did — it kicks loadRailGeo() alongside the map tiles rather than waiting
     // for a hover.
-    const [raw, railGeo] = await Promise.all([
+    const [raw, railGeo, gateways] = await Promise.all([
       fetch("/maps/train/itinerary.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error(`train itinerary ${r.status}`);
         return r.json() as Promise<RawJourneyAtlas>;
       }),
       loadRailGeometry(),
+      // The hotels at either end of the line. Non-fatal: without it the dossier
+      // loses its stays block and nothing else changes.
+      fetch("/maps/train/gateways.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
     ]);
 
     const offerings = adaptTrain(raw);
+    gatewaysRef.current = indexGateways(gateways);
 
     // Keep the raw journeys for the dossier.
     recordsRef.current = new Map((raw.TRIPS ?? []).map((t, i) => [
@@ -58,6 +69,7 @@ export default function AtlasTrain() {
         included: t.included ?? [],
         offers: t.promotions ?? [],
         href: t.u ?? null,
+        stays: gatewaysRef.current.forTrip(String(t.id ?? i)),
       } as JourneyRecord,
     ]));
     const regionLabels: Record<string, string> = {};

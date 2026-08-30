@@ -32,8 +32,18 @@ import type { RawJourneyAtlas } from "@/lib/atlas/adapters/journey";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 import { geodesicLine, unrollLine } from "@/lib/atlas/geo";
+import { indexGateways, NO_GATEWAYS, type GatewayIndex } from "@/lib/atlas/gateway-hotels";
 
 export default function AtlasJet() {
+  /*
+   * The hotels at either end, from the other half of the collection.
+   *
+   * Held in a ref for the same reason the journey records are: the dossier
+   * reads it for a list that does not change after load. See
+   * lib/atlas/gateway-hotels.ts for what the join does and does not claim.
+   */
+  const gatewaysRef = useRef<GatewayIndex>(NO_GATEWAYS);
+
   const load = useCallback(async (): Promise<{
     offerings: AtlasOffering[];
     ctx: ParseContext;
@@ -42,14 +52,26 @@ export default function AtlasJet() {
     brandMarks?: Record<string, { key: string; short?: string | null; domain?: string | null; color?: string | null; glyph?: string | null }>;
     logoBase?: string;
   }> => {
-    const raw: RawJourneyAtlas = await fetch("/maps/jet/itinerary.json", {
-      cache: "no-cache",
-    }).then((r) => {
-      if (!r.ok) throw new Error(`jet itinerary ${r.status}`);
-      return r.json();
-    });
+    /*
+     * Two files, one round trip's worth of latency.
+     *
+     * The gateways file is 140 KB against the itinerary's 330 KB and is not on
+     * the critical path — the map draws without it — so it is fetched alongside
+     * rather than after, and a failure to load it degrades to a dossier with no
+     * stays block rather than an atlas that does not load.
+     */
+    const [raw, gateways] = await Promise.all([
+      fetch("/maps/jet/itinerary.json", { cache: "no-cache" }).then((r) => {
+        if (!r.ok) throw new Error(`jet itinerary ${r.status}`);
+        return r.json() as Promise<RawJourneyAtlas>;
+      }),
+      fetch("/maps/jet/gateways.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+    ]);
 
     const offerings = adaptJet(raw);
+    gatewaysRef.current = indexGateways(gateways);
 
     // Keep the raw journeys for the dossier.
     recordsRef.current = new Map((raw.TRIPS ?? []).map((t, i) => [
@@ -67,6 +89,7 @@ export default function AtlasJet() {
         included: t.included ?? [],
         offers: t.promotions ?? [],
         href: t.u ?? null,
+        stays: gatewaysRef.current.forTrip(String(t.id ?? i)),
       } as JourneyRecord,
     ]));
     const regionLabels: Record<string, string> = {};
