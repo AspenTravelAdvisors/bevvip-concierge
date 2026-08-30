@@ -76,12 +76,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               lowercase, everywhere. */}
           <header className="site">
             {/* Two destinations stacked, because they are two different places:
-                the mark and the wordmark are the BRAND and still go out to
-                expeditionbucketlist.com, while the line under them is the
-                address of this app and goes to its home. Keeping the wordmark's
-                external link is the point — the visitor who clicks a brand
-                expects the brand, and the app's own URL is the thing that
-                should bring them back here. */}
+                the mark and the wordmark are the BRAND and still go out to the
+                apex expeditionbucketlist.com, while the line under them is the
+                address of this app — guide.expeditionbucketlist.com — and goes
+                to its home. They share a domain now, which makes the split
+                easier to lose and no less real: the visitor who clicks a brand
+                expects the brand's front page, and the app's own URL is the
+                thing that should bring them back here. */}
             <div className="brand">
               <a
                 className="brand-face"
