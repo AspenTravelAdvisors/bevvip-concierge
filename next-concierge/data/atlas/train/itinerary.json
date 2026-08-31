@@ -2135,40 +2135,6 @@
     ]
    }
   ],
-  "18047741": [
-   {
-    "n": "Oslo",
-    "r": "NORDICS",
-    "ll": [
-     59.9167,
-     10.75
-    ]
-   },
-   {
-    "n": "Vinstra",
-    "r": "NORDICS",
-    "ll": [
-     61.6,
-     9.75
-    ]
-   },
-   {
-    "n": "Åndalsnes",
-    "r": "NORDICS",
-    "ll": [
-     62.5667,
-     7.7
-    ]
-   },
-   {
-    "n": "Aalesund",
-    "r": "NORDICS",
-    "ll": [
-     62.4667,
-     6.15
-    ]
-   }
-  ],
   "18087224": [
    {
     "n": "Barcelona",
@@ -3082,6 +3048,56 @@
     "ll": [
      35.8428,
      129.212
+    ]
+   },
+   {
+    "n": "Seoul",
+    "r": "EASTASIA",
+    "ll": [
+     37.5664,
+     127
+    ]
+   }
+  ],
+  "18238545": [
+   {
+    "n": "Seoul",
+    "r": "EASTASIA",
+    "ll": [
+     37.5664,
+     127
+    ]
+   },
+   {
+    "n": "Jeonju",
+    "r": "EASTASIA",
+    "ll": [
+     35.8219,
+     127.149
+    ]
+   },
+   {
+    "n": "Yeosu",
+    "r": "EASTASIA",
+    "ll": [
+     34.75,
+     127.717
+    ]
+   },
+   {
+    "n": "Jeju Island",
+    "r": "EASTASIA",
+    "ll": [
+     33.3812,
+     126.555
+    ]
+   },
+   {
+    "n": "Busan",
+    "r": "EASTASIA",
+    "ll": [
+     35.1333,
+     129.05
     ]
    },
    {
@@ -4297,6 +4313,24 @@
     ]
    }
   ],
+  "18535460": [
+   {
+    "n": "Paris",
+    "r": "EUROPE",
+    "ll": [
+     48.8667,
+     2.3333
+    ]
+   },
+   {
+    "n": "Venice",
+    "r": "EUROPE",
+    "ll": [
+     45.4332,
+     12.3372
+    ]
+   }
+  ],
   "18535506": [
    {
     "n": "Paris",
@@ -4330,6 +4364,32 @@
     "ll": [
      45.4332,
      12.3372
+    ]
+   }
+  ],
+  "18535684": [
+   {
+    "n": "London",
+    "r": "BRITAIN",
+    "ll": [
+     51.5072,
+     -0.1276
+    ]
+   },
+   {
+    "n": "Bruton",
+    "r": "BRITAIN",
+    "ll": [
+     51.1125,
+     -2.4528
+    ]
+   },
+   {
+    "n": "London",
+    "r": "BRITAIN",
+    "ll": [
+     51.5072,
+     -0.1276
     ]
    }
   ],
@@ -4722,6 +4782,40 @@
     "ll": [
      56.8667,
      -5.45
+    ]
+   },
+   {
+    "n": "Edinburgh",
+    "r": "BRITAIN",
+    "ll": [
+     55.95,
+     -3.2
+    ]
+   }
+  ],
+  "18536054": [
+   {
+    "n": "Edinburgh",
+    "r": "BRITAIN",
+    "ll": [
+     55.95,
+     -3.2
+    ]
+   },
+   {
+    "n": "Kyle Of Lochalsh",
+    "r": "BRITAIN",
+    "ll": [
+     57.2667,
+     -5.7167
+    ]
+   },
+   {
+    "n": "Aviemore",
+    "r": "BRITAIN",
+    "ll": [
+     57.2,
+     -3.8333
     ]
    },
    {
@@ -5130,7 +5224,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_40_0824.webp",
    "from": "Tokyo, Japan",
    "to": "Seoul, South Korea",
-   "country": "Japan",
+   "country": "South Korea",
    "train": null,
    "world": false,
    "mks": [
@@ -5359,7 +5453,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15801927/allaboutfoodaculinaryvisittoswitzerland",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_0_0727.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_0_0828.webp",
    "from": "Montreux, Switzerland",
    "to": "Zurich, Switzerland",
    "country": "Switzerland",
@@ -5644,7 +5738,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18069724_2_23_0822.webp",
    "from": "Barcelona, Spain",
    "to": "Lisbon, Portugal",
-   "country": "Spain",
+   "country": "Portugal",
    "train": null,
    "world": false,
    "mks": [
@@ -5668,14 +5762,7 @@
     "Accommodations of your choice",
     "Sightseeing tours and/or activites of your choice"
    ],
-   "promotions": [
-    {
-     "name": "Up to $2,500 in Trip Credit",
-     "endDate": "2027-08-04",
-     "exclusive": false,
-     "description": "Discover exclusive offers on personalized itineraries designed for your unique travel style. Enjoy a Trip Credit of up to $2,500 when you plan your journey with Keytours Vacations* *Eligible for new bookings. Trip Credit is based on the land-only value of your itinerary. Offer valid through August 31, 2026."
-    }
-   ],
+   "promotions": [],
    "itin": [
     {
      "d": 1,
@@ -5798,7 +5885,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_37_0824.webp",
    "from": "Seoul, South Korea",
    "to": "Tokyo, Japan",
-   "country": "Japan",
+   "country": "South Korea",
    "train": null,
    "world": false,
    "mks": [
@@ -5984,7 +6071,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_21_0816.webp",
    "from": "Budapest, Hungary",
    "to": "Paris, France",
-   "country": "Hungary",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -6386,7 +6473,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16883754/christmasmarketsofswitzerland",
    "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_52_0727.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_52_0828.webp",
    "from": "Berne, Switzerland",
    "to": "Zurich, Switzerland",
    "country": "Switzerland",
@@ -6746,6 +6833,177 @@
    "route": "16265362"
   },
   {
+   "id": "18535684",
+   "n": "Cornwall, Britannic Explorer, a Belmond Train",
+   "b": "belmond",
+   "g": [
+    "BRITAIN"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18535684/cornwallbritannicexplorerabelmondtrain",
+   "days": 4,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_0_0816.webp",
+   "from": "London, United Kingdom",
+   "to": "London, United Kingdom",
+   "country": "United Kingdom",
+   "train": "Britannic Explorer",
+   "world": true,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 01 Nov 2027",
+   "description": "A celebration of Cornwall in all its sand-kissed, sea-swept glory, this three-night itinerary spirits us to the far reaches of South-West England – the stunning land of shanties and seafood. From your private luxury cabin, embark on a train journey like no other and visit the region’s most historic and picturesque sights. Please note: this journey departs on a Friday afternoon and concludes on a Monday morning. Our train is subject to national railway constraints and timings are purely indicative; please check your final itinerary for confirmed timings.",
+   "included": [
+    "LUXURY ACCOMMODATION Three nights aboard the Britannic Explorer luxury train, with 24-hour steward service.",
+    "FINE DINING Daily table d'hôte meals, alongside a selection of alcoholic and other beverages. Off board, enjoy a gala dinner at celebrated Italian restaurant Da Costa.",
+    "EXCITING EXCURSIONS A tailor-made itinerary of exciting and varied off-board tours and experiences."
+   ],
+   "promotions": [
+    {
+     "name": "Waived Solo Supplement on The Venice Simplon-Orient-Express",
+     "endDate": "2026-12-27",
+     "exclusive": false,
+     "description": "Guests travelling on their own are invited to experience the timeless elegance of a Historic Twin in July and August 2026 - now with no single supplement fee. Details Call our reservations team and quote 'VSTWSOLE' to book this offer. Terms & Conditions: Valid for all one-night journeys in July and August 2026. Book by 30 June. Cabin availability for this offer is limited per departure."
+    },
+    {
+     "name": "4 for 3 on Belmond's British Pullman",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Includes A round-trip travel from London Victoria British Pullman luxury train experience Terms and conditions Valid on any journey in in September, October or November 2026, only when booking a table of four. Not applicable to Cygnus, the Wes Anderson carriage. Call our reservations team on 0800 058 1237 and quote code BBP43. Book our 4 for 3 British Pullman offer and experience our iconic train for less. Along with your guests, jump onboard the train at London Victoria Station and settle in the privacy of our coupés — the private compartments nestled inside our carriages, welcoming up to 4…"
+    },
+    {
+     "name": "Complimentary Stay at Balmoral with Belmond's Royal Scotsman",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Complimentary stay at The Balmoral hotel Details: Applicable to guests who have booked any Royal Scotsman journey in August, October and November 2026 The 2 complimentary nights can be booked before or after the Royal Scotsman journey,. Alternatively, they can be split to one night before and one night after the rail journey Terms and conditions: Applicable when booking any cabin types on The Royal Scotsman trainApplies to Executive Rooms at The Balmoral with breakfast includedQuote code TEB2 when speaking to our reservations team. Subject to availability. Book a Scotch Malt Whisky Tour…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "London"
+    },
+    {
+     "d": 3,
+     "n": "Bruton"
+    },
+    {
+     "d": 1,
+     "n": "London"
+    }
+   ],
+   "route": "18535684"
+  },
+  {
+   "id": "18238545",
+   "n": "Culinary Korea | 5* | Inside Asia | 12 nights | FIT",
+   "b": "insidetravel",
+   "g": [
+    "EASTASIA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18238545/culinarykorea5insideasia12nightsfit",
+   "days": 12,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_39_0824.webp",
+   "from": "Seoul, South Korea",
+   "to": "Seoul, South Korea",
+   "country": "South Korea",
+   "train": null,
+   "world": false,
+   "mks": [
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2027",
+   "description": "From kimchi to KBBQ, this foodie-focused itinerary is the perfect introduction for anyone desperate for a taste of Korea’s culinary culture. Looking for the ultimate Korean tasting menu? You’re in the right place. Whether you’re tucking into crispy fried chicken and ice-cold beer under the bright lights of Seoul’s side streets, exploring charming tea houses and clinking cups of fizzy rice wine in Jeonju, Korea's city of gastronomy, or getting stuck in with a traditional cooking class, you’ll soak up culture at the same time as piling your plate. Trip Highlights - Blend history and tradition with modern ways of life – all through the lens of food – as you tour tea farms, take a KBBQ tour,…",
+   "included": [
+    "Breakfast every day",
+    "2 full-day experiences: Full day guided trip to Seonamsa temple with Korean wild tea experience & Naganeupseong folk village, full day tour of Busan",
+    "3 half-day experiences: Jeju tangerine picking (in autumn/winter), haenyo restaurant reservation, Busan cooking class",
+    "2 evening experiences: Korea BBQ and fried chicken food tour, Korean traditional course menu restaurant reservation",
+    "All entrance fees to sights included in guided experiences",
+    "All internal transport & accommodation",
+    "Private airport transfers",
+    "Portable Wi-Fi device"
+   ],
+   "promotions": [
+    {
+     "name": "£1,000 off a Small Group Tour to Japan!",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Japan is amazing. But it's even better when you share it with someone. Book now to get £1,000 off when you travel as two, on all of our Small Group Tours departing in 2026*. Split the cost and share the savings, or keep it all to yourself (*evil laugh*). With eight tours to pick from, 45 departures still available, and hopefully at least one person you'd love to experience Japan with (partner, sister, best buddy... doesn't matter!), it makes sense to book your tour with us today. But be quick – once these places are gone, they're gone. You've got until 31st August to book. *Terms and…"
+    },
+    {
+     "name": "$500 off a 2026 Small Group Tour to Japan!",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Japan is amazing. But it's even better when you share it with someone. Book now to get $500 off when you travel as two, on all of our Small Group Tours departing in 2026*. Split the cost and share the savings, or keep it all to yourself (*evil laugh*). With eight tours to pick from, 45 departures still available, and hopefully at least one person you'd love to experience Japan with (partner, sister, best buddy... doesn't matter!), it makes sense to book your tour with us today. But be quick – once these places are gone, they're gone. You've got until 31st August to book. *Terms and conditions…"
+    },
+    {
+     "name": "$2,000 off a 2026 Small Group Tour to Japan!",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Japan is amazing. But it's even better when you share it with someone. Book now to get $2,000 AUD / $2,400 NZD off when you travel as two, on all of our Small Group Tours departing in 2026*. Split the cost and share the savings, or keep it all to yourself (*evil laugh*). With eight tours to pick from, 45 departures still available, and hopefully at least one person you'd love to experience Japan with (partner, sister, best buddy... doesn't matter!), it makes sense to book your tour with us today. But be quick – once these places are gone, they're gone. You've got until 31st August to book.…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Seoul"
+    },
+    {
+     "d": 4,
+     "n": "Jeonju"
+    },
+    {
+     "d": 5,
+     "n": "Yeosu"
+    },
+    {
+     "d": 7,
+     "n": "Jeju Island"
+    },
+    {
+     "d": 10,
+     "n": "Busan"
+    },
+    {
+     "d": 1,
+     "n": "Seoul"
+    }
+   ],
+   "route": "18238545"
+  },
+  {
    "id": "16369188",
    "n": "Denali Vacation",
    "b": "knightly",
@@ -6754,7 +7012,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16369188/denalivacation",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2542_2_0_0727.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2542_2_0_0828.webp",
    "from": "Anchorage, AK, United States",
    "to": "Fairbanks, AK, United States",
    "country": "United States",
@@ -6863,7 +7121,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -7180,7 +7438,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16650958_2_0_0802.webp",
    "from": "Rome, Italy",
    "to": "Istanbul, Türkiye",
-   "country": "Türkiye",
+   "country": "Romania",
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "d": "10/22/2026",
@@ -8152,7 +8410,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15801918/letsgetactivesummertouring",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_9_0727.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_9_0828.webp",
    "from": "Lucerne, Switzerland",
    "to": "Zermatt, Switzerland",
    "country": "Switzerland",
@@ -8192,74 +8450,6 @@
     }
    ],
    "route": "15801918"
-  },
-  {
-   "id": "18047741",
-   "n": "Local Secrets of Norway by Rail",
-   "b": "fiftynorth",
-   "g": [
-    "NORDICS"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18047741/localsecretsofnorwaybyrail",
-   "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15204704_2_362_0827.webp",
-   "from": "Oslo, Norway",
-   "to": "Aalesund, Norway",
-   "country": "Norway",
-   "train": null,
-   "world": false,
-   "mks": [
-    "2026-08"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 31 Aug 2026",
-   "description": "Experience the best of Norway’s mountains and fjords on this scenic journey from Oslo to the coastal Ålesund via Gudbransdal Valley. Travel by train through stunning landscapes, stay in charming, local boutique hotels, and enjoy handpicked guided experiences along the way from farm visits and canoeing in the mountain lakes to traveling along iconic roads by e-Bike and exploring coastal towns. Starting in Oslo, journey by train to Norway’s heartland and the cozy Skåbu Fjellhotell, then continue to Åndalsnes for an active mountain stay before reaching the coastal beauty of Ålesund. With a mix of adventure, culture, and relaxation, this tour offers an unforgettable taste of Norway’s diverse…",
-   "included": [
-    "Explore Norway's capital, Oslo",
-    "Stay in a charming and intimate mountain retreat in with local experiences in Skåbo",
-    "Beautiful train journey through Gudbrandsdalen to Åndalsnes",
-    "Guided E-bike tour up to Trollstigen with amazing view",
-    "Discover Ålesund, a picturesque coastal town known for its stunning Art Nouveau architecture, and scenic fjords and Sunnmøre Alps views"
-   ],
-   "promotions": [
-    {
-     "name": "Money-Back Northern Lights Guarantee",
-     "endDate": "2026-10-27",
-     "exclusive": false,
-     "description": "7 days | Independent tour | Sep-Oct | Ivalo to Kirkenes Most people assume the Northern Lights demand deep winter cold. September and October in Finnish and Norwegian Lapland tell a different story: long dark nights, skies that clear fast, and temperatures that, while crisp, are a world away from the depths of an Arctic winter. The forests are at their most vivid, birch and rowan burning gold and amber before the first snows arrive. It is, by any measure, one of the finest times of year to be this far north. This 7-day journey begins at Aurora Village, a family-run glass cabin resort set…"
-    },
-    {
-     "name": "Chase the Northern Lights: Early Bird Special",
-     "endDate": "2028-04-02",
-     "exclusive": false,
-     "description": "An 11-day small group journey from Finnish Lapland to Bergen, travelling from the forests of the Arctic north to the dramatic fjords and coastline of Norway. Book by 30 September to save up to 10%. The journey begins in Finnish Lapland, where you'll spend three nights in a glass-roof Aurora Cabin beneath the northern sky before crossing into Norway's far north. From Kirkenes, board a contemporary Havila coastal ship and sail south along one of the world's most spectacular coastlines, passing Arctic communities, remote islands and majestic fjord landscapes on the way to Bergen. This is travel…"
-    },
-    {
-     "name": "Experience the Northern Lights: Early Bird Special",
-     "endDate": "2028-04-05",
-     "exclusive": false,
-     "description": "A 15-day small group journey from Oslo to Finnish Lapland, travelling north at the pace of the season and the light. Book by 30 September to save up to 10%. The route begins in Oslo and Bergen, then follows the Norwegian coast aboard a contemporary Havila coastal ship to Kirkenes, before continuing into Finnish Lapland for three nights beneath the glass roofs of the Arctic. Along the way there is time on the water, time in the far north, and time to watch for the aurora when the sky is clear. This is travel shaped by the people and places of the region rather than a checklist of highlights. A…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Oslo"
-    },
-    {
-     "d": 2,
-     "n": "Vinstra"
-    },
-    {
-     "d": 4,
-     "n": "Åndalsnes"
-    },
-    {
-     "d": 6,
-     "n": "Aalesund"
-    }
-   ],
-   "route": "18047741"
   },
   {
    "id": "17903467",
@@ -8570,7 +8760,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -8827,7 +9017,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16346033/muklukvacation",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2542_2_0_0727.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2542_2_0_0828.webp",
    "from": "Anchorage, AK, United States",
    "to": "Fairbanks, AK, United States",
    "country": "United States",
@@ -9460,7 +9650,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_0816.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Romania",
+   "country": "Hungary",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9531,7 +9721,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_0816.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "France",
+   "country": "Romania",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9602,7 +9792,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_0816.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Bulgaria",
+   "country": "Romania",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9685,7 +9875,7 @@
    "img": null,
    "from": "Paris, France",
    "to": "Prague, Czech Republic",
-   "country": "Czech Republic",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9796,6 +9986,83 @@
     }
    ],
    "route": "18535389"
+  },
+  {
+   "id": "18535460",
+   "n": "Paris to Venice, Venice Simplon-Orient-Express, a Belmond Train",
+   "b": "belmond",
+   "g": [
+    "EUROPE"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18535460/paristovenicevenicesimplonorientexpressabelmondtrain",
+   "days": 2,
+   "img": null,
+   "from": "Paris, France",
+   "to": "Venice, Italy",
+   "country": "France",
+   "train": "Venice Simplon-Orient-Express",
+   "world": true,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 23 Dec 2027",
+   "description": "Depart from Paris for your overnight journey to Venice. Travel in style across the European landscape before arriving in the City of Water late afternoon the next day. Prepare to indulge your passions and carve your own story aboard a legend in motion. On this glamorous overnight adventure, step aboard Venice Simplon-Orient-Express in Paris, City of Light, and glide through beguiling European landscapes to reach Venice, City of Water, the following day. Estimated departure: Paris, 16:00 – arrival: Venice, 17:30 Our train is subject to national and international railway constraints and timings are purely indicative. Please check your final itinerary for confirmed timings.",
+   "included": [
+    "COMPLIMENTARY TRANSFERS We'll collect you from Paris and transfer you to the train station for departure; on arrival into Venice, we'll transfer you from the station to your accommodation.",
+    "LUXURIOUS ACCOMMODATION One night aboard the Venice Simplon-Orient-Express train.",
+    "A SUMPTUOUS FOUR-COURSE DINNER Feast on our seasonal table d'hôte menu, which includes biscuits, cheeseboard and chutney, as well as coffee and petit fours.",
+    "SOMMELIER WINES All table d'hôte meals include our sommelier's selection of wines when served in the restaurant cars.",
+    "FRENCH BREAKFAST Served in your cabin for ultimate comfort.",
+    "DELICIOUS LUNCH Savour a three-course lunch as the world passes by in one of our restaurant cars.",
+    "DEDICATED STEWARD SERVICE To attend to your every request as you unwind in style."
+   ],
+   "promotions": [
+    {
+     "name": "Waived Solo Supplement on The Venice Simplon-Orient-Express",
+     "endDate": "2026-12-27",
+     "exclusive": false,
+     "description": "Guests travelling on their own are invited to experience the timeless elegance of a Historic Twin in July and August 2026 - now with no single supplement fee. Details Call our reservations team and quote 'VSTWSOLE' to book this offer. Terms & Conditions: Valid for all one-night journeys in July and August 2026. Book by 30 June. Cabin availability for this offer is limited per departure."
+    },
+    {
+     "name": "4 for 3 on Belmond's British Pullman",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Includes A round-trip travel from London Victoria British Pullman luxury train experience Terms and conditions Valid on any journey in in September, October or November 2026, only when booking a table of four. Not applicable to Cygnus, the Wes Anderson carriage. Call our reservations team on 0800 058 1237 and quote code BBP43. Book our 4 for 3 British Pullman offer and experience our iconic train for less. Along with your guests, jump onboard the train at London Victoria Station and settle in the privacy of our coupés — the private compartments nestled inside our carriages, welcoming up to 4…"
+    },
+    {
+     "name": "Complimentary Stay at Balmoral with Belmond's Royal Scotsman",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Complimentary stay at The Balmoral hotel Details: Applicable to guests who have booked any Royal Scotsman journey in August, October and November 2026 The 2 complimentary nights can be booked before or after the Royal Scotsman journey,. Alternatively, they can be split to one night before and one night after the rail journey Terms and conditions: Applicable when booking any cabin types on The Royal Scotsman trainApplies to Executive Rooms at The Balmoral with breakfast includedQuote code TEB2 when speaking to our reservations team. Subject to availability. Book a Scotch Malt Whisky Tour…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Paris"
+    },
+    {
+     "d": 2,
+     "n": "Venice"
+    }
+   ],
+   "route": "18535460"
   },
   {
    "id": "18535511",
@@ -11716,7 +11983,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3374_2_275_0822.webp",
    "from": "Stockholm, Sweden",
    "to": "Bergen, Norway",
-   "country": "Norway",
+   "country": "Denmark",
    "train": null,
    "world": false,
    "mks": [
@@ -11797,7 +12064,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15801915/switzerland9nights",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_0_0727.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3361_2_0_0828.webp",
    "from": "Zurich, Switzerland",
    "to": "Lucerne, Switzerland",
    "country": "Switzerland",
@@ -11910,14 +12177,7 @@
     "Accommodations of your choice",
     "Sightseeing tours and/or actiivities of your choice"
    ],
-   "promotions": [
-    {
-     "name": "Up to $2,500 in Trip Credit",
-     "endDate": "2027-08-04",
-     "exclusive": false,
-     "description": "Discover exclusive offers on personalized itineraries designed for your unique travel style. Enjoy a Trip Credit of up to $2,500 when you plan your journey with Keytours Vacations* *Eligible for new bookings. Trip Credit is based on the land-only value of your itinerary. Offer valid through August 31, 2026."
-    }
-   ],
+   "promotions": [],
    "itin": [
     {
      "d": 1,
@@ -12232,7 +12492,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "d": "9/28/2026",
@@ -12418,6 +12678,86 @@
     }
    ],
    "route": "18230329"
+  },
+  {
+   "id": "18536054",
+   "n": "The Highlands",
+   "b": "belmond",
+   "g": [
+    "BRITAIN"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18536054/thehighlands",
+   "days": 4,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_14_0816.webp",
+   "from": "Edinburgh, United Kingdom",
+   "to": "Edinburgh, United Kingdom",
+   "country": "United Kingdom",
+   "train": "Royal Scotsman",
+   "world": true,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 01 Nov 2027",
+   "description": "Board Royal Scotsman to experience the legends and elements of Scotland in motion. On this three-night journey, discover ancient mountains, flourishing gardens and captivating wildlife. Tour a famous distillery and a majestic castle and be immersed in the wonders of Highland heritage. Estimated departure: 13:45 – arrival: 09:40 Please note: Planned engineering works may cause some route amendments on the journeys departing 24 & 31 October. Our train is subject to national railway constraints and timings are purely indicative. Please check your final itinerary or the Royal Scotsman departure boards for confirmed timings.",
+   "included": [
+    "LUXURY ACCOMMODATION Three nights aboard the Royal Scotsman luxury train with 24-hour steward service.",
+    "FINE DINING All meals aboard the train: full Scottish breakfast, two-course lunch, three-course dinner including cheeseboard, coffee, tea and petit fours. All beverages including alcoholic drinks.",
+    "HISTORICAL TOURS & WELLNESS EXPERIENCES A visit to Ballindalloch Castle, Attadale Gardens and a tour of the Cairn Distillery. A forest bathing experience in woodland and hike near Kyle of Lochalsh.",
+    "ENTERTAINMENT Traditional ceilidhs on board, evening entertainment in the Observation Car and a gala dining experience."
+   ],
+   "promotions": [
+    {
+     "name": "Waived Solo Supplement on The Venice Simplon-Orient-Express",
+     "endDate": "2026-12-27",
+     "exclusive": false,
+     "description": "Guests travelling on their own are invited to experience the timeless elegance of a Historic Twin in July and August 2026 - now with no single supplement fee. Details Call our reservations team and quote 'VSTWSOLE' to book this offer. Terms & Conditions: Valid for all one-night journeys in July and August 2026. Book by 30 June. Cabin availability for this offer is limited per departure."
+    },
+    {
+     "name": "4 for 3 on Belmond's British Pullman",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Includes A round-trip travel from London Victoria British Pullman luxury train experience Terms and conditions Valid on any journey in in September, October or November 2026, only when booking a table of four. Not applicable to Cygnus, the Wes Anderson carriage. Call our reservations team on 0800 058 1237 and quote code BBP43. Book our 4 for 3 British Pullman offer and experience our iconic train for less. Along with your guests, jump onboard the train at London Victoria Station and settle in the privacy of our coupés — the private compartments nestled inside our carriages, welcoming up to 4…"
+    },
+    {
+     "name": "Complimentary Stay at Balmoral with Belmond's Royal Scotsman",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Complimentary stay at The Balmoral hotel Details: Applicable to guests who have booked any Royal Scotsman journey in August, October and November 2026 The 2 complimentary nights can be booked before or after the Royal Scotsman journey,. Alternatively, they can be split to one night before and one night after the rail journey Terms and conditions: Applicable when booking any cabin types on The Royal Scotsman trainApplies to Executive Rooms at The Balmoral with breakfast includedQuote code TEB2 when speaking to our reservations team. Subject to availability. Book a Scotch Malt Whisky Tour…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Edinburgh"
+    },
+    {
+     "d": 2,
+     "n": "Kyle Of Lochalsh"
+    },
+    {
+     "d": 3,
+     "n": "Aviemore"
+    },
+    {
+     "d": 1,
+     "n": "Edinburgh"
+    }
+   ],
+   "route": "18536054"
   },
   {
    "id": "18262682",
@@ -13678,7 +14018,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
