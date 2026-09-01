@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 72,
-  "lodgesInSafariCountries": 69,
-  "journeysWithCamps": 219,
-  "journeysTotal": 444,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 229,
+  "journeysTotal": 448,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 72,
-  "inSafariCountries": 69
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_00327": {
@@ -1463,6 +1463,14 @@
     "km": 6
    }
   ],
+  "16630483": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   }
+  ],
   "16662681": [
    {
     "id": "h_02334",
@@ -2667,6 +2675,26 @@
     "km": 18.1
    }
   ],
+  "18474761": [
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
   "18475653": [
    {
     "id": "h_00537",
@@ -2818,6 +2846,130 @@
     "id": "h_00537",
     "stop": "Ngorongoro",
     "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18535178": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 22.4
+   }
+  ],
+  "18535182": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 22.4
+   }
+  ],
+  "18535586": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 10,
+    "km": 19.6
+   }
+  ],
+  "18535590": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   }
+  ],
+  "18535591": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18535592": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 22.4
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 13,
+    "km": 19.6
+   }
+  ],
+  "18535650": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18535651": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 12,
     "km": 19.6
    }
   ],

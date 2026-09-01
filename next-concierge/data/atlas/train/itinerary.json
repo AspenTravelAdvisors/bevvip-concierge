@@ -5167,7 +5167,6 @@
    "train": "Jacobite Steam Train",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -5228,7 +5227,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -5460,7 +5458,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -5621,7 +5618,6 @@
    "train": "VIA Rail Canadian",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -5686,7 +5682,6 @@
    "train": "VIA Rail Canadian",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -5742,7 +5737,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -5795,7 +5789,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -5889,7 +5882,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -5984,7 +5976,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -6071,7 +6062,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_21_0816.webp",
    "from": "Budapest, Hungary",
    "to": "Paris, France",
-   "country": "France",
+   "country": "Hungary",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -6132,7 +6123,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_29_0816.webp",
    "from": "Budapest, Hungary",
    "to": "Paris, France",
-   "country": "France",
+   "country": "Hungary",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "d": "9/12/2026",
@@ -6198,7 +6189,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -6269,7 +6259,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -6353,7 +6342,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -6537,7 +6525,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -6703,7 +6690,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -6772,7 +6758,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09"
    ],
    "onDemand": true,
@@ -6924,7 +6909,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -7019,7 +7003,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09"
    ],
    "onDemand": true,
@@ -7065,7 +7048,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -7121,7 +7103,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Malaysia",
+   "country": "Singapore",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -7251,7 +7233,6 @@
    "train": "VIA Rail Canadian",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -7315,7 +7296,6 @@
    "train": "Andean Explorer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -7438,7 +7418,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16650958_2_0_0802.webp",
    "from": "Rome, Italy",
    "to": "Istanbul, Türkiye",
-   "country": "Romania",
+   "country": "Italy",
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "d": "10/22/2026",
@@ -7492,7 +7472,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -7579,7 +7558,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -7707,7 +7685,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09"
    ],
    "onDemand": true,
@@ -7873,7 +7850,6 @@
    "train": "VIA Rail Canadian",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -7956,7 +7932,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -8095,7 +8070,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -8194,7 +8168,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -8348,7 +8321,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -8417,7 +8389,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -8467,7 +8438,6 @@
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -8542,7 +8512,6 @@
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -8844,7 +8813,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -8915,7 +8883,6 @@
    "train": "VIA Rail Canadian",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -9024,7 +8991,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09"
    ],
    "onDemand": true,
@@ -9210,7 +9176,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -9297,7 +9262,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -9381,7 +9345,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -9441,7 +9404,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_0816.webp",
    "from": "Paris, France",
    "to": "Budapest, Hungary",
-   "country": "Hungary",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9650,7 +9613,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_0816.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Hungary",
+   "country": "Romania",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9721,7 +9684,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_0816.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Romania",
+   "country": "Türkiye",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9940,7 +9903,7 @@
    "img": null,
    "from": "Paris, France",
    "to": "Amalfi, Italy",
-   "country": "Italy",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "d": "4/22/2027",
@@ -10266,7 +10229,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -10380,7 +10342,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -10451,7 +10412,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -10514,7 +10474,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -10599,7 +10558,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -10662,7 +10620,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -10725,7 +10682,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -10804,7 +10760,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -10867,7 +10822,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -10947,7 +10901,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -11027,7 +10980,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -11070,7 +11022,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -11118,7 +11069,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -11286,7 +11236,6 @@
    "train": "Rovos Rail",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -11351,7 +11300,6 @@
    "train": "Rovos Rail",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -11613,7 +11561,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -11656,7 +11603,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -11728,7 +11674,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -11809,7 +11754,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -11900,7 +11844,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -11983,11 +11926,10 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3374_2_275_0822.webp",
    "from": "Stockholm, Sweden",
    "to": "Bergen, Norway",
-   "country": "Denmark",
+   "country": "Norway",
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -12071,7 +12013,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -12156,7 +12097,6 @@
    "train": "Glacier Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -12222,7 +12162,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -12267,7 +12206,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -12392,7 +12330,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11"
@@ -12424,7 +12361,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Malaysia",
+   "country": "Singapore",
    "train": "Eastern & Oriental Express",
    "world": true,
    "d": "11/16/2026",
@@ -12492,7 +12429,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_0816.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Malaysia",
+   "country": "Singapore",
    "train": "Eastern & Oriental Express",
    "world": true,
    "d": "9/28/2026",
@@ -12641,7 +12578,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09"
    ],
    "onDemand": true,
@@ -12775,7 +12711,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -12900,7 +12835,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13023,7 +12957,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13118,7 +13051,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13213,7 +13145,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13272,7 +13203,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],
@@ -13346,7 +13276,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13393,7 +13322,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09"
    ],
    "onDemand": true,
@@ -13439,7 +13367,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13614,7 +13541,6 @@
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13659,7 +13585,6 @@
    "train": null,
    "world": false,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10",
     "2026-11",
@@ -13870,7 +13795,6 @@
    "train": "Rocky Mountaineer",
    "world": true,
    "mks": [
-    "2026-08",
     "2026-09",
     "2026-10"
    ],

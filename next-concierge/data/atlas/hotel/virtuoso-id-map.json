@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-08-30T14:22:46.901Z",
+  "generated": "2026-09-01T14:05:27.928Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2073,
@@ -26208,7 +26208,7 @@
   {
    "vid": "18537994",
    "name": "Park Hyatt Riviera Maya - A Virtuoso Preview Property",
-   "city": "Cancún",
+   "city": "Riviera Maya",
    "country": "Mexico"
   },
   {
