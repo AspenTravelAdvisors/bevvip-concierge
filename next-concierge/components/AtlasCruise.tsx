@@ -95,6 +95,11 @@ export default function AtlasCruise() {
      */
     const col: Record<string, number> = {};
     (sailings.schema ?? []).forEach((n: string, i: number) => { col[n] = i; });
+    // The supplier's own listing, built the way adaptCruise builds the card's:
+    // `urlBase` + id + slug. The dossier needs it for the same reason the card
+    // does, and for one more — the description arrives clipped, and the cut
+    // wants somewhere to go.
+    const urlBase = String(sailings.urlBase ?? "");
     recordsRef.current = new Map((sailings.rows ?? []).map((r: unknown[]) => {
       const cell = (i: number) => (r[i] == null ? "" : String(r[i]));
       const id = String(r[col.id] ?? "");
@@ -116,7 +121,10 @@ export default function AtlasCruise() {
         })),
         included: [],
         offers,
-        href: null,
+        href: (() => {
+          const slug = cell(col.slug);
+          return urlBase && slug ? `${urlBase}${id}/${slug}` : null;
+        })(),
         stays: gatewaysRef.current.forTrip(id),
       } as JourneyRecord];
     }));

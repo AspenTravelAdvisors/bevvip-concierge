@@ -2681,3 +2681,96 @@ and `lib/seo/journeys.js` learned about the safari camps in a separate pass, and
 the same work here — "what would we book you the night before" as a prompt
 pillar and as a line on a journey's entity page — is its own change with its own
 verification. The data and the atlas ship first.
+
+## A route was framed in mercator on a globe (2026-09-01)
+
+Reported as "the Svalbard routes are displaying as well as Amazon itineraries —
+there may be a tilt or some other issue that changes depending on where on the
+globe the trip is", and the second half of that sentence is exactly right. It
+was not tilt. It was that every fit in the atlas measured a route in **mercator**
+whatever projection was on screen, and mercator and a globe agree only at the
+equator.
+
+**Measured, not reasoned about.** mapbox-gl 3.7.0 was loaded in a headless
+Chromium over an empty style and asked directly — `map.project()` for the scale
+a degree gets, for the pixels a span covers, and for whether the pole is on
+screen. What came back:
+
+| | phone 348×340 | desktop 1100×760 |
+|---|---|---|
+| Svalbard, 78°N — before | 6% × 14% of the frame | 4% × 15% |
+| Svalbard, 78°N — after | 12% × 36% | **18% × 76%** |
+| Upper Amazon, 4°S | 24% × 54% | 25% × 80% |
+
+The Amazon was always right. That is the whole shape of the bug: at 78°N a
+globe draws a span at **cos(φ)/cos(45°)** of the pixels the mercator arithmetic
+predicts — 0.29 of them — so the fit asked for a zoom that no route could ever
+need, hit `minZoom`, and the polar guard then correctly read a whole-globe
+framing and pulled the camera to 40°N. An Arctic itinerary drew as a squiggle
+near the limb of a globe centred on Portugal.
+
+**Three things were wrong, and they are one thing.**
+
+1. **`spanPixels` replaces the mercator-only measure.** On a globe both axes are
+   the arc itself, at the scale mapbox matches to mercator's at
+   `GLOBE_SCALE_LAT` (45°, its `GLOBE_SCALE_MATCH_LATITUDE`) and then eases to
+   the frame's own latitude across the globe projection's `range`. That band
+   **moves with the box** — 3→5 on a desktop, 1.4→3.4 on a phone — which is why
+   the phone was worse and why a fixed correction would have missed it.
+   `fitZoom` bisects rather than solves, because the measure depends on the
+   zoom being looked for.
+2. **The widest row of a span is the one nearest the equator**, not the middle
+   one. Measuring the middle read a tall northern box 40% narrower than it
+   draws: the fjord ports along the bottom of an Arctic itinerary are the part
+   that runs off the side.
+3. **`halfFrameLat` is now exact.** It was `asin(size / (162.97·2^zoom))` — the
+   globe's diameter with neither the perspective nor the camera pull-back — and
+   on a phone it reported a frame twice the real one. The camera sits
+   `CAMERA_HALF_FRAMES` (3, being 1/tan(fov/2) for mapbox's default field of
+   view) half-frames from what it looks at, so solving
+   `3R·sinθ = D − R·cosθ` gives the arc the frame actually holds. Measured
+   against the live transform it lands within 0.1° at every latitude tested.
+   The whole-globe rule went with it: it was `zoom <= 2.0`, which is a
+   *desktop's* answer — the sphere fits a 760px map at 2.1 and a phone's 340px
+   band at 0.9 — so on a phone every Arctic framing between those was read as a
+   whole-globe one. It now asks whether the sphere is inside the frame, which is
+   the same question on every screen.
+
+**`canFrameFlat` still asks in mercator, deliberately.** It exists to decide
+whether to LEAVE the globe, so it is the one caller that must keep measuring the
+flat map it is considering moving to. It has its own `mercatorFitZoom` now, so
+that is a statement rather than an accident.
+
+**Verified.** `scripts/verify-route-framing.mjs` (`npm run verify:route-framing`,
+in `verify`) slices the real framing block out of `AtlasShell.tsx` and checks it
+against the browser measurements, baked in as a table: 20 scale points, 9 span
+extents, 13 pole-in-frame answers, and the report itself — a Svalbard span and
+an Amazon one must both fill the box they are given. The measurements are
+properties of mapbox's globe at the version `lib/mapbox-cdn.ts` pins, so if that
+file starts failing after a mapbox bump, **re-measure before retuning**.
+
+One check in `verify-route-flight.mjs` changed, and it was encoding the old
+model: it asserted that a 78°N framing at zoom 3 on a phone gets dragged south
+to keep the pole out of frame. Projecting the pole says the pole is not in that
+frame. The check now bites at zoom 2, where it is, and asserts the zoom-3 case
+is left where the route is.
+
+### The dossier's description had nowhere to go
+
+Same pass, unrelated fault, reported alongside it. `clip()` cuts a supplier
+description to 700 characters on a word boundary and closes it with an ellipsis
+— 2,921 of 4,311 sailings and 170 of 447 safari journeys are long enough to be
+cut — and the next thing under it in `JourneyDossier` is the Current Offers
+heading. A paragraph that stops mid-sentence with a heading under it reads as
+the end of the file rather than the middle of a page.
+
+The cut now carries a **View details ↗** link to the supplier's own listing,
+under the same words the card beside it already uses, and only where the
+description was actually clipped AND there is somewhere to send the reader. It
+sits tight under the text it continues rather than as a second call to action:
+the booking link at the foot of the panel is the one of those.
+
+Cruise was the collection that had no `href` on its dossier record at all
+(`href: null`, while the other five pass the feed's `u`), so it is built there
+now the way `adaptCruise` builds the card's — `urlBase` + id + slug. All 2,921
+clipped sailings resolve to a link.

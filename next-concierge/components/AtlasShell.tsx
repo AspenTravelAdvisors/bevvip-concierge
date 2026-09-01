@@ -3437,20 +3437,129 @@ export default function AtlasShell({
          * fullscreen-on-a-short-window, in the phone's split map band, and
          * beside an open Guide panel.
          */
-        /**
-         * The zoom fitBounds would choose for this span, in the box we have.
+        /* ── What a span measures, in the projection actually on screen ──────
          *
-         * Shared by the flatten gate (which asks whether mercator can hold a
-         * route at all) and the polar guard (which needs the same number to
-         * re-frame around a corrected latitude without changing what is on
-         * screen). Not clamped to minZoom — both callers care about the
-         * unclamped answer.
+         * Mercator degrees are not globe degrees, and every fit below used to
+         * be computed in mercator whatever was being rendered. That is exact
+         * near the equator and wrong by cos(latitude) at the top of the world:
+         * measured against mapbox-gl 3.7 itself (verify-route-framing.mjs), a
+         * globe draws a span at cos(φ)/cos(GLOBE_SCALE_LAT) of the pixels the
+         * mercator arithmetic predicts.
+         *
+         * So a Svalbard voyage — 19° of longitude and 20° of latitude, which is
+         * a comfortable regional framing — measured as a route no zoom could
+         * hold, landed on minZoom, and was then read from 40°N because the
+         * polar guard correctly saw a whole-globe framing. On a phone the
+         * itinerary occupied 6% of the frame's width. The same span on the
+         * Amazon is framed properly, which is why this reads as "the further
+         * from the equator, the smaller the route" rather than as a broken map.
+         *
+         * Two projections, two measures:
+         *
+         *   - mercator: longitude uniform, latitude stretched by mercY.
+         *   - globe: both axes are the arc itself, at a scale mapbox matches to
+         *     mercator's at GLOBE_SCALE_LAT — so a degree of latitude is the
+         *     same pixels everywhere, and a degree of longitude carries the
+         *     sphere's own cos(φ).
+         *
+         * Mapbox blends the globe into mercator across two zoom levels (the
+         * globe projection's own `range`, shifted by how big the box is), and
+         * above that band the map IS mercator however the projection is named
+         * — which is why a route that fits at zoom 5 was never wrong. The blend
+         * is reproduced rather than approximated, because it is what decides
+         * whether a fit lands inside the band or above it.
+         *
+         * Measured near the centre of the frame. The sphere curves away toward
+         * the limb, so a span reaching the edge covers slightly FEWER pixels
+         * than this says — which leaves a route inside its frame rather than
+         * over the edge, the direction a guard rail should err in.
          */
-        function zoomToFitBox(s: Span): number {
-          const ins = fitInsets();
-          const w = node.clientWidth - ins.left - ins.right;
-          const h = node.clientHeight - ins.top - ins.bottom;
+        /** The latitude mapbox matches globe scale to (GLOBE_SCALE_MATCH_LATITUDE). */
+        const GLOBE_SCALE_LAT = 45;
+        /** The globe projection's own `range`: where it blends into mercator. */
+        const GLOBE_BLEND_LO = 3;
+        const GLOBE_BLEND_HI = 5;
+        /** The box size that band is quoted for; a smaller one blends earlier. */
+        const GLOBE_BLEND_BOX = 1024;
+
+        /**
+         * How many pixels a degree of ARC gets on the globe, as a multiple of
+         * mercator's own equatorial degree.
+         *
+         * Mapbox pulls the globe camera back until the scale matches mercator's
+         * at GLOBE_SCALE_LAT, then eases that match to the frame's OWN latitude
+         * across the globe projection's `range` — where a globe stops being
+         * drawn like a globe and starts being drawn like the flat map it is
+         * about to become. Above the band the two agree exactly, which is why a
+         * route that fits at zoom 5 was never framed wrongly. The band moves
+         * with the box: a phone reaches that agreement two zoom levels earlier
+         * than a desktop does, and a fit that ignored it missed by the width of
+         * the whole correction on exactly the small screens that can least
+         * afford a route drawn at a fifth of its size.
+         */
+        function globeScale(lat: number, zoom: number): number {
+          const size = Math.min(GLOBE_BLEND_BOX, Math.max(node.clientWidth, node.clientHeight));
+          const shift = Math.log2(size / GLOBE_BLEND_BOX);
+          const x = Math.max(0, Math.min(1, (zoom - GLOBE_BLEND_LO - shift) / (GLOBE_BLEND_HI - GLOBE_BLEND_LO)));
+          const t = x * x * (3 - 2 * x);
+          const ref = 1 / Math.cos((GLOBE_SCALE_LAT * Math.PI) / 180);
+          const here = 1 / Math.cos((Math.max(-85, Math.min(85, lat)) * Math.PI) / 180);
+          return ref + (here - ref) * t;
+        }
+
+        /** The pixels a span covers at `zoom`, in the projection on screen. */
+        function spanPixels(s: Span, zoom: number): { w: number; h: number } {
+          const world = 512 * 2 ** zoom;
+          const spanLng = Math.max(s.hi - s.lo, 0.01);
+          if (!projGlobe) {
+            const dy = Math.max(Math.abs(mercY(s.latHi) - mercY(s.latLo)), 1e-4);
+            return { w: (spanLng / 360) * world, h: dy * world };
+          }
+          const deg = world / 360;
+          const m = globeScale((s.latLo + s.latHi) / 2, zoom);
+          /*
+           * The widest row of a span is the one nearest the equator, and it is
+           * the row that has to fit. Measuring the middle one instead reads a
+           * tall northern box 40% narrower than it draws — the ports along a
+           * fjord coast are the southern edge of an Arctic itinerary, and they
+           * are the part that runs off the side.
+           */
+          const widest = s.latLo <= 0 && s.latHi >= 0
+            ? 0
+            : Math.min(Math.abs(s.latLo), Math.abs(s.latHi));
+          return {
+            w: spanLng * deg * Math.cos((widest * Math.PI) / 180) * m,
+            h: Math.max(s.latHi - s.latLo, 0.01) * deg * m,
+          };
+        }
+
+        /**
+         * The zoom at which this span exactly fills `w`×`h` pixels.
+         *
+         * Bisected rather than solved, because the globe's blend into mercator
+         * makes the measure depend on the zoom being looked for. Both measures
+         * grow with zoom, so the fit is monotone and thirty halvings settle it
+         * far finer than a camera can show.
+         */
+        function fitZoom(s: Span, w: number, h: number): number {
           if (!(w > 0) || !(h > 0)) return map.getMinZoom();
+          let lo = -8, hi = 24;
+          for (let i = 0; i < 30; i++) {
+            const mid = (lo + hi) / 2;
+            const px = spanPixels(s, mid);
+            if (px.w <= w && px.h <= h) lo = mid;
+            else hi = mid;
+          }
+          return lo;
+        }
+
+        /**
+         * The zoom MERCATOR would need for this span, whatever is on screen.
+         *
+         * The flatten gate's question is about the flat map it is considering
+         * moving to, so it asks in mercator on purpose — see canFrameFlat.
+         */
+        function mercatorFitZoom(s: Span, w: number, h: number): number {
           const spanLng = Math.max(s.hi - s.lo, 0.01);
           const zx = Math.log2((w * 360) / (spanLng * 512));
           const dy = Math.max(Math.abs(mercY(s.latHi) - mercY(s.latLo)), 1e-4);
@@ -3458,9 +3567,25 @@ export default function AtlasShell({
           return Math.min(zx, zy);
         }
 
+        /**
+         * The zoom a framing would choose for this span, in the box we have.
+         *
+         * Used by the polar guard, which needs the same number to re-frame
+         * around a corrected latitude without changing what is on screen. Not
+         * clamped to minZoom — the caller cares about the unclamped answer.
+         */
+        function zoomToFitBox(s: Span): number {
+          const ins = fitInsets();
+          return fitZoom(s, node.clientWidth - ins.left - ins.right, node.clientHeight - ins.top - ins.bottom);
+        }
+
         function canFrameFlat(s: Span): boolean {
+          const ins = fitInsets();
+          const w = node.clientWidth - ins.left - ins.right;
+          const h = node.clientHeight - ins.top - ins.bottom;
+          if (!(w > 0) || !(h > 0)) return false;
           // A hair of margin: landing exactly ON minZoom is the clamped case.
-          return zoomToFitBox(s) >= map.getMinZoom() + 0.05;
+          return mercatorFitZoom(s, w, h) >= map.getMinZoom() + 0.05;
         }
 
         function flattenIfCircumnavigation(legs: { coordinates: [number, number][] }[]): boolean {
@@ -3717,12 +3842,7 @@ export default function AtlasShell({
 
         /** The zoom at which this box holds this span, with `pad` to spare. */
         function zoomToFit(s: Span, pad: number): number {
-          const w = node.clientWidth / pad;
-          const h = node.clientHeight / pad;
-          const zx = Math.log2((w * 360) / (Math.max(s.hi - s.lo, 0.02) * 512));
-          const dy = Math.max(Math.abs(mercY(s.latHi) - mercY(s.latLo)), 1e-4);
-          const zy = Math.log2(h / (dy * 512));
-          return Math.min(zx, zy);
+          return fitZoom(s, node.clientWidth / pad, node.clientHeight / pad);
         }
 
         /** Longitude across the frame at this zoom, in degrees. */
@@ -3873,9 +3993,9 @@ export default function AtlasShell({
          *
          * Two rules, in order of how often they bite:
          *
-         *   - A whole-globe framing is read from near the equator. Below
-         *     GLOBE_VIEW_ZOOM you are looking at a sphere rather than a map,
-         *     and a sphere has one natural vantage.
+         *   - A whole-globe framing is read from near the equator. When the
+         *     sphere is smaller than the frame you are looking at a sphere
+         *     rather than a map, and a sphere has one natural vantage.
          *   - Otherwise, keep the pole out of frame: the ceiling is however far
          *     the centre can sit from it and still leave POLE_GUARD degrees of
          *     sky at the top of the picture. On a regional framing — an Alaskan
@@ -3883,14 +4003,56 @@ export default function AtlasShell({
          *     centre those produce, so nothing moves. It only engages where the
          *     frame is wide enough for the pole to actually appear in it.
          *
-         * The vertical extent is computed in mercator, which is not exactly
-         * what globe view shows. It does not need to be: this is a guard rail,
-         * and being approximately right about where the pole is is enough to
-         * keep it out of the middle of the picture.
+         * Which rule applies used to be a fixed zoom, and a fixed zoom is a
+         * desktop's answer: the sphere fits a 760px-tall map at zoom 2.1 and a
+         * phone's 340px band at 0.9, so on a phone every Arctic framing between
+         * those was read as a whole-globe one and pulled 28° south of the route
+         * it was meant to show. It is now the question itself — is the sphere
+         * inside the frame — which is the same on every screen.
          */
-        const GLOBE_VIEW_ZOOM = 2.0;
         const GLOBE_VIEW_LAT = 40;
         const POLE_GUARD = 6;
+        /**
+         * How many half-frames the camera sits from what it is looking at.
+         *
+         * 1/tan(fov/2) for mapbox's default field of view, which is chosen so
+         * that this is exactly 3. It is what turns an arc across the globe into
+         * a distance up the picture, and the reason the old guard could only
+         * ever be approximate: a sphere seen in perspective does not put its
+         * degrees on screen at the rate a flat map does.
+         */
+        const CAMERA_HALF_FRAMES = 3;
+        /**
+         * The arc, in degrees, from the centre of a globe frame to its edge.
+         *
+         * `size` is the edge in question — the height for latitude, the width
+         * for longitude. Exact rather than approximate: the camera sits
+         * CAMERA_HALF_FRAMES half-frames from the point it looks at, on a
+         * sphere of radius worldSize/2π drawn at globeScale, and a point θ of
+         * arc away lands CAMERA_HALF_FRAMES·R·sinθ/(D − R·cosθ) half-frames up
+         * the picture. Setting that to one half-frame and solving gives the arc
+         * the frame actually holds.
+         *
+         * 90 when the sphere is smaller than the frame: there is no edge to
+         * find, the whole visible hemisphere is on screen, and every caller's
+         * question — could the pole be in this picture, is this a whole-globe
+         * framing — is answered yes by that alone.
+         *
+         * What this replaces was asin(size / (162.97·2^zoom)): the globe's
+         * projected diameter with neither the perspective nor the camera
+         * pull-back that keeps globe scale matched to mercator's. On a phone it
+         * reported a frame twice the size of the real one, so the polar guard
+         * dragged an Arctic itinerary 16° south of where it belonged to keep a
+         * pole out of a frame the pole was never in.
+         */
+        function globeHalfFrame(size: number, lat: number, zoom: number): number {
+          const r = (512 * 2 ** zoom) / (2 * Math.PI);
+          const d = r + ((size / 2) * CAMERA_HALF_FRAMES) / globeScale(lat, zoom);
+          const reach = r * Math.hypot(CAMERA_HALF_FRAMES, 1);
+          if (!(d < reach)) return 90;
+          return ((Math.asin(d / reach) - Math.atan2(1, CAMERA_HALF_FRAMES)) * 180) / Math.PI;
+        }
+
         /**
          * Degrees of latitude between the centre of the frame and its top edge.
          *
@@ -3899,25 +4061,22 @@ export default function AtlasShell({
          * number of degrees in the top half of a high-latitude frame. A globe
          * does the opposite — it is a sphere, and at 78°N a frame that mercator
          * says reaches 81° actually carries the camera over the pole and down
-         * the other side. Using the mercator figure for both is why the first
-         * version of this guard did nothing at exactly the latitudes it was
-         * written for.
-         *
-         * On a globe the frame subtends an arc, and the globe's projected
-         * diameter is 162.97·2^zoom pixels — the same constant fitGlobe inverts
-         * to fit the sphere to the box.
+         * the other side.
          */
         function halfFrameLat(lat: number, zoom: number): number {
-          if (projGlobe) {
-            const diameter = 162.97 * 2 ** zoom;
-            return (Math.asin(Math.min(1, node.clientHeight / diameter)) * 180) / Math.PI;
-          }
+          if (projGlobe) return globeHalfFrame(node.clientHeight, lat, zoom);
           const halfH = node.clientHeight / 2 / (512 * 2 ** zoom);
           return mercLat(Math.max(0, mercY(lat) - halfH)) - lat;
         }
+
+        /** Is the whole sphere inside the frame, top to bottom? */
+        function framesWholeGlobe(lat: number, zoom: number): boolean {
+          return projGlobe && globeHalfFrame(node.clientHeight, lat, zoom) >= 90;
+        }
+
         function framingLat(lat: number, zoom: number): number {
           if (!Number.isFinite(lat)) return 0;
-          if (projGlobe && zoom <= GLOBE_VIEW_ZOOM) {
+          if (framesWholeGlobe(lat, zoom)) {
             return Math.max(-GLOBE_VIEW_LAT, Math.min(GLOBE_VIEW_LAT, lat));
           }
           const cap = Math.max(0, 90 - POLE_GUARD - halfFrameLat(lat, zoom));

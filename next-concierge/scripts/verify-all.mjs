@@ -38,6 +38,7 @@ const CHECKS = [
   'verify:sea-routes',
   'verify:route-order',
   'verify:route-flight',
+  'verify:route-framing',
   'verify:cruise-regions',
   'verify:atlas-regions',
   'verify:safari-camps',

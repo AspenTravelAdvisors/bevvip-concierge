@@ -117,6 +117,22 @@ export default function JourneyDossier({
     record.days ? `${record.days} days` : null,
   ].filter(Boolean).join(" · ");
 
+  /*
+   * Did the supplier's prose arrive cut short?
+   *
+   * The sync clips a description to 700 characters on a word boundary and
+   * closes it with an ellipsis (`clip` in lib/virtuoso/text.mjs), and on the
+   * shipped cruise feed 2,921 of 4,311 sailings are long enough to be cut. The
+   * ellipsis is honest and, in this panel, misleading: the next thing under it
+   * is the Current Offers heading, so a paragraph that stops mid-sentence
+   * reads as the end of the file rather than as the middle of a page. Where
+   * the feed gives us somewhere to send the reader, the cut gets a
+   * destination — the supplier's own listing, which is where the rest of the
+   * prose is and which the card beside this panel already links to under the
+   * same words.
+   */
+  const clipped = /\u2026\s*$/.test(record.description || "");
+
   return (
     <div className="jd" ref={ref} role="dialog" aria-label={record.title}>
       <div className="jd-head">
@@ -133,6 +149,16 @@ export default function JourneyDossier({
 
       <div className="jd-body">
         {record.description && <p className="jd-desc">{record.description}</p>}
+        {clipped && record.href && (
+          <a
+            className="jd-more"
+            href={record.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View details ↗
+          </a>
+        )}
 
         {/* Offers before the itinerary: a limited-time offer is the only part
             of this file with a deadline attached to it. */}

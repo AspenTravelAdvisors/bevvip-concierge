@@ -5202,6 +5202,23 @@ button.card-book {
   line-height: 1.55;
   color: var(--ink-dim, #b9b6ad);
 }
+/* Where the supplier's prose was cut.
+   The description arrives clipped to 700 characters and closes on an ellipsis,
+   with the offers heading directly under it — so the paragraph reads as
+   finished when it is not. This is the continuation, and it sits tight under
+   the text it continues rather than floating as a second call to action: the
+   booking link at the foot of the panel is the one of those, and two buttons
+   in the same gold would compete for a click the reader has not decided on. */
+.jd-more {
+  display: inline-block;
+  margin: -6px 0 12px;
+  color: var(--gold-light, #e3c98a);
+  font-size: 12px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(227, 201, 138, 0.35);
+  padding-bottom: 1px;
+}
+.jd-more:hover { border-bottom-color: #e3c98a; }
 .jd-label {
   margin: 14px 0 4px;
   font-size: 10px;

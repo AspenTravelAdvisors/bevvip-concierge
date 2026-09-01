@@ -768,8 +768,20 @@ function furthestFromLine(points, legs) {
   check("a whole-globe framing is read from near the equator",
     Math.abs(h.api.framingLat(-64, 1.1)) <= 40 && Math.abs(h.api.framingLat(72, 0.9)) <= 40,
     `-64° → ${h.api.framingLat(-64, 1.1).toFixed(0)}°, 72° → ${h.api.framingLat(72, 0.9).toFixed(0)}°`);
+  /*
+   * …and a wide-but-not-global one keeps the pole out of the picture. Both
+   * halves of this are measured against mapbox-gl 3.7 itself, by projecting
+   * the pole into a 348x340 globe and asking whether it lands on screen:
+   * centred at 78°N it does at zoom 2 and does NOT at zoom 3. The guard has to
+   * bite on the first and leave the second alone — a frame that reaches 81°N
+   * is a fine picture of Svalbard, and dragging it south costs the zoom that
+   * makes the itinerary legible.
+   */
   check("…and a wide-but-not-global one keeps the pole out of the picture",
-    h.api.framingLat(78, 3) < 78,
+    h.api.framingLat(78, 2) < 78,
+    `78° at zoom 2 → ${h.api.framingLat(78, 2).toFixed(0)}°`);
+  check("…while a frame the pole is not in is left where the route is",
+    h.api.framingLat(78, 3) === 78,
     `78° at zoom 3 → ${h.api.framingLat(78, 3).toFixed(0)}°`);
   check("a regional framing is left exactly where it belongs",
     h.api.framingLat(61, 5) === 61 && h.api.framingLat(43.7, 7) === 43.7,

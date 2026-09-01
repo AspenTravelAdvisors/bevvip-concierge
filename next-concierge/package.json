@@ -40,6 +40,7 @@
     "verify:atlas-handoff": "node scripts/verify-atlas-handoff.mjs",
     "verify:route-order": "node scripts/verify-route-order.mjs",
     "verify:route-flight": "node scripts/verify-route-flight.mjs",
+    "verify:route-framing": "node scripts/verify-route-framing.mjs",
     "verify:atlas-ui": "node scripts/verify-atlas-ui.mjs",
     "audit:ports": "node scripts/audit-port-locations.mjs",
     "fix:ports": "node scripts/fix-port-locations.mjs",
