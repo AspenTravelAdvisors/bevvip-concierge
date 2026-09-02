@@ -1,4 +1,36 @@
 import type { OfferingType } from "./types";
+import { COLLECTION_COUNTS } from "./atlas-counts";
+
+/**
+ * How many records a collection ships — generated, never typed.
+ *
+ * Every `count` below used to be a hand-written constant, and four surfaces
+ * state it out loud: the Explore menu's per-item count, the home headline, the
+ * blurb and the map overlay line. The atlas those numbers describe counts
+ * nothing of the sort — its filter rail says "N matches" over the feed it just
+ * fetched — so the claim and its subject were maintained in different places by
+ * different hands, and they had come apart: the menu offered 3,662 expedition
+ * sailings over an atlas holding 4,295, and 274 safari journeys over 450. The
+ * number was at its most wrong exactly where a visitor could check it, by
+ * clicking it.
+ *
+ * scripts/build-collection-counts.mjs now counts each collection through the
+ * SAME shipped adapter its atlas uses, so the menu and the rail do the same
+ * arithmetic over the same rows. `npm run verify:collection-counts` fails if
+ * the feeds have moved since, and the lookup below is typed against the
+ * generated keys — a collection added to this registry and not to the artifact
+ * will not compile, rather than shipping a number nothing checks.
+ *
+ * ONE DIFFERENCE SURVIVES, and it is deliberate. The rail also hides departures
+ * that have already sailed, a cutoff that moves every day; baking it in would
+ * make this file churn nightly for no supplier reason and be wrong by the
+ * following morning anyway. So these are catalogue counts, which is also the
+ * honest figure for prose — "467 hotel-brand yacht voyages" describes the
+ * collection, not today's remaining departures — and between deploys the rail
+ * can read lower by however many have passed. `--report` on the generator
+ * prints that gap.
+ */
+const shipped = (type: keyof typeof COLLECTION_COUNTS): number => COLLECTION_COUNTS[type];
 
 // One registry for the five atlas surfaces. The unified /atlas/[type] route
 // renders them under a single shell; `base` is the internal map root
@@ -67,7 +99,12 @@ export interface AtlasConfig {
   sampleRegions: string[];
   /** Map-legend / nav accent color. The single source for both. */
   color: string;
-  /** Records in the shipped dataset. Powers the blurb and the Explore menu. */
+  /**
+   * Records in the shipped dataset. Powers the blurb and the Explore menu.
+   *
+   * Generated, not typed — see `shipped()` at the top of this file and
+   * scripts/build-collection-counts.mjs.
+   */
   count: number;
   /**
    * What the traveller is trying to do — Deliverable 4.
@@ -105,7 +142,7 @@ export interface AtlasConfig {
    * The ranking is commercial. 1 is the primary revenue driver and 8 is the
    * base layer, running: private jet expeditions, hotel yachts, safari, then
    * expedition and world cruises, rail, villas, hotels. It is deliberately NOT
-   * alphabetical, NOT record count (that would put 3,902 villas above 124 jet
+   * alphabetical, NOT record count (that would put 3,902 villas above 125 jet
    * expeditions — exactly backwards for an agency that sells private aviation),
    * and no longer "how often travelers ask for it", which was a proxy for
    * volume and therefore for the same wrong answer.
@@ -134,12 +171,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_HOTEL_ATLAS_BASE || "/maps/hotel",
     sampleRegions: ["Caribbean", "Mediterranean", "Alps", "Southeast Asia"],
     color: "#e6d488",
-    // Verified against the shipped feed by scripts/audit-listings.mjs, which
-    // npm run verify runs: this said 2,382 while luxury-hotels.json held 2,240,
-    // so the home page headline counted 142 hotels the atlas cannot plot. The
-    // number stays hand-kept — it is an editorial figure, not a raw row count —
-    // but it is no longer hand-kept AND unchecked.
-    count: 2240,
+    count: shipped("hotel"),
     order: 8,
     intent: "stay",
     views: [
@@ -165,7 +197,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: "/atlas/villa",
     sampleRegions: ["Caribbean", "United States", "Europe", "Mexico"],
     color: "#a8d08d",
-    count: 3902,
+    count: shipped("villa"),
     order: 7,
     intent: "stay",
   },
@@ -178,7 +210,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_CRUISE_ATLAS_BASE || "/maps/cruise",
     sampleRegions: ["Antarctica", "Galapagos", "Arctic", "Northwest Passage"],
     color: "#5aa9e6",
-    count: 3662,
+    count: shipped("cruise"),
     order: 4,
     intent: "sea",
   },
@@ -191,7 +223,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_WORLD_CRUISE_ATLAS_BASE || "/maps/worldcruise",
     sampleRegions: ["MED", "CARIB", "AUNZ", "EASTASIA"],
     color: "#45d6c2",
-    count: 303,
+    count: shipped("worldcruise"),
     order: 5,
     intent: "sea",
   },
@@ -236,11 +268,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
      * the reason it is not an arbitrary one either.
      */
     color: "#b57edc",
-    // 269 -> 274: the five journeys the widened selector recognised in the feed
-    // already on disk. See lib/virtuoso/safari-selector.mjs; the number a crawl
-    // returns will be substantially larger, since the pre-egress slice never
-    // looked outside Africa at all.
-    count: 274,
+    count: shipped("safari"),
     order: 3,
     intent: "land",
   },
@@ -253,7 +281,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_TRAIN_ATLAS_BASE || "/maps/train",
     sampleRegions: ["BRITAIN", "EUROPE", "CANADA", "EASTASIA"],
     color: "#e08d5f",
-    count: 130,
+    count: shipped("train"),
     order: 6,
     intent: "land",
   },
@@ -266,7 +294,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_YACHT_ATLAS_BASE || "/maps/yacht",
     sampleRegions: ["MED", "CARIB", "ASIA"],
     color: "#e0b84a",
-    count: 467,
+    count: shipped("yacht"),
     order: 2,
     intent: "sea",
   },
@@ -279,10 +307,7 @@ export const ATLASES: Record<OfferingType, AtlasConfig> = {
     base: process.env.NEXT_PUBLIC_JET_ATLAS_BASE || "/maps/jet",
     sampleRegions: ["ANTARCTICA", "AFRICA", "ASIA", "WORLD"],
     color: "#dfe5f2",
-    // 141 -> 147: the six Safrans du Monde departures added by
-    // scripts/apply-safrans-dates.mjs. Like every count here this is a hand-kept
-    // constant over the raw feed, not a live figure — see the note on `count`.
-    count: 124,
+    count: shipped("jet"),
     order: 1,
     intent: "air",
   },

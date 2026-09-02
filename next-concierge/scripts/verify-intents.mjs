@@ -12,7 +12,7 @@
  *   node scripts/verify-intents.mjs
  */
 
-import { readFileSync, rmSync, mkdtempSync } from "node:fs";
+import { readFileSync, writeFileSync, rmSync, mkdtempSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
@@ -22,13 +22,20 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = mkdtempSync(join(tmpdir(), "intents-"));
 
 execFileSync("npx", [
-  "tsc", "lib/atlas-config.ts", "lib/types.ts",
+  "tsc", "lib/atlas-config.ts", "lib/types.ts", "lib/atlas-counts.ts",
   "--outDir", OUT, "--module", "esnext", "--target", "es2022",
   "--moduleResolution", "bundler", "--skipLibCheck",
 ], { cwd: ROOT, stdio: "inherit" });
 
-const { COLLECTIONS, INTENTS, collectionsByIntent } =
-  await import(pathToFileURL(join(OUT, "atlas-config.js")).href);
+// The registry imports its generated counts extensionless, for webpack; plain
+// tsc emits that specifier verbatim and Node's ESM loader will not guess `.js`.
+const EMITTED = join(OUT, "atlas-config.js");
+writeFileSync(
+  EMITTED,
+  readFileSync(EMITTED, "utf8").replace('from "./atlas-counts"', 'from "./atlas-counts.js"'),
+);
+
+const { COLLECTIONS, INTENTS, collectionsByIntent } = await import(pathToFileURL(EMITTED).href);
 
 const groups = collectionsByIntent();
 const grouped = groups.flatMap((g) => g.items.map((c) => c.type));

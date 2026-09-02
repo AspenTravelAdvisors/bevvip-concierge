@@ -63,6 +63,16 @@ const muteConsts = ["MUTE_OPACITY", "MUTE_MS"].map((n) => {
 
 copyFileSync(join(ROOT, "lib/atlas-config.ts"), join(OUT, "atlas-config.ts"));
 copyFileSync(join(ROOT, "lib/types.ts"), join(OUT, "types.ts"));
+// The registry's generated counts, which it imports for every collection's
+// `count`. Nothing here reads the numbers; without the file it will not compile.
+copyFileSync(join(ROOT, "lib/atlas-counts.ts"), join(OUT, "atlas-counts.ts"));
+// The registry imports it extensionless, for webpack; plain tsc emits that
+// specifier verbatim and Node's ESM loader will not guess `.js` for it.
+writeFileSync(
+  join(OUT, "atlas-config.ts"),
+  readFileSync(join(OUT, "atlas-config.ts"), "utf8")
+    .replace('from "./atlas-counts"', 'from "./atlas-counts.js"'),
+);
 writeFileSync(
   join(OUT, "stack.ts"),
   `/* eslint-disable */\n` +

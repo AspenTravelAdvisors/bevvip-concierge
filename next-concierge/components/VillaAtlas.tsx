@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
+import { ATLASES } from "@/lib/atlas-config";
 import BucketListButton from "./BucketListButton";
 import {
   parseViewParams,
@@ -724,9 +725,14 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
           no membership fee). */}
       <div className="villa-head">
         <div>
+          {/* The count comes from the registry the Explore menu reads, which
+              is generated from this same dataset — a typed "3,902" here is a
+              second claim about the number printed immediately beside it, and
+              it is the one that would not move when the feed did. */}
           <p className="villa-tag">
-            3,902 private villas and vacation homes worldwide, arranged by your Aspen
-            Travel Advisor. VIP travel benefits, zero membership fees.
+            {ATLASES.villa.count.toLocaleString()} private villas and vacation homes
+            worldwide, arranged by your Aspen Travel Advisor. VIP travel benefits, zero
+            membership fees.
           </p>
         </div>
         <div className="villa-count mono">

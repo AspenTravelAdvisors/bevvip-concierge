@@ -46,6 +46,7 @@ const CHECKS = [
   'verify:atlas-handoff',
   'verify:listings',
   'verify:journey-facts',
+  'verify:collection-counts',
   'verify:seo',
 ];
 

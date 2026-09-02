@@ -17,6 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
+import { COUNTS_FILE, generatedCounts } from './lib/collection-counts.mjs';
 
 const STRICT = process.argv.includes('--strict');
 const WARN_DAYS = 7;
@@ -75,25 +76,33 @@ for (const { label, file, key } of FEEDS) {
   }
 }
 
-// The headline counts in lib/atlas-config.ts are hand-kept constants and the
-// nightly sync moves the real numbers underneath them. Nobody would notice a
-// page advertising a stale figure, so say so here rather than never.
+// The counts the site states out loud — the Explore menu, the home headline —
+// come from lib/atlas-counts.ts, and the nightly sync moves the real numbers
+// underneath it. `npm run verify:collection-counts` is the gate; this is the
+// warning that belongs beside the freshness report, since a stale count is a
+// stale-feed symptom and nobody would notice a page advertising one.
+//
+// Keyed by collection type rather than by `nounPlural`, which is what the
+// previous version matched on: it scraped `count:` out of the registry by
+// finding the noun first, so an edit to the wording silently turned every row
+// into "no count found" and the check went quiet instead of red.
 {
-  const config = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
+  const generated = generatedCounts();
   const counted = [
-    ['vetted hotels', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/hotel/luxury-hotels.json'), 'utf8')).length],
-    ['expedition sailings', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/cruise/sailings.json'), 'utf8')).rows.length],
-    ['hotel-brand yacht voyages', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/yacht/itinerary.json'), 'utf8')).TRIPS.length],
-    ['world cruises and grand voyages', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/world/itinerary.json'), 'utf8')).TRIPS.length],
-    ['private jet expeditions', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/jet/itinerary.json'), 'utf8')).TRIPS.length],
-    ['rail journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/train/itinerary.json'), 'utf8')).TRIPS.length],
-    ['safari and wildlife journeys', () => JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/atlas/safari/itinerary.json'), 'utf8')).TRIPS.length],
+    ['hotel', 'vetted hotels', 'data/atlas/hotel/luxury-hotels.json', d => d.length],
+    ['cruise', 'expedition sailings', 'data/atlas/cruise/sailings.json', d => d.rows.length],
+    ['yacht', 'hotel-brand yacht voyages', 'data/atlas/yacht/itinerary.json', d => d.TRIPS.length],
+    ['worldcruise', 'world cruises and grand voyages', 'data/atlas/world/itinerary.json', d => d.TRIPS.length],
+    ['jet', 'private jet expeditions', 'data/atlas/jet/itinerary.json', d => d.TRIPS.length],
+    ['train', 'rail journeys', 'data/atlas/train/itinerary.json', d => d.TRIPS.length],
+    ['safari', 'safari and wildlife journeys', 'data/atlas/safari/itinerary.json', d => d.TRIPS.length],
   ];
   let drifted = 0;
-  for (const [noun, count] of counted) {
-    const stated = Number(new RegExp(`nounPlural: "${noun.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]*?count: (\\d+)`).exec(config)?.[1] ?? 0);
-    let actual; try { actual = count(); } catch { continue; }
-    if (!stated) { console.warn(`  note     no count found for "${noun}" in lib/atlas-config.ts`); continue; }
+  for (const [type, noun, rel, count] of counted) {
+    const stated = generated[type];
+    let actual;
+    try { actual = count(JSON.parse(fs.readFileSync(path.join(repoRoot, rel), 'utf8'))); } catch { continue; }
+    if (!stated) { console.warn(`  note     no count for "${type}" in ${COUNTS_FILE} — run npm run build:collection-counts`); continue; }
     if (stated !== actual) { console.warn(`  drift    "${noun}" advertises ${stated}; the feed holds ${actual}`); drifted++; }
   }
   if (!drifted) console.log('  ok       every headline count matches its feed');

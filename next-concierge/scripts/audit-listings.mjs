@@ -25,6 +25,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { repoRoot } from '../lib/virtuoso/env.mjs';
 import { LOOKS_LIKE_CSS } from '../lib/virtuoso/text.mjs';
+import { COUNTS_FILE, generatedCounts } from './lib/collection-counts.mjs';
 
 // The hotel overlays are CommonJS (they are shared with the in-process atlas
 // backends, which are). This is the same bridge scripts/verify-seo.mjs uses.
@@ -346,17 +347,27 @@ function auditTours() {
 // ---------- the counts the site states out loud ----------
 
 /*
- * atlas-config.ts keeps a hand-written `count` per collection, and
- * collectionsHeadline() adds them up into the first sentence a visitor reads.
- * Checking them is three lines and the alternative is a headline that drifts
- * silently every time a supplier retires a property — which is what it had
- * done, by 142 hotels, when this check was written.
+ * atlas-config.ts states a `count` per collection, and collectionsHeadline()
+ * adds them up into the first sentence a visitor reads. Checking them is three
+ * lines and the alternative is a headline that drifts silently every time a
+ * supplier retires a property — which is what it had done, by 142 hotels, when
+ * this check was written.
+ *
+ * The counts are no longer typed by hand: scripts/build-collection-counts.mjs
+ * derives them from these same feeds, through the shipped adapters, so the
+ * Explore menu and each atlas's filter rail count the same rows. `npm run
+ * verify:collection-counts` is the gate on that; this stays as the second
+ * opinion, and it is a genuinely different one — it counts the raw feed rows
+ * directly, so it also catches a count the adapters agree on and the data does
+ * not.
  *
  * EVERY collection in ATLASES belongs in this table. Safari shipped as the
  * eighth and was not added to it, so the one collection whose count was moving
  * — a new selector, a new sync — was the one collection nobody was checking.
  * A missing row here is silent in both directions: the audit reports "0 of 7"
- * and passes, and the headline drifts anyway.
+ * and passes, and the headline drifts anyway. The generator refuses to run on a
+ * registry it cannot fully count, which is the harder half of that guarantee;
+ * this is the softer one, over the unadapted rows.
  */
 const SHIPPED = {
   hotel: ['data/atlas/hotel/luxury-hotels.json', d => (Array.isArray(d) ? d.length : null)],
@@ -371,18 +382,25 @@ const SHIPPED = {
 
 function auditCounts() {
   if (!section('counts')) return;
-  const src = fs.readFileSync(path.join(repoRoot, 'lib/atlas-config.ts'), 'utf8');
+  const generated = generatedCounts();
+  if (!Object.keys(generated).length) {
+    finding({
+      section: 'counts', ours: true, gate: true,
+      label: 'collections whose stated count does not match what ships',
+      count: Object.keys(SHIPPED).length, of: Object.keys(SHIPPED).length,
+      detail: `${COUNTS_FILE} has not been generated — run npm run build:collection-counts`,
+    });
+    return;
+  }
   const drift = [];
   let stated = 0, actual = 0;
   for (const [type, [rel, pick]] of Object.entries(SHIPPED)) {
     if (!exists(rel)) continue;
-    // The `count:` that follows this collection's `type:` line in the registry.
-    const block = src.slice(src.indexOf(`type: "${type}"`));
-    const declared = Number(block.match(/count:\s*([\d_]+)/)?.[1]?.replace(/_/g, ''));
+    const declared = Number(generated[type]);
     const real = pick(read(rel));
     if (!Number.isFinite(declared) || real == null) continue;
     stated += declared; actual += real;
-    if (declared !== real) drift.push(`${type}: config says ${nf.format(declared)}, ships ${nf.format(real)} (${declared > real ? '+' : ''}${nf.format(declared - real)})`);
+    if (declared !== real) drift.push(`${type}: the menu says ${nf.format(declared)}, the feed holds ${nf.format(real)} (${declared > real ? '+' : ''}${nf.format(declared - real)})`);
   }
   finding({
     section: 'counts', ours: true, gate: true,
