@@ -488,19 +488,12 @@ function getVillaTaxonomy() {
   return source.regions;
 }
 
-// Every villa's route params, for generateStaticParams on the detail page.
-//
-// All 3,902, not the 114 featured ones this used to return. The other 3,788
-// were rendered on demand and held by ISR, which is the most expensive way to
-// serve a page whose content is a static file in this repository — and they are
-// the largest surface on the site, so they were the largest share of the ISR
-// writes that took the account to 100% of its allowance. See "The ISR writes
-// were paying for nothing" in STATE.md.
-function allVillaParams() {
-  return loadVillas().villas.map((v) => ({
-    destination: v.destinationSlug,
-    slug: v.slug,
-  }));
+// Every featured villa's route params, for generateStaticParams on the detail
+// page (114 featured pages prebuilt; the rest are on-demand ISR).
+function featuredVillaParams() {
+  return loadVillas()
+    .villas.filter((v) => v.featured)
+    .map((v) => ({ destination: v.destinationSlug, slug: v.slug }));
 }
 
 // --- seam (TravelWits convention) ---------------------------------------------
@@ -526,7 +519,7 @@ module.exports = {
   getVillaById,
   getVillaBySlug,
   getVillaTaxonomy,
-  allVillaParams,
+  featuredVillaParams,
   buildVillaDeepLink,
   getContent,
   getMatches,

@@ -286,19 +286,17 @@ export function journeyCollections() {
 }
 
 /**
- * Every itinerary's route params — the whole detail tree, built at deploy.
- *
- * Was the 40 itineraries per collection with the most departures behind them,
- * everything else on ISR. The grouping already did the work that split was
- * meant to do: 3,662 sailings collapse to 902 pages, so the tree is small
- * enough to build whole, and a page rendered from a committed feed cannot say
- * anything different on the hundredth request than it did on the first. Same
- * argument as `hotelDetailParams`, and the same source as
- * `journeySitemapEntries()` so the two cannot disagree.
+ * Prebuilt at deploy: the itineraries with the most departures behind them,
+ * per collection. Those are both the most asked about and the most expensive
+ * to render, and everything else is ISR — the same split the hotel and villa
+ * pages use.
  */
-export function journeyDetailParams() {
+export function featuredJourneyParams(perCollection = 40) {
   return JOURNEY_COLLECTIONS.flatMap((type) =>
-    journeysIn(type).map((j) => ({ collection: type, slug: j.slug })),
+    [...journeysIn(type)]
+      .sort((a, b) => b.departures.length - a.departures.length)
+      .slice(0, perCollection)
+      .map((j) => ({ collection: type, slug: j.slug })),
   );
 }
 

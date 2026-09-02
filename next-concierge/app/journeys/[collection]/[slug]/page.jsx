@@ -8,7 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getJourney,
-  journeyDetailParams,
+  featuredJourneyParams,
   relatedJourneys,
   collectionMeta,
   journeyJsonLd,
@@ -18,24 +18,21 @@ import { SITE_URL } from "@/lib/answers";
 import SiteFooter from "@/components/SiteFooter";
 
 /*
- * Static, not ISR. See "The ISR writes were paying for nothing" in STATE.md.
+ * Never regenerate on a timer. See "The ISR writes were paying for nothing"
+ * in STATE.md.
  *
- * generateStaticParams below returns every itinerary, so with `dynamicParams = false`
- * there is no unbuilt page to render: a path the feed does not carry is a 404
- * from the CDN instead of a function call that renders one. That is the answer
- * `notFound()` already gave, reached without a render.
- *
- * `revalidate = false` says the same thing from the other side. Nothing here
- * can change between deployments — it resolves from JSON committed to this
- * repository, and the nightly sync's commit that changes that JSON is itself a
- * deploy. A timer could only ever re-render identical bytes, and every
- * regeneration is a billed ISR write.
+ * This page renders from JSON committed to the repository, so it cannot change
+ * between deployments. `revalidate = 86400` re-rendered identical bytes from an
+ * identical file every day, and every regeneration is a billed ISR write.
+ * `false` holds each entry for the life of the deployment instead; the nightly
+ * sync's commit is what publishes new data, and a deploy starts a fresh cache,
+ * so the pages are exactly as fresh as they were before.
  */
 export const revalidate = false;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return journeyDetailParams();
+  return featuredJourneyParams();
 }
 
 export async function generateMetadata({ params }) {
