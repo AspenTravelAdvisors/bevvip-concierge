@@ -4931,6 +4931,40 @@
     ]
    }
   ],
+  "16919119": [
+   {
+    "n": "Cape Town",
+    "r": "SOUTHERN",
+    "ll": [
+     -33.9167,
+     18.4167
+    ]
+   },
+   {
+    "n": "Kruger National Park",
+    "r": "SOUTHERN",
+    "ll": [
+     -23.95,
+     31.175
+    ]
+   },
+   {
+    "n": "Victoria Falls",
+    "r": "ZAMBEZI",
+    "ll": [
+     -17.9244,
+     25.8566
+    ]
+   },
+   {
+    "n": "Johannesburg",
+    "r": "SOUTHERN",
+    "ll": [
+     -26.2,
+     28.0833
+    ]
+   }
+  ],
   "16919369": [
    {
     "n": "Arusha",
@@ -6231,6 +6265,64 @@
     ]
    }
   ],
+  "18116248": [
+   {
+    "n": "Moab",
+    "r": "ROCKIES",
+    "ll": [
+     38.4506,
+     -109.603
+    ]
+   },
+   {
+    "n": "Canyonlands National Park",
+    "r": "ROCKIES",
+    "ll": [
+     38.1669,
+     -109.76
+    ]
+   },
+   {
+    "n": "Springdale",
+    "r": null,
+    "ll": [
+     37.1855,
+     -112.998
+    ]
+   },
+   {
+    "n": "Zion National Park",
+    "r": null,
+    "ll": [
+     37.2026,
+     -112.988
+    ]
+   },
+   {
+    "n": "Grand Canyon National Park",
+    "r": null,
+    "ll": [
+     35.9422,
+     -112.13
+    ]
+   },
+   {
+    "n": "Zion National Park",
+    "r": null,
+    "ll": [
+     37.2026,
+     -112.988
+    ]
+   },
+   {
+    "n": "Las Vegas",
+    "r": null,
+    "ll": [
+     36.11,
+     -115.212
+    ]
+   }
+  ],
   "18123193": [
    {
     "n": "Vilnius",
@@ -6462,48 +6554,6 @@
     "ll": [
      42.4364,
      18.6961
-    ]
-   }
-  ],
-  "18215491": [
-   {
-    "n": "Jackson Hole",
-    "r": "ROCKIES",
-    "ll": [
-     43.7921,
-     -110.706
-    ]
-   },
-   {
-    "n": "Snake River",
-    "r": "ROCKIES",
-    "ll": [
-     46.25,
-     -118.85
-    ]
-   },
-   {
-    "n": "Yellowstone National Park",
-    "r": "ROCKIES",
-    "ll": [
-     44.5678,
-     -110.441
-    ]
-   },
-   {
-    "n": "Cody",
-    "r": "ROCKIES",
-    "ll": [
-     44.4023,
-     -109.535
-    ]
-   },
-   {
-    "n": "Rapid City",
-    "r": "ROCKIES",
-    "ll": [
-     44.035,
-     -103.378
     ]
    }
   ],
@@ -13143,6 +13193,32 @@
     ]
    }
   ],
+  "18549749": [
+   {
+    "n": "Cape Town",
+    "r": "SOUTHERN",
+    "ll": [
+     -33.9167,
+     18.4167
+    ]
+   },
+   {
+    "n": "Kruger National Park",
+    "r": "SOUTHERN",
+    "ll": [
+     -23.95,
+     31.175
+    ]
+   },
+   {
+    "n": "Victoria Falls",
+    "r": "ZAMBEZI",
+    "ll": [
+     -17.9244,
+     25.8566
+    ]
+   }
+  ],
   "18553095": [
    {
     "n": "La Paz",
@@ -13568,32 +13644,6 @@
     "ll": [
      -19.25,
      22.75
-    ]
-   }
-  ],
-  "18574009": [
-   {
-    "n": "Cape Town",
-    "r": "SOUTHERN",
-    "ll": [
-     -33.9167,
-     18.4167
-    ]
-   },
-   {
-    "n": "Kruger National Park",
-    "r": "SOUTHERN",
-    "ll": [
-     -23.95,
-     31.175
-    ]
-   },
-   {
-    "n": "Victoria Falls",
-    "r": "ZAMBEZI",
-    "ll": [
-     -17.9244,
-     25.8566
     ]
    }
   ],
@@ -16462,6 +16512,48 @@
      -58.6725
     ]
    }
+  ],
+  "18605372": [
+   {
+    "n": "Arusha",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.3678,
+     36.6333
+    ]
+   },
+   {
+    "n": "Lake Manyara National Park",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.375,
+     35.85
+    ]
+   },
+   {
+    "n": "Ngorongoro Crater Conservation Area",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.1592,
+     35.5852
+    ]
+   },
+   {
+    "n": "Serengeti National Park",
+    "r": "EASTAFRICA",
+    "ll": [
+     -2.3328,
+     34.5667
+    ]
+   },
+   {
+    "n": "Fanjove Island, Tanzania",
+    "r": "EASTAFRICA",
+    "ll": [
+     -8.575,
+     39.575
+    ]
+   }
   ]
  },
  "TRIPS": [
@@ -16523,7 +16615,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18475652/adesertsafariinnamibia",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "Windhoek, Namibia",
    "country": "Namibia",
@@ -16762,7 +16854,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_4_0827.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -16984,7 +17076,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18514175/aprivatevillajourneyaroundsouthafrica",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -17167,7 +17259,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18534828/aselfdriveadventureinnamibia",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_208_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_208_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "Windhoek, Namibia",
    "country": "Namibia",
@@ -17337,7 +17429,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_408_0828.webp",
    "from": "Hwange National Park, Zimbabwe",
    "to": "Okavango Delta, Botswana",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -17389,7 +17481,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18325774/aspiritualjourneyintibet",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_81_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_81_0901.webp",
    "from": "Beijing, China",
    "to": "Lhasa, China",
    "country": "China",
@@ -17741,7 +17833,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521705/aksanctuarybotswanasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -17818,7 +17910,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -17872,10 +17964,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18362041/aksanctuarybotswanasafariandvictoriafalls",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -17942,10 +18034,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521706/aksanctuarybotswanasafariandvictoriafalls",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-01",
@@ -18060,7 +18152,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360198/aksanctuarygorillatrekkinginuganda",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -18111,7 +18203,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521707/aksanctuarygorillatrekkinginuganda",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -18171,7 +18263,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521708/aksanctuarygreatmigrationsafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -18247,7 +18339,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473611/aksanctuarykenyasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -18360,7 +18452,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521709/aksanctuarykenyasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -18510,7 +18602,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338097/aksanctuarysafariinkenya",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -18597,7 +18689,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338099/aksanctuarysafariintanzania",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -18692,7 +18784,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338100/aksanctuarysafariintanzaniaandkenya",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -18771,7 +18863,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338887/aksanctuarysafariinuganda",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -18836,7 +18928,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18488737/aksanctuarysouthernafricasafariandvictoriafalls",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -18954,10 +19046,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360200/aksanctuarytanzaniaandkenyasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -19021,10 +19113,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521712/aksanctuarytanzaniaandkenyawildlifesafari",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -19152,7 +19244,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360201/aksanctuarytanzaniasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -19220,7 +19312,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521713/aksanctuarytanzaniasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -19738,7 +19830,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Athens, Greece",
    "to": "Johannesburg, South Africa",
-   "country": "Mauritius",
+   "country": "Tanzania",
    "world": false,
    "d": "8/18/2028",
    "r": "8/31/2028",
@@ -19920,7 +20012,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338369/americasgreatestnationalparks",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_110_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_110_0901.webp",
    "from": "Moab, UT, United States",
    "to": "Phoenix, AZ, United States",
    "country": "United States",
@@ -20007,7 +20099,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338370/americasnationalparksbyair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_58_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_58_0901.webp",
    "from": "Fresno, CA, United States",
    "to": "Jackson Hole, WY, United States",
    "country": "United States",
@@ -20100,7 +20192,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18358549/appianwayandaqueductsparkbyebike",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2952_2_0_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2952_2_0_0901.webp",
    "from": "Rome, Italy",
    "to": "Rome, Italy",
    "country": null,
@@ -20203,7 +20295,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_0_0809.webp",
    "from": "Kyoto, Japan",
    "to": "Marrakech, Morocco",
-   "country": "United Arab Emirates",
+   "country": "Indonesia",
    "world": true,
    "d": "10/17/2027",
    "r": "11/7/2027",
@@ -20273,7 +20365,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_93_0821.webp",
    "from": "Tokyo, Japan",
    "to": "Bangkok Noi, Thailand",
-   "country": "Bhutan",
+   "country": "Thailand",
    "world": false,
    "d": "2/15/2028",
    "r": "3/2/2028",
@@ -20467,7 +20559,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18365702/becomeashepherdforadayeveningexperiencewithdinner",
    "days": 4,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2952_2_0_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2952_2_0_0901.webp",
    "from": "Costa Smeralda, Italy",
    "to": "Costa Smeralda, Italy",
    "country": "Italy",
@@ -20585,7 +20677,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_96_0827.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zimbabwe",
-   "country": "Zimbabwe",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -20662,7 +20754,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15689502/bestofamazongalapagosprivateecuadorgalapagostours",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_32_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_34_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -20756,7 +20848,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_16_0828.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -20976,7 +21068,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/11866871/bestofperuthegalapagosprivateluxurysouthamericatours",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_21_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_23_0815.webp",
    "from": "Lima, Peru",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -21125,7 +21217,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15683960/bestofthegalapagosprivateluxuryecuadortours",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_32_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_34_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -21210,7 +21302,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2027-04",
@@ -21299,16 +21391,16 @@
      "description": "Experience the serene beauty of Bhutan with an exclusive stay at &Beyond Punakha River Lodge Stay for three nights or more at &Beyond Punakha River Lodge, and we’ll cover your Sustainable Development Fee (SDF), allowing you to immerse yourself in the wonders of this Himalayan kingdom without the added cost. Validity dates: 03 Jan – 28 Feb 2026 01 Jun – 31 Aug 2026 01 – 22 Dec 2026 Book your journey today and discover the magic of Bhutan—stress-free!"
     },
     {
-     "name": "Punakha Honeymoon",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "An idyllic and spiritually enriching honeymoon destination nestled amidst the majestic Himalaya mountains Punakha, situated in the heart of the Himalaya, invites couples to experience its secluded and picturesque valley, characterised by awe-inspiring natural beauty, captivating landscapes, and a rich cultural heritage. Immerse guests in the serenity of the Himalaya, strolling hand in hand through lush paddy fields, exploring historic monasteries together, and sharing moments of tranquility beside glistening rivers. With its unique blend of romance, adventure, and culture, Punakha promises an…"
-    },
-    {
      "name": "Milestone Celebrations Offer",
      "endDate": "2026-12-31",
      "exclusive": false,
      "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding…"
+    },
+    {
+     "name": "Punakha Honeymoon",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "An idyllic and spiritually enriching honeymoon destination nestled amidst the majestic Himalaya mountains Punakha, situated in the heart of the Himalaya, invites couples to experience its secluded and picturesque valley, characterised by awe-inspiring natural beauty, captivating landscapes, and a rich cultural heritage. Immerse guests in the serenity of the Himalaya, strolling hand in hand through lush paddy fields, exploring historic monasteries together, and sharing moments of tranquility beside glistening rivers. With its unique blend of romance, adventure, and culture, Punakha promises an…"
     }
    ],
    "itin": [
@@ -21430,7 +21522,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0814.webp",
    "from": "Johannesburg, South Africa",
    "to": "Male, Maldives",
-   "country": "South Africa",
+   "country": "Maldives",
    "world": false,
    "mks": [
     "2026-09",
@@ -22005,7 +22097,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18580069/botswanaexplorersafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_11_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_11_0901.webp",
    "from": "Maun, Botswana",
    "to": "Okavango Delta, Botswana",
    "country": "Botswana",
@@ -22126,7 +22218,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18600041/botswanasafarifromdeltatodesert",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Makgadikgadi Pans – Desert Denizens Up Close",
    "country": "South Africa",
@@ -22190,7 +22282,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18580071/botswanakalaharithedeltabeyond",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_10_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_10_0901.webp",
    "from": "Livingstone, Zambia",
    "to": "Maun, Botswana",
    "country": "Botswana",
@@ -22269,7 +22361,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0809.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -22441,7 +22533,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18113927/brazilwildlifeadventuretheamazonandpantanal",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0901.webp",
    "from": "Manaus, Brazil",
    "to": "",
    "country": "Brazil",
@@ -22560,7 +22652,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473615/brazilwildlifeadventuretheamazonandpantanal",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0901.webp",
    "from": "Manaus, Brazil",
    "to": "",
    "country": "Brazil",
@@ -22760,7 +22852,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0814.webp",
    "from": "Nairobi, Kenya",
    "to": "Mahé, Seychelles",
-   "country": "Seychelles",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -22864,7 +22956,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18342488/californiafamilyroadtrip",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_85_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_85_0901.webp",
    "from": "San Francisco, CA, United States",
    "to": "Santa Monica, CA, United States",
    "country": "United States",
@@ -23479,7 +23571,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18382518/churchillsbelugaspolarbearsarcticwildlife",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_115_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_115_0901.webp",
    "from": "Winnipeg, Canada",
    "to": "Winnipeg, Canada",
    "country": "Canada",
@@ -23694,7 +23786,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473617/classickenyasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -23869,7 +23961,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346149/classicsouthafricakrugertothecape",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -23936,7 +24028,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18475653/classictanzaniasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -24057,7 +24149,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18325781/costaricarainforestadventure",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_90_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_90_0901.webp",
    "from": "San Jose, Costa Rica",
    "to": "San Jose, Costa Rica",
    "country": "Costa Rica",
@@ -24132,10 +24224,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338374/cruisegalpagosandtheamazon",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_54_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_54_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Brazil",
+   "country": "Ecuador",
    "world": false,
    "mks": [
     "2026-09",
@@ -24322,7 +24414,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3014_2_0_0830.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Cambodia",
    "world": false,
    "mks": [
     "2026-09",
@@ -24731,7 +24823,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0809.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Cambodia",
+   "country": "Vietnam",
    "world": false,
    "d": "11/1/2026",
    "r": "11/14/2026",
@@ -24787,7 +24879,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0809.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Vietnam",
    "world": false,
    "d": "2/21/2027",
    "r": "3/6/2027",
@@ -24844,7 +24936,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0809.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Thailand",
    "world": false,
    "d": "11/7/2027",
    "r": "11/20/2027",
@@ -24995,9 +25087,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -25015,7 +25113,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18535905/earthwatchexpeditionsbynathabkillerwhalestheirpreyiniceland",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_72_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_72_0901.webp",
    "from": "Reykjavík, Iceland",
    "to": "Heimaey, Iceland",
    "country": "Iceland",
@@ -25073,7 +25171,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18506376/earthwatchexpeditionsbynathabsurveyingwildlifeintheupperamaz",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_65_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_65_0901.webp",
    "from": "Lima, Peru",
    "to": "Nauta, Peru",
    "country": "Peru",
@@ -25151,10 +25249,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18104364/eastafricabyprivateair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "d": "9/21/2026",
    "r": "10/1/2026",
@@ -25263,16 +25361,81 @@
    "route": "18535651"
   },
   {
+   "id": "18605372",
+   "n": "East African Safari & Island Experience",
+   "b": "wilderness",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18605372/eastafricansafariislandexperience",
+   "days": 12,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_763_0828.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Fanjove Island, Tanzania, Tanzania",
+   "country": "Tanzania",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 02 Sep 2026 - 02 Sep 2027",
+   "description": "Explore northern Tanzania’s legendary safari circuit, from lush waterfalls to the iconic Serengeti and the Ngorongoro Crater. End your adventure on Fanjove Island, a pristine tropical paradise surrounded by turquoise waters and coral reefs. Witness breathtaking landscapes and experience exceptional game viewing across diverse habitats and ecosystems. Enjoy a mix of thrilling adventure and relaxation, from walking safaris in the Serengeti to barefoot island bliss. Stay at some of the best properties in the country, where genuine hospitality combines with luxury for an unforgettable stay.",
+   "included": [
+    "All safari accommodation and meals.",
+    "Twice daily safari activities.",
+    "Park fees and concession fees.",
+    "Laundry service.",
+    "Airport and inter-camp transfers as specified.",
+    "Meet and Greet."
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 2,
+     "n": "Lake Manyara National Park"
+    },
+    {
+     "d": 4,
+     "n": "Ngorongoro Crater Conservation Area"
+    },
+    {
+     "d": 6,
+     "n": "Serengeti National Park"
+    },
+    {
+     "d": 9,
+     "n": "Fanjove Island, Tanzania"
+    }
+   ],
+   "route": "18605372"
+  },
+  {
    "id": "18575922",
    "n": "East Greenland Arctic Adventure",
    "b": "nathab",
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18575922/eastgreenlandarcticadventure",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_148_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_148_0901.webp",
    "from": "Reykjavík, Iceland",
    "to": "Keflavík, Iceland",
-   "country": "Greenland",
+   "country": "Iceland",
    "world": false,
    "mks": [
     "2026-09",
@@ -25580,7 +25743,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
    "from": "Anchorage, AK, United States",
    "to": "Singapore  , Singapore",
-   "country": "Japan",
+   "country": "Papua New Guinea",
    "world": false,
    "d": "6/29/2027",
    "r": "7/20/2027",
@@ -25815,10 +25978,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15135782/exclusivegalapagosperuprivateluxurysouthamericatours",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_21_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_23_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "mks": [
     "2026-09",
@@ -26220,10 +26383,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114408/familysafariinkenyaandtanzania",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-12"
@@ -26289,7 +26452,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473628/familysafariinkenyaandtanzania",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -26365,7 +26528,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/11866806/familytourofthegalapagosprivateluxurygalapagostours",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_32_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_34_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Guayaquil, Ecuador",
    "country": "Ecuador",
@@ -26661,9 +26824,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -26683,7 +26852,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18381655/galapagosdiscoverythenathabexperiencewesternitinerary",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_315_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_315_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Isla San Cristóbal, Ecuador",
    "country": "Ecuador",
@@ -26914,7 +27083,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0814.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -26971,10 +27140,10 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473265/gloriousgardensofenglandandchelseaflowershow",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_153_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_153_0901.webp",
    "from": "London, United Kingdom",
    "to": "London, United Kingdom",
-   "country": "United Kingdom",
+   "country": "New Zealand",
    "world": false,
    "d": "5/12/2027",
    "r": "5/20/2027",
@@ -27170,7 +27339,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Napa, CA, United States",
    "to": "Milano, Italy",
-   "country": "United States",
+   "country": "Spain",
    "world": true,
    "d": "4/12/2028",
    "r": "5/4/2028",
@@ -27276,9 +27445,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -27310,7 +27485,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18477432/greatbearrainforestinsearchofspiritbearsgrizzlieswhales",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_27_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_27_0901.webp",
    "from": "Vancouver, Canada",
    "to": "Bella Bella, Canada",
    "country": "Canada",
@@ -27385,7 +27560,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -27588,9 +27763,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -27754,7 +27935,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/13725345/highlightsofecuadorandthegalapagosprivateluxuryecuadortours",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_90_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_92_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -27833,7 +28014,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/11972624/highlightsoftanzaniaprivateluxurytanzaniatourssafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_36_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_38_0815.webp",
    "from": "Kilimanjaro International Airport, Tanzania",
    "to": "Singita Grumeti Reserves, Tanzania",
    "country": "Tanzania",
@@ -27920,7 +28101,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/12709528/highlightsoftheokavangodeltaprivateluxurybotswanatoursandsaf",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_37_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_39_0815.webp",
    "from": "Maun, Botswana",
    "to": "Okavango Delta, Botswana",
    "country": "Botswana",
@@ -28526,7 +28707,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0812.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "d": "11/9/2026",
    "r": "11/19/2026",
@@ -28710,7 +28891,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Morocco",
+   "country": "France",
    "world": true,
    "d": "3/21/2028",
    "r": "4/10/2028",
@@ -28786,7 +28967,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Maldives",
+   "country": "Vietnam",
    "world": true,
    "mks": [
     "2027-03"
@@ -28857,7 +29038,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15683954/introductiontoecuadorthegalapagosprivateluxuryecuadortours",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_32_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_34_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -28939,7 +29120,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15172759/introductiontosouthafricacapetownsafariprivateluxurytours",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_59_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0815.webp",
    "from": "Cape Town, South Africa",
    "to": "Sabi Sand Game Reserve, South Africa",
    "country": "South Africa",
@@ -29014,7 +29195,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/11972985/introductiontotanzaniaprivateluxurytanzaniatourssafari",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_36_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_38_0815.webp",
    "from": "Kilimanjaro International Airport, Tanzania",
    "to": "Singita Grumeti Reserves, Tanzania",
    "country": "Tanzania",
@@ -29097,7 +29278,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18382037/jaguarswildlifeofbrazilspantanal",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_166_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_166_0901.webp",
    "from": "Sao Paulo, Brazil",
    "to": "Sao Paulo, Brazil",
    "country": "Brazil",
@@ -29258,7 +29439,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15135765/journeythroughecuadorprivateluxuryecuadorgalapagostours",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_90_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_92_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -29436,7 +29617,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_352_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -29565,6 +29746,87 @@
    "route": "18295011"
   },
   {
+   "id": "18107045",
+   "n": "Kenya and Tanzania Safari Adventure",
+   "b": "ak",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107045/kenyaandtanzaniasafariadventure",
+   "days": 12,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "from": "Nairobi, Kenya",
+   "to": "Nairobi, Kenya",
+   "country": "Tanzania",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 01 Sep 2026 - 03 Jan 2027",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Ultraluxe Community Amenity Credit",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Nairobi"
+    },
+    {
+     "d": 2,
+     "n": "Amboseli National Park"
+    },
+    {
+     "d": 4,
+     "n": "Arusha"
+    },
+    {
+     "d": 5,
+     "n": "Lake Manyara"
+    },
+    {
+     "d": 6,
+     "n": "Ngorongoro"
+    },
+    {
+     "d": 7,
+     "n": "Serengeti"
+    },
+    {
+     "d": 9,
+     "n": "Masai Mara National Reserve"
+    },
+    {
+     "d": 1,
+     "n": "Nairobi"
+    }
+   ],
+   "route": "18107045"
+  },
+  {
    "id": "18360363",
    "n": "Kenya and Tanzania Safari Adventure",
    "b": "ak",
@@ -29640,87 +29902,6 @@
    "route": "18360363"
   },
   {
-   "id": "18107045",
-   "n": "Kenya and Tanzania Safari Adventure",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107045/kenyaandtanzaniasafariadventure",
-   "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
-   "from": "Nairobi, Kenya",
-   "to": "Nairobi, Kenya",
-   "country": "Kenya",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12",
-    "2027-01"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 01 Sep 2026 - 03 Jan 2027",
-   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
-   "included": [],
-   "promotions": [
-    {
-     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
-    },
-    {
-     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
-    },
-    {
-     "name": "Ultraluxe Community Amenity Credit",
-     "endDate": "2028-12-31",
-     "exclusive": false,
-     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Nairobi"
-    },
-    {
-     "d": 2,
-     "n": "Amboseli National Park"
-    },
-    {
-     "d": 4,
-     "n": "Arusha"
-    },
-    {
-     "d": 5,
-     "n": "Lake Manyara"
-    },
-    {
-     "d": 6,
-     "n": "Ngorongoro"
-    },
-    {
-     "d": 7,
-     "n": "Serengeti"
-    },
-    {
-     "d": 9,
-     "n": "Masai Mara National Reserve"
-    },
-    {
-     "d": 1,
-     "n": "Nairobi"
-    }
-   ],
-   "route": "18107045"
-  },
-  {
    "id": "18383983",
    "n": "Kenya and Tanzania Safari Adventure",
    "b": "ak",
@@ -29729,7 +29910,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383983/kenyaandtanzaniasafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -29810,7 +29991,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107046/kenyaandtanzaniasafariaprivatejourney",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -29887,10 +30068,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114409/kenyaandtanzaniaepicgreatmigrationsafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -29955,7 +30136,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473632/kenyaandtanzaniaepicgreatmigrationsafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -30032,7 +30213,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18365627/kenyaandugandasafaribyprivateair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Entebbe, Uganda",
    "country": "Kenya",
@@ -30095,10 +30276,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18562114/kenyaandugandasafaribyprivateair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Entebbe, Uganda",
-   "country": "Uganda",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2028-08",
@@ -30276,7 +30457,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338579/kenyafamilysafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -30592,7 +30773,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_677_0828.webp",
    "from": "Nairobi, Kenya",
    "to": "Parc National des Volcans, Rwanda",
-   "country": "Rwanda",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -30987,7 +31168,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18381600/kingdomofthemonarchs",
    "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_417_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_417_0901.webp",
    "from": "Mexico City , Mexico",
    "to": "Mexico City , Mexico",
    "country": "Mexico",
@@ -31135,7 +31316,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/14450642/landbasedtourofthegalapagosprivateluxurygalapagostours",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_32_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_34_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -31262,7 +31443,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_251_0827.webp",
    "from": "Lisbon, Portugal",
    "to": "Praia Sundy, Príncipe, São Tomé and Príncipe, Sao Tome And Principe",
-   "country": "Portugal",
+   "country": "Sao Tome And Principe",
    "world": false,
    "mks": [
     "2026-09",
@@ -31452,7 +31633,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15687415/luxuryadventuretourofecuadorthegalapagosprivateecuadortours",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_32_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_34_0815.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -31602,7 +31783,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15751549/luxuryfoodwinesafaritourofsouthafricaprivateluxurytours",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_59_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0815.webp",
    "from": "Cape Town, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -31906,10 +32087,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18537234/luxurysafarihoneymooninsouthernafrica",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -32610,7 +32791,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_0828.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -33066,7 +33247,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-07",
@@ -33202,7 +33383,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-06",
@@ -33389,9 +33570,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -33593,7 +33780,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346150/namibiaepicwildernessadventure",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "",
    "country": "Namibia",
@@ -33784,7 +33971,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18385770/nathabsalaskabearcamp",
    "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_507_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_507_0901.webp",
    "from": "Anchorage, AK, United States",
    "to": "Homer, AK, United States",
    "country": "United States",
@@ -34371,7 +34558,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18358543/norciatruffleexperience",
    "days": 4,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2952_2_0_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2952_2_0_0901.webp",
    "from": "Norcia, Italy",
    "to": "Norcia, Italy",
    "country": "Italy",
@@ -34412,7 +34599,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Delhi, India",
    "to": "Mumbai, India",
-   "country": "Nepal",
+   "country": "India",
    "world": false,
    "d": "11/7/2026",
    "r": "11/24/2026",
@@ -34473,7 +34660,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18575918/northernlightsarcticexploration",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_261_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_261_0901.webp",
    "from": "Winnipeg, Canada",
    "to": "Winnipeg, Canada",
    "country": "Canada",
@@ -34762,7 +34949,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -34843,7 +35030,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18342492/onthetrailofbrazilswildlife",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0901.webp",
    "from": "Manaus, Brazil",
    "to": "Campo Grande, Brazil",
    "country": "Brazil",
@@ -34980,7 +35167,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0809.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -35031,7 +35218,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2734_2_53_0822.webp",
    "from": "Santiago, Chile",
    "to": "Buenos Aires, Argentina",
-   "country": "Argentina",
+   "country": "Chile",
    "world": false,
    "mks": [
     "2026-09",
@@ -35191,7 +35378,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Amman, Jordan",
    "to": "Cairo, Egypt",
-   "country": "Egypt",
+   "country": "Jordan",
    "world": false,
    "mks": [
     "2026-09",
@@ -35449,7 +35636,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18100729_2_100_0828.webp",
    "from": "New Delhi, India",
    "to": "Kanha National Park, India",
-   "country": "Nepal",
+   "country": "India",
    "world": false,
    "mks": [
     "2027-02",
@@ -35574,9 +35761,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -35596,7 +35789,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15777015/romantickenyatanzaniasafarisandprivateluxuryeastafricatours",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_70_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_72_0815.webp",
    "from": "Nairobi, Kenya",
    "to": "Zanzibar, Tanzania",
    "country": "Kenya",
@@ -35683,7 +35876,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/12647663/romanticsafariseaprivateluxuryafricatours",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_59_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0815.webp",
    "from": "Cape Winelands, South Africa",
    "to": "Beau Champ, Mauritius",
    "country": "South Africa",
@@ -35802,7 +35995,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/11922921/romanticsouthafricaprivateluxurysouthafricasafaritours",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_59_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0815.webp",
    "from": "Cape Winelands, South Africa",
    "to": "Sabi Sand Game Reserve, South Africa",
    "country": "South Africa",
@@ -35922,9 +36115,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -36028,10 +36227,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346151/rwandaandtanzaniawildlifeadventure",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Kigali, Rwanda",
    "to": "Arusha, Tanzania",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -36229,7 +36428,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16533558/rwandasafarimountainsprivateluxuryrwandatours",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_93_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_17_0815.webp",
    "from": "Kigali, Rwanda",
    "to": "Kigali, Rwanda",
    "country": "Rwanda",
@@ -36315,7 +36514,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_26_0828.webp",
    "from": "Linyanti, Botswana",
    "to": "Benguerra Island, Mozambique",
-   "country": "Botswana",
+   "country": "Mozambique",
    "world": false,
    "mks": [
     "2026-09",
@@ -36372,7 +36571,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_16_0828.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Skeleton Coast, Namibia",
-   "country": "Botswana",
+   "country": "Namibia",
    "world": false,
    "mks": [
     "2026-09",
@@ -36433,7 +36632,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_0_0828.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Skeleton Coast, Namibia",
-   "country": "Botswana",
+   "country": "Namibia",
    "world": false,
    "mks": [
     "2026-09",
@@ -36554,10 +36753,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18593039/safaritourofindianepalprivateluxuryindiaandnepaltours",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_20_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_21_0815.webp",
    "from": "Delhi, India",
    "to": "Kathmandu, Nepal",
-   "country": "Nepal",
+   "country": "India",
    "world": false,
    "mks": [
     "2026-09",
@@ -36651,7 +36850,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_86_0827.webp",
    "from": "La Paz, Bolivia",
    "to": "Santiago, Chile",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-09",
@@ -36846,10 +37045,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18375050/secludedbotswanasafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_12_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_12_0901.webp",
    "from": "Livingstone, Zambia",
    "to": "Maun, Botswana",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -36902,7 +37101,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_216_0827.webp",
    "from": "Geneva, Switzerland",
    "to": "Milan, Italy",
-   "country": "Switzerland",
+   "country": "Italy",
    "world": false,
    "mks": [
     "2026-09",
@@ -37060,9 +37259,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -37266,7 +37471,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_0828.webp",
    "from": "Cape Town, South Africa",
    "to": "Windhoek, Namibia",
-   "country": "Namibia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -37332,7 +37537,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_101_0827.webp",
    "from": "Cape Town, South Africa",
    "to": "Vilanculos, Mozambique",
-   "country": "Mozambique",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -37476,7 +37681,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338587/southafricacapetownthewinelandsandhermanus",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_300_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_300_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -37547,7 +37752,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338588/southafricawinelandsandwildlife",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -37756,10 +37961,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18105722/southernafricabyprivateair",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "Namibia",
    "world": false,
    "d": "10/2/2026",
    "r": "10/15/2026",
@@ -37875,7 +38080,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107102/southernafricasafariandrailadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -37952,7 +38157,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -38025,10 +38230,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383989/southernafricasafariandrailadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-03",
@@ -38105,10 +38310,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18603828/southernafricasafariandrailadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2028-03",
@@ -38187,7 +38392,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0812.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -38350,9 +38555,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -38376,7 +38587,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0814.webp",
    "from": "Victoria Falls, Zimbabwe",
    "to": "Maun, Botswana",
-   "country": "Zimbabwe",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -38422,26 +38633,104 @@
    "route": "15856770"
   },
   {
-   "id": "18574009",
+   "id": "18116248",
+   "n": "Spirit of the Desert: The National Parks of the Southwest",
+   "b": "tauck",
+   "g": [
+    "ROCKIES"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18116248/spiritofthedesertthenationalparksofthesouthwest",
+   "days": 10,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
+   "from": "Moab, UT, United States",
+   "to": "Las Vegas, NV, United States",
+   "country": "United States",
+   "world": false,
+   "d": "9/8/2026",
+   "r": "9/17/2026",
+   "mks": [
+    "2026-09"
+   ],
+   "win": "Dates: 08 Sep 2026 - 17 Sep 2026",
+   "description": "Experience six national parks over the course of 10 days as you explore the American Southwest. With feelings that evoke the haunting spirit of the desert - view the inspiring natural beauty, hear the stories of the spirit of the people, and feel the spiritual connection we all share with their special sites are at the heart of this vacation.",
+   "included": [
+    "Stunning landscapes so arresting that they'll live forever in your mind's eye… impossible red rock arches opening before you like grand entryways, offering a sense of endless possibility… canyons and immense cliffs, seemingly carved by a giant to form an island in the sky… fanciful hoodoos come alive while gods and legends linger everywhere… how the human spirit is cheered and fortified by the spirit of the desert. On the ground or by air, explore Arches, Canyonlands, Capitol Reef, Bryce Canyon, Zion and Grand Canyon national parks. Fly over the remote reaches of Capitol Reef and see the Grand Canyon from the air... Spend two nights on the Grand Canyon's South Rim... Enjoy independent sunrise and sunset spirit-of-the-moment experiences in the national parks… and gain insights through filmed vignettes by Ken Burns and Dayton Duncan, sharing their own personal stories and of those who shaped the creation of the national parks."
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Moab"
+    },
+    {
+     "d": 3,
+     "n": "Canyonlands National Park"
+    },
+    {
+     "d": 5,
+     "n": "Springdale"
+    },
+    {
+     "d": 6,
+     "n": "Zion National Park"
+    },
+    {
+     "d": 7,
+     "n": "Grand Canyon National Park"
+    },
+    {
+     "d": 6,
+     "n": "Zion National Park"
+    },
+    {
+     "d": 10,
+     "n": "Las Vegas"
+    }
+   ],
+   "route": "18116248"
+  },
+  {
+   "id": "18549749",
    "n": "Splendors Of Southern Africa 2026",
    "b": "africantravel",
    "g": [
     "SOUTHERN",
     "ZAMBEZI"
    ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18574009/splendorsofsouthernafrica2026",
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18549749/splendorsofsouthernafrica2026",
    "days": 11,
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0812.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
-   "d": "12/3/2026",
-   "r": "12/13/2026",
    "mks": [
-    "2026-12"
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
    ],
-   "win": "Dates: 03 Dec 2026 - 13 Dec 2026",
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2027",
    "description": "African Travel, Inc. is proud to be a preferred partner of Virtuoso. For 50 years, we have been creating extraordinary, handcrafted luxury safari experiences, ensuring immersive and authentic wildlife and cultural encounters across the continent. Our specialty is crafting tailor-made safaris, complemented by exclusive small-group journeys. Whether you prefer a personalized journey or the camaraderie of a small group, African Travel brings the magic of Africa to life in a way that’s uniquely yours. Access Advisor Resources: https://linktr.ee/africantravelvirtuoso",
    "included": [
     "Discover the best of Southern Africa in style on a fully escorted small-group journey limited to 14 guests. Begin in Cape Town, where breathtaking landscapes and rich culture set the stage. Savor world-class wines, explore dramatic coastlines, and experience vibrant local life. Continue to a private Kruger reserve for thrilling Big Five game drives, staying at a luxury lodge with stunning wilderness views. Finally, witness the majesty of Victoria Falls, from misty rainforest trails to a spectacular helicopter flight. With a dedicated travel director, seamless logistics, and generous inclusions, enjoy a stress-free, elevated adventure of a lifetime. Highlights: Explore Victoria Falls with a scenic helicopter flight, walking tour, and Zambezi River cruise. Discover Cape Town’s top sights on private tours with local guides. Experience unparalleled luxury at Cape Grace Hotel, the brand-new Sandringham Lodge, and Victoria Falls River Lodge. Enjoy an extended 5-day safari with twice-daily game drives in the private Kruger reserve."
@@ -38474,7 +38763,7 @@
      "n": "Victoria Falls"
     }
    ],
-   "route": "18574009"
+   "route": "18549749"
   },
   {
    "id": "18345460",
@@ -38550,6 +38839,59 @@
     }
    ],
    "route": "18345460"
+  },
+  {
+   "id": "16919119",
+   "n": "Spotlight on South Africa and Victoria Falls",
+   "b": "tauck",
+   "g": [
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16919119/spotlightonsouthafricaandvictoriafalls",
+   "days": 9,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
+   "from": "Cape Town, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Zambia",
+   "world": false,
+   "d": "10/5/2026",
+   "r": "10/13/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 05 Oct 2026 - 13 Oct 2026",
+   "description": "Venture into the heart of South Africa, where Cape Town's coastal charm and the silhouette of Table Mountain create a setting of pure magic. Savor world-class wines, embark on thrilling game drives, and feel the pulse of the continent with each moment.",
+   "included": [
+    "Journey to the heart of South Africa, a world where breathtaking landscapes, remarkable wildlife and rich cultures await. Adventures begins in the vibrant coastal city of Cape Town, based at the foot of the magnificent Table Mountain. Discover history and natural beauty from game reserves to coastal treasures, sip wines in lush vineyards, and marvel at the playful African penguins on the beach. Experience the savannahs of Kapama Private Game Reserve, home to Africa's \"Big Five\" on thrilling game drives, where lions, elephants, and rhinos roam. Stand in awe of the thundering Victoria Falls and share unforgettable moments during serene sunsets on the Zambezi River, every moment is steeped in wonder."
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Cape Town"
+    },
+    {
+     "d": 4,
+     "n": "Kruger National Park"
+    },
+    {
+     "d": 7,
+     "n": "Victoria Falls"
+    },
+    {
+     "d": 9,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "16919119"
   },
   {
    "id": "18386595",
@@ -38635,9 +38977,15 @@
     },
     {
      "name": "Honeymoon offer",
-     "endDate": "2027-04-22",
+     "endDate": "2027-12-20",
      "exclusive": false,
      "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
+    },
+    {
+     "name": "Fly Me to Phinda",
+     "endDate": "2028-01-10",
+     "exclusive": false,
+     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
     }
    ],
    "itin": [
@@ -38657,7 +39005,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18593438/tajmahalandthetreasuresofindiapushkarfair",
    "days": 16,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_4_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_4_0901.webp",
    "from": "Mumbai, India",
    "to": "Delhi, India",
    "country": "India",
@@ -38862,7 +39210,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/14363674/tanzaniainbriefprivateluxurytanzaniatourssafari",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_36_0815.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_17_0815.webp",
    "from": "Kilimanjaro International Airport, Tanzania",
    "to": "Singita Grumeti Reserves, Tanzania",
    "country": "Tanzania",
@@ -39177,7 +39525,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346152/tanzaniaepicsafarisandzanzibarsbeaches",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_307_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_307_0901.webp",
    "from": "Dar Es Salaam, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -39886,7 +40234,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18399295/thegreatgraywhalesofbaja",
    "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_127_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_127_0901.webp",
    "from": "Loreto, Mexico",
    "to": "Loreto, Mexico",
    "country": "Mexico",
@@ -39981,7 +40329,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18479807/thegreatkenyamigrationsafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_372_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_372_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -40043,7 +40391,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17_0812.webp",
    "from": "Nairobi, Kenya",
    "to": "Ngorongoro, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -40108,7 +40456,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0809.webp",
    "from": "Depart Home",
    "to": "Homeward bound",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -40163,7 +40511,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0809.webp",
    "from": "En route to a classic East African safari",
    "to": "Homeward bound",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -40324,10 +40672,10 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18325791/theluxurytentedcampsofsoutheastasia",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_11_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_11_0901.webp",
    "from": "Chiang Mai, Thailand",
    "to": "Phnom Penh, Cambodia",
-   "country": "Laos",
+   "country": "Thailand",
    "world": false,
    "mks": [
     "2026-09",
@@ -40765,7 +41113,7 @@
    "img": null,
    "from": "Vilnius, Lithuania",
    "to": "Tallinn, Estonia",
-   "country": "Estonia",
+   "country": "Lithuania",
    "world": false,
    "d": "9/22/2026",
    "r": "10/2/2026",
@@ -40838,10 +41186,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338591/theultimateluxuryafricansafari",
    "days": 20,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Nairobi, Kenya",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -40976,7 +41324,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Okavango Delta, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -41086,7 +41434,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0812.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -41251,7 +41599,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18115651/ugandagorillatrekkingandsafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -41313,7 +41661,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473649/ugandagorillatrekkingandsafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -41505,7 +41853,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18403529/ultimatealaskawildlifesafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_99_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_99_0901.webp",
    "from": "Fairbanks, AK, United States",
    "to": "Homer, AK, United States",
    "country": "United States",
@@ -41648,10 +41996,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107126/ultimatebotswanasafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -41725,7 +42073,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -41798,10 +42146,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383993/ultimatebotswanasafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-01",
@@ -41880,10 +42228,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18603829/ultimatebotswanasafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2028-01",
@@ -42042,7 +42390,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -42114,10 +42462,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107132/ultimategreatmigrationsafari",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -42191,7 +42539,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383217/ultimategreatmigrationsafari",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -42276,10 +42624,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107133/ultimategreatmigrationsafariaprivatejourney",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -42353,10 +42701,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18386586/ultimategreatmigrationsafariaprivatejourney",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -42438,7 +42786,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114414/ultimatekenyasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -42582,7 +42930,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4_0812.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -42659,7 +43007,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114415/ultimatetanzaniasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -42727,7 +43075,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18380342/ultimateyellowstonegrandtetonsafari",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_106_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_106_0901.webp",
    "from": "Jackson, WY, United States",
    "to": "Bozeman, MT, United States",
    "country": "United States",
@@ -42795,7 +43143,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Los Angeles, CA, United States",
    "to": "Papagayo Peninsula, Costa Rica, Costa Rica",
-   "country": "Mexico",
+   "country": "Peru",
    "world": false,
    "d": "1/20/2027",
    "r": "2/9/2027",
@@ -42938,7 +43286,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18576555/untamedmongolia",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_172_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_172_0901.webp",
    "from": "Ulaanbaatar, Mongolia",
    "to": "Ulaanbaatar, Mongolia",
    "country": "Mongolia",
@@ -43046,7 +43394,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18537396/untouchednamibiadunesanddesertsafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "Windhoek, Namibia",
    "country": "Namibia",
@@ -43173,7 +43521,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338593/utahsmightyfivenationalparks",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_65_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_65_0901.webp",
    "from": "Las Vegas, NV, United States",
    "to": "Salt Lake City, UT, United States",
    "country": "United States",
@@ -43305,7 +43653,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18342493/wildcanadabearsbelugasandtheauroraborealis",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_79_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_79_0901.webp",
    "from": "Winnipeg, Canada",
    "to": "Winnipeg, Canada",
    "country": "Canada",
@@ -43380,7 +43728,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -43584,7 +43932,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
    "from": "Big Sky, MT, United States",
    "to": "Sea of Cortez, Mexico",
-   "country": "Ecuador",
+   "country": "Brazil",
    "world": false,
    "d": "6/15/2027",
    "r": "6/30/2027",
@@ -43852,7 +44200,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-03",
@@ -44047,10 +44395,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18601052/wildlifesafariaroundtheworldbyprivatejet",
    "days": 26,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_29_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_29_0901.webp",
    "from": "Portland, OR, United States",
    "to": "Boston, MA, United States",
-   "country": "Kenya",
+   "country": "United States",
    "world": true,
    "d": "2/8/2028",
    "r": "3/4/2028",
@@ -44127,7 +44475,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_0_0820.webp",
    "from": "Santiago, Chile",
    "to": "La Paz, Bolivia",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-09",
@@ -44321,7 +44669,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2906_2_47_0819.webp",
    "from": "Quito, Ecuador",
    "to": "Cusco, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-09",
@@ -44630,7 +44978,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Los Angeles, CA, United States",
-   "country": "Indonesia",
+   "country": "Rwanda",
    "world": true,
    "d": "8/10/2027",
    "r": "9/2/2027",
@@ -44858,7 +45206,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338594/wyomingwildernessadventure",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_58_0801.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_58_0901.webp",
    "from": "Bozeman, MT, United States",
    "to": "Jackson Hole, WY, United States",
    "country": "United States",
@@ -44923,62 +45271,6 @@
     }
    ],
    "route": "18338594"
-  },
-  {
-   "id": "18215491",
-   "n": "Yellowstone & Grand Teton National Parks",
-   "b": "tauck",
-   "g": [
-    "ROCKIES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18215491/yellowstonegrandtetonnationalparks",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
-   "from": "Jackson Hole, WY, United States",
-   "to": "Rapid City, SD, United States",
-   "country": "United States",
-   "world": false,
-   "d": "9/5/2026",
-   "r": "9/12/2026",
-   "mks": [
-    "2026-09"
-   ],
-   "win": "Dates: 05 Sep 2026 - 12 Sep 2026",
-   "description": "Geothermal wonders, the magnificent Tetons, Mount Rushmore and the cowboy country of Wyoming take center stage on one of our most popular journeys through the Old West.",
-   "included": [
-    "The soul of the American West... Naturally inspiring, the landscapes of the American West challenge the imagination with jaw-dropping canyons, gurgling mud pots, geysers, and wide-open spaces... while towering mountains are a study in contrast, harboring wildlife and man-made wonders. Larger-than-life sculptures reside in the Black Hills... cowboys and ranches define Wyoming's northern landscapes... Yellowstone National Park compels with natural treasures that never fail to evoke pride... and the jagged granite peaks of the Tetons contrast with forests and rivers below. This is the American West, the true American West - and if you ever doubt you're in the heart and soul of it, just wait until you step foot in the town of Cody, where adventurous stories of the \"Old\" West are heard again and again... and the rodeo reigns supreme. Explore Yellowstone's amazing geothermal features... the colossal Black Hills masterpieces of Mount Rushmore and the Crazy Horse Memorial... the peaks and glaciers of the Tetons... Wyoming's ranch country..."
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Jackson Hole"
-    },
-    {
-     "d": 2,
-     "n": "Snake River"
-    },
-    {
-     "d": 3,
-     "n": "Yellowstone National Park"
-    },
-    {
-     "d": 5,
-     "n": "Cody"
-    },
-    {
-     "d": 7,
-     "n": "Rapid City"
-    }
-   ],
-   "route": "18215491"
   },
   {
    "id": "18478590",
@@ -45303,7 +45595,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_304_0828.webp",
    "from": "Hwange, Zimbabwe",
    "to": "Kafue, Zambia",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -45362,7 +45654,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Makgadikgadi Pans National Park, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -45552,7 +45844,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_315_0828.webp",
    "from": "Kafue, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -45604,7 +45896,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Vilanculos, Mozambique",
-   "country": "Mozambique",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",

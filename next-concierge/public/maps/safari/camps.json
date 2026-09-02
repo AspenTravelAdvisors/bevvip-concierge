@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 72,
-  "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 229,
-  "journeysTotal": 448,
+  "lodgesInSafariCountries": 67,
+  "journeysWithCamps": 231,
+  "journeysTotal": 450,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 72,
-  "inSafariCountries": 68
+  "inSafariCountries": 67
  },
  "CAMPS": {
   "h_00327": {
@@ -1579,6 +1579,20 @@
     "km": 16.2
    }
   ],
+  "16919119": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 22.4
+   }
+  ],
   "16919369": [
    {
     "id": "h_01207",
@@ -3013,6 +3027,20 @@
     "km": 16.2
    }
   ],
+  "18549749": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 22.4
+   }
+  ],
   "18562114": [
    {
     "id": "h_01207",
@@ -3067,20 +3095,6 @@
     "stop": "Okavango Delta",
     "day": 1,
     "km": 19.9
-   }
-  ],
-  "18574009": [
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 10,
-    "km": 3.4
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 10,
-    "km": 22.4
    }
   ],
   "18574019": [
@@ -3799,6 +3813,14 @@
     "stop": "Okavango Delta",
     "day": 6,
     "km": 19.9
+   }
+  ],
+  "18605372": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 6,
+    "km": 23.9
    }
   ]
  }
