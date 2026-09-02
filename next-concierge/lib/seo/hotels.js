@@ -117,39 +117,24 @@ export function getDestination(destination) {
 }
 
 /**
- * The detail pages built at deploy time rather than on first request.
+ * Every property's route params — the whole detail tree, built at deploy.
  *
- * Everything else renders on demand and is held by ISR, the arrangement the
- * villa atlas already uses. Prebuilding all 2,240 would add thousands of pages
- * to every build for properties nobody has asked for yet; prebuilding none
- * means the first crawler to reach a property pays the render. So: the
- * properties an answer page links to by name, plus the largest destinations,
- * are warm before anyone arrives.
+ * This used to prebuild 400 of 2,240, round-robin across countries so the warm
+ * set was geographically wide, and leave the other 1,840 to ISR. It read as a
+ * sensible compromise and it was not one, because it was pricing a render that
+ * has no price to pay: these pages resolve entirely from JSON committed to this
+ * repository, so a property's page is the same bytes on every request until the
+ * next deploy. "On demand" therefore bought nothing and cost a billed ISR write
+ * per page per deployment — against crawler traffic the entity layer exists to
+ * attract. See "The ISR writes were paying for nothing" in STATE.md.
+ *
+ * Built here with `dynamicParams = false` on the page, a property is a static
+ * asset on the CDN. It also closes a gap: the set of pages that exist is now
+ * derived from `allHotels()`, the same call `hotelSitemapEntries()` makes, so
+ * the sitemap cannot advertise a URL the build did not produce.
  */
-export function featuredHotelParams(limit = 400) {
-  const byDestination = new Map();
-  for (const h of allHotels()) {
-    const list = byDestination.get(h.destination) || [];
-    list.push(h);
-    byDestination.set(h.destination, list);
-  }
-  // Round-robin across destinations so the prebuilt set is geographically wide
-  // rather than 400 hotels in the United States.
-  const queues = [...byDestination.values()].map((l) =>
-    [...l].sort((a, b) => String(a.id).localeCompare(String(b.id))),
-  );
-  const picked = [];
-  let progress = true;
-  while (picked.length < limit && progress) {
-    progress = false;
-    for (const q of queues) {
-      if (!q.length) continue;
-      picked.push(q.shift());
-      progress = true;
-      if (picked.length >= limit) break;
-    }
-  }
-  return picked.map((h) => ({ destination: h.destination, slug: h.slug }));
+export function hotelDetailParams() {
+  return allHotels().map((h) => ({ destination: h.destination, slug: h.slug }));
 }
 
 /**

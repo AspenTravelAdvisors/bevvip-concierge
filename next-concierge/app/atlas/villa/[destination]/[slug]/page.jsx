@@ -1,15 +1,13 @@
-// /atlas/villa/[destination]/[slug] — villa detail. The 114 featured villas
-// are prebuilt at deploy; the other ~3,800 render on demand and stick around
-// via ISR until the next deploy (the dataset only changes when the source JSON
-// is re-uploaded, and re-uploading it IS a deploy). All data resolves
-// server-side from lib/villas — the client receives finished HTML, never the
-// dataset.
+// /atlas/villa/[destination]/[slug] — villa detail. All 3,902 are built at
+// deploy; the dataset only changes when the source JSON is re-uploaded, and
+// re-uploading it IS a deploy. All data resolves server-side from lib/villas —
+// the client receives finished HTML, never the dataset.
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IBM_Plex_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/answers";
-import { getVillaBySlug, featuredVillaParams } from "@/lib/villas.js";
+import { getVillaBySlug, allVillaParams } from "@/lib/villas.js";
 import { villaJsonLd, villaBreadcrumbJsonLd } from "@/lib/seo/villas";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -20,21 +18,24 @@ const mono = IBM_Plex_Mono({
 });
 
 /*
- * Never regenerate on a timer. See "The ISR writes were paying for nothing"
- * in STATE.md.
+ * Static, not ISR. See "The ISR writes were paying for nothing" in STATE.md.
  *
- * This page renders from JSON committed to the repository, so it cannot change
- * between deployments. `revalidate = 86400` re-rendered identical bytes from an
- * identical file every day, and every regeneration is a billed ISR write.
- * `false` holds each entry for the life of the deployment instead; the nightly
- * sync's commit is what publishes new data, and a deploy starts a fresh cache,
- * so the pages are exactly as fresh as they were before.
+ * generateStaticParams below returns every villa, so with `dynamicParams = false`
+ * there is no unbuilt page to render: a path the feed does not carry is a 404
+ * from the CDN instead of a function call that renders one. That is the answer
+ * `notFound()` already gave, reached without a render.
+ *
+ * `revalidate = false` says the same thing from the other side. Nothing here
+ * can change between deployments — it resolves from JSON committed to this
+ * repository, and the nightly sync's commit that changes that JSON is itself a
+ * deploy. A timer could only ever re-render identical bytes, and every
+ * regeneration is a billed ISR write.
  */
 export const revalidate = false;
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return featuredVillaParams();
+  return allVillaParams();
 }
 
 export async function generateMetadata({ params }) {
