@@ -2750,10 +2750,14 @@ whole prebuild data chain:
     ✓ Generating static pages (8559/8559)
     TOTAL_SECONDS=286
 
-Under five minutes against a 45-minute Vercel build ceiling, so the build-time
-worry the old note recorded was never worth the writes it was avoiding. The
-route counts are 3,902 villas, 2,237 properties, 2,185 itineraries, and the
-hubs and answers above them.
+And on Vercel, where it actually matters — `Build Completed in /vercel/output
+[5m]`, 5m52s from queued to READY, against 5m18s for the deploy immediately
+before it at 754 prebuilt pages. **An order of magnitude more pages costs about
+thirty seconds of build**, because the render was never the expensive part; the
+prebuild data chain is, and it runs either way. The build-time worry the old
+note recorded was not worth the writes it was avoiding. Route counts are 3,902
+villas, 2,237 properties, 2,185 itineraries, and the hubs and answers above
+them.
 
 Two things were checked against the build output rather than assumed, because
 `dynamicParams = false` turns a page that would have been rendered into a 404:
