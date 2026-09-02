@@ -9,15 +9,14 @@
 //
 // This is that knowledge, server-rendered: the supplier's own description, the
 // year-stamped benefits, coordinates, room counts, the live offers, each with
-// Hotel + BreadcrumbList JSON-LD. Prebuilt for a wide slice at deploy and held
-// by ISR for the rest, for the life of the deployment — the arrangement the
-// villa detail pages already use.
+// Hotel + BreadcrumbList JSON-LD. Every one of them built at deploy — the
+// arrangement the villa detail pages also use.
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getHotelBySlug,
-  featuredHotelParams,
+  hotelDetailParams,
   relatedHotels,
   activePromotions,
   hotelJsonLd,
@@ -27,21 +26,24 @@ import { SITE_URL } from "@/lib/answers";
 import SiteFooter from "@/components/SiteFooter";
 
 /*
- * Never regenerate on a timer. See "The ISR writes were paying for nothing"
- * in STATE.md.
+ * Static, not ISR. See "The ISR writes were paying for nothing" in STATE.md.
  *
- * This page renders from JSON committed to the repository, so it cannot change
- * between deployments. `revalidate = 86400` re-rendered identical bytes from an
- * identical file every day, and every regeneration is a billed ISR write.
- * `false` holds each entry for the life of the deployment instead; the nightly
- * sync's commit is what publishes new data, and a deploy starts a fresh cache,
- * so the pages are exactly as fresh as they were before.
+ * generateStaticParams below returns every property, so with `dynamicParams = false`
+ * there is no unbuilt page to render: a path the feed does not carry is a 404
+ * from the CDN instead of a function call that renders one. That is the answer
+ * `notFound()` already gave, reached without a render.
+ *
+ * `revalidate = false` says the same thing from the other side. Nothing here
+ * can change between deployments — it resolves from JSON committed to this
+ * repository, and the nightly sync's commit that changes that JSON is itself a
+ * deploy. A timer could only ever re-render identical bytes, and every
+ * regeneration is a billed ISR write.
  */
 export const revalidate = false;
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return featuredHotelParams();
+  return hotelDetailParams();
 }
 
 export async function generateMetadata({ params }) {

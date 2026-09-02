@@ -2,8 +2,8 @@
 // missing under them.
 //
 // Villas are the one collection that already HAD detail pages: 3,902 of them at
-// /atlas/villa/<destination>/<slug>, server-rendered, 114 prebuilt and the rest
-// on ISR. Two things were missing, and neither is visible from the page itself.
+// /atlas/villa/<destination>/<slug>, server-rendered, all built at deploy. Two
+// things were missing, and neither is visible from the page itself.
 //
 //   1. **No structured data at all.** Not a single JSON-LD block on any of
 //      them, so a page carrying a name, a place, coordinates, a sleeps count
