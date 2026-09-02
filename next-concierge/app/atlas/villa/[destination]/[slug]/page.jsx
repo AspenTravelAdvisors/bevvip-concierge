@@ -1,8 +1,9 @@
 // /atlas/villa/[destination]/[slug] — villa detail. The 114 featured villas
 // are prebuilt at deploy; the other ~3,800 render on demand and stick around
-// via ISR for a day (the dataset only changes when the source JSON is
-// re-uploaded). All data resolves server-side from lib/villas — the client
-// receives finished HTML, never the dataset.
+// via ISR until the next deploy (the dataset only changes when the source JSON
+// is re-uploaded, and re-uploading it IS a deploy). All data resolves
+// server-side from lib/villas — the client receives finished HTML, never the
+// dataset.
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -18,7 +19,18 @@ const mono = IBM_Plex_Mono({
   variable: "--font-mono",
 });
 
-export const revalidate = 86400;
+/*
+ * Never regenerate on a timer. See "The ISR writes were paying for nothing"
+ * in STATE.md.
+ *
+ * This page renders from JSON committed to the repository, so it cannot change
+ * between deployments. `revalidate = 86400` re-rendered identical bytes from an
+ * identical file every day, and every regeneration is a billed ISR write.
+ * `false` holds each entry for the life of the deployment instead; the nightly
+ * sync's commit is what publishes new data, and a deploy starts a fresh cache,
+ * so the pages are exactly as fresh as they were before.
+ */
+export const revalidate = false;
 export const dynamicParams = true;
 
 export function generateStaticParams() {

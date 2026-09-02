@@ -1012,7 +1012,8 @@ specific lead time is ever quoted by The Guide; the advisor sets both.
   Do NOT copy the client-side full-dataset pattern from the other atlases here.
 - Surfaces: `/atlas/villa` (Mapbox clustered map + paginated cards, SSR initial page),
   `/atlas/villa/[destination]/[slug]` detail (114 featured villas prebuilt via
-  generateStaticParams, the rest on-demand ISR, revalidate 86400).
+  generateStaticParams, the rest on-demand ISR, held for the life of the
+  deployment).
 - Guide: `type: "villa"` in search_offerings (fields sleeps / bedrooms / priceMax),
   advisor-handled rules in guide-prompt.js. CTA is always advisor request; villas
   never enter the TravelWits pipeline or the Hotel Atlas.
@@ -2130,7 +2131,7 @@ first-hand knowledge of specific hotels could not name one.
 
 `/hotels` → `/hotels/<country>` → `/hotels/<country>/<property>`, server-rendered
 from the merged feed, with `Hotel` + `BreadcrumbList` JSON-LD. 400 prebuilt at
-deploy across as many countries as possible, the rest on ISR for a day — the
+deploy across as many countries as possible, the rest on ISR — the
 arrangement the villa detail pages already use. The sitemap went from 147 URLs
 to 2,504.
 
@@ -2681,3 +2682,75 @@ and `lib/seo/journeys.js` learned about the safari camps in a separate pass, and
 the same work here — "what would we book you the night before" as a prompt
 pillar and as a line on a journey's entity page — is its own change with its own
 verification. The data and the atlas ship first.
+
+
+## The ISR writes were paying for nothing (2026-09-02)
+
+Five days after the entity pages shipped, the Vercel team hit **100% of the free
+tier's 200,000 monthly ISR writes** (218K), with every other meter comfortable —
+Edge Requests 391K/1M, ISR Reads 155K/1M, Fast Data Transfer 4.66GB/100GB. A
+free team that exceeds an included limit has its projects **paused**, so the
+meter that was about to take the site down was the one nobody was watching.
+
+### Where the writes came from
+
+Not the nightly sync's crawl, and not the Guide. The three entity detail routes
+carried `revalidate = 86400` with `dynamicParams = true`:
+
+| Route | Pages | Prebuilt |
+| --- | ---: | ---: |
+| `/hotels/<country>/<property>` | 2,240 | 400 |
+| `/journeys/<collection>/<slug>` | 1,991 | 240 |
+| `/atlas/villa/<destination>/<slug>` | 3,902 | 114 |
+| | **8,133** | **754** |
+
+An ISR write is billed every time one of those pages is written to the cache —
+at build for the prebuilt slice, and on every on-demand generation for the other
+7,379. So **one sweep of the tree is 8,133 writes**, and the free tier's entire
+month is 24 sweeps. The sitemap went from 147 URLs to 8,354 on 28–29 August;
+the crawlers that took it up (robots.txt welcomes fourteen AI crawlers by name,
+on purpose) are what sweeps it. The Fast Data Transfer curve in the same window
+is the same crawl seen from the other side.
+
+Two multipliers on top of that. A new production deployment starts a fresh ISR
+cache, so every deploy re-arms all 8,133 pages — and the Vercel API lists 13
+production deploys in the four days from 29 August, because the nightly sync
+commits **every night by design** (the heartbeat in `virtuoso-sync-status.json` always dirties the tree,
+which is the point — see the workflow's own comment). And within a deployment,
+the 86400 expiry re-rendered every page that was still being crawled a day
+later, whether or not anything had changed.
+
+### Why the expiry was never buying anything
+
+These pages render from JSON **committed to the repository**. Nothing they read
+can change between deployments — the only thing that changes it is the nightly
+sync's commit, and that commit is itself a deploy. A 24-hour expiry re-rendered
+identical bytes from an identical file, forever, and paid a billed write each
+time.
+
+So all three routes are now `revalidate = false`: generated once, held for the
+life of the deployment. The data is exactly as fresh as it was before — it was
+never the expiry that refreshed it — at **one write per page per deploy** rather
+than one per page per day per deploy.
+
+### Still open here
+
+- **Prebuild more of the tree.** `generateStaticParams` covers 754 of 8,133.
+  Every page moved into the build is a page a crawler cannot make a function
+  generate, and the honest end state for a tree rendered from committed JSON is
+  `dynamicParams = false` with everything prebuilt — that is a static asset, not
+  an ISR entry, and it bills nothing at all. The blocker is build time: 681
+  pages took a few minutes, and the Hobby build ceiling is 45 minutes, so raise
+  the counts a slice at a time and watch the build. Villas are the obvious first
+  slice — 3,902 pages, `noindex`, the largest and least valuable part of the
+  surface.
+- **A deploy per night is a full cache re-arm.** On a night when the supplier
+  changed nothing, the only diff is the heartbeat, and the build that follows it
+  republishes 8,133 identical pages. A Vercel Ignored Build Step that skips the
+  build when the heartbeat is the sole change would remove those, but the
+  heartbeat is what `verify-virtuoso-freshness.mjs` judges the data on and it
+  has to keep landing on `main` either way — so this is a build-skip question,
+  not a commit question.
+- **Preview deploys prerender too.** Every push to a `claude/*` branch builds
+  and writes its own prebuilt slice. Of the 20 deploys the API returns for
+  29 August – 2 September, 7 are previews.

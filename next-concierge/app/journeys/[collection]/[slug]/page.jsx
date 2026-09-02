@@ -17,7 +17,18 @@ import {
 import { SITE_URL } from "@/lib/answers";
 import SiteFooter from "@/components/SiteFooter";
 
-export const revalidate = 86400;
+/*
+ * Never regenerate on a timer. See "The ISR writes were paying for nothing"
+ * in STATE.md.
+ *
+ * This page renders from JSON committed to the repository, so it cannot change
+ * between deployments. `revalidate = 86400` re-rendered identical bytes from an
+ * identical file every day, and every regeneration is a billed ISR write.
+ * `false` holds each entry for the life of the deployment instead; the nightly
+ * sync's commit is what publishes new data, and a deploy starts a fresh cache,
+ * so the pages are exactly as fresh as they were before.
+ */
+export const revalidate = false;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
