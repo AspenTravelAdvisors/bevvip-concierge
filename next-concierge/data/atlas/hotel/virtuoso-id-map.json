@@ -1,11 +1,11 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-09-01T14:05:27.928Z",
+  "generated": "2026-09-03T13:28:53.424Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2073,
-  "matchedCount": 2306
+  "feedCount": 2072,
+  "matchedCount": 2305
  },
  "overrides": {
   "h_00408": "6176935",
@@ -6198,12 +6198,6 @@
    "how": "name+country",
    "localName": "Museum Hotel",
    "virtuosoName": "Museum Hotel"
-  },
-  "h_01351": {
-   "vid": "16207747",
-   "how": "name+country",
-   "localName": "Mustang Monument",
-   "virtuosoName": "Mustang Monument"
   },
   "h_01352": {
    "vid": "15601188",
@@ -25147,6 +25141,13 @@
    "city": "Aberdeen",
    "country": "United Kingdom",
    "program": "Autograph Collection"
+  },
+  {
+   "id": "h_01351",
+   "name": "Mustang Monument",
+   "city": "Wells",
+   "country": "United States",
+   "program": "Virtuoso"
   },
   {
    "id": "h_01377",

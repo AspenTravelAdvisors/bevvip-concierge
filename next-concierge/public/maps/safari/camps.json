@@ -3,16 +3,16 @@
   "purpose": "Safari lodges from the hotel atlas, joined to safari journeys by coordinate proximity. Built by scripts/build-safari-camps.mjs; do not hand-edit.",
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
-  "lodgesInCategory": 72,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 231,
-  "journeysTotal": 450,
+  "lodgesInCategory": 71,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 232,
+  "journeysTotal": 452,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
-  "category": 72,
-  "inSafariCountries": 67
+  "category": 71,
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_00327": {
@@ -3813,6 +3813,26 @@
     "stop": "Okavango Delta",
     "day": 6,
     "km": 19.9
+   }
+  ],
+  "18605344": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 1,
+    "km": 23.9
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 6,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 6,
+    "km": 16.2
    }
   ],
   "18605372": [
