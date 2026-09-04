@@ -1,10 +1,10 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-09-03T13:28:53.424Z",
+  "generated": "2026-09-04T13:23:22.762Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2072,
+  "feedCount": 2073,
   "matchedCount": 2305
  },
  "overrides": {
@@ -25875,6 +25875,12 @@
    "name": "Corinthia Palace Malta",
    "city": "Balzan",
    "country": "Malta"
+  },
+  {
+   "vid": "18379982",
+   "name": "Desert Rock Resort - A Virtuoso Preview Property",
+   "city": "Hanak",
+   "country": "Saudi Arabia"
   },
   {
    "vid": "18565178",

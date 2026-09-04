@@ -2709,36 +2709,6 @@
     ]
    }
   ],
-  "15710518": [
-   {
-    "n": "Cape Town",
-    "r": "SOUTHERN",
-    "ll": [
-     -33.9167,
-     18.4167
-    ]
-   }
-  ],
-  "15710519": [
-   {
-    "n": "Cape Town",
-    "r": "SOUTHERN",
-    "ll": [
-     -33.9167,
-     18.4167
-    ]
-   }
-  ],
-  "15710521": [
-   {
-    "n": "Kruger National Park",
-    "r": "SOUTHERN",
-    "ll": [
-     -23.95,
-     31.175
-    ]
-   }
-  ],
   "15710535": [
    {
     "n": "Sabi Sand Game Reserve",
@@ -2746,48 +2716,6 @@
     "ll": [
      -24.9207,
      31.5074
-    ]
-   }
-  ],
-  "15730440": [
-   {
-    "n": "Arusha",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.3678,
-     36.6333
-    ]
-   },
-   {
-    "n": "Tarangire National Park",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.8333,
-     36
-    ]
-   },
-   {
-    "n": "Ngorongoro Crater Conservation Area",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.1592,
-     35.5852
-    ]
-   },
-   {
-    "n": "Serengeti National Park",
-    "r": "EASTAFRICA",
-    "ll": [
-     -2.3328,
-     34.5667
-    ]
-   },
-   {
-    "n": "Arusha",
-    "r": "EASTAFRICA",
-    "ll": [
-     -3.3678,
-     36.6333
     ]
    }
   ],
@@ -6231,6 +6159,16 @@
     ]
    }
   ],
+  "18115518": [
+   {
+    "n": "Kuala Lumpur",
+    "r": "BORNEO",
+    "ll": [
+     3.1667,
+     101.7
+    ]
+   }
+  ],
   "18115651": [
    {
     "n": "Entebbe",
@@ -6370,6 +6308,48 @@
     "ll": [
      51.0833,
      -114.083
+    ]
+   }
+  ],
+  "18121355": [
+   {
+    "n": "Rapid City",
+    "r": "ROCKIES",
+    "ll": [
+     44.035,
+     -103.378
+    ]
+   },
+   {
+    "n": "Buffalo",
+    "r": null,
+    "ll": [
+     42.9864,
+     -78.7279
+    ]
+   },
+   {
+    "n": "Cody",
+    "r": "ROCKIES",
+    "ll": [
+     44.4023,
+     -109.535
+    ]
+   },
+   {
+    "n": "Yellowstone National Park",
+    "r": "ROCKIES",
+    "ll": [
+     44.5678,
+     -110.441
+    ]
+   },
+   {
+    "n": "Grand Teton National Park",
+    "r": "ROCKIES",
+    "ll": [
+     43.8167,
+     -110.682
     ]
    }
   ],
@@ -11281,48 +11261,6 @@
     ]
    }
   ],
-  "18407050": [
-   {
-    "n": "Nairobi",
-    "r": "EASTAFRICA",
-    "ll": [
-     -1.2833,
-     36.8167
-    ]
-   },
-   {
-    "n": "Tsavo West National Park",
-    "r": "EASTAFRICA",
-    "ll": [
-     -2.7202,
-     38.0992
-    ]
-   },
-   {
-    "n": "Laikipia Plateau",
-    "r": null,
-    "ll": [
-     36.75,
-     0.4167
-    ]
-   },
-   {
-    "n": "Masai Mara National Reserve",
-    "r": "EASTAFRICA",
-    "ll": [
-     -1.4999,
-     35.1527
-    ]
-   },
-   {
-    "n": "Nairobi",
-    "r": "EASTAFRICA",
-    "ll": [
-     -1.2833,
-     36.8167
-    ]
-   }
-  ],
   "18460819": [
    {
     "n": "Big Sky",
@@ -15843,24 +15781,6 @@
     ]
    }
   ],
-  "18597276": [
-   {
-    "n": "Okavango Delta",
-    "r": "OKAVANGO",
-    "ll": [
-     -19.25,
-     22.75
-    ]
-   },
-   {
-    "n": "Moremi Game Reserve",
-    "r": "OKAVANGO",
-    "ll": [
-     -19.3513,
-     23.2517
-    ]
-   }
-  ],
   "18597537": [
    {
     "n": "Volcanoes National Park",
@@ -16763,7 +16683,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_37_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Okavango Delta, Botswana",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -17224,7 +17144,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16301673/aromancesafari",
    "days": 17,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0804.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0903.webp",
    "from": "Nairobi, Kenya",
    "to": "Chobe National Park, Botswana",
    "country": "Zambia",
@@ -17505,7 +17425,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_408_0828.webp",
    "from": "Hwange National Park, Zimbabwe",
    "to": "Okavango Delta, Botswana",
-   "country": "Zimbabwe",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -17747,7 +17667,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Hwange National Park, Zimbabwe",
    "to": "Kafue, Zambia",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -17858,7 +17778,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_287_0827.webp",
    "from": "Kafue, Zambia",
    "to": "Hwange National Park, Zimbabwe",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -17912,7 +17832,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-01",
@@ -17971,63 +17891,6 @@
     }
    ],
    "route": "18521705"
-  },
-  {
-   "id": "18364254",
-   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18364254/aksanctuarybotswanasafariandvictoriafalls",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Johannesburg, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "Zambia",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 21 Dec 2026",
-   "description": "From mighty Victoria Falls, one of the most spectacular cataracts on the planet, to the Okavango Delta, the largest inland delta in the world and home to an estimated 9,000 species of flora and fauna, this thrilling adventure takes you up close to “The Smoke that Thunders” and reveals a lush, diverse ecosystem prowled by many of Africa’s most iconic species. Seek out hippos, lions, leopards, buffalo, giraffes, wildebeests and more on safari days capped off with stays at unforgettable Sussi & Chuma Lodge, Chobe Chilwero Lodge and Chief’s Camp — all part of the chic A&K Sanctuary collection.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$2,600 value) Johannesburg/Livingstone; Kasane/Okavango Delta/Maun/Johannesburg"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 2,
-     "n": "Livingstone"
-    },
-    {
-     "d": 4,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 6,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18364254"
   },
   {
    "id": "18362041",
@@ -18098,6 +17961,63 @@
     }
    ],
    "route": "18362041"
+  },
+  {
+   "id": "18364254",
+   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
+   "b": "ak",
+   "g": [
+    "OKAVANGO",
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18364254/aksanctuarybotswanasafariandvictoriafalls",
+   "days": 8,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
+   "from": "Johannesburg, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Zambia",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 21 Dec 2026",
+   "description": "From mighty Victoria Falls, one of the most spectacular cataracts on the planet, to the Okavango Delta, the largest inland delta in the world and home to an estimated 9,000 species of flora and fauna, this thrilling adventure takes you up close to “The Smoke that Thunders” and reveals a lush, diverse ecosystem prowled by many of Africa’s most iconic species. Seek out hippos, lions, leopards, buffalo, giraffes, wildebeests and more on safari days capped off with stays at unforgettable Sussi & Chuma Lodge, Chobe Chilwero Lodge and Chief’s Camp — all part of the chic A&K Sanctuary collection.",
+   "included": [
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$2,600 value) Johannesburg/Livingstone; Kasane/Okavango Delta/Maun/Johannesburg"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    },
+    {
+     "d": 2,
+     "n": "Livingstone"
+    },
+    {
+     "d": 4,
+     "n": "Chobe National Park"
+    },
+    {
+     "d": 6,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "18364254"
   },
   {
    "id": "18521706",
@@ -18178,6 +18098,48 @@
    "route": "18521706"
   },
   {
+   "id": "18363904",
+   "n": "A&K Sanctuary Gorilla Trekking in Uganda",
+   "b": "ak",
+   "g": [
+    "GREATAPES"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363904/aksanctuarygorillatrekkinginuganda",
+   "days": 5,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
+   "from": "Entebbe, Uganda",
+   "to": "Bwindi Impenetrable National Park, Uganda",
+   "country": "Uganda",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 27 Dec 2026",
+   "description": "Uganda’s ancient Bwindi Impenetrable Forest is shrouded in mist and mystery: even the name casts the National Park in an enigmatic light. Led by A&K’s expert guides, this five-day itinerary reveals the park’s secrets for those short on time but longing for a mountain gorilla trekking experience they’ll never forget, getting up close with the gentle primates, and authentically experiencing local communities and A&K Philanthropy projects along the way.",
+   "included": [
+    "24/7 A&K On-Call Support",
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "Internal Air Included (Economy Class, AU$1,225 value) Entebbe/Bwindi/Entebbe"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Entebbe"
+    },
+    {
+     "d": 2,
+     "n": "Bwindi Impenetrable National Park"
+    }
+   ],
+   "route": "18363904"
+  },
+  {
    "id": "18360198",
    "n": "A&K Sanctuary Gorilla Trekking in Uganda",
    "b": "ak",
@@ -18227,48 +18189,6 @@
     }
    ],
    "route": "18360198"
-  },
-  {
-   "id": "18363904",
-   "n": "A&K Sanctuary Gorilla Trekking in Uganda",
-   "b": "ak",
-   "g": [
-    "GREATAPES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363904/aksanctuarygorillatrekkinginuganda",
-   "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Entebbe, Uganda",
-   "to": "Bwindi Impenetrable National Park, Uganda",
-   "country": "Uganda",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 27 Dec 2026",
-   "description": "Uganda’s ancient Bwindi Impenetrable Forest is shrouded in mist and mystery: even the name casts the National Park in an enigmatic light. Led by A&K’s expert guides, this five-day itinerary reveals the park’s secrets for those short on time but longing for a mountain gorilla trekking experience they’ll never forget, getting up close with the gentle primates, and authentically experiencing local communities and A&K Philanthropy projects along the way.",
-   "included": [
-    "24/7 A&K On-Call Support",
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "Internal Air Included (Economy Class, AU$1,225 value) Entebbe/Bwindi/Entebbe"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Entebbe"
-    },
-    {
-     "d": 2,
-     "n": "Bwindi Impenetrable National Park"
-    }
-   ],
-   "route": "18363904"
   },
   {
    "id": "18521707",
@@ -18863,7 +18783,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -19007,7 +18927,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -19058,6 +18978,60 @@
     }
    ],
    "route": "18488737"
+  },
+  {
+   "id": "18363897",
+   "n": "A&K Sanctuary Tanzania and Kenya Safari",
+   "b": "ak",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363897/aksanctuarytanzaniaandkenyasafari",
+   "days": 9,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Nairobi, Kenya",
+   "country": "Tanzania",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 21 Oct 2026 - 29 Dec 2026",
+   "description": "Journey from one of the lesser visited parks in northern Tanzania to two of the most celebrated and beloved locations in all of Africa — sprawling Serengeti National Park and the equally epic Maasai Mara Game Reserve in Kenya. By night, bask in stays at Swala Camp, in Tarangire, a little-known jewel, teeming with elephants and lions; Kichakani Camp, in the Serengeti, a vital link in the annual Great Migration circuit; and Olonana, in the Maasai Mara, just across the border in Kenya.",
+   "included": [
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$2,755 value) Arusha/Tarangire; Manyara/Serengeti/Tarime; Migori/Maasai Mara/Nairobi"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 2,
+     "n": "Tarangire National Park"
+    },
+    {
+     "d": 4,
+     "n": "Serengeti National Park"
+    },
+    {
+     "d": 6,
+     "n": "Maasai Mara National Reserve"
+    },
+    {
+     "d": 9,
+     "n": "Nairobi"
+    }
+   ],
+   "route": "18363897"
   },
   {
    "id": "18360200",
@@ -19125,60 +19099,6 @@
     }
    ],
    "route": "18360200"
-  },
-  {
-   "id": "18363897",
-   "n": "A&K Sanctuary Tanzania and Kenya Safari",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363897/aksanctuarytanzaniaandkenyasafari",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Arusha, Tanzania",
-   "to": "Nairobi, Kenya",
-   "country": "Tanzania",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 21 Oct 2026 - 29 Dec 2026",
-   "description": "Journey from one of the lesser visited parks in northern Tanzania to two of the most celebrated and beloved locations in all of Africa — sprawling Serengeti National Park and the equally epic Maasai Mara Game Reserve in Kenya. By night, bask in stays at Swala Camp, in Tarangire, a little-known jewel, teeming with elephants and lions; Kichakani Camp, in the Serengeti, a vital link in the annual Great Migration circuit; and Olonana, in the Maasai Mara, just across the border in Kenya.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$2,755 value) Arusha/Tarangire; Manyara/Serengeti/Tarime; Migori/Maasai Mara/Nairobi"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Arusha"
-    },
-    {
-     "d": 2,
-     "n": "Tarangire National Park"
-    },
-    {
-     "d": 4,
-     "n": "Serengeti National Park"
-    },
-    {
-     "d": 6,
-     "n": "Maasai Mara National Reserve"
-    },
-    {
-     "d": 9,
-     "n": "Nairobi"
-    }
-   ],
-   "route": "18363897"
   },
   {
    "id": "18521712",
@@ -19257,6 +19177,61 @@
    "route": "18521712"
   },
   {
+   "id": "18363882",
+   "n": "A&K Sanctuary Tanzania Safari",
+   "b": "ak",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363882/aksanctuarytanzaniasafari",
+   "days": 9,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Arusha, Tanzania",
+   "country": "Tanzania",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 25 Dec 2026",
+   "description": "The Serengeti is where the annual Great Migration of a million or more herd animals begins, and you will spend three nights in the thick of it at Kichakani Camp, an A&K Sanctuary. Combine this life-affirming experience with sublime stays at Swala Camp, an A&K Sanctuary in Tarangire National Park, and Ngorongoro Crater Camp, an A&K Sanctuary, where iconic species wander against the emerald-green backdrop of a volcanic caldera.",
+   "included": [
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$1,835 value) Arusha/Tarangire/Manyara/Serengeti/Arusha"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 2,
+     "n": "Tarangire National Park"
+    },
+    {
+     "d": 4,
+     "n": "Ngorongoro Crater"
+    },
+    {
+     "d": 6,
+     "n": "Serengeti National Park"
+    },
+    {
+     "d": 1,
+     "n": "Arusha"
+    }
+   ],
+   "route": "18363882"
+  },
+  {
    "id": "18360201",
    "n": "A&K Sanctuary Tanzania Safari",
    "b": "ak",
@@ -19323,61 +19298,6 @@
     }
    ],
    "route": "18360201"
-  },
-  {
-   "id": "18363882",
-   "n": "A&K Sanctuary Tanzania Safari",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363882/aksanctuarytanzaniasafari",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Arusha, Tanzania",
-   "to": "Arusha, Tanzania",
-   "country": "Tanzania",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 25 Dec 2026",
-   "description": "The Serengeti is where the annual Great Migration of a million or more herd animals begins, and you will spend three nights in the thick of it at Kichakani Camp, an A&K Sanctuary. Combine this life-affirming experience with sublime stays at Swala Camp, an A&K Sanctuary in Tarangire National Park, and Ngorongoro Crater Camp, an A&K Sanctuary, where iconic species wander against the emerald-green backdrop of a volcanic caldera.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$1,835 value) Arusha/Tarangire/Manyara/Serengeti/Arusha"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Arusha"
-    },
-    {
-     "d": 2,
-     "n": "Tarangire National Park"
-    },
-    {
-     "d": 4,
-     "n": "Ngorongoro Crater"
-    },
-    {
-     "d": 6,
-     "n": "Serengeti National Park"
-    },
-    {
-     "d": 1,
-     "n": "Arusha"
-    }
-   ],
-   "route": "18363882"
   },
   {
    "id": "18521713",
@@ -19606,7 +19526,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16297109/adventuresafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0804.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0903.webp",
    "from": "Rustenburg, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -19906,7 +19826,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Athens, Greece",
    "to": "Johannesburg, South Africa",
-   "country": "Mauritius",
+   "country": "Egypt",
    "world": false,
    "d": "8/18/2028",
    "r": "8/31/2028",
@@ -19924,6 +19844,12 @@
     "Top-of-the-line guides & Gratuities"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -20371,7 +20297,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_0_0809.webp",
    "from": "Kyoto, Japan",
    "to": "Marrakech, Morocco",
-   "country": "Morocco",
+   "country": "Sri Lanka",
    "world": true,
    "d": "10/17/2027",
    "r": "11/7/2027",
@@ -20441,7 +20367,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_93_0821.webp",
    "from": "Tokyo, Japan",
    "to": "Bangkok Noi, Thailand",
-   "country": "Vietnam",
+   "country": "Thailand",
    "world": false,
    "d": "2/15/2028",
    "r": "3/2/2028",
@@ -20460,6 +20386,12 @@
     "Top-of-the-line guides & Gratuities"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -20511,7 +20443,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_85_0827.webp",
    "from": "La Paz, Bolivia",
    "to": "Atacama, Chile",
-   "country": "Bolivia",
+   "country": "Chile",
    "world": false,
    "mks": [
     "2026-09",
@@ -21147,7 +21079,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_23_0902.webp",
    "from": "Lima, Peru",
    "to": "Quito, Ecuador",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "mks": [
     "2026-09",
@@ -21378,7 +21310,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2027-04",
@@ -21435,7 +21367,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18589218/bhutandriveme",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/10938686_2_175_0804.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/10938686_2_175_0903.webp",
    "from": "Punakha, Bhutan",
    "to": "Paro, Bhutan",
    "country": "Bhutan",
@@ -22115,6 +22047,58 @@
    "route": "18573826"
   },
   {
+   "id": "18115518",
+   "n": "Borneo: Land of the Orangutan",
+   "b": "ak",
+   "g": [
+    "BORNEO"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18115518/borneolandoftheorangutan",
+   "days": 10,
+   "img": null,
+   "from": "Kuala Lumpur, Malaysia",
+   "to": "",
+   "country": "Malaysia",
+   "world": false,
+   "d": "10/3/2026",
+   "r": "10/12/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 03 Oct 2026 - 12 Oct 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [
+    "With its rich diversity of cultures and cuisines, Malaysia is a magnet for adventurous travellers and its wilderness is home to orangutans, sun bears and other exotic species. Discover Malaysia on a comprehensive journey from its bustling capital, Kuala Lumpur, to the rainforests of Borneo. Explore the jungle in style, staying in lodges at the forefront of sustainability, and discover wildlife, from endemic amphibians and insects to the iconic orangutan, with expert local guides."
+   ],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Ultraluxe Community Amenity Credit",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Kuala Lumpur"
+    }
+   ],
+   "route": "18115518"
+  },
+  {
    "id": "18565358",
    "n": "Botswana Dreaming: A Wellness Safari",
    "b": "wilderness",
@@ -22437,7 +22421,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0809.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -22928,7 +22912,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0814.webp",
    "from": "Nairobi, Kenya",
    "to": "Mahé, Seychelles",
-   "country": "Kenya",
+   "country": "Seychelles",
    "world": false,
    "mks": [
     "2026-09",
@@ -23384,7 +23368,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Cape Town, South Africa",
    "to": "Cairo, Egypt",
-   "country": "Zambia",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -23998,7 +23982,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_230_0827.webp",
    "from": "Lima, Peru",
    "to": "Quito, Ecuador",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "mks": [
     "2026-09",
@@ -24363,7 +24347,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_54_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Brazil",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-09",
@@ -24435,7 +24419,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16296557/culinarysafarisouthafrica",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0804.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0903.webp",
    "from": "Johannesburg, South Africa",
    "to": "Kruger National Park, South Africa",
    "country": "South Africa",
@@ -24714,7 +24698,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0812.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Lower Zambezi National Park, Zambia",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-04",
@@ -24959,7 +24943,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0809.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Cambodia",
    "world": false,
    "d": "11/1/2026",
    "r": "11/14/2026",
@@ -25015,7 +24999,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0809.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Laos",
    "world": false,
    "d": "2/21/2027",
    "r": "3/6/2027",
@@ -25072,7 +25056,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0809.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Thailand",
    "world": false,
    "d": "11/7/2027",
    "r": "11/20/2027",
@@ -25388,7 +25372,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "d": "9/21/2026",
    "r": "10/1/2026",
@@ -25453,7 +25437,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0809.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -25571,7 +25555,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_148_0901.webp",
    "from": "Reykjavík, Iceland",
    "to": "Keflavík, Iceland",
-   "country": "Greenland",
+   "country": "Iceland",
    "world": false,
    "mks": [
     "2026-09",
@@ -25879,7 +25863,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
    "from": "Anchorage, AK, United States",
    "to": "Singapore  , Singapore",
-   "country": "Sri Lanka",
+   "country": "Japan",
    "world": false,
    "d": "6/29/2027",
    "r": "7/20/2027",
@@ -25900,6 +25884,12 @@
     "• Top local guides and on-trip experts"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -27279,7 +27269,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_153_0901.webp",
    "from": "London, United Kingdom",
    "to": "London, United Kingdom",
-   "country": "United Kingdom",
+   "country": "New Zealand",
    "world": false,
    "d": "5/12/2027",
    "r": "5/20/2027",
@@ -27475,7 +27465,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Napa, CA, United States",
    "to": "Milano, Italy",
-   "country": "Türkiye",
+   "country": "Switzerland",
    "world": true,
    "d": "4/12/2028",
    "r": "5/4/2028",
@@ -27496,6 +27486,12 @@
     "A trip physician who accompanies you throughout your journey"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -27696,7 +27692,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -27754,7 +27750,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -27821,7 +27817,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16301676/greaterkrugercapetown",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0804.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0903.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -27863,60 +27859,6 @@
     }
    ],
    "route": "16301676"
-  },
-  {
-   "id": "15710521",
-   "n": "Guided bush walks",
-   "b": "andbeyond",
-   "g": [
-    "SOUTHERN"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15710521/guidedbushwalks",
-   "days": 3,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15687445_2_37_0828.webp",
-   "from": "Kruger National Park, South Africa",
-   "to": "Kruger National Park, South Africa",
-   "country": "South Africa",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Travel Now Through: 31 Dec 2026",
-   "description": "Activate all your senses on a guided walking safari For those looking for an active thrill beyond the excitement of Big Five sightings on a game drive vehicle, a guided walking safari offers an opportunity to connect with the African bush, learning about its fascinating fauna and flora. Embark on an adventure where your feet tread in the tracks of Africa’s wild inhabitants, your nostrils fill with the scent of crushed wild grasses as you push through the bush and all six senses re-awaken as Africa touches you and you touch Africa. At one with nature, discover a range of natural wonders in the company of your experienced, walking safari guide. Learn how to track, seeing how close you can…",
-   "included": [
-    "Please contact us for includes and excludes on this experience"
-   ],
-   "promotions": [
-    {
-     "name": "Milestone Celebrations Offer",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding certificate as proof. What's includedStandard &Beyond lodge, camp or yacht…"
-    },
-    {
-     "name": "Honeymoon offer",
-     "endDate": "2027-12-20",
-     "exclusive": false,
-     "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
-    },
-    {
-     "name": "Fly Me to Phinda",
-     "endDate": "2028-01-10",
-     "exclusive": false,
-     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Kruger National Park"
-    }
-   ],
-   "route": "15710521"
   },
   {
    "id": "18578694",
@@ -29027,7 +28969,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Japan",
+   "country": "Maldives",
    "world": true,
    "d": "3/21/2028",
    "r": "4/10/2028",
@@ -29048,6 +28990,12 @@
     "A trip physician who accompanies you throughout your journey"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -29122,6 +29070,12 @@
     "A veteran expedition team that handles all logistics"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -29753,7 +29707,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_352_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -29817,7 +29771,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -29974,7 +29928,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -30049,7 +30003,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -30275,7 +30229,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -30352,7 +30306,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Entebbe, Uganda",
-   "country": "Kenya",
+   "country": "Uganda",
    "world": false,
    "mks": [
     "2027-08",
@@ -30415,7 +30369,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Entebbe, Uganda",
-   "country": "Uganda",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2028-08",
@@ -31088,7 +31042,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0812.webp",
    "from": "Nairobi, Kenya",
    "to": "New York City, NY, United States",
-   "country": "United States",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -31352,7 +31306,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16301678/krugercapetownvillas",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0804.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0903.webp",
    "from": "Johannesburg, South Africa",
    "to": "Franschhoek, South Africa",
    "country": "South Africa",
@@ -31517,6 +31471,62 @@
     }
    ],
    "route": "14450642"
+  },
+  {
+   "id": "18121355",
+   "n": "Legends of the American West",
+   "b": "tauck",
+   "g": [
+    "ROCKIES"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18121355/legendsoftheamericanwest",
+   "days": 9,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
+   "from": "Rapid City, SD, United States",
+   "to": "Journey Home",
+   "country": "United States",
+   "world": false,
+   "d": "9/21/2026",
+   "r": "9/29/2026",
+   "mks": [
+    "2026-09"
+   ],
+   "win": "Dates: 21 Sep 2026 - 29 Sep 2026",
+   "description": "One of our newest adventures in the great American West truly immerses you in the legends of the \"Old West,\" from amazing Mount Rushmore in the Black Hills to the vast cowboy lands of Wyoming and on to America's first national park, Yellowstone, finishing within the imaginative masterpiece of nature known as Grand Teton National Park.",
+   "included": [
+    "The West is larger than life, vast in its myths, its landscapes, historical figures, and monuments... and this 9-day journey takes you to the heart and soul of it. Small groups, averaging 24 Tauck guests, travel from the grand designs of Mount Rushmore and the Crazy Horse Memorial, to the imaginative masterpiece of nature known as Grand Teton National Park, and the wonders deep inside Yellowstone National Park… Visit a ranch, where you'll experience life as a Wyoming cowboy… go in search of Buffalo Bill and the West of the imagination in Cody... go rafting on the Snake River... and step back in time at Mormon Row inside Grand Teton National Park. Stay inside-the-park at sought-after lodges at Yellowstone's Old Faithful Inn and Grand Teton's Jackson Lake Lodge."
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Rapid City"
+    },
+    {
+     "d": 3,
+     "n": "Buffalo"
+    },
+    {
+     "d": 4,
+     "n": "Cody"
+    },
+    {
+     "d": 5,
+     "n": "Yellowstone National Park"
+    },
+    {
+     "d": 7,
+     "n": "Grand Teton National Park"
+    }
+   ],
+   "route": "18121355"
   },
   {
    "id": "18525463",
@@ -32226,7 +32236,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -32460,7 +32470,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_260_0827.webp",
    "from": "Tirana, Albania",
    "to": "Corfu, Greece",
-   "country": "Greece",
+   "country": "Albania",
    "world": false,
    "mks": [
     "2026-09",
@@ -33150,7 +33160,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/14280199_2_7_0823.webp",
    "from": "Wilson Airport, Kenya",
    "to": "Kilimanjaro International Airport, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -33312,7 +33322,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -33383,7 +33393,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-07",
@@ -33519,7 +33529,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-06",
@@ -33584,7 +33594,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_186_0827.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok Noi, Thailand",
-   "country": "Laos",
+   "country": "Thailand",
    "world": false,
    "mks": [
     "2026-09",
@@ -34735,7 +34745,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Delhi, India",
    "to": "Mumbai, India",
-   "country": "India",
+   "country": "Nepal",
    "world": false,
    "d": "11/7/2026",
    "r": "11/24/2026",
@@ -35085,7 +35095,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -35303,7 +35313,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0809.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -35354,7 +35364,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2734_2_53_0822.webp",
    "from": "Santiago, Chile",
    "to": "Buenos Aires, Argentina",
-   "country": "Chile",
+   "country": "Argentina",
    "world": false,
    "mks": [
     "2026-09",
@@ -35433,7 +35443,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_20_0820.webp",
    "from": "Sacred Valley, Peru",
    "to": "La Paz, Bolivia",
-   "country": "Peru",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-09",
@@ -35514,7 +35524,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Amman, Jordan",
    "to": "Cairo, Egypt",
-   "country": "Jordan",
+   "country": "Egypt",
    "world": false,
    "mks": [
     "2026-09",
@@ -35657,57 +35667,6 @@
     }
    ],
    "route": "18574257"
-  },
-  {
-   "id": "18407050",
-   "n": "Private Kenya Safari",
-   "b": "micato",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18407050/privatekenyasafari",
-   "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_4_0809.webp",
-   "from": "En route to a memorable Kenya safari",
-   "to": "Homeward bound",
-   "country": "Kenya",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 31 Dec 2026",
-   "description": "In her magnificent Out of Africa, Isak Dinesen wrote that \"When you have caught the rhythm of Africa you find it is the same in all her music.\" Ms. Dinesen was wonderfully accurate, and on this event-rich but reposeful safari-beautifully accompanied by the praise of birds and the sheer fun of three-night stays in a trio of marvelously African camps-that music crescendos to symphonic heights.",
-   "included": [
-    "The Glowing Essence of Safari In her magnificent Out of Africa, Isak Dinesen wrote that “When you have caught the rhythm of Africa you find it is the same in all her music.” Ms. Dinesen was wonderfully accurate, and on this event-rich but reposeful safari—beautifully accompanied by the praise of birds and the sheer fun of three-night stays in a trio of marvelously African camps—that music crescendos to symphonic heights. We begin in Tsavo, based in the luxurious Finch Hattons Camp, named for and inspired by Denys Finch Hatton, an aristocratic Britisher bursting with love for Africa and its stupendous sceneries and free-roaming animals. Then off-the-well-trod path to Loisaba Tented Camp, in the Loisaba Conservancy, a private enclave adjacent to the Laikipia Reserve, up on the game-rich plateau of the same name, graced with views of a volcanic peak so regal that Kenya took its name as its own (Micato’s birthplace is the only country in the world to name itself for a mountain). We finish flourishingly in Sir Richard Branson’s gem, Mahali Mzuri, a spectacular camp in the fabled Maasai Mara, the lush northern part of the Serengeti-Maasai Mara ecosytem, Earth’s greatest congeries of free-ranging animals. Micato’s Private Kenya Safari is one of our Classic Safaris but with a difference. Like our Classics, it has a fixed daily itinerary, but we will operate it as a Private Classic—without regularly scheduled departures—so you can fit it into your schedule. As on all Private Classics, your group will have its own Safari Director and vehicles, and much privacy throughout. Highlights Kenya’s most luxurious tented camps and lodges, including the splendid Finch Hatton’s Camp (A Virgin Limited Edition property), elegantly eclectic Loisaba Tented Camp; and Sir Richard Branson’s personal camp Mahali Mzuri. Day and night game drives; Samburu-led camel rides on the plains; and delightful horseback riding. Spectacular views and incomparably fascinating ecosystems: regal Mount Kilimanjaro; the Laikipia Plateau and jagged Aberdare mountains; and the famed Mara River. Service, information, and good cheer from your Micato Safari Director from start to finish; round-the-clock access to our unique Concierge Service."
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 2,
-     "n": "Nairobi"
-    },
-    {
-     "d": 3,
-     "n": "Tsavo West National Park"
-    },
-    {
-     "d": 6,
-     "n": "Laikipia Plateau"
-    },
-    {
-     "d": 9,
-     "n": "Masai Mara National Reserve"
-    },
-    {
-     "d": 2,
-     "n": "Nairobi"
-    }
-   ],
-   "route": "18407050"
   },
   {
    "id": "18575680",
@@ -36015,7 +35974,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0902.webp",
    "from": "Cape Winelands, South Africa",
    "to": "Beau Champ, Mauritius",
-   "country": "Seychelles",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -36366,7 +36325,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Kigali, Rwanda",
    "to": "Arusha, Tanzania",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -36650,7 +36609,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_26_0828.webp",
    "from": "Linyanti, Botswana",
    "to": "Benguerra Island, Mozambique",
-   "country": "Botswana",
+   "country": "Mozambique",
    "world": false,
    "mks": [
     "2026-09",
@@ -36768,7 +36727,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_0_0828.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Skeleton Coast, Namibia",
-   "country": "Botswana",
+   "country": "Namibia",
    "world": false,
    "mks": [
     "2026-09",
@@ -36830,7 +36789,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_309_0827.webp",
    "from": "Denis Island, Seychelles",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Seychelles",
    "world": false,
    "mks": [
     "2026-09",
@@ -36892,7 +36851,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_21_0902.webp",
    "from": "Delhi, India",
    "to": "Kathmandu, Nepal",
-   "country": "Nepal",
+   "country": "India",
    "world": false,
    "mks": [
     "2026-09",
@@ -37184,7 +37143,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_12_0901.webp",
    "from": "Livingstone, Zambia",
    "to": "Maun, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -37421,60 +37380,6 @@
    "route": "18605344"
   },
   {
-   "id": "15710518",
-   "n": "Shark cage diving",
-   "b": "andbeyond",
-   "g": [
-    "SOUTHERN"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15710518/sharkcagediving",
-   "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15687445_2_36_0828.webp",
-   "from": "Cape Town, South Africa",
-   "to": "Cape Town, South Africa",
-   "country": "South Africa",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Travel Now Through: 31 Dec 2026",
-   "description": "Stare into the eyes of an apex predator The day begins at the quaint coastal village of Gansbaai, at the Great White House, where a decadent breakfast awaits before heading off to an action packed day. As safety is paramount, divers will be inducted with a brief introductory talk given by a marine biologist, before being fitted with life-jackets. This adventure is ideal for thrill-seekers and nature enthusiasts. Take in the excitement and heart pounding experience of being face-to-face with a spine chilling great white shark, protected only by the steel rungs of a submerged cage. Magnificent and possibly terrifying shark viewing awaits you at Shark Alley. A deep blue channel of water this…",
-   "included": [
-    "Please contact us for includes and excludes on this experience"
-   ],
-   "promotions": [
-    {
-     "name": "Milestone Celebrations Offer",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding certificate as proof. What's includedStandard &Beyond lodge, camp or yacht…"
-    },
-    {
-     "name": "Honeymoon offer",
-     "endDate": "2027-12-20",
-     "exclusive": false,
-     "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
-    },
-    {
-     "name": "Fly Me to Phinda",
-     "endDate": "2028-01-10",
-     "exclusive": false,
-     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Cape Town"
-    }
-   ],
-   "route": "15710518"
-  },
-  {
    "id": "15272308",
    "n": "Short and sweet Fly-in Safari, Masai Mara",
    "b": "andbeyond",
@@ -37667,7 +37572,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_0828.webp",
    "from": "Cape Town, South Africa",
    "to": "Windhoek, Namibia",
-   "country": "South Africa",
+   "country": "Namibia",
    "world": false,
    "mks": [
     "2026-09",
@@ -38160,7 +38065,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Namibia",
+   "country": "Zambia",
    "world": false,
    "d": "10/2/2026",
    "r": "10/15/2026",
@@ -38266,80 +38171,6 @@
    "route": "15859409"
   },
   {
-   "id": "18107102",
-   "n": "Southern Africa Safari and Rail Adventure",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107102/southernafricasafariandrailadventure",
-   "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
-   "from": "Cape Town, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "South Africa",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 05 Sep 2026 - 30 Dec 2026",
-   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
-   "included": [],
-   "promotions": [
-    {
-     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
-    },
-    {
-     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
-    },
-    {
-     "name": "Ultraluxe Community Amenity Credit",
-     "endDate": "2028-12-31",
-     "exclusive": false,
-     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Cape Town"
-    },
-    {
-     "d": 7,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 8,
-     "n": "Victoria Falls"
-    },
-    {
-     "d": 9,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 11,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 7,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18107102"
-  },
-  {
    "id": "18361132",
    "n": "Southern Africa Safari and Rail Adventure",
    "b": "ak",
@@ -38416,6 +38247,80 @@
    "route": "18361132"
   },
   {
+   "id": "18107102",
+   "n": "Southern Africa Safari and Rail Adventure",
+   "b": "ak",
+   "g": [
+    "OKAVANGO",
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107102/southernafricasafariandrailadventure",
+   "days": 13,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "from": "Cape Town, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Botswana",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 05 Sep 2026 - 30 Dec 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Ultraluxe Community Amenity Credit",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Cape Town"
+    },
+    {
+     "d": 7,
+     "n": "Johannesburg"
+    },
+    {
+     "d": 8,
+     "n": "Victoria Falls"
+    },
+    {
+     "d": 9,
+     "n": "Chobe National Park"
+    },
+    {
+     "d": 11,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 7,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "18107102"
+  },
+  {
    "id": "18383989",
    "n": "Southern Africa Safari and Rail Adventure",
    "b": "ak",
@@ -38429,7 +38334,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-03",
@@ -38509,7 +38414,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2028-03",
@@ -38783,7 +38688,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0814.webp",
    "from": "Victoria Falls, Zimbabwe",
    "to": "Maun, Botswana",
-   "country": "Zimbabwe",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -38905,7 +38810,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0812.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -39137,60 +39042,6 @@
     }
    ],
    "route": "18386595"
-  },
-  {
-   "id": "15710519",
-   "n": "Table Mountain hike",
-   "b": "andbeyond",
-   "g": [
-    "SOUTHERN"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15710519/tablemountainhike",
-   "days": 3,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15687445_2_56_0828.webp",
-   "from": "Cape Town, South Africa",
-   "to": "Cape Town, South Africa",
-   "country": "South Africa",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Travel Now Through: 31 Dec 2026",
-   "description": "Climb to the top of Table Mountain on foot There are a variety of hikes available to suit every level of expertise. Choose to descend on foot, in cable cars or extend your venture up to Maclears Beacon, the highest point on the mountain. Platteklip Gorge offers the quickest way up, whereas the India Venster hike follows a less strenuous route up the face of the mountain, underneath the cable cars. The Lions Head hike, alongside Table Mountain, offers a steep climb with the assistance of chains or a more relaxed one without. No matter the route taken, every hike promises breathtaking bird’s-eye views over the city and coast. Once you are at the top of this playground for nature lovers and…",
-   "included": [
-    "Please contact us for includes and excludes on this experience"
-   ],
-   "promotions": [
-    {
-     "name": "Milestone Celebrations Offer",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding certificate as proof. What's includedStandard &Beyond lodge, camp or yacht…"
-    },
-    {
-     "name": "Honeymoon offer",
-     "endDate": "2027-12-20",
-     "exclusive": false,
-     "description": "Save 50% on one partner's accommodation Embrace wild romance with an African Safari Honeymoon One of the best honeymoon destinations in the world. We’re often asked, which is the best country to visit for a honeymoon. We can say, without a doubt, that a honeymoon safari in East, Southern or South Africa should be high up on any newlywed couple’s list of honeymoon ideas. Africa is home to a plethora of romantic adventures and awe-inspiring landscapes such as the Masai Mara, Serengeti and the world-famous Kruger National Park. Whether it be a safari or bush and beach combination honeymoon, the…"
-    },
-    {
-     "name": "Fly Me to Phinda",
-     "endDate": "2028-01-10",
-     "exclusive": false,
-     "description": "Give them longer at Phinda. Let your guests diiscover one of the continent’s finest game viewing experiences at Phinda Private Game Reserve, which is home to Africa’s Big Five and more than 436 bird species. The reserve is particularly well known for close-up sightings of the elegant yet elusive cheetah, as well as the rare black rhino. The details:Guests staying for more than 3 nights at any combination of Phinda lodges receive credits to the value of ZAR 5,250 per Federal Air flight leg (to or from the Phinda airstrip). Alternatively, if they choose not to fly directly into the game…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Cape Town"
-    }
-   ],
-   "route": "15710519"
   },
   {
    "id": "18593438",
@@ -40190,7 +40041,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_286_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Livingstone, Zambia",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -40366,7 +40217,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_2_0809.webp",
    "from": "Tokyo, Japan",
    "to": "Argolida, Greece",
-   "country": "Bhutan",
+   "country": "Uzbekistan",
    "world": true,
    "d": "4/11/2027",
    "r": "5/1/2027",
@@ -40477,7 +40328,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0809.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -40652,7 +40503,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0809.webp",
    "from": "Depart Home",
    "to": "Homeward bound",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -40707,7 +40558,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0809.webp",
    "from": "En route to a classic East African safari",
    "to": "Homeward bound",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -40871,7 +40722,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_11_0901.webp",
    "from": "Chiang Mai, Thailand",
    "to": "Phnom Penh, Cambodia",
-   "country": "Laos",
+   "country": "Thailand",
    "world": false,
    "mks": [
     "2026-09",
@@ -41001,7 +40852,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_49_0825.webp",
    "from": "Arusha, Tanzania",
    "to": "Ngorongoro Crater, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -41113,7 +40964,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_228_0827.webp",
    "from": "Kigali, Rwanda",
    "to": "Lake Tanganyika, Tanzania",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -41309,7 +41160,7 @@
    "img": null,
    "from": "Vilnius, Lithuania",
    "to": "Tallinn, Estonia",
-   "country": "Latvia",
+   "country": "Estonia",
    "world": false,
    "d": "9/22/2026",
    "r": "10/2/2026",
@@ -41630,7 +41481,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0812.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -42130,132 +41981,6 @@
    "route": "18403529"
   },
   {
-   "id": "18597276",
-   "n": "Ultimate Botswana",
-   "b": "africantravel",
-   "g": [
-    "OKAVANGO"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597276/ultimatebotswana",
-   "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0812.webp",
-   "from": "",
-   "to": "Moremi Game Reserve, Botswana",
-   "country": "Botswana",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 31 Dec 2026",
-   "description": "African Travel, Inc. is proud to be a preferred partner of Virtuoso. For 50 years, we have been creating extraordinary, handcrafted luxury safari experiences, ensuring immersive and authentic wildlife and cultural encounters across the continent. Our specialty is crafting tailor-made safaris, complemented by exclusive small-group journeys. Whether you prefer a personalized journey or the camaraderie of a small group, African Travel brings the magic of Africa to life in a way that’s uniquely yours. Access Advisor Resources: https://linktr.ee/africantravelvirtuoso",
-   "included": [
-    "Experience Botswana’s extraordinary wilderness through a seamless blend of adventure and luxury. Begin in the vast Makgadikgadi Pans, where desert-adapted wildlife and the silence of the salt flats create a striking introduction. Continue to a private island in the Okavango Delta, exploring by land, water and air, before concluding in the predator-rich Moremi Game Reserve, where unforgettable wildlife encounters await. Highlights: Explore the Okavango Delta’s vibrant waterways by mokoro, gliding through tranquil lagoons and hidden channels surrounded by lush wildlife. Discover Moremi Game Reserve's game-rich landscapes, where you’ll track Africa’s iconic wildlife on exhilarating morning and evening safaris. Experience the serenity of the Makgadikgadi Pans, where the desert’s silence and expansive beauty create an unforgettable sense of isolation. Enjoy Enjoy a thrilling helicopter arrival and departure from your camp, taking in sweeping aerial views of the UNESCO-listed Okavango Delta with each journey."
-   ],
-   "promotions": [
-    {
-     "name": "The Best of South Africa – with an Extra Night Free in Private Reserves",
-     "endDate": "2027-02-28",
-     "exclusive": false,
-     "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
-    },
-    {
-     "name": "Guests Save Up to $1,000 Per Person on Select Journeys",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "The More You Safari, the More You Save.” With savings of up to $1,000 per person, we make it easy to turn dream safaris into confirmed bookings. From witnessing the Great Migration in the Serengeti National Park to exploring private reserves near Kruger National Park, this promotion delivers strong value across a wide range of itineraries and travel styles—giving advisors a compelling reason to start the conversation now. Click here to download informational flyer. Offer Highlights: Save $500 per person on journeys up to $10,000 Save $750 per person on journeys from $10,001–$18,000 Save…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 4,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 8,
-     "n": "Moremi Game Reserve"
-    }
-   ],
-   "route": "18597276"
-  },
-  {
-   "id": "18107126",
-   "n": "Ultimate Botswana Safari",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107126/ultimatebotswanasafari",
-   "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
-   "from": "Johannesburg, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "Zambia",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 05 Sep 2026 - 12 Dec 2026",
-   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
-   "included": [],
-   "promotions": [
-    {
-     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
-    },
-    {
-     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
-    },
-    {
-     "name": "Ultraluxe Community Amenity Credit",
-     "endDate": "2028-12-31",
-     "exclusive": false,
-     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 2,
-     "n": "Livingstone"
-    },
-    {
-     "d": 4,
-     "n": "Victoria Falls"
-    },
-    {
-     "d": 5,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 6,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18107126"
-  },
-  {
    "id": "18360991",
    "n": "Ultimate Botswana Safari",
    "b": "ak",
@@ -42332,6 +42057,80 @@
    "route": "18360991"
   },
   {
+   "id": "18107126",
+   "n": "Ultimate Botswana Safari",
+   "b": "ak",
+   "g": [
+    "OKAVANGO",
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107126/ultimatebotswanasafari",
+   "days": 10,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "from": "Johannesburg, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Botswana",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 05 Sep 2026 - 12 Dec 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Ultraluxe Community Amenity Credit",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "A&K Ultraluxe Amenity Credit Receive a $500 amenity credit on any Private Jet or Tailormade Journey of $125,000 or more. Terms & Conditions: Virtuoso Exclusive Ultraluxe Community Credit: Receive a $500 luxury amenity credit per person on any Private Jet Journey or Tailormade booking valued at $125,000 per person or more. This can include private transfers from home to airport round-trip, spa service while travelling or other luxury amenities. Request promo code AKLUXE when making your reservation."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    },
+    {
+     "d": 2,
+     "n": "Livingstone"
+    },
+    {
+     "d": 4,
+     "n": "Victoria Falls"
+    },
+    {
+     "d": 5,
+     "n": "Chobe National Park"
+    },
+    {
+     "d": 6,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "18107126"
+  },
+  {
    "id": "18383993",
    "n": "Ultimate Botswana Safari",
    "b": "ak",
@@ -42345,7 +42144,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2027-01",
@@ -42738,7 +42537,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -42823,7 +42622,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -43125,7 +42924,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4_0812.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -43338,7 +43137,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Los Angeles, CA, United States",
    "to": "Papagayo Peninsula, Costa Rica, Costa Rica",
-   "country": "Antarctica",
+   "country": "Mexico",
    "world": false,
    "d": "1/20/2027",
    "r": "2/9/2027",
@@ -43359,6 +43158,12 @@
     "A veteran expedition team who handles all logistics"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -43923,7 +43728,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0812.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -44127,7 +43932,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
    "from": "Big Sky, MT, United States",
    "to": "Sea of Cortez, Mexico",
-   "country": "United States",
+   "country": "Costa Rica",
    "world": false,
    "d": "6/15/2027",
    "r": "6/30/2027",
@@ -44146,6 +43951,12 @@
     "Every single tip"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -44221,57 +44032,6 @@
     }
    ],
    "route": "18574393"
-  },
-  {
-   "id": "15730440",
-   "n": "Wildlife encounters, education and enterprise in Tanzania",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/15730440/wildlifeencounterseducationandenterpriseintanzania",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2526_2_24_0825.webp",
-   "from": "Arusha, Tanzania",
-   "to": "Arusha, Tanzania",
-   "country": "Tanzania",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 31 Dec 2026",
-   "description": "Visit the children at Ilboru Special Needs School, meet the ladies at the Duuma Wajane Bike Shop and get a taste of raw honey at the Mwka Beekeeping Project in this adventure through Northern Tanzania.",
-   "included": [
-    "Accommodation as listed Visits to the A&K Philanthropy projects Transport Activities as listed"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Arusha"
-    },
-    {
-     "d": 3,
-     "n": "Tarangire National Park"
-    },
-    {
-     "d": 5,
-     "n": "Ngorongoro Crater Conservation Area"
-    },
-    {
-     "d": 7,
-     "n": "Serengeti National Park"
-    },
-    {
-     "d": 1,
-     "n": "Arusha"
-    }
-   ],
-   "route": "15730440"
   },
   {
    "id": "18540106",
@@ -44395,7 +44155,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2027-03",
@@ -44593,7 +44353,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_29_0901.webp",
    "from": "Portland, OR, United States",
    "to": "Boston, MA, United States",
-   "country": "Rwanda",
+   "country": "Bolivia",
    "world": true,
    "d": "2/8/2028",
    "r": "3/4/2028",
@@ -45173,7 +44933,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Los Angeles, CA, United States",
-   "country": "Colombia",
+   "country": "Indonesia",
    "world": true,
    "d": "8/10/2027",
    "r": "9/2/2027",
@@ -45193,6 +44953,12 @@
     "All tips & gratuities"
    ],
    "promotions": [
+    {
+     "name": "Half Off Solo Supplement",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "SPECIAL OFFER FOR SOLO TRAVELERS Book a solo seat on the following trips and pay only a 5% Solo Supplement (normally 10% of the published price). Japan's Hidden Gems by Private Jet | June 2026 Ocean to Outback: Exploring New Zealand and Australia by Private Jet | November 2026 Tibet & South Asia: A 15-day Expedition by Private Air | October 2026 Two departures of our flagship journey: Around the World by Luxury Private Jet November 2 – 25, 2026 | 24 Days October 28 – November 21, 2026 | 25 Days Any applied discounts are at the sole discretion of TCS and may only be valid for select offers or…"
+    },
     {
      "name": "$10,000 Credit on Signature Expedition: Around the World by Private Jet",
      "endDate": "2026-12-31",
@@ -45328,7 +45094,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0812.webp",
    "from": "Nairobi, Kenya",
    "to": "Serengeti, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -46039,7 +45805,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_315_0828.webp",
    "from": "Kafue, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -46091,7 +45857,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Vilanculos, Mozambique",
-   "country": "South Africa",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",

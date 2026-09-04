@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 232,
-  "journeysTotal": 452,
+  "lodgesInSafariCountries": 66,
+  "journeysWithCamps": 229,
+  "journeysTotal": 448,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 68
+  "inSafariCountries": 66
  },
  "CAMPS": {
   "h_00327": {
@@ -1069,14 +1069,6 @@
     "stop": "Sabi Sand Game Reserve",
     "day": 1,
     "km": 24.8
-   }
-  ],
-  "15730440": [
-   {
-    "id": "h_01778",
-    "stop": "Serengeti National Park",
-    "day": 7,
-    "km": 23.9
    }
   ],
   "15739524": [
@@ -2617,14 +2609,6 @@
     "km": 17.8
    }
   ],
-  "18407050": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 9,
-    "km": 18.1
-   }
-  ],
   "18460819": [
    {
     "id": "h_01374",
@@ -3509,14 +3493,6 @@
     "stop": "Livingstone",
     "day": 5,
     "km": 19.8
-   }
-  ],
-  "18597276": [
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 4,
-    "km": 19.9
    }
   ],
   "18597537": [
