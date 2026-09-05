@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 66,
-  "journeysWithCamps": 229,
-  "journeysTotal": 448,
+  "lodgesInSafariCountries": 67,
+  "journeysWithCamps": 230,
+  "journeysTotal": 445,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 66
+  "inSafariCountries": 67
  },
  "CAMPS": {
   "h_00327": {
@@ -100,6 +100,22 @@
    ],
    "promo": 0
   },
+  "h_01778": {
+   "n": "Singita - Singita Grumeti",
+   "house": "Singita",
+   "country": "Tanzania",
+   "ll": [
+    -2.15399,
+    34.6857
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4176_2_0_0818.webp",
+   "rooms": 31,
+   "perks": [
+    "Daily breakfast",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
   "h_00537": {
    "n": "Elewana the Manor at Ngorongoro",
    "house": "Minor Hotels",
@@ -116,22 +132,6 @@
     "Spa treatment"
    ],
    "promo": 0
-  },
-  "h_01778": {
-   "n": "Singita - Singita Grumeti",
-   "house": "Singita",
-   "country": "Tanzania",
-   "ll": [
-    -2.15399,
-    34.6857
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4176_2_0_0818.webp",
-   "rooms": 31,
-   "perks": [
-    "Daily breakfast",
-    "Early check-in"
-   ],
-   "promo": 1
   },
   "h_01409": {
    "n": "Ol Jogi Wildlife Conservancy",
@@ -3816,6 +3816,20 @@
     "id": "h_01778",
     "stop": "Serengeti National Park",
     "day": 6,
+    "km": 23.9
+   }
+  ],
+  "18609003": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 8,
     "km": 23.9
    }
   ]
