@@ -3842,11 +3842,11 @@
   "roomAmenities": [],
   "promotions": [
    {
-    "id": "18608471",
-    "name": "Your Summer at Alila Mayakoba Begins Here",
+    "id": "18608467",
+    "name": "Summer Comes Alive at Alila Mayakoba - 30% OFF",
     "endDate": "2026-12-18",
     "exclusive": false,
-    "description": "Step into Alila Mayakoba in full bloom, where summer unfolds through Chef's Atelier evenings, Mexican artisan pop-ups, restorative rituals and sunlit days by the Caribbean Sea. 40% DISCOUNT + EXTRA RESORT CREDIT LONG STAY (+$250 USD), Stay Length: MinLOS: 7."
+    "description": "This summer, Alila Mayakoba comes alive in full bloom, a season of Mexican design, culinary craft, wellness rituals, and Caribbean days by lagoon and sea. For a limited time, enjoy up to 30% savings on select summer stays."
    },
    {
     "id": "18608470",
@@ -3856,11 +3856,11 @@
     "description": "Invite your clients to experience Alila Mayakoba in its first full summer expression, with preferred seasonal savings and a curated calendar of culinary, wellness and Mexican design moments. 30% DISCOUNT + EXTRA RESORT CREDIT (+$100 USD). Stay Length: MinLOS: 3 / MaxLOS: 6."
    },
    {
-    "id": "18608467",
-    "name": "Summer Comes Alive at Alila Mayakoba - 30% OFF",
+    "id": "18608471",
+    "name": "Your Summer at Alila Mayakoba Begins Here",
     "endDate": "2026-12-18",
     "exclusive": false,
-    "description": "This summer, Alila Mayakoba comes alive in full bloom, a season of Mexican design, culinary craft, wellness rituals, and Caribbean days by lagoon and sea. For a limited time, enjoy up to 30% savings on select summer stays."
+    "description": "Step into Alila Mayakoba in full bloom, where summer unfolds through Chef's Atelier evenings, Mexican artisan pop-ups, restorative rituals and sunlit days by the Caribbean Sea. 40% DISCOUNT + EXTRA RESORT CREDIT LONG STAY (+$250 USD), Stay Length: MinLOS: 7."
    }
   ],
   "hasPromotion": true,
@@ -33052,18 +33052,18 @@
   ],
   "promotions": [
    {
-    "id": "18553092",
-    "name": "Summer Offer at Casa de Sierra Nevada",
-    "endDate": "2026-09-30",
-    "exclusive": false,
-    "description": "Journey into a landscape of living heritage at Casa de Sierra Nevada, where artistry, character and timeless elegance intertwine, enriched by refined dining experiences that celebrate the season in the heart of San Miguel de Allende. Welcome artisanal amenity Mezquite cocktail on arrival Daily a la carté breakfast at Andanza Daily in-room wake up coffeeservice Breakfast and lunch or dinner for up 2 adults per room at Andanza Food and Beverages for extra person or children available a la carté 15% off at Spa 15% off in food and beverages Non-alcoholic minibar beverages included in Signature…"
-   },
-   {
     "id": "18553088",
     "name": "Stay a little longer",
     "endDate": "2026-09-30",
     "exclusive": false,
     "description": "Stay a little longer at Casa de Sierra Nevada in San Miguel de Allende and savor added indulgences without watching the clock. Because some escapes deserve more time your third night is on us until October 2026."
+   },
+   {
+    "id": "18553092",
+    "name": "Summer Offer at Casa de Sierra Nevada",
+    "endDate": "2026-09-30",
+    "exclusive": false,
+    "description": "Journey into a landscape of living heritage at Casa de Sierra Nevada, where artistry, character and timeless elegance intertwine, enriched by refined dining experiences that celebrate the season in the heart of San Miguel de Allende. Welcome artisanal amenity Mezquite cocktail on arrival Daily a la carté breakfast at Andanza Daily in-room wake up coffeeservice Breakfast and lunch or dinner for up 2 adults per room at Andanza Food and Beverages for extra person or children available a la carté 15% off at Spa 15% off in food and beverages Non-alcoholic minibar beverages included in Signature…"
    },
    {
     "id": "18553099",
@@ -47196,11 +47196,11 @@
     "description": "Stay three nights or more in our suites and experience the Desa with a little more ease."
    },
    {
-    "id": "18484002",
-    "name": "A  Stay to Feel Good",
+    "id": "18484000",
+    "name": "Good Times All Around",
     "endDate": "2027-03-30",
     "exclusive": false,
-    "description": "Shaped by our 'Merasa' (to feel in Indonesian) wellbeing philosophy. This stay is an invitation to slow down. Sunrise yoga, sound healing at Klymax, plant-forward dining at Tanaman, and rituals that settle in over three nights. Inclusions: - Daily breakfast at beachfront restaurant or Tanaman - Complimentary snacks and refreshments at Tanaman - One-time complimentary mini bar setup - Beachfront access with daybed priority - Access to daily wellbeing activities - 24-hour Desa Gym access - One-time complimentary group Sound Healing session - One-time complimentary lunch or dinner at Tanaman -…"
+    "description": "Wake up to breakfast by the beach. Lunch or dinner at Dome, Tanaman, or Beachfront Restaurant. A cocktail waiting at the Beach Club. All the good stuff already taken care of. Inclusions: - Daily breakfast at the restaurant - One-time complimentary lunch or dinner for two guests at Dome or Beachfront Restaurant - One-time Complimentary cocktail for two guests at the Beach Club - Access to daily wellbeing activities - Beachfront access with daybed priority - 24-hour Desa Gym access - Complimentary welcome jamu - Zero Waste Kit with reusable water bottle and RPET tote bag - One-time…"
    }
   ],
   "hasPromotion": true,
@@ -89852,16 +89852,8 @@
    "Slippers",
    "Voicemail"
   ],
-  "promotions": [
-   {
-    "id": "18561757",
-    "name": "Take Your Stay Further",
-    "endDate": "2026-09-19",
-    "exclusive": false,
-    "description": "Take Your Stay Further Stay 5 nights and get 20% off your rate when you book by September 5. Valid for Stays: June 9, 2026Jun 9, 2026 - September 19, 2026Sep 19, 2026 Book By: September 5, 2026Sep 5, 2026 Terms & Conditions: For information about the cancellation, refund and deposit policies associated with this offer, please see the information provided at time of booking. Reservations must be made at least 0 days prior to your stay. Discount percent applies to room rate only. Reservations subject to availability. Offer only available for a limited time, while shown as available on the…"
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4657_2_0_0814.webp",
@@ -108678,11 +108670,11 @@
   ],
   "promotions": [
    {
-    "id": "18370090",
-    "name": "Detox for Life at Layan Life by Anantara",
+    "id": "18370087",
+    "name": "Anantara Stay Longer Special",
     "endDate": "2027-01-12",
     "exclusive": false,
-    "description": "Detox for Life Give yourself a full reset with a transformative detox holiday in Phuket designed to cleanse, restore and rebalance from the inside out. At our serene detox retreat in Thailand, we combine the wisdom of Traditional Thai Medicine with state-of-the-art detoxification therapies to support your body’s natural ability to eliminate toxins, enhance metabolism and revitalize overall wellbeing. Targeted treatments, healing rituals and expert guidance converge in a setting where deep purification meets emotional renewal. Treatments / Activities Wellness Initial Consultation Medical…"
+    "description": "🌴 Stay Longer, Save More at Layan Residences by Anantara Discover the ultimate long-stay luxury in Phuket with our Stay Longer Special at Layan Residences by Anantara. Nestled on the tranquil shores of Layan Beach, these exclusive private pool residences offer refined tropical living with breathtaking sea views, expansive living spaces, and personalized Anantara service. Enjoy up to 35% off the Best Available Rate when you stay 4 nights or more, giving you more time to relax, reconnect, and truly experience one of the most luxurious residences in Phuket. Whether you’re planning an extended…"
    },
    {
     "id": "18370089",
@@ -108692,11 +108684,11 @@
     "description": "Experience holistic healing at Layan Life with Chattawan (Khun Kathy) Elliot, a practitioner with 25 years of expertise in bodywork, energy healing and vibrational therapy, available from 7 December 2025 to 25 January 2026. Signature Therapies: Integrated Digestive Wellness TherapyHolistic abdominal work to support digestion, circulation and gentle detoxification. Healing CrystalsPersonalised energy healing with intuitively selected crystals for balance and renewal. Sacred Sound & Chakra BalancingTibetan singing bowls to clear blockages and restore energetic harmony. Therapeutic Meridian Foot…"
    },
    {
-    "id": "18370087",
-    "name": "Anantara Stay Longer Special",
+    "id": "18370090",
+    "name": "Detox for Life at Layan Life by Anantara",
     "endDate": "2027-01-12",
     "exclusive": false,
-    "description": "🌴 Stay Longer, Save More at Layan Residences by Anantara Discover the ultimate long-stay luxury in Phuket with our Stay Longer Special at Layan Residences by Anantara. Nestled on the tranquil shores of Layan Beach, these exclusive private pool residences offer refined tropical living with breathtaking sea views, expansive living spaces, and personalized Anantara service. Enjoy up to 35% off the Best Available Rate when you stay 4 nights or more, giving you more time to relax, reconnect, and truly experience one of the most luxurious residences in Phuket. Whether you’re planning an extended…"
+    "description": "Detox for Life Give yourself a full reset with a transformative detox holiday in Phuket designed to cleanse, restore and rebalance from the inside out. At our serene detox retreat in Thailand, we combine the wisdom of Traditional Thai Medicine with state-of-the-art detoxification therapies to support your body’s natural ability to eliminate toxins, enhance metabolism and revitalize overall wellbeing. Targeted treatments, healing rituals and expert guidance converge in a setting where deep purification meets emotional renewal. Treatments / Activities Wellness Initial Consultation Medical…"
    }
   ],
   "hasPromotion": true,
@@ -147182,18 +147174,18 @@
     "description": "Receive a Third Night with Our Compliments Pendry Chicago invites you to savor the vibrant cultural scene of the city. Stay two nights or more with our Extra Day Away offer and enjoy a complimentary third night in Windy City’s most bustling downtown."
    },
    {
-    "id": "18593539",
-    "name": "Suite'n Your Stay",
-    "endDate": "2027-08-14",
-    "exclusive": false,
-    "description": "Enjoy a 10% Savings & Daily $300 Hotel Credit Enjoy the suite life with a 10% savings and daily $300 hotel credit per stay. Use your credit towards a number of experiences, including signature dining at Venteux, Bar Pendry and Château Carbide."
-   },
-   {
     "id": "18593538",
     "name": "Stay More, Do More",
     "endDate": "2027-08-14",
     "exclusive": false,
     "description": "Enjoy up to a 25% Savings Extend your stay and explore the lively city of Chicago. Reserve a minimum of 5 nights and receive a 20% savings on our best available rate, or stay 7 or more nights and receive 25% savings."
+   },
+   {
+    "id": "18593539",
+    "name": "Suite'n Your Stay",
+    "endDate": "2027-08-14",
+    "exclusive": false,
+    "description": "Enjoy a 10% Savings & Daily $300 Hotel Credit Enjoy the suite life with a 10% savings and daily $300 hotel credit per stay. Use your credit towards a number of experiences, including signature dining at Venteux, Bar Pendry and Château Carbide."
    }
   ],
   "hasPromotion": true,
@@ -161301,16 +161293,8 @@
    "Turn Down Service",
    "Wheelchair Accessible"
   ],
-  "promotions": [
-   {
-    "id": "18516061",
-    "name": "Stay 03 Pay 02",
-    "endDate": "2026-09-05",
-    "exclusive": false,
-    "description": "Stay 3, pay 2 Extend your urban escape with a complimentary night at the Royal Mansour Casablanca and enjoy a 3-night stay for the price of 2. An invitation to embrace the timeless elegance of an iconic address and delve into the captivating secrets of the White City, just a little longer. Offer valid from June 1st to September 5, 2026 included, subject to availability at time of booking, cannot be combined with other current offers. Blackout dates and other restrictions may apply."
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16884698_2_0_0828.webp",
@@ -172709,18 +172693,18 @@
     "description": "Escape to island living with exclusive savings and added value. Stay a minimum of three nights and enjoy 15 percent savings, along with THB 2,000 resort credit per bedroom per night, complemented by Virtuoso amenities. As a Virtuoso guest, enjoy daily breakfast, a one-time resort credit, and personalized privileges designed to elevate your stay. Use your credit for spa, dining, or curated island experiences in Koh Yao Noi. Ideal for longer, more meaningful escapes Good to Know Minimum three nights stay Offer is not combinable with any other offer Offer is applicable for all villa categories…"
    },
    {
-    "id": "18379169",
-    "name": "Five Nights Plus",
+    "id": "17900426",
+    "name": "Early Booking Offer",
     "endDate": "2026-12-19",
     "exclusive": true,
-    "description": "Stay for five fabulous nights or longer in the Pool Villa of your choice and receive up to 15 percent off the Best Flexible Rate, plus complimentary breakfast. Inclusions: Daily breakfast Good to know Minimum five nights stay Offer is not combinable Applicable for all villa categories, except The View and The Ocean Retreat Credit card guarantee is required at the time of booking Offer is subject to change without notice ValidityStay period : January 11, 2026 until December 19, 2026. Black-out dates apply Book by date : From now until December 15, 2026 Please contact the reservations team at…"
+    "description": "Plan ahead and enjoy 10 percent savings inclusive of Virtuoso Amenity at Six Senses Yao Noi. Discover Koh Yao Noi with private pool villas, wellness experiences, and dining designed around island living. Valid for bookings made 21 days or more prior to arrival for stays from April 20 to September 25, 2026 Valid for bookings made 45 days or more prior to arrival for stays from September 26 to November 1, 2026 Valid for bookings made 60 days or more prior to arrival for stays from March 1 to April 19 and November 2 to December 19, 2026 Minimum two-night stay Good to Know Offer is not combinable…"
    },
    {
-    "id": "18111482",
-    "name": "Extended Stay Offer – Stay 7 Pay 6!",
+    "id": "17903328",
+    "name": "Four Night Plus",
     "endDate": "2026-12-19",
     "exclusive": true,
-    "description": "Linger a little longer and deepen your savings! Receive a complimentary seventh night on us with buffet breakfast and Virtuoso Amenities Seventh night complimentary on consecutive stays. Applicable for all villa categories except for The View and The Ocean Retreat. Offer is subject to availability at the time of booking, subject to change without notice. Offer is not combinable with any other promotions and offers. Offer is based in Best Flexible Rate for the dates chosen. Blackout dates and other restrictions may apply. Blackout from December 20, 2025 to January 10, 2026 inclusive."
+    "description": "April 20 to November 1, 2026 Stay for four fabulous nights or longer in the Pool Villa of your choice and receive 15 percent off the Best Flexible Rate November 2 to December 19, 2026 Stay for five fabulous nights or longer in the Pool Villa of your choice and receive up to 15 percent off the Best Flexible Rate Good to know Offer is not combinable with other offers Applicable for all villa categories, except The View and The Ocean Retreat Credit card guarantee is required at the time of booking Offer is subject to change without notice Please contact the reservations department at…"
    }
   ],
   "hasPromotion": true,
@@ -178911,18 +178895,18 @@
     "description": "It's not too early to begin planning your summer stay at Stein Eriksen Lodge - book now for select dates and receive a 15% discount. Availability is limited so make your reservation now to lock in the savings. Offer details: 15% off already low rates Limited dates and availability Discount is valid for lodging only, no value-adds"
    },
    {
-    "id": "18489163",
-    "name": "Lincoln Rejuvenation Package",
-    "endDate": "2026-11-25",
-    "exclusive": false,
-    "description": "Lincoln Rejuvenation Package includes: Use of a Lincoln Navigator® SUV $200 resort credit, we recommend:Spa treatment (try a Steins signature massage at The Spa) Private Wellness Class Lodging accommodations for two Note: 3+ nights minimum stay required"
-   },
-   {
     "id": "18488789",
     "name": "Stein Eriksen Lodge Resort Credit Offer",
     "endDate": "2026-11-25",
     "exclusive": false,
     "description": "Stay this summer and receive a $75/night resort credit. Package includes: Resort credit good toward: - Onsite dining at any Stein Collection restaurant - Spa treatments at The Spa at Stein Eriksen Lodge"
+   },
+   {
+    "id": "18489163",
+    "name": "Lincoln Rejuvenation Package",
+    "endDate": "2026-11-25",
+    "exclusive": false,
+    "description": "Lincoln Rejuvenation Package includes: Use of a Lincoln Navigator® SUV $200 resort credit, we recommend:Spa treatment (try a Steins signature massage at The Spa) Private Wellness Class Lodging accommodations for two Note: 3+ nights minimum stay required"
    }
   ],
   "hasPromotion": true,
@@ -189485,18 +189469,18 @@
   ],
   "promotions": [
    {
-    "id": "18231749",
-    "name": "Discounted Green Fees",
+    "id": "18231743",
+    "name": "Complimentary Horse Riding",
     "endDate": "2028-10-09",
     "exclusive": false,
-    "description": "The Killarney Golf & Fishing Club is located adjacent to the hotel. It is comprised of two championship courses. The 18-hole Killeen course (par 72) was the venue for two Irish Opens and was host to the 2010 & 2011 Irish Open. The 18-hole Mahony’s Point course (par 72) boasts stunning views of the iconic Killarney Lakes and the MacGillycuddy's Reeks. Guests of The Europe Hotel & Resort can enjoy discounted green fees on both 18 hole courses."
+    "description": "The hotel is famous for its own Austrian Haflinger Ponies which can be seen grazing in the hotel grounds. Guests may enjoy complimentary horse riding along sheltered bridleways during their stay. Our Haflinger ponies are a gentle breed and are ideal for children and novice riders. Enjoy a 10/15 minute guided trek around the grounds. This complimentary facility operates on a casual, no reservation basis. For those feeling a little more adventurous, why not take a 1, 2 or 3 hour guided trek through the National Park which may be arranged with Killarney Riding Stables."
    },
    {
-    "id": "18231748",
-    "name": "Complimentary Wi-Fi",
+    "id": "18231745",
+    "name": "Complimentary Indoor Tennis",
     "endDate": "2028-10-09",
     "exclusive": false,
-    "description": "Guests can enjoy complimentary Wi-Fi acsess throughout the hotel."
+    "description": "Challenge a loved one to a game of tennis on one of our two indoor courts. Equipment is available from The Active Level of The Europe and is on a first come, first served baisis."
    },
    {
     "id": "18231747",
