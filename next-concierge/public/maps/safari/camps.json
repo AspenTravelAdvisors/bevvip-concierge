@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 66,
-  "journeysWithCamps": 233,
+  "lodgesInSafariCountries": 67,
+  "journeysWithCamps": 234,
   "journeysTotal": 457,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 66
+  "inSafariCountries": 67
  },
  "CAMPS": {
   "h_00327": {
@@ -1505,6 +1505,26 @@
     "stop": "San Pedro de Atacama",
     "day": 1,
     "km": 9.4
+   }
+  ],
+  "16903052": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
    }
   ],
   "16903171": [

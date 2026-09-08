@@ -1,13 +1,13 @@
 {
  "_meta": {
-  "generatedAt": "2026-09-07T15:01:52.773Z",
+  "generatedAt": "2026-09-08T13:31:00.061Z",
   "generator": "scripts/build-cruise-regions.mjs",
-  "sailings": 3890,
-  "corrected": 3765,
+  "sailings": 3889,
+  "corrected": 3764,
   "note": "Complete region map for every sailing, grouped by region name. Derived from each itinerary's geocoded ports; see the script header."
  },
  "counts": {
-  "Mediterranean": 255,
+  "Mediterranean": 254,
   "Arctic": 354,
   "Canada & New England": 39,
   "Amazon & South America": 340,
@@ -39,7 +39,6 @@
    "16845793",
    "16845794",
    "16852178",
-   "16852216",
    "16852217",
    "16872166",
    "16882376",
