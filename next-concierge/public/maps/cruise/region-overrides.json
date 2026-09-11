@@ -1,9 +1,9 @@
 {
  "_meta": {
-  "generatedAt": "2026-09-10T13:33:20.548Z",
+  "generatedAt": "2026-09-11T13:30:44.046Z",
   "generator": "scripts/build-cruise-regions.mjs",
   "sailings": 4247,
-  "corrected": 4120,
+  "corrected": 4122,
   "note": "Complete region map for every sailing, grouped by region name. Derived from each itinerary's geocoded ports; see the script header."
  },
  "counts": {

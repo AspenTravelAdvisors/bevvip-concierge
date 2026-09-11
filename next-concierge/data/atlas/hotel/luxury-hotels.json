@@ -3834,18 +3834,18 @@
   "roomAmenities": [],
   "promotions": [
    {
-    "id": "18612413",
-    "name": "Celebrate a well-deserved escape with our exclusive 20% Discount offer!",
-    "endDate": "2026-12-18",
-    "exclusive": false,
-    "description": "Enjoy 20% savings on stays of 1 to 2 nights when you book between September 9 and November 30, 2026, for travel through December 18, 2026. Whether you are planning a spontaneous getaway or a relaxing retreat, this limited-time offer provides the perfect opportunity to experience exceptional comfort and personalized hospitality. We invite you to reserve your stay today and take advantage of these exclusive savings while availability lasts. Terms and conditions apply."
-   },
-   {
     "id": "18612408",
     "name": "Stay 3 Nights & Save 33% at Alila Mayakoba",
     "endDate": "2026-12-18",
     "exclusive": false,
     "description": "Enjoy 33% savings on stays of 3 to 6 nights when reserved between September 9 and November 30, 2026, for travel through December 18, 2026. Thoughtfully designed to enhance your stay, this offer includes: Daily buffet breakfast for all registered guests. One Cabana Day Experience. Two beachside beverages at Alisio Beach Club. A Hydrotherapy Circuit Experience (one session per adult, per stay). Whether you are planning a relaxing retreat or looking for the perfect destination to celebrate Thanksgiving with family and friends, we invite you to reserve your stay today and experience the season in…"
+   },
+   {
+    "id": "18612413",
+    "name": "Celebrate a well-deserved escape with our exclusive 20% Discount offer!",
+    "endDate": "2026-12-18",
+    "exclusive": false,
+    "description": "Enjoy 20% savings on stays of 1 to 2 nights when you book between September 9 and November 30, 2026, for travel through December 18, 2026. Whether you are planning a spontaneous getaway or a relaxing retreat, this limited-time offer provides the perfect opportunity to experience exceptional comfort and personalized hospitality. We invite you to reserve your stay today and take advantage of these exclusive savings while availability lasts. Terms and conditions apply."
    },
    {
     "id": "18608277",
@@ -95569,6 +95569,13 @@
     "endDate": "2026-09-30",
     "exclusive": false,
     "description": "One Night on Us promotion (Stay 4 nights / Pay 3 nights) Book from 01 July 2025 - 30 September 2026 Valid for Travel from 01 July 2025 - 30 September 2026 Available to book via GDS or direct via luxury.sydney@ihg.com All standard Virtuoso amenities apply Commissionable 10% Blackout dates apply Cannot be combined with any other promotional offer Standard cancellation 24hrs prior to arrival"
+   },
+   {
+    "id": "18598178",
+    "name": "The Suite Experience",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "The Suite Experience exclusive packages Experience the pinnacle of luxury travel with our exclusive collection of Suites. For a limited time, enjoy \"so much more\" with a curated selection of exclusive privileges and added benefits designed to elevate your guests stay. Minimum 2 night's Stay required Luxury Suite Collection Presidential Opera House Suite, Royal Opera House Suite, and Governor Opera House Suites Exclusive inclusions: Club InterContinental Lounge Access Early check in / late check out (subject to availability) U$100 food and beverage credit Return airport transfers or parking…"
    }
   ],
   "hasPromotion": true,
@@ -154045,18 +154052,11 @@
   ],
   "promotions": [
    {
-    "id": "18224718",
-    "name": "Suite Escapade",
+    "id": "18224715",
+    "name": "IHG One Night on Us",
     "endDate": "2026-12-30",
     "exclusive": false,
-    "description": "Book a Suite for 2 nights or above to enjoy 25% discount Inclusive of Regent Club Access for two persons Applicable to selected Harbourview Suites & Corner Suites"
-   },
-   {
-    "id": "18224717",
-    "name": "Book Early and Save",
-    "endDate": "2026-12-30",
-    "exclusive": false,
-    "description": "Enjoy 20% discount when you book 10 days in advance. Enjoy 10% discount when you book 5 days in advance."
+    "description": "Stay for 3 consecutive nights and enjoy the 3rd night on us. Enjoy Regent Club for 2 guests from Studio Suite Harbouview or above Applicable for Studio Suite and above *Cannot be used in conjunction with “Upgrade Privilege”"
    },
    {
     "id": "18224716",
@@ -154064,6 +154064,13 @@
     "endDate": "2026-12-30",
     "exclusive": false,
     "description": "Upgrade Privilege 1 Night Stay : Enjoy a room upgrade to the next category 2 Nights Stay : Enjoy a double upgrade in selected room types Classic Room > Studio Suite Premium Room > Classic Harbourview Room Studio suite > Premium Harbourview Room"
+   },
+   {
+    "id": "18224717",
+    "name": "Book Early and Save",
+    "endDate": "2026-12-30",
+    "exclusive": false,
+    "description": "Enjoy 20% discount when you book 10 days in advance. Enjoy 10% discount when you book 5 days in advance."
    }
   ],
   "hasPromotion": true,
@@ -168664,6 +168671,13 @@
     "endDate": "2026-12-15",
     "exclusive": false,
     "description": "Stay 4 Pay 3 Promotion Extend your Bangkok retreat with a complimentary third night when booking a minimum four-night stay on any room types. Enjoy more time to unwind at the city’s most serene luxury address. Booking Period: 1 September - 31 October 2026 Travel Period: 1 September - 15 December 2026 Eligible promotional reservations may be made via GDS, telephone or email to the hotel, referencing the promotional details. Terms & Conditions: All offers are subject to availability at the time of reservation. Blackout dates may apply. Offers do not apply to group bookings. Rates are per room,…"
+   },
+   {
+    "id": "18613381",
+    "name": "Stay 3 Pay 2 Promotion",
+    "endDate": "2027-06-30",
+    "exclusive": false,
+    "description": "VIRTUOSO PREFERRED EXCLUSIVE OFFER Extend your Bangkok retreat with a complimentary third night when booking a minimum three-night stay Enjoy more time to unwind at the city’s most serene luxury address. Booking Period: Now - 15 November 2026 Travel Period: 7 January 2027 - 30 June 2027 Minimum Length of Stay: 3 nights Eligible promotional reservations may be made via GDS, telephone or email to the hotel, referencing the promotional details. Terms & Conditions: All offers are subject to availability at the time of reservation. Blackout dates may apply. Offers do not apply to group bookings.…"
    }
   ],
   "hasPromotion": true,
@@ -183815,18 +183829,18 @@
     "description": "Book 5 nights at The Brando and only pay for 4 nights! SAVE 20% along with Free flights from Tahiti to Brando! Booking Conditions: Minimum stay of 5 consecutive nights for travel Now thru March 31, 2028 Offer is valid for new bookings only. Applies on All-Inclusive Rates only Combinable with \"Fly FREE\" promotion - Fly free offer is subject to availability at time of booking, hotel reserves the right to terminate free flights This offer is available for a limited inventory and therefore subject to closure and availability at time of booking. Commissions are calculated on the room rates after…"
    },
    {
-    "id": "18371792",
-    "name": "Kids Fly, Stay, Dine & Play Free Offer",
-    "endDate": "2028-03-31",
-    "exclusive": false,
-    "description": "At The Brando, on the pristine shores of Tetiaroa, children are invited to build sandcastles in powdersoft sand, while vibrant marine life glides through crystal clear waters nearby. Encounters with sea turtles, lush tropical gardens, and the colorful underwater world ignite a sense of wonder, curiosity, and discovery. Through our children’s programs rooted in Polynesian culture and environmental stewardship, The Brando offers young guests meaningful, hands-on experiences that inspire learning and connection. Every moment is crafted to ensure that a family stay at The Brando is as enriching…"
-   },
-   {
     "id": "16852766",
     "name": "Brando Early booking 60 days or more 15% offer",
     "endDate": "2028-03-31",
     "exclusive": false,
     "description": "Book 60 days in advance & Save 15% - Villa and breakfast rates starting at 2,900 euros per night plus taxes and fees in our Oceanfront Beach Villas! Rates include the following benefits - Complimentary daily breakfast for 2 Complimentary use of fitness centre - open 24 hours Complimentary use of non motorized watersports: paddle boarding, snorkeling, kayaking Complimentary participation of Green Tour Participation of release of green sea turtles (Feb - Apr) Promotional terms & conditions include: Reservation must be confirmed at least 60 days in advance of travel. This offer is available for…"
+   },
+   {
+    "id": "16852765",
+    "name": "Brando 4th Night FREE & FREE FLIGHTS to/from Tahiti and Brando",
+    "endDate": "2028-03-31",
+    "exclusive": false,
+    "description": "Pay for 3 nights at our private island paradise and your 4th night is FREE...SAVE 25%, PLUS FLY FREE to/from Tahiti to Brando. Our 4th Night FREE package is also combinable or stackable for longer stays, every 4th night is complimentary! So, with an 8-night stay, you only pay for 6-nights. Booking Conditions: Minimum stay of 4 consecutive nights for travel Now thru March 31, 2028 Applicable on all villa stays: One-Bedroom Pool Villas, One-Bedroom Family Pool Villas, Two-Bedroom Villas, Three-Bedroom Villa and on our one-of-a-kind Teremoana Four-Bedroom Pool Residence. Offer is valid for new…"
    }
   ],
   "hasPromotion": true,
@@ -234290,18 +234304,18 @@
   ],
   "promotions": [
    {
-    "id": "18507632",
-    "name": "Stay 4 nights and save 15%",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Virtuoso Exclusive Offer - Stay 4 Nights and Save, includes buffet breakfast for 2 guests daily at Market Kitchen, 100 EUR resort credit per stay, welcome amenity, Commissionable Rate - 100 EUR resort credit per stay. - Daily buffet breakfast at Market Kitchen. - Welcome amenity and GM Welcome Note. - Early Check-in and Late check-out (if available). - Complimentary Upgrade of room type (if available). Credit can only be used on Incidental spend that has incurred during the stay, up to 100 EUR. This includes dining, spa services and hotel recreational activities that are not managed by a…"
-   },
-   {
     "id": "18507473",
     "name": "Extra Resort Credit",
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Virtuoso Exclusive Offer - Extra Resort Credit, includes buffet breakfast for 2 guests daily at Market Kitchen, 150 EUR resort credit per stay, welcome amenity Valid for stays with minimum 3 nights Commissionable Rate Virtuoso Extra Resort Credit Offer Includes: - Monetary Amenity Credit 150 EUR per stay - Complimentary Breakfast for 2 daily - Complimentary basic high speed wireless internet access - Early Check-in and Late check-out (if available) - Welcome amenity and GM Welcome Note - Complimentary Upgrade of room type (if available) Terms: Credit can only be used on Incidental spend that…"
+   },
+   {
+    "id": "18507632",
+    "name": "Stay 4 nights and save 15%",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Virtuoso Exclusive Offer - Stay 4 Nights and Save, includes buffet breakfast for 2 guests daily at Market Kitchen, 100 EUR resort credit per stay, welcome amenity, Commissionable Rate - 100 EUR resort credit per stay. - Daily buffet breakfast at Market Kitchen. - Welcome amenity and GM Welcome Note. - Early Check-in and Late check-out (if available). - Complimentary Upgrade of room type (if available). Credit can only be used on Incidental spend that has incurred during the stay, up to 100 EUR. This includes dining, spa services and hotel recreational activities that are not managed by a…"
    }
   ],
   "hasPromotion": true,

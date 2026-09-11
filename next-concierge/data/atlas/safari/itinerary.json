@@ -9265,56 +9265,6 @@
     ]
    }
   ],
-  "18360991": [
-   {
-    "n": "Johannesburg",
-    "r": "SOUTHERN",
-    "ll": [
-     -26.1986,
-     28.0429
-    ]
-   },
-   {
-    "n": "Livingstone",
-    "r": "ZAMBEZI",
-    "ll": [
-     -17.85,
-     25.8667
-    ]
-   },
-   {
-    "n": "Victoria Falls",
-    "r": "ZAMBEZI",
-    "ll": [
-     -17.9333,
-     25.8333
-    ]
-   },
-   {
-    "n": "Chobe National Park",
-    "r": "ZAMBEZI",
-    "ll": [
-     -18.6666,
-     24.5
-    ]
-   },
-   {
-    "n": "Okavango Delta",
-    "r": "OKAVANGO",
-    "ll": [
-     -19.25,
-     22.75
-    ]
-   },
-   {
-    "n": "Johannesburg",
-    "r": "SOUTHERN",
-    "ll": [
-     -26.1986,
-     28.0429
-    ]
-   }
-  ],
   "18361073": [
    {
     "n": "Cape Town",
@@ -16957,7 +16907,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_37_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Okavango Delta, Botswana",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -18362,63 +18312,6 @@
    "route": "18521705"
   },
   {
-   "id": "18364254",
-   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18364254/aksanctuarybotswanasafariandvictoriafalls",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Johannesburg, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "Zambia",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 21 Dec 2026",
-   "description": "From mighty Victoria Falls, one of the most spectacular cataracts on the planet, to the Okavango Delta, the largest inland delta in the world and home to an estimated 9,000 species of flora and fauna, this thrilling adventure takes you up close to “The Smoke that Thunders” and reveals a lush, diverse ecosystem prowled by many of Africa’s most iconic species. Seek out hippos, lions, leopards, buffalo, giraffes, wildebeests and more on safari days capped off with stays at unforgettable Sussi & Chuma Lodge, Chobe Chilwero Lodge and Chief’s Camp — all part of the chic A&K Sanctuary collection.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$2,600 value) Johannesburg/Livingstone; Kasane/Okavango Delta/Maun/Johannesburg"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 2,
-     "n": "Livingstone"
-    },
-    {
-     "d": 4,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 6,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18364254"
-  },
-  {
    "id": "18362041",
    "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
    "b": "ak",
@@ -18487,6 +18380,63 @@
     }
    ],
    "route": "18362041"
+  },
+  {
+   "id": "18364254",
+   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
+   "b": "ak",
+   "g": [
+    "OKAVANGO",
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18364254/aksanctuarybotswanasafariandvictoriafalls",
+   "days": 8,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
+   "from": "Johannesburg, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Zambia",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 21 Dec 2026",
+   "description": "From mighty Victoria Falls, one of the most spectacular cataracts on the planet, to the Okavango Delta, the largest inland delta in the world and home to an estimated 9,000 species of flora and fauna, this thrilling adventure takes you up close to “The Smoke that Thunders” and reveals a lush, diverse ecosystem prowled by many of Africa’s most iconic species. Seek out hippos, lions, leopards, buffalo, giraffes, wildebeests and more on safari days capped off with stays at unforgettable Sussi & Chuma Lodge, Chobe Chilwero Lodge and Chief’s Camp — all part of the chic A&K Sanctuary collection.",
+   "included": [
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$2,600 value) Johannesburg/Livingstone; Kasane/Okavango Delta/Maun/Johannesburg"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    },
+    {
+     "d": 2,
+     "n": "Livingstone"
+    },
+    {
+     "d": 4,
+     "n": "Chobe National Park"
+    },
+    {
+     "d": 6,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "18364254"
   },
   {
    "id": "18521706",
@@ -19395,7 +19345,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -21153,7 +21103,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_96_0827.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zimbabwe",
-   "country": "Botswana",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -24942,7 +24892,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3014_2_0_0830.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Thailand",
    "world": false,
    "mks": [
     "2026-09",
@@ -25780,7 +25730,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Nairobi, Kenya",
-   "country": "Uganda",
+   "country": "Tanzania",
    "world": false,
    "d": "9/21/2026",
    "r": "10/1/2026",
@@ -28185,7 +28135,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_1_0828.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -32209,7 +32159,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_251_0827.webp",
    "from": "Lisbon, Portugal",
    "to": "Praia Sundy, Príncipe, São Tomé and Príncipe, Sao Tome And Principe",
-   "country": "Portugal",
+   "country": "Sao Tome And Principe",
    "world": false,
    "mks": [
     "2026-09",
@@ -34267,7 +34217,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_186_0827.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok Noi, Thailand",
-   "country": "Vietnam",
+   "country": "Thailand",
    "world": false,
    "mks": [
     "2026-09",
@@ -36175,7 +36125,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_20_0820.webp",
    "from": "Sacred Valley, Peru",
    "to": "La Paz, Bolivia",
-   "country": "Bolivia",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-09",
@@ -36670,7 +36620,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_72_0902.webp",
    "from": "Nairobi, Kenya",
    "to": "Zanzibar, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -36757,7 +36707,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0902.webp",
    "from": "Cape Winelands, South Africa",
    "to": "Beau Champ, Mauritius",
-   "country": "Seychelles",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -38604,7 +38554,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zimbabwe",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -39631,7 +39581,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0909.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -41976,7 +41926,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_228_0827.webp",
    "from": "Kigali, Rwanda",
    "to": "Lake Tanganyika, Tanzania",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -43071,82 +43021,6 @@
    "route": "18597276"
   },
   {
-   "id": "18360991",
-   "n": "Ultimate Botswana Safari",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360991/ultimatebotswanasafari",
-   "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
-   "from": "Johannesburg, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "Botswana",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12",
-    "2027-01",
-    "2027-02",
-    "2027-03",
-    "2027-04",
-    "2027-05",
-    "2027-06",
-    "2027-07",
-    "2027-08",
-    "2027-09",
-    "2027-10",
-    "2027-11",
-    "2027-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 12 Dec 2027",
-   "description": "This is our flagship Southern African adventure, the evolution of the safaris that put us on the map. It’s all here: Victoria Falls, the Big Five, the mighty Zambezi, classic safari tents, premier lodges, helicopter flightseeing, gin & tonics at sunset, and game drives on land and by river. Come experience what we do best.",
-   "included": [
-    "English-Speaking Resident Tour Director® and Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Travelling Bell Boy® Luggage Handling",
-    "Traveller’s Valet® Laundry Service",
-    "Internet Access",
-    "Entrance Fees, Taxes and All Gratuities Except Resident Tour Director",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$3,675 value) Johannesburg/Livingstone; Kasane/Camp to Camp/Maun/Johannesburg"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 2,
-     "n": "Livingstone"
-    },
-    {
-     "d": 4,
-     "n": "Victoria Falls"
-    },
-    {
-     "d": 5,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 6,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18360991"
-  },
-  {
    "id": "18107126",
    "n": "Ultimate Botswana Safari",
    "b": "ak",
@@ -43475,7 +43349,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -44818,7 +44692,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -45571,7 +45445,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_0_0820.webp",
    "from": "Santiago, Chile",
    "to": "La Paz, Bolivia",
-   "country": "Bolivia",
+   "country": "Chile",
    "world": false,
    "mks": [
     "2026-09",
@@ -45765,7 +45639,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2906_2_47_0819.webp",
    "from": "Quito, Ecuador",
    "to": "Cusco, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-09",
@@ -45918,7 +45792,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0814.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-09",
@@ -46235,7 +46109,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Serengeti, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -46756,7 +46630,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_0827.webp",
    "from": "Johannesburg, South Africa",
    "to": "Makgadikgadi Pans National Park, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
