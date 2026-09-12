@@ -153650,13 +153650,6 @@
   ],
   "promotions": [
    {
-    "id": "18566481",
-    "name": "Summer, Your Way",
-    "endDate": "2026-09-11",
-    "exclusive": false,
-    "description": "Arrive any day and save on stays of 3 nights or more! Join us at Rancho La Puerta in Tecate, Baja California, Mexico, for days filled with movement, laughter, and lightness. This summer, experience the freedom to travel on your terms, from June 27 through September 11, 2026, arrive whenever it feels right, and settle into a stay designed around you. Wake with the birds for a morning hike, dive into your favorite fitness classes, cool off in the pool, and gather for evenings full of connection, music, and joy. However, you spend your time, it’s your rhythm, your pace, your Ranch. Stay 3 or…"
-   },
-   {
     "id": "18239608",
     "name": "A Summer to Remember at Rancho La Puerta",
     "endDate": "2026-09-18",
@@ -153669,6 +153662,13 @@
     "endDate": "2026-12-19",
     "exclusive": false,
     "description": "Escape to the magic of the season at Rancho La Puerta in Tecate, Mexico, with 2 nights on us. Each week features fantastic programming that guarantees good times and unforgettable memories. Book your perfect holiday getaway today! Pay for only 5 nights on a 7-night stay. Weeks of November 21-28, November 28-December 5, and December 12-19, 2026. This offers a savings of up to $2,000 per person. Use Promo code: COMPS2N when booking This offer is valid for new reservations only and applies to 7-night stays. It cannot be combined with other offers, and some restrictions apply. Please note that…"
+   },
+   {
+    "id": "18564625",
+    "name": "Four Nights On Us",
+    "endDate": "2027-01-02",
+    "exclusive": false,
+    "description": "Start the New Year rested, renewed, and feeling your very best. Pay for just 10 nights on a 14-night stay. December 19, 2026 – January 2, 2027 Save up to $4,000 per person. Use code: COMPS2N Over two restorative weeks, you’ll move beyond simply unwinding to creating lasting change through daily movement, nourishing cuisine, meaningful connection, and time immersed in nature. Celebrate the season with joy, then welcome the New Year feeling healthier, stronger, and deeply renewed—all while enjoying 4 complimentary nights. This offer is valid for new reservations only and applies to 14-night…"
    }
   ],
   "hasPromotion": true,
@@ -219002,8 +219002,16 @@
   "roomAmenities": [
    "Butler Service"
   ],
-  "promotions": [],
-  "hasPromotion": false,
+  "promotions": [
+   {
+    "id": "18613354",
+    "name": "Festive Suite Escapes",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "For guests seeking an extraordinary holiday experience, The St. Regis New York offers bespoke Thanksgiving and Christmas suite stays featuring luxurious suite accommodations, private holiday dining experiences, festive décor, and personalized touches inspired by the traditions of the Astor family. Thanksgiving Suite Experience Master Suite or Designer Suite accommodations Private Thanksgiving \"Midnight Supper\" for up to eight guests Champagne toast inspired by the historic Caroline Astor gatherings Christmas Suite Experience Master Suite or Designer Suite accommodations Choice of private…"
+   }
+  ],
+  "hasPromotion": true,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4634_2_1_0731.webp",
