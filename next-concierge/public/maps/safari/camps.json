@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 233,
-  "journeysTotal": 454,
+  "journeysWithCamps": 244,
+  "journeysTotal": 493,
   "campsMatched": 39
  },
  "radiusKm": 25,
@@ -433,6 +433,23 @@
    ],
    "promo": 0
   },
+  "h_01374": {
+   "n": "Nayara Tented Camp",
+   "house": "Nayara Resorts",
+   "country": "Costa Rica",
+   "ll": [
+    10.505,
+    -84.689
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0_0820.webp",
+   "rooms": 30,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
   "h_01643": {
    "n": "Rosewood Cape Kidnappers",
    "house": "Rosewood Hotels & Resorts",
@@ -545,23 +562,6 @@
    ],
    "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4020_2_0_0813.webp",
    "rooms": 7,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 1
-  },
-  "h_01374": {
-   "n": "Nayara Tented Camp",
-   "house": "Nayara Resorts",
-   "country": "Costa Rica",
-   "ll": [
-    10.505,
-    -84.689
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0_0820.webp",
-   "rooms": 30,
    "perks": [
     "Daily breakfast",
     "$100 credit",
@@ -1797,6 +1797,28 @@
     "km": 18.1
    }
   ],
+  "18107155": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 9,
+    "km": 16.2
+   }
+  ],
+  "18113907": [
+   {
+    "id": "h_00532",
+    "stop": "San Jose",
+    "day": 1,
+    "km": 16
+   },
+   {
+    "id": "h_01374",
+    "stop": "Fortuna",
+    "day": 4,
+    "km": 4.9
+   }
+  ],
   "18114408": [
    {
     "id": "h_00537",
@@ -2099,6 +2121,14 @@
     "km": 18.1
    }
   ],
+  "18338580": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 5,
+    "km": 19.9
+   }
+  ],
   "18338591": [
    {
     "id": "h_02484",
@@ -2223,6 +2253,26 @@
     "stop": "Serengeti National Park",
     "day": 7,
     "km": 23.9
+   }
+  ],
+  "18360991": [
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 2,
+    "km": 19.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 4,
+    "km": 0.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
    }
   ],
   "18361073": [
@@ -2493,6 +2543,14 @@
     "km": 19.9
    }
   ],
+  "18383999": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 9,
+    "km": 16.2
+   }
+  ],
   "18384197": [
    {
     "id": "h_02339",
@@ -2639,6 +2697,20 @@
     "stop": "Ol Pejeta Conservancy",
     "day": 5,
     "km": 9.1
+   }
+  ],
+  "18473622": [
+   {
+    "id": "h_00532",
+    "stop": "San Jose",
+    "day": 1,
+    "km": 16
+   },
+   {
+    "id": "h_01374",
+    "stop": "Fortuna",
+    "day": 4,
+    "km": 4.9
    }
   ],
   "18473628": [
@@ -3843,6 +3915,58 @@
     "stop": "Okavango Delta",
     "day": 1,
     "km": 19.9
+   }
+  ],
+  "18613383": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 5,
+    "km": 16.2
+   }
+  ],
+  "18613385": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 3,
+    "km": 16.2
+   }
+  ],
+  "18614419": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 22.4
+   }
+  ],
+  "18614564": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
+    "km": 18.1
+   }
+  ],
+  "18614574": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 15,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 15,
+    "km": 22.4
    }
   ]
  }
