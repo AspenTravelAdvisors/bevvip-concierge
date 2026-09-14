@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 244,
-  "journeysTotal": 493,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 239,
+  "journeysTotal": 491,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_00327": {
@@ -2741,26 +2741,6 @@
     "km": 18.1
    }
   ],
-  "18474761": [
-   {
-    "id": "h_01673",
-    "stop": "Thornybush Game Reserve",
-    "day": 7,
-    "km": 15.9
-   },
-   {
-    "id": "h_02345",
-    "stop": "Thornybush Game Reserve",
-    "day": 7,
-    "km": 23.4
-   },
-   {
-    "id": "h_01020",
-    "stop": "Thornybush Game Reserve",
-    "day": 7,
-    "km": 23.9
-   }
-  ],
   "18475653": [
    {
     "id": "h_00537",
@@ -2953,90 +2933,6 @@
     "stop": "Victoria Falls",
     "day": 8,
     "km": 22.4
-   }
-  ],
-  "18535586": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 6,
-    "km": 18.1
-   },
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 10,
-    "km": 19.6
-   }
-  ],
-  "18535590": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 5,
-    "km": 19.6
-   }
-  ],
-  "18535591": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 5,
-    "km": 19.6
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 9,
-    "km": 18.1
-   }
-  ],
-  "18535592": [
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 5,
-    "km": 3.4
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 5,
-    "km": 22.4
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 8,
-    "km": 18.1
-   },
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 13,
-    "km": 19.6
-   }
-  ],
-  "18535650": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 4,
-    "km": 18.1
-   }
-  ],
-  "18535651": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 6,
-    "km": 18.1
-   },
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 12,
-    "km": 19.6
    }
   ],
   "18537234": [
@@ -3967,6 +3863,28 @@
     "stop": "Victoria Falls",
     "day": 15,
     "km": 22.4
+   }
+  ],
+  "18615246": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 2,
+    "km": 23.9
+   }
+  ],
+  "18615253": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 21.1
    }
   ]
  }
