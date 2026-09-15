@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 239,
-  "journeysTotal": 491,
+  "lodgesInSafariCountries": 66,
+  "journeysWithCamps": 244,
+  "journeysTotal": 489,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 68
+  "inSafariCountries": 66
  },
  "CAMPS": {
   "h_00327": {
@@ -1547,38 +1547,6 @@
     "km": 18.1
    }
   ],
-  "16903174": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 2,
-    "km": 19.6
-   },
-   {
-    "id": "h_01409",
-    "stop": "Nanyuki",
-    "day": 9,
-    "km": 1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 11,
-    "km": 18.1
-   },
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
-   }
-  ],
   "16919119": [
    {
     "id": "h_02374",
@@ -1987,38 +1955,6 @@
     "stop": "Masai Mara National Reserve",
     "day": 11,
     "km": 18.1
-   }
-  ],
-  "18295014": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 2,
-    "km": 19.6
-   },
-   {
-    "id": "h_01409",
-    "stop": "Nanyuki",
-    "day": 9,
-    "km": 1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 11,
-    "km": 18.1
-   },
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
    }
   ],
   "18295015": [
@@ -2741,6 +2677,26 @@
     "km": 18.1
    }
   ],
+  "18474761": [
+   {
+    "id": "h_01673",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 15.9
+   },
+   {
+    "id": "h_02345",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.4
+   },
+   {
+    "id": "h_01020",
+    "stop": "Thornybush Game Reserve",
+    "day": 7,
+    "km": 23.9
+   }
+  ],
   "18475653": [
    {
     "id": "h_00537",
@@ -2933,6 +2889,90 @@
     "stop": "Victoria Falls",
     "day": 8,
     "km": 22.4
+   }
+  ],
+  "18535586": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 10,
+    "km": 19.6
+   }
+  ],
+  "18535590": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   }
+  ],
+  "18535591": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18535592": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 5,
+    "km": 22.4
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 13,
+    "km": 19.6
+   }
+  ],
+  "18535650": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18535651": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 6,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 12,
+    "km": 19.6
    }
   ],
   "18537234": [

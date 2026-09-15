@@ -1,10 +1,10 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-09-05T12:31:56.575Z",
+  "generated": "2026-09-15T14:17:01.716Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2075,
+  "feedCount": 2076,
   "matchedCount": 2305
  },
  "overrides": {
@@ -26391,6 +26391,12 @@
    "name": "Spicers Sangoma Retreat",
    "city": "Bowen Mountain",
    "country": "Australia"
+  },
+  {
+   "vid": "18615276",
+   "name": "St. Clement London",
+   "city": "London",
+   "country": "United Kingdom"
   },
   {
    "vid": "18384225",
