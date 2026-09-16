@@ -5521,6 +5521,104 @@
           2.35
         ]
       }
+    ],
+    "around-the-world-by-private-jet-2028": [
+      {
+        "n": "Washington, D.C.",
+        "r": "AMERICAS",
+        "ll": [
+          38.9,
+          -77.04
+        ]
+      },
+      {
+        "n": "Machu Picchu",
+        "r": "SAM",
+        "ll": [
+          -13.16,
+          -72.55
+        ]
+      },
+      {
+        "n": "Easter Island",
+        "r": "SAM",
+        "ll": [
+          -27.11,
+          -109.35
+        ]
+      },
+      {
+        "n": "Mo'orea",
+        "r": "POLY",
+        "ll": [
+          -17.53,
+          -149.83
+        ]
+      },
+      {
+        "n": "Great Barrier Reef",
+        "r": "ANZ",
+        "ll": [
+          -16.92,
+          145.77
+        ]
+      },
+      {
+        "n": "Siem Reap",
+        "r": "SEASIA",
+        "ll": [
+          13.36,
+          103.86
+        ]
+      },
+      {
+        "n": "Agra",
+        "r": "INDIA",
+        "ll": [
+          27.17,
+          78.04
+        ]
+      },
+      {
+        "n": "Serengeti",
+        "r": "AFRICA",
+        "ll": [
+          -2.33,
+          34.83
+        ]
+      },
+      {
+        "n": "Luxor",
+        "r": "AFRICA",
+        "ll": [
+          25.69,
+          32.64
+        ]
+      },
+      {
+        "n": "Cairo",
+        "r": "AFRICA",
+        "ll": [
+          30.04,
+          31.24
+        ]
+      },
+      {
+        "n": "Marrakech",
+        "r": "AFRICA",
+        "ll": [
+          31.63,
+          -7.99
+        ]
+      },
+      {
+        "n": "Washington, D.C.",
+        "r": "AMERICAS",
+        "ll": [
+          38.9,
+          -77.04
+        ]
+      }
     ]
   },
   "TRIPS": [
@@ -16277,6 +16375,33 @@
       "days": 14,
       "d": "9/30/2027",
       "r": "10/13/2027"
+    },
+    {
+      "d": "2/13/2028",
+      "r": "3/10/2028",
+      "n": "Around the World by Private Jet",
+      "b": "natgeo",
+      "route": "around-the-world-by-private-jet-2028",
+      "u": "https://www.expeditionbucketlist.com/national-geographic-private-jet-trips",
+      "days": 27
+    },
+    {
+      "d": "3/10/2028",
+      "r": "4/5/2028",
+      "n": "Around the World by Private Jet",
+      "b": "natgeo",
+      "route": "around-the-world-by-private-jet-2028",
+      "u": "https://www.expeditionbucketlist.com/national-geographic-private-jet-trips",
+      "days": 27
+    },
+    {
+      "d": "3/10/2028",
+      "r": "4/1/2028",
+      "n": "Wildlife of the World by Private Jet",
+      "b": "natgeo",
+      "route": "wildlife-of-the-world-by-private-jet",
+      "u": "https://www.expeditionbucketlist.com/national-geographic-private-jet-trips",
+      "days": 23
     }
   ]
 }
