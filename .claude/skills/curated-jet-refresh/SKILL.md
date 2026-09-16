@@ -243,20 +243,30 @@ in the message which departures were added, retired, or reslotted.
 
 ---
 
-## Standing findings
+## Why ADVISOR FIT is in this report
 
-Two things the audit reports every run that are **not** this month's work:
+`itinerary-fit.json` is keyed by atlas item id, and the jet id is an array
+position. When the merge re-emitted `TRIPS` with the curated block at the head,
+every jet fit row drifted off its trip: 79 of 127 journeys were being described
+by a row belonging to a different supplier — and because `resolveBrandId()`
+trusts a row's `brandId` ahead of the record's own label, that selected the
+wrong brand profile, overlay, relationship boost and advisor notes too.
 
-- **`itinerary-fit.json` is misaligned.** 99 of 127 jet journeys carry advisor
-  fit data keyed to a different brand — the `jt_<index>` keys were assigned
-  against an older ordering of the feed. `lib/atlas/journeys.js` attaches these
-  by id and The Guide ranks intents on them, so intent ranking is reading the
-  wrong supplier's profile. Rebuilding those keys is its own task. It is
-  reported here because every curated trip added shifts the indices again.
-- **`verify:curated-jet` is not in `scripts/verify-all.mjs`.** It exits non-zero
-  today on the two dead Safrans cards, and wiring a red check into the suite
-  only teaches people to ignore the suite. Add it to `CHECKS` once the deck is
-  clean and keep it there.
+`lib/atlas/supplier-fit.js` now binds a row by identity (`fitRowFor`) and drops
+one it cannot show describes the record, so the count should read **0 bound to
+the wrong supplier**. If a curated edit ever pushes it above zero, the resolver
+has stopped holding and that is a blocking finding, not a note.
+
+A large `without a row` count is expected and benign — ranking falls back to the
+brand profile. Regenerating the jet fit data would sharpen it and is its own
+task.
+
+## Standing finding
+
+**`verify:curated-jet` is not in `scripts/verify-all.mjs`.** It exits non-zero
+today on the dead Tour de France card, and wiring a red check into the suite
+only teaches people to ignore the suite. Add it to `CHECKS` once the deck is
+clean and keep it there.
 
 ## Files
 

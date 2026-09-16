@@ -5,8 +5,7 @@
 // Pure functions, one-time JSON load, unit-testable without an HTTP server.
 
 const raw = require("../../data/atlas/world/itinerary.json");
-const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
-const { rankItems } = require("./supplier-fit");
+const { rankItems, fitRowFor } = require("./supplier-fit");
 const { dropPast, isPast, todayISO, sortOfferings, compareByDeparture } = require("./dates");
 
 const ATLAS_URL =
@@ -196,7 +195,7 @@ function filterCruises(params = {}) {
 }
 
 function fitFor(s) {
-  return itineraryFit[s.id] || null;
+  return fitRowFor(s);
 }
 
 function fitScore(s, intent) {

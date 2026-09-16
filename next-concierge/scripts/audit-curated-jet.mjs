@@ -396,36 +396,49 @@ function checkPublishDrift(merged) {
 // ── 5. advisor fit alignment ────────────────────────────────────────────────
 
 /**
- * itinerary-fit.json is keyed by jt_<index>, and the index moved.
+ * Is every jet journey still described by its own fit row?
  *
- * lib/atlas/journeys.js attaches these rows to a journey by id and The Guide
- * ranks on them, so a row filed against the wrong trip is not inert: it is one
- * supplier's guest profile and advisor note presented as another's. The keys
- * were assigned against an older ordering of the feed, and the merge has since
- * re-emitted TRIPS with the curated block at the head.
+ * The jet id is an array position (`jt_<arrayIndex>`), and itinerary-fit.json
+ * was keyed with those positions, so the rows drifted off their trips the first
+ * time the merge re-emitted TRIPS in a different order. lib/atlas/supplier-fit
+ * now binds a row by identity and drops one it cannot show describes the
+ * record, which is what keeps this at zero.
  *
- * Reported rather than repaired, because the repair is a rebuild of the fit
- * data and not a monthly chore — but it is checked here because every curated
- * trip we add shifts the block again, and this is the number that says so.
+ * It is checked here rather than trusted because every curated trip added
+ * shifts the block again — this is the number that says whether the resolver is
+ * still holding.
+ *
+ * `brandId` is NOT the comparison: it is a slug from the brand registry and
+ * does not spell the atlas's own label ("National Geographic-Lindblad
+ * Expeditions" is brandId `lindblad`). Comparing the two produces a large,
+ * confident, entirely false misalignment count. The row's advisorNote opens
+ * with the supplier's display name, which is the like-for-like check.
  */
 function checkFitAlignment(journeysLib) {
-  const fit = require(path.join(repoRoot, 'data/atlas/shared/itinerary-fit.json'));
-  const slug = s => String(s ?? '').toLowerCase().replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const { fitRowFor } = require(path.join(repoRoot, 'lib/atlas/supplier-fit.js'));
+  const norm = s => String(s ?? '').toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+  const noteBrand = row => String(row.advisorNote ?? '').split(';')[0].trim();
 
-  let aligned = 0, misaligned = 0, absent = 0;
+  let bound = 0, wrong = 0, absent = 0;
   for (const j of journeysLib.journeys) {
-    const row = fit[j.id];
+    const row = fitRowFor(j);
     if (!row) { absent++; continue; }
-    if (row.brandId === slug(j.brand)) aligned++; else misaligned++;
+    if (norm(noteBrand(row)) === norm(j.brand)) bound++; else wrong++;
   }
 
-  if (misaligned) {
-    finding('warn', 'fit',
-      `${misaligned} of ${journeysLib.journeys.length} jet journeys carry advisor fit data belonging to a different brand`,
-      'itinerary-fit.json is keyed by jt_<index> against an older ordering. The Guide ranks intents on these rows, so the ranking is reading the wrong supplier. Rebuilding the fit keys is its own task — noted here because adding a curated trip shifts the indices again.');
+  if (wrong) {
+    finding('error', 'fit',
+      `${wrong} of ${journeysLib.journeys.length} jet journeys are bound to a fit row describing a different supplier`,
+      'The resolver in lib/atlas/supplier-fit.js should have dropped these. The Guide ranks intents on the row it binds, so a wrong row selects the wrong brand profile, overlay and advisor notes.');
   }
-  return { aligned, misaligned, absent };
+  if (absent > journeysLib.journeys.length * 0.75) {
+    finding('note', 'fit',
+      `${absent} of ${journeysLib.journeys.length} jet journeys have no fit row at all`,
+      'Ranking falls back to the brand profile for these. Regenerating the jet fit data would sharpen intent ranking.');
+  }
+  return { bound, wrong, absent };
 }
 
 // ── report ──────────────────────────────────────────────────────────────────
@@ -476,7 +489,7 @@ function main() {
   }
 
   console.log('\n  ADVISOR FIT');
-  console.log(`    ${fit.aligned} aligned · ${fit.misaligned} misaligned · ${fit.absent} without a row`);
+  console.log(`    ${fit.bound} correctly bound · ${fit.wrong} bound to the wrong supplier · ${fit.absent} without a row`);
 
   if (sorted.length) {
     console.log('\n  FINDINGS');
