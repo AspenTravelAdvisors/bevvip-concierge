@@ -1,5 +1,4 @@
 # Refreshes the Virtuoso-sourced atlas data every night and commits the result.
-# (Every other night until 7 October 2026 — see the throttle above `jobs:`.)
 #
 # The data is committed rather than fetched at request time so that every change
 # lands as a reviewable diff: these files carry a lot of hand-curation, and a
@@ -19,57 +18,8 @@ concurrency:
   group: virtuoso-sync        # never let two syncs race for the same commit
   cancel-in-progress: false
 
-# Until 7 October 2026 the sync runs every OTHER night rather than nightly.
-#
-# Every sync commits, and Vercel builds production from that commit — just under
-# five minutes a night for this project — and the team is close to its build
-# allowance. Halving the syncs halves those builds, at the cost of data that can
-# be up to 48 hours old rather than 24.
-#
-# It is a gate on a nightly trigger rather than a fortnightly cron, for two
-# reasons. `*/2` in the day-of-month field is not "every other day": it restarts
-# at the 1st, so a 31-day month puts two runs on consecutive nights. And a cron
-# edited by hand has to be edited back by hand, which is the kind of thing that
-# is still throttled at Christmas. This one expires on its own — from 8 October
-# the gate stops throttling and the nightly cron is nightly again, with no second
-# commit needed.
-#
-# Freshness is untouched by it: verify-virtuoso-freshness.mjs warns at 7 days and
-# fails at 30, and a 48-hour cadence keeps every feed inside 2.
 jobs:
-  gate:
-    runs-on: ubuntu-latest
-    outputs:
-      run: ${{ steps.decide.outputs.run }}
-    steps:
-      - id: decide
-        env:
-          # The last night the throttle covers. The parity below puts a run ON
-          # this date, so nightly resumes the next night with no gap in between.
-          THROTTLE_THROUGH: '2026-10-07'
-        run: |
-          today=$(date -u +%F)
-
-          # Days since the epoch, not day-of-month, so the alternation survives
-          # month ends: 29 September is followed by 1 October, not by the 30th.
-          parity=$(( $(date -u +%s) / 86400 % 2 ))
-
-          if [ "${{ github.event_name }}" != 'schedule' ]; then
-            reason='run by hand, never throttled'; run=true
-          elif [[ "$today" > "$THROTTLE_THROUGH" ]]; then
-            reason="past $THROTTLE_THROUGH, back to nightly"; run=true
-          elif [ "$parity" -eq 1 ]; then
-            reason='throttled to alternate nights, and tonight is one'; run=true
-          else
-            reason='throttled to alternate nights, and tonight is not one'; run=false
-          fi
-
-          echo "run=$run" >> "$GITHUB_OUTPUT"
-          echo "$today: $reason (sync=$run)" >> "$GITHUB_STEP_SUMMARY"
-
   sync:
-    needs: gate
-    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write         # required to push the refreshed data back
