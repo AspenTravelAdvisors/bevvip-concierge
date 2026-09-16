@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 66,
-  "journeysWithCamps": 244,
-  "journeysTotal": 489,
+  "journeysWithCamps": 246,
+  "journeysTotal": 492,
   "campsMatched": 39
  },
  "radiusKm": 25,
@@ -1547,6 +1547,38 @@
     "km": 18.1
    }
   ],
+  "16916677": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   }
+  ],
   "16919119": [
    {
     "id": "h_02374",
@@ -2003,6 +2035,38 @@
     "stop": "Paro",
     "day": 10,
     "km": 24.3
+   }
+  ],
+  "18317046": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
    }
   ],
   "18325781": [
