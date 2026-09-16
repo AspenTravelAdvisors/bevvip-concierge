@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "note": "What the out-of-repo surfaces were last published with. Written by scripts/audit-curated-jet.mjs --record; compared against on every run so the audit can say when a page has fallen behind the atlas. Empty until the first publish is recorded.",
+    "surfaces": {
+      "safrans": "public/safrans-du-monde.html — served by this app, and pasted as a code block into the EBL website",
+      "natgeo": "nge-private-jet.vercel.app — a separate deploy, iframed into the EBL website"
+    },
+    "updated": null
+  },
+  "published": {}
+}
