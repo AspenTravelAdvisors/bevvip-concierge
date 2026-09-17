@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 66,
-  "journeysWithCamps": 246,
-  "journeysTotal": 492,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 247,
+  "journeysTotal": 496,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 66
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_00327": {
@@ -3989,6 +3989,14 @@
     "stop": "Victoria Falls",
     "day": 1,
     "km": 21.1
+   }
+  ],
+  "18616942": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 4,
+    "km": 16.2
    }
   ]
  }
