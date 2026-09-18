@@ -30,8 +30,7 @@
 //     (see TAG_MARQUEE) rather than read off the trip
 
 const raw = require("../../data/atlas/safari/itinerary.json");
-const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
-const { rankItems } = require("./supplier-fit");
+const { rankItems, fitRowFor } = require("./supplier-fit");
 const { dropPast, isPast, todayISO, sortOfferings, compareByDeparture } = require("./dates");
 
 const ATLAS_URL = process.env.ATLAS_SAFARI_URL || "/atlas/safari";
@@ -280,7 +279,7 @@ function filterJourneys(params = {}) {
 }
 
 function fitFor(j) {
-  return itineraryFit[j.id] || null;
+  return fitRowFor(j);
 }
 
 function fitScore(j, intent) {

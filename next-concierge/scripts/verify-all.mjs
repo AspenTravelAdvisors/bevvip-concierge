@@ -30,6 +30,7 @@ const CHECKS = [
   'verify:photoreal',
   'verify:villas',
   'verify:offering-shape',
+  'verify:fit-binding',
   'verify:intents',
   'verify:layer-order',
   'verify:legend-focus',

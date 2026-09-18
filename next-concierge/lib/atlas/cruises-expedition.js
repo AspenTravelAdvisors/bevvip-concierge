@@ -19,8 +19,7 @@ const REGION_BY_ID = (() => {
   for (const [region, ids] of Object.entries(byRegion)) for (const id of ids) out[id] = region;
   return out;
 })();
-const itineraryFit = require("../../data/atlas/shared/itinerary-fit.json");
-const { rankItems } = require("./supplier-fit");
+const { rankItems, fitRowFor } = require("./supplier-fit");
 const { dropPast, isPast, todayISO, sortOfferings, compareByDeparture } = require("./dates");
 
 const ATLAS_URL =
@@ -263,7 +262,7 @@ function filterCruises(params = {}) {
 }
 
 function fitFor(c) {
-  return itineraryFit[c.id] || null;
+  return fitRowFor(c);
 }
 
 function fitScore(c, intent) {

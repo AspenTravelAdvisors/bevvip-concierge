@@ -58,6 +58,9 @@
     "merge:virtuoso-journeys": "node scripts/merge-virtuoso-journeys.mjs",
     "audit:listings": "node scripts/audit-listings.mjs",
     "verify:listings": "node scripts/audit-listings.mjs --strict",
+  "audit:curated-jet": "node scripts/audit-curated-jet.mjs",
+  "verify:curated-jet": "node scripts/audit-curated-jet.mjs --strict",
+  "verify:fit-binding": "node scripts/verify-fit-binding.mjs",
     "verify:seo": "node scripts/verify-seo.mjs"
   },
   "dependencies": {

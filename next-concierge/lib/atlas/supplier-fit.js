@@ -78,8 +78,105 @@ function intentKey(raw) {
   return INTENT_ALIASES[key] || key || null;
 }
 
+/*
+ * ── BINDING A FIT ROW TO THE RECORD IT ACTUALLY DESCRIBES ──────────────────
+ *
+ * itinerary-fit.json is keyed by atlas item id, and for most atlases that id is
+ * the supplier's own — cr_16875627 is sailing 16875627 and will be for as long
+ * as the sailing exists. Two atlases key on array POSITION instead, because
+ * their feeds ship no id at all: jet is `jt_<arrayIndex>` (see the WARNING in
+ * lib/atlas/adapters/jet.ts) and the retired world-cruise and yacht rows were
+ * numbered the same way.
+ *
+ * A position is not an identity. `merge:virtuoso-journeys` re-emits TRIPS with
+ * the curated block at the head and the supplier tours behind it, and the
+ * supplier half changes every time the feed is refreshed — which is nightly.
+ * So the jet rows drifted off their trips, and 79 of 127 journeys were being
+ * described by a row belonging to a different supplier.
+ *
+ * That is not a cosmetic mismatch. resolveBrandId() below trusts the row's
+ * brandId AHEAD of the record's own label, so a drifted row does not merely
+ * supply the wrong guest scores — it selects the wrong brand profile, the wrong
+ * advisor overlay, the wrong relationship boost and the wrong client-safe
+ * notes. The Guide then ranks an intent using one supplier's profile while
+ * naming another supplier's journey.
+ *
+ * So a row is bound only when it can be shown to describe the record:
+ *
+ *   1. by id, if the row and the record agree about the brand;
+ *   2. otherwise by identity — the row's own advisorNote carries
+ *      "Brand; Region; Title", which survives any amount of reindexing.
+ *
+ * A row that fails both is dropped rather than used, and scoreItem falls back
+ * to the brand profile. Missing fit data costs precision; wrong fit data is a
+ * confident recommendation of the wrong thing.
+ */
+
+/** advisorNote is "Brand; Region; Title" — or "Brand; Title" when there is no region. */
+function noteParts(row) {
+  const parts = String((row && row.advisorNote) || "").split(";").map((s) => s.trim()).filter(Boolean);
+  return { brand: parts[0] || "", title: parts.length > 1 ? parts[parts.length - 1] : "" };
+}
+
+const brandIdOf = (label) => brandIndex[norm(label)] || null;
+
+/**
+ * Does this row describe this record?
+ *
+ * Deliberately permissive: it rejects only what it can positively disprove, so
+ * an atlas whose brands have no profile entry keeps whatever fit data it has.
+ * Brand ids are compared first because the hotel rows put a property type where
+ * the brand goes ("City Hotel; tags: urban; brand profile: 1 Hotel") and would
+ * fail a naive text comparison against every hotel they correctly describe.
+ */
+function rowDescribes(row, item, label) {
+  if (!row) return false;
+  const itemBrandId = brandIdOf(label);
+  if (row.brandId && itemBrandId) return row.brandId === itemBrandId;
+  const rowBrandText = noteParts(row).brand;
+  if (rowBrandText && label) return norm(rowBrandText) === norm(label);
+  return true;
+}
+
+/** brand + title, from either side of the join. */
+const identityKey = (brand, title) =>
+  brand && title ? `${norm(brand)}||${norm(title)}` : null;
+
+/*
+ * Rows indexed by what they say they are about.
+ *
+ * Duration-only tails ("7 nights") are the expedition-cruise rows, whose id key
+ * is the supplier's and already correct; indexing them would only invite a
+ * collision with a record that happens to be named after its length.
+ */
+const fitByIdentity = (() => {
+  const idx = new Map();
+  for (const row of Object.values(itineraryFit)) {
+    const { brand, title } = noteParts(row);
+    if (!title || /^\d+\s+(night|day)s?$/i.test(title)) continue;
+    const key = identityKey(brand, title);
+    if (key && !idx.has(key)) idx.set(key, row);
+  }
+  return idx;
+})();
+
+/**
+ * The fit row for an atlas record, or null.
+ *
+ * Every atlas goes through here rather than indexing itinerary-fit directly, so
+ * the id-is-a-position problem is solved once instead of in seven places.
+ */
+function fitRowFor(item, getBrandLabel) {
+  if (!item) return null;
+  const label = getBrandLabel ? getBrandLabel(item) : (item.brand || item.operator);
+  const byId = itineraryFit[item.id];
+  if (byId && rowDescribes(byId, item, label)) return byId;
+  const key = identityKey(label, item.name || item.title);
+  return (key && fitByIdentity.get(key)) || null;
+}
+
 function resolveBrandId(item, getBrandLabel) {
-  const fit = itineraryFit[item.id];
+  const fit = fitRowFor(item, getBrandLabel);
   if (fit && fit.brandId) return fit.brandId;
   const label = getBrandLabel ? getBrandLabel(item) : (item.brand || item.operator);
   const direct = brandIndex[norm(label)];
@@ -148,7 +245,7 @@ function buildGuestRationale(profile, fitRow, safeNotes, guestType) {
 
 function scoreItem(item, guestType, options = {}) {
   const guest = intentKey(guestType);
-  const fitRow = itineraryFit[item.id] || null;
+  const fitRow = fitRowFor(item, options.getBrandLabel);
   const brandId = resolveBrandId(item, options.getBrandLabel);
   const profile = brandId ? brandProfiles[brandId] : null;
   const overlay = brandId ? advisorOverlay[brandId] : null;
@@ -215,4 +312,4 @@ function rankItems(items, guestType, options = {}) {
     });
 }
 
-module.exports = { rankItems, scoreItem, intentKey };
+module.exports = { rankItems, scoreItem, intentKey, fitRowFor };
