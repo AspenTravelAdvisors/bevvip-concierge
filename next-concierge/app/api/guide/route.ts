@@ -30,6 +30,13 @@ import type {
 import { corsHeaders } from "@/lib/guide-cors";
 import { leadTool } from "@/lib/guide-meta";
 import { isRateLimited } from "@/lib/rate-limit";
+import {
+  addRound,
+  logGuideTurn,
+  newUsage,
+  requestShape,
+  type GuideUsage,
+} from "@/lib/guide-telemetry";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -91,6 +98,12 @@ export async function OPTIONS(req: Request) {
 
 export async function POST(req: Request) {
   const cors = corsHeaders(req);
+  // Read off the request before the stream starts: once we hand the response
+  // back, the turn runs inside the ReadableStream and `req` is out of scope of
+  // anything that should still be touching it.
+  const shape = requestShape(req);
+  const startedAt = Date.now();
+  const usage = newUsage();
 
   const limited = await isRateLimited(req, cors);
   if (limited) return limited;
@@ -116,17 +129,26 @@ export async function POST(req: Request) {
     async start(controller) {
       const send: Send = (frame) =>
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(frame)}\n\n`));
+      let stopReason = "error";
+      let ok = false;
       try {
-        const { toolMeta, experiences, stopReason } = await runGuideTurnStream({
-          messages,
-          send,
+        const turn = await runGuideTurnStream({ messages, send, usage });
+        stopReason = turn.stopReason;
+        ok = true;
+        send({
+          type: "meta",
+          ...summarizeMeta(turn.toolMeta, turn.experiences),
+          stopReason,
         });
-        send({ type: "meta", ...summarizeMeta(toolMeta, experiences), stopReason });
         send({ type: "done" });
       } catch (err) {
         console.error("Guide error:", err);
         send({ type: "error", error: friendlyModelError(err) });
       } finally {
+        // One line per turn, whatever happened. A turn that threw still spent
+        // tokens on the rounds it completed, and a turn that fails expensively
+        // is exactly the one worth seeing in the logs.
+        logGuideTurn({ shape, usage, startedAt, stopReason, ok });
         controller.close();
       }
     },
@@ -145,9 +167,13 @@ export async function POST(req: Request) {
 async function runGuideTurnStream({
   messages,
   send,
+  usage,
 }: {
   messages: ChatMessage[];
   send: Send;
+  // Mutated in place rather than returned, so a turn that throws mid-sweep
+  // still reports the rounds it already paid for.
+  usage: GuideUsage;
 }): Promise<{
   text: string;
   toolMeta: GuideToolMeta[];
@@ -214,6 +240,7 @@ async function runGuideTurnStream({
       },
       () => send({ type: "status", text: "The Guide is in high demand — retrying..." }),
     );
+    addRound(usage, data.usage);
 
     if (data.stop_reason === "tool_use") {
       const toolUses = data.content.filter(
