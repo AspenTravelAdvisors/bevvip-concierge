@@ -168,6 +168,31 @@ async function runGuideTurnStream({
   const latestUserText = latestUserContent(messages);
   let text = "";
 
+  // Today's date lets the model resolve relative timing ("spring break week",
+  // "the week after Christmas") into real checkIn/checkOut dates. Resolve it
+  // once for the whole turn: recomputing per round would change the system text
+  // mid-conversation if a turn straddles midnight UTC, and a changed prefix is a
+  // missed cache on every remaining round.
+  const today = new Date().toISOString().slice(0, 10);
+  // The two tool schemas (~22k tokens) and GUIDE_PROMPT (~14k) are byte-identical
+  // on every request and every round, and both sit ahead of `messages` in the
+  // cache prefix (tools, then system, then messages) — so one breakpoint on the
+  // last system block covers the whole ~36k. Without it we re-billed that prefix
+  // at full input rate on each of up to MAX_TOOL_ROUNDS requests per question,
+  // which was ~88% of this endpoint's token spend.
+  //
+  // The default five-minute TTL covers the tool-use rounds inside a turn and
+  // back-to-back travelers. The prefix only actually changes when `today` rolls
+  // over, so `ttl: "1h"` is the next lever if traffic stays bursty — it bills the
+  // write at 2x base instead of 1.25x, which one extra hit repays.
+  const system: Anthropic.TextBlockParam[] = [
+    {
+      type: "text",
+      text: `${GUIDE_PROMPT}\n\nToday's date is ${today}.`,
+      cache_control: { type: "ephemeral" },
+    },
+  ];
+
   send({ type: "status", text: "Reading your trip style..." });
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
@@ -176,9 +201,7 @@ async function runGuideTurnStream({
       {
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        // Today's date lets the model resolve relative timing ("spring break
-        // week", "the week after Christmas") into real checkIn/checkOut dates.
-        system: `${GUIDE_PROMPT}\n\nToday's date is ${new Date().toISOString().slice(0, 10)}.`,
+        system,
         messages: convo,
         tools: [
           SEARCH_OFFERINGS_TOOL as Anthropic.Tool,
