@@ -38,6 +38,7 @@ import {
   type GuideUsage,
 } from "@/lib/guide-telemetry";
 import { checkDailyBudget, recordGuideSpend } from "@/lib/guide-budget";
+import { classifyCaller } from "@/lib/guide-botid";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -137,6 +138,13 @@ export async function POST(req: Request) {
     );
   }
 
+  // SHADOW MODE: classify the caller and do nothing with the answer but log it.
+  // Deliberately awaited rather than fired and forgotten — the verdict has to
+  // reach the turn's own log line to be worth anything, and the check costs
+  // milliseconds against a turn that runs for ten to twenty seconds. It cannot
+  // throw and cannot refuse anyone; see lib/guide-botid.ts.
+  const caller = await classifyCaller();
+
   // The day's money is already spent. Refuse before opening a stream: there is
   // nothing to say that is worth another model round, and 503 + Retry-After is
   // what tells a well-behaved caller to stop rather than retry in a loop.
@@ -197,7 +205,17 @@ export async function POST(req: Request) {
         }
         // One line per turn, whatever happened. A turn that fails expensively
         // is exactly the one worth seeing in the logs.
-        logGuideTurn({ shape, usage, startedAt, stopReason, ok, usd, store: budget.store });
+        logGuideTurn({
+          shape,
+          usage,
+          startedAt,
+          stopReason,
+          ok,
+          usd,
+          store: budget.store,
+          bot: caller.verdict,
+          botName: caller.name,
+        });
         controller.close();
       }
     },

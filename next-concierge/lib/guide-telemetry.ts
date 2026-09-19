@@ -104,8 +104,12 @@ export function logGuideTurn(args: {
   usd?: number;
   /** Which counter backs the spend ceiling — see BudgetState.store. */
   store?: string;
+  /** BotID's verdict on the caller — see lib/guide-botid.ts. Shadow mode: recorded, not acted on. */
+  bot?: string;
+  /** The agent's name when `bot` is "verified". */
+  botName?: string;
 }): void {
-  const { shape, usage, startedAt, stopReason, ok, usd, store } = args;
+  const { shape, usage, startedAt, stopReason, ok, usd, store, bot, botName } = args;
   console.log(
     JSON.stringify({
       evt: "guide_turn",
@@ -131,6 +135,11 @@ export function logGuideTurn(args: {
       // multiple of the configured one — that is worth knowing on a quiet day,
       // not discovering from the line that fires once the money is gone.
       ...(store === undefined ? {} : { store }),
+      // Shadow mode: this records what enforcing WOULD have done, and changes
+      // nothing about the turn. Counting "bot" against the referrer and country
+      // on the same line is what decides whether enforcing is safe here.
+      ...(bot === undefined ? {} : { bot }),
+      ...(botName === undefined ? {} : { botName }),
     }),
   );
 }

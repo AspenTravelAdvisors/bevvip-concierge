@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withBotId } from "botid/next/config";
 
 // The Hotel Atlas iframe (public/maps/hotel/) calls a small same-origin API:
 // paged hotel summaries + per-hotel detail + the Google Maps key from
@@ -71,4 +72,8 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// withBotId adds the rewrites that proxy BotID's challenge script through this
+// origin. It changes no behavior on its own: classification only reaches the
+// Guide because app/api/guide/route.ts asks for it, and today that route only
+// logs the answer. See lib/guide-botid.ts.
+export default withBotId(nextConfig);
