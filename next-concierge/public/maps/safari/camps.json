@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 68,
+  "lodgesInSafariCountries": 67,
   "journeysWithCamps": 247,
-  "journeysTotal": 496,
+  "journeysTotal": 494,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 68
+  "inSafariCountries": 67
  },
  "CAMPS": {
   "h_00327": {
@@ -652,7 +652,7 @@
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 0
+   "promo": 1
   },
   "h_00166": {
    "n": "Awasi Atacama - Relais & Chateaux",
@@ -1673,14 +1673,6 @@
     "km": 18.1
    }
   ],
-  "18104364": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 8,
-    "km": 18.1
-   }
-  ],
   "18105722": [
    {
     "id": "h_02374",
@@ -1847,20 +1839,6 @@
     "km": 18.1
    }
   ],
-  "18114414": [
-   {
-    "id": "h_01409",
-    "stop": "Ol Pejeta Conservancy",
-    "day": 2,
-    "km": 9.1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 5,
-    "km": 18.1
-   }
-  ],
   "18114415": [
    {
     "id": "h_00537",
@@ -1987,26 +1965,6 @@
     "stop": "Masai Mara National Reserve",
     "day": 11,
     "km": 18.1
-   }
-  ],
-  "18295015": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 4,
-    "km": 19.6
-   },
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 11,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 11,
-    "km": 16.2
    }
   ],
   "18295028": [
@@ -3039,6 +2997,26 @@
     "km": 19.6
    }
   ],
+  "18537058": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   }
+  ],
   "18537234": [
    {
     "id": "h_02374",
@@ -3997,6 +3975,34 @@
     "stop": "Machu Picchu",
     "day": 4,
     "km": 16.2
+   }
+  ],
+  "18617843": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   }
+  ],
+  "18617846": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
    }
   ]
  }
