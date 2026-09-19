@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// Verifies the two controls that stand between /api/guide and the Anthropic
-// bill: the daily spend ceiling (lib/guide-budget.ts) and the global arm of the
-// rate limiter (lib/rate-limit.ts).
+// Verifies the three controls that stand between /api/guide and the Anthropic
+// bill: the daily spend ceiling (lib/guide-budget.ts), the global arm of the
+// rate limiter (lib/rate-limit.ts), and who is refused a model round at all
+// (lib/guide-botid.ts).
 //
 // Both were written during the 19 September incident, in which the Guide took
 // 1,767 requests in a day against a ~25/day baseline and drained the account's
@@ -11,23 +12,30 @@
 //
 //   - a global limit that only counts per-IP again (the original bug),
 //   - a cost model that under-counts, which silently raises the real ceiling,
-//   - a ceiling that fails open when the shared store is unreachable.
+//   - a ceiling that fails open when the shared store is unreachable,
+//   - a bot rule that refuses anything but an affirmative "bot" verdict, which
+//     would turn a classifier's bad day into a lost customer.
 //
 // These libs are TypeScript, and the repo has no TS test runner. Rather than
-// add one, this compiles the four modules to CommonJS in a temp dir with the
-// tsc that is already a devDependency, and requires the output — CJS resolves
-// the extensionless relative imports that Node's ESM loader will not.
+// add one, this compiles them to CommonJS with the tsc that is already a
+// devDependency and requires the output — CJS resolves the extensionless
+// relative imports that Node's ESM loader will not.
 
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
-const out = mkdtempSync(path.join(tmpdir(), 'guide-budget-'));
+// Inside the project, not /tmp: the compiled modules `require` real packages
+// (lib/guide-botid.ts pulls in botid/server), and Node resolves those by
+// walking up from the file — which from /tmp finds nothing. Sibling of the
+// other .*-build dirs this repo already ignores.
+const out = path.join(root, '.verify-build');
+rmSync(out, { recursive: true, force: true });
+mkdirSync(out, { recursive: true });
 
 let failures = 0;
 const fail = (msg) => { failures++; console.error(`  FAIL  ${msg}`); };
@@ -51,7 +59,7 @@ delete process.env.UPSTASH_REDIS_REST_TOKEN;
 delete process.env.KV_REST_API_URL;
 delete process.env.KV_REST_API_TOKEN;
 
-const sources = ['lib/kv.ts', 'lib/guide-telemetry.ts', 'lib/guide-budget.ts', 'lib/rate-limit.ts'];
+const sources = ['lib/kv.ts', 'lib/guide-telemetry.ts', 'lib/guide-budget.ts', 'lib/rate-limit.ts', 'lib/guide-botid.ts'];
 const tsc = spawnSync(
   'npx',
   ['tsc', ...sources, '--outDir', out, '--module', 'commonjs', '--moduleResolution', 'node',
@@ -69,6 +77,7 @@ writeFileSync(path.join(out, 'package.json'), JSON.stringify({ type: 'commonjs' 
 const require_ = createRequire(path.join(out, 'index.cjs'));
 const budget = require_(path.join(out, 'guide-budget.js'));
 const limit = require_(path.join(out, 'rate-limit.js'));
+const botid = require_(path.join(out, 'guide-botid.js'));
 
 console.log('\nCost model');
 // The real shape of a turn, taken from the 19 September runtime logs.
@@ -169,6 +178,20 @@ const blocked = await limit.isRateLimited(
 check(blocked?.status === 429, 'a refused request gets 429');
 check(!!blocked?.headers.get('Retry-After'), 'a refused request carries Retry-After');
 check(blocked?.headers.get('X-Test') === '1', 'extra headers (CORS) survive onto the 429');
+
+console.log('\nBot classification (enforcing)');
+// wouldRefuse IS the enforcement decision, so assert the real one rather than a
+// restatement of it. Only an affirmative "bot" may be refused: the other three
+// verdicts each represent a caller it would be wrong to turn away, and getting
+// any of them wrong costs a real traveler a conversation.
+check(botid.wouldRefuse({ verdict: 'bot' }) === true,
+  'an automated caller is refused a model round');
+check(botid.wouldRefuse({ verdict: 'human' }) === false,
+  'a human is served');
+check(botid.wouldRefuse({ verdict: 'unknown' }) === false,
+  'a check that could not answer fails OPEN — a classifier being down never decides who gets helped');
+check(botid.wouldRefuse({ verdict: 'verified' }) === false,
+  'a declared agent is served, not swept up as a scraper');
 
 rmSync(out, { recursive: true, force: true });
 console.log(failures ? `\nverify:guide-budget — ${failures} failure(s)\n` : '\nverify:guide-budget — all checks passed\n');

@@ -8,6 +8,7 @@ next-env.d.ts
 .adapters-build/
 .shape-build/
 .photoreal-build/
+.verify-build/
 scripts/cache/virtuoso/
 scripts/cache/naturalearth/
 

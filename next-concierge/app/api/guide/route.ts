@@ -28,6 +28,7 @@ import type {
   GuideToolMeta,
 } from "@/lib/types";
 import { corsHeaders } from "@/lib/guide-cors";
+import { ADVISOR_HANDOFF } from "@/lib/types";
 import { leadTool } from "@/lib/guide-meta";
 import { isRateLimited } from "@/lib/rate-limit";
 import {
@@ -38,7 +39,7 @@ import {
   type GuideUsage,
 } from "@/lib/guide-telemetry";
 import { checkDailyBudget, recordGuideSpend } from "@/lib/guide-budget";
-import { classifyCaller } from "@/lib/guide-botid";
+import { classifyCaller, wouldRefuse } from "@/lib/guide-botid";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -138,12 +139,31 @@ export async function POST(req: Request) {
     );
   }
 
-  // SHADOW MODE: classify the caller and do nothing with the answer but log it.
-  // Deliberately awaited rather than fired and forgotten — the verdict has to
-  // reach the turn's own log line to be worth anything, and the check costs
-  // milliseconds against a turn that runs for ten to twenty seconds. It cannot
-  // throw and cannot refuse anyone; see lib/guide-botid.ts.
+  // Who is calling. The check costs milliseconds against a turn that runs for
+  // ten to twenty seconds, and it cannot throw; see lib/guide-botid.ts.
   const caller = await classifyCaller();
+
+  // ENFORCING. A caller classified as automated gets a real reply and a route
+  // to a person — it just does not get a model round. Deliberately NOT a 403:
+  // the whole design turns on a misclassified traveler still reaching an
+  // advisor, so the refusal is an ordinary 200 SSE turn that reads as the Guide
+  // choosing to hand over rather than as the site breaking. A bot learns
+  // nothing from it either, which is the same property from the other side.
+  if (wouldRefuse(caller)) {
+    logGuideTurn({
+      shape,
+      usage,
+      startedAt,
+      stopReason: ADVISOR_HANDOFF,
+      ok: true,
+      usd: 0,
+      // No `store`: nothing was spent, so the spend ceiling's backing counter
+      // is not what this line is reporting on.
+      bot: caller.verdict,
+      botName: caller.name,
+    });
+    return advisorHandoffStream(cors);
+  }
 
   // The day's money is already spent. Refuse before opening a stream: there is
   // nothing to say that is worth another model round, and 503 + Retry-After is
@@ -429,6 +449,54 @@ async function streamRoundWithRetry(
       await sleep(backoff);
     }
   }
+}
+
+// What a refused caller is told. Warm, specific about the way forward, and
+// silent about why — a traveler wrongly caught by the classifier should read
+// this as the Guide handing over rather than as an accusation, and an actual
+// scraper should learn nothing about what tripped it.
+const ADVISOR_HANDOFF_TEXT =
+  "I can't run that search from here right now — but an Aspen advisor can, and they " +
+  "have the same inventory I do plus the supplier relationships that never fit in a " +
+  "chat window. Use **Talk to an advisor** just above and tell them what you're " +
+  "planning; you'll hear back within 24 hours.";
+
+// The refusal, shaped as an ordinary finished turn: one delta, a meta frame
+// carrying the stopReason the client keys its advisor button off, then done.
+// No status frames — nothing is being searched, and a spinner that resolves to
+// a hand-off reads worse than the hand-off arriving straight away.
+function advisorHandoffStream(cors: Record<string, string>): Response {
+  const encoder = new TextEncoder();
+  const frames: GuideFrame[] = [
+    { type: "delta", text: ADVISOR_HANDOFF_TEXT },
+    {
+      type: "meta",
+      deepLink: null,
+      chartRegion: null,
+      tools: [],
+      experiences: null,
+      stopReason: ADVISOR_HANDOFF,
+    },
+    { type: "done" },
+  ];
+  return new Response(
+    new ReadableStream<Uint8Array>({
+      start(controller) {
+        for (const f of frames) {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(f)}\n\n`));
+        }
+        controller.close();
+      },
+    }),
+    {
+      headers: {
+        ...cors,
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+      },
+    },
+  );
 }
 
 // Retry-After for a tripped daily ceiling. The budget key is a UTC day, so the

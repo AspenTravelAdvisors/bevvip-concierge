@@ -1,9 +1,21 @@
 // next-concierge/lib/guide-botid.ts — server half of BotID, in SHADOW MODE.
 //
-// WHAT THIS DOES TODAY: classifies the caller and reports the verdict. Nothing
-// else. Every traveler is served exactly as before, including one this
-// classifies as a bot. The point is to find out what enforcing WOULD do to real
-// traffic before it does it to anyone.
+// WHAT THIS DOES TODAY: classifies the caller, and the Guide refuses to spend a
+// model round on one classified as automated — handing that visitor to an
+// advisor instead of returning an error. See app/api/guide/route.ts.
+//
+// This ran in shadow mode first, and the shadow data is why it is enforcing.
+// Across the sample every single turn came back "bot", each one carrying the
+// flood's own signature: ref guide.expeditionbucketlist.com, a scatter of
+// countries (PK, BD, AZ, DZ, ID) no luxury-travel book has, several a second.
+// The classifier and the attack agreed completely.
+//
+// What that sample does NOT contain is a confirmed human turn, because the
+// flood is nearly all the traffic there is right now. So the false positive
+// rate is still unmeasured, and the hand-off below is not a nicety — it is the
+// thing standing in for evidence we do not have yet. Watch `"bot"` verdicts
+// arriving from plausible countries on plausible referrers; that is the signal
+// that this is catching real people, and the reason to loosen it.
 //
 // WHY SHADOW FIRST. On 19 September a proxy-pool flood drove /api/guide from
 // ~25 turns a day to 1,767 and drained the Anthropic balance. Rate limits and
@@ -81,11 +93,13 @@ export async function classifyCaller(): Promise<BotCheck> {
 }
 
 /**
- * Whether a verdict WOULD be refused once this starts enforcing. Nothing calls
- * this for control flow yet; it exists so the rule lives beside the comment
- * explaining it, rather than being invented at the call site later.
+ * Whether this caller is refused a model round. The rule lives here, beside the
+ * reasoning, rather than as a condition at the call site.
  *
- * "unknown" is served: failing open is the only safe default for a check that
- * cannot answer. "verified" is served too — see the note on agents above.
+ * ONLY an affirmative "bot" is refused. "unknown" is served, because failing
+ * open is the only safe default for a check that could not answer — a
+ * classifier being down must never decide who gets helped. "verified" is served
+ * too: this business runs an AI travel guide, and a real prospect researching
+ * through a declared agent is a lead, not a scraper.
  */
 export const wouldRefuse = (check: BotCheck): boolean => check.verdict === "bot";

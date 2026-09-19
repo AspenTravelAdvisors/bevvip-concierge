@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChatMessage, GuideFrame, GuideMeta, GuideTurn, TripState } from "@/lib/types";
+import { ADVISOR_HANDOFF } from "@/lib/types";
 import { clearTrip, getTrip, onTrip, setTrip } from "@/lib/trip-state";
 import {
   buildAdvisorContext,
@@ -184,6 +185,15 @@ export default function GuideChat() {
     return () => window.removeEventListener("bevvip:guide-ask", onAsk as EventListener);
   }, []);
 
+  // True once any turn in this transcript was handed to an advisor rather than
+  // answered. The advisor button normally waits for enough conversation to be
+  // worth handing over; a hand-off is that moment by definition, and it can
+  // land on the very first message — which is exactly the case where a traveler
+  // the classifier got wrong would otherwise be left with no way through.
+  function wasHandedOff(list: Turn[]): boolean {
+    return list.some((t) => t.meta?.stopReason === ADVISOR_HANDOFF);
+  }
+
   async function send(text: string, source: AskSource = "composer") {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
@@ -259,7 +269,12 @@ export default function GuideChat() {
               content:
                 meta.stopReason === "max_tool_rounds" && !turn.content.trim()
                   ? "That question reached further than I can search in one pass. Narrow it to a single destination, or one way of travelling, and I will go properly deep on it."
-                  : turn.content,
+                  : meta.stopReason === ADVISOR_HANDOFF && !turn.content.trim()
+                    // The server sends the hand-off copy as a delta, so this is
+                    // only reached if that frame was lost. An empty bubble is
+                    // the one outcome a handed-off traveler must never get.
+                    ? "Let me put you with an Aspen advisor on this one — use Talk to an advisor just above and they'll come back to you within 24 hours."
+                    : turn.content,
             }));
             const lead = [...(meta.tools ?? [])]
               .reverse()
@@ -388,7 +403,7 @@ export default function GuideChat() {
           </button>
           {/* Reachable the moment there's anything worth handing over, rather
               than only on turns that happened to return inventory. */}
-          {(hasBrief(turns) || turns.length >= 3) && (
+          {(hasBrief(turns) || turns.length >= 3 || wasHandedOff(turns)) && (
             <button
               type="button"
               className="gsb-advisor"

@@ -91,6 +91,17 @@ export interface GuideMeta {
   stopReason?: string;
 }
 
+/**
+ * stopReason for a turn the Guide declined to spend a model round on and handed
+ * to a human instead — today, a caller BotID classified as automated.
+ *
+ * It is a normal 200 SSE reply, not an error: a misclassified traveler should
+ * see a warm hand-off with a way through to a person, never a failure. The
+ * client keys the advisor button off this so the way through exists even on a
+ * first message, before the usual "enough transcript to hand over" threshold.
+ */
+export const ADVISOR_HANDOFF = "advisor_handoff";
+
 export type GuideFrame =
   | { type: "status"; text: string }
   | { type: "delta"; text: string }
