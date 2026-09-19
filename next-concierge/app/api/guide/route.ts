@@ -65,7 +65,14 @@ const MAX_MODEL_ATTEMPTS = Number(process.env.GUIDE_MODEL_ATTEMPTS) || 4;
 // spread over a proxy pool — on 19 September 1,359 requests arrived in two
 // hours from twenty-odd countries without one IP reaching 10/min — so the route
 // carries its own ceiling. Blunt by design: see lib/rate-limit.ts.
-const RATE_GLOBAL_MAX = Number(process.env.GUIDE_RATE_GLOBAL_MAX) || 30;
+//
+// This shipped at 30 and that was too high to do anything. The flood it was
+// written for ran at 11-14/min, so the cap sat above the attack and would never
+// have fired. A ceiling is only worth the number on it: against a measured
+// baseline of ~25 turns a DAY, 10/min still allows 14,400 a day — roughly 500x
+// normal traffic — while sitting below any flood worth the name. Raise it via
+// env if a real surge ever trips it, rather than guessing higher now.
+const RATE_GLOBAL_MAX = Number(process.env.GUIDE_RATE_GLOBAL_MAX) || 10;
 const RETRYABLE_STATUS = new Set([408, 409, 429, 500, 502, 503, 504, 529]);
 
 type Send = (frame: GuideFrame) => void;
