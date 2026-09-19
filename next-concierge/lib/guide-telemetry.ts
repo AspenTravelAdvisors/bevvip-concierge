@@ -102,8 +102,10 @@ export function logGuideTurn(args: {
   ok: boolean;
   /** What this turn cost, in dollars, as charged to the daily ceiling. */
   usd?: number;
+  /** Which counter backs the spend ceiling — see BudgetState.store. */
+  store?: string;
 }): void {
-  const { shape, usage, startedAt, stopReason, ok, usd } = args;
+  const { shape, usage, startedAt, stopReason, ok, usd, store } = args;
   console.log(
     JSON.stringify({
       evt: "guide_turn",
@@ -124,6 +126,11 @@ export function logGuideTurn(args: {
       // Four decimals: a turn costs cents, and summing the column over a day is
       // the fastest answer to "what is this endpoint actually costing us".
       ...(usd === undefined ? {} : { usd: Number(usd.toFixed(4)) }),
+      // On EVERY turn, not just on the one that trips the ceiling. Anything but
+      // "shared" means the ceiling is per-instance and the real cap is some
+      // multiple of the configured one — that is worth knowing on a quiet day,
+      // not discovering from the line that fires once the money is gone.
+      ...(store === undefined ? {} : { store }),
     }),
   );
 }

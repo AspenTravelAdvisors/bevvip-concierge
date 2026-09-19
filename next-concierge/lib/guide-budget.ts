@@ -104,13 +104,23 @@ function bumpLocal(key: string, micros: number): number {
   return local.micros;
 }
 
+/** Which counter answered, and therefore whether the ceiling is real. */
+export type BudgetStore = "shared" | "local" | "unconfigured";
+
 export interface BudgetState {
   /** True when the day's spend is already past the ceiling. */
   over: boolean;
   spentUsd: number;
   budgetUsd: number;
-  /** False when this came from the per-instance fallback, not the shared store. */
-  shared: boolean;
+  /**
+   * "shared" is the only value under which the ceiling actually holds: the
+   * others mean the real ceiling is this budget times the number of live
+   * lambdas. The two are split because they want different fixes —
+   * "unconfigured" means UPSTASH_REDIS_REST_URL/_TOKEN (or the KV_REST_API_*
+   * pair) are not set on the project, "local" means they are set but the store
+   * did not answer in time on this request.
+   */
+  store: BudgetStore;
 }
 
 /**
@@ -119,18 +129,19 @@ export interface BudgetState {
  */
 export async function checkDailyBudget(now: number = Date.now()): Promise<BudgetState> {
   const key = dayKey(now);
+  const configured = isStoreConfigured();
   const rows = await kvPipeline([["GET", key]]);
 
-  // `null` from the store means "no spend recorded today", which is a 0, not a
+  // `null` INSIDE the rows means "no spend recorded today", which is a 0, not a
   // failure — distinguish that from kvPipeline returning null for the batch.
-  const shared = rows !== null;
-  const micros = shared ? Number(rows[0] ?? 0) || 0 : bumpLocal(key, 0);
+  const answered = rows !== null;
+  const micros = answered ? Number(rows[0] ?? 0) || 0 : bumpLocal(key, 0);
 
   return {
     over: micros >= BUDGET_MICROS,
     spentUsd: micros / MICROS_PER_USD,
     budgetUsd: DAILY_BUDGET_USD,
-    shared: shared && isStoreConfigured(),
+    store: answered ? "shared" : configured ? "local" : "unconfigured",
   };
 }
 

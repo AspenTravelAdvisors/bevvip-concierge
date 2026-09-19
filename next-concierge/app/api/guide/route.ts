@@ -140,7 +140,7 @@ export async function POST(req: Request) {
         evt: "guide_budget_exhausted",
         spentUsd: Number(budget.spentUsd.toFixed(4)),
         budgetUsd: budget.budgetUsd,
-        shared: budget.shared,
+        store: budget.store,
         ref: shape.ref,
       }),
     );
@@ -190,7 +190,7 @@ export async function POST(req: Request) {
         }
         // One line per turn, whatever happened. A turn that fails expensively
         // is exactly the one worth seeing in the logs.
-        logGuideTurn({ shape, usage, startedAt, stopReason, ok, usd });
+        logGuideTurn({ shape, usage, startedAt, stopReason, ok, usd, store: budget.store });
         controller.close();
       }
     },

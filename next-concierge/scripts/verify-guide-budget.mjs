@@ -96,7 +96,7 @@ check(budget.__test.turnCostUsd({ rounds: 0, input: 0, output: 0, cacheWrite: 0,
 console.log('\nDaily ceiling (per-instance fallback, no shared store)');
 const before = await budget.checkDailyBudget();
 check(!before.over, 'a fresh day is under the ceiling');
-check(before.shared === false, 'reports itself as unshared when no store is configured');
+check(before.store === 'unconfigured', 'names the missing store so the log says which fix applies');
 near(before.budgetUsd, 1, 1e-9, 'reads the ceiling from GUIDE_DAILY_BUDGET_USD');
 
 // Spend past the $1 ceiling one real turn at a time, as production would.
