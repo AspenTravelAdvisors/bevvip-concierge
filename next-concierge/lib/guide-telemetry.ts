@@ -100,8 +100,10 @@ export function logGuideTurn(args: {
   startedAt: number;
   stopReason: string;
   ok: boolean;
+  /** What this turn cost, in dollars, as charged to the daily ceiling. */
+  usd?: number;
 }): void {
-  const { shape, usage, startedAt, stopReason, ok } = args;
+  const { shape, usage, startedAt, stopReason, ok, usd } = args;
   console.log(
     JSON.stringify({
       evt: "guide_turn",
@@ -119,6 +121,9 @@ export function logGuideTurn(args: {
       // `cached: false` on every line means the cache_control breakpoint is not
       // landing — the ~36k prefix is being re-billed at full input rate.
       cached: usage.cacheRead > 0,
+      // Four decimals: a turn costs cents, and summing the column over a day is
+      // the fastest answer to "what is this endpoint actually costing us".
+      ...(usd === undefined ? {} : { usd: Number(usd.toFixed(4)) }),
     }),
   );
 }

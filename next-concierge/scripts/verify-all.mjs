@@ -31,6 +31,7 @@ const CHECKS = [
   'verify:villas',
   'verify:offering-shape',
   'verify:fit-binding',
+  'verify:guide-budget',
   'verify:intents',
   'verify:layer-order',
   'verify:legend-focus',

@@ -61,6 +61,7 @@
   "audit:curated-jet": "node scripts/audit-curated-jet.mjs",
   "verify:curated-jet": "node scripts/audit-curated-jet.mjs --strict",
   "verify:fit-binding": "node scripts/verify-fit-binding.mjs",
+  "verify:guide-budget": "node scripts/verify-guide-budget.mjs",
     "verify:seo": "node scripts/verify-seo.mjs"
   },
   "dependencies": {

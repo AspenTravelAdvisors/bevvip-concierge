@@ -37,6 +37,7 @@ import {
   requestShape,
   type GuideUsage,
 } from "@/lib/guide-telemetry";
+import { checkDailyBudget, recordGuideSpend } from "@/lib/guide-budget";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -60,6 +61,11 @@ const MAX_TOOL_ROUNDS = 6;
 // callers to back off and retry — so we do, rather than dumping the raw error
 // JSON into the chat (which is what travelers were seeing).
 const MAX_MODEL_ATTEMPTS = Number(process.env.GUIDE_MODEL_ATTEMPTS) || 4;
+// Requests per minute across ALL callers. The per-IP limit cannot see a flood
+// spread over a proxy pool — on 19 September 1,359 requests arrived in two
+// hours from twenty-odd countries without one IP reaching 10/min — so the route
+// carries its own ceiling. Blunt by design: see lib/rate-limit.ts.
+const RATE_GLOBAL_MAX = Number(process.env.GUIDE_RATE_GLOBAL_MAX) || 30;
 const RETRYABLE_STATUS = new Set([408, 409, 429, 500, 502, 503, 504, 529]);
 
 type Send = (frame: GuideFrame) => void;
@@ -105,7 +111,7 @@ export async function POST(req: Request) {
   const startedAt = Date.now();
   const usage = newUsage();
 
-  const limited = await isRateLimited(req, cors);
+  const limited = await isRateLimited(req, cors, { globalMax: RATE_GLOBAL_MAX });
   if (limited) return limited;
 
   let messages: ChatMessage[];
@@ -121,6 +127,33 @@ export async function POST(req: Request) {
     return Response.json(
       { error: "Claude API key not configured. Set ANTHROPIC_API_KEY." },
       { status: 500, headers: cors },
+    );
+  }
+
+  // The day's money is already spent. Refuse before opening a stream: there is
+  // nothing to say that is worth another model round, and 503 + Retry-After is
+  // what tells a well-behaved caller to stop rather than retry in a loop.
+  const budget = await checkDailyBudget();
+  if (budget.over) {
+    console.warn(
+      JSON.stringify({
+        evt: "guide_budget_exhausted",
+        spentUsd: Number(budget.spentUsd.toFixed(4)),
+        budgetUsd: budget.budgetUsd,
+        shared: budget.shared,
+        ref: shape.ref,
+      }),
+    );
+    return Response.json(
+      {
+        error:
+          "The Guide has reached its daily limit. It will be available again shortly — " +
+          "an advisor can help you in the meantime.",
+      },
+      {
+        status: 503,
+        headers: { ...cors, "Retry-After": String(secondsUntilUtcMidnight()) },
+      },
     );
   }
 
@@ -145,10 +178,19 @@ export async function POST(req: Request) {
         console.error("Guide error:", err);
         send({ type: "error", error: friendlyModelError(err) });
       } finally {
-        // One line per turn, whatever happened. A turn that threw still spent
-        // tokens on the rounds it completed, and a turn that fails expensively
+        // Charge the day's ledger before anything else: a turn that threw still
+        // spent tokens on the rounds it completed, and those are exactly the
+        // ones that must not go uncounted. Bounded by the store timeout, and
+        // never allowed to fail the response.
+        let usd = 0;
+        try {
+          usd = await recordGuideSpend(usage, MODEL);
+        } catch (e) {
+          console.error("Guide spend not recorded:", e);
+        }
+        // One line per turn, whatever happened. A turn that fails expensively
         // is exactly the one worth seeing in the logs.
-        logGuideTurn({ shape, usage, startedAt, stopReason, ok });
+        logGuideTurn({ shape, usage, startedAt, stopReason, ok, usd });
         controller.close();
       }
     },
@@ -362,6 +404,17 @@ async function streamRoundWithRetry(
       await sleep(backoff);
     }
   }
+}
+
+// Retry-After for a tripped daily ceiling. The budget key is a UTC day, so the
+// honest answer is "when that day rolls over", not a flat guess.
+function secondsUntilUtcMidnight(now: number = Date.now()): number {
+  const next = Date.UTC(
+    new Date(now).getUTCFullYear(),
+    new Date(now).getUTCMonth(),
+    new Date(now).getUTCDate() + 1,
+  );
+  return Math.max(1, Math.ceil((next - now) / 1000));
 }
 
 function statusForToolUses(toolUses: Anthropic.ToolUseBlock[]): string {
