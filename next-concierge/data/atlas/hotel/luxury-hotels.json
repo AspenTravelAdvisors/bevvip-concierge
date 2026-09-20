@@ -31853,18 +31853,18 @@
   ],
   "promotions": [
    {
-    "id": "18537951",
-    "name": "15% Early bird rate",
-    "endDate": "2027-03-21",
-    "exclusive": false,
-    "description": "Book early to take advantage of 15% off your holiday with us. This is a non-cancellable and non-refundable offer that is available over the following dates: 13 - 17 December 2026 7 - 20 January 2027 1 - 5 February 2027 1 - 21 March 2027 The offer includes: - 15% discount off our best flexible rate - Daily CHF 100 food & beverage credit per guest per night - for up to two guests per bedroom* - Daily Swiss breakfast buffet with à la carte options - Complimentary minibar with teas, coffee and regional drinks - Access to the 1’200 m² Carlton Spa - 24 hours limousine service within St. Moritz and…"
-   },
-   {
     "id": "18617247",
     "name": "Ski Pass Included",
     "endDate": "2027-03-21",
     "exclusive": false,
     "description": "Enjoy a complimentary ski pass Includes: Access to the 1200 sq. meter Carlton Spa 24-hour limousine service within Saint Moritz Complimentary shuttle to ski stations in Saint Moritz"
+   },
+   {
+    "id": "18537951",
+    "name": "15% Early bird rate",
+    "endDate": "2027-03-21",
+    "exclusive": false,
+    "description": "Book early to take advantage of 15% off your holiday with us. This is a non-cancellable and non-refundable offer that is available over the following dates: 13 - 17 December 2026 7 - 20 January 2027 1 - 5 February 2027 1 - 21 March 2027 The offer includes: - 15% discount off our best flexible rate - Daily CHF 100 food & beverage credit per guest per night - for up to two guests per bedroom* - Daily Swiss breakfast buffet with à la carte options - Complimentary minibar with teas, coffee and regional drinks - Access to the 1’200 m² Carlton Spa - 24 hours limousine service within St. Moritz and…"
    },
    {
     "id": "18576388",
@@ -42140,11 +42140,11 @@
   ],
   "promotions": [
    {
-    "id": "18216392",
-    "name": "Guaranteed Upgrade",
+    "id": "18112622",
+    "name": "Additional Hotel Credit on Suite & Studio Bookings",
     "endDate": "2027-03-31",
     "exclusive": false,
-    "description": "Elevate Your Hamburg Experience with a guaranteed upgrade to the next available room category at the new Conrad Hamburg. Located on the famous Moenkebergstreet and housed within the historic Levantehaus, a renowned Art Nouveau building from 1912, Conrad Hamburg provides the ideal base for guests looking to fully immerse in the city's art and culture."
+    "description": "Nestled within the historic Levantehaus in the heart of Hamburg, Conrad Hamburg offers a luxurious retreat infused with maritime charm and Hanseatic elegance. Surrounded by premier shopping destinations, the five-star hotel seamlessly blends heritage and modern sophistication. Guests are invited to unwind in spacious rooms and suites, savor the vibrant flavors of Latin American cuisine at the Greta Oto Restaurant, and rejuvenate in the serene spa. With its distinctive ambiance, refined service, and exceptional amenities, Conrad Hamburg promises an unforgettable stay in one of Germany’s most…"
    },
    {
     "id": "18112623",
@@ -42154,11 +42154,11 @@
     "description": "Nestled within the historic Levantehaus in the heart of Hamburg, Conrad Hamburg offers a luxurious retreat infused with maritime charm and Hanseatic elegance. Surrounded by premier shopping destinations, the five-star hotel seamlessly blends heritage and modern sophistication. Guests are invited to unwind in spacious rooms and suites, savor the vibrant flavors of Latin American cuisine at the Greta Oto Restaurant, and rejuvenate in the serene spa. With its distinctive ambiance, refined service, and exceptional amenities, Conrad Hamburg promises an unforgettable stay in one of Germany’s most…"
    },
    {
-    "id": "18112622",
-    "name": "Additional Hotel Credit on Suite & Studio Bookings",
+    "id": "18216392",
+    "name": "Guaranteed Upgrade",
     "endDate": "2027-03-31",
     "exclusive": false,
-    "description": "Nestled within the historic Levantehaus in the heart of Hamburg, Conrad Hamburg offers a luxurious retreat infused with maritime charm and Hanseatic elegance. Surrounded by premier shopping destinations, the five-star hotel seamlessly blends heritage and modern sophistication. Guests are invited to unwind in spacious rooms and suites, savor the vibrant flavors of Latin American cuisine at the Greta Oto Restaurant, and rejuvenate in the serene spa. With its distinctive ambiance, refined service, and exceptional amenities, Conrad Hamburg promises an unforgettable stay in one of Germany’s most…"
+    "description": "Elevate Your Hamburg Experience with a guaranteed upgrade to the next available room category at the new Conrad Hamburg. Located on the famous Moenkebergstreet and housed within the historic Levantehaus, a renowned Art Nouveau building from 1912, Conrad Hamburg provides the ideal base for guests looking to fully immerse in the city's art and culture."
    }
   ],
   "hasPromotion": true,
@@ -56373,13 +56373,6 @@
   ],
   "promotions": [
    {
-    "id": "16878981",
-    "name": "5th Night Free",
-    "endDate": "2026-12-19",
-    "exclusive": false,
-    "description": "Enjoy our all Suites Resort with a free night and a $100 Food & Beverage Credit. Also Available in all Villa Categories."
-   },
-   {
     "id": "16795227",
     "name": "Fairmont Kea Lani Villa Experience - 4th Night Free",
     "endDate": "2026-12-19",
@@ -56387,11 +56380,18 @@
     "description": "Make yourselves at home in luxury beach villas with every fourth night free Steps from Polo Beach, the luxury beach villas at Fairmont Kea Lani Maui are perfect for family or multi-couple Wailea beach vacations. Choose from two-bedroom (1800 sq ft) or three-bedroom (2200 sq ft) beachfront two-story villas, complete with a full gourmet kitchen with dining area for six, spacious indoor living area with full entertainment system, two master bedrooms each with an oversize five piece Italian marble bathroom, and a private furnished courtyard with plunge pool and barbeque grill. Package Includes…"
    },
    {
-    "id": "18394365",
-    "name": "Every 4th Night Free - The Suite Life",
+    "id": "16878981",
+    "name": "5th Night Free",
     "endDate": "2026-12-19",
     "exclusive": false,
-    "description": "Experience the all-suite and villa luxury of Fairmont Kea Lani, Maui with our exclusive Virtuoso Preferred Advisor offer. Enjoy a complimentary fourth night, daily breakfast for two at Kea Lani restaurant, $100.00 food & beverage credit, early check-in and late check-out based on availability, plus a one-category upgrade up to Signature Ocean at check-in based on availability. Indulge in spacious suites, private pool villas, and the beauty of Wailea — and experience more of Maui at Fairmont Kea Lani."
+    "description": "Enjoy our all Suites Resort with a free night and a $100 Food & Beverage Credit. Also Available in all Villa Categories."
+   },
+   {
+    "id": "18394363",
+    "name": "Enjoy Your Villa Every 5th Night Free",
+    "endDate": "2026-12-19",
+    "exclusive": false,
+    "description": "Experience villa luxury of Fairmont Kea Lani, Maui with our exclusive Virtuoso Preferred Advisor offer. Enjoy a complimentary fifth night, daily breakfast for two per bedroom at, Kea Lani Restaurant, early check-in and late check-out based on availability, and a $100.00 Food & Beverage Credit. Indulge in a two- or three-bedroom Ocean View or Oceanfront villa at the beautiful Fairmont Kea Lani. Hawai‘i is calling — and Hawai‘i stays with you."
    }
   ],
   "hasPromotion": true,
@@ -77178,8 +77178,16 @@
    "Sitting Area",
    "Slippers"
   ],
-  "promotions": [],
-  "hasPromotion": false,
+  "promotions": [
+   {
+    "id": "18195226",
+    "name": "Stay Longer, Indulge More",
+    "endDate": "2027-12-31",
+    "exclusive": false,
+    "description": "Step into the world of timeless elegance at Hotel Adlon Kempinski Berlin: Book three or four nights in one of our luxurious rooms or suites and enjoy a 15% discount on our best available rate. Book five nights or more and receive 20% discount on our best available rate. Perfect for those who seek more than just a stay – an experience of true indulgence in the heart of the capital. Valid subject to availability. Booking dates: now until 28 December 2026 Stay dates: now until 31 December 2026"
+   }
+  ],
+  "hasPromotion": true,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4235_2_0_0820.webp",
@@ -120768,16 +120776,8 @@
    "Sitting Area",
    "Slippers"
   ],
-  "promotions": [
-   {
-    "id": "18593106",
-    "name": "Elevate your holiday with up to $500 resort credit",
-    "endDate": "2027-03-19",
-    "exclusive": false,
-    "description": "Nestled on Marbella's legendary Golden Mile, Marbella Club is an icon of Mediterranean luxury, celebrated for its lush gardens, beachfront setting, exceptional dining, holistic wellness, and warm Andalusian hospitality. The promotion includes: $200 USD equivalent Resort or Hotel credit to be utilized during stay for rooms (not combinable, not valid on room rate, no cash value if not redeemed in full). $500 USD equivalent Resort or Hotel credit to be utilized during stay for villas (not combinable, not valid on room rate, no cash value if not redeemed in full). Booking Window: 14 August 2026…"
-   }
-  ],
-  "hasPromotion": true,
+  "promotions": [],
+  "hasPromotion": false,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4259_2_0_0807.webp",
@@ -159798,18 +159798,18 @@
   ],
   "promotions": [
    {
-    "id": "18218787",
-    "name": "Suite Retreats",
+    "id": "16568903",
+    "name": "More Rosewood",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Enjoy an extra night and a complimentary breakfast for two when staying in our suites WHAT’S INCLUDEDA complimentary third night with two consecutive paid nights Daily American breakfast for two adults Exclusive welcome amenity Complimentary WiFi TERMS & CONDITIONSRates are subject to change and availability at the time of booking; a three-night minimum length of stay is required, and black-out dates may apply. Rates are not valid with other offers or applicable to group bookings. Rates are based on single/double occupancy per night and may vary by arrival date, room type, and length of stay.…"
+    "description": "Stay longer to explore more of San Miguel de Allende. Book a three-night stay and receive the 4th night complimentary. From enjoying all the galleries and shopping in town to a relaxing day at Agua, Rosewood San Miguel de Allende offers a number of exciting activities for all our guests to enjoy."
    },
    {
-    "id": "16930352",
-    "name": "Weekday Escape",
+    "id": "16568904",
+    "name": "Early Booking Bonus",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Take a break from the routine with our exclusive Weekday Escape offer. Enjoy a refreshing stay at a discounted rate, perfect for a midweek retreat. Relax, recharge, and unwind without the weekend crowds. Book now and escape to tranquility. What's Included: Up to 30% off our best available rate Daily American breakfast for two adults at 1826 Restaurant 15% discount at Sense Spa 15% discount on Airport Transfer Exclusive welcome amenity Complimentary access to Sense, A Rosewood Spa® Complimentary access to the fitness center Complimentary WiFi Daily housekeeping and nightly turndown service…"
+    "description": "Plan ahead and save up to 20% per night on any of our guest rooms, including signature suites and private residences. Must book at least 30 days in advance to take advantage of this offer. POLICIES, TERMS & CONDITIONS This reservation is Fully Prepaid, Non-Refundable Rates are per room, per night, based on single/double occupancy and availability at the time of reservation, and do not include additional charges that may be imposed or state/local taxes (16% VAT, 4% Lodging, and 10% Service Charge) Blackout dates and other restrictions may apply."
    },
    {
     "id": "16883740",
@@ -175430,13 +175430,6 @@
    "Wheelchair Accessible"
   ],
   "promotions": [
-   {
-    "id": "18488775",
-    "name": "3rd night free summer promotion",
-    "endDate": "2026-09-19",
-    "exclusive": false,
-    "description": "Stay Longer, Enjoy More in Mexico City Book a minimum of 3 nights with us and receive 1 night completely free. Make the most of your summer escape and discover the vibrant energy, culture, and flavors of Mexico City, while enjoying extra time to relax."
-   },
    {
     "id": "18598535",
     "name": "4th night complimentary",
@@ -196211,13 +196204,6 @@
     "endDate": "2026-10-18",
     "exclusive": false,
     "description": "Complimentary fourth night when booking three consecutive nights. For stays from July 26, 2026, through October 18, 2026. Offer subject to availability, some restricted dates and blackouts may apply. Offer combinable with Virtuoso amenities but no other promotions. Not available at The Residences at Little Nell."
-   },
-   {
-    "id": "18526614",
-    "name": "Early Access Exclusive",
-    "endDate": "2026-10-19",
-    "exclusive": false,
-    "description": "Plan ahead and settle into summer at The Little Nell. Book your stay 30+ days in advance and enjoy up to 10% savings on a non-refundable reservation. At the base of Aspen Mountain, everything unfolds easily—morning hikes, afternoons by the pool, and evenings that turn into something more. With thoughtful service and effortless access, this is summer in Aspen at its best. Go ahead, check in, and turn summer on. Full advance payment required and nonrefundable at the time of booking. Available for all room types and suites, however, black out dates may apply."
    }
   ],
   "hasPromotion": true,
@@ -220134,18 +220120,18 @@
   ],
   "promotions": [
    {
-    "id": "18505609",
-    "name": "Third Night Complimentary",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Stay 3 nights and pay the equivalent of 2, including Virtuoso amenities, with us at The St. Regis Toronto - offer extended until end of 2026! *Rate does run each night however it is reduced by 33.3333% to account for the third night being complimentary *Some blackout dates apply"
-   },
-   {
     "id": "18144056",
     "name": "Exquisite Suite Offer",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Enjoy our new Exquisite Suite Offer at The St. Regis Toronto, now extended through the World Cup in July of 2026. In addition to the below Virtuoso amenities, your guest's will receive the below enhanced hotel credit's for suite bookings, tiered to our large collection of luxury suites: Superior & Deluxe One Bedroom Suite: $250 USD total hotel credit Corner Deluxe One Bedroom Suite: $300 USD total hotel credit Grand Deluxe One Bedroom Suite: $450 USD total hotel credit Deluxe Two Bedroom Suite & Astor Suites: $500 USD total hotel credit"
+   },
+   {
+    "id": "18505609",
+    "name": "Third Night Complimentary",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Stay 3 nights and pay the equivalent of 2, including Virtuoso amenities, with us at The St. Regis Toronto - offer extended until end of 2026! *Rate does run each night however it is reduced by 33.3333% to account for the third night being complimentary *Some blackout dates apply"
    }
   ],
   "hasPromotion": true,
