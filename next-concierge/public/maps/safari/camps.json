@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 243,
-  "journeysTotal": 486,
+  "journeysWithCamps": 247,
+  "journeysTotal": 495,
   "campsMatched": 39
  },
  "radiusKm": 25,
@@ -1587,6 +1587,14 @@
     "km": 22.4
    }
   ],
+  "16929701": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
   "18061582": [
    {
     "id": "h_02374",
@@ -1733,7 +1741,7 @@
     "km": 19.9
    }
   ],
-  "18107133": [
+  "18107132": [
    {
     "id": "h_00537",
     "stop": "Ngorongoro",
@@ -1747,12 +1755,18 @@
     "km": 18.1
    }
   ],
-  "18107155": [
+  "18107133": [
    {
-    "id": "h_00971",
-    "stop": "Machu Picchu",
-    "day": 9,
-    "km": 16.2
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
    }
   ],
   "18113907": [
@@ -1794,6 +1808,20 @@
     "id": "h_01207",
     "stop": "Masai Mara National Reserve",
     "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18114414": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
     "km": 18.1
    }
   ],
@@ -2153,6 +2181,14 @@
     "stop": "Ngorongoro",
     "day": 4,
     "km": 19.6
+   }
+  ],
+  "18360283": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 8,
+    "km": 23.9
    }
   ],
   "18360363": [
@@ -3942,6 +3978,20 @@
    }
   ],
   "18617846": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   }
+  ],
+  "18618700": [
    {
     "id": "h_00537",
     "stop": "Ngorongoro",
