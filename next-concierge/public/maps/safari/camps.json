@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 247,
-  "journeysTotal": 495,
+  "lodgesInSafariCountries": 66,
+  "journeysWithCamps": 248,
+  "journeysTotal": 496,
   "campsMatched": 39
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 66
  },
  "CAMPS": {
   "h_00327": {
@@ -1651,6 +1651,14 @@
     "stop": "Masai Mara National Reserve",
     "day": 1,
     "km": 18.1
+   }
+  ],
+  "18105041": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 9,
+    "km": 16.2
    }
   ],
   "18105722": [
