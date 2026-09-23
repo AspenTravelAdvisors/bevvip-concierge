@@ -5,9 +5,9 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 66,
-  "journeysWithCamps": 248,
-  "journeysTotal": 496,
-  "campsMatched": 39
+  "journeysWithCamps": 249,
+  "journeysTotal": 499,
+  "campsMatched": 40
  },
  "radiusKm": 25,
  "totals": {
@@ -430,6 +430,23 @@
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01448": {
+   "n": "Pacuare Lodge",
+   "house": null,
+   "country": "Costa Rica",
+   "ll": [
+    9.90111,
+    -83.6845
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15852727_2_0_0816.webp",
+   "rooms": 20,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
    ],
    "promo": 0
   },
@@ -4011,6 +4028,20 @@
     "stop": "Masai Mara National Reserve",
     "day": 11,
     "km": 18.1
+   }
+  ],
+  "18619564": [
+   {
+    "id": "h_00532",
+    "stop": "San Jose",
+    "day": 1,
+    "km": 16
+   },
+   {
+    "id": "h_01448",
+    "stop": "Turrialba",
+    "day": 4,
+    "km": 0.2
    }
   ]
  }
