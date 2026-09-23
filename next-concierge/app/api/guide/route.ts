@@ -76,6 +76,15 @@ const MAX_MODEL_ATTEMPTS = Number(process.env.GUIDE_MODEL_ATTEMPTS) || 4;
 // normal traffic — while sitting below any flood worth the name. Raise it via
 // env if a real surge ever trips it, rather than guessing higher now.
 const RATE_GLOBAL_MAX = Number(process.env.GUIDE_RATE_GLOBAL_MAX) || 10;
+// Turns per IP per day. The per-minute limit stops a burst, but at 10/min it
+// still allows 14,400 a day, so a caller pacing itself at one question every
+// few minutes never meets it. That is exactly the shape of the traffic after
+// BotID started enforcing: the 23 September Console export shows ~125 turns by
+// 16:00 UTC against a ~25/day baseline, arriving every one to eight minutes,
+// every sampled line from one country and classified "human". A traveler
+// planning a real trip asks a handful of questions, not forty.
+const RATE_DAILY_MAX = Number(process.env.GUIDE_RATE_DAILY_MAX) || 40;
+const DAY_MS = 24 * 60 * 60 * 1000;
 const RETRYABLE_STATUS = new Set([408, 409, 429, 500, 502, 503, 504, 529]);
 
 type Send = (frame: GuideFrame) => void;
@@ -123,6 +132,15 @@ export async function POST(req: Request) {
 
   const limited = await isRateLimited(req, cors, { globalMax: RATE_GLOBAL_MAX });
   if (limited) return limited;
+  const daily = await isRateLimited(req, cors, {
+    bucket: "guide-day",
+    max: RATE_DAILY_MAX,
+    windowMs: DAY_MS,
+    message:
+      "You've reached today's limit for The Guide. An advisor can pick this up with you — " +
+      "use Talk to an advisor and you'll hear back within 24 hours.",
+  });
+  if (daily) return daily;
 
   let body: { messages?: unknown };
   try {

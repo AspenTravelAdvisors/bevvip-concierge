@@ -52,6 +52,8 @@ export interface RateLimitOptions {
    * Omit to leave the route per-IP only.
    */
   globalMax?: number;
+  /** What a caller refused by the per-IP limit is told. */
+  message?: string;
 }
 
 // bucket:ip -> { count, resetAt }
@@ -163,7 +165,7 @@ export async function isRateLimited(
       ipRec,
       max,
       now,
-      "Too many requests. Please slow down and try again shortly.",
+      opts.message ?? "Too many requests. Please slow down and try again shortly.",
       extraHeaders,
     );
   }

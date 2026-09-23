@@ -180,6 +180,19 @@ check(blocked?.status === 429, 'a refused request gets 429');
 check(!!blocked?.headers.get('Retry-After'), 'a refused request carries Retry-After');
 check(blocked?.headers.get('X-Test') === '1', 'extra headers (CORS) survive onto the 429');
 
+console.log('\nPer-IP daily cap');
+{
+  const opts = { bucket: 'test-day', max: 3, windowMs: 86_400_000, message: 'daily limit' };
+  let last = null;
+  for (let i = 0; i < 3; i++) last = await limit.isRateLimited(req('192.0.2.7'), {}, opts);
+  check(last === null, 'a traveler under the daily cap is served');
+  const over = await limit.isRateLimited(req('192.0.2.7'), {}, opts);
+  check(over?.status === 429 && (await over.json()).error === 'daily limit',
+    'the next turn is refused with the daily message, not "slow down"');
+  check(Number(over.headers.get('Retry-After')) > 3600, 'Retry-After points at the day rolling over');
+  check((await limit.isRateLimited(req('192.0.2.8'), {}, opts)) === null, 'another IP is unaffected');
+}
+
 console.log('\nBot classification (enforcing)');
 // wouldRefuse IS the enforcement decision, so assert the real one rather than a
 // restatement of it. Only an affirmative "bot" may be refused: the other three
