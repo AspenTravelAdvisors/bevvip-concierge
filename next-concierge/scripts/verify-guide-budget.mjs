@@ -59,7 +59,7 @@ delete process.env.UPSTASH_REDIS_REST_TOKEN;
 delete process.env.KV_REST_API_URL;
 delete process.env.KV_REST_API_TOKEN;
 
-const sources = ['lib/kv.ts', 'lib/guide-telemetry.ts', 'lib/guide-budget.ts', 'lib/rate-limit.ts', 'lib/guide-botid.ts', 'lib/guide-tokens.ts'];
+const sources = ['lib/kv.ts', 'lib/guide-telemetry.ts', 'lib/guide-budget.ts', 'lib/rate-limit.ts', 'lib/guide-botid.ts', 'lib/guide-tokens.ts', 'lib/blocked-countries.ts'];
 const tsc = spawnSync(
   'npx',
   ['tsc', ...sources, '--outDir', out, '--module', 'commonjs', '--moduleResolution', 'node',
@@ -79,6 +79,7 @@ const budget = require_(path.join(out, 'guide-budget.js'));
 const limit = require_(path.join(out, 'rate-limit.js'));
 const botid = require_(path.join(out, 'guide-botid.js'));
 const tokens = require_(path.join(out, 'guide-tokens.js'));
+const geo = require_(path.join(out, 'blocked-countries.js'));
 
 console.log('\nCost model');
 // The real shape of a turn, taken from the 19 September runtime logs.
@@ -191,6 +192,16 @@ console.log('\nPer-IP daily cap');
     'the next turn is refused with the daily message, not "slow down"');
   check(Number(over.headers.get('Retry-After')) > 3600, 'Retry-After points at the day rolling over');
   check((await limit.isRateLimited(req('192.0.2.8'), {}, opts)) === null, 'another IP is unaffected');
+}
+
+console.log('\nBlocked countries');
+{
+  const h = (c) => new Headers(c ? { 'x-vercel-ip-country': c } : {});
+  check(geo.isBlockedCountry(h('CN')) && geo.isBlockedCountry(h('cn')), 'China is refused');
+  check(!geo.isBlockedCountry(h('US')) && !geo.isBlockedCountry(h('GB')) && !geo.isBlockedCountry(h('HK')),
+    'other countries are served');
+  check(!geo.isBlockedCountry(h(null)), 'a request with no geolocation (local dev) is served');
+  check(geo.blockedResponse().status === 403, 'the refusal is a 403');
 }
 
 console.log('\nBot classification (enforcing)');

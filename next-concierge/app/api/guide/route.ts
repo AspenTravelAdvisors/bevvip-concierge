@@ -41,6 +41,7 @@ import {
 import { checkDailyBudget, recordGuideSpend } from "@/lib/guide-budget";
 import { classifyCaller, wouldRefuse } from "@/lib/guide-botid";
 import { boundHistory, toolResultForModel, withRollingCache } from "@/lib/guide-tokens";
+import { blockedResponse, isBlockedCountry } from "@/lib/blocked-countries";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -122,6 +123,9 @@ export async function OPTIONS(req: Request) {
 }
 
 export async function POST(req: Request) {
+  // Also refused in middleware.ts; repeated here because this is the route
+  // that spends money, and it must not depend on the matcher staying wide.
+  if (isBlockedCountry(req.headers)) return blockedResponse();
   const cors = corsHeaders(req);
   // Read off the request before the stream starts: once we hand the response
   // back, the turn runs inside the ReadableStream and `req` is out of scope of
