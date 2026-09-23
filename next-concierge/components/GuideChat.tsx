@@ -31,6 +31,7 @@ import {
 import { collectionsSummary } from "@/lib/atlas-config";
 import { askAboutDays, registerGuideHost } from "@/lib/atlas/ask";
 import { leadPlace } from "@/lib/guide-meta";
+import { MAX_USER_CHARS } from "@/lib/guide-tokens";
 import { openAdvisor, ADVISOR_CTA, ADVISOR_SLA } from "./AdvisorRequest";
 import ResultCards from "./ResultCards";
 
@@ -232,7 +233,15 @@ export default function GuideChat() {
       });
       if (!res.ok || !res.body) {
         const err = await res.text().catch(() => "");
-        throw new Error(err || `Guide unavailable (${res.status})`);
+        // Refusals (too long, daily limit) arrive as {"error": "..."}; show the
+        // sentence, not the JSON around it.
+        let detail = err;
+        try {
+          detail = JSON.parse(err)?.error || err;
+        } catch {
+          // Not JSON — use the body as it came.
+        }
+        throw new Error(detail || `Guide unavailable (${res.status})`);
       }
 
       const reader = res.body.getReader();
@@ -545,6 +554,8 @@ export default function GuideChat() {
         <div className="row">
           <textarea
             rows={1}
+            // The server refuses anything longer (lib/guide-tokens.ts).
+            maxLength={MAX_USER_CHARS}
             placeholder="Ask The Guide…"
             value={input}
             onChange={(e) => setInput(e.target.value)}

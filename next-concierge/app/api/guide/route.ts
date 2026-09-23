@@ -40,6 +40,7 @@ import {
 } from "@/lib/guide-telemetry";
 import { checkDailyBudget, recordGuideSpend } from "@/lib/guide-budget";
 import { classifyCaller, wouldRefuse } from "@/lib/guide-botid";
+import { boundHistory, toolResultForModel, withRollingCache } from "@/lib/guide-tokens";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -123,15 +124,18 @@ export async function POST(req: Request) {
   const limited = await isRateLimited(req, cors, { globalMax: RATE_GLOBAL_MAX });
   if (limited) return limited;
 
-  let messages: ChatMessage[];
+  let body: { messages?: unknown };
   try {
-    ({ messages } = await req.json());
+    body = await req.json();
   } catch {
     return Response.json({ error: "Invalid JSON body" }, { status: 400, headers: cors });
   }
-  if (!messages || !Array.isArray(messages)) {
-    return Response.json({ error: "Invalid messages format" }, { status: 400, headers: cors });
+  // Bounded before anything is spent: see lib/guide-tokens.ts.
+  const bounded = boundHistory(body?.messages);
+  if (!bounded.ok) {
+    return Response.json({ error: bounded.error }, { status: bounded.status, headers: cors });
   }
+  const messages: ChatMessage[] = bounded.messages;
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json(
       { error: "Claude API key not configured. Set ANTHROPIC_API_KEY." },
@@ -192,15 +196,28 @@ export async function POST(req: Request) {
     );
   }
 
+  // Ends the turn's model calls when nobody is listening any more — the
+  // traveler pressed Stop, closed the tab, or a script hung up. Without it the
+  // tool loop ran every remaining round, and paid for it, into a closed socket.
+  const hangup = new AbortController();
+  req.signal?.addEventListener("abort", () => hangup.abort(), { once: true });
+
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const send: Send = (frame) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(frame)}\n\n`));
+      const send: Send = (frame) => {
+        if (hangup.signal.aborted) return;
+        try {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(frame)}\n\n`));
+        } catch {
+          // The consumer is gone; treat it as a hang-up.
+          hangup.abort();
+        }
+      };
       let stopReason = "error";
       let ok = false;
       try {
-        const turn = await runGuideTurnStream({ messages, send, usage });
+        const turn = await runGuideTurnStream({ messages, send, usage, signal: hangup.signal });
         stopReason = turn.stopReason;
         ok = true;
         send({
@@ -210,8 +227,12 @@ export async function POST(req: Request) {
         });
         send({ type: "done" });
       } catch (err) {
-        console.error("Guide error:", err);
-        send({ type: "error", error: friendlyModelError(err) });
+        if (hangup.signal.aborted) {
+          stopReason = "client_closed";
+        } else {
+          console.error("Guide error:", err);
+          send({ type: "error", error: friendlyModelError(err) });
+        }
       } finally {
         // Charge the day's ledger before anything else: a turn that threw still
         // spent tokens on the rounds it completed, and those are exactly the
@@ -236,8 +257,15 @@ export async function POST(req: Request) {
           bot: caller.verdict,
           botName: caller.name,
         });
-        controller.close();
+        try {
+          controller.close();
+        } catch {
+          // Already cancelled by the consumer.
+        }
       }
+    },
+    cancel() {
+      hangup.abort();
     },
   });
 
@@ -255,9 +283,11 @@ async function runGuideTurnStream({
   messages,
   send,
   usage,
+  signal,
 }: {
   messages: ChatMessage[];
   send: Send;
+  signal: AbortSignal;
   // Mutated in place rather than returned, so a turn that throws mid-sweep
   // still reports the rounds it already paid for.
   usage: GuideUsage;
@@ -309,13 +339,14 @@ async function runGuideTurnStream({
   send({ type: "status", text: "Reading your trip style..." });
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+    if (signal.aborted) throw new Error("client closed");
     const data = await streamRoundWithRetry(
       client,
       {
         model: MODEL,
         max_tokens: MAX_TOKENS,
         system,
-        messages: convo,
+        messages: withRollingCache(convo),
         tools: [
           SEARCH_OFFERINGS_TOOL as Anthropic.Tool,
           SEARCH_EXPERIENCES_TOOL as Anthropic.Tool,
@@ -326,6 +357,7 @@ async function runGuideTurnStream({
         send({ type: "delta", text: delta });
       },
       () => send({ type: "status", text: "The Guide is in high demand — retrying..." }),
+      signal,
     );
     addRound(usage, data.usage);
 
@@ -401,7 +433,9 @@ async function runGuideTurnStream({
         toolResults.push({
           type: "tool_result",
           tool_use_id: tu.id,
-          content: JSON.stringify(result),
+          // The model's copy, without the card/map/booking fields; the full
+          // result already went to toolMeta above.
+          content: toolResultForModel(result),
         });
       }
 
@@ -431,18 +465,26 @@ async function streamRoundWithRetry(
   params: Anthropic.MessageStreamParams,
   onText: (delta: string) => void,
   onRetry: () => void,
+  signal: AbortSignal,
 ): Promise<Anthropic.Message> {
   for (let attempt = 1; ; attempt++) {
     let emitted = false;
     try {
-      const stream = client.messages.stream(params);
+      const stream = client.messages.stream(params, { signal });
       stream.on("text", (delta) => {
         emitted = true;
         onText(delta);
       });
       return await stream.finalMessage();
     } catch (err) {
-      if (attempt >= MAX_MODEL_ATTEMPTS || emitted || !isRetryableModelError(err)) throw err;
+      if (
+        signal.aborted ||
+        attempt >= MAX_MODEL_ATTEMPTS ||
+        emitted ||
+        !isRetryableModelError(err)
+      ) {
+        throw err;
+      }
       onRetry();
       // Exponential backoff with jitter: ~0.6s, 1.2s, 2.4s (capped at 8s).
       const backoff = Math.min(8000, 600 * 2 ** (attempt - 1)) + Math.random() * 300;
