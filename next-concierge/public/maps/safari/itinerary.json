@@ -4553,48 +4553,6 @@
     ]
    }
   ],
-  "16691702": [
-   {
-    "n": "Seoul",
-    "r": null,
-    "ll": [
-     37.5664,
-     127
-    ]
-   },
-   {
-    "n": "Busan",
-    "r": null,
-    "ll": [
-     35.1333,
-     129.05
-    ]
-   },
-   {
-    "n": "Gyeongju",
-    "r": null,
-    "ll": [
-     35.8428,
-     129.212
-    ]
-   },
-   {
-    "n": "Jeju Island",
-    "r": null,
-    "ll": [
-     33.3812,
-     126.555
-    ]
-   },
-   {
-    "n": "Incheon",
-    "r": null,
-    "ll": [
-     37.4536,
-     126.732
-    ]
-   }
-  ],
   "16723514": [
    {
     "n": "Hluhluwe",
@@ -6321,6 +6279,32 @@
     ]
    }
   ],
+  "18116045": [
+   {
+    "n": "Winnipeg",
+    "r": "CHURCHILL",
+    "ll": [
+     49.8833,
+     -97.1667
+    ]
+   },
+   {
+    "n": "Churchill",
+    "r": "CHURCHILL",
+    "ll": [
+     58.7667,
+     -94.1667
+    ]
+   },
+   {
+    "n": "Winnipeg",
+    "r": "CHURCHILL",
+    "ll": [
+     49.8833,
+     -97.1667
+    ]
+   }
+  ],
   "18126117": [
    {
     "n": "Dublin",
@@ -6368,40 +6352,6 @@
     "ll": [
      53.3331,
      -6.2489
-    ]
-   }
-  ],
-  "18197649": [
-   {
-    "n": "Vancouver",
-    "r": null,
-    "ll": [
-     49.25,
-     -123.133
-    ]
-   },
-   {
-    "n": "Jasper",
-    "r": null,
-    "ll": [
-     52.875,
-     -118.075
-    ]
-   },
-   {
-    "n": "Banff",
-    "r": null,
-    "ll": [
-     51.1667,
-     -115.569
-    ]
-   },
-   {
-    "n": "Calgary",
-    "r": "ROCKIES",
-    "ll": [
-     51.0833,
-     -114.083
     ]
    }
   ],
@@ -6586,40 +6536,6 @@
     "ll": [
      -18.9167,
      47.5167
-    ]
-   }
-  ],
-  "18220809": [
-   {
-    "n": "Denver",
-    "r": "ROCKIES",
-    "ll": [
-     39.7525,
-     -104.999
-    ]
-   },
-   {
-    "n": "Arches National Park",
-    "r": "ROCKIES",
-    "ll": [
-     38.6833,
-     -109.567
-    ]
-   },
-   {
-    "n": "Canyonlands National Park",
-    "r": "ROCKIES",
-    "ll": [
-     38.1669,
-     -109.76
-    ]
-   },
-   {
-    "n": "Salt Lake City",
-    "r": "ROCKIES",
-    "ll": [
-     40.7242,
-     -111.879
     ]
    }
   ],
@@ -14129,6 +14045,48 @@
     ]
    }
   ],
+  "18573824": [
+   {
+    "n": "Santa Cruz De La Sierra",
+    "r": "AMAZONIA",
+    "ll": [
+     -17.8,
+     -63.1667
+    ]
+   },
+   {
+    "n": "Sucre",
+    "r": "AMAZONIA",
+    "ll": [
+     -19.0431,
+     -65.2592
+    ]
+   },
+   {
+    "n": "Potosí",
+    "r": "AMAZONIA",
+    "ll": [
+     -19.5836,
+     -65.7531
+    ]
+   },
+   {
+    "n": "Uyuni",
+    "r": "AMAZONIA",
+    "ll": [
+     -20.4667,
+     -66.8333
+    ]
+   },
+   {
+    "n": "La Paz",
+    "r": "AMAZONIA",
+    "ll": [
+     -16.5,
+     -68.15
+    ]
+   }
+  ],
   "18573826": [
    {
     "n": "Santa Cruz De La Sierra",
@@ -18297,7 +18255,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18475652/adesertsafariinnamibia",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "Windhoek, Namibia",
    "country": "Namibia",
@@ -18369,7 +18327,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_37_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Okavango Delta, Botswana",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -18442,7 +18400,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614464/afreshperspectiveonperuaboardpureamazon8nights",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_166_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_196_0901.webp",
    "from": "Lima, Peru",
    "to": "Lima, Peru",
    "country": "Peru",
@@ -18513,7 +18471,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614465/agalpagoscruisebyadventureyacht",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_124_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_155_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -18665,7 +18623,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614546/agrandsafariinsouthernafrica",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -18735,7 +18693,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_4_0919.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -19069,7 +19027,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614549/anextlevelsafariadventureinzimbabwe",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_208_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -19132,7 +19090,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18514175/aprivatevillajourneyaroundsouthafrica",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -19207,7 +19165,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_0903.webp",
    "from": "Nairobi, Kenya",
    "to": "Chobe National Park, Botswana",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -19315,7 +19273,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18534828/aselfdriveadventureinnamibia",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_208_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_237_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "Windhoek, Namibia",
    "country": "Namibia",
@@ -19485,7 +19443,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_408_0828.webp",
    "from": "Hwange National Park, Zimbabwe",
    "to": "Okavango Delta, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -19537,7 +19495,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18325774/aspiritualjourneyintibet",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_81_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_112_0901.webp",
    "from": "Beijing, China",
    "to": "Lhasa, China",
    "country": "China",
@@ -20035,7 +19993,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521705/aksanctuarybotswanasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "Botswana",
@@ -20099,6 +20057,76 @@
    "route": "18521705"
   },
   {
+   "id": "18362041",
+   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
+   "b": "ak",
+   "g": [
+    "OKAVANGO",
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18362041/aksanctuarybotswanasafariandvictoriafalls",
+   "days": 8,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
+   "from": "Johannesburg, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Botswana",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 08 Sep 2026 - 21 Dec 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2027-03-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Virtuoso Exclusive Benefit",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "$200 USD Shipboard Credit Per Stateroom Virtuoso Guests will enjoy $200 USD shipboard credit per stateroom on all voyages. Onboard credit will be applied to your shipboard account. Offer only applies to all A&K x Crystal Cruises. Offer is per stateroom, valid on new reservations and has no cash value. Must mention code VRTLEC at time of booking. Restrictions may apply; advisors, please see Booking Instructions and Supplier Terms & Conditions under the Advisor Info tab for more details."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    },
+    {
+     "d": 2,
+     "n": "Livingstone"
+    },
+    {
+     "d": 4,
+     "n": "Chobe National Park"
+    },
+    {
+     "d": 6,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "18362041"
+  },
+  {
    "id": "18364254",
    "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
    "b": "ak",
@@ -20156,76 +20184,6 @@
    "route": "18364254"
   },
   {
-   "id": "18362041",
-   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18362041/aksanctuarybotswanasafariandvictoriafalls",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
-   "from": "Johannesburg, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "South Africa",
-   "world": false,
-   "mks": [
-    "2026-09",
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 08 Sep 2026 - 21 Dec 2026",
-   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
-   "included": [],
-   "promotions": [
-    {
-     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
-     "endDate": "2027-03-31",
-     "exclusive": false,
-     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
-    },
-    {
-     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
-    },
-    {
-     "name": "Virtuoso Exclusive Benefit",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "$200 USD Shipboard Credit Per Stateroom Virtuoso Guests will enjoy $200 USD shipboard credit per stateroom on all voyages. Onboard credit will be applied to your shipboard account. Offer only applies to all A&K x Crystal Cruises. Offer is per stateroom, valid on new reservations and has no cash value. Must mention code VRTLEC at time of booking. Restrictions may apply; advisors, please see Booking Instructions and Supplier Terms & Conditions under the Advisor Info tab for more details."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 2,
-     "n": "Livingstone"
-    },
-    {
-     "d": 4,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 6,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18362041"
-  },
-  {
    "id": "18521706",
    "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
    "b": "ak",
@@ -20236,7 +20194,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521706/aksanctuarybotswanasafariandvictoriafalls",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "Botswana",
@@ -20304,48 +20262,6 @@
    "route": "18521706"
   },
   {
-   "id": "18363904",
-   "n": "A&K Sanctuary Gorilla Trekking in Uganda",
-   "b": "ak",
-   "g": [
-    "GREATAPES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363904/aksanctuarygorillatrekkinginuganda",
-   "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
-   "from": "Entebbe, Uganda",
-   "to": "Bwindi Impenetrable National Park, Uganda",
-   "country": "Uganda",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 27 Dec 2026",
-   "description": "Uganda’s ancient Bwindi Impenetrable Forest is shrouded in mist and mystery: even the name casts the National Park in an enigmatic light. Led by A&K’s expert guides, this five-day itinerary reveals the park’s secrets for those short on time but longing for a mountain gorilla trekking experience they’ll never forget, getting up close with the gentle primates, and authentically experiencing local communities and A&K Philanthropy projects along the way.",
-   "included": [
-    "24/7 A&K On-Call Support",
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "Internal Air Included (Economy Class, AU$1,225 value) Entebbe/Bwindi/Entebbe"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Entebbe"
-    },
-    {
-     "d": 2,
-     "n": "Bwindi Impenetrable National Park"
-    }
-   ],
-   "route": "18363904"
-  },
-  {
    "id": "18360198",
    "n": "A&K Sanctuary Gorilla Trekking in Uganda",
    "b": "ak",
@@ -20354,7 +20270,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360198/aksanctuarygorillatrekkinginuganda",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_316_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -20397,6 +20313,48 @@
    "route": "18360198"
   },
   {
+   "id": "18363904",
+   "n": "A&K Sanctuary Gorilla Trekking in Uganda",
+   "b": "ak",
+   "g": [
+    "GREATAPES"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363904/aksanctuarygorillatrekkinginuganda",
+   "days": 5,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
+   "from": "Entebbe, Uganda",
+   "to": "Bwindi Impenetrable National Park, Uganda",
+   "country": "Uganda",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 27 Dec 2026",
+   "description": "Uganda’s ancient Bwindi Impenetrable Forest is shrouded in mist and mystery: even the name casts the National Park in an enigmatic light. Led by A&K’s expert guides, this five-day itinerary reveals the park’s secrets for those short on time but longing for a mountain gorilla trekking experience they’ll never forget, getting up close with the gentle primates, and authentically experiencing local communities and A&K Philanthropy projects along the way.",
+   "included": [
+    "24/7 A&K On-Call Support",
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "Internal Air Included (Economy Class, AU$1,225 value) Entebbe/Bwindi/Entebbe"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Entebbe"
+    },
+    {
+     "d": 2,
+     "n": "Bwindi Impenetrable National Park"
+    }
+   ],
+   "route": "18363904"
+  },
+  {
    "id": "18521707",
    "n": "A&K Sanctuary Gorilla Trekking in Uganda",
    "b": "ak",
@@ -20405,7 +20363,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521707/aksanctuarygorillatrekkinginuganda",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_316_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -20465,7 +20423,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521708/aksanctuarygreatmigrationsafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -20541,7 +20499,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473611/aksanctuarykenyasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -20654,7 +20612,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521709/aksanctuarykenyasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -20802,7 +20760,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338097/aksanctuarysafariinkenya",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -20889,7 +20847,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338099/aksanctuarysafariintanzania",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -20984,7 +20942,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338100/aksanctuarysafariintanzaniaandkenya",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -21063,7 +21021,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338887/aksanctuarysafariinuganda",
    "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_316_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -21128,10 +21086,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18488737/aksanctuarysouthernafricasafariandvictoriafalls",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -21183,60 +21141,6 @@
    "route": "18488737"
   },
   {
-   "id": "18363897",
-   "n": "A&K Sanctuary Tanzania and Kenya Safari",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363897/aksanctuarytanzaniaandkenyasafari",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
-   "from": "Arusha, Tanzania",
-   "to": "Nairobi, Kenya",
-   "country": "Tanzania",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 21 Oct 2026 - 29 Dec 2026",
-   "description": "Journey from one of the lesser visited parks in northern Tanzania to two of the most celebrated and beloved locations in all of Africa — sprawling Serengeti National Park and the equally epic Maasai Mara Game Reserve in Kenya. By night, bask in stays at Swala Camp, in Tarangire, a little-known jewel, teeming with elephants and lions; Kichakani Camp, in the Serengeti, a vital link in the annual Great Migration circuit; and Olonana, in the Maasai Mara, just across the border in Kenya.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$2,755 value) Arusha/Tarangire; Manyara/Serengeti/Tarime; Migori/Maasai Mara/Nairobi"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Arusha"
-    },
-    {
-     "d": 2,
-     "n": "Tarangire National Park"
-    },
-    {
-     "d": 4,
-     "n": "Serengeti National Park"
-    },
-    {
-     "d": 6,
-     "n": "Maasai Mara National Reserve"
-    },
-    {
-     "d": 9,
-     "n": "Nairobi"
-    }
-   ],
-   "route": "18363897"
-  },
-  {
    "id": "18360200",
    "n": "A&K Sanctuary Tanzania and Kenya Safari",
    "b": "ak",
@@ -21245,10 +21149,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360200/aksanctuarytanzaniaandkenyasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -21304,6 +21208,60 @@
    "route": "18360200"
   },
   {
+   "id": "18363897",
+   "n": "A&K Sanctuary Tanzania and Kenya Safari",
+   "b": "ak",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363897/aksanctuarytanzaniaandkenyasafari",
+   "days": 9,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Nairobi, Kenya",
+   "country": "Kenya",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 21 Oct 2026 - 29 Dec 2026",
+   "description": "Journey from one of the lesser visited parks in northern Tanzania to two of the most celebrated and beloved locations in all of Africa — sprawling Serengeti National Park and the equally epic Maasai Mara Game Reserve in Kenya. By night, bask in stays at Swala Camp, in Tarangire, a little-known jewel, teeming with elephants and lions; Kichakani Camp, in the Serengeti, a vital link in the annual Great Migration circuit; and Olonana, in the Maasai Mara, just across the border in Kenya.",
+   "included": [
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$2,755 value) Arusha/Tarangire; Manyara/Serengeti/Tarime; Migori/Maasai Mara/Nairobi"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 2,
+     "n": "Tarangire National Park"
+    },
+    {
+     "d": 4,
+     "n": "Serengeti National Park"
+    },
+    {
+     "d": 6,
+     "n": "Maasai Mara National Reserve"
+    },
+    {
+     "d": 9,
+     "n": "Nairobi"
+    }
+   ],
+   "route": "18363897"
+  },
+  {
    "id": "18521712",
    "n": "A&K Sanctuary Tanzania and Kenya Wildlife Safari",
    "b": "ak",
@@ -21312,7 +21270,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521712/aksanctuarytanzaniaandkenyawildlifesafari",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -21388,7 +21346,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360201/aksanctuarytanzaniasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -21511,7 +21469,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18521713/aksanctuarytanzaniasafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -22039,7 +21997,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0908.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "Kenya",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -22287,7 +22245,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18375508/americascanyonlands",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_115_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_115_0923.webp",
    "from": "Scottsdale, AZ, United States",
    "to": "Las Vegas, NV, United States",
    "country": "United States",
@@ -22348,7 +22306,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338369/americasgreatestnationalparks",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_110_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_141_0901.webp",
    "from": "Moab, UT, United States",
    "to": "Phoenix, AZ, United States",
    "country": "United States",
@@ -22435,7 +22393,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338370/americasnationalparksbyair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_58_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_89_0901.webp",
    "from": "Fresno, CA, United States",
    "to": "Jackson Hole, WY, United States",
    "country": "United States",
@@ -22528,7 +22486,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614438/anargentinewildlifeadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_239_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_268_0901.webp",
    "from": "Buenos Aires, Argentina",
    "to": "Buenos Aires, Argentina",
    "country": "Argentina",
@@ -22755,7 +22713,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_0_0908.webp",
    "from": "Kyoto, Japan",
    "to": "Marrakech, Morocco",
-   "country": "United Arab Emirates",
+   "country": "Philippines",
    "world": true,
    "d": "10/17/2027",
    "r": "11/7/2027",
@@ -22825,7 +22783,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_93_0821.webp",
    "from": "Tokyo, Japan",
    "to": "Bangkok Noi, Thailand",
-   "country": "Japan",
+   "country": "Bhutan",
    "world": false,
    "d": "2/15/2028",
    "r": "3/2/2028",
@@ -22901,7 +22859,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_90_0919.webp",
    "from": "La Paz, Bolivia",
    "to": "Atacama, Chile",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-09",
@@ -23027,7 +22985,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346243/beachesandbaysofthegalpagos",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_124_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_155_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -23851,7 +23809,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2027-04",
@@ -23934,16 +23892,16 @@
      "description": "Experience the serene beauty of Bhutan with an exclusive stay at &Beyond Punakha River Lodge Stay for three nights or more at &Beyond Punakha River Lodge, and we’ll cover your Sustainable Development Fee (SDF), allowing you to immerse yourself in the wonders of this Himalayan kingdom without the added cost. Validity dates: 03 Jan – 28 Feb 2026 01 Jun – 31 Aug 2026 01 – 22 Dec 2026 Book your journey today and discover the magic of Bhutan—stress-free!"
     },
     {
-     "name": "Milestone Celebrations Offer",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding…"
-    },
-    {
      "name": "Punakha Honeymoon",
      "endDate": "2026-12-31",
      "exclusive": false,
      "description": "An idyllic and spiritually enriching honeymoon destination nestled amidst the majestic Himalaya mountains Punakha, situated in the heart of the Himalaya, invites couples to experience its secluded and picturesque valley, characterised by awe-inspiring natural beauty, captivating landscapes, and a rich cultural heritage. Immerse guests in the serenity of the Himalaya, strolling hand in hand through lush paddy fields, exploring historic monasteries together, and sharing moments of tranquility beside glistening rivers. With its unique blend of romance, adventure, and culture, Punakha promises an…"
+    },
+    {
+     "name": "Milestone Celebrations Offer",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding…"
     }
    ],
    "itin": [
@@ -24813,7 +24771,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18600041/botswanasafarifromdeltatodesert",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_208_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Makgadikgadi Pans – Desert Denizens Up Close",
    "country": "South Africa",
@@ -24956,7 +24914,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0908.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -25128,7 +25086,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473615/brazilwildlifeadventuretheamazonandpantanal",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_253_0901.webp",
    "from": "Manaus, Brazil",
    "to": "",
    "country": "Brazil",
@@ -25381,7 +25339,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Nairobi, Kenya",
    "to": "Mahé, Seychelles",
-   "country": "Kenya",
+   "country": "Seychelles",
    "world": false,
    "mks": [
     "2026-09",
@@ -25485,7 +25443,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18342488/californiafamilyroadtrip",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_85_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_116_0901.webp",
    "from": "San Francisco, CA, United States",
    "to": "Santa Monica, CA, United States",
    "country": "United States",
@@ -26303,7 +26261,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473617/classickenyasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -26478,7 +26436,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346149/classicsouthafricakrugertothecape",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -26545,7 +26503,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18475653/classictanzaniasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -26621,7 +26579,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18514207/coastallandscapesonagalpagoscruiseaprivatejourney",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_124_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_155_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -26820,7 +26778,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18325781/costaricarainforestadventure",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_90_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_19_0924.webp",
    "from": "San Jose, Costa Rica",
    "to": "San Jose, Costa Rica",
    "country": "Costa Rica",
@@ -26895,10 +26853,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338374/cruisegalpagosandtheamazon",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_54_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_3_0924.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Peru",
+   "country": "Brazil",
    "world": false,
    "mks": [
     "2026-09",
@@ -26970,7 +26928,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18113907/cruisingandwildlifeincostarica",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_90_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_17_0924.webp",
    "from": "San Jose, Costa Rica",
    "to": "Golfito, Costa Rica",
    "country": "Costa Rica",
@@ -27034,7 +26992,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473622/cruisingandwildlifeincostarica",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_90_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_17_0924.webp",
    "from": "San Jose, Costa Rica",
    "to": "Golfito, Costa Rica",
    "country": "Costa Rica",
@@ -27225,7 +27183,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3014_2_0_0830.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Laos",
    "world": false,
    "mks": [
     "2026-09",
@@ -27389,7 +27347,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Lower Zambezi National Park, Zambia",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-04",
@@ -27431,59 +27389,6 @@
     }
    ],
    "route": "18597969"
-  },
-  {
-   "id": "18220809",
-   "n": "Denver to Salt Lake City with Canyon Spirit - Westbound",
-   "b": "tauck",
-   "g": [
-    "ROCKIES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18220809/denvertosaltlakecitywithcanyonspiritwestbound",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_252_0922.webp",
-   "from": "Denver, CO, United States",
-   "to": "Salt Lake City, UT, United States",
-   "country": "United States",
-   "world": false,
-   "d": "9/27/2026",
-   "r": "10/4/2026",
-   "mks": [
-    "2026-09",
-    "2026-10"
-   ],
-   "win": "Dates: 27 Sep 2026 - 04 Oct 2026",
-   "description": "Highlighted with a two-day journey aboard the luxurious Canyon Spirit, discover the best of the American West with visits to Arches and Canyonlands National Parks and Moab, bookended with two night stays in Salt Lake City and Denver.",
-   "included": [
-    "Enjoy front row views of this incredible landscape aboard a luxury train, a flightseeing plane, a 4 x 4 Hummer, along with short hikes and scenic drives that showcase wilderness wonders, on a new journey that is awe-inspiring everywhere you look In Salt Lake City, view powdered mountains, famed in winter for the \"greatest snow on Earth,\" and a great salt water lake, millennia old. Discover the world's greatest concentration of sandstone arches by coach and on foot as you explore Arches National Park. Get a bird's eye vision of ancient Earth on a flightseeing adventure over Canyonlands National Park. Onboard Canyon Spirit, luxury unfolds inside custom-designed glass-dome coaches. Operated by the same family-owned company behind the Rocky Mountaineer and part of the Armstrong Collective, this journey blends SilverLeaf Plus service, regionally inspired meals, handcrafted cocktails, and enriching storytelling with spectacular landscapes. A restful overnight in Glenwood Springs adds a soothing pause amid the grandeur."
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Denver"
-    },
-    {
-     "d": 4,
-     "n": "Arches National Park"
-    },
-    {
-     "d": 5,
-     "n": "Canyonlands National Park"
-    },
-    {
-     "d": 6,
-     "n": "Salt Lake City"
-    }
-   ],
-   "route": "18220809"
   },
   {
    "id": "18600963",
@@ -27669,7 +27574,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0908.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Laos",
    "world": false,
    "d": "11/1/2026",
    "r": "11/14/2026",
@@ -27725,7 +27630,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0908.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Laos",
    "world": false,
    "d": "2/21/2027",
    "r": "3/6/2027",
@@ -28091,7 +27996,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0908.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -28143,10 +28048,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614559/eastafricasgreatmigration",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_307_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_314_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -28591,7 +28496,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
    "from": "Anchorage, AK, United States",
    "to": "Singapore  , Singapore",
-   "country": "Singapore",
+   "country": "Indonesia",
    "world": false,
    "d": "6/29/2027",
    "r": "7/20/2027",
@@ -28829,7 +28734,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_23_0902.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "mks": [
     "2026-09",
@@ -29256,7 +29161,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114408/familysafariinkenyaandtanzania",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -29325,10 +29230,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473628/familysafariinkenyaandtanzania",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-06",
@@ -29942,7 +29847,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18618373/galapagoswildlifewonderland",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_411_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_411_0923.webp",
    "from": "Quito, Ecuador",
    "to": "Homeward bound",
    "country": "Ecuador",
@@ -30074,7 +29979,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -30131,10 +30036,10 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473265/gloriousgardensofenglandandchelseaflowershow",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_153_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_183_0901.webp",
    "from": "London, United Kingdom",
    "to": "London, United Kingdom",
-   "country": "New Zealand",
+   "country": "United Kingdom",
    "world": false,
    "d": "5/12/2027",
    "r": "5/20/2027",
@@ -30191,7 +30096,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614560/gorillaandchimptrekkinginrwanda",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_183_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_213_0901.webp",
    "from": "Kigali, Rwanda",
    "to": "Kigali, Rwanda",
    "country": "Rwanda",
@@ -30294,7 +30199,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614561/gorillatrekkinginrwanda",
    "days": 4,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_183_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_213_0901.webp",
    "from": "Kigali, Rwanda",
    "to": "Kigali | A Final Gorilla Trek",
    "country": "Rwanda",
@@ -30357,7 +30262,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614434/gorillatrekkinginuganda",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_316_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -30519,7 +30424,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Napa, CA, United States",
    "to": "Milano, Italy",
-   "country": "Vietnam",
+   "country": "Japan",
    "world": true,
    "d": "4/12/2028",
    "r": "5/4/2028",
@@ -30743,10 +30648,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16929701/greatmigrationtanzaniakenya",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "d": "10/1/2026",
    "r": "10/10/2026",
@@ -30803,10 +30708,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295007/greatmigrationtanzaniakenya",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -31038,6 +30943,81 @@
     }
    ],
    "route": "18578694"
+  },
+  {
+   "id": "18573824",
+   "n": "Highlights of Bolivia",
+   "b": "ak",
+   "g": [
+    "AMAZONIA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18573824/highlightsofbolivia",
+   "days": 10,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_30_0820.webp",
+   "from": "Santa Cruz De La Sierra, Bolivia",
+   "to": "La Paz, Bolivia",
+   "country": "Bolivia",
+   "world": false,
+   "mks": [
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12",
+    "2028-01",
+    "2028-02",
+    "2028-03",
+    "2028-04",
+    "2028-05",
+    "2028-06",
+    "2028-07",
+    "2028-08",
+    "2028-09",
+    "2028-10",
+    "2028-11",
+    "2028-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2028",
+   "description": "From cultural capitals to sacred lakes: explore endless salt horizons, this journey reveals Bolivia’s layered soul — where history, ritual and vast landscapes converge.",
+   "included": [
+    "- Meals as described. -Transfers. -English speaking guide."
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Santa Cruz De La Sierra"
+    },
+    {
+     "d": 3,
+     "n": "Sucre"
+    },
+    {
+     "d": 4,
+     "n": "Potosí"
+    },
+    {
+     "d": 5,
+     "n": "Uyuni"
+    },
+    {
+     "d": 7,
+     "n": "La Paz"
+    }
+   ],
+   "route": "18573824"
   },
   {
    "id": "13725345",
@@ -31292,7 +31272,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18100729_2_0_0828.webp",
    "from": "Kathmandu, Nepal",
    "to": "Paro, Bhutan",
-   "country": "Nepal",
+   "country": "Bhutan",
    "world": false,
    "mks": [
     "2026-09",
@@ -31599,7 +31579,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614484/iconicindiatigersandthetajmahal",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_66_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_24_0901.webp",
    "from": "Delhi, India",
    "to": "Delhi, India",
    "country": "India",
@@ -31910,7 +31890,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0909.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "d": "11/9/2026",
    "r": "11/19/2026",
@@ -32113,7 +32093,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Japan",
+   "country": "Hungary",
    "world": true,
    "d": "3/21/2028",
    "r": "4/10/2028",
@@ -32195,7 +32175,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "France",
+   "country": "Vietnam",
    "world": true,
    "mks": [
     "2027-03"
@@ -32848,7 +32828,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16903171/kenyatanzaniaaclassicsafari",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_397_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_397_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -32912,10 +32892,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295011/kenyatanzaniaaclassicsafari",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -32988,10 +32968,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107045/kenyaandtanzaniasafariadventure",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -33072,7 +33052,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -33144,7 +33124,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383983/kenyaandtanzaniasafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -33225,10 +33205,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18617843/kenyaandtanzaniasafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2028-01",
@@ -33306,10 +33286,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107046/kenyaandtanzaniasafariaprivatejourney",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -33382,10 +33362,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114409/kenyaandtanzaniaepicgreatmigrationsafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -33449,10 +33429,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473632/kenyaandtanzaniaepicgreatmigrationsafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -33526,7 +33506,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18365627/kenyaandugandasafaribyprivateair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -33589,10 +33569,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18562114/kenyaandugandasafaribyprivateair",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Entebbe, Uganda",
-   "country": "Kenya",
+   "country": "Uganda",
    "world": false,
    "mks": [
     "2028-08",
@@ -33714,7 +33694,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338579/kenyafamilysafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -34283,7 +34263,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "New York City, NY, United States",
-   "country": "Kenya",
+   "country": "United States",
    "world": false,
    "mks": [
     "2026-10",
@@ -34397,7 +34377,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614564/kenyathemaasaimaraandbeyond",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
    "country": "Kenya",
@@ -34823,7 +34803,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_256_0919.webp",
    "from": "Lisbon, Portugal",
    "to": "Praia Sundy, Príncipe, São Tomé and Príncipe, Sao Tome And Principe",
-   "country": "Sao Tome And Principe",
+   "country": "Portugal",
    "world": false,
    "mks": [
     "2026-09",
@@ -35250,7 +35230,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338580/luxuryhoneymoonincapetownandbotswana",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -35400,59 +35380,6 @@
     }
    ],
    "route": "18578681"
-  },
-  {
-   "id": "16691702",
-   "n": "Luxury Korean Pop Culture Tour",
-   "b": "kerdowney",
-   "g": [],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16691702/luxurykoreanpopculturetour",
-   "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_185_0919.webp",
-   "from": "Seoul, South Korea",
-   "to": "Incheon, South Korea",
-   "country": "South Korea",
-   "world": false,
-   "mks": [
-    "2026-09"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 24 Sep 2026",
-   "description": "Explore South Korea and its influence on global music, film, and fashion with our luxury Korean Pop Culture Tour with Ker & Downey. This 11-night itinerary takes you on a journey of discovery through South Korea to experience firsthand the origins of the world’s obsession with Korean popular culture.",
-   "included": [
-    "Private transfers to/from airports",
-    "Five-night stay in Seoul in luxury accommodations",
-    "Full-day privately guide orientation tour of Seoul",
-    "Full-day privately guided K-Pop makeover experience and hallyu tour of Seoul",
-    "Full-day privately guided tour of Sunshine Studio in Nongsam, a drive of approximately two-and-a-half hours one-way from Seoul",
-    "Full-day privately guided tour of Seoul including Jinkwansa Temple, lunch with Buddhist nuns, and a spa treatment at SPA 1899",
-    "KTX high speed train ticket from Seoul to Busan",
-    "Privately guided tour of Busan on arrival"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Seoul"
-    },
-    {
-     "d": 6,
-     "n": "Busan"
-    },
-    {
-     "d": 7,
-     "n": "Gyeongju"
-    },
-    {
-     "d": 8,
-     "n": "Jeju Island"
-    },
-    {
-     "d": 11,
-     "n": "Incheon"
-    }
-   ],
-   "route": "16691702"
   },
   {
    "id": "18600922",
@@ -35615,10 +35542,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18537234/luxurysafarihoneymooninsouthernafrica",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -35852,7 +35779,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_265_0919.webp",
    "from": "Tirana, Albania",
    "to": "Corfu, Greece",
-   "country": "Greece",
+   "country": "Albania",
    "world": false,
    "mks": [
     "2026-09",
@@ -36022,7 +35949,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614411/machupicchuandtheamazon",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_166_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_196_0901.webp",
    "from": "Lima, Peru",
    "to": "Lima, Peru",
    "country": "Peru",
@@ -36489,6 +36416,54 @@
    "route": "11922887"
   },
   {
+   "id": "18116045",
+   "n": "Manitoba: Polar Bear Adventure",
+   "b": "tauck",
+   "g": [
+    "CHURCHILL"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18116045/manitobapolarbearadventure",
+   "days": 6,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_329_0923.webp",
+   "from": "Winnipeg, Canada",
+   "to": "Winnipeg, Canada",
+   "country": "Canada",
+   "world": false,
+   "d": "11/5/2026",
+   "r": "11/10/2026",
+   "mks": [
+    "2026-11"
+   ],
+   "win": "Dates: 05 Nov 2026 - 10 Nov 2026",
+   "description": "Get up close to astonishing Arctic life in Churchill, from polar bears to snowy owls, white foxes, or sled dogs as you explore the Manitoba landscapes and learn about the environment of the migrating polar bears on their annual trek across the tundra.",
+   "included": [
+    "Manitoba's vast open spaces are filled with unique wonders, stories, and adventures on this awe-inspiring journey to the far reaches of the Canadian wilderness. Embrace your inner explorer on a once-in-a-lifetime journey to Manitoba in \"Polar Bear Season,\" when these great white carnivores lumber across the plains toward Hudson Bay to prepare for winter... One of our most popular trips provides you with a rare look into the world of the polar bear in their natural habitat. Late October and November is polar bear season in Churchill, Manitoba, the start of the long-awaited migration of these great white creatures. Over icy rivers and across the subarctic plains, they make their way towards the coast and the seal-rich waters of the Hudson Bay to fulfill their need for food for the winter ahead. Normally elusive, these bears are plentiful in this remote location of northern Canada at this time of the year, giving travelers seeking an up-close look at arctic life an exciting glimpse into their world. You'll stay in a cozy lodge where family-style meals, warm camaraderie and two-footed locals share stories about Hudson Bay history, past and present, in front of a crackling fire. You'll also learn more about Manitoba and early fur-trading history during a special private evening with the Hudson's Bay Company of Adventurers at the Manitoba Museum... at a dog sledding demonstration... on a dog sled ride... and much more."
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Winnipeg"
+    },
+    {
+     "d": 2,
+     "n": "Churchill"
+    },
+    {
+     "d": 1,
+     "n": "Winnipeg"
+    }
+   ],
+   "route": "18116045"
+  },
+  {
    "id": "18575489",
    "n": "Marshes & Islands of the Okavango",
    "b": "wilderness",
@@ -36932,10 +36907,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16916677/mountaingorillasafarikenyatanzaniarwanda",
    "days": 16,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "d": "10/4/2026",
    "r": "10/19/2026",
@@ -37005,10 +36980,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18317046/mountaingorillasafarikenyatanzaniarwanda",
    "days": 16,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "d": "10/6/2027",
    "r": "10/21/2027",
@@ -37078,10 +37053,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18537058/mountaingorillasafaritanzaniazanzibarrwanda",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "d": "9/22/2027",
    "r": "10/4/2027",
@@ -37146,7 +37121,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_239_0919.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok Noi, Thailand",
-   "country": "Cambodia",
+   "country": "Vietnam",
    "world": false,
    "mks": [
     "2026-09",
@@ -37414,7 +37389,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16919178/namibiaepicsafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_411_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_411_0923.webp",
    "from": "Windhoek, Namibia",
    "to": "\nJourney home\n",
    "country": "Namibia",
@@ -37474,7 +37449,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346150/namibiaepicwildernessadventure",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "",
    "country": "Namibia",
@@ -38635,7 +38610,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -38716,7 +38691,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18342492/onthetrailofbrazilswildlife",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_253_0901.webp",
    "from": "Manaus, Brazil",
    "to": "Campo Grande, Brazil",
    "country": "Brazil",
@@ -38791,7 +38766,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18478583/paradisevalleyyellowstonethetetons",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_116_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_116_0923.webp",
    "from": "Bozeman, MT, United States",
    "to": "Tour Ends",
    "country": "United States",
@@ -38852,7 +38827,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0908.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -38903,7 +38878,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2734_2_53_0822.webp",
    "from": "Santiago, Chile",
    "to": "Buenos Aires, Argentina",
-   "country": "Chile",
+   "country": "Argentina",
    "world": false,
    "mks": [
     "2026-09",
@@ -38982,7 +38957,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_20_0820.webp",
    "from": "Sacred Valley, Peru",
    "to": "La Paz, Bolivia",
-   "country": "Peru",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-09",
@@ -39063,10 +39038,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18616942/peruandthegalapagosislands",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_7_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_7_0923.webp",
    "from": "Lima, Peru",
    "to": "Journey Home",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "d": "10/22/2027",
    "r": "11/5/2027",
@@ -39229,7 +39204,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Amman, Jordan",
    "to": "Cairo, Egypt",
-   "country": "Egypt",
+   "country": "Jordan",
    "world": false,
    "mks": [
     "2026-09",
@@ -39321,7 +39296,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
    "from": "",
    "to": "Victoria Falls, Zambia",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -39481,7 +39456,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18100729_2_100_0828.webp",
    "from": "New Delhi, India",
    "to": "Kanha National Park, India",
-   "country": "India",
+   "country": "Nepal",
    "world": false,
    "mks": [
     "2027-02",
@@ -39724,7 +39699,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_61_0902.webp",
    "from": "Cape Winelands, South Africa",
    "to": "Beau Champ, Mauritius",
-   "country": "Seychelles",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -40072,10 +40047,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346151/rwandaandtanzaniawildlifeadventure",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Kigali, Rwanda",
    "to": "Arusha, Tanzania",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -40501,7 +40476,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_0_0828.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Skeleton Coast, Namibia",
-   "country": "Botswana",
+   "country": "Namibia",
    "world": false,
    "mks": [
     "2026-09",
@@ -40563,7 +40538,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_314_0919.webp",
    "from": "Denis Island, Seychelles",
    "to": "Nairobi, Kenya",
-   "country": "Seychelles",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -40646,7 +40621,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614417/safariodysseyacrosssouthernafrica",
    "days": 17,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_208_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Windhoek | Peaceful Returns",
    "country": "South Africa",
@@ -40801,7 +40776,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18616789/sakuraseassouthkoreajapaneastbound",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_3_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_3_0923.webp",
    "from": "Seoul, South Korea",
    "to": "Osaka, Japan",
    "country": "South Korea",
@@ -41646,7 +41621,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -41710,10 +41685,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614419/southafricasafaricapetownkrugerandvictoriafalls",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -41785,7 +41760,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338587/southafricacapetownthewinelandsandhermanus",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_300_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -41856,7 +41831,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338588/southafricawinelandsandwildlife",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -42051,10 +42026,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18377225/southamericawildlifeadventurebyprivatejet",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_224_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_253_0901.webp",
    "from": "Bogotá, Colombia",
    "to": "Sao Paulo, Brazil",
-   "country": "Colombia",
+   "country": "Brazil",
    "world": false,
    "mks": [
     "2027-06",
@@ -42118,10 +42093,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18105722/southernafricabyprivateair",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "d": "10/2/2026",
    "r": "10/15/2026",
@@ -42236,10 +42211,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614574/southernafricafamilysafari",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_104_0901.webp",
    "from": "Johannesburg, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -42305,13 +42280,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107102/southernafricasafariandrailadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -42382,7 +42356,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",
@@ -42454,7 +42428,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383989/southernafricasafariandrailadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -42534,10 +42508,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18603828/southernafricasafariandrailadventure",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2028-03",
@@ -42612,7 +42586,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18614575/southernafricasafaribytrain",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_178_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_25_0901.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "South Africa",
@@ -42872,7 +42846,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Victoria Falls, Zimbabwe",
    "to": "Maun, Botswana",
-   "country": "Botswana",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-09",
@@ -42930,7 +42904,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0909.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -43065,7 +43039,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16919119/spotlightonsouthafricaandvictoriafalls",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
    "country": "Zambia",
@@ -43220,7 +43194,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18593438/tajmahalandthetreasuresofindiapushkarfair",
    "days": 16,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_4_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_24_0901.webp",
    "from": "Mumbai, India",
    "to": "Delhi, India",
    "country": "India",
@@ -43662,7 +43636,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295024/tanzaniaagrandfamilysafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -43726,7 +43700,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346152/tanzaniaepicsafarisandzanzibarsbeaches",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_307_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_314_0901.webp",
    "from": "Dar Es Salaam, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -43871,7 +43845,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16903180/tanzaniaserengetitozanzibar",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "",
    "country": "Tanzania",
@@ -43920,7 +43894,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295025/tanzaniaserengetitozanzibar",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "",
    "country": "Tanzania",
@@ -44181,7 +44155,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18347180/thebestofwesterncanadarockymountaineer",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_209_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_209_0923.webp",
    "from": "Calgary, Canada",
    "to": "Vancouver, Canada",
    "country": "Canada",
@@ -44297,7 +44271,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_35_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Kalahari Desert, Botswana",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -44358,7 +44332,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_291_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Livingstone, Zambia",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -44623,7 +44597,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_2_0908.webp",
    "from": "Tokyo, Japan",
    "to": "Argolida, Greece",
-   "country": "Japan",
+   "country": "India",
    "world": true,
    "d": "4/11/2027",
    "r": "5/1/2027",
@@ -44734,7 +44708,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0908.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -44958,7 +44932,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_17_0908.webp",
    "from": "En route to a classic East African safari",
    "to": "Homeward bound",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -45113,7 +45087,7 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18325791/theluxurytentedcampsofsoutheastasia",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_11_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_45_0901.webp",
    "from": "Chiang Mai, Thailand",
    "to": "Phnom Penh, Cambodia",
    "country": "Laos",
@@ -45187,7 +45161,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_8_0908.webp",
    "from": "Depart Home",
    "to": "Arrive home",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -45246,7 +45220,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_49_0825.webp",
    "from": "Arusha, Tanzania",
    "to": "Ngorongoro Crater, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -45358,7 +45332,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_233_0919.webp",
    "from": "Kigali, Rwanda",
    "to": "Lake Tanganyika, Tanzania",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-09",
@@ -45580,7 +45554,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338591/theultimateluxuryafricansafari",
    "days": 20,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_136_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Nairobi, Kenya",
    "country": "Zambia",
@@ -45718,7 +45692,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Okavango Delta, Botswana",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -45891,7 +45865,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -46050,7 +46024,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18115582/ugandagorillatrekkingandsafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_316_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -46114,7 +46088,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18473649/ugandagorillatrekkingandsafariadventure",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_316_0901.webp",
    "from": "Entebbe, Uganda",
    "to": "Entebbe, Uganda",
    "country": "Uganda",
@@ -46492,10 +46466,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107126/ultimatebotswanasafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -46569,7 +46543,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zimbabwe",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-09",
@@ -46642,10 +46616,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383993/ultimatebotswanasafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-01",
@@ -46724,10 +46698,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18603829/ultimatebotswanasafari",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_73_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2028-01",
@@ -46808,7 +46782,6 @@
    "country": "Egypt",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -46883,7 +46856,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18105959/ultimategalpagosnorthernandwesternroute",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_190_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_220_0901.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Guayaquil, Ecuador",
    "country": "Ecuador",
@@ -46960,7 +46933,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107130/ultimategalpagossouthernandcentralroute",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_124_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_155_0901.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -47034,10 +47007,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107132/ultimategreatmigrationsafari",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -47114,7 +47087,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -47186,10 +47159,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383217/ultimategreatmigrationsafari",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -47271,7 +47244,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18618700/ultimategreatmigrationsafari",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -47356,10 +47329,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18107133/ultimategreatmigrationsafariaprivatejourney",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -47432,7 +47405,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18386586/ultimategreatmigrationsafariaprivatejourney",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -47517,7 +47490,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18617846/ultimategreatmigrationsafariaprivatejourney",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Tanzania",
@@ -47602,7 +47575,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114414/ultimatekenyasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_298_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0901.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
@@ -47739,7 +47712,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4_0909.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -47810,7 +47783,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114415/ultimatetanzaniasafari",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_150_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0901.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
@@ -47945,7 +47918,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Los Angeles, CA, United States",
    "to": "Papagayo Peninsula, Costa Rica, Costa Rica",
-   "country": "Peru",
+   "country": "United States",
    "world": false,
    "d": "1/20/2027",
    "r": "2/9/2027",
@@ -48190,7 +48163,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18537396/untouchednamibiadunesanddesertsafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_302_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_310_0901.webp",
    "from": "Windhoek, Namibia",
    "to": "Windhoek, Namibia",
    "country": "Namibia",
@@ -48317,7 +48290,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338593/utahsmightyfivenationalparks",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_65_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_96_0901.webp",
    "from": "Las Vegas, NV, United States",
    "to": "Salt Lake City, UT, United States",
    "country": "United States",
@@ -48388,59 +48361,6 @@
    "route": "18338593"
   },
   {
-   "id": "18197649",
-   "n": "Vancouver & the Rockies with Rocky Mountaineer",
-   "b": "tauck",
-   "g": [
-    "ROCKIES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18197649/vancouvertherockieswithrockymountaineer",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_209_0922.webp",
-   "from": "Vancouver, Canada",
-   "to": "Calgary, Canada",
-   "country": "Canada",
-   "world": false,
-   "d": "9/27/2026",
-   "r": "10/5/2026",
-   "mks": [
-    "2026-09",
-    "2026-10"
-   ],
-   "win": "Dates: 27 Sep 2026 - 05 Oct 2026",
-   "description": "Journey through unspoiled wilderness with an exciting rail adventure onboard Rocky Mountaineer to the snowy peaks and glacial lakes of the Canadian Rockies, plus stays in four Fairmont hotels in Vancouver and Jasper and Banff national parks!",
-   "included": [
-    "A journey that will transport you, body and soul... from the sophisticated seaport city of Vancouver... to a classic train ride aboard the Rocky Mountaineer through unspoiled wilderness... to the snowy peaks and glacial lakes of the Canadian Rockies... experience nature at its most spectacular. Explore Vancouver, known for its culinary innovation, art scene, and beautiful mountain backdrop, where you'll take in bird's-eye views by floatplane, enjoy a private visit to a First Nations art gallery, and more... Ride the rails into the Canadian Rockies onboard Rocky Mountaineer, enjoying breathtaking scenery from a GoldLeaf Service glass-dome coach... Travel along the Icefields Parkway... and stay at four premier Fairmont resort hotels in Vancouver and in Jasper and Banff National Parks!"
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Vancouver"
-    },
-    {
-     "d": 4,
-     "n": "Jasper"
-    },
-    {
-     "d": 6,
-     "n": "Banff"
-    },
-    {
-     "d": 9,
-     "n": "Calgary"
-    }
-   ],
-   "route": "18197649"
-  },
-  {
    "id": "18514208",
    "n": "Volcanic Landscapes on a Galápagos Cruise: A Private Journey",
    "b": "ak",
@@ -48449,7 +48369,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18514208/volcaniclandscapesonagalpagoscruiseaprivatejourney",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_124_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_155_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -48523,7 +48443,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18346244/volcanicwondersofthegalpagos",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_124_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_155_0901.webp",
    "from": "Quito, Ecuador",
    "to": "Quito, Ecuador",
    "country": "Ecuador",
@@ -48659,7 +48579,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18359518/westernhorizonsmesaverdetomoab",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_113_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_113_0923.webp",
    "from": "Durango, CO, United States",
    "to": "Journey Home",
    "country": "United States",
@@ -48716,7 +48636,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18342493/wildcanadabearsbelugasandtheauroraborealis",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_79_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_110_0901.webp",
    "from": "Winnipeg, Canada",
    "to": "Winnipeg, Canada",
    "country": "Canada",
@@ -48791,7 +48711,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-09",
@@ -48977,7 +48897,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0821.webp",
    "from": "Big Sky, MT, United States",
    "to": "Sea of Cortez, Mexico",
-   "country": "United States",
+   "country": "Brazil",
    "world": false,
    "d": "6/15/2027",
    "r": "6/30/2027",
@@ -49190,10 +49110,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16919378/wildlifeodysseysouthafricabotswanazimbabwe",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-09",
@@ -49247,7 +49167,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295028/wildlifeodysseysouthafricabotswanazimbabwe",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -49445,10 +49365,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18601052/wildlifesafariaroundtheworldbyprivatejet",
    "days": 26,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_29_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_62_0901.webp",
    "from": "Portland, OR, United States",
    "to": "Boston, MA, United States",
-   "country": "United States",
+   "country": "Japan",
    "world": true,
    "d": "2/8/2028",
    "r": "3/4/2028",
@@ -49525,7 +49445,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_0_0820.webp",
    "from": "Santiago, Chile",
    "to": "La Paz, Bolivia",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-09",
@@ -49593,7 +49513,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295029/wonderlandyellowstoneinwinter",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_117_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_117_0923.webp",
    "from": "Welcome to Montana",
    "to": "Journey Home",
    "country": "United States",
@@ -49868,7 +49788,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18105041/wondersofthegalpagosandmachupicchu",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_166_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_196_0901.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
    "country": "Peru",
@@ -50013,7 +49933,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18383999/wondersofthegalpagosandmachupicchu",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_54_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_3_0924.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
    "country": "Ecuador",
@@ -50198,7 +50118,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0821.webp",
    "from": "Seattle, WA, United States",
    "to": "Los Angeles, CA, United States",
-   "country": "Colombia",
+   "country": "Morocco",
    "world": true,
    "d": "8/10/2027",
    "r": "9/2/2027",
@@ -50283,7 +50203,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Ngorongoro, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-09",
@@ -50353,7 +50273,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Serengeti, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-09",
@@ -50420,7 +50340,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18338594/wyomingwildernessadventure",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_58_0901.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_89_0901.webp",
    "from": "Bozeman, MT, United States",
    "to": "Jackson Hole, WY, United States",
    "country": "United States",
@@ -50495,7 +50415,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18478590/yellowstonegrandtetonnationalparks",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_117_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_117_0923.webp",
    "from": "Jackson Hole, WY, United States",
    "to": "Rapid City, SD, United States",
    "country": "United States",
@@ -50557,7 +50477,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18478591/yellowstonethetetonsamericansafari",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_116_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_116_0923.webp",
    "from": "Jackson Hole, WY, United States",
    "to": "Journey Home",
    "country": "United States",
@@ -50610,7 +50530,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18478592/yellowstoneawakensspringfall",
    "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_117_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_117_0923.webp",
    "from": "Bozeman, MT, United States",
    "to": "Bozeman, MT, United States",
    "country": "United States",
@@ -51110,7 +51030,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Vilanculos, Mozambique",
-   "country": "Zimbabwe",
+   "country": "Mozambique",
    "world": false,
    "mks": [
     "2026-09",
