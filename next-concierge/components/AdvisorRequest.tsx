@@ -25,6 +25,7 @@ import {
 } from "@/lib/handoff";
 import { peekTurns } from "@/lib/conversation-store";
 import { advisorRequestSent, advisorCtaClicked, type AdvisorSource } from "@/lib/analytics";
+import { arrivalSource } from "@/lib/arrival";
 
 /** The single, never-varying label. Say it the same way every time. */
 export const ADVISOR_CTA = "Send this to an advisor";
@@ -169,6 +170,7 @@ function AdvisorForm({
           notes: notes.trim(),
           transcript: context.transcript,
           pageUrl: typeof window !== "undefined" ? window.location.href : "",
+          aiSource: arrivalSource(),
         }),
       });
       if (!res.ok) {

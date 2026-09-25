@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import AdvisorRequest from "@/components/AdvisorRequest";
+import ArrivalCapture from "@/components/ArrivalCapture";
 import IntroTour from "@/components/IntroTour";
 import SiteNav from "@/components/SiteNav";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <IntroTour />
         </div>
         <Analytics />
+        <ArrivalCapture />
       </body>
     </html>
   );

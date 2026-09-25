@@ -62,6 +62,22 @@ const nextConfig: NextConfig = {
       permanent: true,
     }));
   },
+  /*
+   * The atlas data files — 27 MB of JSON, GeoJSON and binary under /maps — are
+   * marked noindex. They exist for the maps to draw; every fact in them is also
+   * on an HTML page that credits and links us. Kept crawlable (not disallowed in
+   * robots.txt) because search engines render the atlas pages and need to fetch
+   * what those pages fetch; noindex only stops the raw files being listed as
+   * results of their own, where a reader gets the data without the page.
+   */
+  async headers() {
+    return [
+      {
+        source: "/maps/:file(.*\\.(?:json|geojson|bin))",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+    ];
+  },
   async rewrites() {
     return [
       {

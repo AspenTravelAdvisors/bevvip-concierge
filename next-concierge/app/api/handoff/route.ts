@@ -14,6 +14,7 @@
 
 import { corsHeaders } from "@/lib/guide-cors";
 import { isRateLimited } from "@/lib/rate-limit";
+import { arrivalLabel, classifyAiSource } from "@/lib/arrival";
 
 export const runtime = "nodejs";
 export const maxDuration = 20;
@@ -61,6 +62,9 @@ interface HandoffBody {
   transcript?: string;
   // Where the traveler was when they handed off.
   pageUrl?: string;
+  // The AI assistant that first sent this traveler to the site, e.g. "chatgpt"
+  // (lib/arrival.ts). Null when they did not arrive from one we recognise.
+  aiSource?: string | null;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -90,6 +94,8 @@ function composeMessage(body: HandoffBody): string {
 
   lines.push(`New hand-off from Expedition Bucket List — ${cat}`);
   if (body.action) lines.push(`Traveler tapped: ${body.action}`);
+  const ai = classifyAiSource(body.aiSource);
+  if (ai) lines.push(`Found us through: ${arrivalLabel(ai)}`);
   if (body.source === "header") {
     // A cold request: nobody searched, so there is no shortlist and the brief
     // is mostly blank by design. Say so, rather than letting the advisor read
@@ -195,6 +201,9 @@ export async function POST(req: Request) {
     shortlistSource: body.shortlistSource === "bucket" ? "bucket-list" : "on-screen",
     deepLink: clip(body.deepLink, 1000),
     pageUrl: clip(body.pageUrl, 500),
+    // Re-classified rather than echoed, so the lead inbox only ever sees a
+    // known assistant name and never whatever a caller put in the field.
+    aiSource: classifyAiSource(body.aiSource) ?? "",
     message: composeMessage(body),
   };
 

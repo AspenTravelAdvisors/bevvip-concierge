@@ -15,6 +15,7 @@
 // no-op, so calling these is always safe.
 
 import { track } from "@vercel/analytics";
+import { arrivalSource } from "./arrival";
 
 type Props = Record<string, string | number | boolean | null>;
 
@@ -58,13 +59,30 @@ export function advisorCtaClicked(category: string, source: AdvisorSource) {
   emit("advisor_cta_clicked", { category, source });
 }
 
+/**
+ * `ai` on the two conversion events is the AI assistant that first sent this
+ * visitor (lib/arrival.ts), or "none". It is how we find out whether being cited
+ * by ChatGPT, Perplexity and friends turns into business, rather than guessing.
+ */
+const aiSource = () => arrivalSource() ?? "none";
+
 export function advisorRequestSent(category: string, shortlist: number) {
-  emit("advisor_request_sent", { category, shortlist });
+  emit("advisor_request_sent", { category, shortlist, ai: aiSource() });
 }
 
 /** The self-serve path. `hasDates` separates real intent from a default stay. */
 export function bookingClicked(type: string, hasDates: boolean) {
-  emit("booking_clicked", { type, hasDates });
+  emit("booking_clicked", { type, hasDates, ai: aiSource() });
+}
+
+/**
+ * A visitor landed from an AI assistant, recorded once per visitor (first
+ * touch). The denominator for the `ai` split on the two events above: without
+ * it, "three bookings from ChatGPT" cannot be told apart from three of three or
+ * three of three thousand.
+ */
+export function aiArrival(source: string, via: "utm" | "referrer", landing: string) {
+  emit("ai_arrival", { source, via, landing });
 }
 
 export function atlasOpened(type: string, source: "card" | "shortlist" | "nav") {
