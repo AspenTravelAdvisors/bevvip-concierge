@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 249,
-  "journeysTotal": 498,
+  "journeysWithCamps": 250,
+  "journeysTotal": 497,
   "campsMatched": 40
  },
  "radiusKm": 25,
@@ -1524,6 +1524,26 @@
     "km": 9.4
    }
   ],
+  "16903105": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 1,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 3,
+    "km": 19.9
+   }
+  ],
   "16903171": [
    {
     "id": "h_00537",
@@ -1978,35 +1998,7 @@
     "km": 18.1
    }
   ],
-  "18295028": [
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 1,
-    "km": 3.4
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 1,
-    "km": 22.4
-   }
-  ],
-  "18301934": [
-   {
-    "id": "h_00077",
-    "stop": "Paro",
-    "day": 10,
-    "km": 22.3
-   },
-   {
-    "id": "h_01788",
-    "stop": "Paro",
-    "day": 10,
-    "km": 24.3
-   }
-  ],
-  "18317046": [
+  "18295014": [
    {
     "id": "h_00537",
     "stop": "Ngorongoro",
@@ -2036,6 +2028,54 @@
     "stop": "Volcanoes National Park",
     "day": 15,
     "km": 16.2
+   }
+  ],
+  "18295015": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 11,
+    "km": 16.2
+   }
+  ],
+  "18295028": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 1,
+    "km": 22.4
+   }
+  ],
+  "18301934": [
+   {
+    "id": "h_00077",
+    "stop": "Paro",
+    "day": 10,
+    "km": 22.3
+   },
+   {
+    "id": "h_01788",
+    "stop": "Paro",
+    "day": 10,
+    "km": 24.3
    }
   ],
   "18325781": [
@@ -3008,26 +3048,6 @@
     "km": 19.6
    }
   ],
-  "18537058": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 4,
-    "km": 19.6
-   },
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 11,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 11,
-    "km": 16.2
-   }
-  ],
   "18537234": [
    {
     "id": "h_02374",
@@ -3980,14 +4000,6 @@
     "km": 21.1
    }
   ],
-  "18616942": [
-   {
-    "id": "h_00971",
-    "stop": "Machu Picchu",
-    "day": 4,
-    "km": 16.2
-   }
-  ],
   "18617843": [
    {
     "id": "h_00537",
@@ -4042,6 +4054,14 @@
     "stop": "Turrialba",
     "day": 4,
     "km": 0.2
+   }
+  ],
+  "18621622": [
+   {
+    "id": "h_00971",
+    "stop": "Machu Picchu",
+    "day": 4,
+    "km": 16.2
    }
   ]
  }
