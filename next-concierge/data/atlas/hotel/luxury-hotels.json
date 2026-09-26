@@ -3834,18 +3834,18 @@
   "roomAmenities": [],
   "promotions": [
    {
-    "id": "18612413",
-    "name": "Celebrate a well-deserved escape with our exclusive 20% Discount offer!",
-    "endDate": "2026-12-18",
-    "exclusive": false,
-    "description": "Enjoy 20% savings on stays of 1 to 2 nights when you book between September 9 and November 30, 2026, for travel through December 18, 2026. Whether you are planning a spontaneous getaway or a relaxing retreat, this limited-time offer provides the perfect opportunity to experience exceptional comfort and personalized hospitality. We invite you to reserve your stay today and take advantage of these exclusive savings while availability lasts. Terms and conditions apply."
-   },
-   {
     "id": "18612408",
     "name": "Stay 3 Nights & Save 33% at Alila Mayakoba",
     "endDate": "2026-12-18",
     "exclusive": false,
     "description": "Enjoy 33% savings on stays of 3 to 6 nights when reserved between September 9 and November 30, 2026, for travel through December 18, 2026. Thoughtfully designed to enhance your stay, this offer includes: Daily buffet breakfast for all registered guests. One Cabana Day Experience. Two beachside beverages at Alisio Beach Club. A Hydrotherapy Circuit Experience (one session per adult, per stay). Whether you are planning a relaxing retreat or looking for the perfect destination to celebrate Thanksgiving with family and friends, we invite you to reserve your stay today and experience the season in…"
+   },
+   {
+    "id": "18612413",
+    "name": "Celebrate a well-deserved escape with our exclusive 20% Discount offer!",
+    "endDate": "2026-12-18",
+    "exclusive": false,
+    "description": "Enjoy 20% savings on stays of 1 to 2 nights when you book between September 9 and November 30, 2026, for travel through December 18, 2026. Whether you are planning a spontaneous getaway or a relaxing retreat, this limited-time offer provides the perfect opportunity to experience exceptional comfort and personalized hospitality. We invite you to reserve your stay today and take advantage of these exclusive savings while availability lasts. Terms and conditions apply."
    },
    {
     "id": "18608277",
@@ -5150,18 +5150,18 @@
   ],
   "promotions": [
    {
-    "id": "18565437",
-    "name": "Stay 4 and Pay 3",
-    "endDate": "2026-09-30",
-    "exclusive": true,
-    "description": "Offer Type: 4thd night complimentary Booking start date: 02 July 2026 Booking end date: 26 Sep 2026 Travel start date: 03 July 2026 Travel end date: 30 September 2026 Blackout dates: NA Room Categories: All room categories"
-   },
-   {
     "id": "18579819",
     "name": "Extra Hotel Credit for your Summer Stay",
     "endDate": "2026-09-30",
     "exclusive": false,
     "description": "Additional US 200 Hotel Credit per booking per stay. (Staying period: From now to 30 September 2026) Hotel credit coverage: - F&B outlet, Spa treatment and retail products, laundry, and transportation (except taxi) Excludes: - Room rental, taxies, handling charges, pay outs, couriers."
+   },
+   {
+    "id": "18565437",
+    "name": "Stay 4 and Pay 3",
+    "endDate": "2026-09-30",
+    "exclusive": true,
+    "description": "Offer Type: 4thd night complimentary Booking start date: 02 July 2026 Booking end date: 26 Sep 2026 Travel start date: 03 July 2026 Travel end date: 30 September 2026 Blackout dates: NA Room Categories: All room categories"
    }
   ],
   "hasPromotion": true,
@@ -10454,11 +10454,11 @@
   ],
   "promotions": [
    {
-    "id": "18473014",
-    "name": "The Art of Wellbeing at Layan Life by Anantara",
+    "id": "16730581",
+    "name": "Your Layan Escape Awaits",
     "endDate": "2027-10-31",
     "exclusive": false,
-    "description": "In a pristine natural setting free from distraction, the expert team of physiotherapists, nutritionists and personal trainers at Layan Life by Anantara will guide you towards your wellness goals. Designed for active and wellness curious individuals seeking to unlock their vitality, this exclusive seven day, eight night retreat blends advanced diagnostics, regenerative therapies, mindful movement and restorative practices to assess biological health, support cellular function and optimise long term wellbeing. Leave with renewed clarity, empowered by longevity-enhancing tools and practices.…"
+    "description": "Advance Purchase – Ultra-Luxury Best Rate at Anantara Layan Phuket Resort Plan ahead and enjoy exceptional savings with our Advance Purchase Offer at Anantara Layan Phuket Resort, an ultra-luxury beachfront resort in Phuket, Thailand. This exclusive best available rate is ideal for discerning travelers seeking privacy, elegance, and personalized luxury. Nestled on the secluded shores of Layan Beach, Anantara Layan Phuket Resort offers refined suites and private pool villas, world-class dining, and bespoke experiences in a serene tropical setting."
    },
    {
     "id": "18133012",
@@ -10468,11 +10468,11 @@
     "description": "Exclusive offer for long stays in Phuket Linger a little longer with more days to savour, more nights to remember. With your savings on accommodation up to 30%, indulge in more experiences immersing you in the best of the destination with exclusive Phuket hotel package deals. Terms and Conditions Offer is subject to 10% service charge, 7% government tax and 1% provincial tax. A minimum of 5 consecutive nights stay is required. The rate quoted is per room per night, including maximum (30%) discount, subject to seasonal variations, a cancellation policy and change without notice. A…"
    },
    {
-    "id": "16730581",
-    "name": "Your Layan Escape Awaits",
+    "id": "18473014",
+    "name": "The Art of Wellbeing at Layan Life by Anantara",
     "endDate": "2027-10-31",
     "exclusive": false,
-    "description": "Advance Purchase – Ultra-Luxury Best Rate at Anantara Layan Phuket Resort Plan ahead and enjoy exceptional savings with our Advance Purchase Offer at Anantara Layan Phuket Resort, an ultra-luxury beachfront resort in Phuket, Thailand. This exclusive best available rate is ideal for discerning travelers seeking privacy, elegance, and personalized luxury. Nestled on the secluded shores of Layan Beach, Anantara Layan Phuket Resort offers refined suites and private pool villas, world-class dining, and bespoke experiences in a serene tropical setting."
+    "description": "In a pristine natural setting free from distraction, the expert team of physiotherapists, nutritionists and personal trainers at Layan Life by Anantara will guide you towards your wellness goals. Designed for active and wellness curious individuals seeking to unlock their vitality, this exclusive seven day, eight night retreat blends advanced diagnostics, regenerative therapies, mindful movement and restorative practices to assess biological health, support cellular function and optimise long term wellbeing. Leave with renewed clarity, empowered by longevity-enhancing tools and practices.…"
    }
   ],
   "hasPromotion": true,
@@ -10978,18 +10978,18 @@
   ],
   "promotions": [
    {
-    "id": "16903250",
-    "name": "Anantara Italy Journey",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Anantara Italy Journey Indulge in the Ultimate Italian Escape Reserve your stay at both Anantara Palazzo Naiadi Rome Hotel and Anantara Convento di Amalfi Grand Hotel throughout your Italian journey to unlock exclusive privileges: 10% oﬀ on your stay when booking Rooms 15% oﬀ on you stay when booking Jr Suites & Suites Special Welcome & Farewell VIP amenities From November to March: A minimum stay of 4 nights in total to be spend between Anantara Palazzo Naiadi Rome and Anantara Convento di Amalfi Grand Hotel From April to October: A minimum stay of 6 nights in total to be spend between…"
-   },
-   {
     "id": "16833725",
     "name": "Exclusive Courtesy Suites Benefits",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Exclusive Courtesy Suites Benefits Carefully crafted around our most exclusive rooms, our Exclusive Courtesy Suites Benefits are designed to ensure ultimate comfort and an elevated luxury experience. . Junior Suite • Complimentary one-way transfer by luxury car (E-class) from/to airport or train station • Free mini bar | no alcoholic beverages • Ironing service | 2 garments per stay • tickets for Roman cultural attractions (per guest, per stay) • 1 access to the wet area for two people (per stay) • Butler service | upon request for Junior Suite Piazza View | Junior Suite Terrace Junior Suite…"
+   },
+   {
+    "id": "16903250",
+    "name": "Anantara Italy Journey",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Anantara Italy Journey Indulge in the Ultimate Italian Escape Reserve your stay at both Anantara Palazzo Naiadi Rome Hotel and Anantara Convento di Amalfi Grand Hotel throughout your Italian journey to unlock exclusive privileges: 10% oﬀ on your stay when booking Rooms 15% oﬀ on you stay when booking Jr Suites & Suites Special Welcome & Farewell VIP amenities From November to March: A minimum stay of 4 nights in total to be spend between Anantara Palazzo Naiadi Rome and Anantara Convento di Amalfi Grand Hotel From April to October: A minimum stay of 6 nights in total to be spend between…"
    }
   ],
   "hasPromotion": true,
@@ -11566,18 +11566,18 @@
     "description": "Enhance your Bangkok escape with exclusive privileges designed for an exceptional stay at Anantara Siam Bangkok. 1) Guaranteed Room Upgrade Enjoy a guaranteed upgrade to the next room category: Deluxe Room → Siam Room → Kasara Executive Room → Siam Suite → Kasara Executive Suite → Anantara Suite → Royal Suite * Guests upgraded to a Kasara Executive Room or higher will also enjoy full Kasara Executive Lounge privileges. 2) Exclusive Family Benefits Families travelling with one child under 12 years old will receive: Complimentary daily breakfast for the child Complimentary extra bed, if…"
    },
    {
-    "id": "18573767",
-    "name": "Stay 3, Pay 2",
-    "endDate": "2027-06-30",
-    "exclusive": false,
-    "description": "STAY 3 PAY 2 Enjoy an additional night on us in selected room categories, including: 1) Deluxe Room 2) Siam Room 3) Kasara Executive Room 4) Siam Suite BOOKING PERIOD: Now - 30 June 2027 STAY PERIOD: Now - 30 June 2027"
-   },
-   {
     "id": "18561761",
     "name": "20% Saving on All Room Category",
     "endDate": "2027-06-30",
     "exclusive": false,
     "description": "20% SAVINGS Enjoy 20 % savings across all room and suite categories. BOOKING PERIOD: 15 June 2026 - 30 June 2027 STAY PERIOD: 01 July 2026 - 30 June 2027 Term & conditions apply."
+   },
+   {
+    "id": "18561758",
+    "name": "Stay 3 Pay 2",
+    "endDate": "2027-06-30",
+    "exclusive": false,
+    "description": "OFFER 1: STAY 3 PAY 2 Enjoy an additional night on us in selected room categories, including: 1) Deluxe Room 2) Siam Room 3) Kasara Executive Room 4) Siam Suite BOOKING PERIOD: 15 June 2026 - 30 June 2027 STAY PERIOD: 01 July 2026 - 30 June 2027"
    }
   ],
   "hasPromotion": true,
@@ -16047,18 +16047,18 @@
   ],
   "promotions": [
    {
-    "id": "18404349",
-    "name": "4th Night Free",
-    "endDate": "2026-12-31",
-    "exclusive": true,
-    "description": "Enjoy a 4th Night Free when you stay with us for three consecutive nights. Extend your stay and experience more of Austin!"
-   },
-   {
     "id": "18352167",
     "name": "Kappo Kappo Opening",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "French Japanese Omakase restaurant now open at Austin Proper Hotel. A5 wagyu and pristine seafood served at an intimate chef’s counter in a Kelly Wearstler-designed space that brings you into the experience. Each evening unfolds like a conversation - unexpected, personal, and rooted in place."
+   },
+   {
+    "id": "18404349",
+    "name": "4th Night Free",
+    "endDate": "2026-12-31",
+    "exclusive": true,
+    "description": "Enjoy a 4th Night Free when you stay with us for three consecutive nights. Extend your stay and experience more of Austin!"
    },
    {
     "id": "18575689",
@@ -19393,18 +19393,18 @@
   ],
   "promotions": [
    {
-    "id": "18586339",
-    "name": "Virtuoso Suite Life",
-    "endDate": "2027-03-31",
-    "exclusive": false,
-    "description": "Our Tufa Suites are named after the stone that was used on the original Bardessono family wine cellar. The tufa stone was repurposed and can be found within the architecture of the hotel. The Tufa Suites are 750 sq ft, offering one King bed dressed with luxury linens, two flat-screen televisions, expanded private courtyard - ideal for in-suite dining - a see-through gas fireplace, and bathroom featuring a soaking tub and steam shower. Enhance your Tufa suite experience of 2+ nights minimum stay including Virtuoso amenities plus an additional $150 resort credit."
-   },
-   {
     "id": "18481546",
     "name": "Stay 2 Nights and Get the Third Night on us!",
     "endDate": "2027-03-31",
     "exclusive": false,
     "description": "Stay a little longer ~ Another day at the spa? Another dining opportunity at Lucy? More time, more relaxation, more Yountville! Stay 2 nights and get the 3rd night free. Based upon availability and not combinable with any other offers or promotions. Restrictions and black-out dates may apply. Bookable through December, 2026 for travel through March, 31, 2027. **Virtuoso Amenities and Benefits Apply**"
+   },
+   {
+    "id": "18586339",
+    "name": "Virtuoso Suite Life",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "Our Tufa Suites are named after the stone that was used on the original Bardessono family wine cellar. The tufa stone was repurposed and can be found within the architecture of the hotel. The Tufa Suites are 750 sq ft, offering one King bed dressed with luxury linens, two flat-screen televisions, expanded private courtyard - ideal for in-suite dining - a see-through gas fireplace, and bathroom featuring a soaking tub and steam shower. Enhance your Tufa suite experience of 2+ nights minimum stay including Virtuoso amenities plus an additional $150 resort credit."
    }
   ],
   "hasPromotion": true,
@@ -24687,18 +24687,18 @@
     "description": "Embrace the lightness of summer at Brenners Park‑Hotel & Spa. Long, warm days, gentle breezes from the park, and the quiet charm of Baden‑Baden set the scene for a stay that feels wonderfully effortless. Whether you unwind on the Minerva Terrace, explore the Black Forest’s winding paths, or set off on a leisurely drive through nature, this escape captures the season at its most beautiful. Your three-night summer escape includes: Complimentary Breakfast Complimentary Summer Afternoon Tea on the Minerva Terrace Confirmed one category upgrade at time of booking upon availability Complimentary ½…"
    },
    {
-    "id": "18560761",
-    "name": "Family Adventure",
+    "id": "18555446",
+    "name": "A Little Longer at Brenners",
     "endDate": "2026-12-22",
     "exclusive": false,
-    "description": "Your family escape in the Black Forest: Discover unforgettable family moments in the heart of the Black Forest. With thoughtfully curated experiences for children, relaxing moments for adults, and inspiring nature all around, Brenners Park‑Hotel & Spa offers the ideal setting for a meaningful family getaway. This offer includes: Complimentary breakfast From a minimum stay of three nights, you receive 50% off on the second connected children’s room Complimentary Kids’ Club with daily changing program Travel itinerary for the family in the surroundings Terms & Conditions: This offer is subject…"
+    "description": "Some moments are meant to be savoured just a little longer. At Brenners Park-Hotel & Spa, we invite you to slow down, unwind, and fully embrace the calm and elegance that surround you. Stay three nights and the third night is on us—our invitation to linger longer and make every moment even more memorable. This Offer includes: A complimentary third night for every stay of a minimum three consecutive nights. This offer is subject to availability. All prices include statutory VAT unless otherwise stated. The local visitor’s tax is not included in the price and will be charged upon departure.…"
    },
    {
-    "id": "18557066",
-    "name": "Early Privilege Escape",
+    "id": "18557065",
+    "name": "Brenners Extended Retreat",
     "endDate": "2026-12-22",
     "exclusive": false,
-    "description": "Experience Brenners Park-Hotel & Spa at its finest. Elegant surroundings and a keen attention to detail create the perfect setting for a relaxing escape. Enjoy a stay where relaxation and wellbeing take centre stage. Enjoy 15% off our best available rate, including daily breakfast for two—adding an extra touch of comfort to every moment of your stay. This Offer includes: 15% off the best available rate Daily breakfast for two Terms & Conditions: This offer is subject to availability. All prices include statutory VAT unless otherwise stated. The local visitor’s tax is not included in the price…"
+    "description": "True relaxation takes time. At Brenners Park-Hotel & Spa, the experience unfolds best when you take the time to truly settle in. Arrive at your own pace, unwind, and enjoy Brenners in a more relaxed rhythm. Stay four nights and the fourth night is on us—because the most memorable stays are those you don’t have to rush. This Offer includes: A complimentary fourth night for every stay of a minimum four consecutive nights. Terms & Conditions: This offer is subject to availability. All prices include statutory VAT unless otherwise stated. The local visitor’s tax is not included in the price and…"
    }
   ],
   "hasPromotion": true,
@@ -30099,6 +30099,13 @@
   ],
   "promotions": [
    {
+    "id": "16902081",
+    "name": "Riverside Retreat (Stay 3 Pay 2)",
+    "endDate": "2026-12-20",
+    "exclusive": false,
+    "description": "Experience Bangkok’s soulful energy by making the serene riverfront your retreat —now further enhanced with Capella Bangkok’s immersive resort offerings and complimentary nights. Dive into the dynamic city of Bangkok, where ancient traditions meet modern wonders. At its heart, the culturally rich Charoenkrung district has been revitalised with the opening of Capella Bangkok, an elegant urban sanctuary perched on the banks of the meandering Chao Phraya River. Global travellers can now enjoy this tranquil escape with the “Riverside Retreat” offer, which includes one complimentary night and a…"
+   },
+   {
     "id": "18268508",
     "name": "Family Togetherness",
     "endDate": "2026-12-20",
@@ -30111,13 +30118,6 @@
     "endDate": "2026-12-20",
     "exclusive": false,
     "description": "For a limited time only, enjoy up to 18% savings off the Best Available Rate when you reserve our suites and villas! Embrace our riverfront lifestyle and and indulge in the comfort of the city’s first resort-style riverside villas with plunge pools and secluded tropical gardens hemming the waterfront or the superlative suites with spacious river-facing balconies. Package Inclusions 18% savings off Best Available Rate Daily breakfast for two guests A bottle of house Champagne Flexible check-in and check-out (subject to availability) Complimentary pressing up to 5 pieces of clothing per stay…"
-   },
-   {
-    "id": "16902081",
-    "name": "Riverside Retreat (Stay 3 Pay 2)",
-    "endDate": "2026-12-20",
-    "exclusive": false,
-    "description": "Experience Bangkok’s soulful energy by making the serene riverfront your retreat —now further enhanced with Capella Bangkok’s immersive resort offerings and complimentary nights. Dive into the dynamic city of Bangkok, where ancient traditions meet modern wonders. At its heart, the culturally rich Charoenkrung district has been revitalised with the opening of Capella Bangkok, an elegant urban sanctuary perched on the banks of the meandering Chao Phraya River. Global travellers can now enjoy this tranquil escape with the “Riverside Retreat” offer, which includes one complimentary night and a…"
    }
   ],
   "hasPromotion": true,
@@ -31852,18 +31852,18 @@
   ],
   "promotions": [
    {
-    "id": "18537951",
-    "name": "15% Early bird rate",
-    "endDate": "2027-03-21",
-    "exclusive": false,
-    "description": "Book early to take advantage of 15% off your holiday with us. This is a non-cancellable and non-refundable offer that is available over the following dates: 13 - 17 December 2026 7 - 20 January 2027 1 - 5 February 2027 1 - 21 March 2027 The offer includes: - 15% discount off our best flexible rate - Daily CHF 100 food & beverage credit per guest per night - for up to two guests per bedroom* - Daily Swiss breakfast buffet with à la carte options - Complimentary minibar with teas, coffee and regional drinks - Access to the 1’200 m² Carlton Spa - 24 hours limousine service within St. Moritz and…"
-   },
-   {
     "id": "18617247",
     "name": "Ski Pass Included",
     "endDate": "2027-03-21",
     "exclusive": false,
     "description": "Enjoy a complimentary ski pass Includes: Access to the 1200 sq. meter Carlton Spa 24-hour limousine service within Saint Moritz Complimentary shuttle to ski stations in Saint Moritz"
+   },
+   {
+    "id": "18537951",
+    "name": "15% Early bird rate",
+    "endDate": "2027-03-21",
+    "exclusive": false,
+    "description": "Book early to take advantage of 15% off your holiday with us. This is a non-cancellable and non-refundable offer that is available over the following dates: 13 - 17 December 2026 7 - 20 January 2027 1 - 5 February 2027 1 - 21 March 2027 The offer includes: - 15% discount off our best flexible rate - Daily CHF 100 food & beverage credit per guest per night - for up to two guests per bedroom* - Daily Swiss breakfast buffet with à la carte options - Complimentary minibar with teas, coffee and regional drinks - Access to the 1’200 m² Carlton Spa - 24 hours limousine service within St. Moritz and…"
    },
    {
     "id": "18576388",
@@ -36238,11 +36238,11 @@
     "description": "There is a special kind of magic in seeing our sanctuary through the eyes of a child. From discovering the gentle Caribbean waves to splashing in private villa pools, Chablé Maroma is a place where every generation finds its own rhythm. We are so excited to announce our new family promotion: Up to two children under 11 stay and enjoy breakfast for free when visiting us this season. It is time to create memories that will last a lifetime on one of the most beautiful beaches in the world."
    },
    {
-    "id": "18576415",
-    "name": "Villa Season at Chablé Maroma | Exclusive Inclusions for Your Clients",
+    "id": "18474806",
+    "name": "3rd Night on us",
     "endDate": "2026-12-19",
     "exclusive": false,
-    "description": "Elevate your clients' stay at Chablé Maroma this summer with an exceptional set of inclusions available exclusively for Serenity Villa and Presidential Villa reservations.Book now and your clients will enjoy: 2 Facial Massages per stay Daily a la carte Breakfast for two at Kaban Restaurant $200 USD Resort Credit per stay per room 15% discount on Food & Beverage and Spa treatments These inclusions are designed to create a deeply immersive, personalized experience from the moment your clients arrive, placing them at the heart of Chablé Maroma's world-class wellness philosophy. Eligible…"
+    "description": "Invite your clients to discover the mystical spirit of Chablé Maroma. This curated invitation offers a complimentary night to experience our pristine Riviera Maya sanctuary, where the turquoise Caribbean meets deep wellness and world-class design. Guest InclusionsComplimentary 3rd Night (minimum 3-night stay). $150 USD Resort Credit per stay for Spa or F&B. Daily Breakfast for Two at our signature restaurant. Daily Restocked Private Bar and welcome amenity."
    }
   ],
   "hasPromotion": true,
@@ -40976,18 +40976,18 @@
   ],
   "promotions": [
    {
-    "id": "18560963",
-    "name": "Ultimate Savings",
-    "endDate": "2028-03-31",
-    "exclusive": false,
-    "description": "Book your restorative escape to COMO Shambhala Estate by October 20th 2026 and receive up to 35 per cent off for stays until March 31st 2028. Nestled in the Balinese jungle, COMO Shambhala Estate invites you to explore the reimagined Ojas Wellness Centre, where expert therapies, contemporary movement spaces, and experiences inspired by nature create opportunities to unwind, recharge, and reconnect."
-   },
-   {
     "id": "18600460",
     "name": "Ultimate Savings Up To 35 Per Cent",
     "endDate": "2028-03-31",
     "exclusive": false,
     "description": "Plan your escape to COMO Shambhala Estate at least 60 days in advance and enjoy up to 35 per cent off. Reserve by October 20th 2026 until March 31st 2028."
+   },
+   {
+    "id": "18560963",
+    "name": "Ultimate Savings",
+    "endDate": "2028-03-31",
+    "exclusive": false,
+    "description": "Book your restorative escape to COMO Shambhala Estate by October 20th 2026 and receive up to 35 per cent off for stays until March 31st 2028. Nestled in the Balinese jungle, COMO Shambhala Estate invites you to explore the reimagined Ojas Wellness Centre, where expert therapies, contemporary movement spaces, and experiences inspired by nature create opportunities to unwind, recharge, and reconnect."
    }
   ],
   "hasPromotion": true,
@@ -42147,13 +42147,6 @@
   ],
   "promotions": [
    {
-    "id": "18216392",
-    "name": "Guaranteed Upgrade",
-    "endDate": "2027-03-31",
-    "exclusive": false,
-    "description": "Elevate Your Hamburg Experience with a guaranteed upgrade to the next available room category at the new Conrad Hamburg. Located on the famous Moenkebergstreet and housed within the historic Levantehaus, a renowned Art Nouveau building from 1912, Conrad Hamburg provides the ideal base for guests looking to fully immerse in the city's art and culture."
-   },
-   {
     "id": "18112623",
     "name": "Suite Discovery - Stay 4 nights and pay for 3",
     "endDate": "2027-03-31",
@@ -42166,6 +42159,13 @@
     "endDate": "2027-03-31",
     "exclusive": false,
     "description": "Nestled within the historic Levantehaus in the heart of Hamburg, Conrad Hamburg offers a luxurious retreat infused with maritime charm and Hanseatic elegance. Surrounded by premier shopping destinations, the five-star hotel seamlessly blends heritage and modern sophistication. Guests are invited to unwind in spacious rooms and suites, savor the vibrant flavors of Latin American cuisine at the Greta Oto Restaurant, and rejuvenate in the serene spa. With its distinctive ambiance, refined service, and exceptional amenities, Conrad Hamburg promises an unforgettable stay in one of Germany’s most…"
+   },
+   {
+    "id": "18216392",
+    "name": "Guaranteed Upgrade",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "Elevate Your Hamburg Experience with a guaranteed upgrade to the next available room category at the new Conrad Hamburg. Located on the famous Moenkebergstreet and housed within the historic Levantehaus, a renowned Art Nouveau building from 1912, Conrad Hamburg provides the ideal base for guests looking to fully immerse in the city's art and culture."
    }
   ],
   "hasPromotion": true,
@@ -43136,18 +43136,18 @@
   ],
   "promotions": [
    {
-    "id": "18238543",
-    "name": "Third Night Stay Free",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Experience Conrad Seoul with Stay 3 Pay 2 (33.3% discounted rate will be offered for 3 nights staying guest). Virtuoso Amenities are included in this exclusive offer. Must stay at least 3 nights. Offer subject to availability, blackout dates may apply. Cannot be combined with any other offers.. Must stay at least 3 nights. Offer subject to availability, blackout dates may apply. Cannot be combined with any other offers. Virtuoso Amenities Included: For 2026: Upgrade on arrival, subject to availability Daily Full Breakfast for two guests per bedroom $100USD equivalent Food & Beverage credit…"
-   },
-   {
     "id": "16918947",
     "name": "Third Night Stay Free",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Experience Conrad Seoul with Stay 3 Pay 2 (33.3% discounted rate will be offered for 3 nights staying guest). Virtuoso Amenities are included in this exclusive offer. Must stay at least 3 nights. Offer subject to availability, blackout dates may apply. Cannot be combined with any other offers. Virtuoso Amenities Included: For 2026: Upgrade on arrival, subject to availability Daily Full Breakfast for two guests per bedroom $100USD equivalent Food & Beverage credit utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full) Early check-in/late check-out,…"
+   },
+   {
+    "id": "18238543",
+    "name": "Third Night Stay Free",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Experience Conrad Seoul with Stay 3 Pay 2 (33.3% discounted rate will be offered for 3 nights staying guest). Virtuoso Amenities are included in this exclusive offer. Must stay at least 3 nights. Offer subject to availability, blackout dates may apply. Cannot be combined with any other offers.. Must stay at least 3 nights. Offer subject to availability, blackout dates may apply. Cannot be combined with any other offers. Virtuoso Amenities Included: For 2026: Upgrade on arrival, subject to availability Daily Full Breakfast for two guests per bedroom $100USD equivalent Food & Beverage credit…"
    }
   ],
   "hasPromotion": true,
@@ -51555,18 +51555,18 @@
   ],
   "promotions": [
    {
-    "id": "18372445",
-    "name": "Exclusive Villa Offer 2026",
-    "endDate": "2026-10-31",
-    "exclusive": true,
-    "description": "Reserve one of our Luxury Villas and receive: - 1 free night for minimum 4 night-stay - 10% off on all spa services - 15% off on food and beverages consumptions"
-   },
-   {
     "id": "16760910",
     "name": "2026 Special Offers",
     "endDate": "2026-10-31",
     "exclusive": false,
     "description": "Escape to the enchanting universe of Elounda Gulf Villas and make the most of our exclusive offers. Let us tempt you. Take benefit of special rates, added values and resort credit!!! Plese visit the link below for view and book our special offers: https://eloundagulfvillas.reserve-online.net/ Combinable with our Virtuoso amenity which includes: Upgrade on arrival to the next room category, subject to availability (does not apply from Suite to Villa) Daily Buffet breakfast at Argo Restaurant, for all guests (already included in property rates) Stays of 5+ nights will also receive a…"
+   },
+   {
+    "id": "18372445",
+    "name": "Exclusive Villa Offer 2026",
+    "endDate": "2026-10-31",
+    "exclusive": true,
+    "description": "Reserve one of our Luxury Villas and receive: - 1 free night for minimum 4 night-stay - 10% off on all spa services - 15% off on food and beverages consumptions"
    }
   ],
   "hasPromotion": true,
@@ -53202,11 +53202,11 @@
     "description": "Slip away to Riviera Maya with 20% savings for an effortless escape inviting you to slow down and savor oceanfront moments. Settle into the natural rhythm of Riviera Maya for a short weekend, or linger a little longer to revel in restorative wellness experiences and the distinct flavors of Mexico. No minimum length of stay required Book or stay through December 23, 2026 Subject to availability"
    },
    {
-    "id": "18365201",
-    "name": "Book in Advance | Save 40%",
+    "id": "18519954",
+    "name": "4th Night on Us",
     "endDate": "2027-12-22",
     "exclusive": false,
-    "description": "Book in Advance | Save 40% Book online or call 855.725.5333. For a limited time, save up to 40% on up to four nights of accommodations when you book 30 days or more in advance. Allow memories to unfold in Riviera Maya over authentic local experiences, exquisite epicurean journeys, and the pursuit of total wellbeing. This offer is non-cancellable and non-refundable. Full payment is required at the time of booking 30 day advance booking required Minimum length of stay is 4 nights"
+    "description": "Journey to Etéreo to enjoy every fourth night on us this season. Create cherished memories where golden Mexican sunshine warms your days, moments of renewal unfold at our serene spa, SANA, and every meal celebrates local cuisine."
    }
   ],
   "hasPromotion": true,
@@ -56455,6 +56455,13 @@
   ],
   "promotions": [
    {
+    "id": "16795227",
+    "name": "Fairmont Kea Lani Villa Experience - 4th Night Free",
+    "endDate": "2026-12-19",
+    "exclusive": false,
+    "description": "Make yourselves at home in luxury beach villas with every fourth night free Steps from Polo Beach, the luxury beach villas at Fairmont Kea Lani Maui are perfect for family or multi-couple Wailea beach vacations. Choose from two-bedroom (1800 sq ft) or three-bedroom (2200 sq ft) beachfront two-story villas, complete with a full gourmet kitchen with dining area for six, spacious indoor living area with full entertainment system, two master bedrooms each with an oversize five piece Italian marble bathroom, and a private furnished courtyard with plunge pool and barbeque grill. Package Includes…"
+   },
+   {
     "id": "18394365",
     "name": "Every 4th Night Free - The Suite Life",
     "endDate": "2026-12-19",
@@ -56467,13 +56474,6 @@
     "endDate": "2026-12-19",
     "exclusive": false,
     "description": "As part of the Virtuoso Ultra-Luxe community, your private villa retreat awaits at Fairmont Kea Lani. Enjoy spacious residential-style villas with gourmet kitchens, private plunge pools, and expansive lanais — perfect for families or those seeking extra space and privacy. Each villa includes a complimentary fourth night, daily breakfast for 2 per bedroom, a welcome villa basket, $100.00 food & beverage credit, and valet parking. Your Maui home away from home — with every fourth night free."
-   },
-   {
-    "id": "18394363",
-    "name": "Enjoy Your Villa Every 5th Night Free",
-    "endDate": "2026-12-19",
-    "exclusive": false,
-    "description": "Experience villa luxury of Fairmont Kea Lani, Maui with our exclusive Virtuoso Preferred Advisor offer. Enjoy a complimentary fifth night, daily breakfast for two per bedroom at, Kea Lani Restaurant, early check-in and late check-out based on availability, and a $100.00 Food & Beverage Credit. Indulge in a two- or three-bedroom Ocean View or Oceanfront villa at the beautiful Fairmont Kea Lani. Hawai‘i is calling — and Hawai‘i stays with you."
    }
   ],
   "hasPromotion": true,
@@ -67048,18 +67048,18 @@
   ],
   "promotions": [
    {
-    "id": "18621315",
-    "name": "Advance Purchase - Up to 25% Off",
-    "endDate": "2027-09-24",
-    "exclusive": false,
-    "description": "Enjoy up to 25% off our Room Rate when you book your stay in advance."
-   },
-   {
     "id": "18621303",
     "name": "Experience More - Spending Credit",
     "endDate": "2027-09-24",
     "exclusive": false,
     "description": "Make every moment extraordinary with the Experience More spending credit. Enjoy elevated dining, restorative wellness and curated experiences designed for an unforgettable stay."
+   },
+   {
+    "id": "18621315",
+    "name": "Advance Purchase - Up to 25% Off",
+    "endDate": "2027-09-24",
+    "exclusive": false,
+    "description": "Enjoy up to 25% off our Room Rate when you book your stay in advance."
    }
   ],
   "hasPromotion": true,
@@ -75033,7 +75033,7 @@
    {
     "id": "18391405",
     "name": "4th Night Free",
-    "endDate": "2027-06-30",
+    "endDate": "2027-12-20",
     "exclusive": false,
     "description": "Stay 4 nights or more and take advantage of the following benefits: The fourth night complimentary. Virtuoso Amenities will be applied: Upgrade on arrival, subject to availability, Daily Full breakfast for up to two guests per bedroom, served in the restaurant, $100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full), Early Check-In / Late Check-Out, subject to availability, Complimentary Wi-Fi"
    }
@@ -76250,13 +76250,6 @@
   ],
   "promotions": [
    {
-    "id": "18229572",
-    "name": "This Season, Live Florence Like a Local",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Florence is now revealing its most enchanting side: the crisp air, the golden light, and the quiet beauty of its streets make it the perfect time for an indulgent escape. At the Helvetia & Bristol, experience the magic of the season in the elegant heritage of the Helvetia rooms or the contemporary comfort of the Bristol suites. Begin your mornings with an unforgettable four hands breakfast, where the sweet creations of Iginio Massari meet the savory artistry of Cibrèo Caffè. After exploring the boutiques and ateliers surrounding the hotel, unwind at LA SPA Helvetia & Bristol, home to the…"
-   },
-   {
     "id": "18399318",
     "name": "Stay Longer On Us",
     "endDate": "2026-12-31",
@@ -76269,6 +76262,13 @@
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "This season, Florence belongs to the top of your travel list. Suite Temptation at Helvetia & Bristol Firenze – Starhotels Collezione is a curated Suite experience blending slow luxury and world-class amenities, giving the perfect opportunity to experience the city at your own pace. Begin each day with a genuine breakfast signed Iginio Massari and unwind with exclusive access to the Roman Baths at LA SPA, where ancient rituals meet contemporary wellness. Your experience is further elevated by a complimentary 20-minute facial massage per person, a refined welcome with a bottle of Ferrari…"
+   },
+   {
+    "id": "18229572",
+    "name": "This Season, Live Florence Like a Local",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Florence is now revealing its most enchanting side: the crisp air, the golden light, and the quiet beauty of its streets make it the perfect time for an indulgent escape. At the Helvetia & Bristol, experience the magic of the season in the elegant heritage of the Helvetia rooms or the contemporary comfort of the Bristol suites. Begin your mornings with an unforgettable four hands breakfast, where the sweet creations of Iginio Massari meet the savory artistry of Cibrèo Caffè. After exploring the boutiques and ateliers surrounding the hotel, unwind at LA SPA Helvetia & Bristol, home to the…"
    }
   ],
   "hasPromotion": true,
@@ -82003,13 +82003,6 @@
   ],
   "promotions": [
    {
-    "id": "18562222",
-    "name": "Spa Experience",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "An oasis in the heart of Rome, Irene Forte Spa is committed to resorting harmony and equilibrium to your life. Experience an invigorating workout in the first-class gym, feel the heat in our Finnish sauna, then plunge into the saltwater hydro-pool. When you book one or more night’s stay with Rocco Forte Hotels, we will guarantee you slip into serenity. Treat yourself to a relaxing, indulgent Spa Weekend package at one of our sumptuous spas. Unwind and rejuvenate with a restorative treatment while we make sure you’re thoroughly pampered. Your Stay Includes: A restorative Spa Treatment at one…"
-   },
-   {
     "id": "18397074",
     "name": "In Love with Rome",
     "endDate": "2026-12-31",
@@ -82017,11 +82010,18 @@
     "description": "Let Rome unfold at a pace that suits you. Stay two nights or more in an elegant room or suite and save up to 15%, with daily breakfast included. When reserving a suite, you'll also enjoy bespoke privileges through our Suites & Beyond programme, including enhanced amenities and unique cultural experiences designed to reveal the city from a more personal perspective. Your stay includes: Daily breakfast for two people Save up to 15% Terms & Conditions: Minimum length of stay and blackout dates apply VAT included Displayed rate is exclusive of city tax"
    },
    {
-    "id": "18562727",
-    "name": "A Journey Between Rome & Florence",
+    "id": "18562222",
+    "name": "Spa Experience",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "An oasis in the heart of Rome, Irene Forte Spa is committed to resorting harmony and equilibrium to your life. Experience an invigorating workout in the first-class gym, feel the heat in our Finnish sauna, then plunge into the saltwater hydro-pool. When you book one or more night’s stay with Rocco Forte Hotels, we will guarantee you slip into serenity. Treat yourself to a relaxing, indulgent Spa Weekend package at one of our sumptuous spas. Unwind and rejuvenate with a restorative treatment while we make sure you’re thoroughly pampered. Your Stay Includes: A restorative Spa Treatment at one…"
+   },
+   {
+    "id": "18562220",
+    "name": "Culinary Experience",
     "endDate": "2027-01-31",
     "exclusive": false,
-    "description": "Experience Italy’s most photogenic Renaissance cities with a 5-night stay across our prestigious destinations in Rome and Florence, and enjoy exclusive benefits. Each of our participating hotels offers a unique perspective: encounter Rome’s vibrant cosmopolitanism at Hotel de Russie and soak up the majesty of Florence’s historic beauty at Hotel Savoy, located on the Piazza della Repubblica. As part of your stay at our hotels, enjoy 10% off our best available rate and travel in style with two first-class train tickets between Rome and Florence. Select a Rocco Forte Suite and enhance your stay…"
+    "description": "One of the most romantic garden restaurants in Rome, Le Jardin de Russie at the Hotel de Russie is famed for its exemplary Italian cuisine. The colourful and fragrant dishes have been inspired by the Mediterranean ingredients on the hotel’s doorstep, and are overseen by celebrity Chef Fulvio Pierangelini. One of the highlights of visiting a new country is discovering different cuisines and we pride ourselves on delivering the freshest and most local produce to our hotel restaurants. Our Culinary Experience package will make your taste buds tingle. Simply book one or more nights with us and…"
    }
   ],
   "hasPromotion": true,
@@ -84115,18 +84115,18 @@
     "description": "Save 20% when you stay 3 nights or longer Booking Restrictions : Minimum 3 nights stay. Not combinable with any other offer. The offer is subject to availability."
    },
    {
-    "id": "18370107",
-    "name": "Penthouse Suite Offer",
-    "endDate": "2027-12-31",
-    "exclusive": false,
-    "description": "Athens’ Ultimate Luxury Retreat Experience the epitome of luxury in our palatial two-bedroom Penthouse Suite, offering breathtaking vistas of the Acropolis. An expansive private outdoor pool and elegant sitting and dining areas on the terrace create an unrivaled sanctuary of comfort and style, perfectly situated in the heart of Athens. This exclusive package includes: A complimentary degustation menu dinner with wine pairing at the Michelin-starred Tudor Hall Restaurant, offering venerable views of the Acropolis (Gratuities and additional alcoholic beverages are not included). One-way airport…"
-   },
-   {
     "id": "16409805",
     "name": "Your Suite Experience in Athens",
     "endDate": "2027-12-31",
     "exclusive": false,
     "description": "- One way airport transfer in a Mercedes E-Class taxi - minimum 2 nights stay in any suite - valid through April 30, 2027 - not combinable with any other offer - includes all Virtuoso amenities *For alternative vehicle requests additional charges will be applied"
+   },
+   {
+    "id": "18370107",
+    "name": "Penthouse Suite Offer",
+    "endDate": "2027-12-31",
+    "exclusive": false,
+    "description": "Athens’ Ultimate Luxury Retreat Experience the epitome of luxury in our palatial two-bedroom Penthouse Suite, offering breathtaking vistas of the Acropolis. An expansive private outdoor pool and elegant sitting and dining areas on the terrace create an unrivaled sanctuary of comfort and style, perfectly situated in the heart of Athens. This exclusive package includes: A complimentary degustation menu dinner with wine pairing at the Michelin-starred Tudor Hall Restaurant, offering venerable views of the Acropolis (Gratuities and additional alcoholic beverages are not included). One-way airport…"
    }
   ],
   "hasPromotion": true,
@@ -88760,18 +88760,18 @@
   ],
   "promotions": [
    {
-    "id": "18196673",
-    "name": "Suite Indulgence",
-    "endDate": "2026-12-29",
-    "exclusive": false,
-    "description": "Your Luxurious Escape to Dresden Let yourself be swept away by the quiet splendour of Dresden while enjoying the elevated comforts of a luxurious suite. With our exclusive suite offer, every detail has been carefully considered to ensure a stay that is both refined and unforgettable. Whether waking up to views over baroque rooftops or winding down in spacious elegance, your suite becomes your sanctuary in the heart of the city. Available for all suites and commissionable at 15%, valid for all bookings until the 31st of December 2026. Black Out Dates may apply. You’ll receive: Up to 20%…"
-   },
-   {
     "id": "18049660",
     "name": "Stay 3 Pay 2 at Hotel Taschenbergpalais Kempinski Dresden",
     "endDate": "2026-12-29",
     "exclusive": true,
     "description": "Stay 3, Pay 2 – An Virtuoso Offer at Hotel Taschenbergpalais Kempinski Dresden Discover the timeless elegance of Hotel Taschenbergpalais Kempinski Dresden, a palace built by Augustus the Strong for his beloved Countess Cosel. Steeped in the grandeur of Saxon royalty, this historic gem has been a symbol of sophistication for centuries. Following a complete renovation in 2024, the hotel shines anew with regal design elements inspired by its royal heritage. Experience the perfect blend of history and modern luxury in the heart of Dresden’s Old Town. Ideally located in central Europe, Dresden is…"
+   },
+   {
+    "id": "18196673",
+    "name": "Suite Indulgence",
+    "endDate": "2026-12-29",
+    "exclusive": false,
+    "description": "Your Luxurious Escape to Dresden Let yourself be swept away by the quiet splendour of Dresden while enjoying the elevated comforts of a luxurious suite. With our exclusive suite offer, every detail has been carefully considered to ensure a stay that is both refined and unforgettable. Whether waking up to views over baroque rooftops or winding down in spacious elegance, your suite becomes your sanctuary in the heart of the city. Available for all suites and commissionable at 15%, valid for all bookings until the 31st of December 2026. Black Out Dates may apply. You’ll receive: Up to 20%…"
    },
    {
     "id": "18196671",
@@ -102850,18 +102850,18 @@
     "description": "Stay & Save - Save 10% when you stay 3 nights or longer - minimum 3 nights stay - valid from July 1, 2026 through August 31, 2026 - not combinable with any other offer - includes all Virtuoso amenities The offer is always subject to hotel's availability"
    },
    {
-    "id": "18368546",
-    "name": "Penthouse Suite Offer",
-    "endDate": "2027-12-31",
-    "exclusive": false,
-    "description": "Athens’ Ultimate Luxury Retreat Experience the epitome of luxury in our palatial two-bedroom Penthouse Suite, offering breathtaking vistas of the Acropolis. An expansive private outdoor pool and elegant sitting and dining areas on the terrace create an unrivaled sanctuary of comfort and style, perfectly situated in the heart of Athens. This exclusive package includes: A complimentary degustation menu dinner with wine pairing at the Michelin-starred Tudor Hall Restaurant, offering venerable views of the Acropolis (Gratuities and additional alcoholic beverages are not included). One-way airport…"
-   },
-   {
     "id": "16688859",
     "name": "Suite Promotion",
     "endDate": "2027-12-31",
     "exclusive": false,
     "description": "Suite Promotion - One way airport transfer in a Mercedes E-Class Taxi - minimum 2 nights stay in a suite - valid through April 30, 2027 - not combinable with any other offer - includes all Virtuoso amenities * For alternative vehicle requests additional charges will be applied"
+   },
+   {
+    "id": "18368546",
+    "name": "Penthouse Suite Offer",
+    "endDate": "2027-12-31",
+    "exclusive": false,
+    "description": "Athens’ Ultimate Luxury Retreat Experience the epitome of luxury in our palatial two-bedroom Penthouse Suite, offering breathtaking vistas of the Acropolis. An expansive private outdoor pool and elegant sitting and dining areas on the terrace create an unrivaled sanctuary of comfort and style, perfectly situated in the heart of Athens. This exclusive package includes: A complimentary degustation menu dinner with wine pairing at the Michelin-starred Tudor Hall Restaurant, offering venerable views of the Acropolis (Gratuities and additional alcoholic beverages are not included). One-way airport…"
    }
   ],
   "hasPromotion": true,
@@ -111191,11 +111191,11 @@
     "description": "Days devoted to wellness, when the Lefay SPAs open their doors to the most renowned experts in the various holistic disciplines. During these weeks, it will be possible to enjoy the uniqueness of a Lefay SPA experience, enriched by the presence of visiting masters, who will be exceptionally hosted in our Resort to give our Guests the opportunity to try out new techniques and manual skills from various fields and specialisations. The Wellness Weeks will take place during the following periods: From 16th to 28th March 2026 with Joao Santos, Dry Massage practitioner and expert in Tui Na and…"
    },
    {
-    "id": "18565364",
-    "name": "LEFAY LAKE AND MOUNTAINS",
+    "id": "18598097",
+    "name": "Rejuvenate",
     "endDate": "2026-12-17",
     "exclusive": false,
-    "description": "A new special offer combining the iconic scenery of Lake Garda with the beauty of the Dolomites. Six consecutive nights to experience both properties in the Lefay Resorts collection, admire the charming area in which they are located, discover the local flavours in the Vital Gourmet restaurants and regenerate thanks to massages carried out with natural local products. 3-night stay on Lake Garda 3-night stay in the Dolomites Breakfast Buffet at the Resorts’ main restaurants Entrance to Lefay SPA Worlds with pools, saunas, fitness centre and relaxation areas 1 Lefay SPA Gocce di Lago energy…"
+    "description": "A revitalising and anti-aging package for face and body, combining the latest aesthetic technology with holistic Lefay SPA treatments. The protagonists are the \"Paths of the Black Turtle\", which include scrubs, mud therapy and specific massages. Overnight stay of at least 3 nights Breakfast Buffet at 'Dolomia' Restaurant 1 Lefay SPA revitalising and anti-aging energy body massage Alta Marea (50 min.) 1 Facial rejuvenation treatment with HydraFacial MD Treatment + Booster (60 min.) 1 Oxygen Therapy Intraceuticals (60 min.) 1 Anti-aging path of the Black Tortoise Luce (Long, 2 h., 10 min.)…"
    }
   ],
   "hasPromotion": true,
@@ -111330,11 +111330,11 @@
     "description": "Days devoted to wellness, when the Lefay SPAs open their doors to the most renowned experts in the various holistic disciplines. During these weeks, it will be possible to enjoy the uniqueness of a Lefay SPA experience, enriched by the presence of visiting masters, who will be exceptionally hosted in our Resort to give our Guests the opportunity to try out new techniques and manual skills from various fields and specialisations. The Wellness Weeks will take place during the following periods: From 13th to 26th February 2026 with Lucja Maslowska, founder of \"My Separate World\", a method to…"
    },
    {
-    "id": "18565359",
-    "name": "ROMANTIC ESCAPE",
+    "id": "18598100",
+    "name": "Purify",
     "endDate": "2026-12-17",
     "exclusive": false,
-    "description": "Spend some time together, immersed in the peace and quiet of the Mediterranean nature of Lake Garda. Treat yourself to some moments of well-being with a journey in one of the enchanting Lefay Private SPAs, which includes a welcome ritual and a couple’s massage. This is combined with a gourmet dinner that will surprise every sense. 2 nights Breakfast, one of which served in the privacy of your Suite 1 à la carte gourmet dinner at “Gramen” Restaurant* Bottle of champagne in your room upon arrival 1 Wellness programme with treatments dedicated to the couple in one of our splendid Private SPA…"
+    "description": "A path created to cleanse the body from accumulated toxins, improving the quality of life. Lefay SPA treatments allow symptoms such as fatigue, irritability and bloating to be eliminated in three days and promote the free flow of vital energy. 2 nights Buffet breakfast at “La Limonaia” Restaurant 1 Holistic activity: Stretching of the Meridians in the Energy and Therapeutic Garden 'The Centre' 1 Salt and extra-virgin olive oil body scrub (30 min.) 1 Lefay SPA aromatic mud wrap Il Potere del Cielo e della Terra (45 min.) 1 BIO Lefay SPA detoxifying energy massage La Luce Oltre la Nebbia (50…"
    }
   ],
   "hasPromotion": true,
@@ -112978,13 +112978,6 @@
   ],
   "promotions": [
    {
-    "id": "18125627",
-    "name": "DiscoverMORE (Get 10% on a 6-night stay  )",
-    "endDate": "2027-04-30",
-    "exclusive": false,
-    "description": "Book a 6-night stay at ONE or MORE properties withing the MORE Collection and get 10% OFF Validity (excluding block-out dates ) : 30 April 2027 Block out dates : 20 December - 3 January"
-   },
-   {
     "id": "16796475",
     "name": "StayMORE ( Book 4 nights and get 1 night free)",
     "endDate": "2027-04-30",
@@ -112997,6 +112990,13 @@
     "endDate": "2027-04-30",
     "exclusive": false,
     "description": "Repeat guests will be gifted 10% on their accommodation rate Validity: Until 30 April 2027 (excluding block-out dates) • Block-out dates : 20 December - 3 January • Valid for repeat guests, and excludes travelling companions who have not stayed at a MORE property previously • This promotion can be combined with other MORE Offers, excluding LoveMORE"
+   },
+   {
+    "id": "18125627",
+    "name": "DiscoverMORE (Get 10% on a 6-night stay  )",
+    "endDate": "2027-04-30",
+    "exclusive": false,
+    "description": "Book a 6-night stay at ONE or MORE properties withing the MORE Collection and get 10% OFF Validity (excluding block-out dates ) : 30 April 2027 Block out dates : 20 December - 3 January"
    }
   ],
   "hasPromotion": true,
@@ -113232,18 +113232,18 @@
     "description": "Experience and connect with Feel Urban Spa by Live Aqua in San Miguel de Allende—your personal oasis. Feel your body reach balance, your mind relax and achieve clarity, and your spirit be set free. The spa features eight massage rooms, a sauna, steam room, experiential showers, relaxation areas, and an extraordinary leisure pool. Enjoy a USD 50 spa credit, an exclusive Virtuoso promotion. Book now: ventas2aqsm@posadas.com"
    },
    {
-    "id": "18611257",
-    "name": "Stay 3 Nights, Pay for 2",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Stay three consecutive nights at Live Aqua San Miguel de Allende and pay for only two nights. The third night is complimentary."
-   },
-   {
     "id": "18402096",
     "name": "Elevated Earnings: 15% Commission for Virtuoso",
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Exclusive 15% Commission Incentive for Virtuoso Advisors We are pleased to offer an enhanced 15% commission for all Virtuoso advisors on new reservations confirmed by Sep 30, 2026, for travel throughout the entire 2026 calendar year. This limited-time incentive is designed to reward our valued partners while providing your clients with the exceptional experience of Live Aqua San Miguel de Allende. All eligible bookings made within the promotional window will automatically qualify for the 15% commission, regardless of travel dates in 2026. The offer applies to standard transient reservations…"
+   },
+   {
+    "id": "18611257",
+    "name": "Stay 3 Nights, Pay for 2",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Stay three consecutive nights at Live Aqua San Miguel de Allende and pay for only two nights. The third night is complimentary."
    }
   ],
   "hasPromotion": true,
@@ -115886,18 +115886,18 @@
   ],
   "promotions": [
    {
-    "id": "18397576",
-    "name": "Island Hopper - Transfers incl",
-    "endDate": "2027-08-15",
-    "exclusive": false,
-    "description": "Island Hopper Flying through St. Maarten? Hop on a boat, relax with a rum punch, and let us take care of your ride. Traveling to Malliouhana doesn’t get easier – or more fun. $45 per person Daily Breakfast Credit in Celeste Round Trip Boat Transfer from St. Maarten to Blowing Point Ferry Terminal in Anguilla Round Trip Taxi Service from Blowing Point Ferry Terminal to Malliouhana Contact your Virtuoso travel advisor to coordinate the boat and taxi transfers with your arrival in St. Maarten 4-night minimum. Combinable with your Virtuoso perks"
-   },
-   {
     "id": "16496625",
     "name": "5th Night Complimentary + Up to $500 Resort Credit",
     "endDate": "2027-08-15",
     "exclusive": true,
     "description": "Stay 4 nights and enjoy the 5th night on us to explore the magic of Malliouhana. From vibrant island cuisine to wellness and seaside adventures, experience Yoga, Paddleboard by Moonlight or a tropical cocktail creation class with our on-site beverage expert. Enjoy a $250 resort credit in guest rooms and $500 resort credit in suites to use while on property, and create the perfect balance of relaxation and adventure during your tropical getaway."
+   },
+   {
+    "id": "18397576",
+    "name": "Island Hopper - Transfers incl",
+    "endDate": "2027-08-15",
+    "exclusive": false,
+    "description": "Island Hopper Flying through St. Maarten? Hop on a boat, relax with a rum punch, and let us take care of your ride. Traveling to Malliouhana doesn’t get easier – or more fun. $45 per person Daily Breakfast Credit in Celeste Round Trip Boat Transfer from St. Maarten to Blowing Point Ferry Terminal in Anguilla Round Trip Taxi Service from Blowing Point Ferry Terminal to Malliouhana Contact your Virtuoso travel advisor to coordinate the boat and taxi transfers with your arrival in St. Maarten 4-night minimum. Combinable with your Virtuoso perks"
    },
    {
     "id": "18179917",
@@ -117530,18 +117530,18 @@
     "description": "Valid until 30 September 2026. Minimum three-night stay. Blackout dates apply. The rate shown reflects the average nightly rate including the complimentary night. Book a minimum of two nights and enjoy a complimentary third night. Additional benefits available when you log into or join Fans of M.O. Terms and Conditions Local taxes apply. Rates are subject to 16.6% service charge and tax. This offer is subject to availability, is not applicable for groups and cannot be combined with any other offers. Rates are subject to change and may vary on certain days of the week. Prepayment of the full…"
    },
    {
-    "id": "18378846",
-    "name": "A Harmonious Retreat: The Tong Ren Tang Wellness Journey",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Details Valid until 31 December 2026. A 60-minute Traditional Chinese Medicine health consultation by Tong Ren Tang for up to two guests in your courtyard. A 60-minute Health-Preserving Tuina at The Spa for two. A 60-minute personalised morning wellness activity for up to three guests: Tai Chi or Ba Duan Jin. A 30-minute intangible cultural heritage workshop by Tong Ren Tang in your courtyard for up to three guests: hand-rolled TCM pills or scented sachet crafting. Each room is entitled to two complimentary 30-minute TCM therapy：- TCM Herbal Application Therapy.- TCM Cupping Therapy.- TCM Gua…"
-   },
-   {
     "id": "18283054",
     "name": "Luxury Courtyard Hideaway",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Details Valid until 31 December 2026. From breakfast to wellness, unique hutong tour to an elegant limousine transfer, every element ensures that guests make the most of their stay. Enjoy daily credit of CNY1,888 for all restaurants and the bar, laundry and pressing service, and treatments at The Spa (advance booking is required). 24-hour stay. Daily breakfast at VICINI or in-room-dining for registered guests. One way limousine service (airports or train stations). 24-hour butler on call service. Terms and Conditions Local taxes apply. Rates are subject to 16.6% service charge and tax. This…"
+   },
+   {
+    "id": "18279160",
+    "name": "Echoes of Hutong Dreams",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Details Valid until 31 December 2026. Sample itinerary Itinerary can be tailored to suit your schedule and preferences. After booking, our concierge and butler team will craft an exclusive experience for you. 24-hour butler on call service. Day 1 Enjoy a seamless arrival with our limousine service transfer to the hotel, followed by check-in at the lobby. Savour the quiet ritual of a tea ceremony at The Spa or in the privacy of your courtyard. *Recommendation (with extra charge): Indulge in authentic Italian cuisine at VICINI, where vibrant ambiance meets exquisite flavours, before enjoying a…"
    }
   ],
   "hasPromotion": true,
@@ -123542,18 +123542,18 @@
   ],
   "promotions": [
    {
-    "id": "18586078",
-    "name": "More at Meadowood",
-    "endDate": "2027-03-31",
-    "exclusive": false,
-    "description": "Immerse yourself in the heart of Napa Valley and awaken to the rhythms of nature on our sprawling hillside estate. Embrace our wine-country approach to leisure, rest, and rejuvenation. OFFERING INCLUSIONSOvernight accommodations at our gracious Forbes Travel Guide Five-Star estate A welcome bottle of Napa Valley wine upon arrival A $750 Estate Credit for dining, rejuvenating spa treatments, or discovering treasures in our three retail boutiques Available for stays beginning September 1, 2026. Rates are not equivalent to the Best Available Rate.Offer is subject to availability at time of…"
-   },
-   {
     "id": "18527714",
     "name": "Stay Longer at Meadowood",
     "endDate": "2027-03-31",
     "exclusive": false,
     "description": "Stay three consecutive nights and receive the fourth with our compliments.Based upon availability at time of booking; blackout dates may apply."
+   },
+   {
+    "id": "18586078",
+    "name": "More at Meadowood",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "Immerse yourself in the heart of Napa Valley and awaken to the rhythms of nature on our sprawling hillside estate. Embrace our wine-country approach to leisure, rest, and rejuvenation. OFFERING INCLUSIONSOvernight accommodations at our gracious Forbes Travel Guide Five-Star estate A welcome bottle of Napa Valley wine upon arrival A $750 Estate Credit for dining, rejuvenating spa treatments, or discovering treasures in our three retail boutiques Available for stays beginning September 1, 2026. Rates are not equivalent to the Best Available Rate.Offer is subject to availability at time of…"
    }
   ],
   "hasPromotion": true,
@@ -125974,6 +125974,13 @@
   ],
   "promotions": [
    {
+    "id": "16536808",
+    "name": "More Time Away",
+    "endDate": "2026-12-15",
+    "exclusive": false,
+    "description": "Channel The Spirit of the Mountain West with More Time Away at Montage Big Sky Extend your stay and create even more cherished memories. Receive a 15% savings on stays of four nights, a 20% savings on stays of five to six nights or a 25% savings on stays of seven nights or more. 4 – 7+ night Minimum length of stay. Subject to availability and blackout dates. Suites, Lodge Residences, Inn Residences and Mountain Homes are not eligible for More Time Away promotion. Booking dates - now through December 10, 2026. Travel Dates - now through December 15, 2026 Combinable with Virtuoso amenities."
+   },
+   {
     "id": "18489168",
     "name": "Suite Escape",
     "endDate": "2026-12-15",
@@ -125986,13 +125993,6 @@
     "endDate": "2026-12-15",
     "exclusive": false,
     "description": "Stay 3 or more nights and receive a $200 Daily Resort Credit for King and Queen/Queen rooms and $300 Daily Resort Credit for Studios. Combinable with the following Virtuoso amenities: Breakfast for two daily ($75 max daily credit) upgrade based on availability at time of arrival and early check-in/late check-out subject to availability. Some blackout dates apply. Suites, Lodge Residences, Inn Residences and Mountain Homes are not eligible for the Stay Well Lived promotion."
-   },
-   {
-    "id": "16536808",
-    "name": "More Time Away",
-    "endDate": "2026-12-15",
-    "exclusive": false,
-    "description": "Channel The Spirit of the Mountain West with More Time Away at Montage Big Sky Extend your stay and create even more cherished memories. Receive a 15% savings on stays of four nights, a 20% savings on stays of five to six nights or a 25% savings on stays of seven nights or more. 4 – 7+ night Minimum length of stay. Subject to availability and blackout dates. Suites, Lodge Residences, Inn Residences and Mountain Homes are not eligible for More Time Away promotion. Booking dates - now through December 10, 2026. Travel Dates - now through December 15, 2026 Combinable with Virtuoso amenities."
    }
   ],
   "hasPromotion": true,
@@ -126105,18 +126105,18 @@
     "description": "Reserve your stay this season and receive a $100 daily resort credit, valid towards a variety of resort experiences, including dining, Compass Sports rentals, treatments at Spa Montage and more. A two night minimum length of stay is required. Subject to availability. Applicable on King and Queen/Queen rooms only. Valid on new bookings, not combinable with any other packages or promotions, not applicable to groups. Blackout dates may apply. Combinable with Virtuoso amenities"
    },
    {
-    "id": "16874035",
-    "name": "Suite Escape",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Reserve one of our spacious suites at our Deer Valley luxury resort and receive a 10% savings and a daily $300 resort credit. Two night minimum length of stay required. Available on all 1, 2 and 3 Bedroom Suites (excluding Specialty Suites) Blackout dates subject to change. Combinable with Virtuoso amenities."
-   },
-   {
     "id": "16765308",
     "name": "More Time Away",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Extend your stay and create even more cherished memories. Receive a 15% savings on stays of three to four nights, a 20% savings on stays of five to six nights or a 25% savings on stays of seven nights or more. Combinable with the Virtuoso amenities"
+   },
+   {
+    "id": "18477582",
+    "name": "Specialty Suite Splendor",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Retreat to one of our signature Montage Deer Valley suites for two nights or more and enjoy 15% savings on our best available rate, along with a daily $300 resort credit to explore distinctive dining or Spa Montage experiences, plus complimentary valet parking. Two night minimum length of stay required. Available on 1 and 2 Bedroom Specialty Suites ONLY. Blackout dates subject to change. Combinable with all Virtuoso amenities"
    }
   ],
   "hasPromotion": true,
@@ -126550,18 +126550,18 @@
     "description": "Enjoy our one of our rooms or suites featuring private plunge pools and a thoughtful selection of amenities that can be indulged in poolside for the ultimate relaxation experience. Package Includes a $200 daily food and beverage credit, poolside welcome amenity, and daily delivery of refreshments, snacks, chilled towels, and more."
    },
    {
-    "id": "18363878",
-    "name": "Advance Purchase - Up to 20% Savings",
+    "id": "18363874",
+    "name": "Residential Retreat -  Up to 15% saving + 750 USD Resort Credit + Transfers",
     "endDate": "2026-12-18",
     "exclusive": false,
-    "description": "Enjoy up to 20% savings on our best available rate. Reserve your stay at least 21 days in advance. A full pre-paid deposit is required at the time of booking and reservations are non-refundable and non-cancelable."
+    "description": "Receive up to 15% savings, a one time $750 USD resort credit and round-trip transportation for up to 4 guests on Residences and Casas when staying 3 or more nights"
    },
    {
-    "id": "18363877",
-    "name": "5th Night Complimentary",
+    "id": "18363873",
+    "name": "Suite Escape - Up to 10% savings + Daily $300 USD Resort Credit",
     "endDate": "2026-12-18",
     "exclusive": false,
-    "description": "Reserve Five consecutive nights and receive the fifth night with our compliments. Maximum of 3 comp nights - up to a 15-night stay."
+    "description": "Receive up to 10% savings and a daily $300 USD resort credit in Suites when staying 2 or more nights."
    }
   ],
   "hasPromotion": true,
@@ -132323,11 +132323,11 @@
     "description": "This season, make family time unforgettable at Nobu Hotel Ibiza Bay, where every day is an adventure and every moment is a cherished memory. With the The Family Edit package, families can enjoy: Seaside Lunches - Feel the Mediterranean breeze while kids (under 17) enjoy a complimentary meal at Chambao By the Beach—barefoot luxury at its finest. Dining Credit - Savor the flavors of Nobu Restaurant, toast to golden-hour moments on our Rooftop, or explore Ibiza Bay’s world-class culinary offerings. Endless Fun - Our Kids Club is a world of exploration, with interactive workshops, games, and…"
    },
    {
-    "id": "18598126",
-    "name": "Back to School? Or Back to Ibiza?",
+    "id": "18576391",
+    "name": "Suite Beats",
     "endDate": "2026-10-26",
     "exclusive": false,
-    "description": "Summer isn’t over. Not in Ibiza. Back to school doesn’t have to mean back to reality. Not quite yet.Because while the rest of the world starts putting summer away, Ibiza keeps the doors open a little longer. Days by the bay, barefoot afternoons, long lunches that turn into sundowners and the unmistakable energy of the island’s closing parties as the season reaches its final crescendo. Stay a little longer. Summer a little more.Enjoy 15 per cent off your stay and settle into the slower side of Ibiza at Nobu Hotel Ibiza Bay.Wake to breakfast at Chambao by the Beach, spend the day between pool,…"
+    "description": "Toast the sunset, embrace the night, and wake up refreshed in ultimate luxury. Answer Ibiza's irresistible call for fun-times and let spontaneity lead the way without compromising on wellbeing. Watch the sun set over Ibiza from The Rooftop at Nobu Ibiza Bay, with handcrafted cocktails before heading out to experience the island's legendary nightlife with a private transfer to the club of your choice. After a night to remember, wake up slowly with breakfast in bed and restore your body with a Liquid IV recovery drip and a complimentary wellness experience of the day. From golden hour to the…"
    }
   ],
   "hasPromotion": true,
@@ -136377,18 +136377,18 @@
     "description": "Escape to the peaks and find stillness among the pines. Book your alpine hideaway and enjoy your third, fourth, or fifth night on us when you book. Offer includes: 3 nights for the price of 2 4 nights for the price of 3 5 nights for the price of 4 Terms & Conditions: A minimum stay of three nights nights applies between 18 November 2025 - 17 December 2026 Combinable with Virtuoso Amenities."
    },
    {
-    "id": "18369330",
-    "name": "Experience Big Sky",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Embrace the spirit of adventure in Big Sky Country. Book a stay and receive $200 in resort credits per bedroom per stay to use toward experiences such as fine-dining, snowshoeing, or an alpine-inspired spa treatment. Offer includes: $200 resort credit per bedroom per stay Daily complimentary breakfast at Wildwood Terms and Conditions: A minimum stay of two nights applies between 4 January 2026 and 31 December 2027. Book from 4 January 2026 to 31 December 2026. Resort Credit is valid toward food and non-alcoholic beverage purchases, spa services, and recreational equipment rentals only. It is…"
-   },
-   {
     "id": "18241116",
     "name": "Wellness Escape",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Escape the every day and reconnect with what truly matters. Your experience begins with $200 in spa credit to relax and recharge. For a deeper connection to nature, enhance your stay with a guided mindfulness hike that includes journaling, an enriching addition to your mountain retreat. You'll also enjoy a thoughtfully curated in-room wellness treats and complimentary valet service for one vehicle. Offer Inclusions: $200 Spa Credit Health forward snack in room upon arrival Complimentary Valet (1 Vehicle) Terms & Conditions: A minimum stay of two nights applies between: 18 November 2025 to 31…"
+   },
+   {
+    "id": "18369330",
+    "name": "Experience Big Sky",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Embrace the spirit of adventure in Big Sky Country. Book a stay and receive $200 in resort credits per bedroom per stay to use toward experiences such as fine-dining, snowshoeing, or an alpine-inspired spa treatment. Offer includes: $200 resort credit per bedroom per stay Daily complimentary breakfast at Wildwood Terms and Conditions: A minimum stay of two nights applies between 4 January 2026 and 31 December 2027. Book from 4 January 2026 to 31 December 2026. Resort Credit is valid toward food and non-alcoholic beverage purchases, spa services, and recreational equipment rentals only. It is…"
    }
   ],
   "hasPromotion": true,
@@ -147736,18 +147736,18 @@
     "description": "Reserve 3 nights and receive the 3rd night with our compliments. *Combinable with Virtuoso Amenities Cancellation Policy: Cancel at least 72 hours prior to arrival to avoid a penalty equal to 50% of the total stay including tax. Guarantee Policy: Credit card guarantee at time of booking; a 50% deposit of the total stay including tax is due 72 hours prior to arrival"
    },
    {
-    "id": "18481463",
-    "name": "Suite Retreat",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Suite Retreat Reserve two nights or more in one of our signature Newport Beach suites and enjoy 15% savings on our best available rate, a daily $300 hotel credit, signature dining, drinks, and spa. Combinable with Virtuoso Amenities. ** The one time $100 Virtuoso resort credit does not apply as the promotion includes a higher credit. Cancellation Policy: Cancel at least 72 hours prior to arrival to avoid a penalty equal to 50% of the total stay including tax. Guarantee Policy: Credit card guarantee at time of booking; a 50% deposit of the total stay including tax is due 72 hours prior to…"
-   },
-   {
     "id": "16796579",
     "name": "Stay More Do More",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Extend your stay and explore the iconic coast of Newport Beach. Reserve a minimum of 3-4 nights and receive a 15% savings on our best available rate, stay 5-6 nights and enjoy an 20% savings, or stay 7 or more nights and receive a 25% savings. *Combinable with Virtuoso Amenities Cancellation Policy: Cancel at least 72 hours prior to arrival to avoid a penalty equal to 50% of the total stay including tax. Guarantee Policy: Credit card guarantee at time of booking; a 50% deposit of the total stay including tax is due 72 hours prior to arrival"
+   },
+   {
+    "id": "16796578",
+    "name": "Suite'n Your Stay",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Reserve a stay in one of our suites and enjoy a 10% savings on our best available rate and a $300 daily resort credit. Resort credit is valid for use towards experiences including signature dining at SET, cocktails at Bar Pendry, treatments at Spa Pendry and more. *Combinable with Virtuoso Amenities (except one time $100 Resort Credit as promotion already includes a credit) Two night minimum lenght of stay required Cancellation Policy: Cancel at least 72 hours prior to arrival to avoid a penalty equal to 50% of the total stay including tax. Guarantee Policy: Credit card guarantee at time of…"
    }
   ],
   "hasPromotion": true,
@@ -151672,18 +151672,18 @@
   ],
   "promotions": [
    {
-    "id": "16873694",
-    "name": "Complimentary 5th Night",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Immerse yourself in the serenity of Raffles Bali, where ocean views and sunsets offer a tranquil escape. Extend your stay with our exclusive offer—enjoy your 5th night on us, along with a host of exceptional additional benefits, including: USD200 Food & Beverage credit, per villa per stay One-time 90 minutes spa treatment at Raffles Spa One-time 3-course degustation dinner at Loloan Beach Bar and Grill One-time Afternoon Tea at The Writers Bar Return airport transfers and VIP arrival assistance Daily breakfast at Rumari restaurant Upgrade to next category (up to Hilltop Pool Villa), subject…"
-   },
-   {
     "id": "18077892",
     "name": "The Raffles Indulgence - Stay Pay Offer with up to USD 200 Resort Credit",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Special Offers Just for You Stay longer and enjoy more with our exclusive offers: Included with Every Stay – Virtuoso Exclusive Amenities: Daily à la carte breakfast at Rumari Complimentary round-trip airport transfers Complimentary Wi-Fi Villa upgrade upon arrival (subject to availability) Early check-in and late check-out (subject to availability) Resort credit based on length of stay More Nights, More Indulgence Book a non-promotional rate and enjoy even more personalized experiences: Stay 3 Pay 2 includes: 60-minute spa treatment for two Afternoon tea at The Writers Bar USD 150 resort…"
+   },
+   {
+    "id": "16873694",
+    "name": "Complimentary 5th Night",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Immerse yourself in the serenity of Raffles Bali, where ocean views and sunsets offer a tranquil escape. Extend your stay with our exclusive offer—enjoy your 5th night on us, along with a host of exceptional additional benefits, including: USD200 Food & Beverage credit, per villa per stay One-time 90 minutes spa treatment at Raffles Spa One-time 3-course degustation dinner at Loloan Beach Bar and Grill One-time Afternoon Tea at The Writers Bar Return airport transfers and VIP arrival assistance Daily breakfast at Rumari restaurant Upgrade to next category (up to Hilltop Pool Villa), subject…"
    }
   ],
   "hasPromotion": true,
@@ -154145,18 +154145,18 @@
     "description": "Far from ordinary, Simply Perfect. Rancho Valencia invites you to stay, and stay for as long as you wish! For every day you stay, enjoy a $100 resort credit to use towards spa, dining, or retail. The simple fine print? Stay one day = $100 resort credit. Stay 2 days = $200 resort credit. Stay 3 days.... you get it! A $100 per day resort credit for every day you stay."
    },
    {
-    "id": "18408317",
-    "name": "San Diego Sunshine",
-    "endDate": "2027-06-30",
-    "exclusive": false,
-    "description": "We are serving up sunshine at Rancho Valencia! Book now and enjoy breakfast for two and a $250 resort credit with our San Diego Sunshine offer. See what you've been missing at Rancho Valencia Resort and Spa!"
-   },
-   {
     "id": "16867939",
     "name": "4th Night Free",
     "endDate": "2027-06-30",
     "exclusive": false,
     "description": "Take advantage of one of our most popular offers. Book three nights in a luxurious resort casita or our grand private residences and receive a complimentary fourth night. Available for stays January 1, 2026 through December 31, 2026. Not combinable with other offers. Stay a little longer, because you won't want to leave!"
+   },
+   {
+    "id": "18408317",
+    "name": "San Diego Sunshine",
+    "endDate": "2027-06-30",
+    "exclusive": false,
+    "description": "We are serving up sunshine at Rancho Valencia! Book now and enjoy breakfast for two and a $250 resort credit with our San Diego Sunshine offer. See what you've been missing at Rancho Valencia Resort and Spa!"
    }
   ],
   "hasPromotion": true,
@@ -156371,18 +156371,18 @@
     "description": "Your perfect summer begins with a stay in one of our elegant and spacious Private Villas. A trip to our flagship Irene Forte Spa, a round of golf on our championship courses, fine dining, exclusive tours and island excursions—the beauty of our Private Villas lies in the freedom to do it all, with space, privacy and thoughtful service at your fingertips. Reconnect with friends and family, surrounded by citrus groves and views of the Mediterranean, and save more on your stay this summer, whilst enjoying daily breakfast at Buongiorno. Your stay includes: Up to 15% discount on the best available…"
    },
    {
-    "id": "18574468",
-    "name": "The Ultimate Villa Experience",
+    "id": "16921428",
+    "name": "A Sicilian Adventure for Families",
     "endDate": "2026-11-01",
     "exclusive": false,
-    "description": "Designed around a selection of our most exceptional experiences, discover the very best of Sicily from your seafront villa. For ultimate comfort and breathtaking views, arrive and depart by helicopter. Mornings begin with breakfast on your terrace, followed by days spent exploring the island in a Fiat 500e reserved for your stay, or reaching its most beautiful beaches by private boat with skipper. Return to your villa for a barbecue beneath the stars or an immersive cooking experience at La Casetta nell’Orto. Your stay includes: Return helicopter transfer from Palermo or Taormina Luggage…"
+    "description": "Family holidays at Rocco Forte Private Villas are all about stargazing and pizza making. Introduce your family to the culture and cuisine of Italy’s largest island from the comfort of your villa, complete with private pool. Breakfast is served daily in your villa, setting you up for a busy day of sports and sightseeing. Active kids can have a golf lesson, included as part of your experience, or try an array of sports on site. Entertain and educate the kids with a family outing to the Valley of the Temples. After your tour, meet Rosa and Carmelo, farmers and custodians of this land for 50…"
    },
    {
-    "id": "18574466",
-    "name": "The Ultimate Villa Experience",
+    "id": "16921427",
+    "name": "A Private Golfing Experience",
     "endDate": "2026-11-01",
     "exclusive": false,
-    "description": "Designed around a selection of our most exceptional experiences, discover the very best of Sicily from your seafront villa. For ultimate comfort and breathtaking views, arrive and depart by helicopter. Mornings begin with breakfast on your terrace, followed by days spent exploring the island in a Fiat 500e reserved for your stay, or reaching its most beautiful beaches by private boat with skipper. Return to your villa for a barbecue beneath the stars or an immersive cooking experience at La Casetta nell’Orto. Your stay includes: Return helicopter transfer from Palermo or Taormina Luggage…"
+    "description": "Perfect your swing on a Sicilian sporting escape at your own Rocco Forte Private Villa and enjoy an exclusive tour of Sicily’s finest vineyards. Golf enthusiasts can admire the Mediterranean from the fairways of Italy’s best golf course at Verdura Resort – six green fees are included as part of your golfing experience. Need help with your swing? Our golf pros can arrange a complimentary assessment using the latest technology. After your round, ease tension and reduce the possibility of golf related injuries with a Be Forte sports massage. When you’re ready to explore beyond the greens,…"
    }
   ],
   "hasPromotion": true,
@@ -157418,18 +157418,18 @@
     "description": "Stay longer this summer in The Bahamas and enjoy a complimentary night on us. For a limited time, enjoy a daily USD100 resort credit and a complimentary fourth night for stays May 1 – October 31, 2026. Offer combinable with consortia benefits; resort credits are not combinable."
    },
    {
-    "id": "18045389",
-    "name": "Advance Purchase",
-    "endDate": "2026-12-19",
-    "exclusive": false,
-    "description": "Enjoy exclusive savings and receive up to 25% off on our flexible rates when you plan ahead for your unforgettable Caribbean getaway. Indulge in our beachfront enclave of pure luxury and immerse yourself in the sights and sounds of the islands, filled with rich culture, delectable flavors, and endless experiences right at your fingertips. Minimum Stay 2 consecutive paid nights, Full pre-payment required at time of booking, which is non-refundable in case of cancellation or amendments. Available on select guestrooms and suites/rates and availability are subject to change; Blackout dates may…"
-   },
-   {
     "id": "16761807",
     "name": "More Rosewood: Extended Stay Offer",
     "endDate": "2026-12-19",
     "exclusive": false,
     "description": "MORE ROSEWOOD: EXTENDED STAY OFFER Linger in Bahamian paradise for just a bit longer. Book a 3, 4, 5, or 7 night stay in select room types and receive one night, complimentary, in luxurious accommodations. *Offer combinable with Virtuoso amenities **Offer subject to availability and blackout dates."
+   },
+   {
+    "id": "18045389",
+    "name": "Advance Purchase",
+    "endDate": "2026-12-19",
+    "exclusive": false,
+    "description": "Enjoy exclusive savings and receive up to 25% off on our flexible rates when you plan ahead for your unforgettable Caribbean getaway. Indulge in our beachfront enclave of pure luxury and immerse yourself in the sights and sounds of the islands, filled with rich culture, delectable flavors, and endless experiences right at your fingertips. Minimum Stay 2 consecutive paid nights, Full pre-payment required at time of booking, which is non-refundable in case of cancellation or amendments. Available on select guestrooms and suites/rates and availability are subject to change; Blackout dates may…"
    }
   ],
   "hasPromotion": true,
@@ -158332,18 +158332,18 @@
     "description": "Elevate your stay: Enjoy up to 20% savings on luxurious stays and 15% off on select spa treatments. WHAT'S INCLUDED Luxurious accommodations in our reimagined guestrooms (offer does not apply to suites) Enjoy 15% off treatments at Sense, A Rosewood Spa Complimentary WiFi BOOK & STAY BETWEEN Now - 30th Sept 2026 MINIMUM STAY 2 consecutive nights"
    },
    {
-    "id": "18192014",
-    "name": "4th Night on Us",
-    "endDate": "2027-03-31",
-    "exclusive": false,
-    "description": "Enjoy a complimentary night at Rosewood Hotel Georgia—from the breathtaking setting to a cosmopolitan treasure hunt of things to explore. Use your extra day to venture out and enjoy Vancouver, with easy access to shopping, entertainment, and attractions including the famous Stanley Park just minutes away."
-   },
-   {
     "id": "18053844",
     "name": "Suite Sojourn Offer - Great Savings on Posh Accommodations",
     "endDate": "2027-03-31",
     "exclusive": true,
     "description": "Elevate your stay in one of our reimagined suites, carefully crafted for the ultimate luxury experience, extend your stay to a minimum of 2 nights to obtain this offer. Enjoy up to 25% off our best available rate on suites."
+   },
+   {
+    "id": "18192014",
+    "name": "4th Night on Us",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "Enjoy a complimentary night at Rosewood Hotel Georgia—from the breathtaking setting to a cosmopolitan treasure hunt of things to explore. Use your extra day to venture out and enjoy Vancouver, with easy access to shopping, entertainment, and attractions including the famous Stanley Park just minutes away."
    }
   ],
   "hasPromotion": true,
@@ -159145,18 +159145,18 @@
   ],
   "promotions": [
    {
-    "id": "18191956",
-    "name": "Rosewood Escapes",
-    "endDate": "2026-12-30",
-    "exclusive": false,
-    "description": "Retreat to Rosewood Mansion on Turtle Creek and receive 15% off our flexible rate. Terms and conditions: The rate is not combinable with other offers nor applicable on group bookings. Offers are subject to change/availability and exclude applicable tax, service fee or other surcharges unless otherwise noted. Rates may vary by arrival date and be limited to specific room types. Blackout dates may apply."
-   },
-   {
     "id": "18112719",
     "name": "Suite Sojourn",
     "endDate": "2026-12-30",
     "exclusive": false,
     "description": "Experience Rosewood Mansion on Turtle Creek's residentially appointed suites and enjoy up to 40% off our flexible rate, overnight valet parking, one-time USD 150 food and beverage credit to be used in the Mansion Restaurant. Virtuoso Guests will also enjoy daily breakfast, room upgrade based upon availability, early check in and check out based upon availability. Policies, Terms and Conditions The percentage off varies by suite type booked. One time USD 150 food and beverage credit at the Mansion Restaurant (In-room dining and Mansion Bar are excluded) This rate is not combinable with other…"
+   },
+   {
+    "id": "18191956",
+    "name": "Rosewood Escapes",
+    "endDate": "2026-12-30",
+    "exclusive": false,
+    "description": "Retreat to Rosewood Mansion on Turtle Creek and receive 15% off our flexible rate. Terms and conditions: The rate is not combinable with other offers nor applicable on group bookings. Offers are subject to change/availability and exclude applicable tax, service fee or other surcharges unless otherwise noted. Rates may vary by arrival date and be limited to specific room types. Blackout dates may apply."
    },
    {
     "id": "17898587",
@@ -159945,13 +159945,6 @@
   ],
   "promotions": [
    {
-    "id": "18218787",
-    "name": "Suite Retreats",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Enjoy an extra night and a complimentary breakfast for two when staying in our suites WHAT’S INCLUDEDA complimentary third night with two consecutive paid nights Daily American breakfast for two adults Exclusive welcome amenity Complimentary WiFi TERMS & CONDITIONSRates are subject to change and availability at the time of booking; a three-night minimum length of stay is required, and black-out dates may apply. Rates are not valid with other offers or applicable to group bookings. Rates are based on single/double occupancy per night and may vary by arrival date, room type, and length of stay.…"
-   },
-   {
     "id": "16930352",
     "name": "Weekday Escape",
     "endDate": "2026-12-31",
@@ -159964,6 +159957,13 @@
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Celebrate the spur of the moment with an unexpected getaway. Take advantage of this last-minute deal, and book your next adventure to San Miguel de Allende."
+   },
+   {
+    "id": "16568904",
+    "name": "Early Booking Bonus",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Plan ahead and save up to 20% per night on any of our guest rooms, including signature suites and private residences. Must book at least 30 days in advance to take advantage of this offer. POLICIES, TERMS & CONDITIONS This reservation is Fully Prepaid, Non-Refundable Rates are per room, per night, based on single/double occupancy and availability at the time of reservation, and do not include additional charges that may be imposed or state/local taxes (16% VAT, 4% Lodging, and 10% Service Charge) Blackout dates and other restrictions may apply."
    }
   ],
   "hasPromotion": true,
@@ -160404,6 +160404,13 @@
   ],
   "promotions": [
    {
+    "id": "16927292",
+    "name": "Suite Sojourn",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Experience a city retreat in one of our elegant suites with exclusive benefits including daily breakfast, a hotel credit to be used during the stay and more. A Suite stay combines the ultimate comfort and all the luxuries that will make you emerge relaxed and inspired. Book a 2-night stay and receive a 15% discount on our best available rate Complimentary breakfast in our Neue Hoheit brasserie Complimentary roundtrip airport transfer for Signature and Royal Houses Chilled bottle of champagne on arrival in a Signature and Royal Houses Complimentary WiFi Complimentary access to Asaya Spa sauna…"
+   },
+   {
     "id": "18360449",
     "name": "Discover Vienna",
     "endDate": "2026-12-31",
@@ -160416,13 +160423,6 @@
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Stay an additional night with our compliments and discover Rosewood Vienna, one of the capital’s most acclaimed ultra-luxury hotels. Ideally situated on Petersplatz, one of the most famous squares in Vienna’s Old Town, Rosewood Vienna is located just steps away from the city’s most luxurious shopping and dining and its most famous historical sites. -WHAT’S INCLUDED Upgrade upon availability up until St. Stephen’ Suite Complimentary a la carte Breakfast for two persons at the Neue Hoheit Restaurant A 100€ equivalent Food & Beverage & Spa credit to be utilized during-Credit not combinable, not…"
-   },
-   {
-    "id": "16927292",
-    "name": "Suite Sojourn",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Experience a city retreat in one of our elegant suites with exclusive benefits including daily breakfast, a hotel credit to be used during the stay and more. A Suite stay combines the ultimate comfort and all the luxuries that will make you emerge relaxed and inspired. Book a 2-night stay and receive a 15% discount on our best available rate Complimentary breakfast in our Neue Hoheit brasserie Complimentary roundtrip airport transfer for Signature and Royal Houses Chilled bottle of champagne on arrival in a Signature and Royal Houses Complimentary WiFi Complimentary access to Asaya Spa sauna…"
    }
   ],
   "hasPromotion": true,
@@ -165385,8 +165385,16 @@
    "Turn Down Service",
    "Wheelchair Accessible"
   ],
-  "promotions": [],
-  "hasPromotion": false,
+  "promotions": [
+   {
+    "id": "18621759",
+    "name": "Buy 4 Nights, Get 1 Free",
+    "endDate": "2026-12-17",
+    "exclusive": false,
+    "description": "A longer stay offers more spaces to move at your own pace. For a limited time, book a five-night Self-Guided Stay and enjoy the final night on us. Please note that arrivals on Mondays and Tuesdays are not eligible. Available until December 17, 2026 Deposit Policy: Two nights room and tax at the time of booking, and full deposit 14 days prior to arrival. Cancellation Policy: 14 days prior to arrival for full refund."
+   }
+  ],
+  "hasPromotion": true,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16809330_2_0_0809.webp",
@@ -166932,18 +166940,18 @@
     "description": "Experience an unforgettable family vacation at Shangri-La Paris! Immerse yourself in the charm of our spacious Family Suites, designed to create joyful and lasting memories. Every moment is crafted to enchant you and your children's stay in Paris. Stay in our Family Junior Suite or Family Eiffel View Suite categories to fully enjoy your family retreat with a special rate, including up to 60% discount on the connecting room. Start your days with a sumptuous American breakfast, savored at La Bauhinia restaurant or in the comfort of your suite. Little ones will be thrilled with special amenities…"
    },
    {
-    "id": "18117206",
-    "name": "Book Early and Save",
-    "endDate": "2027-04-30",
-    "exclusive": false,
-    "description": "Book Early and Save Indulge in the refined splendor of Shangri-La Paris and be rewarded for planning ahead with our Book Early and Save offer. 20% savings on all room and suite categories for bookings made 21+ days before arrival. 15% savings on select Eiffel View categories for bookings made between 7 and 21 days before arrival. Offer applies for stays from now to April 30th, 2027. Terms & Conditions Payment & Cancellation: Full prepayment for the entire stay duration is required at the time of booking. Prepayment is non-refundable in the event of cancellation or modification. Rates are in…"
-   },
-   {
     "id": "16657417",
     "name": "Stay longer in Paris with One night on us",
     "endDate": "2027-04-30",
     "exclusive": false,
     "description": "One night on us : fourth night complimentary. Offer applies for stays from August 1st 2025 until April 30th 2027. Terms & Conditions Rates are in EUR. VAT and service charges are included. A Visitor Tax of EUR 15,93 per night will be charged per adult in supplement. Offer is subject to availability and cannot be availed in conjunction with other offers or promotions. A minimum of 4 consecutive nights is required per room per stay to benefit from this offer. This offer applies to all rooms and suites, with the exception of Signature Suites. Blackout dates may apply. For additional information…"
+   },
+   {
+    "id": "18117206",
+    "name": "Book Early and Save",
+    "endDate": "2027-04-30",
+    "exclusive": false,
+    "description": "Book Early and Save Indulge in the refined splendor of Shangri-La Paris and be rewarded for planning ahead with our Book Early and Save offer. 20% savings on all room and suite categories for bookings made 21+ days before arrival. 15% savings on select Eiffel View categories for bookings made between 7 and 21 days before arrival. Offer applies for stays from now to April 30th, 2027. Terms & Conditions Payment & Cancellation: Full prepayment for the entire stay duration is required at the time of booking. Prepayment is non-refundable in the event of cancellation or modification. Rates are in…"
    }
   ],
   "hasPromotion": true,
@@ -167277,18 +167285,18 @@
   ],
   "promotions": [
    {
-    "id": "18375072",
-    "name": "The Valley Wing Cruise Offer (A Voyage to Shangri-La)",
-    "endDate": "2027-12-31",
-    "exclusive": false,
-    "description": "A Voyage to Shangri-La Enhance your cruise journey with a refined pre- or post-stay at Shangri-La Singapore and receive: Increased USD150 Hotel Credit per room per stay (Instead of USD100) Complimentary one-way transfer to / or from cruise centre per room per stay (at least 72 hours advance reservation is required) This offer is combinable with Stay 3 Pay 2 Offer (Enjoy a Complimentary 3rd Night on Us) Please contact luxury.sls@shangri-la.com and slsconcierge@shangri-la.com for transfer arrangements. Booking period: 2 Feb 2026 - 31 Dec 2026 Travel period: 2 Feb 2026 - 31 Dec 2027 Terms &…"
-   },
-   {
     "id": "16848408",
     "name": "A Complimentary 4th night on us at Shangri-La Singapore",
     "endDate": "2027-12-31",
     "exclusive": false,
     "description": "Book your stay at Shangri-La Singapore for three nights and enjoy a complimentary fourth night on us. Booking period: by 31 December 2026 Travel period: till 31 December 2027 Terms & Conditions Applicable for all room types in the Tower Wing, Garden Wing and Valley Wing except for Grand Suite, Garden Wing One-Bedroom Suites, Garden Wing Premier Balcony Suites, Singapore Suite and Shangri-La Suite. Blackout dates apply: 8 to 10 Oct 2026, 25 to 27 Dec 2026, 31 Dec 2026 to 01 Jan 2027, 05 to 08 Feb 2027, 09 to 13 May 2027, 27 to 30 May 2027, 30 Sep to 02 Oct 2027, 07 to 09 Oct 2027, 24 to 26 Dec…"
+   },
+   {
+    "id": "18375072",
+    "name": "The Valley Wing Cruise Offer (A Voyage to Shangri-La)",
+    "endDate": "2027-12-31",
+    "exclusive": false,
+    "description": "A Voyage to Shangri-La Enhance your cruise journey with a refined pre- or post-stay at Shangri-La Singapore and receive: Increased USD150 Hotel Credit per room per stay (Instead of USD100) Complimentary one-way transfer to / or from cruise centre per room per stay (at least 72 hours advance reservation is required) This offer is combinable with Stay 3 Pay 2 Offer (Enjoy a Complimentary 3rd Night on Us) Please contact luxury.sls@shangri-la.com and slsconcierge@shangri-la.com for transfer arrangements. Booking period: 2 Feb 2026 - 31 Dec 2026 Travel period: 2 Feb 2026 - 31 Dec 2027 Terms &…"
    },
    {
     "id": "18077893",
@@ -170033,18 +170041,18 @@
   ],
   "promotions": [
    {
-    "id": "18392651",
-    "name": "Suite Privilege with Extra Hotel Credit",
-    "endDate": "2026-12-31",
-    "exclusive": true,
-    "description": "Book a suite and receive an extra USD100 hotel credit per stay, for a total of USD200 hotel credit per stay (equivalent in local currency), redeemable at the hotel's restaurants and wellness facilities (not combinable with other offers, not applicable toward room charges, and has no cash value if not fully redeemed)"
-   },
-   {
     "id": "16743120",
     "name": "Third Night Complimentary : Stay 3, Pay 2",
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Promotion Name : Third Night Complimentary : Stay 3, Pay 2 Room Type : Grand Deluxe Room (lead-in room) and above room types Booking period : Now until 30 September 2026 Stay period : Now until 31 December 2026 Blackout date : 12-14 April 2026 inclusive, 1-4 October 2026 inclusive and 20-31 December 2026 inclusive Remarks : -The promotion is room only basis - 15% commission on appliable rates - Book a suite and receive an extra USD100 hotel credit per stay, for a total of USD200 hotel credit per stay (equivalent in local currency), redeemable at the hotel's restaurants and wellness facilities…"
+   },
+   {
+    "id": "18392651",
+    "name": "Suite Privilege with Extra Hotel Credit",
+    "endDate": "2026-12-31",
+    "exclusive": true,
+    "description": "Book a suite and receive an extra USD100 hotel credit per stay, for a total of USD200 hotel credit per stay (equivalent in local currency), redeemable at the hotel's restaurants and wellness facilities (not combinable with other offers, not applicable toward room charges, and has no cash value if not fully redeemed)"
    }
   ],
   "hasPromotion": true,
@@ -170292,6 +170300,13 @@
   ],
   "promotions": [
    {
+    "id": "18344992",
+    "name": "Singita 4 Night Combination Offer",
+    "endDate": "2026-12-14",
+    "exclusive": false,
+    "description": "Book 4 nights at any Singita Serengeti lodge/camp and receive 1 night on us, as well as a private vehicle at less 50%. Valid: 6 January to 15 May & 1 October to 14 December 2026 Minimum 4 nights required The complimentary night applies to the lowest-rated night Private vehicle subject to availability"
+   },
+   {
     "id": "18345062",
     "name": "Singita Explore/Serengeti House Combination Offer",
     "endDate": "2026-12-14",
@@ -170304,13 +170319,6 @@
     "endDate": "2026-12-14",
     "exclusive": false,
     "description": "Book 3 nights at Singita Explore followed by 2 nights at Serengeti House and receive 1 night at Explore on us. Valid: 6 January to 14 December 2026 Minimum 5 nights required (minimum of 3 nights at Singita Explore) The complimentary night applies to Singita Explore"
-   },
-   {
-    "id": "18344994",
-    "name": "Singita 6 Night Combination Offer",
-    "endDate": "2026-12-14",
-    "exclusive": false,
-    "description": "Extend your Serengeti safari by booking 6 nights at any combination of Singita Serengeti lodges/camps and receive 1 night on us, as well as a complimentary private vehicle. Valid: 6 January to 15 May & 1 October to 14 December 2026 Minimum 6 nights required The complimentary night applies to the lowest-rated night Private vehicle subject to availability"
    }
   ],
   "hasPromotion": true,
@@ -170914,25 +170922,25 @@
   ],
   "promotions": [
    {
-    "id": "18377374",
-    "name": "10 Night Plus",
-    "endDate": "2026-12-31",
-    "exclusive": true,
-    "description": "Stay for ten consecutive nights or longer in any combination of our lodges and enjoy a private English-speaking guide, car, driver, 60 minute spa and one way flight ticket for Bumthang to Paro for 2 adults. Inclusions: Full board meals at our lodges Private English-speaking guide Private driver and vehicle Pre-arrival tour advice and customized itinerary 60 minute spa and one way flight ticket for Bumthang to Paro for 2 adults. Please email Reservations at reservations-bhutan@sixsenses.com for any questions and to confirm availability. Offer is subject to change."
-   },
-   {
-    "id": "18377373",
-    "name": "6 Night Plus",
-    "endDate": "2026-12-31",
-    "exclusive": true,
-    "description": "Stay for six consecutive nights or longer in any combination of our lodges and enjoy a private English-speaking guide, car, driver, daily touring, monument entrance fees, and airport transfers, plus complimentary breakfast. Inclusions: Full board meals at our lodges Private English-speaking guide Private driver and vehicle Pre-arrival tour advice and customized itinerary Daily touring including entrance fees to monuments and temples, hikes, and road permits Visa and SDF processing Please email Reservations at reservations-bhutan@sixsenses.com for any questions and to confirm availability.…"
-   },
-   {
     "id": "18399312",
     "name": "Seven-Night Khamsa: Thimphu, Punakha, Gangtey, Bumthang and Paro Valleys",
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Travel back in time and take a journey that few people have had the opportunity to experience. Druk Yul, Bhutan’s official name, is known as the Land of the Dragon People with a rich cultural heritage that has largely remained hidden until its recent emergence onto the world stage. Your Six Senses Guide will meet you upon arrival and accompany you on your khamsa ‘royal stroll’ through the Kingdom, sharing insights to the culture, history and local life of each valley as you go. Discover the country’s breathtaking natural beauty, meet and mingle with our Bhutanese friends as you embrace the…"
+   },
+   {
+    "id": "18399311",
+    "name": "Four-Night Khamsa: Thimphu and Paro Valleys",
+    "endDate": "2026-12-31",
+    "exclusive": true,
+    "description": "Travel back in time and take a journey that few people have had the opportunity to experience. Druk Yul, Bhutan’s official name, is known as the Land of the Dragon People with a rich cultural heritage that has largely remained hidden until its recent emergence onto the world stage. Your Six Senses guide will meet you upon arrival and accompany you on your khamsa ‘royal stroll’ through the Kingdom, sharing insights to the culture, history and local life of each valley as you go. Discover the country’s breathtaking natural beauty, meet and mingle with our Bhutanese friends as you embrace the…"
+   },
+   {
+    "id": "18377374",
+    "name": "10 Night Plus",
+    "endDate": "2026-12-31",
+    "exclusive": true,
+    "description": "Stay for ten consecutive nights or longer in any combination of our lodges and enjoy a private English-speaking guide, car, driver, 60 minute spa and one way flight ticket for Bumthang to Paro for 2 adults. Inclusions: Full board meals at our lodges Private English-speaking guide Private driver and vehicle Pre-arrival tour advice and customized itinerary 60 minute spa and one way flight ticket for Bumthang to Paro for 2 adults. Please email Reservations at reservations-bhutan@sixsenses.com for any questions and to confirm availability. Offer is subject to change."
    }
   ],
   "hasPromotion": true,
@@ -171061,18 +171069,18 @@
     "description": "Indulge in exclusive savings and experience unparalleled comfort and tranquility on your upcoming beachside getaway. Daily breakfast at By The Beach Restaurant Round-trip shared airport transfers from Con Dao airport Offer is subject to change without notice Offer is subject to room availability and the terms and conditions based on Resort policy Free cancellations up to 10 days prior to stay Blackout dates apply"
    },
    {
-    "id": "18572865",
-    "name": "Six Senses Con Dao Enhanced Amenities",
-    "endDate": "2026-12-23",
-    "exclusive": false,
-    "description": "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant Gauranteed upgrade on booking time from Villas to Villas & Residence to Residence (except Beachfront Four Bedroom Villa), until 30th September 2026 Upgrade on arrival, subject to availability from 1st october - 23rd december 2026 A complimentary 60 minute massage for up to 2 guest, per Bedroom, once during stay Early check-in / Late check-out, subject to availability Complimentary roundtrip private airport transfers Complimentary Non-alcoholic beverages in-room minibar,once per stay Stays of 4+ nights will also…"
-   },
-   {
     "id": "18088379",
     "name": "Four Nights Plus",
     "endDate": "2026-12-23",
     "exclusive": true,
     "description": "Stay for four nights or more and save up to 25 percent on our Best Flexible Rate Daily breakfast at By The Beach restaurant Round-trip shared airport transfers from Con Dao airport Valid for minimum of four nights stay Credit card guarantee is required at the time of booking Offer is subject to room availability and the terms and conditions based on Resort policy Free cancellations up to 21 days prior to stay Blackout dates apply"
+   },
+   {
+    "id": "18572865",
+    "name": "Six Senses Con Dao Enhanced Amenities",
+    "endDate": "2026-12-23",
+    "exclusive": false,
+    "description": "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant Gauranteed upgrade on booking time from Villas to Villas & Residence to Residence (except Beachfront Four Bedroom Villa), until 30th September 2026 Upgrade on arrival, subject to availability from 1st october - 23rd december 2026 A complimentary 60 minute massage for up to 2 guest, per Bedroom, once during stay Early check-in / Late check-out, subject to availability Complimentary roundtrip private airport transfers Complimentary Non-alcoholic beverages in-room minibar,once per stay Stays of 4+ nights will also…"
    }
   ],
   "hasPromotion": true,
@@ -171315,18 +171323,18 @@
     "description": "Enjoy the enchanting surroundings at Six Senses Douro Valley for four or more consecutive nights and save 15 percent on our Best Available Rate. Settle in and explore the vibrant landscape, savor acclaimed wines, and find inner calm in our state-of-the-art spa. Unwind in a Quinta Deluxe, Valley Superior, Vineyard Deluxe, or Quinta River and let the beauty of the valley inspire every moment of your stay. Inclusions:15 percent off our Best Available Rate Good to know Offer is subject to availability Minimum four-night stay required in a Quinta Deluxe, Valley Superior, Vineyard Deluxe, and…"
    },
    {
-    "id": "18344745",
-    "name": "Suite Retreat",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Suite Retreat Reserve one of our sublime suites in the heart of the Douro Valley for four consecutive nights and enjoy a 15 percent discount, along with a daily breakfast that celebrates the valley's fresh, seasonal flavors. Let this retreat be your sanctuary as you relax, reconnect, and relish the unparalleled views of the Douro’s rolling vineyards and serene river. Inclusions: 15 percent off the Best Available Rate Daily breakfast for two guests Minimum four-night stay in Quinta Suite, Vineyard Suite, Quinta Duplex, Valley Suite, Valley Garden Suite, or Quinta Courtyard Suite Flexible…"
-   },
-   {
     "id": "18579742",
     "name": "Douro Escape",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Experience a harmonious blend of tranquility and wellness with the Douro Escape. Book three nights and save 15 percent on our Best Available Rate and discover the serenity of staying at Six Senses Douro Valley, set amidst vine-covered hills and breathtaking river views. Inclusions:15 percent off our Best Available Rate Good to know Minimum three nights stay Offer is subject to availability Offer is not combinable with other offers Offer is subject to change without notice Cancellation policy applies"
+   },
+   {
+    "id": "18344745",
+    "name": "Suite Retreat",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Suite Retreat Reserve one of our sublime suites in the heart of the Douro Valley for four consecutive nights and enjoy a 15 percent discount, along with a daily breakfast that celebrates the valley's fresh, seasonal flavors. Let this retreat be your sanctuary as you relax, reconnect, and relish the unparalleled views of the Douro’s rolling vineyards and serene river. Inclusions: 15 percent off the Best Available Rate Daily breakfast for two guests Minimum four-night stay in Quinta Suite, Vineyard Suite, Quinta Duplex, Valley Suite, Valley Garden Suite, or Quinta Courtyard Suite Flexible…"
    }
   ],
   "hasPromotion": true,
@@ -172457,13 +172465,6 @@
   ],
   "promotions": [
    {
-    "id": "18481889",
-    "name": "Prepay and Save",
-    "endDate": "2026-12-31",
-    "exclusive": true,
-    "description": "Save up to 20 percent on our Best Flexible Rate when you prepay your hotel stay at Six Sense Rome. Plus, enjoy breakfast and a range of added benefits on us. Inclusions:Up to 20 percent savings on our Rome accommodation Upgrade on arrival, subject to availability Daily breakfast Access to Roman Baths Terms and Consitions A non-refundable deposit of the full stay is required upon confirmation Connecting rooms are available upon request Offer is subject to change without notice Black-out dates may apply This offer is not applicable to groups, conferences, or meetings"
-   },
-   {
     "id": "18339936",
     "name": "A Roman Holiday",
     "endDate": "2026-12-31",
@@ -172476,6 +172477,13 @@
     "endDate": "2026-12-31",
     "exclusive": true,
     "description": "Indulge your senses to enjoy up to 25 percent savings when you stay two nights or more, and the following pampering and foodie experiences plus daily breakfast at BIVIUM Restaurant or in-suite for a spoiling and unforgettable stay. Two Bedroom Mellini Suite and Two Bedroom Lata Suite Roundtrip transfers to and from the airport One in-suite 60’ signature massage In-suite Gin O’clock or mocktail experience In-suite check-in/out Unpacking and packing service Up to 5 pieces of regular garments for pressing per stay And all the extra benefits listed below Deluxe Suites, Terrace Junior Suites,…"
+   },
+   {
+    "id": "18339933",
+    "name": "Family Time in  Rome",
+    "endDate": "2026-12-31",
+    "exclusive": true,
+    "description": "Inclusions: Enjoy up to 50 percent savings on the Best Flexible Rate for a connecting or adjacent Deluxe Room when booking a Deluxe Junior Suite, or for a connecting or adjacent Deluxe Room when booking a Deluxe Suite Daily breakfast Welcome Six Senses amenities also for kids Daily kids’ ice cream and mocktails Kids activities: mocktail making and Earth Lab sessions Access to Roman Baths from 16 years"
    }
   ],
   "hasPromotion": true,
@@ -172593,13 +172601,6 @@
   ],
   "promotions": [
    {
-    "id": "18111480",
-    "name": "Extended Stay Offer – Stay 5 Pay 4!",
-    "endDate": "2026-12-20",
-    "exclusive": true,
-    "description": "Stay a little longer and recharge a little more! Receive a complimentary fifth night on us with buffet breakfast and Virtuoso Amenities Fifth night complimentary on consecutive stays Applicable for all villa categories. Offer is subject to availability at the time of booking, subject to change without notice. Offer is not combinable with any other promotions and offers. Offer is based in Best Flexible Rate for the dates chosen."
-   },
-   {
     "id": "15867695",
     "name": "Early Booking on Koh Samui",
     "endDate": "2026-12-20",
@@ -172612,6 +172613,13 @@
     "endDate": "2026-12-20",
     "exclusive": true,
     "description": "Four Nights Plus Offer Enjoy up to 20 percent off our Best Flexible Rate inclusive of daily breakfast when you stay for four nights or more in any villa for your choice Validity: Now until December 20, 2026 Inclusions: Daily buffet breakfast Welcome amenities Unlimited in-villa Wi-Fi Virtuoso benefits Good to know Minimum four nights stay Applicable for all villa categories Credit card guarantee required at time of booking Offer is subject to change without notice For more information, please contact the reservations department at reservations-samui@sixsenses.com"
+   },
+   {
+    "id": "18111480",
+    "name": "Extended Stay Offer – Stay 5 Pay 4!",
+    "endDate": "2026-12-20",
+    "exclusive": true,
+    "description": "Stay a little longer and recharge a little more! Receive a complimentary fifth night on us with buffet breakfast and Virtuoso Amenities Fifth night complimentary on consecutive stays Applicable for all villa categories. Offer is subject to availability at the time of booking, subject to change without notice. Offer is not combinable with any other promotions and offers. Offer is based in Best Flexible Rate for the dates chosen."
    }
   ],
   "hasPromotion": true,
@@ -175441,11 +175449,11 @@
     "description": "3rd Night Free promotion. Kindly contact your travel advisor to book. Stay three nights and get one night free of charge. Available for all rooms and suites Hotel inventory & promo application subject to availability"
    },
    {
-    "id": "16898911",
-    "name": "10% Off Promotion",
+    "id": "16726167",
+    "name": "Special VIP Tour at Gassan Diamonds",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "10% OFF Promotion = 10% discount per night Eligible Room Categories: Superior Room & Suites How to book: Kindly contact your travel advisor to book Restrictions: Subject to availability"
+    "description": "A visit to one of the great diamond places in Amsterdam. See the craftsmen cut and polish diamonds, check out the jewelry or watches, have your own jewelry cleaned or tempt yourself into buying something sparkly. Well worth a visit • Courtesy Car service • Welcome with a glass of champagne • Tour through the headquarters of Gassan Diamonds including explanation about diamonds and the craft of diamond polishing • A visit at their Rolex Boutique • Opportunity to have your Jewelry cleaned by their crafty goldsmiths Eligible Room categories: Superior Canal View or higher How to book the Tour: For…"
    }
   ],
   "hasPromotion": true,
@@ -181514,18 +181522,18 @@
   ],
   "promotions": [
    {
-    "id": "18507646",
-    "name": "Earn More & Enjoy More - comp Half Board upgrade and speedboat transfers",
-    "endDate": "2028-01-10",
-    "exclusive": false,
-    "description": "Virtuoso Offer: Stay 3 Nights and above Offer Inclusions: Daily breakfast at 24 Degrees Complimentary combined Speedboat Airport Transfers - standard waiting time 90 minutes Local Snacks - Evening Tea - daily 16:00-17:00 hours Daily USD 100 Resort Credit per room - valid as per the Resort Credit factsheet, available at the resort Sunset Cruise Experience per stay - once during the stay, and subject to weather conditions Non-motorized water sports - excluding lessons Complimentary snorkelling equipment - fins & masks Standard Wi-Fi plan - up to four devices per room Access to gymnasium"
-   },
-   {
     "id": "18055158",
     "name": "Stay more and pay less - comp Half Board upgrade and speedboat transfers",
     "endDate": "2028-01-10",
     "exclusive": false,
     "description": "Stay 5 Pay 4 Offer Inclusions: Daily breakfast at 24 Degrees Complimentary combined Speedboat Airport Transfers - standard waiting time 90 minutes Local Snacks - Evening Tea - daily 16:00-17:00 hours Mongolian Grill Experience at 24 Degrees - once during the stay 60 Minutes Indian Aromatherapy Massage - for a couple, once during the stay Daily USD 100 Resort Credit per room - valid as per the Resort Credit factsheet, available at the resort Sunset Cruise Experience per stay - once during the stay, and subject to weather conditions Complimentary professional photography session (30 minutes)…"
+   },
+   {
+    "id": "18507646",
+    "name": "Earn More & Enjoy More - comp Half Board upgrade and speedboat transfers",
+    "endDate": "2028-01-10",
+    "exclusive": false,
+    "description": "Virtuoso Offer: Stay 3 Nights and above Offer Inclusions: Daily breakfast at 24 Degrees Complimentary combined Speedboat Airport Transfers - standard waiting time 90 minutes Local Snacks - Evening Tea - daily 16:00-17:00 hours Daily USD 100 Resort Credit per room - valid as per the Resort Credit factsheet, available at the resort Sunset Cruise Experience per stay - once during the stay, and subject to weather conditions Non-motorized water sports - excluding lessons Complimentary snorkelling equipment - fins & masks Standard Wi-Fi plan - up to four devices per room Access to gymnasium"
    }
   ],
   "hasPromotion": true,
@@ -183854,6 +183862,13 @@
   ],
   "promotions": [
    {
+    "id": "18515536",
+    "name": "A  Family Story",
+    "endDate": "2027-04-30",
+    "exclusive": false,
+    "description": "It’s all fun and games at The Berkeley, as suite stays include a complimentary second room – or 50% off a second bedroom with all other reservations. This tale of two spaces begins with enchanting treats for stylish sleepovers, followed by family splash times in our indoor pool. When London calls, our children’s concierge holds unlocks royal palaces, imagination-sparking museums, West End matinees, and afternoons of Hyde (Park) and seek. This offer includes: Reserve one room for adults and receive a second room at a 50% saving or reserve a one-bedroom suite for adults and receive a…"
+   },
+   {
     "id": "18375847",
     "name": "Life Is Suite",
     "endDate": "2027-04-30",
@@ -183866,13 +183881,6 @@
     "endDate": "2027-04-30",
     "exclusive": false,
     "description": "From milestone anniversaries to just-because breaks away from the everyday, our 15% discounted advance booking offer is for those who like to make a commitment, and love to plan ahead. Here, there’s always something new to discover – including our collection of suites and rooms, created by acclaimed designers to frame London views. With Hyde Park on your doorstep, the world-class shops of Knightsbridge close by, and London's cultural landmarks ready to be discovered, The Berkeley is perfectly place to explore the very best of the capital. Offer Includes 15% saving on our room-only rate when…"
-   },
-   {
-    "id": "18374226",
-    "name": "Stay Four Longer",
-    "endDate": "2027-04-30",
-    "exclusive": false,
-    "description": "Time flies at The Berkeley, so enjoy a night on us when making a four-night reservation. Explore neighbouring Hyde Park, go boutique-hopping in iconic Knightsbridge or lift the curtain on an inspiring theatre programme in London’s West End. Be back at The Berkeley for Cedric Grolet's twist on afternoon tea, sip storied pours at The Berkeley Bar & Terrace or soak up serenity from our indoor and outdoor pools. Offer includes: Book four or more consecutive nights and get every fourth night free A host of exceptional inclusions when you book a suite Guaranteed 10am check-in when arrival time is…"
    }
   ],
   "hasPromotion": true,
@@ -184089,25 +184097,25 @@
   ],
   "promotions": [
    {
+    "id": "16852766",
+    "name": "Brando Early booking 60 days or more 15% offer",
+    "endDate": "2028-03-31",
+    "exclusive": false,
+    "description": "Book 60 days in advance & Save 15% - Villa and breakfast rates starting at 2,900 euros per night plus taxes and fees in our Oceanfront Beach Villas! Rates include the following benefits - Complimentary daily breakfast for 2 Complimentary use of fitness centre - open 24 hours Complimentary use of non motorized watersports: paddle boarding, snorkeling, kayaking Complimentary participation of Green Tour Participation of release of green sea turtles (Feb - Apr) Promotional terms & conditions include: Reservation must be confirmed at least 60 days in advance of travel. This offer is available for…"
+   },
+   {
+    "id": "16852765",
+    "name": "Brando 4th Night FREE & FREE FLIGHTS to/from Tahiti and Brando",
+    "endDate": "2028-03-31",
+    "exclusive": false,
+    "description": "Pay for 3 nights at our private island paradise and your 4th night is FREE...SAVE 25%, PLUS FLY FREE to/from Tahiti to Brando. Our 4th Night FREE package is also combinable or stackable for longer stays, every 4th night is complimentary! So, with an 8-night stay, you only pay for 6-nights. Booking Conditions: Minimum stay of 4 consecutive nights for travel Now thru March 31, 2028 Applicable on all villa stays: One-Bedroom Pool Villas, One-Bedroom Family Pool Villas, Two-Bedroom Villas, Three-Bedroom Villa and on our one-of-a-kind Teremoana Four-Bedroom Pool Residence. Offer is valid for new…"
+   },
+   {
     "id": "18371792",
     "name": "Kids Fly, Stay, Dine & Play Free Offer",
     "endDate": "2028-03-31",
     "exclusive": false,
     "description": "At The Brando, on the pristine shores of Tetiaroa, children are invited to build sandcastles in powdersoft sand, while vibrant marine life glides through crystal clear waters nearby. Encounters with sea turtles, lush tropical gardens, and the colorful underwater world ignite a sense of wonder, curiosity, and discovery. Through our children’s programs rooted in Polynesian culture and environmental stewardship, The Brando offers young guests meaningful, hands-on experiences that inspire learning and connection. Every moment is crafted to ensure that a family stay at The Brando is as enriching…"
-   },
-   {
-    "id": "18587571",
-    "name": "FLY FREE to The Brando Private Island on All Inclusive Rates only",
-    "endDate": "2028-03-31",
-    "exclusive": false,
-    "description": "Paradise is now closer than you think with FREE round-trip flights between Papeete, Tahiti & Tetiaroa, home of the exclusive Brando Private Island resort. Come experience our all-inclusive ease with a minimum 3 night stay travel now thru December 31, 2026; minimum 4 nights stay for travel in 2027. Air Tetiaroa offers twice daily round-trip flights from Papeete, Tahiti and the convenient 20-minute flight is both efficient and a spectacular aerial view of our pristine island paradise. Complimentary Air Tetiaroa flights are provided for 2 passengers staying in our One-Bedroom Pool Villa &…"
-   },
-   {
-    "id": "18300343",
-    "name": "Stay 7 nights or longer get 30% off & FREE FLIGHTS to/from PPT and Brando",
-    "endDate": "2028-03-31",
-    "exclusive": false,
-    "description": "Stay 7 nights or longer, receive 30% off at our private island paradise, PLUS FLY FREE to/from Tahiti to Brando. Booking Conditions: Minimum stay of 7 consecutive nights for travel now thru March 31, 2028 Applicable on all villa stays: One-Bedroom Pool Villas, One-Bedroom Family Pool Villas, Two-Bedroom Villas, Three-Bedroom Villa and on our one-of-a-kind Teremoana Four-Bedroom Pool Residence. Offer is valid for new bookings only. Applies to All-Inclusive Rates only Combinable with \"Fly FREE\" promotion - Fly free offer is subject to availability at time of booking, hotel reserves the right to…"
    }
   ],
   "hasPromotion": true,
@@ -185848,18 +185856,18 @@
   ],
   "promotions": [
    {
-    "id": "18565363",
-    "name": "More Rosewood",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Stay two nights at The Carlyle, A Rosewood Hotel and receive a third night free. Applicable to all categories except classic and superior rooms. Subject to availability and blackout dates may apply."
-   },
-   {
     "id": "18565145",
     "name": "Suite Sojourn at The Carlyle, A Rosewood Hotel",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Located in Manhattan's Upper East Side on Madison Avenue, The Carlyle is emblematic of the New York experience. Whether for business or leisure, this luxury New York hotel is designed with sophistication and comfort in mind. Receive up to 25% off our best available rates and overnight parking for stays ranging from Rosewood Suite to Presidential Suite"
+   },
+   {
+    "id": "18565363",
+    "name": "More Rosewood",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Stay two nights at The Carlyle, A Rosewood Hotel and receive a third night free. Applicable to all categories except classic and superior rooms. Subject to availability and blackout dates may apply."
    }
   ],
   "hasPromotion": true,
@@ -189702,18 +189710,18 @@
   ],
   "promotions": [
    {
-    "id": "18231749",
-    "name": "Discounted Green Fees",
+    "id": "18231743",
+    "name": "Complimentary Horse Riding",
     "endDate": "2028-10-09",
     "exclusive": false,
-    "description": "The Killarney Golf & Fishing Club is located adjacent to the hotel. It is comprised of two championship courses. The 18-hole Killeen course (par 72) was the venue for two Irish Opens and was host to the 2010 & 2011 Irish Open. The 18-hole Mahony’s Point course (par 72) boasts stunning views of the iconic Killarney Lakes and the MacGillycuddy's Reeks. Guests of The Europe Hotel & Resort can enjoy discounted green fees on both 18 hole courses."
+    "description": "The hotel is famous for its own Austrian Haflinger Ponies which can be seen grazing in the hotel grounds. Guests may enjoy complimentary horse riding along sheltered bridleways during their stay. Our Haflinger ponies are a gentle breed and are ideal for children and novice riders. Enjoy a 10/15 minute guided trek around the grounds. This complimentary facility operates on a casual, no reservation basis. For those feeling a little more adventurous, why not take a 1, 2 or 3 hour guided trek through the National Park which may be arranged with Killarney Riding Stables."
    },
    {
-    "id": "18231748",
-    "name": "Complimentary Wi-Fi",
+    "id": "18231745",
+    "name": "Complimentary Indoor Tennis",
     "endDate": "2028-10-09",
     "exclusive": false,
-    "description": "Guests can enjoy complimentary Wi-Fi acsess throughout the hotel."
+    "description": "Challenge a loved one to a game of tennis on one of our two indoor courts. Equipment is available from The Active Level of The Europe and is on a first come, first served baisis."
    },
    {
     "id": "18231747",
@@ -192896,18 +192904,18 @@
   ],
   "promotions": [
    {
-    "id": "18385804",
-    "name": "Fourth Night on the House",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Reserve four consecutive nights at The Huntington Hotel and receive one night with our compliments. With an extra day, find more to explore on Nob Hill and beyond, then come back to the comfort of a familiar return, all without the pressure of an abbreviated stay. Terms and conditions: Offer is subject to availability and may not be combined with other offers, promotions or rates."
-   },
-   {
     "id": "18576315",
     "name": "Suite Living In Nob Hill",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Experience Nob Hill’s exceptional charm with a pied-à-terre style stay in a gracious suite. Choose from an open-plan Junior Suite, expansive One-Bedroom Suite, and more, each with handsome details and sweeping views of the city and bay beyond. Each suite booking of two nights or more includes airport transfer from The Huntington Hotel, 2pm late check-out, and daily breakfast. All Virtuoso amenities included*. Terms and Conditions This offer is extended to Junior Suite and higher accommodation categories and requires a two-night minimum length of stay. The daily breakfast is for up to two…"
+   },
+   {
+    "id": "18385804",
+    "name": "Fourth Night on the House",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Reserve four consecutive nights at The Huntington Hotel and receive one night with our compliments. With an extra day, find more to explore on Nob Hill and beyond, then come back to the comfort of a familiar return, all without the pressure of an abbreviated stay. Terms and conditions: Offer is subject to availability and may not be combined with other offers, promotions or rates."
    },
    {
     "id": "18602354",
@@ -194572,18 +194580,18 @@
   ],
   "promotions": [
    {
-    "id": "18195023",
-    "name": "Lanesborough City Breaks - 15% Off",
-    "endDate": "2026-12-18",
-    "exclusive": false,
-    "description": "Plan your next city break to London and enjoy 15% off our best available rate when booking a two or three night stay at The Lanesborough. Take a stroll in nearby Hyde Park, shop the beautiful boutiques and iconic department stores of Knightsbridge or choose to simply relax in our Regency residence with complimentary access to The Lanesborough Club & Spa. This offer includes 15% off the best available rate, when staying two or three nights The following complimentary services are included in all guestrooms: Access to The Lanesborough Club & Spa Dedicated 24-hour butler service Complimentary…"
-   },
-   {
     "id": "16784879",
     "name": "Fourth Night Free",
     "endDate": "2026-12-18",
     "exclusive": false,
     "description": "Explore London a little longer and enjoy an extra night on The Lanesborough. Take a stroll in nearby Hyde Park, shop the beautiful boutiques and iconic department stores of Knightsbridge or choose to simply relax at The Lanesborough Club & Spa. This offer includes Complimentary fourth night when staying three consecutive nights Offer available until 18th December 2026 (blackout dates apply) The following complimentary services are included in all guestrooms: Access to The Lanesborough Club & Spa Dedicated 24-hour butler service Complimentary fresh fruit and water replenished daily…"
+   },
+   {
+    "id": "18195023",
+    "name": "Lanesborough City Breaks - 15% Off",
+    "endDate": "2026-12-18",
+    "exclusive": false,
+    "description": "Plan your next city break to London and enjoy 15% off our best available rate when booking a two or three night stay at The Lanesborough. Take a stroll in nearby Hyde Park, shop the beautiful boutiques and iconic department stores of Knightsbridge or choose to simply relax in our Regency residence with complimentary access to The Lanesborough Club & Spa. This offer includes 15% off the best available rate, when staying two or three nights The following complimentary services are included in all guestrooms: Access to The Lanesborough Club & Spa Dedicated 24-hour butler service Complimentary…"
    }
   ],
   "hasPromotion": true,
@@ -198094,18 +198102,18 @@
   ],
   "promotions": [
    {
-    "id": "18478602",
-    "name": "Stay Longer On Us!",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Receive 15% off when you stay 3 nights or longer. Virtuoso Benefits included. Rate code API. Book under \"Virtuoso Stay Longer Promotion\" Offers are non-combinable. Subject to availability. Promotion available for Superior and Deluxe Room categories."
-   },
-   {
     "id": "18478599",
     "name": "Go Ahead Stay A While",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Book three consecutive nights and receive the third night complimentary. Virtuoso Benefits Included. Rate code API. Book under \"Virtuoso Comp Night Offer\" Offers are non-combinable. Subject to availability. Promotion available from Premier room category."
+   },
+   {
+    "id": "18478602",
+    "name": "Stay Longer On Us!",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Receive 15% off when you stay 3 nights or longer. Virtuoso Benefits included. Rate code API. Book under \"Virtuoso Stay Longer Promotion\" Offers are non-combinable. Subject to availability. Promotion available for Superior and Deluxe Room categories."
    }
   ],
   "hasPromotion": true,
@@ -200823,13 +200831,6 @@
   ],
   "promotions": [
    {
-    "id": "18392624",
-    "name": "Blissful Moments - Spa Package",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Relax, refresh and unwind with soothing Reflexology and Swedish massages, tennis lessons or fitness training and a bottle of champagne. *VALID FOR SELECTED DATES BETWEEN February 24, 2026 and December 31, 2026. Offers are subject to availability at time of booking. Blackout dates and other restrictions may apply. *INCLUDED 60-minute Reflexology Massage for two 60-minute Swedish Massage for two Choice of tennis lessons or private fitness training for two A bottle of champagne *CONDITION 3 nights minimum length of stay"
-   },
-   {
     "id": "18392621",
     "name": "Tennis In Paradise",
     "endDate": "2026-12-31",
@@ -200837,11 +200838,18 @@
     "description": "Serve up fun with a tennis lesson for two, unlimited play on our Har-Tru tennis courts – one of which is illuminated for nighttime play – and daily breakfast. *VALID FOR SELECTED DATES BETWEEN February 24, 2026 and December 31, 2026. Offers are subject to availability at time of booking. Blackout dates and other restrictions may apply. *INCLUDED Daily breakfast for up to two guests at DUNE restaurant or through In-Room Dining 60-minute tennis lesson for two guests once per stay Unlimited court time on our Har-Tru tennis courts *CONDITIONS During the installation of two new padel courts,…"
    },
    {
-    "id": "18392646",
-    "name": "Advance Purchase - Up To 20% Off",
+    "id": "18392624",
+    "name": "Blissful Moments - Spa Package",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Relax, refresh and unwind with soothing Reflexology and Swedish massages, tennis lessons or fitness training and a bottle of champagne. *VALID FOR SELECTED DATES BETWEEN February 24, 2026 and December 31, 2026. Offers are subject to availability at time of booking. Blackout dates and other restrictions may apply. *INCLUDED 60-minute Reflexology Massage for two 60-minute Swedish Massage for two Choice of tennis lessons or private fitness training for two A bottle of champagne *CONDITION 3 nights minimum length of stay"
+   },
+   {
+    "id": "16847128",
+    "name": "Return to Paradise 4th Night Free",
     "endDate": "2027-12-31",
     "exclusive": false,
-    "description": "Enjoy up to 20% off our Room Rate when you book your stay in advance. Reservation must be made at least 15 days in advance. *VALID FOR SELECTED DATES BETWEEN February 24, 2026 and December 31, 2027. Offers are subject to availability at time of booking. Blackout dates and other restrictions may apply. *INCLUDED Up to 20% off our Room Rate *CONDITIONS A full, non-refundable prepayment is required at booking No changes will be permitted No refund will be issued for cancelled reservations, no-shows or early departures 3 nights minimum length of stay"
+    "description": "Experience our secluded sanctuary with a complimentary fourth night and private transportation between the airport and the Resort. Your exclusive paradise awaits. *VALID FOR SELECTED DATES BETWEEN February 24, 2026 and December 31, 2027. Offers are subject to availability at time of booking. Blackout dates and other restrictions may apply. *INCLUDED Complimentary fourth night with every three consecutive paid nights Round-trip transportation between the airport and the Resort in a private SUV *CONDITIONSRates for this offer are based on our Best Available Rate for the dates chosen The rate…"
    }
   ],
   "hasPromotion": true,
@@ -204147,18 +204155,18 @@
   ],
   "promotions": [
    {
-    "id": "18373385",
-    "name": "Stay 2 Nights - Up to 10% Off",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Stay minimum 2 consecutive nights and enjoy 10% savings on PuLi Daily Rate."
-   },
-   {
     "id": "18373384",
     "name": "Stay 3 Nights - Up to 15% Off",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Stay minimum 3 consecutive nights and enjoy 15% savings on PuLi Daily Rate."
+   },
+   {
+    "id": "18373385",
+    "name": "Stay 2 Nights - Up to 10% Off",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Stay minimum 2 consecutive nights and enjoy 10% savings on PuLi Daily Rate."
    },
    {
     "id": "18578624",
@@ -208417,18 +208425,18 @@
     "description": "Defined by The Ritz-Carlton's legendary care, the Suite Signature Journey offers a personalized stay from arrival to departure. From VIP airport arrival and seamless transfers to the intuitive presence of dedicated Guardian Angels (butlers), every moment of the experience is designed to allow guests to simply settle in and enjoy. Stay for 3 nights and enjoy a complimentary 3rd night on us for stays by January 31, 2027. Signature benefits include: The Ritz-Carlton Club Lounge Access Five daily culinary presentations at The Ritz-Carlton Club Lounge Complimentary pressing of two garments per…"
    },
    {
-    "id": "18380637",
-    "name": "Stay 4, Pay 3",
-    "endDate": "2027-12-31",
-    "exclusive": true,
-    "description": "Extend your stay and enjoy the freedom to explore and truly settle into the rhythm of the city. From the vibrant lifestyle scene of One Bangkok to morning walks in Lumpini Park and world-class shopping at Siam Paragon, the city’s most iconic experiences are all within easy reach. Book a four-night stay and enjoy the 4th night complimentary Club Lounge access for two persons (for Club room and Suite bookings) Includes Virtuoso Program Amenities: Welcome amenities Complimentary daily breakfast for two guests (served at Lily’s for Deluxe Rooms, Club Lounge for Club Rooms, with Suites enjoying…"
-   },
-   {
     "id": "18112312",
     "name": "Elevated Escape",
     "endDate": "2027-12-31",
     "exclusive": true,
     "description": "Immerse yourself in refined comfort at The Ritz-Carlton, Bangkok, and enjoy 20% savings when booking two nights or more. Elevate your stay with a Club Room, featuring exclusive Club Lounge access, personalized check-in, and thoughtfully curated daily culinary presentations for a truly elevated experience. Includes Virtuoso Amenities: Personalized welcome amenity Complimentary breakfast daily for two guests per room (served at Lily’s for Deluxe Rooms, Club Lounge for Club Rooms, with Suites enjoying access to both venues) $100 hotel credit per stay plus additional credit as stated above…"
+   },
+   {
+    "id": "18380637",
+    "name": "Stay 4, Pay 3",
+    "endDate": "2027-12-31",
+    "exclusive": true,
+    "description": "Extend your stay and enjoy the freedom to explore and truly settle into the rhythm of the city. From the vibrant lifestyle scene of One Bangkok to morning walks in Lumpini Park and world-class shopping at Siam Paragon, the city’s most iconic experiences are all within easy reach. Book a four-night stay and enjoy the 4th night complimentary Club Lounge access for two persons (for Club room and Suite bookings) Includes Virtuoso Program Amenities: Welcome amenities Complimentary daily breakfast for two guests (served at Lily’s for Deluxe Rooms, Club Lounge for Club Rooms, with Suites enjoying…"
    }
   ],
   "hasPromotion": true,
@@ -209134,13 +209142,6 @@
   ],
   "promotions": [
    {
-    "id": "18506387",
-    "name": "Book 3 Nights, Receive 15% Off",
-    "endDate": "2027-04-30",
-    "exclusive": false,
-    "description": "Book 3 consecutive nights and receive 15% off Applicable to all room categories Includes Virtuoso Amenities: Upgrade on arrival, subject to availability Daily Full breakfast for up to two guests per bedroom, served in the restaurant $100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full) Early check-in / Late check-out, subject to availability"
-   },
-   {
     "id": "18400510",
     "name": "Book a Suite 4 Nights, Receive 30% Discount",
     "endDate": "2027-04-30",
@@ -209153,6 +209154,13 @@
     "endDate": "2027-04-30",
     "exclusive": false,
     "description": "Book 4 consecutive nights and receive 25% off Applicable to all room categories Includes Virtuoso Amenities: Upgrade on arrival, subject to availability Daily Full breakfast for up to two guests per bedroom, served in the restaurant $100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full) Early check-in / Late check-out, subject to availability"
+   },
+   {
+    "id": "18506387",
+    "name": "Book 3 Nights, Receive 15% Off",
+    "endDate": "2027-04-30",
+    "exclusive": false,
+    "description": "Book 3 consecutive nights and receive 15% off Applicable to all room categories Includes Virtuoso Amenities: Upgrade on arrival, subject to availability Daily Full breakfast for up to two guests per bedroom, served in the restaurant $100 USD equivalent Resort or Hotel credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full) Early check-in / Late check-out, subject to availability"
    }
   ],
   "hasPromotion": true,
@@ -210135,13 +210143,6 @@
   ],
   "promotions": [
    {
-    "id": "18368524",
-    "name": "Specialty Suite Offer",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Stay 3+ Nights or more in a Specialty Suite receive 25% off AND an additional one-time $400 resort credit"
-   },
-   {
     "id": "18368519",
     "name": "Stay Two Plus Nights Promotion",
     "endDate": "2026-12-31",
@@ -210154,6 +210155,13 @@
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Stay three nights or more and enjoy 25% savings on newly remastered guestrooms and suites at The Ritz-Carlton, Laguna Niguel. Applicable to all room categories including Deluxe guestrooms, Club guestrooms and Two Bedroom Suites."
+   },
+   {
+    "id": "18368524",
+    "name": "Specialty Suite Offer",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Stay 3+ Nights or more in a Specialty Suite receive 25% off AND an additional one-time $400 resort credit"
    }
   ],
   "hasPromotion": true,
@@ -212096,25 +212104,25 @@
   ],
   "promotions": [
    {
-    "id": "18619614",
-    "name": "Stay Longer with Us - Stay 5 nights, receive 20% off",
-    "endDate": "2027-03-31",
-    "exclusive": false,
-    "description": "Stay Longer with Us - Stay 5 nights, receive 20% off"
-   },
-   {
-    "id": "18619613",
-    "name": "Stay 4 nights, recieve 15% off",
-    "endDate": "2027-03-31",
-    "exclusive": false,
-    "description": "Stay Longer with Us - Stay 4 nights, receive 15% off"
-   },
-   {
     "id": "18527809",
     "name": "Extra Credit Offer",
     "endDate": "2027-03-31",
     "exclusive": false,
     "description": "Stay 3 nights or longer and receive an additional one-time $250 resort credit"
+   },
+   {
+    "id": "18527798",
+    "name": "Suite and Club Resort Credit Offer",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "Stay 3 nights or longer and receive a DAILY $200 Resort Credit for Club and Suite bookings"
+   },
+   {
+    "id": "18619614",
+    "name": "Stay Longer with Us - Stay 5 nights, receive 20% off",
+    "endDate": "2027-03-31",
+    "exclusive": false,
+    "description": "Stay Longer with Us - Stay 5 nights, receive 20% off"
    }
   ],
   "hasPromotion": true,
@@ -216072,11 +216080,11 @@
     "description": "Length of Stay Discount: Receive an exclusive offer up to 15% off Flexible Rate with a minimum consecutive stay of 4 nights Eligible for room categories from Garden King onwards Promotion is valid till 31 December 2026"
    },
    {
-    "id": "18565208",
-    "name": "Length of Stay Offer",
+    "id": "18615841",
+    "name": "Room Upgrade Offer",
     "endDate": "2027-06-30",
     "exclusive": false,
-    "description": "Length of Stay Discount: Receive an exclusive offer up to 15% off Flexible Rate with a minimum consecutive stay of 4 nights Eligible for all room categories Promotion is valid till 30 June 2027 Blackout Dates: 31 December 2026 – 01 January 2027 (both dates inclusive) 04 February – 13 February 2027 (both dates inclusive)"
+    "description": "Enjoy a guaranteed room upgrade at the time of booking, with no minimum length of stay required. *The selected room category at the time of booking already reflects the room upgrade offer. Applicable room categories and upgrades include: Garden King to Garden Premier King Garden Premier King to Deluxe King Garden Premier Double to Deluxe Double Deluxe King to Cuscaden Suite Blackout Dates: 17 December 2026 – 01 January 2027 (both dates inclusive) 04 February – 13 February 2027 (both dates inclusive)"
    }
   ],
   "hasPromotion": true,
@@ -221718,18 +221726,18 @@
   ],
   "promotions": [
    {
-    "id": "18365746",
-    "name": "Stay 4, Get 50% off the 4th Night (Suites)",
-    "endDate": "2026-12-26",
-    "exclusive": false,
-    "description": "Stay four or more nights in a suite and enjoy 50% off every fourth night! Your discounted night will be applied at checkout. Offer valid exclusively for suites and composite suites."
-   },
-   {
     "id": "18365745",
     "name": "Stay 3, Get 25% Off (Guest Rooms)",
     "endDate": "2026-12-26",
     "exclusive": false,
     "description": "Stay three or more nights in and enjoy 25% off the entire stay. Discounted rate will be reflected at the time of booking. Offer valid for standard guest rooms and composite guest rooms."
+   },
+   {
+    "id": "18365746",
+    "name": "Stay 4, Get 50% off the 4th Night (Suites)",
+    "endDate": "2026-12-26",
+    "exclusive": false,
+    "description": "Stay four or more nights in a suite and enjoy 50% off every fourth night! Your discounted night will be applied at checkout. Offer valid exclusively for suites and composite suites."
    },
    {
     "id": "18586004",
@@ -231620,18 +231628,18 @@
   ],
   "promotions": [
    {
-    "id": "18576511",
-    "name": "Stay 4 Pay 3",
-    "endDate": "2026-10-31",
-    "exclusive": false,
-    "description": "4 nights stay with 25% discount daily, pre-paid non refundable. Daily buffet breakfast included served in our panoramic restaurant. VAT included and city tax excluded. Wi-fi and welcome drink, cookies in room, 1 afternoon tea for 2, upgrade and early check-in upon availability, 1 spa treatment for 2, with a minimum of 3 nights 1 lunch or dinner free for 2, drinks excluded.100 $ credit for Amintina luxury service Apartment"
-   },
-   {
     "id": "18123101",
     "name": "Pre-pay and save",
     "endDate": "2026-10-31",
     "exclusive": false,
     "description": "Pre-pay and save, 15% off on our bed & breakfast rate. The offer is pre-paid not refundable and we ask the full amount at the moment of confirmation"
+   },
+   {
+    "id": "18576511",
+    "name": "Stay 4 Pay 3",
+    "endDate": "2026-10-31",
+    "exclusive": false,
+    "description": "4 nights stay with 25% discount daily, pre-paid non refundable. Daily buffet breakfast included served in our panoramic restaurant. VAT included and city tax excluded. Wi-fi and welcome drink, cookies in room, 1 afternoon tea for 2, upgrade and early check-in upon availability, 1 spa treatment for 2, with a minimum of 3 nights 1 lunch or dinner free for 2, drinks excluded.100 $ credit for Amintina luxury service Apartment"
    }
   ],
   "hasPromotion": true,
@@ -232190,11 +232198,11 @@
   ],
   "promotions": [
    {
-    "id": "18481902",
-    "name": "Palermo and Sicily’s Coasts",
+    "id": "16849967",
+    "name": "Falling In Love With Italy",
     "endDate": "2026-11-01",
     "exclusive": false,
-    "description": "Set off on a coast-to-coast Sicilian journey with a complimentary one-way transfer from the Liberty era elegance of Villa Igiea to the sunlit serenity of Verdura Resort. Experience two of the most beautiful places to stay in Sicily with a journey spanning the breadth of the island. Explore Palermo’s Baroque landmarks, vibrant markets, and authentic soul, balancing the cultural richness of the island’s capital with the spaciousness of our beachside resort. Here, championship golf courses, sporting activities, and a vast spa set among olive groves and orchards await. Cultural palazzo and…"
+    "description": "A unique opportunity to journey through Italy, discovering its regional charms and nuances. Choose your own combination of Rocco Forte hotel stays, spending as much time at each location as you wish to soak up the sites and experiences on offer. Combine a chic city break with an elegant beach holiday, or integrate an indulgent spa and golf retreat with a sensory adventure uncovering the terroirs of Italy’s extraordinary wines. With full flexibility, customise your stay based on your interests and pace. Experience the charm of staying at the Hotel de Russie or Hotel de la Ville in Rome,…"
    },
    {
     "id": "18397068",
@@ -232204,11 +232212,11 @@
     "description": "Long loved by royalty, artists and literary greats, this Belle Époque palazzo is an elegant refuge overlooking the Gulf of Palermo. Alongside complimentary breakfast throughout your stay, choose a room and save up to 15%, with a welcome Italian aperitivo and tickets to Palermo’s most storied sites. Book a suite and enjoy savings of up to 20%, alongside personalised amenities and exclusive cultural experiences through our Suites & Beyond programme. Your stay includes: Daily breakfast for two people Save up to 20% Terms and Conditions: Minimum length of stay and blackout dates apply"
    },
    {
-    "id": "16849967",
-    "name": "Falling In Love With Italy",
+    "id": "18481902",
+    "name": "Palermo and Sicily’s Coasts",
     "endDate": "2026-11-01",
     "exclusive": false,
-    "description": "A unique opportunity to journey through Italy, discovering its regional charms and nuances. Choose your own combination of Rocco Forte hotel stays, spending as much time at each location as you wish to soak up the sites and experiences on offer. Combine a chic city break with an elegant beach holiday, or integrate an indulgent spa and golf retreat with a sensory adventure uncovering the terroirs of Italy’s extraordinary wines. With full flexibility, customise your stay based on your interests and pace. Experience the charm of staying at the Hotel de Russie or Hotel de la Ville in Rome,…"
+    "description": "Set off on a coast-to-coast Sicilian journey with a complimentary one-way transfer from the Liberty era elegance of Villa Igiea to the sunlit serenity of Verdura Resort. Experience two of the most beautiful places to stay in Sicily with a journey spanning the breadth of the island. Explore Palermo’s Baroque landmarks, vibrant markets, and authentic soul, balancing the cultural richness of the island’s capital with the spaciousness of our beachside resort. Here, championship golf courses, sporting activities, and a vast spa set among olive groves and orchards await. Cultural palazzo and…"
    }
   ],
   "hasPromotion": true,
@@ -235834,18 +235842,18 @@
   ],
   "promotions": [
    {
-    "id": "18364311",
-    "name": "Suite Offer",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Book a Suite for two nights or more and earn an extra 10% discount. Includes Virtuoso Program Amenities"
-   },
-   {
     "id": "18364309",
     "name": "Hotel Credit Offer",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Book for a minimum of 4 night stay and receive extra hotel credit of $50 USD ( above standard $100 USD hotel credit offered per stay)"
+   },
+   {
+    "id": "18364311",
+    "name": "Suite Offer",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Book a Suite for two nights or more and earn an extra 10% discount. Includes Virtuoso Program Amenities"
    },
    {
     "id": "18364310",
@@ -241207,18 +241215,18 @@
   ],
   "promotions": [
    {
-    "id": "18280706",
-    "name": "Three Night Flight",
-    "endDate": "2028-01-05",
-    "exclusive": false,
-    "description": "Book Three Nights in a Suite and receive return scheduled fixed wing flights from Maun to the Lodge. Offer applicable when paying full Published rates in either a Suite or Xigera Family Suite A minimum of 3-night stay required in order to qualify for the promotional offer Offer only applicable on the Maun – Xigera – Maun routing – credits will not be passed for alternate routings Offer is not combinable with any other promotions, Tactical Offers or SADC rates. Offer is not available during peak season (01 Jun – 30 Sep; 20 Dec – 05 Jan) Offer is not applicable on exclusive use bookings Special…"
-   },
-   {
     "id": "18280704",
     "name": "Stay 4 Nights and Pay for 3",
     "endDate": "2028-01-05",
     "exclusive": false,
     "description": "Stay for four nights at Xigera Safari Lodge and enjoy one complimentary night. Offer only applicable when booking for a minimum of 4 nights. The offer is consecutive ie. Stay 8 / Pay 6 or Stay 12 / Pay 8, etc Offer is not combinable with any other promotions, tactical, or seasonal offers Offer is not available during peak season (01 Jun – 30 Sep; 20 Dec – 05 Jan) Offer is not applicable on exclusive use bookings Special offers are subject to availability at time of booking and may be closed or limited based on the lodge availability General booking terms and conditions apply"
+   },
+   {
+    "id": "18280706",
+    "name": "Three Night Flight",
+    "endDate": "2028-01-05",
+    "exclusive": false,
+    "description": "Book Three Nights in a Suite and receive return scheduled fixed wing flights from Maun to the Lodge. Offer applicable when paying full Published rates in either a Suite or Xigera Family Suite A minimum of 3-night stay required in order to qualify for the promotional offer Offer only applicable on the Maun – Xigera – Maun routing – credits will not be passed for alternate routings Offer is not combinable with any other promotions, Tactical Offers or SADC rates. Offer is not available during peak season (01 Jun – 30 Sep; 20 Dec – 05 Jan) Offer is not applicable on exclusive use bookings Special…"
    }
   ],
   "hasPromotion": true,
@@ -242051,11 +242059,11 @@
     "description": "In October, Zannier Île de Bendor takes on a slower, more peaceful rhythm, with the gentle warmth of the South of France and quieter days by the Mediterranean. Stay a minimum of three nights and enjoy a complimentary mēditatif treatment, for two adults, per stay. Conditions available by contacting reservations.bendor@zannier.com."
    },
    {
-    "id": "18377416",
-    "name": "Pay 3 Stay 4",
+    "id": "18391026",
+    "name": "Suite Treat Offer",
     "endDate": "2026-11-01",
-    "exclusive": false,
-    "description": "Book a 4-night stay and enjoy one complimentary night. *Stay Period : May, September and October, 2026"
+    "exclusive": true,
+    "description": "This summer at Zannier Île de Bendor, guests are invited to slow down and savor island life a little longer with an exclusive “Pay 2, Stay 3” offer on select Junior Suites and Suites. Book two nights and receive the third night free, giving you more time to relax, explore, and enjoy the beauty of the Mediterranean. *offer not available in June, July and August 2026. Accommodations Delos • Cloister Junior Suite with Garden, Cloister Terrace Suite, Delos Harbour Junior Suite, Delos Junior Suite, Delos Harbour Suite, Delos Pavilion Suite, Delos Solea Suite, The Delos Suite Soukana • Soukana…"
    }
   ],
   "hasPromotion": true,
