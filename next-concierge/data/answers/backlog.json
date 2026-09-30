@@ -1,29 +1,175 @@
 {
   "_about": "Queue for scripts/draft-answers.mjs. The monthly job drafts the first `queued` topics in order, marks them `drafted`, and opens a PR. Reorder, add or delete topics freely; `angle` is the brief the drafter works from. Status values: queued, drafted, failed, skipped.",
   "topics": [
-    { "id": "maldives-overwater-first-timers", "category": "Hotels", "status": "queued", "question": "Which Maldives resort is best for a first visit?", "angle": "Seaplane vs. speedboat transfer time, house reef quality, overwater vs. beach villas, all-inclusive vs. half-board. Evidence: the Maldives properties." },
-    { "id": "amalfi-coast-positano-vs-ravello", "category": "Hotels", "status": "queued", "question": "Amalfi Coast: should you stay in Positano, Ravello or Amalfi?", "angle": "What each town is like to stay in: stairs, beach access, noise, day-tripper crowds, driving. Evidence: Campania properties." },
-    { "id": "antarctica-best-month", "category": "Expedition", "status": "queued", "question": "What is the best month to go to Antarctica?", "angle": "November to March, month by month: snow and courtship, penguin chicks, whales, light, prices, how full ships are. Link to the first-timers answer rather than repeating it." },
-    { "id": "botswana-okavango-water-vs-land-camps", "category": "Safari", "status": "queued", "question": "Okavango Delta: water camp, land camp, or both?", "angle": "Mokoro and boating vs. game drives, flood season timing, why most trips combine two or three camps. Evidence: Botswana lodges." },
-    { "id": "japan-ryokan-vs-luxury-hotel", "category": "Hotels", "status": "queued", "question": "Ryokan or luxury hotel in Japan: which should you book?", "angle": "What a luxury ryokan is actually like (kaiseki dinner, futons, onsen etiquette, fixed meal times) vs. Tokyo/Kyoto hotels; how to combine them. Evidence: Japan properties." },
-    { "id": "galapagos-best-time", "category": "Expedition", "status": "queued", "question": "When is the best time to visit the Galápagos?", "angle": "Warm wet season vs. cool dry Garúa season, sea conditions, what wildlife is doing month by month, why there is no bad month." },
-    { "id": "family-safari-kids-age", "category": "Safari", "status": "queued", "question": "How old should children be for a luxury safari?", "angle": "Camp minimum ages, private vehicles, malaria-free options in South Africa, family tents, what works at 6, 10 and teens." },
-    { "id": "venice-simplon-orient-express-worth-it", "category": "Rails", "status": "queued", "question": "Is the Venice Simplon-Orient-Express worth it?", "angle": "What one night aboard is actually like: cabin types (historic cabins, suites, Grand Suites), shared vs. private bathrooms, dinner, the dress code, the routes. Honest about who it disappoints." },
-    { "id": "caribbean-hurricane-season-travel", "category": "Planning", "status": "queued", "question": "Should you travel to the Caribbean in hurricane season?", "angle": "June to November risk by month and by island (ABC islands lower), insurance, resort closures in September and October, the value in June and early December." },
-    { "id": "four-seasons-yachts-vs-ritz-carlton-yachts", "category": "Yachts", "status": "queued", "question": "Four Seasons Yachts or Ritz-Carlton Yacht Collection: which should you book?", "angle": "Ship size and suite size, itineraries, dining, who each suits. Use journey tokens for operators. Do not state launch dates or ship specifications you are not certain of." },
-    { "id": "aspen-vs-vail-vs-telluride-luxury", "category": "Hotels", "status": "queued", "question": "Aspen, Vail or Telluride for a luxury ski trip?", "angle": "Town character, mountains, getting there (flights into ASE, EGE, TEX), best hotels, who each suits. Evidence: Colorado ski properties." },
-    { "id": "northern-lights-where-to-stay", "category": "Planning", "status": "queued", "question": "Where should you stay to see the northern lights?", "angle": "Norway, Finnish Lapland, Iceland, Canada: probability, season (September to March), weather, glass igloos vs. real luxury, pairing with a Norway coastal voyage." },
-    { "id": "african-safari-cost-what-drives-it", "category": "Safari", "status": "queued", "question": "Why do luxury safaris cost so much?", "angle": "Park and conservation fees, exclusive concessions, bush flights, low guest numbers, full board; where the money goes and where you can save (green season, fewer camps)." },
-    { "id": "private-island-resorts", "category": "Hotels", "status": "queued", "question": "What are the best private-island resorts?", "angle": "Genuinely one-resort islands vs. resorts that just call themselves private; transfers; what exclusivity actually means. Evidence: tag=private-island." },
-    { "id": "arctic-polar-bear-best-trip", "category": "Expedition", "status": "queued", "question": "What's the best trip for seeing polar bears?", "angle": "Svalbard by ship (June to August) vs. Churchill by tundra vehicle (October to November); odds, ship size, what a sighting is actually like." },
-    { "id": "italy-lakes-como-vs-garda", "category": "Hotels", "status": "queued", "question": "Lake Como, Lake Garda or Lake Maggiore?", "angle": "Character of each lake, best towns to base in, boats vs. roads, season. Evidence: Lombardia properties." },
-    { "id": "honeymoon-first-luxury", "category": "Planning", "status": "queued", "question": "How should you plan a luxury honeymoon?", "angle": "Pairing a city with a beach or safari, timing and seasons, how honeymoon amenities really work, when to book. Link to relevant existing answers." },
-    { "id": "small-ship-mediterranean-yacht-cruise", "category": "Yachts", "status": "queued", "question": "What's the best small ship for a Mediterranean cruise?", "angle": "Yacht-style ships (Ritz-Carlton, Four Seasons, Orient Express, Sea Cloud) vs. small luxury cruise ships (Seabourn, Silversea); marina ports, tender ports, season." },
-    { "id": "kenya-great-migration-timing", "category": "Safari", "status": "queued", "question": "When is the best time to see the Great Migration?", "angle": "Month by month across Serengeti and Masai Mara, river crossings (July to October, unpredictable), calving season in the southern Serengeti (January to March)." },
-    { "id": "villa-with-staff-what-to-expect", "category": "Villas", "status": "queued", "question": "What does a fully staffed luxury villa actually include?", "angle": "Chef, housekeeping, concierge, what costs extra (groceries, drinks, staff gratuity), how it differs by region. No evidence block; villas are not in the hotel query engine." },
-    { "id": "patagonia-luxury-lodges", "category": "Hotels", "status": "queued", "question": "Where should you stay in Patagonia?", "angle": "Torres del Paine vs. El Calafate/El Chaltén, all-inclusive lodges with guided excursions, wind and season (October to April). Evidence: Chile and Argentina properties." },
-    { "id": "world-cruise-what-to-pack-and-plan", "category": "Voyages", "status": "queued", "question": "How do you prepare for a world cruise?", "angle": "Visas, medications, mail and banking at home, formal nights, laundry, staying connected; practical and calm." },
-    { "id": "japan-by-train-luxury", "category": "Rails", "status": "queued", "question": "Can you see Japan by luxury train?", "angle": "Shinkansen Green and Gran Class for the main legs; the cruise trains (Seven Stars in Kyushu, Shiki-shima, Twilight Express Mizukaze) and how hard they are to book; how operators build rail itineraries in Japan." },
-    { "id": "travel-insurance-luxury-trips", "category": "Planning", "status": "queued", "question": "What travel insurance do you need for an expensive trip?", "angle": "Cancel For Any Reason vs. standard, medical evacuation for expeditions and safari, when to buy it. General guidance only; no specific insurer recommendations or prices." }
+    {
+      "id": "maldives-overwater-first-timers",
+      "category": "Hotels",
+      "status": "failed",
+      "question": "Which Maldives resort is best for a first visit?",
+      "angle": "Seaplane vs. speedboat transfer time, house reef quality, overwater vs. beach villas, all-inclusive vs. half-board. Evidence: the Maldives properties.",
+      "drafted": "2026-09-30",
+      "error": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cfa1quj7Er9NU7pNNw65V\"}"
+    },
+    {
+      "id": "amalfi-coast-positano-vs-ravello",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Amalfi Coast: should you stay in Positano, Ravello or Amalfi?",
+      "angle": "What each town is like to stay in: stairs, beach access, noise, day-tripper crowds, driving. Evidence: Campania properties."
+    },
+    {
+      "id": "antarctica-best-month",
+      "category": "Expedition",
+      "status": "queued",
+      "question": "What is the best month to go to Antarctica?",
+      "angle": "November to March, month by month: snow and courtship, penguin chicks, whales, light, prices, how full ships are. Link to the first-timers answer rather than repeating it."
+    },
+    {
+      "id": "botswana-okavango-water-vs-land-camps",
+      "category": "Safari",
+      "status": "queued",
+      "question": "Okavango Delta: water camp, land camp, or both?",
+      "angle": "Mokoro and boating vs. game drives, flood season timing, why most trips combine two or three camps. Evidence: Botswana lodges."
+    },
+    {
+      "id": "japan-ryokan-vs-luxury-hotel",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Ryokan or luxury hotel in Japan: which should you book?",
+      "angle": "What a luxury ryokan is actually like (kaiseki dinner, futons, onsen etiquette, fixed meal times) vs. Tokyo/Kyoto hotels; how to combine them. Evidence: Japan properties."
+    },
+    {
+      "id": "galapagos-best-time",
+      "category": "Expedition",
+      "status": "queued",
+      "question": "When is the best time to visit the Galápagos?",
+      "angle": "Warm wet season vs. cool dry Garúa season, sea conditions, what wildlife is doing month by month, why there is no bad month."
+    },
+    {
+      "id": "family-safari-kids-age",
+      "category": "Safari",
+      "status": "queued",
+      "question": "How old should children be for a luxury safari?",
+      "angle": "Camp minimum ages, private vehicles, malaria-free options in South Africa, family tents, what works at 6, 10 and teens."
+    },
+    {
+      "id": "venice-simplon-orient-express-worth-it",
+      "category": "Rails",
+      "status": "queued",
+      "question": "Is the Venice Simplon-Orient-Express worth it?",
+      "angle": "What one night aboard is actually like: cabin types (historic cabins, suites, Grand Suites), shared vs. private bathrooms, dinner, the dress code, the routes. Honest about who it disappoints."
+    },
+    {
+      "id": "caribbean-hurricane-season-travel",
+      "category": "Planning",
+      "status": "queued",
+      "question": "Should you travel to the Caribbean in hurricane season?",
+      "angle": "June to November risk by month and by island (ABC islands lower), insurance, resort closures in September and October, the value in June and early December."
+    },
+    {
+      "id": "four-seasons-yachts-vs-ritz-carlton-yachts",
+      "category": "Yachts",
+      "status": "queued",
+      "question": "Four Seasons Yachts or Ritz-Carlton Yacht Collection: which should you book?",
+      "angle": "Ship size and suite size, itineraries, dining, who each suits. Use journey tokens for operators. Do not state launch dates or ship specifications you are not certain of."
+    },
+    {
+      "id": "aspen-vs-vail-vs-telluride-luxury",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Aspen, Vail or Telluride for a luxury ski trip?",
+      "angle": "Town character, mountains, getting there (flights into ASE, EGE, TEX), best hotels, who each suits. Evidence: Colorado ski properties."
+    },
+    {
+      "id": "northern-lights-where-to-stay",
+      "category": "Planning",
+      "status": "queued",
+      "question": "Where should you stay to see the northern lights?",
+      "angle": "Norway, Finnish Lapland, Iceland, Canada: probability, season (September to March), weather, glass igloos vs. real luxury, pairing with a Norway coastal voyage."
+    },
+    {
+      "id": "african-safari-cost-what-drives-it",
+      "category": "Safari",
+      "status": "queued",
+      "question": "Why do luxury safaris cost so much?",
+      "angle": "Park and conservation fees, exclusive concessions, bush flights, low guest numbers, full board; where the money goes and where you can save (green season, fewer camps)."
+    },
+    {
+      "id": "private-island-resorts",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "What are the best private-island resorts?",
+      "angle": "Genuinely one-resort islands vs. resorts that just call themselves private; transfers; what exclusivity actually means. Evidence: tag=private-island."
+    },
+    {
+      "id": "arctic-polar-bear-best-trip",
+      "category": "Expedition",
+      "status": "queued",
+      "question": "What's the best trip for seeing polar bears?",
+      "angle": "Svalbard by ship (June to August) vs. Churchill by tundra vehicle (October to November); odds, ship size, what a sighting is actually like."
+    },
+    {
+      "id": "italy-lakes-como-vs-garda",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Lake Como, Lake Garda or Lake Maggiore?",
+      "angle": "Character of each lake, best towns to base in, boats vs. roads, season. Evidence: Lombardia properties."
+    },
+    {
+      "id": "honeymoon-first-luxury",
+      "category": "Planning",
+      "status": "queued",
+      "question": "How should you plan a luxury honeymoon?",
+      "angle": "Pairing a city with a beach or safari, timing and seasons, how honeymoon amenities really work, when to book. Link to relevant existing answers."
+    },
+    {
+      "id": "small-ship-mediterranean-yacht-cruise",
+      "category": "Yachts",
+      "status": "queued",
+      "question": "What's the best small ship for a Mediterranean cruise?",
+      "angle": "Yacht-style ships (Ritz-Carlton, Four Seasons, Orient Express, Sea Cloud) vs. small luxury cruise ships (Seabourn, Silversea); marina ports, tender ports, season."
+    },
+    {
+      "id": "kenya-great-migration-timing",
+      "category": "Safari",
+      "status": "queued",
+      "question": "When is the best time to see the Great Migration?",
+      "angle": "Month by month across Serengeti and Masai Mara, river crossings (July to October, unpredictable), calving season in the southern Serengeti (January to March)."
+    },
+    {
+      "id": "villa-with-staff-what-to-expect",
+      "category": "Villas",
+      "status": "queued",
+      "question": "What does a fully staffed luxury villa actually include?",
+      "angle": "Chef, housekeeping, concierge, what costs extra (groceries, drinks, staff gratuity), how it differs by region. No evidence block; villas are not in the hotel query engine."
+    },
+    {
+      "id": "patagonia-luxury-lodges",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Where should you stay in Patagonia?",
+      "angle": "Torres del Paine vs. El Calafate/El Chaltén, all-inclusive lodges with guided excursions, wind and season (October to April). Evidence: Chile and Argentina properties."
+    },
+    {
+      "id": "world-cruise-what-to-pack-and-plan",
+      "category": "Voyages",
+      "status": "queued",
+      "question": "How do you prepare for a world cruise?",
+      "angle": "Visas, medications, mail and banking at home, formal nights, laundry, staying connected; practical and calm."
+    },
+    {
+      "id": "japan-by-train-luxury",
+      "category": "Rails",
+      "status": "queued",
+      "question": "Can you see Japan by luxury train?",
+      "angle": "Shinkansen Green and Gran Class for the main legs; the cruise trains (Seven Stars in Kyushu, Shiki-shima, Twilight Express Mizukaze) and how hard they are to book; how operators build rail itineraries in Japan."
+    },
+    {
+      "id": "travel-insurance-luxury-trips",
+      "category": "Planning",
+      "status": "queued",
+      "question": "What travel insurance do you need for an expensive trip?",
+      "angle": "Cancel For Any Reason vs. standard, medical evacuation for expeditions and safari, when to buy it. General guidance only; no specific insurer recommendations or prices."
+    }
   ]
 }
