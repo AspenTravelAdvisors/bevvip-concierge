@@ -43,7 +43,7 @@ export const generatedAnswers = [
             ],
             [
               "Domestic flight plus boat",
-              "Southern and outer atolls such as Laamu, Gaafu Alifu, Dhaalu",
+              "Southern and outer atolls such as Laamu and Gaafu Alifu",
               "Often two hours or more including connections",
               "Tight connections from long-haul flights; the most remote reefs"
             ]
