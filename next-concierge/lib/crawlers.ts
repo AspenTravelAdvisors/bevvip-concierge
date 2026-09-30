@@ -6,7 +6,9 @@
 // crawlers — stays welcome; app/robots.js says why.
 //
 // Listed in robots.txt as Disallow: / for the ones that honour it, and refused
-// with a 403 in middleware.ts for the ones that do not. Bytespider in
+// with a 403 by the Vercel Firewall rule "Deny no-return crawlers" for the ones
+// that do not. That rule is maintained by hand in the Vercel dashboard: change
+// this list and change the rule with it. Bytespider in
 // particular is widely reported to ignore robots.txt, so the file alone would
 // be a polite request it declines.
 

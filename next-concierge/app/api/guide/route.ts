@@ -123,8 +123,9 @@ export async function OPTIONS(req: Request) {
 }
 
 export async function POST(req: Request) {
-  // Also refused in middleware.ts; repeated here because this is the route
-  // that spends money, and it must not depend on the matcher staying wide.
+  // Also refused site-wide by the Vercel Firewall "China" rule; repeated here
+  // because this is the route that spends money, and it must not depend on a
+  // dashboard toggle staying on.
   if (isBlockedCountry(req.headers)) return blockedResponse();
   const cors = corsHeaders(req);
   // Read off the request before the stream starts: once we hand the response

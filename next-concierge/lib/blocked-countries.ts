@@ -7,9 +7,12 @@
 // the whole site, not only /api/guide: the atlas and its data are the product
 // being copied, not just the model spend.
 //
-// Enforced in middleware.ts for every page and in the Guide route itself, so
-// the one endpoint that spends money stays covered if the middleware matcher is
-// ever narrowed. Override with BLOCKED_COUNTRIES="CN,XX" (ISO 3166-1 alpha-2).
+// Enforced for every page by the Vercel Firewall rule "China", which refuses
+// the request before it reaches a function and is not billed as usage. This
+// helper is the second layer, in the Guide route only: the one endpoint that
+// spends money stays covered if the firewall rule is ever switched off.
+// (It used to run in middleware.ts on every request; removed 30 September 2026
+// once the firewall rule was live, since each middleware run is billed.) Override with BLOCKED_COUNTRIES="CN,XX" (ISO 3166-1 alpha-2).
 
 const BLOCKED = new Set(
   (process.env.BLOCKED_COUNTRIES ?? "CN")
