@@ -6,6 +6,7 @@ import { hotelAnswers } from "@/data/answers/hotels";
 import { villaAnswers } from "@/data/answers/villas";
 import { journeyAnswers } from "@/data/answers/journeys";
 import { safariAnswers } from "@/data/answers/safari";
+import { generatedAnswers } from "@/data/answers/generated";
 
 /**
  * Canonical origin for absolute URLs in metadata, sitemap, robots and JSON-LD.
@@ -49,6 +50,7 @@ export const ALL_ANSWERS = [
   ...villaAnswers,
   ...journeyAnswers,
   ...safariAnswers,
+  ...generatedAnswers,
 ];
 
 const BY_SLUG = new Map(ALL_ANSWERS.map((a) => [a.slug, a]));

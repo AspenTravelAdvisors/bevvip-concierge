@@ -1,0 +1,77 @@
+# Drafts a few new /answers pages each month and opens them as a pull request.
+#
+# The drafting is scripts/draft-answers.mjs: it takes the next queued topics
+# from next-concierge/data/answers/backlog.json, asks Claude for each page,
+# and keeps only drafts that pass verify:seo (every count a live query, every
+# link a real page). Nothing publishes on its own: the drafts make claims in
+# the agency's name, so they arrive as a PR with a checklist of the claims
+# worth checking, and go live when someone merges it.
+#
+# Cost is a few API requests a month, well under $5.
+#
+# Requires:
+#   - repository secret ANTHROPIC_API_KEY
+#   - Settings -> Actions -> General -> "Allow GitHub Actions to create and
+#     approve pull requests" switched on, or the last step cannot open the PR.
+name: Monthly answer pages
+
+on:
+  schedule:
+    - cron: '0 15 1 * *'     # the 1st of each month, 15:00 UTC (09:00 Aspen)
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'How many pages to draft'
+        default: '3'
+
+concurrency:
+  group: monthly-answers
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # push the drafts branch
+      pull-requests: write   # open the PR
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-concierge/package-lock.json
+
+      - name: Install dependencies
+        working-directory: next-concierge
+        run: npm ci
+
+      - name: Draft the pages
+        working-directory: next-concierge
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/draft-answers.mjs --count "${{ github.event.inputs.count || '3' }}"
+
+      - name: Open the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- next-concierge/data/answers; then
+            echo "Nothing drafted this month."
+            exit 0
+          fi
+          BRANCH="answers/$(date -u +%Y-%m)-${{ github.run_number }}"
+          git config user.name  "answer-drafts[bot]"
+          git config user.email "answer-drafts@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add next-concierge/data/answers
+          git commit -m "Draft this month's answer pages" -m "Drafted by scripts/draft-answers.mjs; see the PR for the claims to check."
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "Answer pages for $(date -u +'%B %Y')" \
+            --body-file next-concierge/answers-pr-body.md

@@ -589,4 +589,71 @@ export const hotelAnswers = [
       { href: "/answers/best-villas-under-2000-that-sleep-8", label: "Ski villas instead — Colorado options under $2,000" },
     ],
   },
+  {
+    slug: "hotel-brand-advisor-programs-compared",
+    category: "Hotels",
+    question: "Marriott STARS, IHG Destined, Hilton for Luxury: what do hotel brand advisor programs add?",
+    title: "Hotel Brand Advisor Programs Compared: STARS, Destined, Hilton for Luxury and More",
+    description:
+      "What the big hotel groups' own advisor programs add to a stay, how they differ from Virtuoso, and which properties carry them, across the {{hotels:program=Marriott STARS}} Marriott STARS, {{hotels:program=IHG Destined}} IHG Destined and {{hotels:program=Hilton for Luxury}} Hilton for Luxury properties in our atlas.",
+    updated: "2026-09-30",
+    capsule:
+      "The big hotel groups each run a program for invited luxury advisors: Marriott STARS, IHG Destined, Hilton for Luxury, Rosewood Elite, Shangri-La's Luxury Circle and others. Booked through a member advisor at the hotel's own rate, they typically add daily breakfast for two, a property credit of about $100, an upgrade when available and early or late check-out, on top of any loyalty status you hold.",
+    answer: [
+      "Hotel groups keep a short list of travel advisors whose clients they most want, and give those clients a standard set of benefits. The names differ but the shape is similar: daily breakfast for two, a property credit (commonly $100), an upgrade on arrival when available, early check-in and late check-out when available, and a welcome amenity. The rate is the hotel's own flexible rate, so the benefits cost nothing extra.",
+      "These brand programs sit alongside Virtuoso rather than replacing it. At a Ritz-Carlton or St. Regis, Marriott STARS is often the stronger stack; at an InterContinental or Six Senses, IHG Destined. An advisor who holds several can book each hotel through whichever serves you best. In our atlas, {{hotels:program=Marriott STARS}} properties are filed under Marriott STARS, {{hotels:program=IHG Destined}} under IHG Destined, {{hotels:program=Hilton for Luxury}} under Hilton for Luxury, {{hotels:program=Rosewood Elite}} under Rosewood Elite and {{hotels:program=Shangri-La The Luxury Circle}} under Shangri-La's Luxury Circle.",
+    ],
+    sections: [
+      {
+        h2: "The programs, and the hotels they cover",
+        table: {
+          caption: "Benefits vary by hotel and are listed in full on each property's own page. Counts are from the atlas, refreshed nightly.",
+          columns: ["Program", "Group", "Typical brands", "In our atlas"],
+          rows: [
+            ["Marriott STARS", "Marriott", "Ritz-Carlton, St. Regis, EDITION, The Luxury Collection", "{{hotels:program=Marriott STARS}}"],
+            ["IHG Destined", "IHG", "InterContinental, Six Senses, Regent, Kimpton", "{{hotels:program=IHG Destined}}"],
+            ["Hilton for Luxury", "Hilton", "Waldorf Astoria, Conrad, LXR", "{{hotels:program=Hilton for Luxury}}"],
+            ["Four Seasons Preferred Partner", "Four Seasons", "Four Seasons", "{{hotels:program=Four Seasons Preferred Partner}}"],
+            ["Rosewood Elite", "Rosewood", "Rosewood", "{{hotels:program=Rosewood Elite}}"],
+            ["Shangri-La The Luxury Circle", "Shangri-La", "Shangri-La", "{{hotels:program=Shangri-La The Luxury Circle}}"],
+            ["The Peninsula Pen Club", "Peninsula", "The Peninsula", "{{hotels:program=The Peninsula Pen Club}}"],
+          ],
+        },
+      },
+      {
+        h2: "How they stack with your loyalty status",
+        paras: [
+          "Brand advisor programs and loyalty status usually work together, not against each other. A booking through a member advisor at a qualifying rate still earns points and elite-night credit, and your status benefits still apply. Where the two overlap, as with breakfast, you get one breakfast, not two, but the property credit and the advisor's relationship with the hotel are added on top.",
+          "The part that does not show in any table is who is looking after the reservation. A program booking is flagged to the hotel before you arrive, and the advisor has a named contact to call when something needs fixing. That is worth more on a complicated stay than any single benefit.",
+        ],
+      },
+    ],
+    evidence: {
+      h2: "The Marriott STARS properties, from the supplier feed",
+      note:
+        "Every property in the atlas filed under Marriott STARS, largest first. Each links to its own page, where the benefits currently on file for it are listed in full.",
+      query: "program=Marriott STARS",
+      sort: "rooms",
+      limit: 15,
+    },
+    faqs: [
+      {
+        q: "Can I book these benefits myself?",
+        a: "No. They are only available through an advisor who is a member of the program, and membership is by invitation from the hotel group. The rate is the same one you would see on the hotel's website.",
+      },
+      {
+        q: "Do they apply to prepaid or discounted rates?",
+        a: "Usually not. The benefits are attached to the flexible rate, and sometimes to published promotions. A deeply discounted prepaid rate may cost less but carries no benefits, and an advisor can price both so you can compare.",
+      },
+      {
+        q: "Is Virtuoso better than a brand program?",
+        a: "Neither is better in general; it depends on the hotel. At some the brand program offers more, at others Virtuoso does, and a hotel only applies one set per stay. The right choice is whichever gives more at the particular property.",
+      },
+    ],
+    related: [
+      { href: "/answers/virtuoso-perks-vs-booking-direct", label: "Virtuoso perks vs. booking direct" },
+      { href: "/answers/four-seasons-preferred-partner-benefits", label: "The Four Seasons program in detail" },
+      { href: "/hotels", label: "Every property in the atlas, one page each" },
+    ],
+  },
 ];

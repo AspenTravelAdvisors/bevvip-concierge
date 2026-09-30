@@ -169,4 +169,83 @@ export const safariAnswers = [
       { href: "/hotels/south-africa", label: "Every South African property in the atlas" },
     ],
   },
+  {
+    slug: "gorilla-trekking-rwanda-vs-uganda",
+    category: "Safari",
+    question: "Gorilla trekking: Rwanda or Uganda?",
+    title: "Gorilla Trekking in Rwanda vs. Uganda: How to Choose",
+    description:
+      "Rwanda's Volcanoes National Park against Uganda's Bwindi: permit costs, how hard the trek is, how you get there, and which lodges make the trip, across the {{journeys:collection=safari&region=GREATAPES}} great-ape itineraries in our atlas.",
+    updated: "2026-09-30",
+    capsule:
+      "Choose Rwanda when time is short and comfort matters: Volcanoes National Park is about three hours by road from Kigali and the lodges are among Africa's best, but the permit is $1,500. Choose Uganda when you have more days and want better value: Bwindi permits are $800, the forest is wilder and the treks often harder, and Kibale adds the best chimpanzee tracking in Africa.",
+    answer: [
+      "Both countries give you the same thing at the end of the trek: one hour, in a group of at most eight, with a habituated mountain gorilla family. What differs is everything around that hour. Rwanda is the efficient, polished version. You land in Kigali, drive about three hours to Volcanoes National Park, and trek from a lodge that is often the best room of the whole Africa trip. The price of that ease is the permit, $1,500 per person per trek.",
+      "Uganda is the version with more forest and more time in it. Bwindi Impenetrable is steeper and denser, reached by light aircraft or a long drive, and its permits cost $800. It also has more gorilla families to allocate, a four-hour habituation experience that Rwanda does not offer, and Kibale Forest, which is where serious chimpanzee tracking happens. Of the {{journeys:collection=safari&region=GREATAPES}} great-ape itineraries in our atlas, {{journeys:collection=safari&country=Rwanda}} go to Rwanda and {{journeys:collection=safari&country=Uganda}} to Uganda.",
+    ],
+    sections: [
+      {
+        h2: "Side by side",
+        table: {
+          caption: "Permit prices are the national park authorities' published rates for foreign non-residents; confirm at booking, since both have changed before.",
+          columns: ["", "Rwanda (Volcanoes NP)", "Uganda (Bwindi)"],
+          rows: [
+            ["Gorilla permit", "$1,500 per trek", "$800 per trek"],
+            ["Getting there", "About 3 hours by road from Kigali", "Light aircraft to a Bwindi airstrip, or 4 to 5 hours by road from Kigali to southern Bwindi"],
+            ["The trek", "Bamboo and volcano slopes; often 1 to 4 hours round trip", "Dense, steep forest; can run 2 to 6 hours or more"],
+            ["Other primates", "Golden monkeys; chimpanzees in Nyungwe, a long drive south", "Chimpanzees in Kibale, the strongest chimp tracking in Africa"],
+            ["Pairs well with", "A Tanzania or Kenya safari, via Kigali", "Queen Elizabeth NP and Murchison Falls within Uganda"],
+            ["Minimum age", "15", "15"],
+          ],
+        },
+        paras: [
+          "Neither trek is technical, but both can be hard. Porters are available at the trailhead for a modest fee and are worth hiring even if you do not need one: the fee goes to the communities around the park, and a steadying hand on a wet slope is worth a great deal.",
+        ],
+      },
+      {
+        h2: "Which one, for whom",
+        list: [
+          "Four or five days, gorillas as an add-on to an East Africa safari: Rwanda. The Kigali connection makes it simple.",
+          "A week or more, and the primates are the point: Uganda, with Bwindi and Kibale together.",
+          "Two treks rather than one: either works, but the second trek costs $800 in Uganda and $1,500 in Rwanda.",
+          "Fitness is a real concern: Rwanda, where rangers can often assign a nearer family on request. It is a request, not a promise.",
+          "Honeymoon or a milestone: Rwanda's lodges are the reason, and they are worth it.",
+        ],
+      },
+      {
+        h2: "When to go",
+        paras: [
+          "Gorillas are seen year-round in both countries. The drier months, roughly June to September and December to February, make trails less slippery and are the most requested, so permits for those months go early. The rainy months are wetter underfoot but quieter, and the forest is at its greenest. Permits are released in limited numbers per family per day, which is why a gorilla trek is best booked before the rest of the trip is designed around it.",
+        ],
+      },
+    ],
+    evidence: {
+      h2: "The Rwanda properties in the atlas",
+      note:
+        "The Rwandan lodges and hotels on file from the supplier feed, smallest first. Each links to its own page with the benefits a booking through us carries.",
+      query: "country=Rwanda",
+      sort: "smallest",
+      limit: 10,
+    },
+    faqs: [
+      {
+        q: "Is the $1,500 Rwanda permit worth it over Uganda's $800?",
+        a: "If your time is short, usually yes: the shorter transfer and simpler logistics can save a full day, which on a luxury trip is worth more than the difference. If you have a week and want the primates to be the center of the trip, Uganda gives more for the money.",
+      },
+      {
+        q: "How close do you get?",
+        a: "The rule is seven meters, but the gorillas have not read it. Families often move past and around the group, and rangers manage the distance. The hour is timed from when you reach them, not from the trailhead.",
+      },
+      {
+        q: "What is the habituation experience in Uganda?",
+        a: "A four-hour visit with a gorilla family still being habituated to people, alongside the researchers and trackers doing that work, offered in Bwindi's southern sector. It costs more than a standard permit and has very few places, and for many travelers it is the most memorable day of the trip.",
+      },
+    ],
+    related: [
+      { href: "/journeys/safari", label: "Every safari itinerary in the atlas, day by day" },
+      { href: "/answers/which-safari-operator-should-you-book", label: "Which operator to book it through" },
+      { href: "/answers/botswana-vs-kenya-vs-south-africa-first-safari", label: "The savannah half of the trip" },
+      { href: "/hotels/rwanda", label: "Every Rwandan property in the atlas" },
+    ],
+  },
 ];

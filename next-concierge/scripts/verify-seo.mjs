@@ -128,6 +128,14 @@ for (const a of answers) {
       fail(a.slug, `{{${body}}} matches no property — a typo, or a programme the feed no longer carries`);
     }
   }
+  // The journey tokens had no such guard, so `{{journeys:operator=Seaborn}}`
+  // published "0 itineraries" and passed. The same check, over the other feed.
+  for (const [, body] of JSON.stringify(a).matchAll(/\{\{((?:journeys|departures):[^}]+)\}\}/g)) {
+    const spec = body.slice(body.indexOf(':') + 1).trim();
+    if (facts.countJourneys(spec) === 0) {
+      fail(a.slug, `{{${body}}} matches no itinerary — a typo, or an operator the feed no longer carries`);
+    }
+  }
 }
 
 // ── 2. every evidence query matches something ───────────────────────────────

@@ -252,4 +252,185 @@ export const journeyAnswers = [
       { href: "/answers/best-caribbean-villas-for-12-guests", label: "The land-based alternative for big groups" },
     ],
   },
+  {
+    slug: "rocky-mountaineer-vs-via-rail-canadian",
+    category: "Rails",
+    question: "Rocky Mountaineer or VIA Rail's Canadian: which Canadian train should you take?",
+    title: "Rocky Mountaineer vs. VIA Rail Canadian: Which Train Through the Rockies",
+    description:
+      "Daylight-only luxury against a four-night transcontinental sleeper: how Rocky Mountaineer and VIA Rail's Canadian differ, who each suits, and how to build them into a trip, from the {{journeys:collection=train&country=Canada}} Canadian rail itineraries in our atlas.",
+    updated: "2026-09-30",
+    capsule:
+      "Take Rocky Mountaineer to see the Rockies in comfort: it runs only in daylight, stops overnight in hotels, and serves the best food on Canadian rails, from spring to autumn. Take VIA Rail's Canadian for the journey itself: four nights sleeping aboard between Toronto and Vancouver, year-round, with the prairies and the Rockies both in the window.",
+    answer: [
+      "They answer different questions. Rocky Mountaineer is a sightseeing train. It travels only by day so you never pass the scenery in the dark, puts you in a hotel each night, and concentrates on the mountain stretches between Vancouver, Jasper, Banff and Lake Louise. Its GoldLeaf service has a two-level glass-dome coach with a dining room below. It runs roughly April to October.",
+      "VIA Rail's Canadian is a working transcontinental train that happens to be one of the great rail journeys. It crosses from Toronto to Vancouver over four nights, through the lakes and forests of northern Ontario, the prairies and then the Rockies, and it runs all year, including snow season. Prestige class adds a larger cabin with its own shower and a dedicated attendant. Of the {{journeys:collection=train&country=Canada}} Canadian rail itineraries in our atlas, {{journeys:collection=train&vessel=Rocky Mountaineer}} are built on Rocky Mountaineer and {{journeys:collection=train&vessel=VIA Rail Canadian}} on the Canadian.",
+    ],
+    sections: [
+      {
+        h2: "Side by side",
+        table: {
+          columns: ["", "Rocky Mountaineer", "VIA Rail Canadian"],
+          rows: [
+            ["What it is", "Daylight sightseeing train", "Overnight transcontinental sleeper"],
+            ["Nights", "In hotels along the route", "Aboard, in a private cabin"],
+            ["Route", "Vancouver, Kamloops, Jasper, Banff, Lake Louise", "Toronto to Vancouver, via Winnipeg, Edmonton and Jasper"],
+            ["Season", "About April to October", "Year-round"],
+            ["Top service", "GoldLeaf: bilevel glass dome, dining room below", "Prestige: larger cabin with private shower"],
+            ["Best for", "The mountains, with good hotels and no sleeping aboard", "The whole country, and travelers who love trains for their own sake"],
+          ],
+        },
+      },
+      {
+        h2: "How the two fit into a trip",
+        paras: [
+          "Most Rocky Mountaineer trips are built as circle tours: the train one way, a drive or a flight back, and nights at Jasper, Banff or Lake Louise in between. That is where a Canadian rail trip is really won or lost, because the hotels at the far end are part of the experience rather than somewhere to sleep. The Canadian works best as the spine of a longer trip, often with a few days in Toronto at the start and Vancouver or Vancouver Island at the end.",
+          "The two also combine well. A popular shape is the Canadian from Toronto to Jasper, then Rocky Mountaineer from Jasper on to Vancouver, which gives you both the sleeper experience and the daylight mountain stretch.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Is GoldLeaf worth the premium over SilverLeaf?",
+        a: "For most people on a once-only trip, yes. The upper-deck dome gives the full view overhead, and meals are served in a separate dining room rather than at your seat. SilverLeaf is still very good, with a single-level dome coach.",
+      },
+      {
+        q: "Does the Canadian run on time?",
+        a: "Often not. It shares track with freight trains, which have priority, so delays of hours are common. That is part of the character of the trip, but it means you should not book a tight connection at the far end.",
+      },
+      {
+        q: "Can I see the Rockies in winter by train?",
+        a: "Only on the Canadian. Rocky Mountaineer does not run in winter, while the Canadian runs through snow season at reduced frequency, and a winter crossing of the Rockies is one of the most beautiful rail journeys anywhere.",
+      },
+    ],
+    related: [
+      { href: "/journeys/train", label: "Every rail itinerary in the atlas, day by day" },
+      { href: "/answers/best-luxury-train-journeys", label: "The great luxury trains of the world" },
+      { href: "/hotels/canada", label: "Every Canadian property in the atlas" },
+    ],
+  },
+
+  {
+    slug: "world-cruise-segments-explained",
+    category: "Voyages",
+    question: "Do you have to do a whole world cruise, or can you book a segment?",
+    title: "World Cruise Segments: How to Sail Part of a World Voyage",
+    description:
+      "How world cruise segments work, what you give up against the full voyage, and which lines sell them, across the {{journeys:collection=worldcruise}} long voyages in our atlas.",
+    updated: "2026-09-30",
+    capsule:
+      "You do not have to sail the whole voyage. Almost every world cruise is also sold in segments of roughly two to six weeks, each starting and ending in a port with good air connections. You get the same ship and itinerary for that stretch, but usually not the full-voyage extras, such as included air, onboard credit and the grand events kept for full-world guests.",
+    answer: [
+      "A world cruise is usually a single voyage of around three to six months, but lines sell it in pieces too: Sydney to Singapore, Cape Town to Lisbon, Miami to Los Angeles through the Panama Canal. Each segment is a normal cruise in its own right, and it is often the best way to sail the most interesting part of a world voyage without giving up four months.",
+      "What changes is the package. Full-world guests are the lines' most valued passengers and usually get the most generous terms: included business-class air on some lines, larger onboard credits, private events ashore and gifts along the way. Segment guests share the ship and the ports but rarely get the full set. Our atlas holds {{journeys:collection=worldcruise}} long voyages; {{journeys:collection=worldcruise&daysMin=100}} of them run for 100 days or more.",
+    ],
+    sections: [
+      {
+        h2: "Full voyage vs. segment",
+        table: {
+          columns: ["", "Full world voyage", "Segment"],
+          rows: [
+            ["Length", "Often 100 to 180 days", "Usually 2 to 6 weeks"],
+            ["Cost", "Highest total, lowest per night on many lines", "Lower total, often a higher rate per night"],
+            ["Extras", "The full package: air, credits, events ashore", "Usually standard cruise terms"],
+            ["Suite choice", "Booked early; the best suites go first", "What remains around full-world bookings"],
+            ["Best for", "Retirees and long-sabbatical travelers", "Anyone who wants one region done properly"],
+          ],
+        },
+        paras: [
+          "Suite availability is the practical catch. Full-world guests book early and hold their suites for the whole voyage, so the best categories on a popular segment can be unavailable even when the segment itself has space. If a specific suite matters, it is worth asking early whether it is being held for the full voyage.",
+        ],
+      },
+      {
+        h2: "Choosing a segment",
+        list: [
+          "Pick by region, then by season: the South Pacific and Australia leg of a January departure is usually the most requested.",
+          "Look for segments that start and end in hubs, such as Sydney, Singapore, Dubai or Barcelona, so flights are simple.",
+          "Two back-to-back segments often cost less than you would expect, and sometimes add perks, so price the combination.",
+          "Ask whether any full-voyage events fall inside your dates; sometimes segment guests are invited too.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Which lines sell world cruise segments?",
+        a: "Nearly all of them, including Cunard, Seabourn, Regent Seven Seas, Silversea, Oceania, Azamara, Holland America, Princess and Viking. The exact segments each year depend on the route, and they are released at the same time as the full voyage.",
+      },
+      {
+        q: "Can I upgrade a segment into the full voyage later?",
+        a: "Sometimes, if space allows, but the full-voyage package is usually priced for guests who booked it as such. If there is a real chance you will want the whole thing, ask for the full-voyage fare up front.",
+      },
+      {
+        q: "Is a world cruise segment good for a first cruise?",
+        a: "It can be, particularly on a smaller luxury ship. The ship is calm and settled into its long voyage, the guests are experienced and friendly, and the port days tend to be longer than on a typical short cruise.",
+      },
+    ],
+    related: [
+      { href: "/journeys/worldcruise", label: "Every world voyage in the atlas, with its ports" },
+      { href: "/answers/world-cruises-compared", label: "The world cruises themselves, compared" },
+      { href: "/answers/do-travel-advisors-cost-more", label: "Do travel advisors cost more?" },
+    ],
+  },
+
+  {
+    slug: "private-jet-journeys-explained",
+    category: "Planning",
+    question: "What is a private jet journey, and is it worth it?",
+    title: "Private Jet Journeys Explained: Who Runs Them and Who They Suit",
+    description:
+      "How escorted private jet journeys work, who operates them, what they cost and who they are best for, across the {{journeys:collection=jet}} jet itineraries in our atlas.",
+    updated: "2026-09-30",
+    capsule:
+      "A private jet journey is an escorted trip around the world or a region on a chartered, reconfigured aircraft with roughly 40 to 80 guests, lie-flat seats, a dedicated crew and expert lecturers. It removes every airport queue and connection. It is expensive, usually six figures per person, and best for travelers who want many far-apart places in two to four weeks.",
+    answer: [
+      "The idea is simple: the best places on earth are rarely next to each other, and commercial flying between them is what wears a trip down. On a private jet journey the aircraft is yours for the whole trip. You arrive at a private terminal, board the same plane with the same crew each time, and step out in the next country while your luggage goes ahead to the hotel. On the ground, the stays are at the best hotels in each place, with a small team of guides and, on most trips, a physician traveling with the group.",
+      "A few operators run most of these trips. TCS World Travel is the longest-established and operates the Four Seasons Private Jet, and Abercrombie & Kent, Remote Lands and National Geographic run their own departures. Our atlas holds {{journeys:collection=jet}} jet itineraries; the typical trip runs about two to three weeks, and {{journeys:collection=jet&daysMin=21}} of them last three weeks or more.",
+    ],
+    sections: [
+      {
+        h2: "What is included, and what is not",
+        table: {
+          columns: ["Usually included", "Usually not included"],
+          rows: [
+            ["All flights on the private jet", "Flights to the starting city and home from the last"],
+            ["The best hotel in each stop, often in suites", "Some premium spa treatments and personal extras"],
+            ["Nearly all meals, drinks and excursions", "Travel insurance"],
+            ["Tour director, guides, lecturers and a physician", "Gratuities, on some operators"],
+            ["Luggage handled from start to finish", ""],
+          ],
+        },
+        paras: [
+          "Because nearly everything is included, the price looks higher than it is when set against building the same trip privately. It is still a large sum, and it is worth comparing it honestly with a private itinerary on commercial business class, which suits some travelers better.",
+        ],
+      },
+      {
+        h2: "Who it suits, and who it does not",
+        list: [
+          "Suits: travelers with limited time who want six or eight countries in one trip without a single connection.",
+          "Suits: couples and solo travelers who enjoy a well-traveled group and good lecturers.",
+          "Suits less: anyone who wants long, slow stays in one place, since most stops are two or three nights.",
+          "Suits less: families with young children, as these trips are designed for adults and the pace is full.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How big is the group?",
+        a: "Usually around 40 to 80 guests, depending on the aircraft. On the ground the group often splits into smaller parties for excursions, and there is always a choice of activities at each stop.",
+      },
+      {
+        q: "What does it cost?",
+        a: "Most trips are priced in six figures per person, with a supplement for solo travelers. The price includes almost everything, so the fair comparison is with a fully private itinerary of the same length and standard.",
+      },
+      {
+        q: "How far ahead should I book?",
+        a: "A year or more for the most popular routes, since each departure has a small number of seats and the same guests often return.",
+      },
+    ],
+    related: [
+      { href: "/journeys/jet", label: "Every private jet itinerary in the atlas" },
+      { href: "/answers/world-cruises-compared", label: "The slower way round the world" },
+      { href: "/answers/do-travel-advisors-cost-more", label: "Do travel advisors cost more?" },
+    ],
+  },
 ];

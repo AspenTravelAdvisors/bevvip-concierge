@@ -14,3 +14,6 @@ scripts/cache/naturalearth/
 
 # stray typecheck output from `tsc ... > .tsc-check.log`
 .tsc-check.log
+
+# the reviewer brief scripts/draft-answers.mjs writes for its PR
+answers-pr-body.md
