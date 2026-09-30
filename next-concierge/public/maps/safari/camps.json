@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 248,
-  "journeysTotal": 499,
+  "lodgesInSafariCountries": 66,
+  "journeysWithCamps": 246,
+  "journeysTotal": 494,
   "campsMatched": 40
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 66
  },
  "CAMPS": {
   "h_00327": {
@@ -584,7 +584,7 @@
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 1
+   "promo": 0
   },
   "h_01858": {
    "n": "Stillpoint Lodge",
@@ -1524,26 +1524,6 @@
     "km": 9.4
    }
   ],
-  "16903105": [
-   {
-    "id": "h_02374",
-    "stop": "Livingstone",
-    "day": 1,
-    "km": 10.1
-   },
-   {
-    "id": "h_01349",
-    "stop": "Livingstone",
-    "day": 1,
-    "km": 19.8
-   },
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 3,
-    "km": 19.9
-   }
-  ],
   "16903171": [
    {
     "id": "h_00537",
@@ -1968,38 +1948,6 @@
     "stop": "Masai Mara National Reserve",
     "day": 11,
     "km": 18.1
-   }
-  ],
-  "18295014": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 2,
-    "km": 19.6
-   },
-   {
-    "id": "h_01409",
-    "stop": "Nanyuki",
-    "day": 9,
-    "km": 1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 11,
-    "km": 18.1
-   },
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
    }
   ],
   "18295015": [
