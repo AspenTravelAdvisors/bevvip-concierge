@@ -481,6 +481,12 @@ const AUTO_DAYLIGHT_OUT = 7;
 // the "Map unavailable" handoff panel, while a working basemap was one
 // setStyle away the whole time.
 //
+// It came back for good in September 2026, for a different reason: GL 3.7
+// could no longer load the server-side Standard styles at all, and this
+// watchdog quietly served Dark to every visitor for weeks. Fixed by the engine
+// bump in lib/mapbox-cdn.ts. If map_style_fallback climbs again, check the GL
+// version against Mapbox's current release before anything else.
+//
 // So: if a style hasn't loaded in STYLE_FALLBACK_MS, drop to Dark. A degraded
 // globe beats no globe, and this is basemap-agnostic — it covers whichever
 // family breaks next, not just this incident.
