@@ -308,6 +308,16 @@ for (const topic of queued) {
       raw = parseAnswer(message);
       messages.push({ role: 'assistant', content: message.content });
     } catch (err) {
+      // An API failure (bad key, no credit, an outage) says nothing about the
+      // topic. Failing the run leaves every topic queued for next time and
+      // makes GitHub send its failure email; the first version marked the
+      // topic `failed` and reported success, which is how a mistyped secret
+      // quietly burned a topic.
+      if (err instanceof Anthropic.APIError) {
+        console.error(`\nThe Claude API refused the request: ${err.message}`);
+        if (err.status === 401) console.error('Check the ANTHROPIC_API_KEY repository secret.');
+        process.exit(1);
+      }
       lastError = err.message;
       console.log(`    attempt ${attempt}: ${lastError}`);
       break; // a refusal or an API failure will not improve by asking again

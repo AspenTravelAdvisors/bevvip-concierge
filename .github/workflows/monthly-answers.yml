@@ -59,7 +59,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if git diff --quiet -- next-concierge/data/answers; then
+          # Only a new page is worth a PR. A month where every topic failed
+          # still changes backlog.json, but a PR with nothing to read is noise;
+          # the failures are in this job's log.
+          if git diff --quiet -- next-concierge/data/answers/generated.js; then
             echo "Nothing drafted this month."
             exit 0
           fi
