@@ -4,16 +4,20 @@
     {
       "id": "aspen-vs-vail-vs-telluride-luxury",
       "category": "Hotels",
-      "status": "queued",
+      "status": "drafted",
       "question": "Aspen, Vail or Telluride for a luxury ski trip?",
-      "angle": "Town character, mountains, getting there (flights into ASE, EGE, TEX), best hotels, who each suits. We are Aspen-based: write it from local knowledge, which is what a rentals site cannot offer. Evidence: Colorado ski properties."
+      "angle": "Town character, mountains, getting there (flights into ASE, EGE, TEX), best hotels, who each suits. We are Aspen-based: write it from local knowledge, which is what a rentals site cannot offer. Evidence: Colorado ski properties.",
+      "drafted": "2026-10-01",
+      "slug": "aspen-vs-vail-vs-telluride-luxury-ski-trip"
     },
     {
       "id": "kenya-great-migration-timing",
       "category": "Safari",
-      "status": "queued",
+      "status": "drafted",
       "question": "When is the best time to see the Great Migration?",
-      "angle": "Month by month across Serengeti and Masai Mara, river crossings (July to October, unpredictable), calving season in the southern Serengeti (January to March). Only one tourism board is cited for this today, so give the month-by-month table in full."
+      "angle": "Month by month across Serengeti and Masai Mara, river crossings (July to October, unpredictable), calving season in the southern Serengeti (January to March). Only one tourism board is cited for this today, so give the month-by-month table in full.",
+      "drafted": "2026-10-01",
+      "slug": "best-time-to-see-the-great-migration-month-by-month"
     },
     {
       "id": "maldives-overwater-first-timers",
@@ -27,9 +31,11 @@
     {
       "id": "amalfi-coast-positano-vs-ravello",
       "category": "Hotels",
-      "status": "queued",
+      "status": "drafted",
       "question": "Amalfi Coast: should you stay in Positano, Ravello or Amalfi?",
-      "angle": "What each town is like to stay in: stairs, beach access, noise, day-tripper crowds, driving. Evidence: Campania properties."
+      "angle": "What each town is like to stay in: stairs, beach access, noise, day-tripper crowds, driving. Evidence: Campania properties.",
+      "drafted": "2026-10-01",
+      "slug": "amalfi-coast-positano-vs-ravello-vs-amalfi"
     },
     {
       "id": "antarctica-best-month",
