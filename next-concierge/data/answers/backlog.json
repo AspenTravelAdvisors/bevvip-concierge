@@ -2,6 +2,20 @@
   "_about": "Queue for scripts/draft-answers.mjs. The monthly job drafts the first `queued` topics in order, marks them `drafted`, and opens a PR. Reorder, add or delete topics freely; `angle` is the brief the drafter works from. Status values: queued, drafted, failed, skipped.",
   "topics": [
     {
+      "id": "aspen-vs-vail-vs-telluride-luxury",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Aspen, Vail or Telluride for a luxury ski trip?",
+      "angle": "Town character, mountains, getting there (flights into ASE, EGE, TEX), best hotels, who each suits. We are Aspen-based: write it from local knowledge, which is what a rentals site cannot offer. Evidence: Colorado ski properties."
+    },
+    {
+      "id": "kenya-great-migration-timing",
+      "category": "Safari",
+      "status": "queued",
+      "question": "When is the best time to see the Great Migration?",
+      "angle": "Month by month across Serengeti and Masai Mara, river crossings (July to October, unpredictable), calving season in the southern Serengeti (January to March). Only one tourism board is cited for this today, so give the month-by-month table in full."
+    },
+    {
       "id": "maldives-overwater-first-timers",
       "category": "Hotels",
       "status": "drafted",
@@ -74,13 +88,6 @@
       "angle": "Ship size and suite size, itineraries, dining, who each suits. Use journey tokens for operators. Do not state launch dates or ship specifications you are not certain of."
     },
     {
-      "id": "aspen-vs-vail-vs-telluride-luxury",
-      "category": "Hotels",
-      "status": "queued",
-      "question": "Aspen, Vail or Telluride for a luxury ski trip?",
-      "angle": "Town character, mountains, getting there (flights into ASE, EGE, TEX), best hotels, who each suits. Evidence: Colorado ski properties."
-    },
-    {
       "id": "northern-lights-where-to-stay",
       "category": "Planning",
       "status": "queued",
@@ -130,13 +137,6 @@
       "angle": "Yacht-style ships (Ritz-Carlton, Four Seasons, Orient Express, Sea Cloud) vs. small luxury cruise ships (Seabourn, Silversea); marina ports, tender ports, season."
     },
     {
-      "id": "kenya-great-migration-timing",
-      "category": "Safari",
-      "status": "queued",
-      "question": "When is the best time to see the Great Migration?",
-      "angle": "Month by month across Serengeti and Masai Mara, river crossings (July to October, unpredictable), calving season in the southern Serengeti (January to March)."
-    },
-    {
       "id": "villa-with-staff-what-to-expect",
       "category": "Villas",
       "status": "queued",
@@ -170,6 +170,13 @@
       "status": "queued",
       "question": "What travel insurance do you need for an expensive trip?",
       "angle": "Cancel For Any Reason vs. standard, medical evacuation for expeditions and safari, when to buy it. General guidance only; no specific insurer recommendations or prices."
+    },
+    {
+      "id": "how-to-choose-expedition-cruise-advisor",
+      "category": "Expedition",
+      "status": "queued",
+      "question": "How do you choose an expedition cruise advisor?",
+      "angle": "What to ask: how many polar or Galápagos sailings they have booked or sailed, which operators they hold preferred status with, whether they will compare ships across brands rather than sell one, and what happens when a voyage is cancelled or rerouted. Name no advisor but our own; link to the expedition answers."
     }
   ]
 }

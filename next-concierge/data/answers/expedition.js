@@ -307,8 +307,8 @@ export const expeditionAnswers = [
     question: "Ponant vs. Lindblad vs. Silversea: which expedition line is right for you?",
     title: "Ponant vs. Lindblad vs. Silversea Expeditions Compared",
     description:
-      "An advisor's honest comparison of the three most-asked-about luxury expedition lines: who each one is actually for, how the ships differ, and how to choose between them.",
-    updated: UPDATED,
+      "An advisor's honest comparison of the three most-asked-about luxury expedition lines: who each one is actually for, how the ships differ ship by ship on guests, guides and ice class, and how to choose between them.",
+    updated: "2026-10-01",
     capsule:
       "Lindblad–National Geographic is the expedition with the best faculty, Ponant the one with the best kitchen, and Silversea the one with the best butler. All three run the same itineraries under the same IAATO rules; travelers regret them for culture rather than quality — booking Lindblad wanting champagne, or Silversea wanting a second lecture on krill.",
     answer: [
@@ -322,21 +322,44 @@ export const expeditionAnswers = [
           caption: "Fleet figures from operator materials; sailing counts from our atlas ({{collection:cruise}} tracked expedition departures).",
           columns: ["", "Lindblad–Nat Geo", "Ponant", "Silversea Expeditions"],
           rows: [
-            ["Sailings tracked in our atlas", "1,194", "588", "177"],
+            ["Departures tracked in our atlas", "{{departures:collection=cruise&operator=National Geographic-Lindblad Expeditions}}", "{{departures:collection=cruise&operator=PONANT EXPLORATIONS}}", "{{departures:collection=cruise&operator=Silversea}}"],
             ["Signature ships", "NG Endurance / Resolution (138)", "Le Commandant Charcot (245, PC2)", "Silver Endeavour (~200 polar)"],
             ["Expedition team", "~16 incl. photo instructor, undersea team", "~12–16", "~19–22"],
             ["Onboard culture", "University afloat — lectures, labs, science partners", "French maison — gastronomy, design, Blue Eye lounge", "All-suite, butler service, formal-optional"],
-            ["Galápagos presence", "Largest (635 tracked departures)", "—", "Silver Origin (108 tracked)"],
+            ["Galápagos presence", "Largest ({{departures:collection=cruise&operator=National Geographic-Lindblad Expeditions&region=Galápagos}} tracked departures)", "—", "Silver Origin ({{departures:collection=cruise&operator=Silversea&region=Galápagos}} tracked)"],
             ["Unique card", "National Geographic partnership", "North Pole capability", "Fly-the-Drake + door-to-door fares"],
             ["Price posture", "Premium", "Premium–luxury", "Luxury"],
           ],
         },
       },
       {
+        h2: "Ship by ship: guests, guides and ice class",
+        table: {
+          caption: "Each operator's published guest capacity and typical expedition-team size, compiled July 2026 from operator materials (our ships dataset). Polar capacity is shown where a ship sails with fewer guests in Antarctica than it is built for. Team size varies by sailing, so confirm on a specific departure.",
+          columns: ["Ship", "Line", "Guests", "Expedition team", "Guests per guide", "Zodiacs", "Ice class"],
+          rows: [
+            ["National Geographic Endurance / Resolution", "Lindblad", "138", "16", "8.6", "14", "PC5"],
+            ["National Geographic Orion", "Lindblad", "102", "12", "8.5", "10", "1A"],
+            ["National Geographic Explorer", "Lindblad", "148", "14", "10.6", "14", "1A"],
+            ["Silver Endeavour", "Silversea", "200 in Antarctica (220 built)", "22", "9.1", "16", "PC6"],
+            ["Silver Cloud", "Silversea", "200 in Antarctica (254 built)", "19", "10.5", "18", "1C"],
+            ["Le Commandant Charcot", "Ponant", "245", "16", "15.3", "16", "PC2"],
+            ["Ponant Explorers (Le Bellot, Le Jacques-Cartier and sisters)", "Ponant", "184", "12", "15.3", "12", "1C"],
+            ["Le Boréal, L'Austral, Le Soléal, Le Lyrial", "Ponant", "199 in Antarctica (264 built)", "12", "16.6", "12", "1C"],
+            ["National Geographic Islander II (Galápagos)", "Lindblad", "48", "5", "9.6", "4", "—"],
+            ["National Geographic Endeavour II (Galápagos)", "Lindblad", "96", "8", "12.0", "8", "—"],
+            ["Silver Origin (Galápagos)", "Silversea", "100", "10", "10.0", "8", "—"],
+          ],
+        },
+        paras: [
+          "Read the guests-per-guide column before the brochure. Lindblad's polar ships and Silver Endeavour sit near nine guests per expedition-team member, which is what lets a ship run small Zodiac groups, a kayak program and a lecture at the same time. Ponant's ships carry more guests per guide, a trade it makes for its kitchen and its itinerary range rather than an oversight, and Le Commandant Charcot is the only ship here with the PC2 ice class needed to reach the geographic North Pole. Every polar ship in the table lands at most 100 guests ashore at once under IAATO rules, so on a 200-guest ship the landings run in shifts.",
+        ],
+      },
+      {
         h2: "The differences that surprise people",
         list: [
           "Lindblad's ships are deliberately unglamorous in places — the money is in the staff, the Zodiac fleet and the science kit, not marble. Guests who need resort polish should look at the other two.",
-          "Ponant sails far beyond the poles: 588 tracked departures include the Mediterranean, tropics and remote Pacific — it's the most 'cruise line shaped' of the three.",
+          "Ponant sails far beyond the poles: {{departures:collection=cruise&operator=PONANT EXPLORATIONS}} tracked departures include the Mediterranean, tropics and remote Pacific — it's the most 'cruise line shaped' of the three.",
           "Silversea's expedition team sizes are larger than its luxury image suggests (about 22 on Silver Endeavour) — the science content is real, just served after the caviar rather than instead of it.",
           "Kids: Lindblad runs family departures with a naturalist-led kids' program; Ponant and Silversea welcome children but program little for them on expedition routes.",
         ],
@@ -356,7 +379,7 @@ export const expeditionAnswers = [
       },
       {
         q: "Which has the best Galápagos program?",
-        a: "Lindblad by depth — 635 tracked departures across three ships including the 48-guest Islander II. Silversea's Silver Origin is the single most luxurious ship in the islands. Ponant doesn't operate there.",
+        a: "Lindblad by depth — {{departures:collection=cruise&operator=National Geographic-Lindblad Expeditions&region=Galápagos}} tracked departures across its ships including the 48-guest Islander II. Silversea's Silver Origin is the single most luxurious ship in the islands. Ponant doesn't operate there.",
       },
       {
         q: "Is Le Commandant Charcot worth the premium?",

@@ -96,10 +96,10 @@ export const safariAnswers = [
     slug: "botswana-vs-kenya-vs-south-africa-first-safari",
     category: "Safari",
     question: "Botswana, Kenya or South Africa — where should your first safari be?",
-    title: "Where to Take a First Safari: Botswana vs Kenya vs South Africa",
+    title: "Botswana vs Kenya vs South Africa: Where to Take a First Safari",
     description:
-      "An advisor's honest comparison of the three most-booked first-safari countries — game density, cost, malaria, family suitability and season — drawn from the safari itineraries and lodges in our atlas.",
-    updated: UPDATED,
+      "Botswana vs Kenya vs South Africa for a first safari: a verdict grid by traveler, then an honest comparison of game density, cost, malaria, family suitability and season, drawn from the safari itineraries and lodges in our atlas.",
+    updated: "2026-10-01",
     capsule:
       "Choose Kenya for spectacle and value, and for the Great Migration between July and October. Choose Botswana for exclusivity, water-based game viewing in the Okavango and the fewest other vehicles, at the highest cost. Choose South Africa for a first safari with children, a malaria-free option, and the easiest pairing with a city and a coastline.",
     answer: [
@@ -107,6 +107,26 @@ export const safariAnswers = [
       "Our atlas holds {{journeys:collection=safari}} safari itineraries, concentrated exactly where you would expect: Kenya {{journeys:collection=safari&country=Kenya}}, Tanzania {{journeys:collection=safari&country=Tanzania}}, Botswana {{journeys:collection=safari&country=Botswana}}, South Africa {{journeys:collection=safari&country=South Africa}}, Zambia {{journeys:collection=safari&country=Zambia}}, Namibia {{journeys:collection=safari&country=Namibia}}, Rwanda {{journeys:collection=safari&country=Rwanda}}, Zimbabwe {{journeys:collection=safari&country=Zimbabwe}}. On the lodge side it holds {{hotels:category=Lodge / Safari}} safari and wilderness properties: {{hotels:category=Lodge / Safari&country=South Africa}} in South Africa, {{hotels:category=Lodge / Safari&country=Botswana}} in Botswana, {{hotels:category=Lodge / Safari&country=Kenya}} in Kenya — which is itself a useful signal about where the private-reserve lodge market is deepest, and where the good beds are independently owned rather than filed under a preferred-partner programme.",
     ],
     sections: [
+      {
+        h2: "The verdict, by traveler",
+        table: {
+          caption: "One winner per row. Where two countries are close, the runner-up is named.",
+          columns: ["If this is you", "Go to", "Runner-up", "Why"],
+          rows: [
+            ["First safari, short on time (under a week)", "Kenya", "South Africa", "The Masai Mara shows the most game per hour, and Nairobi has the most direct long-haul flights"],
+            ["The Great Migration is the picture in your head", "Kenya, July to October", "Tanzania", "River crossings on the Mara; calving in Tanzania's southern Serengeti in January to March"],
+            ["Travelling with children under twelve", "South Africa", "Kenya", "Malaria-free reserves, family lodges, and camps without a minimum age"],
+            ["You want to avoid malaria altogether", "South Africa", "—", "Madikwe and the Eastern Cape reserves are malaria-free; Kenya and Botswana are not"],
+            ["You want no other vehicles at a sighting", "Botswana", "Kenya's conservancies", "Private Okavango concessions limit vehicles; Mara conservancies cap them too"],
+            ["You want water: mokoro, boats, flooded plains", "Botswana", "—", "The Okavango Delta is the only one of the three with water-based game viewing"],
+            ["Leopard is the animal you most want to see", "South Africa (Sabi Sand)", "Botswana", "Habituated leopards and off-road tracking in the private reserves"],
+            ["Best value for a luxury standard", "Kenya", "South Africa", "Comparable camps cost less than Botswana's concessions; green season cuts rates further"],
+            ["Price is no object and this is a milestone", "Botswana", "Kenya", "Low-density concessions and the most exclusive camps in Africa"],
+            ["Safari plus a city, wine country or a coastline", "South Africa", "Kenya with Lamu or Zanzibar", "Cape Town and the winelands are a short flight from the reserves"],
+            ["A sceptical partner who needs convincing", "South Africa", "Kenya", "Easy logistics, no malaria in some reserves, and Cape Town at the end"],
+          ],
+        },
+      },
       {
         h2: "The three, compared honestly",
         table: {
@@ -176,14 +196,29 @@ export const safariAnswers = [
     title: "Gorilla Trekking in Rwanda vs. Uganda: How to Choose",
     description:
       "Rwanda's Volcanoes National Park against Uganda's Bwindi: permit costs, how hard the trek is, how you get there, and which lodges make the trip, across the {{journeys:collection=safari&region=GREATAPES}} great-ape itineraries in our atlas.",
-    updated: "2026-09-30",
+    updated: "2026-10-01",
     capsule:
-      "Choose Rwanda when time is short and comfort matters: Volcanoes National Park is about three hours by road from Kigali and the lodges are among Africa's best, but the permit is $1,500. Choose Uganda when you have more days and want better value: Bwindi permits are $800, the forest is wilder and the treks often harder, and Kibale adds the best chimpanzee tracking in Africa.",
+      "Gorilla permits as of October 2026: $1,500 per trek in Rwanda, $800 per trek in Uganda, and $1,500 for Uganda's four-hour habituation experience. Choose Rwanda when time is short and comfort matters: Volcanoes National Park is about three hours by road from Kigali and the lodges are among Africa's best. Choose Uganda when you have more days and want better value: the forest is wilder, the treks often harder, and Kibale adds the best chimpanzee tracking in Africa.",
     answer: [
       "Both countries give you the same thing at the end of the trek: one hour, in a group of at most eight, with a habituated mountain gorilla family. What differs is everything around that hour. Rwanda is the efficient, polished version. You land in Kigali, drive about three hours to Volcanoes National Park, and trek from a lodge that is often the best room of the whole Africa trip. The price of that ease is the permit, $1,500 per person per trek.",
       "Uganda is the version with more forest and more time in it. Bwindi Impenetrable is steeper and denser, reached by light aircraft or a long drive, and its permits cost $800. It also has more gorilla families to allocate, a four-hour habituation experience that Rwanda does not offer, and Kibale Forest, which is where serious chimpanzee tracking happens. Of the {{journeys:collection=safari&region=GREATAPES}} great-ape itineraries in our atlas, {{journeys:collection=safari&country=Rwanda}} go to Rwanda and {{journeys:collection=safari&country=Uganda}} to Uganda.",
     ],
     sections: [
+      {
+        h2: "Gorilla permit prices, October 2026",
+        table: {
+          caption: "Published rates for foreign non-residents, per person, from the Rwanda Development Board (visitrwandabookings.rdb.rw) and the Uganda Wildlife Authority. Checked 2026-10-01; confirm at booking, since both have changed before.",
+          columns: ["Permit", "Price", "Time with the gorillas", "Notes"],
+          rows: [
+            ["Rwanda gorilla trek (Volcanoes NP)", "$1,500", "1 hour", "Groups of up to eight, one habituated family"],
+            ["Uganda gorilla trek (Bwindi, Mgahinga)", "$800", "1 hour", "UWA has offered $600 in the low-season months of April, May and November"],
+            ["Uganda gorilla habituation (Bwindi)", "$1,500", "Up to 4 hours", "Rising to $1,800 for treks from 1 January 2027 under UWA's 2026–2028 tariff; very few places"],
+          ],
+        },
+        paras: [
+          "Uganda now sells permits only through licensed Ugandan operators, and payment is due in full when the permit is booked, so the permit is usually the first thing secured and the rest of the trip is built around its date.",
+        ],
+      },
       {
         h2: "Side by side",
         table: {
@@ -238,7 +273,7 @@ export const safariAnswers = [
       },
       {
         q: "What is the habituation experience in Uganda?",
-        a: "A four-hour visit with a gorilla family still being habituated to people, alongside the researchers and trackers doing that work, offered in Bwindi's southern sector. It costs more than a standard permit and has very few places, and for many travelers it is the most memorable day of the trip.",
+        a: "A four-hour visit with a gorilla family still being habituated to people, alongside the researchers and trackers doing that work, offered in Bwindi's southern sector. It costs $1,500, rising to $1,800 from 1 January 2027, against $800 for a standard permit, and has very few places, and for many travelers it is the most memorable day of the trip.",
       },
     ],
     related: [

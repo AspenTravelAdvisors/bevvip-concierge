@@ -28,15 +28,29 @@ export const hotelAnswers = [
     question: "What do you actually get booking Four Seasons through a Preferred Partner?",
     title: "Four Seasons Preferred Partner Benefits, Explained",
     description:
-      "What Four Seasons Preferred Partner status really gets you — upgrades, breakfast, hotel credits, VIP status — versus booking direct, across the {{hotels:program=Four Seasons Preferred Partner}} Preferred Partner properties in our atlas.",
-    updated: UPDATED,
+      "Is booking Four Seasons through a Preferred Partner advisor worth it? Yes: the 2026 benefits list — breakfast, a $100 or $200 credit, an upgrade, early and late check-out — at the same rate as booking direct, across the {{hotels:program=Four Seasons Preferred Partner}} Preferred Partner properties in our atlas.",
+    updated: "2026-10-01",
     capsule:
-      "Booking Four Seasons through a Preferred Partner advisor costs the same as the hotel's own flexible rate and adds a room upgrade when available, daily breakfast for two, a property credit of roughly $100–$150, early check-in and late check-out priority, and a VIP flag on the reservation — typically $700–$1,500 of value on a five-night stay.",
+      "Yes, it is worth it: booking Four Seasons through a Preferred Partner advisor costs the same as the hotel's own rate and, in 2026, adds daily breakfast for two, a $100 property credit per stay ($200 in suites), an upgrade at check-in when available, priority early check-in and late check-out, and a VIP flag on the reservation. On a five-night resort stay that is typically $700–$1,500 of value.",
     answer: [
-      "Booking Four Seasons through a Preferred Partner advisor gets you, at no extra cost over the hotel's own flexible rate: an upgrade at check-in when available (with Preferred Partner reservations prioritized for them), daily breakfast for two, a property credit (commonly $100–$150 for spa or dining), early check-in and late check-out priority, a welcome amenity, and — the part regulars value most — your reservation flagged in the hotel's system as a Preferred Partner VIP before you land.",
+      "Yes. Booking Four Seasons through a Preferred Partner advisor gets you, at no extra cost over the hotel's own rate: an upgrade at check-in when available (with Preferred Partner reservations prioritized for them), daily breakfast for two, a property credit of $100 per stay in guest rooms and $200 in suites, early check-in and late check-out priority, and — the part regulars value most — your reservation flagged in the hotel's system as a Preferred Partner VIP before you land.",
       "The rate itself is the same as booking direct. Four Seasons runs Preferred Partner as its official top-tier advisor program precisely so the benefits ride on top of published rates rather than discounting them. Our atlas currently tracks {{hotels:program=Four Seasons Preferred Partner}} Four Seasons Preferred Partner properties, out of {{hotels:name=four seasons}} Four Seasons hotels in it overall.",
     ],
     sections: [
+      {
+        h2: "2026 Preferred Partner benefits",
+        paras: [
+          "The standard Four Seasons Preferred Partner benefits for stays in 2026, as Four Seasons publishes them to member advisors. Checked 2026-10-01. Individual hotels sometimes add to the list, such as a spa credit or airport transfers, and each property's own page in our atlas shows what is on file for it.",
+        ],
+        list: [
+          "Daily breakfast for two guests per bedroom, in the restaurant or through in-room dining at most hotels. A few city hotels give a per-person breakfast credit instead.",
+          "A property credit once per stay: $100 in guest rooms, $200 in suites, specialty suites and villas. It is used for dining or spa and has no cash value.",
+          "An upgrade of one category at check-in, when available. Preferred Partner reservations are near the front of the queue, but it is not guaranteed.",
+          "Early check-in and late check-out, when available, with priority over ordinary bookings.",
+          "Complimentary Wi-Fi.",
+          "The reservation flagged to the hotel as a Preferred Partner booking, with the advisor's name attached.",
+        ],
+      },
       {
         h2: "The benefit stack, item by item",
         table: {
@@ -44,7 +58,7 @@ export const hotelAnswers = [
           rows: [
             ["Room upgrade (subject to availability, prioritized)", "One category at busy resorts; sometimes more midweek in cities — routinely $200–$800/night of value"],
             ["Daily breakfast for two", "$80–$150/day at resort pricing"],
-            ["Property credit ($100 typical, varies)", "Face value, usable at spa or F&B"],
+            ["Property credit ($100 per stay; $200 in suites)", "Face value, usable at spa or F&B"],
             ["Early check-in / late check-out priority", "Occasionally the whole ballgame on arrival/departure days"],
             ["Welcome amenity + VIP flag", "Soft value: the GM knows you're coming and whose guest you are"],
           ],
@@ -56,7 +70,7 @@ export const hotelAnswers = [
       {
         h2: "Preferred Partner vs. Amex FHR vs. booking direct",
         paras: [
-          "Amex Fine Hotels + Resorts offers a similar-looking stack, and at Four Seasons both are legitimate. The differences: FHR benefits are standardized and transactional; Preferred Partner adds the advisor's relationship — pre-arrival notes to the GM, intervention when things go sideways, and access when the hotel is 'sold out.' Booking direct with no program gets you none of the stack. The only scenario where direct wins is a prepaid advance-purchase discount rate, which trades flexibility and all benefits for the discount.",
+          "Amex Fine Hotels + Resorts offers a similar-looking stack, and at Four Seasons both are legitimate. The differences: FHR benefits are standardized and transactional; Preferred Partner adds the advisor's relationship — pre-arrival notes to the GM, intervention when things go sideways, and access when the hotel is 'sold out.' Booking direct with no program gets you none of the stack. Prepaid advance-purchase rates are no longer the exception they once were: many now carry the Preferred Partner benefits too, so an advisor can book the cheaper prepaid rate with the benefits where a hotel allows it. Ask for both rates side by side.",
         ],
       },
       {
@@ -65,6 +79,7 @@ export const hotelAnswers = [
           "Book the room category you'd be happy to sleep in — upgrades are when-available, not guaranteed.",
           "Tell your advisor what the trip is for; 'anniversary' in the pre-arrival note outperforms any status.",
           "Stack with Four Seasons' own offers (third night free, etc.) — Preferred Partner benefits apply on most published promotions.",
+          "Booking a suite doubles the credit to $200, which narrows the gap to the room below more than the rate difference suggests.",
           "Use it hardest at resorts, where breakfast and credits price highest.",
         ],
       },
@@ -104,8 +119,8 @@ export const hotelAnswers = [
     question: "Virtuoso perks vs. booking direct: what's actually worth it?",
     title: "Virtuoso Perks vs. Booking Direct — What's Actually Worth It",
     description:
-      "A plain-English audit of Virtuoso benefits — upgrades, breakfast, $100 credits, VIP status — versus booking hotels direct or through points, across {{hotels:program=Virtuoso}} Virtuoso properties.",
-    updated: UPDATED,
+      "A plain-English audit of Virtuoso benefits — upgrades, breakfast, $100 credits, VIP status — versus booking hotels direct or through points, with the 2026 amenities on file at real properties, across {{hotels:program=Virtuoso}} Virtuoso properties.",
+    updated: "2026-10-01",
     capsule:
       "A Virtuoso booking costs the same as the hotel's best flexible rate and adds an upgrade when available, daily breakfast for two, a property credit of about $100, early check-in and late check-out priority, and a VIP flag — $150–$400 a night of countable value. Booking direct wins only on prepaid discount rates or points redemptions.",
     answer: [
@@ -126,6 +141,27 @@ export const hotelAnswers = [
             ["A human who knows the GM", "Yes", "No", "No", "No"],
           ],
         },
+      },
+      {
+        h2: "What the amenities look like at real hotels",
+        table: {
+          caption: "The 2026 Virtuoso amenities on file for each property in the supplier feed, checked 2026-10-01. Upgrades and early or late check-out are always subject to availability. Each property's page in our atlas lists its current terms in full.",
+          columns: ["Property", "Breakfast", "Credit, once per stay", "Upgrade", "Early / late", "Anything extra"],
+          rows: [
+            ["Claridge's, London", "Full breakfast for two, restaurant or in-room", "$100 hotel credit", "On arrival", "Yes", "—"],
+            ["Aman Kyoto", "Breakfast for two (already in Aman's rate)", "$100 resort credit", "On arrival", "Yes", "—"],
+            ["Casa Cipriani New York", "$45 per person daily breakfast credit", "$100 food and beverage credit", "On arrival", "Yes", "—"],
+            ["Capella Kyoto", "Full breakfast for two, restaurant or in-room", "$100; $200 in Junior Suites and above", "On arrival", "Yes", "A further $200 credit on stays of 7+ nights"],
+            ["Cheval Blanc Randheli, Maldives", "Breakfast for two (already in the rate)", "$150 food and beverage credit", "On arrival", "Yes", "—"],
+            ["Cheval Blanc Paris", "Full breakfast for two, restaurant or in-room", "None", "On arrival", "Yes", "Round-trip private airport or train transfers with meet and greet"],
+            ["Amanyara, Turks and Caicos", "Breakfast for two (already in the rate)", "$100; plus $100 per villa bedroom", "On arrival", "Yes", "—"],
+            ["Chileno Bay, Auberge Collection, Los Cabos", "$45 per person daily breakfast credit", "$100; $250 in villas of 2+ bedrooms", "On arrival", "Yes", "—"],
+          ],
+        },
+        paras: [
+          "Two patterns are worth knowing. Where breakfast is already in a resort's rate, as at most Amans and Maldives islands, the credit and the upgrade are the benefits that count. And several hotels scale the credit with the booking, so a suite or a long stay can be worth two or three times the headline $100.",
+          "At hotels that belong to a big group, the group's own advisor program can carry a different list. Our brand-by-brand comparison of those programs is in the link below.",
+        ],
       },
       {
         h2: "What the brochures undersell",
@@ -160,6 +196,7 @@ export const hotelAnswers = [
     },
     related: [
       { href: "/answers/four-seasons-preferred-partner-benefits", label: "The Four Seasons–specific version" },
+      { href: "/answers/hotel-brand-advisor-programs-compared", label: "Hotels with advisor perks, brand by brand: STARS, Destined, Hilton for Luxury and more" },
       { href: "/answers/do-travel-advisors-cost-more", label: "Do travel advisors cost more than booking yourself?" },
       { href: "/hotels", label: "Browse all {{collection:hotel}} properties, one page each" },
     ],
@@ -375,39 +412,45 @@ export const hotelAnswers = [
     title: "The Quietest Luxury Resorts in Italy",
     description:
       "Where to find genuine quiet in Italian luxury — Tuscan estates, lake villas away from the ferry docks, Dolomites retreats and off-crowd islands — drawn from the {{hotels:country=Italy}} Italian properties in our atlas.",
-    updated: UPDATED,
+    updated: "2026-10-01",
     capsule:
-      "Genuine quiet in Italy is bought with distance from a ferry dock or a funicular: the Tuscan wine estates (Il Borro, Borgo San Felice, Castello di Velona), Monastero Santa Rosa on the cliff between the Amalfi towns, Mezzatorre on Ischia, Verdura's 230 acres in Sicily, and the Dolomites at San Cassiano and Pinzolo.",
+      "Quiet in Italy is bought with distance from a ferry dock or a funicular, and with a small room count. The quietest luxury hotels we book: Borgo Santo Pietro (22 rooms) and Castello di Velona (45) in Tuscany, Passalacqua (24) and Il Sereno (40) on Lake Como, Monastero Santa Rosa (20) on the Amalfi cliffs, Monaci delle Terre Nere (25) on Etna, and Aman Rosa Alpina (51) in the Dolomites.",
     answer: [
-      "For genuine quiet — not 'Positano but with a better pool deck' — book the countryside estates and the wrong-famous-lake shores: Borgo Santo Pietro-style Tuscan farm estates (in our files: Il Borro in the Arno valley, Borgo San Felice among the Chianti vines, Castello di Velona above the Val d'Orcia), Monastero Santa Rosa on the Amalfi Coast's cliff BEYOND the towns (a former monastery, 20 rooms, silence as architecture), Mezzatorre on Ischia (the unfashionable-island trick), San Domenico-adjacent escapes aside — Sicily's quiet is Verdura's 230 private acres near Sciacca, and the Dolomites' is Aman Rosa Alpina in San Cassiano and Lefay Dolomiti in Pinzolo.",
-      "The pattern: quiet in Italy is bought with distance from a ferry dock, a funicular, or a name that appears on tote bags. Our atlas holds {{hotels:country=Italy}} Italian properties, of which the supplier flags {{hotels:country=Italy&experience=Seclusion}} for seclusion; the loudest thirty are the most requested, and the quietest thirty are the best reviewed afterward.",
+      "For genuine quiet, rather than Positano with a better pool deck, book small hotels that are the destination themselves. In Tuscany that means the farm and wine estates: Borgo Santo Pietro, 22 rooms in its own valley below Chiusdino; Castello di Velona, a castle above the Val d'Orcia; and Borgo San Felice, a whole hamlet inside a Chianti vineyard. On Lake Como it means Passalacqua's 24 rooms in a private park at Moltrasio, and Il Sereno on the east shore at Torno, away from the Bellagio and Varenna ferry docks. On the Amalfi Coast it is Monastero Santa Rosa, 20 rooms in a former monastery on the cliff between the towns rather than in one of them. In Sicily it is Monaci delle Terre Nere, 25 rooms on an organic estate on the slopes of Etna, and in the Dolomites, Aman Rosa Alpina in San Cassiano.",
+      "The pattern: quiet in Italy is bought with distance from a ferry dock, a funicular, or a name that appears on tote bags, and with a room count under about sixty. Our atlas holds {{hotels:country=Italy}} Italian properties, of which the supplier flags {{hotels:country=Italy&experience=Seclusion}} for seclusion; the loudest thirty are the most requested, and the quietest thirty are the best reviewed afterward.",
     ],
     sections: [
       {
         h2: "The quiet list, by landscape",
         table: {
-          caption: "All properties below are in our atlas with Virtuoso or brand-program VIP benefits.",
-          columns: ["Region", "Property", "Why it's quiet"],
+          caption: "Every property below is in our atlas with Virtuoso VIP benefits. Room counts are from the supplier feed, checked 2026-10-01.",
+          columns: ["Region", "Property", "Rooms", "Why it's quiet"],
           rows: [
-            ["Tuscany (Val d'Orcia)", "Castello di Velona", "A castle above thermal vineyards; nearest crowd is Montalcino, far below"],
-            ["Tuscany (Chianti)", "Borgo San Felice", "An entire restored hamlet inside a wine estate"],
-            ["Tuscany (Arezzo)", "Il Borro Estate", "Ferragamo family valley — vineyards, villas, no through-road"],
-            ["Amalfi Coast", "Monastero Santa Rosa", "20 rooms in a clifftop monastery between (not in) the towns"],
-            ["Ischia", "Mezzatorre Hotel & Thermal Spa", "A 16th-century watchtower in a pine cove; Capri's crowds stayed on Capri"],
-            ["Lake Como", "Villa d'Este annexes / Grand Hotel Victoria, Menaggio", "Menaggio and Cernobbio's garden ends sit off the Bellagio ferry circus"],
-            ["Lake Garda", "Lefay Lago di Garda", "Wellness estate high above the lake road"],
-            ["Dolomites", "Aman Rosa Alpina, San Cassiano", "Alpine village hush, Aman staffing"],
-            ["Dolomites", "Lefay Dolomiti, Pinzolo", "Spa-first, ski-adjacent, serenely un-Cortina"],
-            ["Sicily", "Verdura Resort", "230 private coastal acres near Sciacca — nothing to walk to, blissfully"],
-            ["Umbria", "Borgo dei Conti, Perugia", "Umbria is Tuscany with half the traffic; this estate proves it"],
-            ["Thermal Tuscany", "Fonteverde, San Casciano dei Bagni", "Medici thermal town the tour buses skip"],
+            ["Tuscany (Siena hills)", "Borgo Santo Pietro", "22", "A 13th-century farmhouse estate with its own gardens, farm and kitchen, at the end of a country road below Chiusdino"],
+            ["Tuscany (Val d'Orcia)", "Castello di Velona", "45", "A castle above thermal vineyards; the nearest crowd is Montalcino, far below"],
+            ["Tuscany (Chianti)", "Borgo San Felice", "63", "An entire restored hamlet inside a wine estate"],
+            ["Tuscany (Arezzo)", "Il Borro Estate", "60", "The Ferragamo family valley — vineyards, villas, no through-road"],
+            ["Tuscany (thermal)", "Fonteverde, San Casciano dei Bagni", "78", "A Medici spa town the tour buses skip"],
+            ["Umbria", "Borgo dei Conti, Perugia", "40", "Umbria is Tuscany with half the traffic; this estate proves it"],
+            ["Lake Como (west shore)", "Passalacqua, Moltrasio", "24", "An 18th-century villa in terraced private gardens, with no ferry dock or public promenade in front of it"],
+            ["Lake Como (east shore)", "Il Sereno, Torno", "40", "On the quieter eastern shore near Como, well away from the Bellagio and Varenna ferry circus, with its own boats for the lake"],
+            ["Lake Como (Menaggio)", "Grand Hotel Victoria", "73", "Menaggio's garden end, off the main ferry triangle"],
+            ["Lake Garda", "Lefay Lago di Garda", "96", "A wellness estate high above the lake road"],
+            ["Amalfi Coast", "Monastero Santa Rosa", "20", "A clifftop former monastery at Conca dei Marini, between the towns rather than in one"],
+            ["Ischia", "Mezzatorre Hotel & Thermal Spa", "48", "A 16th-century watchtower in a pine cove; Capri's crowds stay on Capri"],
+            ["Sicily (Etna)", "Monaci delle Terre Nere", "25", "An organic farm estate among lava-stone terraces on Etna's eastern slope, far from Taormina's crowds"],
+            ["Sicily (Sciacca)", "Verdura Resort", "203", "230 private coastal acres with nothing to walk to; for more privacy, its 20 private villas"],
+            ["Sardinia (Gallura hills)", "Petra Segreta, San Pantaleo", "27", "In granite hills above the Costa Smeralda, out of earshot of Porto Cervo"],
+            ["Puglia", "Masseria Torre Maizza", "40", "A fortified 16th-century farmhouse among olive groves near Savelletri"],
+            ["Dolomites", "Aman Rosa Alpina, San Cassiano", "51", "Alpine village hush, Aman staffing"],
+            ["Dolomites", "Lefay Dolomiti, Pinzolo", "88", "Spa-first, ski-adjacent, serenely un-Cortina"],
           ],
         },
       },
       {
         h2: "Timing is half the quiet",
         paras: [
-          "Even the famous coasts go quiet on the calendar's edges: Amalfi and the lakes in late September–October and May deliver open restaurants and empty pools; August delivers neither anywhere. If the heart is set on a marquee town — Positano, Taormina, Portofino — book the quietest property in it (Villa Treville's 16 rooms in Positano; Villa Sant'Andrea on Taormina's beach below the town) and take the town in doses.",
+          "Even the famous coasts go quiet on the calendar's edges: Amalfi and the lakes in late September–October and May deliver open restaurants and empty pools; August delivers neither anywhere. If the heart is set on a marquee town — Positano, Taormina, Portofino — book the quietest property in it (Villa Treville's 22 rooms in Positano; Villa Sant'Andrea on Taormina's beach below the town) and take the town in doses.",
           "For total silence with Italian polish, remember the country's own countryside brands: the wine-estate hotels above are functionally Italy's answer to Aman pricing at half the rate, with cellars attached.",
         ],
       },
@@ -596,14 +639,34 @@ export const hotelAnswers = [
     title: "Hotel Brand Advisor Programs Compared: STARS, Destined, Hilton for Luxury and More",
     description:
       "What the big hotel groups' own advisor programs add to a stay, how they differ from Virtuoso, and which properties carry them, across the {{hotels:program=Marriott STARS}} Marriott STARS, {{hotels:program=IHG Destined}} IHG Destined and {{hotels:program=Hilton for Luxury}} Hilton for Luxury properties in our atlas.",
-    updated: "2026-09-30",
+    updated: "2026-10-01",
     capsule:
-      "The big hotel groups each run a program for invited luxury advisors: Marriott STARS, IHG Destined, Hilton for Luxury, Rosewood Elite, Shangri-La's Luxury Circle and others. Booked through a member advisor at the hotel's own rate, they typically add daily breakfast for two, a property credit of about $100, an upgrade when available and early or late check-out, on top of any loyalty status you hold.",
+      "Hotels with advisor perks, brand by brand: Four Seasons (Preferred Partner), Marriott's Ritz-Carlton and St. Regis (STARS), IHG's InterContinental and Six Senses (Destined), Hilton's Waldorf Astoria and Conrad (Hilton for Luxury), Hyatt (Privé), Rosewood (Elite), Shangri-La (The Luxury Circle), Peninsula (Pen Club), Mandarin Oriental (Fan Club) and Jumeirah (Passport to Luxury). Booked through a member advisor at the hotel's own rate, each typically adds breakfast for two, a $100 credit, an upgrade when available and early or late check-out.",
     answer: [
+      "Which hotel brands give perks through an advisor? Nearly every luxury group does, each through its own invitation-only program: Four Seasons Preferred Partner, Marriott STARS, IHG Destined, Hilton for Luxury, Hyatt Privé, Rosewood Elite, Shangri-La The Luxury Circle, The Peninsula Pen Club, Mandarin Oriental Fan Club and Jumeirah Passport to Luxury. The list below gives each brand's benefits; independent hotels such as Aman, Belmond and Cheval Blanc give theirs through Virtuoso.",
       "Hotel groups keep a short list of travel advisors whose clients they most want, and give those clients a standard set of benefits. The names differ but the shape is similar: daily breakfast for two, a property credit (commonly $100), an upgrade on arrival when available, early check-in and late check-out when available, and a welcome amenity. The rate is the hotel's own flexible rate, so the benefits cost nothing extra.",
       "These brand programs sit alongside Virtuoso rather than replacing it. At a Ritz-Carlton or St. Regis, Marriott STARS is often the stronger stack; at an InterContinental or Six Senses, IHG Destined. An advisor who holds several can book each hotel through whichever serves you best. In our atlas, {{hotels:program=Marriott STARS}} properties are filed under Marriott STARS, {{hotels:program=IHG Destined}} under IHG Destined, {{hotels:program=Hilton for Luxury}} under Hilton for Luxury, {{hotels:program=Rosewood Elite}} under Rosewood Elite and {{hotels:program=Shangri-La The Luxury Circle}} under Shangri-La's Luxury Circle.",
     ],
     sections: [
+      {
+        h2: "Hotel brands with advisor perks, brand by brand",
+        list: [
+          "Four Seasons — Preferred Partner: breakfast for two, $100 credit per stay ($200 in suites), upgrade, early and late check-out.",
+          "Marriott (Ritz-Carlton, St. Regis, EDITION, The Luxury Collection) — STARS: breakfast for two, $100 credit, upgrade, early and late check-out.",
+          "IHG (InterContinental, Six Senses, Regent, Kimpton) — Destined: breakfast, a property credit and upgrade priority, varying by hotel.",
+          "Hilton (Waldorf Astoria, Conrad, LXR) — Hilton for Luxury: breakfast for two, $100 credit, upgrade, early and late check-out; some resorts add spa access.",
+          "Hyatt (Park Hyatt, Alila, Andaz and others) — Privé: breakfast, a property credit and upgrade priority, varying by hotel.",
+          "Rosewood — Rosewood Elite: breakfast for two, $100 food and beverage credit, upgrade, early and late check-out.",
+          "Shangri-La — The Luxury Circle: breakfast for two and an upgrade; at many hotels an automatic move to Horizon Club access, with a $100 credit in club rooms and suites.",
+          "The Peninsula — Pen Club: full breakfast for two, $100 credit, upgrade, early and late check-out.",
+          "Mandarin Oriental — Fan Club: breakfast for two, $100 credit, upgrade; some suites add airport transfers.",
+          "Jumeirah — Passport to Luxury: breakfast for two, $100 credit, upgrade; suites at some hotels add a massage.",
+          "Independent hotels and smaller brands (Aman, Belmond, Cheval Blanc, Capella, Oetker and most Relais & Châteaux) — usually through Virtuoso, with a similar list.",
+        ],
+        paras: [
+          "Benefits are as filed for 2026 in the supplier feed behind our atlas, checked 2026-10-01. Hotels vary the details, and each property's own page lists what is on file for it.",
+        ],
+      },
       {
         h2: "The programs, and the hotels they cover",
         table: {
