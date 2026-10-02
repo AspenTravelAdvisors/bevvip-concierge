@@ -1,10 +1,10 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-09-15T14:17:01.716Z",
+  "generated": "2026-10-02T15:38:47.385Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2076,
+  "feedCount": 2084,
   "matchedCount": 2305
  },
  "overrides": {
@@ -25745,6 +25745,12 @@
    "country": "Japan"
   },
   {
+   "vid": "18620918",
+   "name": "Appellation Healdsburg",
+   "city": "Healdsburg",
+   "country": "United States"
+  },
+  {
    "vid": "18378979",
    "name": "AYANA Komodo Waecicu Beach",
    "city": "Labuan Bajo, Flores",
@@ -25827,6 +25833,12 @@
    "name": "Cape Fahn Hotel",
    "city": "Koh Samui",
    "country": "Thailand"
+  },
+  {
+   "vid": "18624520",
+   "name": "Cape Sounio, a Resort to Live",
+   "city": "Cape Sounion",
+   "country": "Greece"
   },
   {
    "vid": "16186412",
@@ -25979,9 +25991,27 @@
    "country": "Colombia"
   },
   {
+   "vid": "18623660",
+   "name": "Hotel La Gemma",
+   "city": "Tuscany",
+   "country": "Italy"
+  },
+  {
+   "vid": "18624508",
+   "name": "Hotel La Ponche",
+   "city": "St. Tropez",
+   "country": "France"
+  },
+  {
    "vid": "18394305",
    "name": "Hotel Mediterraneo Sorrento",
    "city": "Sant'agnello",
+   "country": "Italy"
+  },
+  {
+   "vid": "18623686",
+   "name": "Hotel Miramalfi",
+   "city": "Amalfi",
    "country": "Italy"
   },
   {
@@ -26049,6 +26079,12 @@
    "name": "Kimpton Margot Sydney",
    "city": "Sydney",
    "country": "Australia"
+  },
+  {
+   "vid": "18623122",
+   "name": "L'oscar London",
+   "city": "London",
+   "country": "United Kingdom"
   },
   {
    "vid": "18392809",
@@ -26207,6 +26243,12 @@
    "country": "Egypt"
   },
   {
+   "vid": "18624537",
+   "name": "Palazzo Cordusio a Gran Melia Hotel",
+   "city": "Milan",
+   "country": "Italy"
+  },
+  {
    "vid": "18380334",
    "name": "Pan Pacific London",
    "city": "London",
@@ -26271,6 +26313,12 @@
    "name": "RAKxa Integrative Wellness",
    "city": "Phra Pradaeng",
    "country": "Thailand"
+  },
+  {
+   "vid": "18619607",
+   "name": "Regina Isabella - Resort SPA Restaurant",
+   "city": "Lacco Ameno",
+   "country": "Italy"
   },
   {
    "vid": "18376824",

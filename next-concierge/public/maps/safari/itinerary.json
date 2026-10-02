@@ -4713,7 +4713,7 @@
     ]
    }
   ],
-  "16916677": [
+  "16918176": [
    {
     "n": "Arusha",
     "r": "EASTAFRICA",
@@ -4723,11 +4723,19 @@
     ]
    },
    {
-    "n": "Ngorongoro",
+    "n": "Tarangire National Park",
     "r": "EASTAFRICA",
     "ll": [
-     -3.15,
-     35.475
+     -3.8333,
+     36
+    ]
+   },
+   {
+    "n": "Karatu",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.3333,
+     35.6667
     ]
    },
    {
@@ -4739,85 +4747,11 @@
     ]
    },
    {
-    "n": "Amboseli National Park",
+    "n": "Arusha",
     "r": "EASTAFRICA",
     "ll": [
-     -2.6414,
-     37.2481
-    ]
-   },
-   {
-    "n": "Nanyuki",
-    "r": "EASTAFRICA",
-    "ll": [
-     0.0167,
-     37.0667
-    ]
-   },
-   {
-    "n": "Masai Mara National Reserve",
-    "r": "EASTAFRICA",
-    "ll": [
-     -1.4999,
-     35.1527
-    ]
-   },
-   {
-    "n": "Kigali",
-    "r": "GREATAPES",
-    "ll": [
-     -1.9536,
-     30.0606
-    ]
-   },
-   {
-    "n": "Volcanoes National Park",
-    "r": "GREATAPES",
-    "ll": [
-     -1.5196,
-     29.4497
-    ]
-   },
-   {
-    "n": "Kigali",
-    "r": "GREATAPES",
-    "ll": [
-     -1.9536,
-     30.0606
-    ]
-   }
-  ],
-  "16919119": [
-   {
-    "n": "Cape Town",
-    "r": "SOUTHERN",
-    "ll": [
-     -33.9167,
-     18.4167
-    ]
-   },
-   {
-    "n": "Kruger National Park",
-    "r": "SOUTHERN",
-    "ll": [
-     -23.95,
-     31.175
-    ]
-   },
-   {
-    "n": "Victoria Falls",
-    "r": "ZAMBEZI",
-    "ll": [
-     -17.9244,
-     25.8566
-    ]
-   },
-   {
-    "n": "Johannesburg",
-    "r": "SOUTHERN",
-    "ll": [
-     -26.2,
-     28.0833
+     -3.3678,
+     36.6333
     ]
    }
   ],
@@ -4910,48 +4844,6 @@
     "ll": [
      -33.9167,
      18.4167
-    ]
-   }
-  ],
-  "16929705": [
-   {
-    "n": "Las Vegas",
-    "r": null,
-    "ll": [
-     36.11,
-     -115.212
-    ]
-   },
-   {
-    "n": "Death Valley National Park",
-    "r": null,
-    "ll": [
-     36.2933,
-     -116.459
-    ]
-   },
-   {
-    "n": "Palm Springs",
-    "r": null,
-    "ll": [
-     33.728,
-     -116.512
-    ]
-   },
-   {
-    "n": "Joshua Tree National Park",
-    "r": null,
-    "ll": [
-     34.135,
-     -116.315
-    ]
-   },
-   {
-    "n": "San Diego",
-    "r": null,
-    "ll": [
-     32.9014,
-     -117.208
     ]
    }
   ],
@@ -5538,6 +5430,56 @@
     "ll": [
      -2.1667,
      -79.9
+    ]
+   }
+  ],
+  "18106487": [
+   {
+    "n": "Granada",
+    "r": null,
+    "ll": [
+     37.178,
+     -3.6008
+    ]
+   },
+   {
+    "n": "Fez",
+    "r": null,
+    "ll": [
+     34.0528,
+     -4.9828
+    ]
+   },
+   {
+    "n": "Volubilis",
+    "r": null,
+    "ll": [
+     34.1628,
+     -5.527
+    ]
+   },
+   {
+    "n": "Fez",
+    "r": null,
+    "ll": [
+     34.0528,
+     -4.9828
+    ]
+   },
+   {
+    "n": "Marrakesh",
+    "r": null,
+    "ll": [
+     31.6333,
+     -8
+    ]
+   },
+   {
+    "n": "Seville",
+    "r": null,
+    "ll": [
+     37.3772,
+     -5.9869
     ]
    }
   ],
@@ -6224,6 +6166,48 @@
     "ll": [
      10.3997,
      -75.5144
+    ]
+   }
+  ],
+  "18116461": [
+   {
+    "n": "Florence",
+    "r": null,
+    "ll": [
+     43.7667,
+     11.25
+    ]
+   },
+   {
+    "n": "Cinque Terre",
+    "r": null,
+    "ll": [
+     44.162,
+     9.6827
+    ]
+   },
+   {
+    "n": "Lucca",
+    "r": null,
+    "ll": [
+     43.8333,
+     10.4833
+    ]
+   },
+   {
+    "n": "Cinque Terre",
+    "r": null,
+    "ll": [
+     44.162,
+     9.6827
+    ]
+   },
+   {
+    "n": "Portofino",
+    "r": null,
+    "ll": [
+     44.3,
+     9.2
     ]
    }
   ],
@@ -6996,6 +6980,80 @@
     "ll": [
      -1.2833,
      36.8167
+    ]
+   }
+  ],
+  "18295014": [
+   {
+    "n": "Arusha",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.3678,
+     36.6333
+    ]
+   },
+   {
+    "n": "Ngorongoro",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.15,
+     35.475
+    ]
+   },
+   {
+    "n": "Serengeti",
+    "r": "EASTAFRICA",
+    "ll": [
+     -2.3308,
+     34.8333
+    ]
+   },
+   {
+    "n": "Amboseli National Park",
+    "r": "EASTAFRICA",
+    "ll": [
+     -2.6414,
+     37.2481
+    ]
+   },
+   {
+    "n": "Nanyuki",
+    "r": "EASTAFRICA",
+    "ll": [
+     0.0167,
+     37.0667
+    ]
+   },
+   {
+    "n": "Masai Mara National Reserve",
+    "r": "EASTAFRICA",
+    "ll": [
+     -1.4999,
+     35.1527
+    ]
+   },
+   {
+    "n": "Kigali",
+    "r": "GREATAPES",
+    "ll": [
+     -1.9536,
+     30.0606
+    ]
+   },
+   {
+    "n": "Volcanoes National Park",
+    "r": "GREATAPES",
+    "ll": [
+     -1.5196,
+     29.4497
+    ]
+   },
+   {
+    "n": "Kigali",
+    "r": "GREATAPES",
+    "ll": [
+     -1.9536,
+     30.0606
     ]
    }
   ],
@@ -8603,40 +8661,6 @@
     ]
    }
   ],
-  "18345548": [
-   {
-    "n": "San Francisco",
-    "r": null,
-    "ll": [
-     37.7749,
-     -122.419
-    ]
-   },
-   {
-    "n": "Sequoia National Park",
-    "r": null,
-    "ll": [
-     36.5377,
-     -118.727
-    ]
-   },
-   {
-    "n": "Yosemite National Park",
-    "r": null,
-    "ll": [
-     37.6912,
-     -119.591
-    ]
-   },
-   {
-    "n": "San Francisco",
-    "r": null,
-    "ll": [
-     37.7749,
-     -122.419
-    ]
-   }
-  ],
   "18346149": [
    {
     "n": "Johannesburg",
@@ -8870,56 +8894,6 @@
     "ll": [
      -0.2167,
      -78.5
-    ]
-   }
-  ],
-  "18347180": [
-   {
-    "n": "Calgary",
-    "r": "ROCKIES",
-    "ll": [
-     51.0833,
-     -114.083
-    ]
-   },
-   {
-    "n": "Banff",
-    "r": null,
-    "ll": [
-     51.1667,
-     -115.569
-    ]
-   },
-   {
-    "n": "Vancouver",
-    "r": null,
-    "ll": [
-     49.25,
-     -123.133
-    ]
-   },
-   {
-    "n": "Victoria",
-    "r": null,
-    "ll": [
-     48.4329,
-     -123.369
-    ]
-   },
-   {
-    "n": "Whistler",
-    "r": null,
-    "ll": [
-     50.1164,
-     -122.969
-    ]
-   },
-   {
-    "n": "Vancouver",
-    "r": null,
-    "ll": [
-     49.25,
-     -123.133
     ]
    }
   ],
@@ -18036,7 +18010,6 @@
    "country": "Indonesia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18151,10 +18124,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_37_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Okavango Delta, Botswana",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18227,10 +18199,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_196_0924.webp",
    "from": "Lima, Peru",
    "to": "Lima, Peru",
-   "country": "Brazil",
+   "country": "Peru",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18301,7 +18272,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18364,7 +18334,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18453,7 +18422,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18520,7 +18488,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18614,7 +18581,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18677,7 +18643,6 @@
    "country": "Madagascar",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18737,7 +18702,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18786,7 +18750,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18857,7 +18820,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18920,7 +18882,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -18992,7 +18953,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -19055,7 +19015,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19103,7 +19062,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19190,7 +19148,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19267,10 +19224,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_408_0828.webp",
    "from": "Hwange National Park, Zimbabwe",
    "to": "Okavango Delta, Botswana",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19325,7 +19281,6 @@
    "country": "China",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19400,7 +19355,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19449,10 +19403,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_16_0919.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19574,7 +19527,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19658,7 +19610,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19715,7 +19666,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19769,7 +19719,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -19820,7 +19769,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-01",
@@ -19881,6 +19830,62 @@
    "route": "18521705"
   },
   {
+   "id": "18364254",
+   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
+   "b": "ak",
+   "g": [
+    "OKAVANGO",
+    "SOUTHERN",
+    "ZAMBEZI"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18364254/aksanctuarybotswanasafariandvictoriafalls",
+   "days": 8,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
+   "from": "Johannesburg, South Africa",
+   "to": "Johannesburg, South Africa",
+   "country": "Botswana",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 21 Dec 2026",
+   "description": "From mighty Victoria Falls, one of the most spectacular cataracts on the planet, to the Okavango Delta, the largest inland delta in the world and home to an estimated 9,000 species of flora and fauna, this thrilling adventure takes you up close to “The Smoke that Thunders” and reveals a lush, diverse ecosystem prowled by many of Africa’s most iconic species. Seek out hippos, lions, leopards, buffalo, giraffes, wildebeests and more on safari days capped off with stays at unforgettable Sussi & Chuma Lodge, Chobe Chilwero Lodge and Chief’s Camp — all part of the chic A&K Sanctuary collection.",
+   "included": [
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$2,600 value) Johannesburg/Livingstone; Kasane/Okavango Delta/Maun/Johannesburg"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    },
+    {
+     "d": 2,
+     "n": "Livingstone"
+    },
+    {
+     "d": 4,
+     "n": "Chobe National Park"
+    },
+    {
+     "d": 6,
+     "n": "Okavango Delta"
+    },
+    {
+     "d": 1,
+     "n": "Johannesburg"
+    }
+   ],
+   "route": "18364254"
+  },
+  {
    "id": "18362041",
    "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
    "b": "ak",
@@ -19897,7 +19902,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -19949,62 +19953,6 @@
     }
    ],
    "route": "18362041"
-  },
-  {
-   "id": "18364254",
-   "n": "A&K Sanctuary Botswana Safari and Victoria Falls",
-   "b": "ak",
-   "g": [
-    "OKAVANGO",
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18364254/aksanctuarybotswanasafariandvictoriafalls",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
-   "from": "Johannesburg, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "Zambia",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 21 Dec 2026",
-   "description": "From mighty Victoria Falls, one of the most spectacular cataracts on the planet, to the Okavango Delta, the largest inland delta in the world and home to an estimated 9,000 species of flora and fauna, this thrilling adventure takes you up close to “The Smoke that Thunders” and reveals a lush, diverse ecosystem prowled by many of Africa’s most iconic species. Seek out hippos, lions, leopards, buffalo, giraffes, wildebeests and more on safari days capped off with stays at unforgettable Sussi & Chuma Lodge, Chobe Chilwero Lodge and Chief’s Camp — all part of the chic A&K Sanctuary collection.",
-   "included": [
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$2,600 value) Johannesburg/Livingstone; Kasane/Okavango Delta/Maun/Johannesburg"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    },
-    {
-     "d": 2,
-     "n": "Livingstone"
-    },
-    {
-     "d": 4,
-     "n": "Chobe National Park"
-    },
-    {
-     "d": 6,
-     "n": "Okavango Delta"
-    },
-    {
-     "d": 1,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "18364254"
   },
   {
    "id": "18521706",
@@ -20085,48 +20033,6 @@
    "route": "18521706"
   },
   {
-   "id": "18363904",
-   "n": "A&K Sanctuary Gorilla Trekking in Uganda",
-   "b": "ak",
-   "g": [
-    "GREATAPES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363904/aksanctuarygorillatrekkinginuganda",
-   "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
-   "from": "Entebbe, Uganda",
-   "to": "Bwindi Impenetrable National Park, Uganda",
-   "country": "Uganda",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 27 Dec 2026",
-   "description": "Uganda’s ancient Bwindi Impenetrable Forest is shrouded in mist and mystery: even the name casts the National Park in an enigmatic light. Led by A&K’s expert guides, this five-day itinerary reveals the park’s secrets for those short on time but longing for a mountain gorilla trekking experience they’ll never forget, getting up close with the gentle primates, and authentically experiencing local communities and A&K Philanthropy projects along the way.",
-   "included": [
-    "24/7 A&K On-Call Support",
-    "English-Speaking Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Entrance Fees and Taxes",
-    "Internal Air Included (Economy Class, AU$1,225 value) Entebbe/Bwindi/Entebbe"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Entebbe"
-    },
-    {
-     "d": 2,
-     "n": "Bwindi Impenetrable National Park"
-    }
-   ],
-   "route": "18363904"
-  },
-  {
    "id": "18360198",
    "n": "A&K Sanctuary Gorilla Trekking in Uganda",
    "b": "ak",
@@ -20176,6 +20082,48 @@
     }
    ],
    "route": "18360198"
+  },
+  {
+   "id": "18363904",
+   "n": "A&K Sanctuary Gorilla Trekking in Uganda",
+   "b": "ak",
+   "g": [
+    "GREATAPES"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363904/aksanctuarygorillatrekkinginuganda",
+   "days": 5,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
+   "from": "Entebbe, Uganda",
+   "to": "Bwindi Impenetrable National Park, Uganda",
+   "country": "Uganda",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 27 Dec 2026",
+   "description": "Uganda’s ancient Bwindi Impenetrable Forest is shrouded in mist and mystery: even the name casts the National Park in an enigmatic light. Led by A&K’s expert guides, this five-day itinerary reveals the park’s secrets for those short on time but longing for a mountain gorilla trekking experience they’ll never forget, getting up close with the gentle primates, and authentically experiencing local communities and A&K Philanthropy projects along the way.",
+   "included": [
+    "24/7 A&K On-Call Support",
+    "English-Speaking Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Entrance Fees and Taxes",
+    "Internal Air Included (Economy Class, AU$1,225 value) Entebbe/Bwindi/Entebbe"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Entebbe"
+    },
+    {
+     "d": 2,
+     "n": "Bwindi Impenetrable National Park"
+    }
+   ],
+   "route": "18363904"
   },
   {
    "id": "18521707",
@@ -20589,7 +20537,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -20676,7 +20623,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -20768,10 +20714,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0924.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -20850,7 +20795,6 @@
    "country": "Uganda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -20912,7 +20856,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -20962,6 +20906,73 @@
     }
    ],
    "route": "18488737"
+  },
+  {
+   "id": "18360200",
+   "n": "A&K Sanctuary Tanzania and Kenya Safari",
+   "b": "ak",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360200/aksanctuarytanzaniaandkenyasafari",
+   "days": 9,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0924.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Nairobi, Kenya",
+   "country": "Kenya",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures: 21 Oct 2026 - 29 Dec 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2027-03-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Virtuoso Exclusive Benefit",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "$200 USD Shipboard Credit Per Stateroom Virtuoso Guests will enjoy $200 USD shipboard credit per stateroom on all voyages. Onboard credit will be applied to your shipboard account. Offer only applies to all A&K x Crystal Cruises. Offer is per stateroom, valid on new reservations and has no cash value. Must mention code VRTLEC at time of booking. Restrictions may apply; advisors, please see Booking Instructions and Supplier Terms & Conditions under the Advisor Info tab for more details."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 2,
+     "n": "Tarangire National Park"
+    },
+    {
+     "d": 4,
+     "n": "Serengeti"
+    },
+    {
+     "d": 6,
+     "n": "Masai Mara National Reserve"
+    },
+    {
+     "d": 9,
+     "n": "Nairobi"
+    }
+   ],
+   "route": "18360200"
   },
   {
    "id": "18363897",
@@ -21018,73 +21029,6 @@
    "route": "18363897"
   },
   {
-   "id": "18360200",
-   "n": "A&K Sanctuary Tanzania and Kenya Safari",
-   "b": "ak",
-   "g": [
-    "EASTAFRICA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18360200/aksanctuarytanzaniaandkenyasafari",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0924.webp",
-   "from": "Arusha, Tanzania",
-   "to": "Nairobi, Kenya",
-   "country": "Tanzania",
-   "world": false,
-   "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures: 21 Oct 2026 - 29 Dec 2026",
-   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
-   "included": [],
-   "promotions": [
-    {
-     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
-     "endDate": "2027-03-31",
-     "exclusive": false,
-     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
-    },
-    {
-     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
-    },
-    {
-     "name": "Virtuoso Exclusive Benefit",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "$200 USD Shipboard Credit Per Stateroom Virtuoso Guests will enjoy $200 USD shipboard credit per stateroom on all voyages. Onboard credit will be applied to your shipboard account. Offer only applies to all A&K x Crystal Cruises. Offer is per stateroom, valid on new reservations and has no cash value. Must mention code VRTLEC at time of booking. Restrictions may apply; advisors, please see Booking Instructions and Supplier Terms & Conditions under the Advisor Info tab for more details."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Arusha"
-    },
-    {
-     "d": 2,
-     "n": "Tarangire National Park"
-    },
-    {
-     "d": 4,
-     "n": "Serengeti"
-    },
-    {
-     "d": 6,
-     "n": "Masai Mara National Reserve"
-    },
-    {
-     "d": 9,
-     "n": "Nairobi"
-    }
-   ],
-   "route": "18360200"
-  },
-  {
    "id": "18521712",
    "n": "A&K Sanctuary Tanzania and Kenya Wildlife Safari",
    "b": "ak",
@@ -21096,7 +21040,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -21175,7 +21119,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -21243,7 +21186,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -21369,7 +21311,7 @@
    "img": null,
    "from": "New York City, NY, United States",
    "to": "",
-   "country": "United States",
+   "country": "Canada",
    "world": false,
    "d": "9/8/2027",
    "r": "9/21/2027",
@@ -21452,7 +21394,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -21504,7 +21445,6 @@
    "country": "Argentina",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -21594,7 +21534,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -21642,7 +21581,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -21702,7 +21640,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -21763,7 +21700,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -21823,7 +21759,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -21945,7 +21880,6 @@
    "country": "Portugal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -21993,7 +21927,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22063,7 +21996,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22150,7 +22082,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22243,7 +22174,6 @@
    "country": "Argentina",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22306,7 +22236,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22367,7 +22296,6 @@
    "country": null,
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -22406,7 +22334,6 @@
    "country": "Argentina",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22534,7 +22461,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_93_0926.webp",
    "from": "Tokyo, Japan",
    "to": "Bangkok Noi, Thailand",
-   "country": "Maldives",
+   "country": "Vietnam",
    "world": false,
    "d": "2/15/2028",
    "r": "3/2/2028",
@@ -22597,10 +22524,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_90_0919.webp",
    "from": "La Paz, Bolivia",
    "to": "Atacama, Chile",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22680,7 +22606,6 @@
    "country": "Indonesia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22810,7 +22735,6 @@
    "country": "Italy",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22849,7 +22773,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -22925,7 +22848,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23005,7 +22927,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23093,10 +23014,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_16_0828.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Cape Town, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23158,7 +23078,6 @@
    "country": "Cyprus",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23247,7 +23166,6 @@
    "country": "Montenegro",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23319,7 +23237,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23410,7 +23327,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -23468,7 +23384,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23604,7 +23519,6 @@
    "country": "Bhutan",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -23630,16 +23544,16 @@
      "description": "Experience the serene beauty of Bhutan with an exclusive stay at &Beyond Punakha River Lodge Stay for three nights or more at &Beyond Punakha River Lodge, and we’ll cover your Sustainable Development Fee (SDF), allowing you to immerse yourself in the wonders of this Himalayan kingdom without the added cost. Validity dates: 03 Jan – 28 Feb 2026 01 Jun – 31 Aug 2026 01 – 22 Dec 2026 Book your journey today and discover the magic of Bhutan—stress-free!"
     },
     {
-     "name": "Punakha Honeymoon",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "An idyllic and spiritually enriching honeymoon destination nestled amidst the majestic Himalaya mountains Punakha, situated in the heart of the Himalaya, invites couples to experience its secluded and picturesque valley, characterised by awe-inspiring natural beauty, captivating landscapes, and a rich cultural heritage. Immerse guests in the serenity of the Himalaya, strolling hand in hand through lush paddy fields, exploring historic monasteries together, and sharing moments of tranquility beside glistening rivers. With its unique blend of romance, adventure, and culture, Punakha promises an…"
-    },
-    {
      "name": "Milestone Celebrations Offer",
      "endDate": "2026-12-31",
      "exclusive": false,
      "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding…"
+    },
+    {
+     "name": "Punakha Honeymoon",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "An idyllic and spiritually enriching honeymoon destination nestled amidst the majestic Himalaya mountains Punakha, situated in the heart of the Himalaya, invites couples to experience its secluded and picturesque valley, characterised by awe-inspiring natural beauty, captivating landscapes, and a rich cultural heritage. Immerse guests in the serenity of the Himalaya, strolling hand in hand through lush paddy fields, exploring historic monasteries together, and sharing moments of tranquility beside glistening rivers. With its unique blend of romance, adventure, and culture, Punakha promises an…"
     }
    ],
    "itin": [
@@ -23669,7 +23583,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23719,7 +23632,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -23761,10 +23673,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Johannesburg, South Africa",
    "to": "Male, Maldives",
-   "country": "Maldives",
+   "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -23832,7 +23743,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23879,7 +23789,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23933,7 +23842,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -23980,7 +23888,6 @@
    "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24055,7 +23962,6 @@
    "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24130,7 +24036,6 @@
    "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24209,7 +24114,6 @@
    "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24292,7 +24196,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24342,7 +24245,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24400,7 +24302,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24463,7 +24364,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24600,10 +24500,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0908.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -24658,7 +24557,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24703,13 +24601,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15686146/brazilindepthriodejaneiroiguassumanaussalvadorandtrancoso",
    "days": 21,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15571430_2_58_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15571430_2_59_0922.webp",
    "from": "Rio De Janeiro, Brazil",
    "to": "Trancoso, Brazil",
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -24892,7 +24789,6 @@
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10"
    ],
    "onDemand": true,
@@ -24925,13 +24821,12 @@
    "g": [],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16549153/brazilvibrantexuberantandfamiliarriosalvadoranditacare",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15571430_2_83_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15571430_2_0_0922.webp",
    "from": "Sao Paulo, Brazil",
    "to": "Amazonas, Brazil",
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -24975,7 +24870,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25028,7 +24922,6 @@
    "country": "Seychelles",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -25090,7 +24983,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25135,7 +25027,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25232,7 +25123,6 @@
    "country": "Cambodia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25301,7 +25191,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -25343,7 +25232,6 @@
    "country": "Canada",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25421,10 +25309,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
    "from": "Cape Town, South Africa",
    "to": "Cairo, Egypt",
-   "country": "Zambia",
+   "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25498,7 +25385,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25560,7 +25446,6 @@
    "country": null,
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25605,7 +25490,6 @@
    "country": "Chile",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25673,7 +25557,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25738,7 +25621,6 @@
    "country": "Canada",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25793,7 +25675,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -25850,7 +25731,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -25899,7 +25779,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26026,7 +25905,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26128,7 +26006,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26343,7 +26220,6 @@
    "country": "Portugal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26390,7 +26266,6 @@
    "country": "Costa Rica",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26470,7 +26345,6 @@
    "country": "Costa Rica",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26542,10 +26416,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_3_0924.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26760,7 +26633,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -26805,7 +26677,6 @@
    "country": "Ireland",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -26862,10 +26733,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3014_2_0_0830.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Laos",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -26925,7 +26795,6 @@
    "country": "Mexico",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27026,7 +26895,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Lower Zambezi National Park, Zambia",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-04",
@@ -27084,7 +26953,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27132,7 +27000,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27194,7 +27061,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27253,7 +27119,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0908.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Cambodia",
+   "country": "Thailand",
    "world": false,
    "d": "11/1/2026",
    "r": "11/14/2026",
@@ -27366,7 +27232,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_0908.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Cambodia",
+   "country": "Laos",
    "world": false,
    "d": "11/7/2027",
    "r": "11/20/2027",
@@ -27425,7 +27291,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27491,10 +27356,21 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
-    "2026-12"
+    "2026-12",
+    "2027-01",
+    "2027-02",
+    "2027-03",
+    "2027-04",
+    "2027-05",
+    "2027-06",
+    "2027-07",
+    "2027-08",
+    "2027-09",
+    "2027-10",
+    "2027-11",
+    "2027-12"
    ],
    "onDemand": true,
    "win": "Valid for Travel Now Through: 13 Dec 2026",
@@ -27678,7 +27554,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -27733,7 +27608,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27804,7 +27678,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27864,10 +27737,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2565_2_148_0901.webp",
    "from": "Reykjavík, Iceland",
    "to": "Keflavík, Iceland",
-   "country": "Iceland",
+   "country": "Greenland",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -27943,7 +27815,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10"
    ],
    "onDemand": true,
@@ -27989,7 +27860,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -28085,7 +27955,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10"
    ],
    "onDemand": true,
@@ -28131,7 +28000,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10"
    ],
    "onDemand": true,
@@ -28175,7 +28043,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0926.webp",
    "from": "Anchorage, AK, United States",
    "to": "Singapore  , Singapore",
-   "country": "Japan",
+   "country": "Australia",
    "world": false,
    "d": "6/29/2027",
    "r": "7/20/2027",
@@ -28305,7 +28173,6 @@
    "country": "Laos",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -28343,7 +28210,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -28402,7 +28268,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -28493,7 +28358,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -28545,7 +28409,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -28595,7 +28458,6 @@
    "country": "Indonesia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -28735,7 +28597,6 @@
    "country": "Papua New Guinea",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -28854,7 +28715,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-12"
@@ -28923,7 +28784,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-06",
@@ -29002,7 +28863,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29075,7 +28935,6 @@
    "country": "New Zealand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29170,7 +29029,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29217,7 +29075,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29270,7 +29127,6 @@
    "country": null,
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29326,7 +29182,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29423,7 +29278,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29483,7 +29337,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29599,7 +29452,6 @@
    "country": "Laos",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -29634,7 +29486,6 @@
    "country": "Thailand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -29672,7 +29523,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -29792,7 +29642,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29855,7 +29704,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29895,7 +29743,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -29958,7 +29805,6 @@
    "country": "Uganda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30021,7 +29867,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30070,7 +29915,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30114,7 +29958,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0926.webp",
    "from": "Napa, CA, United States",
    "to": "Milano, Italy",
-   "country": "Spain",
+   "country": "Italy",
    "world": true,
    "d": "4/12/2028",
    "r": "5/4/2028",
@@ -30186,7 +30030,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -30259,7 +30102,6 @@
    "country": "Canada",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30401,7 +30243,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -30453,7 +30294,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -30505,7 +30345,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30638,7 +30477,6 @@
    "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30713,7 +30551,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30792,7 +30629,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30879,7 +30715,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -30951,10 +30786,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18100729_2_0_0828.webp",
    "from": "Kathmandu, Nepal",
    "to": "Paro, Bhutan",
-   "country": "Nepal",
+   "country": "Bhutan",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -31027,7 +30861,6 @@
    "country": "Japan",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31105,7 +30938,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31152,7 +30984,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31264,7 +31095,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31335,7 +31165,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31389,7 +31218,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31443,7 +31271,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31521,7 +31348,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -31624,7 +31450,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31706,7 +31531,6 @@
    "country": "Indonesia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31772,7 +31596,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0926.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Japan",
+   "country": "Hungary",
    "world": true,
    "d": "3/21/2028",
    "r": "4/10/2028",
@@ -31841,7 +31665,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0926.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Tanzania",
+   "country": "Vietnam",
    "world": true,
    "mks": [
     "2027-03"
@@ -31911,7 +31735,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -31993,7 +31816,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -32068,7 +31890,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -32151,7 +31972,6 @@
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -32211,7 +32031,6 @@
    "country": "Nepal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -32265,7 +32084,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -32312,7 +32130,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -32395,7 +32212,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -32432,7 +32248,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -32487,7 +32302,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -32548,7 +32362,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -32624,10 +32438,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -32705,7 +32518,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -32779,7 +32592,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -32860,7 +32673,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2028-01",
@@ -32941,7 +32754,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -33084,7 +32897,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -33283,13 +33096,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15387348/kenyabirdingsafari",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_37_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_37_0930.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -33352,7 +33164,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -33427,7 +33238,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -33501,13 +33311,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15389436/kenyagolfsafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_1_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_1_0930.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -33552,13 +33361,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15739524/kenyamillennialsafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_1_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_1_0930.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -33609,7 +33417,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -33672,7 +33479,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -33736,10 +33542,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_677_0828.webp",
    "from": "Nairobi, Kenya",
    "to": "Parc National des Volcans, Rwanda",
-   "country": "Kenya",
+   "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -33797,7 +33602,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -33872,7 +33676,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10"
    ],
    "onDemand": true,
@@ -34035,7 +33838,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34102,7 +33904,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34192,7 +33993,6 @@
    "country": "Mexico",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34240,7 +34040,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -34291,7 +34090,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34340,7 +34138,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34415,7 +34212,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11"
    ],
@@ -34458,7 +34254,6 @@
    "country": "Portugal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34520,7 +34315,6 @@
    "country": "Portugal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34566,7 +34360,6 @@
    "country": "New Zealand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34651,7 +34444,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34733,7 +34525,6 @@
    "country": "Costa Rica",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34801,7 +34592,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34885,10 +34675,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -34959,7 +34748,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35048,7 +34836,6 @@
    "country": "Mozambique",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35122,7 +34909,6 @@
    "country": "Peru",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35197,10 +34983,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35275,7 +35060,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35353,7 +35137,6 @@
    "country": "Switzerland",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35431,10 +35214,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_265_0919.webp",
    "from": "Tirana, Albania",
    "to": "Corfu, Greece",
-   "country": "Albania",
+   "country": "Greece",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35513,7 +35295,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35559,7 +35340,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35607,7 +35387,6 @@
    "country": "Peru",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35722,7 +35501,6 @@
    "country": "Madagascar",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35804,7 +35582,6 @@
    "country": "Madagascar",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35867,7 +35644,6 @@
    "country": "Madagascar",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -35928,7 +35704,6 @@
    "country": "Mexico",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36011,7 +35786,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36082,7 +35856,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36129,10 +35902,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_0828.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36193,7 +35965,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -36235,7 +36006,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36280,7 +36050,6 @@
    "country": "Mexico",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36355,7 +36124,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -36422,7 +36190,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36469,7 +36236,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36502,30 +36268,29 @@
    "route": "16628900"
   },
   {
-   "id": "16916677",
+   "id": "18295014",
    "n": "Mountain Gorilla Safari: Kenya, Tanzania & Rwanda",
    "b": "tauck",
    "g": [
     "EASTAFRICA",
     "GREATAPES"
    ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16916677/mountaingorillasafarikenyatanzaniarwanda",
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18295014/mountaingorillasafarikenyatanzaniarwanda",
    "days": 16,
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
-   "d": "10/4/2026",
-   "r": "10/19/2026",
    "mks": [
-    "2026-10"
+    "2027-08",
+    "2027-09",
+    "2027-10"
    ],
-   "win": "Dates: 04 Oct 2026 - 19 Oct 2026",
+   "onDemand": true,
+   "win": "Valid for Departures: 21 Jul 2027 - 21 Oct 2027",
    "description": "From the Big Five to silverbacked Mountain Gorillas, wildlife is the draw on this 16-day safari through Kenya, Tanzania and Rwanda where game drives and mountain treks reward you with once-in-a-lifetime encounters with animals, both endemic and endangered. All departures are small groups, limited to 24 guests.",
-   "included": [
-    "From the Big Five to silverback Mountain Gorillas, wildlife is the draw on this 16-day safari in Kenya, Tanzania and Rwanda, where game drives and a special mountain trek reward with once-in-a-lifetime encounters with animals, both endemic and endangered... highlighted by an opportunity to \"meet\" a gorilla family living in the wilds of Rwanda and a visit to the Dian Fossey Gorilla Fund Museum, dedicated to saving the endangered mountain gorilla. Gorillas in your midst... Spend the last three nights of your 16-day African safari to Kenya and Tanzania in Rwanda, home to some of the last remaining mountain gorillas on Earth. Learn insights and observations about gorilla behavior at private lectures and during a visit to the Dian Fossey Gorilla Fund Museum before your once-in-a-lifetime gorilla trek begins. A private porter will carry your provisions as an expert guide leads you into the wilderness for your gorilla encounter. Once the gorillas are located, you will have the rare opportunity to watch them interact with each other - and you if they choose! Your adventure includes talks by conservationists working to save these endangered gorillas from extinction. All departures are small groups, limited to 24 guests. Special experiences include; game drives in the national parks of Tanzania and Kenya; private lecture on famous elephants of Amboseli and anti-poaching efforts; a hot air balloon ride at dawn followed by a champagne breakfast in the bush; and a guided gorilla trek in Volcanoes National Park for a one-hour gorilla family visit and a private lecture on conservation programs underway in Rwanda."
-   ],
+   "included": [],
    "promotions": [
     {
      "name": "Tauck Bridges: Save When You Travel As A Group",
@@ -36572,7 +36337,7 @@
      "n": "Kigali"
     }
    ],
-   "route": "16916677"
+   "route": "18295014"
   },
   {
    "id": "18295015",
@@ -36655,7 +36420,6 @@
    "country": "Vietnam",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36741,7 +36505,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36808,7 +36571,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36870,7 +36632,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -36986,7 +36747,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37053,7 +36813,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37110,7 +36869,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37158,7 +36916,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37228,7 +36985,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37274,13 +37030,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15737735/naturalwondersofbrazilriodejaneiropantanalandiguassu",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15571430_2_32_0922.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15571430_2_33_0922.webp",
    "from": "Rio De Janeiro, Brazil",
    "to": "Foz do Iguaçu, Brazil",
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37336,13 +37091,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18397020/natureswondersgalapagosandamazonexpeditionwithbeyondgalapago",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15444065_2_222_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15444065_2_222_0930.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Ecuador",
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37424,7 +37178,6 @@
    "country": "Argentina",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37495,7 +37248,6 @@
    "country": "Nepal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -37546,7 +37298,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37615,7 +37366,6 @@
    "country": "New Zealand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37687,7 +37437,6 @@
    "country": "Italy",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -37772,7 +37521,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37847,7 +37595,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37908,7 +37655,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -37972,7 +37718,6 @@
    "country": "Thailand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -38009,7 +37754,6 @@
    "country": "Norway",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38069,10 +37813,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38156,7 +37899,6 @@
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38287,10 +38029,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6_0908.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "South Africa",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -38341,7 +38082,6 @@
    "country": "Argentina",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38420,7 +38160,6 @@
    "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38584,7 +38323,6 @@
    "country": "Peru",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38667,7 +38405,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Amman, Jordan",
    "to": "Cairo, Egypt",
-   "country": "Jordan",
+   "country": "Egypt",
    "world": false,
    "mks": [
     "2026-10",
@@ -38761,7 +38499,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38819,7 +38556,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -38870,7 +38606,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -38975,7 +38710,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39023,7 +38757,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -39074,10 +38807,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_72_0902.webp",
    "from": "Nairobi, Kenya",
    "to": "Zanzibar, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39164,7 +38896,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39283,7 +39014,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39366,7 +39096,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39435,7 +39164,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39512,10 +39240,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Kigali, Rwanda",
    "to": "Arusha, Tanzania",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39598,7 +39325,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39686,7 +39412,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39740,7 +39465,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39823,7 +39547,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39880,7 +39603,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -39941,7 +39663,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40003,7 +39724,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40089,7 +39809,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40152,7 +39871,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40241,7 +39959,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_3_0923.webp",
    "from": "Seoul, South Korea",
    "to": "Osaka, Japan",
-   "country": "Japan",
+   "country": "South Korea",
    "world": false,
    "d": "4/12/2027",
    "r": "4/25/2027",
@@ -40321,10 +40039,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_91_0919.webp",
    "from": "La Paz, Bolivia",
    "to": "Santiago, Chile",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40406,60 +40123,6 @@
    "route": "18554130"
   },
   {
-   "id": "16929705",
-   "n": "Sand and Surf: Death Valley to San Diego",
-   "b": "tauck",
-   "g": [],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16929705/sandandsurfdeathvalleytosandiego",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_191_0923.webp",
-   "from": "Las Vegas, NV, United States",
-   "to": "Journey Home",
-   "country": "United States",
-   "world": false,
-   "d": "12/4/2026",
-   "r": "12/11/2026",
-   "mks": [
-    "2026-12"
-   ],
-   "win": "Dates: 04 Dec 2026 - 11 Dec 2026",
-   "description": "As a family-owned travel company since 1925, our values and vision remain true: always do the right thing and deliver more than what's expected. With journeys across 7 continents, in over 100 destinations and to 70+ countries, we keep moving forward to find new ways to enhance travel experiences that will be memorable for a lifetime.",
-   "included": [
-    "Experience the breathtaking contrasts of the American Southwest, where rugged desert landscapes meet the captivating allure of the Pacific coast. Journey from the dazzling lights of Las Vegas to Death Valley's dramatic desert terrain, Palm Springs' architectural charm, and San Diego's coastal beauty. From the neon glow of Las Vegas to the sunlit shores of San Diego, your journey unveils the breathtaking contrasts of the American Southwest. Stand in awe at Death Valley's vast desert terrain, where golden dunes and rugged peaks create an otherworldly landscape. Discover the architectural elegance and Hollywood history of Rancho Mirage and Palm Springs, then explore the surreal rock formations and twisted Joshua trees in the national park. Savor fine wines in Temecula before arriving at the iconic Hotel del Coronado, where ocean breezes and Victorian grandeur welcome you. With early access to the USS Midway (the home of the United States Navy Strike Fighter Tactics Instructor program, also known as the Top Gun flight school) and time to explore San Diego's vibrant districts, our colder weather adventure blends natural wonders, cultural gems, and coastal beauty into an unforgettable experience."
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Las Vegas"
-    },
-    {
-     "d": 2,
-     "n": "Death Valley National Park"
-    },
-    {
-     "d": 4,
-     "n": "Palm Springs"
-    },
-    {
-     "d": 5,
-     "n": "Joshua Tree National Park"
-    },
-    {
-     "d": 6,
-     "n": "San Diego"
-    }
-   ],
-   "route": "16929705"
-  },
-  {
    "id": "16628139",
    "n": "Scenic helicopter flight",
    "b": "andbeyond",
@@ -40474,7 +40137,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40522,7 +40184,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11"
    ],
@@ -40572,10 +40233,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_221_0919.webp",
    "from": "Geneva, Switzerland",
    "to": "Milan, Italy",
-   "country": "Switzerland",
+   "country": "Italy",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40645,7 +40305,6 @@
    "country": "Papua New Guinea",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40733,10 +40392,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_763_0828.webp",
    "from": "Serengeti National Park, Tanzania",
    "to": "Volcanoes National Park, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40795,7 +40453,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -40849,7 +40506,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -40909,7 +40565,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -40963,7 +40618,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -41015,10 +40669,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_0828.webp",
    "from": "Cape Town, South Africa",
    "to": "Windhoek, Namibia",
-   "country": "Namibia",
+   "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41081,10 +40734,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_106_0919.webp",
    "from": "Cape Town, South Africa",
    "to": "Vilanculos, Mozambique",
-   "country": "South Africa",
+   "country": "Mozambique",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41162,7 +40814,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zimbabwe",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -41231,7 +40883,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41306,7 +40957,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41377,7 +41027,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41448,7 +41097,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41506,7 +41154,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41569,7 +41216,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_253_0924.webp",
    "from": "Bogotá, Colombia",
    "to": "Sao Paulo, Brazil",
-   "country": "Brazil",
+   "country": "Colombia",
    "world": false,
    "mks": [
     "2027-06",
@@ -41637,7 +41284,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -41684,10 +41330,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_104_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -41753,7 +41398,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-10",
@@ -41826,7 +41471,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -41901,7 +41546,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-03",
@@ -41981,7 +41626,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2028-03",
@@ -42062,7 +41707,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42130,7 +41774,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42192,7 +41835,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42242,6 +41884,76 @@
    "route": "18587275"
   },
   {
+   "id": "18106487",
+   "n": "Spain and Morocco by Private Jet",
+   "b": "ak",
+   "g": [],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18106487/spainandmoroccobyprivatejet",
+   "days": 13,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_22_0924.webp",
+   "from": "Granada, Spain",
+   "to": "Seville, Spain",
+   "country": "Spain",
+   "world": false,
+   "d": "10/13/2026",
+   "r": "10/25/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 13 Oct 2026 - 25 Oct 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [
+    "Separated by the Mediterranean Sea and the Strait of Gibraltar, Spain and Morocco are forever linked by the Moorish culture. Travel by exclusively chartered small jet as you discover how the Moors shaped the region’s iconic architecture and incredible cuisine. Visit UNESCO World Heritage Sites, stay a night at A&K’s Private Desert Camp and take in a private flamenco performance at a palace in Seville."
+   ],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2027-03-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Virtuoso Exclusive Benefit",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "$200 USD Shipboard Credit Per Stateroom Virtuoso Guests will enjoy $200 USD shipboard credit per stateroom on all voyages. Onboard credit will be applied to your shipboard account. Offer only applies to all A&K x Crystal Cruises. Offer is per stateroom, valid on new reservations and has no cash value. Must mention code VRTLEC at time of booking. Restrictions may apply; advisors, please see Booking Instructions and Supplier Terms & Conditions under the Advisor Info tab for more details."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Granada"
+    },
+    {
+     "d": 3,
+     "n": "Fez"
+    },
+    {
+     "d": 4,
+     "n": "Volubilis"
+    },
+    {
+     "d": 3,
+     "n": "Fez"
+    },
+    {
+     "d": 7,
+     "n": "Marrakesh"
+    },
+    {
+     "d": 10,
+     "n": "Seville"
+    }
+   ],
+   "route": "18106487"
+  },
+  {
    "id": "15710535",
    "n": "Specialist star photography lesson",
    "b": "andbeyond",
@@ -42256,7 +41968,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42319,7 +42030,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -42377,7 +42087,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42439,7 +42148,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42500,59 +42208,6 @@
    "route": "18345460"
   },
   {
-   "id": "16919119",
-   "n": "Spotlight on South Africa and Victoria Falls",
-   "b": "tauck",
-   "g": [
-    "SOUTHERN",
-    "ZAMBEZI"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16919119/spotlightonsouthafricaandvictoriafalls",
-   "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
-   "from": "Cape Town, South Africa",
-   "to": "Johannesburg, South Africa",
-   "country": "South Africa",
-   "world": false,
-   "d": "10/5/2026",
-   "r": "10/13/2026",
-   "mks": [
-    "2026-10"
-   ],
-   "win": "Dates: 05 Oct 2026 - 13 Oct 2026",
-   "description": "Venture into the heart of South Africa, where Cape Town's coastal charm and the silhouette of Table Mountain create a setting of pure magic. Savor world-class wines, embark on thrilling game drives, and feel the pulse of the continent with each moment.",
-   "included": [
-    "Journey to the heart of South Africa, a world where breathtaking landscapes, remarkable wildlife and rich cultures await. Adventures begins in the vibrant coastal city of Cape Town, based at the foot of the magnificent Table Mountain. Discover history and natural beauty from game reserves to coastal treasures, sip wines in lush vineyards, and marvel at the playful African penguins on the beach. Experience the savannahs of Kapama Private Game Reserve, home to Africa's \"Big Five\" on thrilling game drives, where lions, elephants, and rhinos roam. Stand in awe of the thundering Victoria Falls and share unforgettable moments during serene sunsets on the Zambezi River, every moment is steeped in wonder."
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Cape Town"
-    },
-    {
-     "d": 4,
-     "n": "Kruger National Park"
-    },
-    {
-     "d": 7,
-     "n": "Victoria Falls"
-    },
-    {
-     "d": 9,
-     "n": "Johannesburg"
-    }
-   ],
-   "route": "16919119"
-  },
-  {
    "id": "18386595",
    "n": "Stories on the Slopes of Merapi",
    "b": "ak",
@@ -42567,7 +42222,6 @@
    "country": "Indonesia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42616,7 +42270,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -42747,7 +42400,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42813,7 +42465,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42893,7 +42544,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -42972,7 +42622,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43061,7 +42710,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -43096,6 +42744,62 @@
     }
    ],
    "route": "18535590"
+  },
+  {
+   "id": "16918176",
+   "n": "Tanzania: A Grand Family Safari",
+   "b": "tauck",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16918176/tanzaniaagrandfamilysafari",
+   "days": 10,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_105_0923.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Arusha, Tanzania",
+   "country": "Tanzania",
+   "world": false,
+   "d": "12/18/2026",
+   "r": "12/27/2026",
+   "mks": [
+    "2026-12"
+   ],
+   "win": "Dates: 18 Dec 2026 - 27 Dec 2026",
+   "description": "Join us on a 10-day family safari in Tanzania, for the ultimate adventure across the African landscape where you'll have an opportunity to view Africa's \"Big Five\" on daily game drives in a few of the region's national parks.",
+   "included": [
+    "Where the wild things are... your family discovers the spirit of adventure witnessing the \"Big Five\" during morning, afternoon and evening safari game drives... a two-million-year-old crater... Mt. Kilimanjaro.... elephant herds that dwarf their neighbors, antelope, zebra, gazelle... buffalo, wildebeest and long-necked giraffes.. and in the Serengeti, golden-maned lions playing their part in the circle of life. Wake up to views of Mt. Kilimanjaro from your African lodge... and discover who lives on the slopes of this mighty mountain. Experience the real life home of Maasai warriors and Africa's Big Five. Get a true taste of daily life in the African bush when you learn how to make beaded jewelry and throw a spear, and go inside a village school. You may see lions resting under enormous baobab trees... wildebeest making their way past herds of elephants and gazelles... elephants, up close. Travel aboard our open-top Africa safari vehicles where everyone has a great view of Tanzania's amazing wildlife during morning and afternoon game drives. Your Tauck Director provides a window into an unknown, unseen world that introduces Tanzania's nocturnal society, revealing what would normally be hidden in darkness... And from your tented camp in \"the place where life began\".... to your lodge next to Africa's \"Garden of Eden\"... to your safari lodge in the Serengeti, your family becomes part of the unbelievable wilderness pageant that comes alive right outside your door!"
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 3,
+     "n": "Tarangire National Park"
+    },
+    {
+     "d": 5,
+     "n": "Karatu"
+    },
+    {
+     "d": 7,
+     "n": "Serengeti"
+    },
+    {
+     "d": 1,
+     "n": "Arusha"
+    }
+   ],
+   "route": "16918176"
   },
   {
    "id": "18295024",
@@ -43176,7 +42880,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43251,7 +42954,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43321,9 +43023,7 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-10",
-    "2026-11",
-    "2026-12"
+    "2026-10"
    ],
    "onDemand": true,
    "win": "Valid for Departures: 07 Sep 2026 - 30 Dec 2026",
@@ -43436,7 +43136,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43488,7 +43187,6 @@
    "country": "Thailand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43559,13 +43257,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16674831/thebestofchile",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15444065_2_0_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15444065_2_0_0930.webp",
    "from": "San Pedro de Atacama, Chile",
    "to": "Lake District, Chile",
    "country": "Chile",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43619,66 +43316,6 @@
    "route": "16674831"
   },
   {
-   "id": "18347180",
-   "n": "The Best of Western Canada & Rocky Mountaineer",
-   "b": "tauck",
-   "g": [
-    "ROCKIES"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18347180/thebestofwesterncanadarockymountaineer",
-   "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_209_0923.webp",
-   "from": "Calgary, Canada",
-   "to": "Vancouver, Canada",
-   "country": "Canada",
-   "world": false,
-   "d": "10/4/2026",
-   "r": "10/13/2026",
-   "mks": [
-    "2026-10"
-   ],
-   "win": "Dates: 04 Oct 2026 - 13 Oct 2026",
-   "description": "Venture across Western Canada on a 10-day journey highlighted by a two-day journey aboard, Rocky Mountaineer, and bookended with stays in Calgary and Whistler.",
-   "included": [
-    "All aboard! And you're off on a wilderness adventure that's steeped in scenic beauty accessible only by train, boat, float plane and Ice Explorer; rewarding with stays in luxury Fairmont hotels; and enriched by guided exploration with expert guides who introduce you to the gems of Western Canada. It all starts along the stunning shores of Lake Louise, where a three-night stay at the Fairmont Chateau Lake Louise indulges with the natural treasures of Banff National Park. View alpine wonders on a float trip on the Bow River, enjoy afternoon tea at the venerable Banff Springs Hotel, and explore the chic town of Banff as you wish. Drive along the incomparable Icefields Parkway for views of arctic wildlife, turquoise lakes, pristine glaciers, thundering waterfalls and towering peaks that defy comparison and ride a specially designed Ice Explorer atop a prehistoric glacier. Board the Rocky Mountaineer as you travel to Vancouver in premier Gold Leaf seats that pamper with head-turning vistas and First Class service, stopping overnight in Kamloops before ending your rail journey with a stay at the Fairmont Hotel Vancouver. A visit to Granville Island fly to Victoria Island aboard a float plane for a two-night stay at the waterfront Fairmont Empress where whale watching and a choice of sightseeing await. Ride a ferry back to Vancouver and drive to the Fairmont Chateau Whistler, experiencing unique cultural discoveries that make your last two nights memorable in every way."
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Calgary"
-    },
-    {
-     "d": 2,
-     "n": "Banff"
-    },
-    {
-     "d": 5,
-     "n": "Vancouver"
-    },
-    {
-     "d": 6,
-     "n": "Victoria"
-    },
-    {
-     "d": 8,
-     "n": "Whistler"
-    },
-    {
-     "d": 5,
-     "n": "Vancouver"
-    }
-   ],
-   "route": "18347180"
-  },
-  {
    "id": "18615253",
    "n": "The Best of Zimbabwe: Victoria Falls, Hwange & Mana Pools",
    "b": "wilderness",
@@ -43693,7 +43330,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43743,10 +43379,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_35_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Kalahari Desert, Botswana",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43804,10 +43439,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_291_0919.webp",
    "from": "Johannesburg, South Africa",
    "to": "Livingstone, Zambia",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43871,7 +43505,6 @@
    "country": "Portugal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43915,7 +43548,6 @@
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -43976,13 +43608,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/16867953/thegalapagosandchileanwineroute",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15444065_2_160_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15444065_2_160_0930.webp",
    "from": "Santa Cruz Island, Ecuador",
    "to": "Millahue, Chile",
-   "country": "Chile",
+   "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44069,7 +43700,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_2_0908.webp",
    "from": "Tokyo, Japan",
    "to": "Argolida, Greece",
-   "country": "China",
+   "country": "India",
    "world": true,
    "d": "4/11/2027",
    "r": "5/1/2027",
@@ -44183,7 +43814,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -44234,7 +43864,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44290,7 +43919,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Ngorongoro, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -44349,10 +43978,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0_0908.webp",
    "from": "Depart Home",
    "to": "Homeward bound",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -44404,10 +44032,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_17_0908.webp",
    "from": "En route to a classic East African safari",
    "to": "Homeward bound",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -44464,7 +44091,6 @@
    "country": "Thailand",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44513,7 +44139,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44562,10 +44187,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_45_0924.webp",
    "from": "Chiang Mai, Thailand",
    "to": "Phnom Penh, Cambodia",
-   "country": "Laos",
+   "country": "Cambodia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44633,10 +44257,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_8_0908.webp",
    "from": "Depart Home",
    "to": "Arrive home",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -44689,13 +44312,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/14957132/theoriginalsafaricombiningkenyaandtanzania",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_49_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2963_2_49_0930.webp",
    "from": "Arusha, Tanzania",
    "to": "Ngorongoro Crater, Tanzania",
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -44804,10 +44426,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_233_0919.webp",
    "from": "Kigali, Rwanda",
    "to": "Lake Tanganyika, Tanzania",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44889,7 +44510,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -44950,7 +44570,6 @@
    "country": "India",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45032,7 +44651,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45113,13 +44731,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15699709/theultimatemultigenerationaltanzaniansafari",
    "days": 13,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2526_2_14_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2526_2_14_0930.webp",
    "from": "Arusha, Tanzania",
    "to": "Dar Es Salaam, Tanzania",
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -45164,10 +44781,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Okavango Delta, Botswana",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45223,7 +44839,6 @@
    "country": "Madagascar",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45287,7 +44902,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -45337,7 +44951,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -45404,7 +45018,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45444,7 +45057,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -45486,6 +45098,60 @@
     }
    ],
    "route": "15389119"
+  },
+  {
+   "id": "18116461",
+   "n": "Tuscany, Cinque Terre & the Portofino Coast",
+   "b": "tauck",
+   "g": [],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18116461/tuscanycinqueterretheportofinocoast",
+   "days": 8,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_138_0923.webp",
+   "from": "Florence, Italy",
+   "to": "Arrivederci, Italy",
+   "country": "Italy",
+   "world": false,
+   "d": "10/22/2026",
+   "r": "10/29/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 22 Oct 2026 - 29 Oct 2026",
+   "description": "A fresh new perspective on life in \"the five lands\" and under the Tuscan sun... It's hands-on learning with local experts on many subjects, who share their experience, their knowledge and their passions. And you are suddenly living la dolce vita...",
+   "included": [
+    "From under the Tuscan sun to the Italian Riviera, embark on a journey that fills your senses with art, cuisine, wine, and the best of nature - from rolling Tuscan hills with vineyards of grapes and olives to the magnificent Mediterranean Italian Riviera, lined with fragrant gardens along a picturesque coastline... And suddenly, you are living la dolce vita... Our 8-day journey brings extraordinary experiences, from nature to knowledge. Bicycling atop the walls of Lucca... or walking through the medieval alleys of Siena. It's laughter. It's sharing, such as vino made from grapes in the vineyards you've just explored. It's about becoming a part of day-to-day Italy... learning to cook Italian-style... savoring the extraordinary beauty of nature from Portofino along the Mediterranean's Italian Riviera... exploring villages of Cinque Terre National Park, overlooking the sea... and going off-the-beaten-path for an Italian cultural connection unlike any other."
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Florence"
+    },
+    {
+     "d": 4,
+     "n": "Cinque Terre"
+    },
+    {
+     "d": 5,
+     "n": "Lucca"
+    },
+    {
+     "d": 4,
+     "n": "Cinque Terre"
+    },
+    {
+     "d": 7,
+     "n": "Portofino"
+    }
+   ],
+   "route": "18116461"
   },
   {
    "id": "18115582",
@@ -45691,7 +45357,6 @@
    "country": "Uganda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45749,7 +45414,6 @@
    "country": "Uganda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45807,7 +45471,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -45896,7 +45559,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -45941,7 +45603,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -46014,7 +45676,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -46089,7 +45751,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-01",
@@ -46483,7 +46145,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -46560,7 +46221,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -46717,7 +46377,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2028-01",
@@ -46802,7 +46462,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -46963,7 +46623,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2028-01",
@@ -47114,7 +46774,6 @@
    "country": "South Africa",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -47185,7 +46844,6 @@
    "country": "Rwanda",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -47326,7 +46984,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -47388,7 +47045,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0926.webp",
    "from": "Los Angeles, CA, United States",
    "to": "Papagayo Peninsula, Costa Rica, Costa Rica",
-   "country": "Mexico",
+   "country": "Costa Rica",
    "world": false,
    "d": "1/20/2027",
    "r": "2/9/2027",
@@ -47464,7 +47121,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -47580,7 +47236,6 @@
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -47626,7 +47281,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -47701,7 +47355,6 @@
    "country": "Namibia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -47753,7 +47406,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48043,7 +47695,6 @@
    "country": "Nepal",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48096,7 +47747,6 @@
    "country": "Canada",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48165,10 +47815,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48234,7 +47883,6 @@
    "country": "Madagascar",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48351,7 +47999,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0926.webp",
    "from": "Big Sky, MT, United States",
    "to": "Sea of Cortez, Mexico",
-   "country": "Mexico",
+   "country": "Ecuador",
    "world": false,
    "d": "6/15/2027",
    "r": "6/30/2027",
@@ -48395,10 +48043,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_234_0828.webp",
    "from": "Linyanti, Botswana",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Mozambique",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48448,13 +48095,12 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15730440/wildlifeencounterseducationandenterpriseintanzania",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2526_2_24_0825.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2526_2_24_0930.webp",
    "from": "Arusha, Tanzania",
    "to": "Arusha, Tanzania",
    "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12"
@@ -48505,7 +48151,6 @@
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10"
    ],
    "onDemand": true,
@@ -48554,7 +48199,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -48612,7 +48257,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-03",
@@ -48677,7 +48322,6 @@
    "country": "Brazil",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48761,7 +48405,6 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -48810,7 +48453,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_62_0924.webp",
    "from": "Portland, OR, United States",
    "to": "Boston, MA, United States",
-   "country": "Bolivia",
+   "country": "United States",
    "world": true,
    "d": "2/8/2028",
    "r": "3/4/2028",
@@ -48890,7 +48533,6 @@
    "country": "Chile",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -49002,10 +48644,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2382_2_5_0912.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -49081,10 +48722,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2906_2_47_0912.webp",
    "from": "Quito, Ecuador",
    "to": "Cusco, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -49221,66 +48861,6 @@
    "route": "18361363"
   },
   {
-   "id": "18363151",
-   "n": "Wonders of the Galápagos and Machu Picchu",
-   "b": "ak",
-   "g": [
-    "GALAPAGOS",
-    "AMAZONIA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363151/wondersofthegalpagosandmachupicchu",
-   "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
-   "from": "Guayaquil, Ecuador",
-   "to": "Lima, Peru",
-   "country": "Ecuador",
-   "world": false,
-   "mks": [
-    "2026-11"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 26 Nov 2026",
-   "description": "This exciting South American adventure combines two bucket-list destinations in one incredible journey. Begin with a cruise of the Galápagos’ Northern Islands, our guides revealing giant tortoises, marine iguanas, blue-footed boobies and more with a host of exciting snorkeling, kayaking and shore excursions. Then, explore the enduring heritage of the Sacred Valley and join a site expert to discover the wonders of Machu Picchu.",
-   "included": [
-    "Travelling Bell Boy® Luggage Handling",
-    "English-Speaking Resident Tour Director® and Local Guides",
-    "Airport Meet and Greet with Private Transfers",
-    "Traveller’s Valet® Laundry Service",
-    "Internet Access",
-    "Entrance Fees, Taxes and All Gratuities Except Resident Tour Director",
-    "24/7 A&K On-Call Support",
-    "Internal Air Included (Economy Class, AU$3,060 value) Guayaquil/Baltra/Guayaquil/Lima; Lima/Cusco/Lima"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Guayaquil"
-    },
-    {
-     "d": 6,
-     "n": "Lima"
-    },
-    {
-     "d": 7,
-     "n": "Sacred Valley"
-    },
-    {
-     "d": 9,
-     "n": "Machu Picchu"
-    },
-    {
-     "d": 10,
-     "n": "Cusco"
-    },
-    {
-     "d": 6,
-     "n": "Lima"
-    }
-   ],
-   "route": "18363151"
-  },
-  {
    "id": "18105041",
    "n": "Wonders of the Galápagos and Machu Picchu",
    "b": "ak",
@@ -49293,7 +48873,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_196_0924.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "d": "11/15/2026",
    "r": "11/26/2026",
@@ -49366,6 +48946,66 @@
    "route": "18105041"
   },
   {
+   "id": "18363151",
+   "n": "Wonders of the Galápagos and Machu Picchu",
+   "b": "ak",
+   "g": [
+    "GALAPAGOS",
+    "AMAZONIA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18363151/wondersofthegalpagosandmachupicchu",
+   "days": 12,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
+   "from": "Guayaquil, Ecuador",
+   "to": "Lima, Peru",
+   "country": "Peru",
+   "world": false,
+   "mks": [
+    "2026-11"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 26 Nov 2026",
+   "description": "This exciting South American adventure combines two bucket-list destinations in one incredible journey. Begin with a cruise of the Galápagos’ Northern Islands, our guides revealing giant tortoises, marine iguanas, blue-footed boobies and more with a host of exciting snorkeling, kayaking and shore excursions. Then, explore the enduring heritage of the Sacred Valley and join a site expert to discover the wonders of Machu Picchu.",
+   "included": [
+    "Travelling Bell Boy® Luggage Handling",
+    "English-Speaking Resident Tour Director® and Local Guides",
+    "Airport Meet and Greet with Private Transfers",
+    "Traveller’s Valet® Laundry Service",
+    "Internet Access",
+    "Entrance Fees, Taxes and All Gratuities Except Resident Tour Director",
+    "24/7 A&K On-Call Support",
+    "Internal Air Included (Economy Class, AU$3,060 value) Guayaquil/Baltra/Guayaquil/Lima; Lima/Cusco/Lima"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Guayaquil"
+    },
+    {
+     "d": 6,
+     "n": "Lima"
+    },
+    {
+     "d": 7,
+     "n": "Sacred Valley"
+    },
+    {
+     "d": 9,
+     "n": "Machu Picchu"
+    },
+    {
+     "d": 10,
+     "n": "Cusco"
+    },
+    {
+     "d": 6,
+     "n": "Lima"
+    }
+   ],
+   "route": "18363151"
+  },
+  {
    "id": "18383999",
    "n": "Wonders of the Galápagos and Machu Picchu",
    "b": "ak",
@@ -49378,7 +49018,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_3_0924.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2027-02",
@@ -49466,7 +49106,6 @@
    "country": "Türkiye",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -49560,7 +49199,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0926.webp",
    "from": "Seattle, WA, United States",
    "to": "Los Angeles, CA, United States",
-   "country": "Morocco",
+   "country": "Seychelles",
    "world": true,
    "d": "8/10/2027",
    "r": "9/2/2027",
@@ -49635,7 +49274,6 @@
    "country": "Kenya",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -49702,10 +49340,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
    "from": "Nairobi, Kenya",
    "to": "Serengeti, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -49775,7 +49412,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50017,7 +49653,6 @@
    "country": "United States",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50074,56 +49709,6 @@
    "route": "16678160"
   },
   {
-   "id": "18345548",
-   "n": "Yosemite and Sequoia: John Muir's California",
-   "b": "tauck",
-   "g": [],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18345548/yosemiteandsequoiajohnmuirscalifornia",
-   "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_110_0923.webp",
-   "from": "San Francisco, CA, United States",
-   "to": "San Francisco, CA, United States",
-   "country": "United States",
-   "world": false,
-   "d": "10/5/2026",
-   "r": "10/12/2026",
-   "mks": [
-    "2026-10"
-   ],
-   "win": "Dates: 05 Oct 2026 - 12 Oct 2026",
-   "description": "Explore sites beloved by conservationist John Muir, from San Francisco to the Sierra Nevada - Muir Woods, Sequoia National Park and his beloved Yosemite National Park. Experience the powerful beauty of glacier-carved mountains, soaring redwood and sequoia forests, and gain behind-the-scenes insights into past and present preservation efforts.",
-   "included": [
-    "At his first breathtaking view of Yosemite in 1869, young John Muir had a life-changing moment - a surge of euphoria as he wandered, overwhelmed in the great natural beauty of a landscape unlike anything he had seen before… Follow Muir's path on Tauck's compelling Yosemite tour that traces his trajectory from San Francisco to the Sierra Nevada, embracing Muir Woods, Sequoia National Park and his beloved Yosemite, experiencing the powerful beauty of glacier-carved mountains, soaring redwood and sequoia forests, and the story of why they remain for us exactly as he found them."
-   ],
-   "promotions": [
-    {
-     "name": "Tauck Bridges: Save When You Travel As A Group",
-     "endDate": "2027-12-31",
-     "exclusive": false,
-     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "San Francisco"
-    },
-    {
-     "d": 3,
-     "n": "Sequoia National Park"
-    },
-    {
-     "d": 5,
-     "n": "Yosemite National Park"
-    },
-    {
-     "d": 1,
-     "n": "San Francisco"
-    }
-   ],
-   "route": "18345548"
-  },
-  {
    "id": "18385712",
    "n": "Yucatan Bliss",
    "b": "ak",
@@ -50136,7 +49721,6 @@
    "country": "Mexico",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50211,7 +49795,6 @@
    "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50270,7 +49853,6 @@
    "country": "Botswana",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50362,7 +49944,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50407,7 +49988,6 @@
    "country": "Zambia",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50457,10 +50037,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_315_0828.webp",
    "from": "Kafue, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
@@ -50509,10 +50088,9 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_0828.webp",
    "from": "Livingstone, Zambia",
    "to": "Vilanculos, Mozambique",
-   "country": "Zimbabwe",
+   "country": "Mozambique",
    "world": false,
    "mks": [
-    "2026-09",
     "2026-10",
     "2026-11",
     "2026-12",
