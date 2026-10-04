@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 245,
-  "journeysTotal": 493,
+  "journeysWithCamps": 243,
+  "journeysTotal": 486,
   "campsMatched": 40
  },
  "radiusKm": 25,
@@ -1706,20 +1706,6 @@
     "km": 18.1
    }
   ],
-  "18107133": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 6,
-    "km": 19.6
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 11,
-    "km": 18.1
-   }
-  ],
   "18113907": [
    {
     "id": "h_00532",
@@ -1904,38 +1890,6 @@
     "km": 18.1
    }
   ],
-  "18295014": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 2,
-    "km": 19.6
-   },
-   {
-    "id": "h_01409",
-    "stop": "Nanyuki",
-    "day": 9,
-    "km": 1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 11,
-    "km": 18.1
-   },
-   {
-    "id": "h_01417",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
-   },
-   {
-    "id": "h_01782",
-    "stop": "Volcanoes National Park",
-    "day": 15,
-    "km": 16.2
-   }
-  ],
   "18295015": [
    {
     "id": "h_00537",
@@ -1982,6 +1936,38 @@
     "stop": "Paro",
     "day": 10,
     "km": 24.3
+   }
+  ],
+  "18317046": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 2,
+    "km": 19.6
+   },
+   {
+    "id": "h_01409",
+    "stop": "Nanyuki",
+    "day": 9,
+    "km": 1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
+   },
+   {
+    "id": "h_01417",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
+   },
+   {
+    "id": "h_01782",
+    "stop": "Volcanoes National Park",
+    "day": 15,
+    "km": 16.2
    }
   ],
   "18325781": [
@@ -2188,20 +2174,6 @@
     "stop": "Okavango Delta",
     "day": 6,
     "km": 19.9
-   }
-  ],
-  "18361073": [
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 7,
-    "km": 0.8
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 7,
-    "km": 21.1
    }
   ],
   "18361132": [

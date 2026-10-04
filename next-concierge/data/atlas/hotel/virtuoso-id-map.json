@@ -1,10 +1,10 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-02T15:38:47.385Z",
+  "generated": "2026-10-04T14:44:29.287Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2084,
+  "feedCount": 2088,
   "matchedCount": 2305
  },
  "overrides": {
@@ -25937,6 +25937,12 @@
    "country": "South Korea"
   },
   {
+   "vid": "6164110",
+   "name": "Fairmont Hotel Vancouver",
+   "city": "Vancouver",
+   "country": "Canada"
+  },
+  {
    "vid": "16675647",
    "name": "Fairmont Singapore South Tower",
    "city": "Singapore",
@@ -25989,6 +25995,12 @@
    "name": "Hotel Charleston Santa Teresa",
    "city": "Cartagena",
    "country": "Colombia"
+  },
+  {
+   "vid": "18624526",
+   "name": "Hotel De Tuilerieen",
+   "city": "Bruges",
+   "country": "Belgium"
   },
   {
    "vid": "18623660",
@@ -26097,6 +26109,12 @@
    "name": "Le Dune Piscinas",
    "city": "Arbus",
    "country": "Italy"
+  },
+  {
+   "vid": "6163963",
+   "name": "Le Mas Candille Hotel",
+   "city": "Mougins",
+   "country": "France"
   },
   {
    "vid": "18460123",
@@ -26277,6 +26295,12 @@
    "name": "Patmos Aktis, a Luxury Collection Resort & Spa, Greece",
    "city": "Pátmos",
    "country": "Greece"
+  },
+  {
+   "vid": "18623670",
+   "name": "Pavillon Faubourg Saint-Germain",
+   "city": "Paris",
+   "country": "France"
   },
   {
    "vid": "18456505",

@@ -33241,6 +33241,13 @@
   ],
   "promotions": [
    {
+    "id": "18553092",
+    "name": "Summer Offer at Casa de Sierra Nevada",
+    "endDate": "2027-03-01",
+    "exclusive": false,
+    "description": "Journey into a landscape of living heritage at Casa de Sierra Nevada, where artistry, character and timeless elegance intertwine, enriched by refined dining experiences that celebrate the season in the heart of San Miguel de Allende. Welcome artisanal amenity Mezquite cocktail on arrival Daily a la carté breakfast at Andanza Daily in-room wake up coffeeservice Breakfast and lunch or dinner for up 2 adults per room at Andanza Food and Beverages for extra person or children available a la carté 15% off at Spa 15% off in food and beverages Non-alcoholic minibar beverages included in Signature…"
+   },
+   {
     "id": "18553099",
     "name": "GRAND TOUR MEXICO",
     "endDate": "2027-09-30",
@@ -37890,8 +37897,16 @@
    "Sitting Area",
    "Slippers"
   ],
-  "promotions": [],
-  "hasPromotion": false,
+  "promotions": [
+   {
+    "id": "18623739",
+    "name": "Immune Optimisation module",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Complimentary immune add-on module, designed to strengthen and restore immunity through tailored nutrition, gut and lab diagnostics, and functional therapies that enhance resilience and vitality. Valid for bookings made between July 1st and December 31st, for stays between September 1st and December 31st, 2026 with booking code IMMUNE26 Gut microbiome check Immune blood panel x2 Intermittent Hypo/Hyperoxy Exposure Treatment x3 Intravenous Vitamin Therapies (with vitamin c and electrolytes) Chenot diet® enhanced with fermented food"
+   }
+  ],
+  "hasPromotion": true,
   "bookUrl": "https://www.VipTravelAi.com",
   "bookPassword": "VIP",
   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16386081_2_0_0813.webp",
@@ -53748,11 +53763,11 @@
   ],
   "promotions": [
    {
-    "id": "18578657",
-    "name": "Stay 4 Nights and enjoy 15% discount!",
+    "id": "18378936",
+    "name": "Stay 7 nights and enjoy a 20% discount",
     "endDate": "2027-06-30",
     "exclusive": false,
-    "description": "Stay 4 nights and enjoy a 20% discount Subject to availability. Minimum stay requirement is 4 nights. Blackout dates: 04 Sep 2026 to 06 Sep 2026; 22 Sep 2026 to 27 Sep 2026; 05 Oct 2026 to 07 Oct 2026; 23 Feb 2027 to 01 Mar 2027; 13 Apr 2027 to 18 Apr 2027"
+    "description": "Stay 7 nights and enjoy a 20% discount Subject to availability. Minimum stay requirement is 7 nights. Available 7 days per week. Blackout dates: may apply."
    },
    {
     "id": "18378939",
@@ -53762,11 +53777,11 @@
     "description": "Stay 3 nights and enjoy a 10% discount This offer is subject to availability. Valid for a minimum of three nights stay. Reservations can be amended or cancelled without any penalty fee 24 hours prior to arrival within 23.59 pm Italian time. After this time, a penalty fee of 100% will be charged. The cancellation policy changes during special event dates in Milan. Blackout dates: may apply"
    },
    {
-    "id": "18378936",
-    "name": "Stay 7 nights and enjoy a 20% discount",
+    "id": "18578657",
+    "name": "Stay 4 Nights and enjoy 15% discount!",
     "endDate": "2027-06-30",
     "exclusive": false,
-    "description": "Stay 7 nights and enjoy a 20% discount Subject to availability. Minimum stay requirement is 7 nights. Available 7 days per week. Blackout dates: may apply."
+    "description": "Stay 4 nights and enjoy a 20% discount Subject to availability. Minimum stay requirement is 4 nights. Blackout dates: 04 Sep 2026 to 06 Sep 2026; 22 Sep 2026 to 27 Sep 2026; 05 Oct 2026 to 07 Oct 2026; 23 Feb 2027 to 01 Mar 2027; 13 Apr 2027 to 18 Apr 2027"
    }
   ],
   "hasPromotion": true,
@@ -56150,6 +56165,107 @@
    "zen"
   ],
   "source": "virtuoso"
+ },
+ {
+  "id": "h_v6164110",
+  "vid": "6164110",
+  "name": "Fairmont Hotel Vancouver",
+  "brand": null,
+  "chain": "FRHI Hotels & Resorts",
+  "program": "Virtuoso",
+  "category": "City Hotel",
+  "country": "Canada",
+  "city": "Vancouver",
+  "address": null,
+  "postalCode": "V6C 2W6",
+  "lat": 49.2837,
+  "lng": -123.12,
+  "region": null,
+  "adminRegion": "British Columbia",
+  "countryCode": "CAN",
+  "vipUpgrades": [
+   "Upgrade on arrival, subject to availability",
+   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant",
+   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
+   "Early check-in / Late check-out, subject to availability"
+  ],
+  "perksYear": 2027,
+  "perksStale": false,
+  "hideAmenities": false,
+  "description": "Fairmont Hotel Vancouver is part of Virtuoso’s exclusive Regional Program for Canada",
+  "inTheKnow": "Contact your Virtuoso Travel Advisor for insider knowledge to help enhance your experience.",
+  "summary": "Fairmont Hotel Vancouver is part of Virtuoso’s exclusive Regional Program for Canada CANADA'S iconic CASTLE IN THE CITY Fairmont Hotel Vancouver has been the pinnacle of elegance since its debut in 1939, when a visit by the British royal couple sealed its reputation as one of the most iconic, 5-star luxury hotels in Vancouver. Journey through the iconic moments of the storied past within the renovated grandeur of the present. Step into a world where contemporary convenience meets iconic luxury Our prime downtown Vancouver location places you in the centre of the city’s biggest attractions, including the Vancouver Art Gallery, Granville Island, Stanley Park Seawall, and Robson Street…",
+  "rooms": [
+   {
+    "name": "Royal 1 Bedroom Suite",
+    "description": "Available in 1 King 1 to 2 Guests 84 sqm/904 sq ft Royal 1 Bedroom Suite"
+   },
+   {
+    "name": "One Bedroom Suite",
+    "description": "Available in 1 King or 2 Queen 4 to 6 Guests 70 sqm/753 sq ft One Bedroom Suite 1 King One Bedroom Suite 2 Queen"
+   },
+   {
+    "name": "Fairmont Gold Executive Suite",
+    "description": "1 King 2 Guests 70 sqm/753 sq ft Fairmont Gold Executive Suite 1 King"
+   },
+   {
+    "name": "Fairmont Gold 1 Bedroom Suite",
+    "description": "Available in 1 King or 2 Queen 4 to 6 Guests 69 sqm/742 sq ft Fairmont Gold 1 Bedroom Suite 1 King Fairmont Gold 1 Bedroom Suite 2 Queen"
+   },
+   {
+    "name": "Morningside 1 Bedroom Suite",
+    "description": "Available in 1 King 1 to 2 Guests 84 sqm/904 sq ft Morningside 1 Bedroom Suite"
+   },
+   {
+    "name": "Lieutenant Governor's 1 Bedroom Suite",
+    "description": "Available in 1 King 1 to 2 Guests 84 sqm/904 sq ft Lieutenant Governor's 1 Bedroom Suite"
+   }
+  ],
+  "roomTypeCount": 14,
+  "roomAmenities": [
+   "Air Conditioning",
+   "Bathrobe",
+   "Coffee/Tea Maker",
+   "Hair Dryer",
+   "Internet Access",
+   "Iron/Ironing Board",
+   "Mini Bar",
+   "Non-Smoking",
+   "Safe",
+   "Sitting Area",
+   "Slippers"
+  ],
+  "promotions": [],
+  "hasPromotion": false,
+  "bookUrl": "https://www.VipTravelAi.com",
+  "bookPassword": "VIP",
+  "thumb": null,
+  "images": [],
+  "imageCount": 0,
+  "propertyType": "Hotel or Resort",
+  "numberOfRooms": 557,
+  "nearestAirport": "Vancouver Intl (YVR)",
+  "nearestAirportMiles": 6,
+  "experiences": [
+   "City Life",
+   "Landmarks",
+   "Local Immersion"
+  ],
+  "vibes": [
+   "Sophisticated"
+  ],
+  "sustainability": [],
+  "reviews": null,
+  "tags": [
+   "city-life",
+   "classic",
+   "landmarks",
+   "local-immersion",
+   "sophisticated",
+   "spa",
+   "urban"
+  ],
+  "source": "virtuoso-new"
  },
  {
   "id": "h_00588",
@@ -82168,6 +82284,109 @@
   "source": "virtuoso"
  },
  {
+  "id": "h_v18624526",
+  "vid": "18624526",
+  "name": "Hotel De Tuilerieen",
+  "brand": null,
+  "chain": null,
+  "program": "Virtuoso",
+  "category": "City Hotel",
+  "country": "Belgium",
+  "city": "Bruges",
+  "address": null,
+  "postalCode": "8000",
+  "lat": 51.2063,
+  "lng": 3.22675,
+  "region": null,
+  "adminRegion": "West-Vlaanderen (nl)",
+  "countryCode": "BEL",
+  "vipUpgrades": [
+   "Upgrade on arrival, subject to availability",
+   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
+   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
+   "Early check-in / Late check-out, subject to availability"
+  ],
+  "perksYear": null,
+  "perksStale": false,
+  "hideAmenities": false,
+  "description": "Virtuoso and your Travel Advisor curate the best travel experiences from around the world. We picked this exclusive experience just for you.",
+  "inTheKnow": "Contact your Virtuoso Travel Advisor for insider knowledge to help enhance your experience.",
+  "summary": "Canal views. Cobbled lanes. Churches. Charming bridges. Step outside and find yourself in the most iconic corners of Bruges. Nestled quietely beside the canals in Bruges’ historic center, Hotel De Tuilerieën is more than a five-star hotel. It’s a home built on history and held together by heartfelt hospitality. Expect spontaneous service, delivered with effortless style. From our generous five-star breakfast to golden hour aperitifs in The Parlour, relaxed dining at Mémoire, and serene nights in uniquely designed rooms, each detail is considered, each moment meaningful.",
+  "rooms": [
+   {
+    "name": "Royal Executive Room",
+    "description": "A spacious 40 m² room with contemporary comfort. Room Size: 40 m² https://www.hoteltuilerieen.com/rooms-and-suites/royal-executive-room/"
+   },
+   {
+    "name": "Royal Executive Room with Canal View",
+    "description": "An elegant 40 m² room with breathtaking views over Bruges’ historic canals. Room Size: 40 m²…"
+   },
+   {
+    "name": "Family Suite",
+    "description": "A spacious 50 m² suite with two bedrooms and bathrooms, designed for family comfort and togetherness. Room Size: 50 m²…"
+   },
+   {
+    "name": "Family Suite with Canal View",
+    "description": "A generous 50 m² suite with two bedrooms and serene canal views, ideal for families. Room Size: 50 m²…"
+   },
+   {
+    "name": "Suite With Private Terrace",
+    "description": "A 45 m² suite with luxurious interiors and the indulgence of a private terrace. Room Size: 45 m²…"
+   },
+   {
+    "name": "Belfry Tower Suite",
+    "description": "A charming 40 m² suite named after Bruges’ iconic belfry, stylish and inviting. Room Size: 40 m²…"
+   }
+  ],
+  "roomTypeCount": 8,
+  "roomAmenities": [
+   "Air Conditioning",
+   "Balcony/Lanai/Terrace",
+   "Bathrobe",
+   "Coffee/Tea Maker",
+   "Complimentary Newspaper",
+   "Hair Dryer",
+   "Internet Access",
+   "Iron/Ironing Board",
+   "Mini Bar",
+   "Non-Smoking",
+   "Safe",
+   "Slippers",
+   "Turn Down Service"
+  ],
+  "promotions": [],
+  "hasPromotion": false,
+  "bookUrl": "https://www.VipTravelAi.com",
+  "bookPassword": "VIP",
+  "thumb": null,
+  "images": [],
+  "imageCount": 0,
+  "propertyType": "Hotel or Resort",
+  "numberOfRooms": 41,
+  "nearestAirport": "Lesquin (LIL)",
+  "nearestAirportMiles": 44,
+  "experiences": [
+   "City Life",
+   "Local Immersion",
+   "Wellness"
+  ],
+  "vibes": [
+   "Sophisticated"
+  ],
+  "sustainability": [],
+  "reviews": null,
+  "tags": [
+   "city-life",
+   "contemporary",
+   "local-immersion",
+   "sophisticated",
+   "spa",
+   "urban",
+   "wellness"
+  ],
+  "source": "virtuoso-new"
+ },
+ {
   "id": "h_00936",
   "vid": "6164122",
   "name": "Hotel del Coronado",
@@ -85392,13 +85611,6 @@
    "Turn Down Service"
   ],
   "promotions": [
-   {
-    "id": "18508582",
-    "name": "La Perla Gourmet Experience",
-    "endDate": "2026-10-04",
-    "exclusive": false,
-    "description": "La Perla Gourmet Experience (Valid for 2 guests) A culinary journey through time. A three-night stay shaped around three curated dining experiences across La Perla’s signature restaurants. Created to celebrate 70 years of La Perla, this experience invites you to discover three distinct culinary expressions, united by a deep connection to place, tradition, and local producers. Your stay includes: 3 nights in a room or suite; Gourmet welcome with house champagne; Daily breakfast. Three dining experiences with reserved tables in the following restaurants: Bistrot & Music Club Vibrant atmosphere,…"
-   },
    {
     "id": "18508585",
     "name": "Seventy years. Celebrate them with us.",
@@ -110575,6 +110787,115 @@
   "source": "virtuoso"
  },
  {
+  "id": "h_v6163963",
+  "vid": "6163963",
+  "name": "Le Mas Candille Hotel",
+  "brand": null,
+  "chain": null,
+  "program": "Virtuoso",
+  "category": "Spa / Wellness Resort",
+  "country": "France",
+  "city": "Mougins",
+  "address": null,
+  "postalCode": "6250",
+  "lat": 43.6009,
+  "lng": 6.99059,
+  "region": null,
+  "adminRegion": "Provence-Alpes-Cote d'Azur",
+  "countryCode": "FRA",
+  "vipUpgrades": [
+   "Upgrade on arrival, subject to availability",
+   "Daily Buffet breakfast for up to two guests per bedroom, served in the restaurant",
+   "$100 USD equivalent Food & Beverage credit to be utilized during stay (not combinable, not valid on room rate, no cash value if not redeemed in full)",
+   "Early check-in / Late check-out, subject to availability"
+  ],
+  "perksYear": 2027,
+  "perksStale": false,
+  "hideAmenities": false,
+  "description": "Virtuoso and your Travel Advisor curate the best travel experiences from around the world. We picked this exclusive experience just for you.",
+  "inTheKnow": "Contact your Virtuoso Travel Advisor for insider knowledge to help enhance your experience.",
+  "summary": "Iconic hotel on the Côte d’Azur A must on the Côte d'Azur thanks to its unique location on the hillside of Mougins, Mas Candille transports you to a dreamed-of Riviera, celebrating luxury, comfort and relaxation in equal measure. Just 20 minutes from Nice airport and Cannes, with its Croisette and crazy atmosphere, Mas Candille, entirely redesigned by architect Hugo Toro, promises an escape like no other. Between the refinement of its 46 rooms and suites, the serenity of its 4-hectare park, the absolute relaxation offered by its Spa Clarins, the gastronomic surprises of its restaurants, the turquoise of its 2 swimming pools and the beauty of its view stretching over the Grasse hinterland,…",
+  "rooms": [
+   {
+    "name": "Terrace Suite",
+    "description": "4 Guests 70 sqm https://www.mascandille.com/en/rooms-suites/villa-..."
+   },
+   {
+    "name": "Superior Room",
+    "description": "2 Guests 22 - 28 sqm https://www.mascandille.com/en/rooms-suites/mas-su..."
+   },
+   {
+    "name": "Deluxe Garden Room",
+    "description": "3 Guests 35 sqm https://www.mascandille.com/en/rooms-suites/bastid..."
+   },
+   {
+    "name": "Deluxe Valley Room",
+    "description": "3 Guests 35 sqm https://www.mascandille.com/en/rooms-suites/bastid..."
+   },
+   {
+    "name": "Terrace Room",
+    "description": "2 Guests 23 sqm https://www.mascandille.com/en/rooms-suites/mas-cl..."
+   },
+   {
+    "name": "Garden Room",
+    "description": "2 Guests 24 sqm https://www.mascandille.com/en/rooms-suites/mas-st..."
+   }
+  ],
+  "roomTypeCount": 7,
+  "roomAmenities": [
+   "Air Conditioning",
+   "Balcony/Lanai/Terrace",
+   "Bathrobe",
+   "Coffee/Tea Maker",
+   "Hair Dryer",
+   "Internet Access",
+   "Mini Bar",
+   "Non-Smoking",
+   "Safe",
+   "Sitting Area",
+   "Slippers",
+   "Turn Down Service",
+   "Voicemail"
+  ],
+  "promotions": [],
+  "hasPromotion": false,
+  "bookUrl": "https://www.VipTravelAi.com",
+  "bookPassword": "VIP",
+  "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4113_2_0_0922.webp",
+  "images": [
+   "https://media.virtuoso.com/m/Images/Brochures/4113_2_0_0922.jpg",
+   "https://media.virtuoso.com/m/Images/Brochures/4113_2_1_0922.jpg",
+   "https://media.virtuoso.com/m/Images/Brochures/4113_2_2_0922.jpg"
+  ],
+  "imageCount": 18,
+  "propertyType": "Hotel or Resort",
+  "numberOfRooms": 46,
+  "nearestAirport": "Cote D'azur International Airport (NCE)",
+  "nearestAirportMiles": 11,
+  "experiences": [
+   "Local Immersion",
+   "Seclusion",
+   "Wellness"
+  ],
+  "vibes": [
+   "Sophisticated"
+  ],
+  "sustainability": [],
+  "reviews": {
+   "total": 4,
+   "recommendedPercent": 100
+  },
+  "tags": [
+   "eclectic",
+   "local-immersion",
+   "seclusion",
+   "sophisticated",
+   "spa",
+   "wellness"
+  ],
+  "source": "virtuoso-new"
+ },
+ {
   "id": "h_01158",
   "vid": "15542916",
   "name": "Le Mount Stephen",
@@ -117840,11 +118161,11 @@
   ],
   "promotions": [
    {
-    "id": "18378856",
-    "name": "Courtyard Enchantment",
+    "id": "18279160",
+    "name": "Echoes of Hutong Dreams",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Details Valid until 31 December 2026. Exclusive Hot Pot for two will be served when booking a Deluxe Courtyard to Grand Courtyard. Exclusive Hot Pot for up to six guests will be served when booking a Mandarin Courtyard or above. Enjoy a choice of a 30-minute mixology service by TIAO held in your courtyard between 4pm and 6:30pm. Or alternatively a tea ceremony with a 30-minute musical performance of Chinese instruments in your courtyard. Round-trip limousine service between any destination within the city. Daily breakfast at VICINI or in-room-dining for registered guests. 24-hour butler on…"
+    "description": "Details Valid until 31 December 2026. Sample itinerary Itinerary can be tailored to suit your schedule and preferences. After booking, our concierge and butler team will craft an exclusive experience for you. 24-hour butler on call service. Day 1 Enjoy a seamless arrival with our limousine service transfer to the hotel, followed by check-in at the lobby. Savour the quiet ritual of a tea ceremony at The Spa or in the privacy of your courtyard. *Recommendation (with extra charge): Indulge in authentic Italian cuisine at VICINI, where vibrant ambiance meets exquisite flavours, before enjoying a…"
    },
    {
     "id": "18283054",
@@ -117854,11 +118175,11 @@
     "description": "Details Valid until 31 December 2026. From breakfast to wellness, unique hutong tour to an elegant limousine transfer, every element ensures that guests make the most of their stay. Enjoy daily credit of CNY1,888 for all restaurants and the bar, laundry and pressing service, and treatments at The Spa (advance booking is required). 24-hour stay. Daily breakfast at VICINI or in-room-dining for registered guests. One way limousine service (airports or train stations). 24-hour butler on call service. Terms and Conditions Local taxes apply. Rates are subject to 16.6% service charge and tax. This…"
    },
    {
-    "id": "18378854",
-    "name": "Fun-Filled Family Moments",
+    "id": "18378846",
+    "name": "A Harmonious Retreat: The Tong Ren Tang Wellness Journey",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Details Valid until 31 December 2026. Our Children's Daycare Service is available for up to 8 hours per room night, with our bespoke, local activities include: A 60-minute body massage (for 1 adult and 1 child). A 60-minute Hutong treasure hunt activity accompanied by a butler. A 60-minute Junior Chef Masterclass of your choice: pizza making, pasta making, dumpling making or Tang Hu Lu making for a maximum of 2 children at VICINI. A 90-minute handicraft workshop of your choice: Traditional Chinese Medicine sachet making workshop, calligraphy, foil painting or fish-lantern making class. A…"
+    "description": "Details Valid until 31 December 2026. A 60-minute Traditional Chinese Medicine health consultation by Tong Ren Tang for up to two guests in your courtyard. A 60-minute Health-Preserving Tuina at The Spa for two. A 60-minute personalised morning wellness activity for up to three guests: Tai Chi or Ba Duan Jin. A 30-minute intangible cultural heritage workshop by Tong Ren Tang in your courtyard for up to three guests: hand-rolled TCM pills or scented sachet crafting. Each room is entitled to two complimentary 30-minute TCM therapy：- TCM Herbal Application Therapy.- TCM Cupping Therapy.- TCM Gua…"
    }
   ],
   "hasPromotion": true,
@@ -118389,11 +118710,11 @@
   ],
   "promotions": [
    {
-    "id": "18361651",
-    "name": "Plan Ahead",
+    "id": "18312711",
+    "name": "Short & Suite",
     "endDate": "2026-10-31",
     "exclusive": false,
-    "description": "Stay from 5 January - 3 March and from 13 April - 31 October 2026. Up to 15% savings on the room rate. Additional benefits are available when you log in to or join Fans of M.O. Terms and Conditions Reservations must be made at least seven days in advance. Deposit and cancellation policy5 January - 3 March 2026: The reservation is non-cancellable, non-refundable and cannot be amended. Full prepayment is required at the time of booking. 13 April - 31 October 2026: Standard deposit and cancellation policy applies. Rates are subject to 17.7% tax and service charge. Offer is subject to…"
+    "description": "Details Valid from 13 April - 31 October 2026. Up to 25% savings on the room rate. Daily breakfast for two persons at The Verandah (for four persons when booking a Two-Bedroom Suite). Terms and Conditions Rates are subject to 17.7% tax and service charge. Offer is subject to availability, not applicable for groups, and cannot be combined with other promotions. Rates are subject to change and may vary on certain days of the week. A credit card is required at time of booking. Check-in is 3pm and check-out is 12pm. Special event cancellation policies may apply. Changes to existing reservations…"
    },
    {
     "id": "18312712",
@@ -118403,11 +118724,11 @@
     "description": "Details Valid from 13 April - 31 October 2026. Minimum three-night stay. Book a minimum of two consecutive nights and receive a complimentary third night. Rate reflects the average nightly rate including the complimentary night. Terms and Conditions Minimum of three night stay is required. Complimentary night is repeatable within a stay. A stay is considered to be consecutive nights at the same hotel. Rate above reflects the average nightly rate including the complimentary night. Rates are subject to 17.7% tax and service charge. Offer is subject to availability, not applicable for groups,…"
    },
    {
-    "id": "18312711",
-    "name": "Short & Suite",
+    "id": "18361651",
+    "name": "Plan Ahead",
     "endDate": "2026-10-31",
     "exclusive": false,
-    "description": "Details Valid from 13 April - 31 October 2026. Up to 25% savings on the room rate. Daily breakfast for two persons at The Verandah (for four persons when booking a Two-Bedroom Suite). Terms and Conditions Rates are subject to 17.7% tax and service charge. Offer is subject to availability, not applicable for groups, and cannot be combined with other promotions. Rates are subject to change and may vary on certain days of the week. A credit card is required at time of booking. Check-in is 3pm and check-out is 12pm. Special event cancellation policies may apply. Changes to existing reservations…"
+    "description": "Stay from 5 January - 3 March and from 13 April - 31 October 2026. Up to 15% savings on the room rate. Additional benefits are available when you log in to or join Fans of M.O. Terms and Conditions Reservations must be made at least seven days in advance. Deposit and cancellation policy5 January - 3 March 2026: The reservation is non-cancellable, non-refundable and cannot be amended. Full prepayment is required at the time of booking. 13 April - 31 October 2026: Standard deposit and cancellation policy applies. Rates are subject to 17.7% tax and service charge. Offer is subject to…"
    }
   ],
   "hasPromotion": true,
@@ -121430,25 +121751,25 @@
   ],
   "promotions": [
    {
-    "id": "18553103",
-    "name": "Summer Offer at Maroma A Belmond Hotel",
-    "endDate": "2026-10-31",
+    "id": "18226074",
+    "name": "Taste Of The Riviera Maya",
+    "endDate": "2027-06-17",
     "exclusive": false,
-    "description": "Explore a shoreline where time moves with intention at Maroma, where the rhythm of the Riviera Maya, untouched beaches and immersive wellness rituals set the tone — complemented by a thoughtfully curated dining experience designed to savor every sunlit moment. INCLUSIONS “SUMMER IN RIVIERA MAYA”: • Margarita Maroma on arrival • Daily à la carte breakfast at Casa Mayor • Daily in-room wake up coffee service • Breakfast and lunch or dinner for up 2 adults per room at Casa Mayor • Food and Beverages for extra person or children, available a la carté • Spa credit of US$100 per stay. • 15% off in…"
+    "description": "Take a bite out of life in the Riviera Maya. An unforgettable stay, fine dining and the decadence of Mexican cacao—what could be sweeter than this? Your stay includes: Luxury accommodation Welcome amenity Daily breakfast at Casa Mayor for two One ‘Journey into Agave’ experience exploring the origins, methods and chemistry profiles of tequila for two One ‘Nixtamal Journey’ experience discovering the artisanal process of cooking corn for two One Three-course Mexican dinner experience for two at Casa Mayor Terms & Conditions: Requires a three-night minimum stay. Not available over the festive…"
    },
    {
-    "id": "18110945",
-    "name": "The Suite Life",
-    "endDate": "2026-12-14",
+    "id": "18226083",
+    "name": "Celebrate In The Riviera Maya",
+    "endDate": "2027-06-17",
     "exclusive": false,
-    "description": "Go all out on luxury and anticipate an unforgettable escape to the Riviera Maya. Your stay includes: Luxury suite accommodation Daily breakfast at Casa Mayor $500 USD resort credit per stay Terms & Conditions: Requires a four-night minimum stay. Blackout dates apply"
+    "description": "From a romantic honeymoon to a landmark birthday, the Riviera Maya is the ultimate celebration spot. Your stay includes: Luxury accommodation Daily breakfast at Casa Mayor A bottle of champagne and Mexican truffles on arrival One three-course dinner on the beach including a bottle of house wine Two 60-minute body massage per stay Daily romantic turndown amenity Terms & Conditions: Requires a three-night minimum stay. Not available over the festive season. Excludes Signature Suites and Villas"
    },
    {
-    "id": "18602115",
-    "name": "CRAFT YOUR PERFECT  SUMMER RETREAT",
-    "endDate": "2027-08-31",
+    "id": "18226094",
+    "name": "Discover Riviera Maya",
+    "endDate": "2027-06-17",
     "exclusive": false,
-    "description": "Discover Guerlain’s tailor-made treatment, inspired by over 80 years of expertise. Each experience is uniquely personalized through expert consultation, combining face and body care with specialized techniques, innovative gestures, and wellness-focused rituals for your individual needs. For more details, please contact your personal host or email us at: maroma.spa@belmond.com Prices in MXN and are inclusive of 16% tax. Service not included. Valid August 2026"
+    "description": "Discover a new level of indulgence as you explore the Riviera Maya from your home at Maroma. Your stay includes: Luxury accommodation Daily breakfast at Casa Mayor for two guests Welcome amenity Two rounds of golf at El Camaleón Mayakoba Golf Course, including round-trip transportation between Maroma and the course One 60-minute body massage for two guests Terms & Conditions: Requires a three-night minimum stay. Not available over the festive season. Excludes Signature Suites and Villas"
    }
   ],
   "hasPromotion": true,
@@ -141572,6 +141893,13 @@
     "description": "Un resort de bienestar frente al mar, donde cientos de hectáreas de selva intacta abrazan la Riviera Maya. TARIFA ESPECIAL PARA RESIDENTES MEXICANOS Desde $14,500 MXN por noche en ocupación doble The Gifting Lifestyle Lo llamamos The Gifting Lifestyle porque está hecho para ser recibido. Palmaïa es nuestra ofrenda al mundo, nuestro concepto todo incluido. La tarifa incluye: $100 Dólares de Resort Credit por estancia Upgrade de Suite en Cortesía (Sujeto a Disponibilidad) Más de 50 Actividades Holísticas Semanales Alimentos y Bebidas Saludables y Nutritivas Sesiones Musicales de The Rituals of…"
    },
    {
+    "id": "18629700",
+    "name": "AïA Festive Bliss + Round Trip Transfers + $200 US Resort Credit, All-Inclu",
+    "endDate": "2027-01-03",
+    "exclusive": false,
+    "description": "A Festive Stay, Made More Seamless Celebrate the season at Palmaïa - The House of AïA, where the final days of the year come alive through soulful rituals, conscious cuisine, live music, creative experiences, and special gatherings between jungle and sea. Book 5 nights or more and enjoy: USD $200 additional Resort Credit per room per stay One complimentary roundtrip transfer to and from Cancún International Airport Virtuoso Amenities Festive happens only once a year. Make it part of your story. Booking Window: Through October 31st, 2026 Travel Window: December 21st, 2026 – January 3rd, 2027…"
+   },
+   {
     "id": "18517056",
     "name": "Seasonal Awakening up to 30% OFF from BAR - All Inclusive",
     "endDate": "2027-04-30",
@@ -147395,6 +147723,106 @@
    "sophisticated",
    "spa",
    "wellness"
+  ],
+  "source": "virtuoso-new"
+ },
+ {
+  "id": "h_v18623670",
+  "vid": "18623670",
+  "name": "Pavillon Faubourg Saint-Germain",
+  "brand": null,
+  "chain": null,
+  "program": "Virtuoso",
+  "category": "City Hotel",
+  "country": "France",
+  "city": "Paris",
+  "address": null,
+  "postalCode": "75007",
+  "lat": 48.8565,
+  "lng": 2.33037,
+  "region": null,
+  "adminRegion": "Ile-de-France",
+  "countryCode": "FRA",
+  "vipUpgrades": [
+   "Upgrade on arrival, subject to availability",
+   "Daily Full breakfast for up to two guests per bedroom, served in the restaurant and via in-room dining",
+   "$100 USD equivalent Resort or Hotel credit to be utilized during stay (Not combinable, not valid on room rate, no cash value if not redeemed in full)",
+   "Early check-in / Late check-out, subject to availability"
+  ],
+  "perksYear": 2027,
+  "perksStale": false,
+  "hideAmenities": false,
+  "description": "Virtuoso and your Travel Advisor curate the best travel experiences from around the world. We picked this exclusive experience just for you.",
+  "inTheKnow": "Contact your Virtuoso Travel Advisor for insider knowledge to help enhance your experience.",
+  "summary": "Rive Gauche, the rebirth of a 5-star boutique hotel Such quintessentially Parisian details. A café that feels like a literary salon. A chic and lively dining experience. Neighborhood life, between the Seine and the Café de Flore. A must-visit destination: the Pavillon Faubourg Saint-Germain. Haute couture decor. Personalized service. And the privilege of a spa where you can gently escape the hustle and bustle. Paris without compromise. Paris as the only promise.‍This is the promise of a new “Germanopratin” hotspot. Between the Seine and the Café de Flore, the “ Pavillon Faubourg Saint-Germain ” opened in April 2022. A venue offering three distinct experiences: at number 1, Les Parisiens, a…",
+  "rooms": [
+   {
+    "name": "Family Suite",
+    "description": "5 Guests 1 Suite interconnecting with a Deluxe room https://en.pavillon-faubourg-saint-germain.com/cha..."
+   },
+   {
+    "name": "Suite Ulysse",
+    "description": "3 Guests 58 sqm https://en.pavillon-faubourg-saint-germain.com/cha..."
+   },
+   {
+    "name": "One-Bedroom Suite",
+    "description": "One-Bedroom Suite"
+   },
+   {
+    "name": "Junior Suite",
+    "description": "3 Guests 31.5 - 33.9 sqm https://en.pavillon-faubourg-saint-germain.com/cha..."
+   },
+   {
+    "name": "Family Junior Suite",
+    "description": "1 Junior Suite interconnecting with a Deluxe room"
+   },
+   {
+    "name": "Superior Rooms",
+    "description": "2 Guests 20-23 sqm https://en.pavillon-faubourg-saint-germain.com/cha..."
+   }
+  ],
+  "roomTypeCount": 10,
+  "roomAmenities": [
+   "Air Conditioning",
+   "Bathrobe",
+   "Coffee/Tea Maker",
+   "Hair Dryer",
+   "Internet Access",
+   "Iron/Ironing Board",
+   "Mini Bar",
+   "Safe",
+   "Sitting Area",
+   "Slippers"
+  ],
+  "promotions": [],
+  "hasPromotion": false,
+  "bookUrl": "https://www.VipTravelAi.com",
+  "bookPassword": "VIP",
+  "thumb": null,
+  "images": [],
+  "imageCount": 0,
+  "propertyType": "Hotel or Resort",
+  "numberOfRooms": 48,
+  "nearestAirport": "Paris (PAR)",
+  "nearestAirportMiles": 0,
+  "experiences": [
+   "City Life",
+   "Local Immersion",
+   "Seclusion"
+  ],
+  "vibes": [
+   "Sophisticated"
+  ],
+  "sustainability": [],
+  "reviews": null,
+  "tags": [
+   "city-life",
+   "contemporary",
+   "local-immersion",
+   "seclusion",
+   "sophisticated",
+   "spa",
+   "urban"
   ],
   "source": "virtuoso-new"
  },
@@ -160759,11 +161187,11 @@
   ],
   "promotions": [
    {
-    "id": "18360449",
-    "name": "Discover Vienna",
+    "id": "16927292",
+    "name": "Suite Sojourn",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Plan ahead and enjoy up to 25% off our flexible rate for a Vienna getaway. 100€ equivalent credit per stay to redeem in our Food and Beverage Outlets or for Spa services VIP amenities Early check-in & Late check-out subject to availability Inclusive à la carte breakfast daily in our Neue Hoheit Restaurant Upgrade subject to availability upon arrival (up to St. Stephen’ Suite)"
+    "description": "Experience a city retreat in one of our elegant suites with exclusive benefits including daily breakfast, a hotel credit to be used during the stay and more. A Suite stay combines the ultimate comfort and all the luxuries that will make you emerge relaxed and inspired. Book a 2-night stay and receive a 15% discount on our best available rate Complimentary breakfast in our Neue Hoheit brasserie Complimentary roundtrip airport transfer for Signature and Royal Houses Chilled bottle of champagne on arrival in a Signature and Royal Houses Complimentary WiFi Complimentary access to Asaya Spa sauna…"
    },
    {
     "id": "18360447",
@@ -160773,11 +161201,11 @@
     "description": "Stay an additional night with our compliments and discover Rosewood Vienna, one of the capital’s most acclaimed ultra-luxury hotels. Ideally situated on Petersplatz, one of the most famous squares in Vienna’s Old Town, Rosewood Vienna is located just steps away from the city’s most luxurious shopping and dining and its most famous historical sites. -WHAT’S INCLUDED Upgrade upon availability up until St. Stephen’ Suite Complimentary a la carte Breakfast for two persons at the Neue Hoheit Restaurant A 100€ equivalent Food & Beverage & Spa credit to be utilized during-Credit not combinable, not…"
    },
    {
-    "id": "16927292",
-    "name": "Suite Sojourn",
+    "id": "18360449",
+    "name": "Discover Vienna",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Experience a city retreat in one of our elegant suites with exclusive benefits including daily breakfast, a hotel credit to be used during the stay and more. A Suite stay combines the ultimate comfort and all the luxuries that will make you emerge relaxed and inspired. Book a 2-night stay and receive a 15% discount on our best available rate Complimentary breakfast in our Neue Hoheit brasserie Complimentary roundtrip airport transfer for Signature and Royal Houses Chilled bottle of champagne on arrival in a Signature and Royal Houses Complimentary WiFi Complimentary access to Asaya Spa sauna…"
+    "description": "Plan ahead and enjoy up to 25% off our flexible rate for a Vienna getaway. 100€ equivalent credit per stay to redeem in our Food and Beverage Outlets or for Spa services VIP amenities Early check-in & Late check-out subject to availability Inclusive à la carte breakfast daily in our Neue Hoheit Restaurant Upgrade subject to availability upon arrival (up to St. Stephen’ Suite)"
    }
   ],
   "hasPromotion": true,
@@ -167648,18 +168076,18 @@
   ],
   "promotions": [
    {
-    "id": "18077893",
-    "name": "Enjoy a Complimentary 3rd Night On Us",
-    "endDate": "2027-12-31",
-    "exclusive": false,
-    "description": "Stay consecutive 3 nights at the price of 2 nights. Book your stay at Shangri-La Singapore for three nights and enjoy a complimentary third night on us. Booking period: by 31 December 2026 Travel period: till 31 December 2027 Terms & Conditions Applicable for all room types in the Tower Wing, Garden Wing and Valley Wing except for Tower Wing Deluxe Rooms, Themed Family Suites, Grand Suite, Garden Wing One Bedroom Suites, Garden Wing Premier Balcony Suites, Singapore Suites and Shangri-La Suite. Blackout dates apply: 8 to 10 Oct 2026, 25 to 27 Dec 2026, 31 Dec 2026 to 01 Jan 2027, 05 to 08 Feb…"
-   },
-   {
     "id": "16848408",
     "name": "A Complimentary 4th night on us at Shangri-La Singapore",
     "endDate": "2027-12-31",
     "exclusive": false,
     "description": "Book your stay at Shangri-La Singapore for three nights and enjoy a complimentary fourth night on us. Booking period: by 31 December 2026 Travel period: till 31 December 2027 Terms & Conditions Applicable for all room types in the Tower Wing, Garden Wing and Valley Wing except for Grand Suite, Garden Wing One-Bedroom Suites, Garden Wing Premier Balcony Suites, Singapore Suite and Shangri-La Suite. Blackout dates apply: 8 to 10 Oct 2026, 25 to 27 Dec 2026, 31 Dec 2026 to 01 Jan 2027, 05 to 08 Feb 2027, 09 to 13 May 2027, 27 to 30 May 2027, 30 Sep to 02 Oct 2027, 07 to 09 Oct 2027, 24 to 26 Dec…"
+   },
+   {
+    "id": "18077893",
+    "name": "Enjoy a Complimentary 3rd Night On Us",
+    "endDate": "2027-12-31",
+    "exclusive": false,
+    "description": "Stay consecutive 3 nights at the price of 2 nights. Book your stay at Shangri-La Singapore for three nights and enjoy a complimentary third night on us. Booking period: by 31 December 2026 Travel period: till 31 December 2027 Terms & Conditions Applicable for all room types in the Tower Wing, Garden Wing and Valley Wing except for Tower Wing Deluxe Rooms, Themed Family Suites, Grand Suite, Garden Wing One Bedroom Suites, Garden Wing Premier Balcony Suites, Singapore Suites and Shangri-La Suite. Blackout dates apply: 8 to 10 Oct 2026, 25 to 27 Dec 2026, 31 Dec 2026 to 01 Jan 2027, 05 to 08 Feb…"
    },
    {
     "id": "18375072",
@@ -190169,18 +190597,11 @@
   "roomAmenities": [],
   "promotions": [
    {
-    "id": "16921265",
-    "name": "Stay 4 Pay 3",
+    "id": "16328180",
+    "name": "Book 3 nights or more and Save 10%",
     "endDate": "2026-12-31",
     "exclusive": false,
-    "description": "Stay a minimum of 4 nights and enjoy one night complimentary. Offer subject to availability. Black out date may apply."
-   },
-   {
-    "id": "16682046",
-    "name": "Suite offer",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Book one of our unique Junior Suites or Suites for 2 nights and enjoy an extra 100$ hotel credit per stay. Offer subject to availability. Black out date may apply."
+    "description": "Book 3 nights or more and save 10%. Offer subject to availability. Black out dates may apply."
    },
    {
     "id": "16682043",
@@ -190188,6 +190609,13 @@
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Book one of our luxurious rooms for 3 nights or more and enjoy an extra 100$ hotel credit per stay. Offer subject to availability. Black out date may apply."
+   },
+   {
+    "id": "16682046",
+    "name": "Suite offer",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Book one of our unique Junior Suites or Suites for 2 nights and enjoy an extra 100$ hotel credit per stay. Offer subject to availability. Black out date may apply."
    }
   ],
   "hasPromotion": true,
@@ -204436,18 +204864,18 @@
   ],
   "promotions": [
    {
-    "id": "18373385",
-    "name": "Stay 2 Nights - Up to 10% Off",
-    "endDate": "2026-12-31",
-    "exclusive": false,
-    "description": "Stay minimum 2 consecutive nights and enjoy 10% savings on PuLi Daily Rate."
-   },
-   {
     "id": "18373384",
     "name": "Stay 3 Nights - Up to 15% Off",
     "endDate": "2026-12-31",
     "exclusive": false,
     "description": "Stay minimum 3 consecutive nights and enjoy 15% savings on PuLi Daily Rate."
+   },
+   {
+    "id": "18373385",
+    "name": "Stay 2 Nights - Up to 10% Off",
+    "endDate": "2026-12-31",
+    "exclusive": false,
+    "description": "Stay minimum 2 consecutive nights and enjoy 10% savings on PuLi Daily Rate."
    },
    {
     "id": "18578624",
@@ -210259,18 +210687,11 @@
   ],
   "promotions": [
    {
-    "id": "16220481",
-    "name": "Exclusive Family Escape",
+    "id": "16220477",
+    "name": "4th Night Complimentary Stay",
     "endDate": "2026-12-20",
     "exclusive": false,
-    "description": "Exclusive Family Escape Book a suite and enjoy 50% saving on the 2nd room booked Customized welcome amenities for kids and parents Valid from now until 20 December 2026 Not combinable with other promotional offers Blackout dates apply."
-   },
-   {
-    "id": "16220479",
-    "name": "One Journey, Two Capitals-Discover Tokyo & Kyoto with Ritz-Carlton Journeys",
-    "endDate": "2026-12-20",
-    "exclusive": false,
-    "description": "One Journey, Two Capitals (Tokyo and Kyoto) - Get 15% Off Discover Japan with exclusive Ritz-Carlton experiences of Tokyo & Kyoto properties. Take a journey through time and experience the two faces of Japan. Enjoy luxurious accommodations at The Ritz-Carlton, Kyoto and The Ritz-Carlton, Tokyo and let us curate a unique experience to explore the two fascinating capitals of Japan. A unique setting for all discerning guests with a range of interests from culinary experiences, Spa/Wellness, Romantic/Couples/Weddings/Honeymoons getaways, Family/Children Programs along with young, Hot & Hip Trends…"
+    "description": "4th Night Complimentary Stay Book a room for minimum four consecutive nights and receive 4th night complimentary Based on a minimum four consecutive night stay valid until 20 December 2026 Blackout dates apply. applicable to all room categories automatically offer this promotion anytime a request is received via email or direct channel where dates exceed 4 nights The Deduction of the complimentary night will be reflected after the booking is confirmed."
    },
    {
     "id": "16220478",
@@ -210278,6 +210699,13 @@
     "endDate": "2026-12-20",
     "exclusive": false,
     "description": "3rd Night Complimentary Stay Book a suite for minimum three consecutive nights and receive 3rd night complimentary Applicable to all suite categories. Valid for stays until December 20, 2026. Subject to availability. 2025 Blackout dates apply. The Deduction of the complimentary night will be reflected after the booking is confirmed."
+   },
+   {
+    "id": "16220479",
+    "name": "One Journey, Two Capitals-Discover Tokyo & Kyoto with Ritz-Carlton Journeys",
+    "endDate": "2026-12-20",
+    "exclusive": false,
+    "description": "One Journey, Two Capitals (Tokyo and Kyoto) - Get 15% Off Discover Japan with exclusive Ritz-Carlton experiences of Tokyo & Kyoto properties. Take a journey through time and experience the two faces of Japan. Enjoy luxurious accommodations at The Ritz-Carlton, Kyoto and The Ritz-Carlton, Tokyo and let us curate a unique experience to explore the two fascinating capitals of Japan. A unique setting for all discerning guests with a range of interests from culinary experiences, Spa/Wellness, Romantic/Couples/Weddings/Honeymoons getaways, Family/Children Programs along with young, Hot & Hip Trends…"
    }
   ],
   "hasPromotion": true,
@@ -211996,18 +212424,11 @@
   ],
   "promotions": [
    {
-    "id": "16734166",
-    "name": "Food & Beverage Credit Offer",
+    "id": "16733625",
+    "name": "Complimentary Night Offer",
     "endDate": "2027-02-28",
     "exclusive": true,
-    "description": "Stay at our landmark hotel and receive an additional $100 food & beverage credit ($200 USD total) Blackout Dates: Sep. 14-16, 2026; Nov. 16-18, 2026; Dec. 7-9, 2026; Jan. 10-13, 2027"
-   },
-   {
-    "id": "16734165",
-    "name": "Stay Longer, Experience More",
-    "endDate": "2027-02-28",
-    "exclusive": true,
-    "description": "Stay longer and experience more in our beautiful City by the Bay! Receive up to 15% off retail for all stays of 2 nights or longer. Blackout Dates: Sep. 14-16, 2026; Oct. 12-14, 2026; Nov. 16-18, 2026; Dec. 7-9, 2026; Jan. 11-13, 2027"
+    "description": "Stay 3 or more nights, Thursday-Monday, and receive the 3rd night complimentary with Virtuoso amenities. Complimentary night will be adjusted off at check-out. Blackout Dates: Sep. 14-16, 2026; Oct. 12-14, 2026; Nov. 16-18, 2026; Dec. 7-9, 2026; Jan. 11-13, 2027"
    },
    {
     "id": "16734164",
@@ -212015,6 +212436,13 @@
     "endDate": "2027-02-28",
     "exclusive": true,
     "description": "Escape to our respite atop Nob Hill and receive up to 25% off retail for any suite reservation. Blackout Dates: Sep. 14-16, 2026; Oct. 12-14, 2026; Nov. 16-18, 2026; Dec. 7-9, 2026; Jan. 11-13, 2027"
+   },
+   {
+    "id": "16734165",
+    "name": "Stay Longer, Experience More",
+    "endDate": "2027-02-28",
+    "exclusive": true,
+    "description": "Stay longer and experience more in our beautiful City by the Bay! Receive up to 15% off retail for all stays of 2 nights or longer. Blackout Dates: Sep. 14-16, 2026; Oct. 12-14, 2026; Nov. 16-18, 2026; Dec. 7-9, 2026; Jan. 11-13, 2027"
    }
   ],
   "hasPromotion": true,
@@ -212895,11 +213323,11 @@
     "description": "Luxury Getaway - Stay Longer and Save up to 30 percent Extend your stay and enhance your escape with an exclusive offer. Book three nights in one of our luxurious Deluxe Rooms or One-Bedroom Corner Suites, and enjoy up to 30% off, and experience more of what you love. Reserve now and take advantage of this limited-time promotion.*Based on availability."
    },
    {
-    "id": "16756299",
-    "name": "Family Connecting Room Package",
+    "id": "16518685",
+    "name": "Stay a minimum of 2 nights and receive an additional $150 CAD Hotel Credit",
     "endDate": "2027-03-02",
-    "exclusive": false,
-    "description": "Introducing our exclusive Family Experience Suite with Connecting Room & Cooking Class package, designed to create unforgettable memories for your family. Enjoy spacious connecting rooms perfect for accommodating everyone comfortably. Indulge in a delectable hot buffet breakfast daily for 2 adults and 2 children, setting the perfect start for your day of exploration. Plus, receive an $100 USD hotel credit per stay to use towards dining, spa treatments, or other hotel amenities. As part of this exceptional package, your family will have the opportunity to participate in a fun and educational…"
+    "exclusive": true,
+    "description": "Stay a minimum of 2 nights in any category and receive an additional CAD $150 Hotel Credit. Cumulative - Example: Stay 4 nights and receive and additional CAD $300 Hotel Credit."
    }
   ],
   "hasPromotion": true,
