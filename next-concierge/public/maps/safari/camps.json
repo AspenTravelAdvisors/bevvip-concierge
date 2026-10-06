@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 245,
-  "journeysTotal": 491,
+  "journeysWithCamps": 250,
+  "journeysTotal": 498,
   "campsMatched": 40
  },
  "radiusKm": 25,
@@ -1558,20 +1558,6 @@
     "km": 22.4
    }
   ],
-  "18061582": [
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 10,
-    "km": 3.4
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 10,
-    "km": 22.4
-   }
-  ],
   "18092022": [
    {
     "id": "h_01207",
@@ -1745,20 +1731,6 @@
     "id": "h_01207",
     "stop": "Masai Mara National Reserve",
     "day": 9,
-    "km": 18.1
-   }
-  ],
-  "18114409": [
-   {
-    "id": "h_01409",
-    "stop": "Ol Pejeta Conservancy",
-    "day": 2,
-    "km": 9.1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 4,
     "km": 18.1
    }
   ],
@@ -2718,6 +2690,32 @@
     "km": 19.9
    }
   ],
+  "18505877": [
+   {
+    "id": "h_01181",
+    "stop": "Skukuza",
+    "day": 8,
+    "km": 7
+   },
+   {
+    "id": "h_01781",
+    "stop": "Skukuza",
+    "day": 8,
+    "km": 9.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 9,
+    "km": 22.4
+   }
+  ],
   "18515262": [
    {
     "id": "h_01207",
@@ -3070,22 +3068,6 @@
     "stop": "Okavango Delta",
     "day": 6,
     "km": 19.9
-   }
-  ],
-  "18574061": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 8,
-    "km": 18.1
-   }
-  ],
-  "18574114": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 9,
-    "km": 19.6
    }
   ],
   "18574257": [
@@ -3734,14 +3716,6 @@
     "km": 16.2
    }
   ],
-  "18602050": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 7,
-    "km": 18.1
-   }
-  ],
   "18603828": [
    {
     "id": "h_02374",
@@ -3968,6 +3942,132 @@
     "stop": "Machu Picchu",
     "day": 4,
     "km": 16.2
+   }
+  ],
+  "18630977": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 19.8
+   }
+  ],
+  "18630983": [
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 5,
+    "km": 19.8
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 7,
+    "km": 19.9
+   }
+  ],
+  "18631028": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 5,
+    "km": 24.8
+   },
+   {
+    "id": "h_02374",
+    "stop": "Livingstone",
+    "day": 9,
+    "km": 10.1
+   },
+   {
+    "id": "h_01349",
+    "stop": "Livingstone",
+    "day": 9,
+    "km": 19.8
+   }
+  ],
+  "18631029": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 2,
+    "km": 18.1
+   },
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 5,
+    "km": 23.9
+   }
+  ],
+  "18631142": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18631143": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   }
+  ],
+  "18631144": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
+   }
+  ],
+  "18631145": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   }
+  ],
+  "18631189": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 7,
+    "km": 18.1
    }
   ]
  }
