@@ -4,17 +4,101 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 250,
-  "journeysTotal": 498,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 256,
+  "journeysTotal": 504,
   "campsMatched": 40
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 68
  },
  "CAMPS": {
+  "h_01781": {
+   "n": "Singita - Singita Sabi Sand",
+   "house": "Singita",
+   "country": "South Africa",
+   "ll": [
+    -24.9279,
+    31.5249
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4369_2_24_0819.webp",
+   "rooms": 24,
+   "perks": [
+    "Daily breakfast",
+    "Early check-in"
+   ],
+   "promo": 1
+  },
+  "h_01181": {
+   "n": "Lion Sands Game Reserve",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.9723,
+    31.5312
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4024_2_0_0814.webp",
+   "rooms": 46,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 1
+  },
+  "h_01212": {
+   "n": "MalaMala Game Reserve",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.7566,
+    31.6411
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4522_2_21_0730.webp",
+   "rooms": 33,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Airport transfer"
+   ],
+   "promo": 0
+  },
+  "h_02327": {
+   "n": "Tintswalo Safari",
+   "house": null,
+   "country": "South Africa",
+   "ll": [
+    -24.6977,
+    31.5201
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4575_2_34_0828.webp",
+   "rooms": 13,
+   "perks": [
+    "Daily breakfast",
+    "Spa treatment",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_01207": {
+   "n": "Mahali Mzuri",
+   "house": "Virgin Hotels Collection",
+   "country": "Kenya",
+   "ll": [
+    -1.34584,
+    35.2039
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12948588_2_0_0809.webp",
+   "rooms": 12,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
   "h_00327": {
    "n": "Capella Ubud, Bali",
    "house": "Capella Hotel Group",
@@ -48,23 +132,6 @@
     "Room upgrade"
    ],
    "promo": 1
-  },
-  "h_01207": {
-   "n": "Mahali Mzuri",
-   "house": "Virgin Hotels Collection",
-   "country": "Kenya",
-   "ll": [
-    -1.34584,
-    35.2039
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12948588_2_0_0809.webp",
-   "rooms": 12,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
   },
   "h_01349": {
    "n": "Mukwa River Lodge",
@@ -316,73 +383,6 @@
     "Daily breakfast",
     "Room upgrade",
     "Spa treatment"
-   ],
-   "promo": 0
-  },
-  "h_01781": {
-   "n": "Singita - Singita Sabi Sand",
-   "house": "Singita",
-   "country": "South Africa",
-   "ll": [
-    -24.9279,
-    31.5249
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4369_2_24_0819.webp",
-   "rooms": 24,
-   "perks": [
-    "Daily breakfast",
-    "Early check-in"
-   ],
-   "promo": 1
-  },
-  "h_01181": {
-   "n": "Lion Sands Game Reserve",
-   "house": null,
-   "country": "South Africa",
-   "ll": [
-    -24.9723,
-    31.5312
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4024_2_0_0814.webp",
-   "rooms": 46,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Spa treatment"
-   ],
-   "promo": 1
-  },
-  "h_01212": {
-   "n": "MalaMala Game Reserve",
-   "house": null,
-   "country": "South Africa",
-   "ll": [
-    -24.7566,
-    31.6411
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4522_2_21_0730.webp",
-   "rooms": 33,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Airport transfer"
-   ],
-   "promo": 0
-  },
-  "h_02327": {
-   "n": "Tintswalo Safari",
-   "house": null,
-   "country": "South Africa",
-   "ll": [
-    -24.6977,
-    31.5201
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4575_2_34_0828.webp",
-   "rooms": 13,
-   "perks": [
-    "Daily breakfast",
-    "Spa treatment",
-    "Early check-in"
    ],
    "promo": 0
   },
@@ -1718,6 +1718,20 @@
     "stop": "Fortuna",
     "day": 4,
     "km": 4.9
+   }
+  ],
+  "18114094": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
    }
   ],
   "18114408": [
@@ -4030,6 +4044,32 @@
     "km": 23.9
    }
   ],
+  "18631030": [
+   {
+    "id": "h_01781",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 1.9
+   },
+   {
+    "id": "h_01181",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 6.2
+   },
+   {
+    "id": "h_01212",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 22.7
+   },
+   {
+    "id": "h_02327",
+    "stop": "Sabi Sand Game Reserve",
+    "day": 7,
+    "km": 24.8
+   }
+  ],
   "18631142": [
    {
     "id": "h_02484",
@@ -4068,6 +4108,38 @@
     "stop": "Masai Mara National Reserve",
     "day": 7,
     "km": 18.1
+   }
+  ],
+  "18631280": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 2,
+    "km": 18.1
+   }
+  ],
+  "18631286": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 7,
+    "km": 19.9
+   }
+  ],
+  "18631290": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 1,
+    "km": 19.9
+   }
+  ],
+  "18631298": [
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 4,
+    "km": 19.9
    }
   ]
  }
