@@ -35,6 +35,14 @@ export const metadata: Metadata = {
   },
   description:
     "Expedition Bucket List — Aspen Travel Advisors' AI travel concierge. Approved luxury hotels, expedition cruises, private jet journeys and luxury hotel yachts — framed, mapped and booked by The Guide.",
+  // Bing Webmaster Tools ownership, for when it is verified by meta tag rather
+  // than imported from Google Search Console. ChatGPT's search reads largely
+  // from Bing's index, so this is the console that matters for AI citations.
+  // Set BING_SITE_VERIFICATION to the msvalidate.01 content value; unset emits
+  // nothing.
+  ...(process.env.BING_SITE_VERIFICATION && {
+    verification: { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } },
+  }),
 };
 
 export const viewport: Viewport = {

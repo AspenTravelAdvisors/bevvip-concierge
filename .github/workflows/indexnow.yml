@@ -1,0 +1,86 @@
+# Tells Bing which pages changed, right after each production deploy goes live.
+#
+# ChatGPT's search reads largely from Bing's index, so this is the quickest
+# route from "a new answer page was merged" to "ChatGPT can cite it". The
+# script is next-concierge/scripts/indexnow.mjs; it submits only the URLs that
+# are new, removed or re-verified since its last run, and the sitemap copy it
+# compares against is carried between runs in the Actions cache.
+#
+# Vercel reports each deploy back to GitHub as a deployment, so this runs on
+# that event, once per successful Production deploy (the nightly data sync
+# included). It can also be run by hand from the Actions tab.
+#
+# The key is public by design: IndexNow proves ownership by finding the same
+# value at https://<host>/<key>.txt, which is
+# next-concierge/public/daa74811d7f26a19d116bb5ed94b4052.txt. No secret needed.
+name: IndexNow
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'List the URLs without submitting them'
+        type: boolean
+        default: false
+
+jobs:
+  # Vercel deploys a commit, not a branch, so a deployment_status run has no
+  # branch of its own, and an Actions cache saved from it is not reliably
+  # restorable by the next one. The deploy event therefore only hands off to a
+  # workflow_dispatch run on main, where the cache has one stable home.
+  # (GITHUB_TOKEN may start workflow_dispatch runs; it is the exception to the
+  # rule that its events trigger nothing.)
+  hand-off:
+    if: >-
+      github.event_name == 'deployment_status' &&
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run indexnow.yml --repo "${{ github.repository }}" --ref main
+
+  submit:
+    if: github.event_name == 'workflow_dispatch'
+    # On the job, not the workflow: every Preview deploy also fires
+    # deployment_status, and a workflow-level group would let those skipped
+    # runs displace a queued submission. A newer submit replacing a queued one
+    # loses nothing, since each run diffs against the last saved sitemap.
+    concurrency:
+      group: indexnow
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    env:
+      INDEXNOW_KEY: daa74811d7f26a19d116bb5ed94b4052
+      SITE_URL: https://guide.expeditionbucketlist.com
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: next-concierge/scripts
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Same rotating-key pattern as the Virtuoso crawl cache: each run saves a
+      # fresh entry and restores the most recent one.
+      - name: Restore the last submitted sitemap
+        uses: actions/cache@v4
+        with:
+          path: .indexnow
+          key: indexnow-${{ github.run_id }}
+          restore-keys: |
+            indexnow-
+
+      - name: Submit changed URLs
+        run: >-
+          node next-concierge/scripts/indexnow.mjs --state .indexnow/sitemap.json
+          ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
