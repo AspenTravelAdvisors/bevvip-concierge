@@ -65,6 +65,8 @@ interface HandoffBody {
   // The AI assistant that first sent this traveler to the site, e.g. "chatgpt"
   // (lib/arrival.ts). Null when they did not arrive from one we recognise.
   aiSource?: string | null;
+  // The page that assistant first landed them on, path only.
+  aiLanding?: string | null;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -85,6 +87,20 @@ function clip(s: unknown, max: number): string {
   return t.length > max ? t.slice(0, max) + "…" : t;
 }
 
+/** A site path as the lead inbox may show it, or "" — never arbitrary text. */
+function landingPath(s: unknown): string {
+  const t = clip(s, 200);
+  return /^\/[\w\-./]*$/.test(t) ? t : "";
+}
+
+function pagePath(url: unknown): string {
+  try {
+    return new URL(String(url)).pathname;
+  } catch {
+    return "";
+  }
+}
+
 // Build the human-readable advisor email body. Lead with the structured brief
 // (how to follow up) and keep the transcript at the bottom as backup context.
 function composeMessage(body: HandoffBody): string {
@@ -95,7 +111,14 @@ function composeMessage(body: HandoffBody): string {
   lines.push(`New hand-off from Expedition Bucket List — ${cat}`);
   if (body.action) lines.push(`Traveler tapped: ${body.action}`);
   const ai = classifyAiSource(body.aiSource);
-  if (ai) lines.push(`Found us through: ${arrivalLabel(ai)}`);
+  if (ai) {
+    const landing = landingPath(body.aiLanding);
+    lines.push(`Found us through: ${arrivalLabel(ai)}${landing ? ` (landed on ${landing})` : ""}`);
+  }
+  if (body.source === "answer") {
+    const page = landingPath(pagePath(body.pageUrl));
+    lines.push(`Asked from the answer page${page ? ` ${page}` : ""}.`);
+  }
   if (body.source === "header") {
     // A cold request: nobody searched, so there is no shortlist and the brief
     // is mostly blank by design. Say so, rather than letting the advisor read
@@ -204,6 +227,7 @@ export async function POST(req: Request) {
     // Re-classified rather than echoed, so the lead inbox only ever sees a
     // known assistant name and never whatever a caller put in the field.
     aiSource: classifyAiSource(body.aiSource) ?? "",
+    aiLanding: landingPath(body.aiLanding),
     message: composeMessage(body),
   };
 
