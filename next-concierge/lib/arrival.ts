@@ -154,3 +154,13 @@ export function arrivalSource(): string | null {
   if (typeof window === "undefined") return null;
   return read()?.source ?? null;
 }
+
+/**
+ * The page that assistant first sent this visitor to, e.g. "/answers/…".
+ * Kept beside the source so the lead email can say which page earned the lead,
+ * which is what decides the next answer page worth writing.
+ */
+export function arrivalLanding(): string | null {
+  if (typeof window === "undefined") return null;
+  return read()?.landing ?? null;
+}

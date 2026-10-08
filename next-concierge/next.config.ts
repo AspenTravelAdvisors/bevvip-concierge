@@ -44,11 +44,21 @@ const SITE_ORIGIN =
  * matched by path-to-regexp, where an unnamed group is a parameter rather than
  * a plain alternation — two literal rules cannot be misread.
  *
+ * thetravelguideai.com is the same story under a second spelling, and the
+ * older chatbot copy in "Master Documents" still links to it. Its apex is
+ * redirected to www at the Vercel domain level, and www was serving the whole
+ * site, so it is retired the same way.
+ *
  * If the domain is instead redirected at the Vercel project level, that fires
  * at the edge before this app runs and this rule simply never matches. It is
  * the backstop for the case where the old domain is still pointed here.
  */
-const RETIRED_HOSTS = ["theaitravelguide.com", "www.theaitravelguide.com"];
+const RETIRED_HOSTS = [
+  "theaitravelguide.com",
+  "www.theaitravelguide.com",
+  "thetravelguideai.com",
+  "www.thetravelguideai.com",
+];
 
 const nextConfig: NextConfig = {
   // The Guide's tool loop can run several Claude + Atlas round trips.

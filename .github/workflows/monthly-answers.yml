@@ -22,7 +22,7 @@ on:
     inputs:
       count:
         description: 'How many pages to draft'
-        default: '3'
+        default: '5'
 
 concurrency:
   group: monthly-answers
@@ -53,7 +53,7 @@ jobs:
         working-directory: next-concierge
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node scripts/draft-answers.mjs --count "${{ github.event.inputs.count || '3' }}"
+        run: node scripts/draft-answers.mjs --count "${{ github.event.inputs.count || '5' }}"
 
       - name: Open the pull request
         env:

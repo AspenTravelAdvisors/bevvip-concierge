@@ -25,6 +25,7 @@ import {
 } from "@/lib/seo/answer-schema";
 import { answerEvidence, resolvedAnswer } from "@/lib/seo/answer-facts";
 import SiteFooter from "@/components/SiteFooter";
+import AnswerAdvisorCta from "@/components/AnswerAdvisorCta";
 
 export const dynamicParams = false;
 
@@ -168,6 +169,11 @@ export default async function AnswerPage({ params }) {
           the Article block's `speakable` names. */}
       {a.capsule && <p className="answers-capsule">{a.capsule}</p>}
 
+      {/* Straight after the short answer: a reader who arrived from an AI
+          assistant has just had the question answered, and this is where they
+          decide whether to act on it. */}
+      <AnswerAdvisorCta lead="Planning this trip? An Aspen advisor will shape it around your dates and price it with Virtuoso VIP benefits included." />
+
       <div className="answers-lead">
         {a.answer.map((p, i) => (
           <p key={i}>{p}</p>
@@ -216,10 +222,11 @@ export default async function AnswerPage({ params }) {
           Want this answered for your dates and budget?{" "}
           <Link href={`/?ask=${encodeURIComponent(a.question)}`}>
             Ask The Guide
-          </Link>{" "}
-          — our AI concierge — or have our advisors price it with
-          VIP benefits included.
+          </Link>
+          , our AI concierge, or have an advisor price it with VIP benefits
+          included.
         </p>
+        <AnswerAdvisorCta lead="Ready to plan it with a person?" />
       </aside>
       <SiteFooter />
     </article>

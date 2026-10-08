@@ -37,7 +37,7 @@ export type AskSource =
   | "dossier";
 
 /** Where the advisor form was opened from. */
-export type AdvisorSource = "chat" | "header" | "atlas" | "bucketlist";
+export type AdvisorSource = "chat" | "header" | "atlas" | "bucketlist" | "answer";
 
 function emit(event: string, props?: Props) {
   try {
