@@ -2921,6 +2921,40 @@ main.page {
   font-size: 14px;
   margin: 0;
 }
+/* The advisor button on answer pages (components/AnswerAdvisorCta.tsx). It
+   reuses the header's .nav-cta button so the action looks the same wherever
+   it appears. */
+.answers-advisor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 18px 0 26px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.answers-advisor p {
+  flex: 1 1 260px;
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+}
+.answers-advisor .nav-cta {
+  margin-left: 0;
+}
+.answers-advisor-sla {
+  flex-basis: 100%;
+  color: var(--sub);
+  font-size: 13px;
+}
+.answers-related .answers-advisor {
+  margin: 14px 0 0;
+  border-left-width: 1px;
+  background: transparent;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    UX pass — 2026-07-27. See UX-AUDIT.md.
