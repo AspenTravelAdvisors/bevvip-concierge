@@ -45,6 +45,20 @@
       "angle": "November to March, month by month: snow and courtship, penguin chicks, whales, light, prices, how full ships are. Link to the first-timers answer rather than repeating it."
     },
     {
+      "id": "northern-lights-where-to-stay",
+      "category": "Planning",
+      "status": "queued",
+      "question": "Where should you stay to see the northern lights?",
+      "angle": "Norway, Finnish Lapland, Iceland, Canada: probability, season (September to March), weather, glass igloos vs. real luxury, pairing with a Norway coastal voyage."
+    },
+    {
+      "id": "four-seasons-yachts-vs-ritz-carlton-yachts",
+      "category": "Yachts",
+      "status": "queued",
+      "question": "Four Seasons Yachts or Ritz-Carlton Yacht Collection: which should you book?",
+      "angle": "Ship size and suite size, itineraries, dining, who each suits. Use journey tokens for operators. Do not state launch dates or ship specifications you are not certain of."
+    },
+    {
       "id": "botswana-okavango-water-vs-land-camps",
       "category": "Safari",
       "status": "queued",
@@ -64,6 +78,20 @@
       "status": "queued",
       "question": "When is the best time to visit the Galápagos?",
       "angle": "Warm wet season vs. cool dry Garúa season, sea conditions, what wildlife is doing month by month, why there is no bad month."
+    },
+    {
+      "id": "italy-lakes-como-vs-garda",
+      "category": "Hotels",
+      "status": "queued",
+      "question": "Lake Como, Lake Garda or Lake Maggiore?",
+      "angle": "Character of each lake, best towns to base in, boats vs. roads, season. Evidence: Lombardia properties."
+    },
+    {
+      "id": "arctic-polar-bear-best-trip",
+      "category": "Expedition",
+      "status": "queued",
+      "question": "What's the best trip for seeing polar bears?",
+      "angle": "Svalbard by ship (June to August) vs. Churchill by tundra vehicle (October to November); odds, ship size, what a sighting is actually like."
     },
     {
       "id": "family-safari-kids-age",
@@ -87,20 +115,6 @@
       "angle": "June to November risk by month and by island (ABC islands lower), insurance, resort closures in September and October, the value in June and early December."
     },
     {
-      "id": "four-seasons-yachts-vs-ritz-carlton-yachts",
-      "category": "Yachts",
-      "status": "queued",
-      "question": "Four Seasons Yachts or Ritz-Carlton Yacht Collection: which should you book?",
-      "angle": "Ship size and suite size, itineraries, dining, who each suits. Use journey tokens for operators. Do not state launch dates or ship specifications you are not certain of."
-    },
-    {
-      "id": "northern-lights-where-to-stay",
-      "category": "Planning",
-      "status": "queued",
-      "question": "Where should you stay to see the northern lights?",
-      "angle": "Norway, Finnish Lapland, Iceland, Canada: probability, season (September to March), weather, glass igloos vs. real luxury, pairing with a Norway coastal voyage."
-    },
-    {
       "id": "african-safari-cost-what-drives-it",
       "category": "Safari",
       "status": "queued",
@@ -113,20 +127,6 @@
       "status": "queued",
       "question": "What are the best private-island resorts?",
       "angle": "Genuinely one-resort islands vs. resorts that just call themselves private; transfers; what exclusivity actually means. Evidence: tag=private-island."
-    },
-    {
-      "id": "arctic-polar-bear-best-trip",
-      "category": "Expedition",
-      "status": "queued",
-      "question": "What's the best trip for seeing polar bears?",
-      "angle": "Svalbard by ship (June to August) vs. Churchill by tundra vehicle (October to November); odds, ship size, what a sighting is actually like."
-    },
-    {
-      "id": "italy-lakes-como-vs-garda",
-      "category": "Hotels",
-      "status": "queued",
-      "question": "Lake Como, Lake Garda or Lake Maggiore?",
-      "angle": "Character of each lake, best towns to base in, boats vs. roads, season. Evidence: Lombardia properties."
     },
     {
       "id": "honeymoon-first-luxury",
