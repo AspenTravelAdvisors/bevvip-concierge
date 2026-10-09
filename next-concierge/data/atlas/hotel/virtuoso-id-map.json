@@ -1,11 +1,11 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-09T16:02:00.361Z",
+  "generated": "2026-10-09T22:45:58.549Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2087,
-  "matchedCount": 2305
+  "feedCount": 2086,
+  "matchedCount": 2303
  },
  "overrides": {
   "h_00408": "6176935",
@@ -457,12 +457,6 @@
    "localName": "Ambiente Sedona, A Landscape Hotel",
    "virtuosoName": "Ambiente Sedona, A Landscape Hotel"
   },
-  "h_00094": {
-   "vid": "6163761",
-   "how": "name+country",
-   "localName": "Amirandes, A Grecotel Resort to Live",
-   "virtuosoName": "Amirandes, A Grecotel Resort to Live"
-  },
   "h_00095": {
    "vid": "6163939",
    "how": "name+country",
@@ -809,7 +803,7 @@
    "vid": "18288836",
    "how": "name+country",
    "localName": "Awasi Iguazu",
-   "virtuosoName": "Awasi Iguazu Relais & Chateaux"
+   "virtuosoName": "Awasi Iguazú Relais & Châteaux"
   },
   "h_00168": {
    "vid": "18280928",
@@ -845,7 +839,7 @@
    "vid": "17905182",
    "how": "name+country",
    "localName": "BLESS Hotel Madrid",
-   "virtuosoName": "BLESS Hotel Madrid"
+   "virtuosoName": "BLESS Madrid"
   },
   "h_00176": {
    "vid": "13818763",
@@ -7597,12 +7591,6 @@
    "localName": "Rosewood Kauri Cliffs",
    "virtuosoName": "Rosewood Kauri Cliffs"
   },
-  "h_01649": {
-   "vid": "6164008",
-   "how": "name+country",
-   "localName": "Rosewood Le Guanahani",
-   "virtuosoName": "Rosewood Le Guanahani"
-  },
   "h_01650": {
    "vid": "6164080",
    "how": "name+country",
@@ -8670,12 +8658,6 @@
    "how": "name+country",
    "localName": "Tafoni Houses Cave Hotel",
    "virtuosoName": "Tafoni Houses Cave Hotel"
-  },
-  "h_01882": {
-   "vid": "6164366",
-   "how": "name+country",
-   "localName": "Taj 51 Buckingham Gate Suites and Residences",
-   "virtuosoName": "Taj 51 Buckingham Gate Suites and Residences"
   },
   "h_01883": {
    "vid": "6163910",
@@ -10405,12 +10387,6 @@
    "localName": "The St. Regis Deer Valley",
    "virtuosoName": "The St. Regis Deer Valley"
   },
-  "h_02255": {
-   "vid": "11164561",
-   "how": "name+country",
-   "localName": "The St. Regis Doha",
-   "virtuosoName": "The St. Regis Doha"
-  },
   "h_02256": {
    "vid": "6164264",
    "how": "name+country",
@@ -11581,6 +11557,12 @@
    "localName": "Ambiente Sedona",
    "virtuosoName": "Ambiente Sedona, A Landscape Hotel"
   },
+  "h_00094": {
+   "vid": "6163761",
+   "how": "fuzzy:0.86",
+   "localName": "Amirandes, A Grecotel Resort to Live",
+   "virtuosoName": "Amirandes, A Resort to Live®"
+  },
   "h_00103": {
    "vid": "18268352",
    "how": "fuzzy:1.00",
@@ -12655,6 +12637,12 @@
    "localName": "THE US GRANT",
    "virtuosoName": "THE US GRANT, a Luxury Collection Hotel, San Diego"
   },
+  "h_01882": {
+   "vid": "6164366",
+   "how": "fuzzy:1.00",
+   "localName": "Taj 51 Buckingham Gate Suites and Residences",
+   "virtuosoName": "51 Buckingham Gate - Taj 51 Buckingham Gate Suites and Residences"
+  },
   "h_01892": {
    "vid": "6166992",
    "how": "duplicate-of:h_01893",
@@ -13121,7 +13109,7 @@
    "vid": "6163761",
    "how": "twin-of:h_00094",
    "localName": "Amirandes",
-   "virtuosoName": "Amirandes, A Grecotel Resort to Live"
+   "virtuosoName": "Amirandes, A Resort to Live®"
   },
   "h_00129": {
    "vid": "14092422",
@@ -13962,23 +13950,6 @@
    "how": [
     "name+country",
     "duplicate-of:h_00092"
-   ],
-   "confident": true
-  },
-  {
-   "vid": "6163761",
-   "virtuosoName": "Amirandes, A Grecotel Resort to Live",
-   "localIds": [
-    "h_00094",
-    "h_00093"
-   ],
-   "localNames": [
-    "Amirandes, A Grecotel Resort to Live",
-    "Amirandes"
-   ],
-   "how": [
-    "name+country",
-    "twin-of:h_00094"
    ],
    "confident": true
   },
@@ -19939,6 +19910,23 @@
    "confident": false
   },
   {
+   "vid": "6163761",
+   "virtuosoName": "Amirandes, A Resort to Live®",
+   "localIds": [
+    "h_00094",
+    "h_00093"
+   ],
+   "localNames": [
+    "Amirandes, A Grecotel Resort to Live",
+    "Amirandes"
+   ],
+   "how": [
+    "fuzzy:0.86",
+    "twin-of:h_00094"
+   ],
+   "confident": false
+  },
+  {
    "vid": "18075196",
    "virtuosoName": "Infante Sagres",
    "localIds": [
@@ -22526,10 +22514,10 @@
   },
   {
    "vid": "6163761",
-   "virtuosoName": "Amirandes, A Grecotel Resort to Live",
+   "virtuosoName": "Amirandes, A Resort to Live®",
    "dropName": "Amirandes",
    "metresApart": 2,
-   "note": "the same name, with the supplier saying more — \"amirandes\" against \"amirandes grecotel to live\" once city and country are stripped",
+   "note": "the same name, with the supplier saying more — \"amirandes\" against \"amirandes to live\" once city and country are stripped",
    "keep": "h_00094",
    "drop": "h_00093",
    "keepName": "Amirandes, A Grecotel Resort to Live",
@@ -25311,6 +25299,13 @@
    "program": "Rocco Forte Knights"
   },
   {
+   "id": "h_01649",
+   "name": "Rosewood Le Guanahani",
+   "city": "St. Barthelemy",
+   "country": "Saint Barthélemy",
+   "program": "Rosewood Elite"
+  },
+  {
    "id": "h_01683",
    "name": "SHA Wellness Clinic",
    "city": "Altea",
@@ -25584,6 +25579,13 @@
    "program": "Marriott STARS"
   },
   {
+   "id": "h_02255",
+   "name": "The St. Regis Doha",
+   "city": "Doha",
+   "country": "Qatar",
+   "program": "Marriott STARS"
+  },
+  {
    "id": "h_02258",
    "name": "The St. Regis Houston",
    "city": "Houston",
@@ -25732,6 +25734,12 @@
   }
  ],
  "unmatchedApi": [
+  {
+   "vid": "6164008",
+   "name": "Airelles le Guanahani Saint Barthelémy",
+   "city": "Saint Barthelemy",
+   "country": "Saint Barthélemy"
+  },
   {
    "vid": "18402385",
    "name": "Akelarre, Relais & Chateaux Hotel",

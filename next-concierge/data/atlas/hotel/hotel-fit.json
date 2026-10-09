@@ -578,6 +578,67 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
+ "h_01882": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 69,
+  "matchScores": {
+   "honeymoon": 61.9,
+   "family": 77.4,
+   "celebration": 67.6,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 66.9,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.56,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.92,
+   "sceneFit": 4.15,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3.25,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "room/suite:suite/suites/residence; privacy:residence; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "room/suite:suite/suites/residence; privacy:residence; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 5,
+  "nearbyHotelCount": 25,
+  "description": "Taj 51 Buckingham Gate Suites and Residences: in London, Westminster with the doorknob turned inward; a private-key mood, suite comfort, and a little room from the world for travelers who prefer the calendar under their own jurisdiction.",
+  "searchKeywords": [
+   "Taj 51 Buckingham Gate Suites and Residences London",
+   "Taj 51 Buckingham Gate Suites and Residences luxury hotel",
+   "best luxury hotels in London",
+   "London 5 star hotel",
+   "London luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
  "h_00011": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -12229,67 +12290,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_00175": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.4,
-  "matchScores": {
-   "honeymoon": 60.7,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 73.7,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3.14,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3.18,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.04,
-   "guestPersonalityFit": 3.2,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 6,
-  "nearbyHotelCount": 12,
-  "description": "BLESS Hotel Madrid: in Madrid, neatly folded into a hotel key; spa time treated as strategy and arrival logistics that behave, preferred-program polish, and the sort of operational calm that saves a trip from itself.",
-  "searchKeywords": [
-   "BLESS Hotel Madrid Madrid",
-   "BLESS Hotel Madrid luxury hotel",
-   "best luxury hotels in Madrid",
-   "Madrid 5 star hotel",
-   "Madrid luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00174": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -12339,6 +12339,67 @@
    "best luxury hotels in Ibiza",
    "Ibiza 5 star hotel",
    "Ibiza luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
+ "h_00175": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 68.4,
+  "matchScores": {
+   "honeymoon": 60.7,
+   "family": 76,
+   "celebration": 64.8,
+   "business": 79,
+   "active": 73.7,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3.14,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3.18,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 3.8,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4.04,
+   "guestPersonalityFit": 3.2,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "wellness:spa; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 6,
+  "nearbyHotelCount": 12,
+  "description": "BLESS Hotel Madrid: in Madrid, neatly folded into a hotel key; spa time treated as strategy and arrival logistics that behave, preferred-program polish, and the sort of operational calm that saves a trip from itself.",
+  "searchKeywords": [
+   "BLESS Hotel Madrid Madrid",
+   "BLESS Hotel Madrid luxury hotel",
+   "best luxury hotels in Madrid",
+   "Madrid 5 star hotel",
+   "Madrid luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -97038,67 +97099,6 @@
    "best luxury hotels in Cappadocia",
    "Cappadocia 5 star hotel",
    "Cappadocia luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01882": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 69,
-  "matchScores": {
-   "honeymoon": 61.9,
-   "family": 77.4,
-   "celebration": 67.6,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 66.9,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.56,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.92,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3.25,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "room/suite:suite/suites/residence; privacy:residence; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "room/suite:suite/suites/residence; privacy:residence; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 5,
-  "nearbyHotelCount": 25,
-  "description": "Taj 51 Buckingham Gate Suites and Residences: in London, Westminster with the doorknob turned inward; a private-key mood, suite comfort, and a little room from the world for travelers who prefer the calendar under their own jurisdiction.",
-  "searchKeywords": [
-   "Taj 51 Buckingham Gate Suites and Residences London",
-   "Taj 51 Buckingham Gate Suites and Residences luxury hotel",
-   "best luxury hotels in London",
-   "London 5 star hotel",
-   "London luxury hotel"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
