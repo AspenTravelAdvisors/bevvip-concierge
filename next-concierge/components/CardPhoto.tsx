@@ -1,41 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 /*
- * A card's photograph, with a way down when the picture will not load.
+ * A card's photograph, or the empty panel when there is none to show.
  *
- * The merge scripts point cards at Virtuoso's resized variant
- * (`/Brochures/h400/<id>.webp`, lib/virtuoso/media.mjs) because the originals
- * are megabytes each. But media.virtuoso.com does not answer that request for
- * every image — for many it fails, and the card drew the browser's
- * broken-image icon on a black square. When the sized variant fails we fall
- * back to the original brochure .jpg (every original in the feeds is a .jpg),
- * and when that fails too the card shows the same empty panel it shows for a
- * record with no photograph at all, never a broken image.
+ * Supplier photo URLs die: Virtuoso deletes a property's old photographs when
+ * it replaces them, and a feed can carry the old URL until the next refresh
+ * (scripts/sync-virtuoso-hotels.mjs). The card used to draw the browser's
+ * broken-image icon on a black square for those. Now a photo that fails to
+ * load is swapped for the same empty panel a record with no photograph gets.
+ *
+ * There is no retry against the full-size original: when the resized variant
+ * is gone the original is too (784 of 784 checked), so a retry is only a
+ * second 404 per card.
  */
-const SIZED = /^(https:\/\/media\.virtuoso\.com\/m\/Images\/Brochures\/)h\d+\/([^/?#]+)\.webp$/i;
-
-/** The full-size original behind a resized Virtuoso URL, or null if it is not one. */
-function originalOf(url: string): string | null {
-  const m = SIZED.exec(url);
-  return m ? `${m[1]}${m[2]}.jpg` : null;
-}
-
 export default function CardPhoto({ src }: { src: string | null }) {
-  const [current, setCurrent] = useState<string | null>(src);
+  const [failed, setFailed] = useState(false);
 
-  // Cards are recycled as filters change; a new record starts from its own src.
-  useEffect(() => setCurrent(src), [src]);
+  // Cards are recycled as filters change; a new record gets a fresh attempt.
+  useEffect(() => setFailed(false), [src]);
 
-  if (!current) return <span className="ac-media-empty" />;
+  // An image can fail before React attaches onError (server-rendered markup
+  // loading ahead of hydration), and that error event is never replayed. A
+  // finished image with no pixels has failed, whenever it happened.
+  const check = useCallback((img: HTMLImageElement | null) => {
+    if (img && img.complete && img.naturalWidth === 0) setFailed(true);
+  }, []);
+
+  if (!src || failed) return <span className="ac-media-empty" />;
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={current}
-      alt=""
-      loading="lazy"
-      onError={() => setCurrent((u) => (u ? originalOf(u) : null))}
-    />
+    <img ref={check} src={src} alt="" loading="lazy" onError={() => setFailed(true)} />
   );
 }
