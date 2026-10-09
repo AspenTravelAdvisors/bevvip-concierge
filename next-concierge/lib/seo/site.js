@@ -21,6 +21,10 @@ export const AGENCY_URL = "https://aspentraveladvisors.com";
 export const BRAND_URL = "https://expeditionbucketlist.com";
 export const VIRTUOSO_ADVISOR_URL =
   "https://www.virtuoso.com/advisor/brianharris/travel";
+export const FACEBOOK_URL = "https://www.facebook.com/AspenTravelAdvisors/";
+// The owner's personal profile. It describes a person, not the agency, so it
+// belongs on the founder node below rather than in the agency's own sameAs.
+export const OWNER_LINKEDIN_URL = "https://www.linkedin.com/in/brianpayntarharris/";
 
 // Fragment identifiers, not page URLs: `#organization` is the agency itself,
 // which is not the same resource as the home page that describes it.
@@ -38,7 +42,18 @@ export function organizationJsonLd() {
     url: SITE_URL,
     // The signals that let an answer engine reconcile "Aspen Travel Advisors"
     // across the open web with the entity publishing this page.
-    sameAs: [AGENCY_URL, BRAND_URL, VIRTUOSO_ADVISOR_URL],
+    sameAs: [AGENCY_URL, BRAND_URL, VIRTUOSO_ADVISOR_URL, FACEBOOK_URL],
+    // The agency is one advisor's practice, and the profiles that carry its
+    // name most often — LinkedIn, Virtuoso — are his. Naming him lets an
+    // engine join "Brian Harris, Aspen Travel Advisors" on those pages back to
+    // this entity.
+    founder: {
+      "@type": "Person",
+      name: "Brian Harris",
+      alternateName: "Brian Payntar Harris",
+      jobTitle: "Owner",
+      sameAs: [OWNER_LINKEDIN_URL, VIRTUOSO_ADVISOR_URL],
+    },
     brand: { "@type": "Brand", name: SITE_NAME, url: BRAND_URL },
     // The membership is the whole basis of the site's authority claim — the
     // perks it documents exist because of it — so it is stated in the markup
