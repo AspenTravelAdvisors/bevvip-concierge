@@ -11,6 +11,7 @@
 //   node scripts/sync-virtuoso-hotels.mjs --force    # ignore cache, refetch all
 //   node scripts/sync-virtuoso-hotels.mjs --limit 50 # short run for development
 //   node scripts/sync-virtuoso-hotels.mjs --normalize-only   # rebuild feed from cache
+//   node scripts/sync-virtuoso-hotels.mjs --refresh 2100     # re-fetch that many oldest records
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -29,6 +30,20 @@ const value = f => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] : nu
 const FORCE = has('--force');
 const NORMALIZE_ONLY = has('--normalize-only');
 const LIMIT = Number(value('--limit') || 0);
+
+/*
+ * How many cached detail records to re-fetch per run, oldest first.
+ *
+ * The cache used to be fetch-once: a property's detail was crawled the first
+ * night it appeared and never again, and the nightly job carries the cache
+ * forward indefinitely. Virtuoso replaces a property's photographs from time
+ * to time and deletes the old files, so by October 784 of 2,076 hotel photos
+ * — every one crawled in late July or August — were 404s on media.virtuoso.com
+ * and the cards showed broken images. Re-fetching the 300 oldest records a
+ * night (~4 minutes) cycles the whole catalog in about a week, which keeps the
+ * galleries, perks and prose current as well as the photos.
+ */
+const REFRESH = Number(value('--refresh') ?? 300);
 
 const CACHE_DIR = path.join(repoRoot, 'scripts/cache/virtuoso');
 const CACHE_FILE = path.join(CACHE_DIR, 'hotels-detail.ndjson');
@@ -137,7 +152,10 @@ function normalize(summary, detail) {
     folioDescription: text(d.asSeenInTravelFolioDescription),
     folioInTheKnow: text(d.asSeenInTravelFolioInTheKnow),
 
-    image: d.defaultImageUrl || summary.defaultImageUrl || null,
+    // The catalog row is pulled fresh every night; the detail record may be up
+    // to a refresh cycle old, and an old photo URL is a deleted file. Cruises
+    // and tours already prefer the row for exactly this reason.
+    image: summary.defaultImageUrl || d.defaultImageUrl || null,
     images: (d.imageLibraryItems ?? []).slice(0, MAX_IMAGES).map(i => ({ url: i.url, caption: i.caption || null })),
     imageCount: (d.imageLibraryItems ?? []).length,
     video: d.supplierVideos?.[0]?.webContentURL || null,
@@ -208,8 +226,14 @@ async function main() {
     fs.writeFileSync(catalogFile, JSON.stringify(rows, null, 1));
 
     const targets = LIMIT ? catalog.slice(0, LIMIT) : catalog;
-    const todo = targets.filter(r => FORCE || !cache.has(String(r.id)));
-    console.log(`detail: ${todo.length} to fetch, ${targets.length - todo.length} cached`);
+    const missing = targets.filter(r => FORCE || !cache.has(String(r.id)));
+    // Records cached before `fetchedAt` existed sort as the oldest of all.
+    const stale = FORCE ? [] : targets
+      .filter(r => cache.has(String(r.id)))
+      .sort((a, b) => (cache.get(String(a.id)).fetchedAt ?? 0) - (cache.get(String(b.id)).fetchedAt ?? 0))
+      .slice(0, REFRESH);
+    const todo = [...missing, ...stale];
+    console.log(`detail: ${missing.length} to fetch, ${stale.length} to refresh, ${targets.length - todo.length} cached`);
 
     if (todo.length) {
       const stream = fs.createWriteStream(CACHE_FILE, { flags: FORCE ? 'w' : 'a' });
@@ -218,7 +242,7 @@ async function main() {
       for (const row of todo) {
         try {
           const res = await v.call('/v2/hotel', { id: row.id });
-          const rec = { id: String(row.id), detail: res.result?.data ?? null };
+          const rec = { id: String(row.id), fetchedAt: Date.now(), detail: res.result?.data ?? null };
           cache.set(rec.id, rec);
           stream.write(JSON.stringify(rec) + '\n');
         } catch (err) {
@@ -232,6 +256,17 @@ async function main() {
         }
       }
       await new Promise(r => stream.end(r));
+
+      // The cache is append-only and the newest line for an id wins on read,
+      // so every refresh leaves a superseded copy behind. Rewrite it with one
+      // line per property, or a week of refreshes doubles the file.
+      if (stale.length) {
+        const tmp = `${CACHE_FILE}.tmp`;
+        const out = fs.createWriteStream(tmp);
+        for (const rec of cache.values()) out.write(JSON.stringify(rec) + '\n');
+        await new Promise(r => out.end(r));
+        fs.renameSync(tmp, CACHE_FILE);
+      }
     }
   }
 

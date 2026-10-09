@@ -31,6 +31,7 @@ import { loadSeaRoutes } from "@/lib/atlas/adapters/sea-geometry";
 import type { RawVoyageAtlas } from "@/lib/atlas/adapters/voyage";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
+import CardPhoto from "./CardPhoto";
 
 export default function AtlasWorldCruise() {
   /* The hotels at either end — see lib/atlas/gateway-hotels.ts. */
@@ -118,12 +119,7 @@ export default function AtlasWorldCruise() {
         {/* A live supplier offer, flagged on the feed. The terms are in the
             dossier; on a card the badge only has to be worth the click. */}
         {o.hasPromotion && <span className="ac-offer-badge">✦ Offer</span>}
-        {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt="" loading="lazy" />
-        ) : (
-          <span className="ac-media-empty" />
-        )}
+        <CardPhoto src={src} />
       </span>
     );
   }, []);

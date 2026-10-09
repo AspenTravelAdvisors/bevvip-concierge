@@ -33,6 +33,7 @@ import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
 import { geodesicLine, unrollLine } from "@/lib/atlas/geo";
 import { indexGateways, NO_GATEWAYS, type GatewayIndex } from "@/lib/atlas/gateway-hotels";
+import CardPhoto from "./CardPhoto";
 
 export default function AtlasJet() {
   /*
@@ -154,12 +155,7 @@ export default function AtlasJet() {
         {/* A live supplier offer, flagged on the feed. The terms are in the
             dossier; on a card the badge only has to be worth the click. */}
         {o.hasPromotion && <span className="ac-offer-badge">✦ Offer</span>}
-        {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt="" loading="lazy" />
-        ) : (
-          <span className="ac-media-empty" />
-        )}
+        <CardPhoto src={src} />
       </span>
     );
   }, []);

@@ -25,6 +25,7 @@ import { adaptSafari, SAFARI_DESCRIPTOR } from "@/lib/atlas/adapters/safari";
 import type { RawJourneyAtlas } from "@/lib/atlas/adapters/journey";
 import type { ParseContext } from "@/lib/atlas/adapters/params";
 import type { AtlasOffering } from "@/lib/atlas/adapters/types";
+import CardPhoto from "./CardPhoto";
 
 export default function AtlasSafari() {
   /** Journey files, held from the feed the map already loaded. */
@@ -178,12 +179,7 @@ export default function AtlasSafari() {
     return (
       <span className="ac-media">
         {o.hasPromotion && <span className="ac-offer-badge">✦ Offer</span>}
-        {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt="" loading="lazy" />
-        ) : (
-          <span className="ac-media-empty" />
-        )}
+        <CardPhoto src={src} />
       </span>
     );
   }, []);

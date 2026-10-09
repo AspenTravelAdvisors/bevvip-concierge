@@ -52,6 +52,7 @@ import HotelDossier from "./HotelDossier";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip, onTrip } from "@/lib/trip-state";
 import type { TripState } from "@/lib/types";
+import CardPhoto from "./CardPhoto";
 
 /** What /api/hotel/tw hands back per hotel — enough to build a rate search. */
 interface TwIdentity {
@@ -313,12 +314,7 @@ export default function AtlasHotel() {
             are in the dossier; on a card the badge only has to be worth the
             click. */}
         {o.hasPromotion && <span className="ac-offer-badge">✦ Offer</span>}
-        {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt="" loading="lazy" />
-        ) : (
-          <span className="ac-media-empty" />
-        )}
+        <CardPhoto src={src} />
       </span>
     );
   }, []);
