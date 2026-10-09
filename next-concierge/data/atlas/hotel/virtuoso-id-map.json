@@ -1,10 +1,10 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-04T14:44:29.287Z",
+  "generated": "2026-10-09T16:02:00.361Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2088,
+  "feedCount": 2087,
   "matchedCount": 2305
  },
  "overrides": {
@@ -25911,12 +25911,6 @@
    "name": "Eagle Island Lodge, A Belmond Safari",
    "city": "Okavango Delta",
    "country": "Botswana"
-  },
-  {
-   "vid": "18535522",
-   "name": "El Foro, a Luxury Collection Hotel, Seville - A Virtuoso Preview",
-   "city": "Sevilla",
-   "country": "Spain"
   },
   {
    "vid": "18474677",
