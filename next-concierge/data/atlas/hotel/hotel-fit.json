@@ -29433,6 +29433,74 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
+ "h_01971": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 67.9,
+  "matchScores": {
+   "honeymoon": 60,
+   "family": 76,
+   "celebration": 64.8,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 3.8,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 1,
+  "nearbyHotelCount": 1,
+  "description": "The Fairmont Banff Springs: a stay in Banff, Alberta that knows when to be useful and when to be invisible; the Spray Avenue address and a room that knows when to go quiet. For a celebration that prefers polish to noise.",
+  "searchKeywords": [
+   "The Fairmont Banff Springs Banff",
+   "The Fairmont Banff Springs luxury hotel",
+   "best luxury hotels in Banff",
+   "Banff 5 star hotel",
+   "Banff luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": 4,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": 1999,
+  "ratingBadges": [
+   {
+    "source": "AAA",
+    "rating": 4,
+    "label": "AAA 4 Diamond",
+    "year": 2026
+   }
+  ],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
  "h_00578": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -29558,6 +29626,142 @@
   "aaaDiamondYear": 2026,
   "aaaFirstDiamondYear": null,
   "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
+ "h_01972": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 67.9,
+  "matchScores": {
+   "honeymoon": 60,
+   "family": 76,
+   "celebration": 64.8,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 3.8,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 1,
+  "nearbyHotelCount": 1,
+  "description": "The Fairmont Chateau Lake Louise: a grand address in Lake Louise, Alberta; lake-country calm and history with fresh linen and grand-hotel manners with practical shoulders for guests who like their history with the plumbing solved.",
+  "searchKeywords": [
+   "The Fairmont Chateau Lake Louise Lake Louise",
+   "The Fairmont Chateau Lake Louise luxury hotel",
+   "best luxury hotels in Lake Louise",
+   "Lake Louise 5 star hotel",
+   "Lake Louise luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": 4,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": 2005,
+  "ratingBadges": [
+   {
+    "source": "AAA",
+    "rating": 4,
+    "label": "AAA 4 Diamond",
+    "year": 2026
+   }
+  ],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
+ "h_01973": {
+  "bestFit": "Ski / mountain",
+  "intentTags": [
+   "Ski / mountain"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 70.3,
+  "matchScores": {
+   "honeymoon": 66.4,
+   "family": 79.3,
+   "celebration": 66.4,
+   "business": 75.9,
+   "active": 73,
+   "uhnw": 71.4,
+   "simpleVip": 75.9
+  },
+  "criteriaScores": {
+   "guestIntent": 3.29,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4.43,
+   "roomSuiteReality": 3.9,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 3.7,
+   "sceneFit": 3.5,
+   "familyMultigen": 4,
+   "accessibilityEase": 3,
+   "seasonalityRiskFit": 2.7,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4.82,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.6
+  },
+  "evaluationNotes": "location:ski; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "location:ski; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 1,
+  "nearbyHotelCount": 2,
+  "description": "The Fairmont Chateau Whistler: a mountain address in Whistler, British Columbia for guests who believe cold air improves character; cold-air ambition and a past that has learned good service. After the last run: historic scale and dependable polish.",
+  "searchKeywords": [
+   "The Fairmont Chateau Whistler Whistler",
+   "The Fairmont Chateau Whistler luxury hotel",
+   "Whistler luxury ski hotel",
+   "Whistler mountain resort",
+   "Whistler luxury resort"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": 4,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": 1990,
+  "ratingBadges": [
+   {
+    "source": "AAA",
+    "rating": 4,
+    "label": "AAA 4 Diamond",
+    "year": 2026
+   }
+  ],
   "ratingsSource": {
    "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
@@ -101659,210 +101863,6 @@
   "aaaDiamondYear": 2026,
   "aaaFirstDiamondYear": null,
   "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01971": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "The Fairmont Banff Springs: a stay in Banff, Alberta that knows when to be useful and when to be invisible; the Spray Avenue address and a room that knows when to go quiet. For a celebration that prefers polish to noise.",
-  "searchKeywords": [
-   "The Fairmont Banff Springs Banff",
-   "The Fairmont Banff Springs luxury hotel",
-   "best luxury hotels in Banff",
-   "Banff 5 star hotel",
-   "Banff luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": 4,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": 1999,
-  "ratingBadges": [
-   {
-    "source": "AAA",
-    "rating": 4,
-    "label": "AAA 4 Diamond",
-    "year": 2026
-   }
-  ],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01972": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 67.9,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 64.8,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 3.8,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 1,
-  "description": "The Fairmont Chateau Lake Louise: a grand address in Lake Louise, Alberta; lake-country calm and history with fresh linen and grand-hotel manners with practical shoulders for guests who like their history with the plumbing solved.",
-  "searchKeywords": [
-   "The Fairmont Chateau Lake Louise Lake Louise",
-   "The Fairmont Chateau Lake Louise luxury hotel",
-   "best luxury hotels in Lake Louise",
-   "Lake Louise 5 star hotel",
-   "Lake Louise luxury hotel"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": 4,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": 2005,
-  "ratingBadges": [
-   {
-    "source": "AAA",
-    "rating": 4,
-    "label": "AAA 4 Diamond",
-    "year": 2026
-   }
-  ],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01973": {
-  "bestFit": "Ski / mountain",
-  "intentTags": [
-   "Ski / mountain"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.3,
-  "matchScores": {
-   "honeymoon": 66.4,
-   "family": 79.3,
-   "celebration": 66.4,
-   "business": 75.9,
-   "active": 73,
-   "uhnw": 71.4,
-   "simpleVip": 75.9
-  },
-  "criteriaScores": {
-   "guestIntent": 3.29,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4.43,
-   "roomSuiteReality": 3.9,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.7,
-   "sceneFit": 3.5,
-   "familyMultigen": 4,
-   "accessibilityEase": 3,
-   "seasonalityRiskFit": 2.7,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.82,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "location:ski; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "location:ski; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 2,
-  "description": "The Fairmont Chateau Whistler: a mountain address in Whistler, British Columbia for guests who believe cold air improves character; cold-air ambition and a past that has learned good service. After the last run: historic scale and dependable polish.",
-  "searchKeywords": [
-   "The Fairmont Chateau Whistler Whistler",
-   "The Fairmont Chateau Whistler luxury hotel",
-   "Whistler luxury ski hotel",
-   "Whistler mountain resort",
-   "Whistler luxury resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": 4,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": 1990,
-  "ratingBadges": [
-   {
-    "source": "AAA",
-    "rating": 4,
-    "label": "AAA 4 Diamond",
-    "year": 2026
-   }
-  ],
   "ratingsSource": {
    "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"

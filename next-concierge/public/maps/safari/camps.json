@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 256,
-  "journeysTotal": 502,
+  "journeysWithCamps": 255,
+  "journeysTotal": 498,
   "campsMatched": 40
  },
  "radiusKm": 25,
@@ -2207,26 +2207,6 @@
     "id": "h_02484",
     "stop": "Okavango Delta",
     "day": 11,
-    "km": 19.9
-   }
-  ],
-  "18362041": [
-   {
-    "id": "h_02374",
-    "stop": "Livingstone",
-    "day": 2,
-    "km": 10.1
-   },
-   {
-    "id": "h_01349",
-    "stop": "Livingstone",
-    "day": 2,
-    "km": 19.8
-   },
-   {
-    "id": "h_02484",
-    "stop": "Okavango Delta",
-    "day": 6,
     "km": 19.9
    }
   ],

@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-09T22:45:58.549Z",
+  "generated": "2026-10-10T15:11:31.351Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2086,
@@ -9077,19 +9077,19 @@
    "vid": "6163998",
    "how": "name+country",
    "localName": "The Fairmont Banff Springs",
-   "virtuosoName": "The Fairmont Banff Springs"
+   "virtuosoName": "Fairmont Banff Springs"
   },
   "h_01972": {
    "vid": "6164328",
    "how": "name+country",
    "localName": "The Fairmont Chateau Lake Louise",
-   "virtuosoName": "The Fairmont Chateau Lake Louise"
+   "virtuosoName": "Fairmont Chateau Lake Louise"
   },
   "h_01973": {
    "vid": "6164241",
    "how": "name+country",
    "localName": "The Fairmont Chateau Whistler",
-   "virtuosoName": "The Fairmont Chateau Whistler"
+   "virtuosoName": "Fairmont Chateau Whistler"
   },
   "h_01974": {
    "vid": "6164262",
