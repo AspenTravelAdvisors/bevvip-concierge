@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-10T15:11:31.351Z",
+  "generated": "2026-10-11T15:32:33.130Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2086,
@@ -11969,7 +11969,7 @@
    "vid": "18365754",
    "how": "fuzzy:0.67",
    "localName": "HOTEL THE MITSUI HAKONE, a Luxury Collection Hotel & Spa",
-   "virtuosoName": "HOTEL THE MITSUI HAKONE, a Luxury Collection Hotel- A Virtuoso Preview"
+   "virtuosoName": "HOTEL THE MITSUI HAKONE, a Luxury Collection Hotel - Virtuoso Preview"
   },
   "h_00779": {
    "vid": "15224514",

@@ -523,72 +523,6 @@
     ]
    }
   ],
-  "16265799": [
-   {
-    "n": "Vancouver",
-    "r": "CANADA",
-    "ll": [
-     49.25,
-     -123.133
-    ]
-   },
-   {
-    "n": "Kamloops",
-    "r": "CANADA",
-    "ll": [
-     50.6667,
-     -120.333
-    ]
-   },
-   {
-    "n": "Jasper",
-    "r": "CANADA",
-    "ll": [
-     52.875,
-     -118.075
-    ]
-   },
-   {
-    "n": "Lake Louise",
-    "r": "CANADA",
-    "ll": [
-     51.4253,
-     -116.177
-    ]
-   },
-   {
-    "n": "Banff",
-    "r": "CANADA",
-    "ll": [
-     51.1667,
-     -115.569
-    ]
-   },
-   {
-    "n": "Lake Louise",
-    "r": "CANADA",
-    "ll": [
-     51.4253,
-     -116.177
-    ]
-   },
-   {
-    "n": "Banff",
-    "r": "CANADA",
-    "ll": [
-     51.1667,
-     -115.569
-    ]
-   },
-   {
-    "n": "Calgary",
-    "r": "CANADA",
-    "ll": [
-     51.0833,
-     -114.083
-    ]
-   }
-  ],
   "16265804": [
    {
     "n": "Vancouver",
@@ -4326,7 +4260,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_40_1001.webp",
    "from": "Tokyo, Japan",
    "to": "Seoul, South Korea",
-   "country": "South Korea",
+   "country": "Japan",
    "train": null,
    "world": false,
    "mks": [
@@ -4854,7 +4788,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_37_1001.webp",
    "from": "Seoul, South Korea",
    "to": "Tokyo, Japan",
-   "country": "South Korea",
+   "country": "Japan",
    "train": null,
    "world": false,
    "mks": [
@@ -6825,7 +6759,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -7605,7 +7539,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Bulgaria",
+   "country": "Romania",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7680,7 +7614,7 @@
    "img": null,
    "from": "Paris, France",
    "to": "Prague, Czech Republic",
-   "country": "France",
+   "country": "Czech Republic",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -9662,7 +9596,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3374_2_275_0927.webp",
    "from": "Stockholm, Sweden",
    "to": "Bergen, Norway",
-   "country": "Denmark",
+   "country": "Sweden",
    "train": null,
    "world": false,
    "mks": [
@@ -10410,7 +10344,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Langkawi, Malaysia",
-   "country": "Malaysia",
+   "country": "Singapore",
    "train": "Eastern & Oriental Express",
    "world": true,
    "d": "5/10/2027",
@@ -11218,74 +11152,6 @@
     }
    ],
    "route": "18535776"
-  },
-  {
-   "id": "16265799",
-   "n": "Western Canada Highlights Train Tour | Rocky Mountaineer Train",
-   "b": "canadabydesign",
-   "g": [
-    "CANADA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16265799/westerncanadahighlightstraintourrockymountaineertrain",
-   "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/14853773_2_452_0926.webp",
-   "from": "Vancouver, Canada",
-   "to": "Banff, Canada",
-   "country": "Canada",
-   "train": "Rocky Mountaineer",
-   "world": true,
-   "mks": [
-    "2026-10"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 10 Oct 2026",
-   "description": "What better way to see all the scenic highlights of the Canadian Rockies than on our 7-day Western Canada Train Trip. Traveling from Vancouver to Jasper on Rocky Mountaineer, enjoy the perks of GoldLeaf Service and choose between a morning Maligne Valley tour with Medicine Lake or wildlife viewing on arrival. Take the scenic Icefields Parkway to Lake Louise with an Ice Explorer ride and picnic lunch along the way, then arrive by coach to Banff for your choice of wildlife viewing or a cowboy cookout. This 7-day package is perfectly customized to you!",
-   "included": [
-    "Rocky Mountaineer Train between Vancouver and Jasper Return transfers between rail depot and hotel in Kamloops",
-    "1 night accommodation in Kamloops provided by Rocky Mountaineer 2 nights accommodation in Jasper 1 night accommodation in Lake Louise 2 nights accommodation in Banff",
-    "Taxi transfer between rail depot and hotel in Jasper",
-    "Jasper | Freedom of Choice - Choose 1 of 5 Excursions 1. Morning Maligne Valley with Medicine Lake Tour 2. Evening Discover Jasper & its Wildlife 3. Gentle Raft Float on the Athabasca River",
-    "4. Maligne Canyon Hiking Tour 5. Upgrade Option: Maligne Valley Sightseeing + Boat Cruise",
-    "Full day tour between Jasper and Lake Louise with picnic lunch included Ice Explorer ride onto Athabasca Glacier + Glacier Skywalk Scheduled transfer between Lake Louise and Banff",
-    "Banff | Freedom of Choice - Choose 1 of 5 Excursions 1. Discover Banff & Its Wildlife Tour + Banff Gondola 2. Banff National Park Explorer Moraine Lake & Lake Louise | Small Group Tour with Picnic Lunch",
-    "3. Rockies Hidden Gems Yoho & Kootenay National Parks | Small Group Tour with Picnic Lunch 4. Cowboy Horseback Cookout BBQ Lunch or Dinner 5. Signature Guided Hike | Small Group Hike with Picnic Lunch"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Vancouver"
-    },
-    {
-     "d": 1,
-     "n": "Kamloops"
-    },
-    {
-     "d": 2,
-     "n": "Jasper"
-    },
-    {
-     "d": 4,
-     "n": "Lake Louise"
-    },
-    {
-     "d": 5,
-     "n": "Banff"
-    },
-    {
-     "d": 4,
-     "n": "Lake Louise"
-    },
-    {
-     "d": 5,
-     "n": "Banff"
-    },
-    {
-     "d": 7,
-     "n": "Calgary"
-    }
-   ],
-   "route": "16265799"
   },
   {
    "id": "18536039",
