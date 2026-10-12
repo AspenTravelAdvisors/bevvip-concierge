@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-11T15:32:33.130Z",
+  "generated": "2026-10-12T18:52:30.491Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2086,
@@ -5873,7 +5873,7 @@
    "vid": "12091352",
    "how": "name+country",
    "localName": "Manoir Hovey",
-   "virtuosoName": "Manoir Hovey"
+   "virtuosoName": "Manoir Hovey - Relais & Châteaux"
   },
   "h_01286": {
    "vid": "6164084",
@@ -6210,12 +6210,6 @@
    "how": "name+country",
    "localName": "Myconian Villa Collection",
    "virtuosoName": "Myconian Villa Collection"
-  },
-  "h_01356": {
-   "vid": "6164187",
-   "how": "name+country",
-   "localName": "Mykonos Blu, A Grecotel Resort to Live",
-   "virtuosoName": "Mykonos Blu, A Grecotel Resort to Live"
   },
   "h_01357": {
    "vid": "15883208",
@@ -12343,6 +12337,18 @@
    "localName": "Mount Lofty House",
    "virtuosoName": "Mount Lofty House Adults Retreat"
   },
+  "h_01355": {
+   "vid": "6164187",
+   "how": "fuzzy:0.67",
+   "localName": "Mykonos Blu",
+   "virtuosoName": "Mykonos Blu, A Resort to Live®"
+  },
+  "h_01356": {
+   "vid": "6164187",
+   "how": "fuzzy:0.89",
+   "localName": "Mykonos Blu, A Grecotel Resort to Live",
+   "virtuosoName": "Mykonos Blu, A Resort to Live®"
+  },
   "h_01401": {
    "vid": "16116999",
    "how": "duplicate-of:h_01402",
@@ -13464,12 +13470,6 @@
    "how": "twin-of:h_01343",
    "localName": "Mount Nelson",
    "virtuosoName": "Mount Nelson, A Belmond Hotel, Cape Town"
-  },
-  "h_01355": {
-   "vid": "6164187",
-   "how": "twin-of:h_01356",
-   "localName": "Mykonos Blu",
-   "virtuosoName": "Mykonos Blu, A Grecotel Resort to Live"
   },
   "h_01359": {
    "vid": "6163632",
@@ -17013,23 +17013,6 @@
    "confident": true
   },
   {
-   "vid": "6164187",
-   "virtuosoName": "Mykonos Blu, A Grecotel Resort to Live",
-   "localIds": [
-    "h_01356",
-    "h_01355"
-   ],
-   "localNames": [
-    "Mykonos Blu, A Grecotel Resort to Live",
-    "Mykonos Blu"
-   ],
-   "how": [
-    "name+country",
-    "twin-of:h_01356"
-   ],
-   "confident": true
-  },
-  {
    "vid": "6163632",
    "virtuosoName": "Mystique, a Luxury Collection Hotel, Santorini",
    "localIds": [
@@ -19940,6 +19923,23 @@
    "how": [
     "fuzzy:0.80",
     "fuzzy:0.67"
+   ],
+   "confident": false
+  },
+  {
+   "vid": "6164187",
+   "virtuosoName": "Mykonos Blu, A Resort to Live®",
+   "localIds": [
+    "h_01355",
+    "h_01356"
+   ],
+   "localNames": [
+    "Mykonos Blu",
+    "Mykonos Blu, A Grecotel Resort to Live"
+   ],
+   "how": [
+    "fuzzy:0.67",
+    "fuzzy:0.89"
    ],
    "confident": false
   },
@@ -23137,17 +23137,6 @@
    "keep": "h_01343",
    "drop": "h_01342",
    "keepName": "Mount Nelson, A Belmond Hotel, Cape Town",
-   "score": 1
-  },
-  {
-   "vid": "6164187",
-   "virtuosoName": "Mykonos Blu, A Grecotel Resort to Live",
-   "dropName": "Mykonos Blu",
-   "metresApart": 202,
-   "note": "the same name, with the supplier saying more — \"blu\" against \"blu grecotel to live\" once city and country are stripped",
-   "keep": "h_01356",
-   "drop": "h_01355",
-   "keepName": "Mykonos Blu, A Grecotel Resort to Live",
    "score": 1
   },
   {
