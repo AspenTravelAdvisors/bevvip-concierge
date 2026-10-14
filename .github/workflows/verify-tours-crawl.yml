@@ -1,0 +1,48 @@
+# Temporary: runs the tours sync and journey merge against the live API on this
+# branch, without committing, to check the crawl-by-company change. Delete
+# before merging.
+name: Verify tours crawl
+
+on:
+  push:
+    branches: [claude/ecstatic-bardeen-2953q5]
+    paths:
+      - .github/workflows/verify-tours-crawl.yml
+      - next-concierge/scripts/sync-virtuoso-tours.mjs
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-concierge/package-lock.json
+      - name: Install dependencies
+        working-directory: next-concierge
+        run: npm ci
+      - name: Restore the crawl cache
+        uses: actions/cache/restore@v4
+        with:
+          path: next-concierge/scripts/cache/virtuoso
+          key: virtuoso-crawl-none
+          restore-keys: |
+            virtuoso-crawl-
+      - name: Sync tours
+        working-directory: next-concierge
+        env:
+          VIRTUOSO_API_USER: ${{ secrets.VIRTUOSO_API_USER }}
+          VIRTUOSO_API_KEY: ${{ secrets.VIRTUOSO_API_KEY }}
+          VIRTUOSO_API_AES_KEY: ${{ secrets.VIRTUOSO_API_AES_KEY }}
+          VIRTUOSO_API_AES_IV: ${{ secrets.VIRTUOSO_API_AES_IV }}
+        run: npm run sync:virtuoso-tours
+      - name: Merge journeys
+        working-directory: next-concierge
+        run: npm run merge:virtuoso-journeys
+      - name: Compare with what is live
+        run: git diff --stat -- next-concierge/data/atlas

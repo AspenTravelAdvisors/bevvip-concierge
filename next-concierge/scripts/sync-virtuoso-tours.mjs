@@ -7,8 +7,8 @@
 // one location and a prose blurb, no day-by-day itinerary, and exactly one of
 // the 835 mentions a private jet against our atlas's 147.
 //
-// Selection is client-side because the whole catalogue is one cheap 8-second
-// fetch and neither atlas maps to a single facet:
+// The catalogue is fetched one company at a time (see crawlCatalog), and
+// selection is client-side because neither atlas maps to a single facet:
 //
 //   rail  travelStyles contains "Rail" — the API's own classification, 131 tours,
 //         against our 135, with the same operators down the list.
@@ -227,6 +227,62 @@ function dedupe(tours) {
   return [...best.values()];
 }
 
+/*
+ * The whole catalogue, one company at a time.
+ *
+ * Paging the unfiltered search does not return the catalogue. Its order shifts
+ * between pages, so a crawl of 13,202 rows held only ~12,860-13,050 distinct
+ * tours, a different set every run: some came back twice and the rest never
+ * arrived. That is the nightly wobble in the jet, rail and safari counts. Page
+ * 0 asked twice comes back identical, so the shuffle is between pages, not
+ * within one.
+ *
+ * Filtered by company, every query fits on one page today (the largest
+ * operator has 971 tours against 2,500 rows a page), so there is no "between
+ * pages" for the order to shift across. A probe in October 2026 crawled all
+ * 240 companies and got 13,202 rows, 13,202 distinct ids, every company
+ * matching its facet count. It costs ~90 seconds instead of ~8. Should an
+ * operator outgrow a page, searchAll pages it and the distinct-id check below
+ * catches any loss.
+ *
+ * The facet count is the yardstick for each company. A company that comes back
+ * short is retried, because this API answers an intermittent empty 200 (see
+ * searchAll). A small drift is tolerated, since the catalogue can change during
+ * a 90-second crawl. A real shortfall throws, which fails this step only and
+ * leaves the last committed feed in place.
+ */
+async function crawlCatalog(v) {
+  const facets = await v.filters('/v2/tours');
+  const companies = facets.find(f => f.category === 'Company')?.facets ?? [];
+  if (!companies.length) throw new Error('/v2/tours facet catalogue has no Company category, so the catalogue cannot be crawled by company.');
+  const expected = companies.reduce((n, c) => n + (c.count ?? 0), 0);
+
+  const byId = new Map();
+  const short = [];
+  for (const c of companies) {
+    let rows = [];
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      ({ rows } = await v.searchAll('/v2/tours', { companies: c.name }));
+      if (rows.length >= c.count - Math.max(2, Math.ceil(c.count * 0.02))) break;
+      if (attempt < 3) {
+        console.log(`  ${c.name}: ${rows.length} of ${c.count} tours, retrying`);
+        await new Promise(r => setTimeout(r, 1000 * attempt));
+      }
+    }
+    if (rows.length !== c.count) short.push(`${c.name} ${rows.length}/${c.count}`);
+    for (const row of rows) byId.set(String(row.id), row);
+  }
+
+  console.log(`catalog: ${byId.size}/${expected} tours across ${companies.length} companies`);
+  if (short.length) console.log(`  off their facet count: ${short.slice(0, 10).join(' · ')}${short.length > 10 ? ` · and ${short.length - 10} more` : ''}`);
+  const floor = expected - Math.max(10, Math.ceil(expected * 0.005));
+  if (byId.size < floor) {
+    throw new Error(`/v2/tours crawl by company found ${byId.size} distinct tours of ${expected}. ` +
+      'Refusing to treat a partial catalog as the whole one.');
+  }
+  return [...byId.values()];
+}
+
 async function main() {
   fs.mkdirSync(CACHE_DIR, { recursive: true });
   const cache = readNdjsonCache(CACHE_FILE, { force: FORCE });
@@ -239,9 +295,7 @@ async function main() {
     console.log(`catalog: ${rows.length} tours (from cache)`);
   } else {
     const v = createClient({ log: msg => console.log(msg) });
-    const res = await v.searchAll('/v2/tours');
-    rows = res.rows;
-    console.log(`catalog: ${rows.length}/${res.totalRows} tours`);
+    rows = await crawlCatalog(v);
     fs.writeFileSync(CATALOG_FILE, JSON.stringify(rows));
   }
 
