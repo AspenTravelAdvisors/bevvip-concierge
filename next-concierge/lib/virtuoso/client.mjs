@@ -166,7 +166,21 @@ export function createClient({ retries = 10, log = () => {} } = {}) {
   return {
     call,
     login,
-    /** Every row of a search endpoint. The catalog is small enough to come back in one call. */
+    /**
+     * Every row of a search endpoint, or an error — never a silent fraction.
+     *
+     * An empty page before `totalRows` is reached used to end the loop and
+     * return what had arrived. That is how /v2/tours came back as 5,000 of
+     * 13,202 rows two nights running in October 2026 (the page at startRow
+     * 5000 was empty), and the tours sync wrote a feed missing most of the jet
+     * and rail journeys. The journey merge's shrink guard caught it, but by
+     * failing the whole job, so the hotel, promotion and sailing refreshes
+     * that had finished perfectly were thrown away with it.
+     *
+     * Throwing here fails the one crawl step that hit the short read. Its feed
+     * on disk is left as last committed, and every other source still
+     * publishes.
+     */
     async searchAll(path, params = {}) {
       const first = await call(path, { ...params, rowsPerPage: 2500, startRow: 0 });
       const { totalRows = 0, data = [] } = first.result ?? {};
@@ -176,6 +190,10 @@ export function createClient({ retries = 10, log = () => {} } = {}) {
         const batch = next.result?.data ?? [];
         if (!batch.length) break;         // defensive: never spin on an empty page
         rows.push(...batch);
+      }
+      if (rows.length < totalRows) {
+        throw new Error(`Virtuoso ${path} returned ${rows.length} of ${totalRows} rows — ` +
+          `the page at startRow ${rows.length} came back empty. Refusing to treat a partial catalog as the whole one.`);
       }
       return { totalRows, rows };
     },
