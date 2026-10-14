@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 257,
-  "journeysTotal": 504,
+  "lodgesInSafariCountries": 67,
+  "journeysWithCamps": 256,
+  "journeysTotal": 503,
   "campsMatched": 41
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 68
+  "inSafariCountries": 67
  },
  "CAMPS": {
   "h_01781": {
@@ -90,7 +90,7 @@
     -1.34584,
     35.2039
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12948588_2_0_0908.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12948588_2_0.webp",
    "rooms": 12,
    "perks": [
     "Daily breakfast",
@@ -242,7 +242,7 @@
     -27.1987,
     22.4789
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15254553_2_0_0908.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15254553_2_0.webp",
    "rooms": 14,
    "perks": [
     "Daily breakfast",
@@ -276,7 +276,7 @@
     -1.43207,
     29.5666
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16117027_2_0_0909.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16117027_2_0.webp",
    "rooms": 9,
    "perks": [
     "Daily breakfast",
@@ -343,7 +343,7 @@
     27.4191,
     89.6623
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15456706_2_0_0908.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15456706_2_0.webp",
    "rooms": 82,
    "perks": [
     "Daily breakfast",
@@ -509,7 +509,7 @@
     -44.8629,
     168.389
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4018_2_0_0908.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4018_2_0.webp",
    "rooms": 17,
    "perks": [
     "Daily breakfast",
@@ -577,7 +577,7 @@
     -20.4507,
     24.8093
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16149694_2_0_0909.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16149694_2_0.webp",
    "rooms": 9,
    "perks": [
     "Daily breakfast",
@@ -628,7 +628,7 @@
     59.473764,
     -151.48401
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15407936_2_26_0908.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15407936_2_26.webp",
    "rooms": 5,
    "perks": [
     "Daily breakfast",
@@ -696,7 +696,7 @@
     -22.9179,
     -68.291
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/1690769_2_23_0908.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/1690769_2_23.webp",
    "rooms": 12,
    "perks": [
     "Daily breakfast",
@@ -1777,14 +1777,6 @@
     "stop": "Masai Mara National Reserve",
     "day": 5,
     "km": 18.1
-   }
-  ],
-  "18114415": [
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 4,
-    "km": 19.6
    }
   ],
   "18230568": [

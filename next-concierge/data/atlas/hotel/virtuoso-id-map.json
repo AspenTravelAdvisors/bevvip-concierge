@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-12T18:52:30.491Z",
+  "generated": "2026-10-14T17:19:16.344Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2086,
@@ -7447,12 +7447,6 @@
    "localName": "Riad Fès-Relais & Châteaux",
    "virtuosoName": "Riad Fès"
   },
-  "h_01618": {
-   "vid": "16360287",
-   "how": "name+country",
-   "localName": "Riggs Washington D.C.",
-   "virtuosoName": "Riggs Washington D.C."
-  },
   "h_01620": {
    "vid": "6202634",
    "how": "name+country",
@@ -12474,6 +12468,12 @@
    "how": "duplicate-of:h_01602",
    "localName": "Rambagh Palace",
    "virtuosoName": "Rambagh Palace, Jaipur"
+  },
+  "h_01618": {
+   "vid": "16360287",
+   "how": "fuzzy:0.95",
+   "localName": "Riggs Washington D.C.",
+   "virtuosoName": "Riggs Washington DC"
   },
   "h_01633": {
    "vid": "6164503",
@@ -23949,13 +23949,13 @@
    "name": "Hotel Savoy",
    "city": "Lisbon",
    "country": "Portugal",
-   "reason": "name matches but the nearest is 974 km away, beyond the 25 km ceiling",
+   "reason": "name matches but the nearest is 976 km away, beyond the 25 km ceiling",
    "candidates": [
     {
      "vid": "16614587",
      "name": "Savoy Palace",
      "city": "Madeira",
-     "km": 974.5,
+     "km": 975.9,
      "how": "contained"
     }
    ]
