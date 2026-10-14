@@ -180,15 +180,31 @@ export function createClient({ retries = 10, log = () => {} } = {}) {
      * Throwing here fails the one crawl step that hit the short read. Its feed
      * on disk is left as last committed, and every other source still
      * publishes.
+     *
+     * Before giving up, an empty page is retried. A probe showed the failure
+     * is intermittent: the 5000 page answered "0 rows of 0" and the identical
+     * request three seconds later returned all 2,500 rows, with every row in
+     * the range readable. It arrives as a 200, so call()'s own retries never
+     * see it. Each retry also halves the page, in case size is what tips the
+     * server over; startRow follows rows.length, so a smaller page just
+     * resumes where the last good one ended.
      */
     async searchAll(path, params = {}) {
       const first = await call(path, { ...params, rowsPerPage: 2500, startRow: 0 });
       const { totalRows = 0, data = [] } = first.result ?? {};
       const rows = [...data];
+      let rowsPerPage = 2500, emptyPages = 0;
       while (rows.length < totalRows) {
-        const next = await call(path, { ...params, rowsPerPage: 2500, startRow: rows.length });
+        const next = await call(path, { ...params, rowsPerPage, startRow: rows.length });
         const batch = next.result?.data ?? [];
-        if (!batch.length) break;         // defensive: never spin on an empty page
+        if (!batch.length) {
+          if (++emptyPages > 5) break;    // never spin on a page that stays empty
+          rowsPerPage = Math.max(250, Math.ceil(rowsPerPage / 2));
+          log(`virtuoso: ${path} page at startRow ${rows.length} came back empty; retrying with ${rowsPerPage} rows`);
+          await new Promise(r => setTimeout(r, 1000 * emptyPages));
+          continue;
+        }
+        emptyPages = 0;
         rows.push(...batch);
       }
       if (rows.length < totalRows) {
