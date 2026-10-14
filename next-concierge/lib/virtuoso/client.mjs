@@ -166,16 +166,50 @@ export function createClient({ retries = 10, log = () => {} } = {}) {
   return {
     call,
     login,
-    /** Every row of a search endpoint. The catalog is small enough to come back in one call. */
+    /**
+     * Every row of a search endpoint, or an error — never a silent fraction.
+     *
+     * An empty page before `totalRows` is reached used to end the loop and
+     * return what had arrived. That is how /v2/tours came back as 5,000 of
+     * 13,202 rows two nights running in October 2026 (the page at startRow
+     * 5000 was empty), and the tours sync wrote a feed missing most of the jet
+     * and rail journeys. The journey merge's shrink guard caught it, but by
+     * failing the whole job, so the hotel, promotion and sailing refreshes
+     * that had finished perfectly were thrown away with it.
+     *
+     * Throwing here fails the one crawl step that hit the short read. Its feed
+     * on disk is left as last committed, and every other source still
+     * publishes.
+     *
+     * Before giving up, an empty page is retried. A probe showed the failure
+     * is intermittent: the 5000 page answered "0 rows of 0" and the identical
+     * request three seconds later returned all 2,500 rows, with every row in
+     * the range readable. It arrives as a 200, so call()'s own retries never
+     * see it. Each retry also halves the page, in case size is what tips the
+     * server over; startRow follows rows.length, so a smaller page just
+     * resumes where the last good one ended.
+     */
     async searchAll(path, params = {}) {
       const first = await call(path, { ...params, rowsPerPage: 2500, startRow: 0 });
       const { totalRows = 0, data = [] } = first.result ?? {};
       const rows = [...data];
+      let rowsPerPage = 2500, emptyPages = 0;
       while (rows.length < totalRows) {
-        const next = await call(path, { ...params, rowsPerPage: 2500, startRow: rows.length });
+        const next = await call(path, { ...params, rowsPerPage, startRow: rows.length });
         const batch = next.result?.data ?? [];
-        if (!batch.length) break;         // defensive: never spin on an empty page
+        if (!batch.length) {
+          if (++emptyPages > 5) break;    // never spin on a page that stays empty
+          rowsPerPage = Math.max(250, Math.ceil(rowsPerPage / 2));
+          log(`virtuoso: ${path} page at startRow ${rows.length} came back empty; retrying with ${rowsPerPage} rows`);
+          await new Promise(r => setTimeout(r, 1000 * emptyPages));
+          continue;
+        }
+        emptyPages = 0;
         rows.push(...batch);
+      }
+      if (rows.length < totalRows) {
+        throw new Error(`Virtuoso ${path} returned ${rows.length} of ${totalRows} rows — ` +
+          `the page at startRow ${rows.length} came back empty. Refusing to treat a partial catalog as the whole one.`);
       }
       return { totalRows, rows };
     },
