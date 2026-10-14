@@ -1,0 +1,31 @@
+# One-off diagnostic for the /v2/tours duplicate rows. Delete once the tours
+# sync is fixed. Runs on push to its own branch because workflow_dispatch only
+# appears for workflows on the default branch.
+name: Probe Virtuoso tours
+
+on:
+  push:
+    branches: [claude/ecstatic-bardeen-2953q5]
+    paths:
+      - .github/workflows/probe-virtuoso-tours.yml
+      - next-concierge/scripts/probe-virtuoso-tours.mjs
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Probe /v2/tours
+        working-directory: next-concierge
+        env:
+          VIRTUOSO_API_USER: ${{ secrets.VIRTUOSO_API_USER }}
+          VIRTUOSO_API_KEY: ${{ secrets.VIRTUOSO_API_KEY }}
+          VIRTUOSO_API_AES_KEY: ${{ secrets.VIRTUOSO_API_AES_KEY }}
+          VIRTUOSO_API_AES_IV: ${{ secrets.VIRTUOSO_API_AES_IV }}
+        run: node scripts/probe-virtuoso-tours.mjs
