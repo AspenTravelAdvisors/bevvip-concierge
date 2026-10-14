@@ -19,6 +19,33 @@ for (const startRow of [0, 2500, 5000, 7500]) {
   console.log(`page at startRow ${startRow}: ${page.result?.data?.length ?? 0} rows of ${page.result?.totalRows ?? '?'}`);
 }
 
+/*
+ * Narrow the failing page down to the rows that break it.
+ *
+ * The 5000 page answered "0 rows of 0" while 7500 answered normally, so this is
+ * not a depth cap: something inside 5000-7499 makes the server give up on the
+ * whole page. Halve each failing range until single rows are left.
+ */
+const bad = [];
+async function bisect(start, size) {
+  const page = await v.call('/v2/tours', { rowsPerPage: size, startRow: start });
+  const got = page.result?.data?.length ?? 0;
+  if (got > 0 || (page.result?.totalRows ?? 0) > 0) return;
+  if (size === 1) { bad.push(start); console.log(`  bad row at startRow ${start}`); return; }
+  const half = Math.ceil(size / 2);
+  await bisect(start, half);
+  await bisect(start + half, size - half);
+}
+console.log('\n--- bisecting startRow 5000..7499 ---');
+await bisect(5000, 2500);
+console.log(`failing rows: ${bad.length ? bad.join(', ') : 'none (the page works again)'}`);
+// What the neighbours of each failing row look like, to see what breaks it.
+for (const b of bad.slice(0, 5)) {
+  const around = await v.call('/v2/tours', { rowsPerPage: 1, startRow: b - 1 });
+  const r = around.result?.data?.[0];
+  console.log(`  row before ${b}: ${r ? `${r.id} ${r.name} (${r.company})` : 'none'}`);
+}
+
 const filters = await v.filters('/v2/tours');
 fs.writeFileSync('tours-filters.json', JSON.stringify(filters, null, 1));
 
