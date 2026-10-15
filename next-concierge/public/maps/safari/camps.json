@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 256,
-  "journeysTotal": 503,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 258,
+  "journeysTotal": 506,
   "campsMatched": 41
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_01781": {
@@ -594,7 +594,7 @@
     -43.6579,
     172.584
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4020_2_0_0910.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4020_2_0.webp",
    "rooms": 7,
    "perks": [
     "Daily breakfast",
@@ -1723,6 +1723,14 @@
     "km": 18.1
    }
   ],
+  "18112646": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 1,
+    "km": 18.1
+   }
+  ],
   "18113907": [
    {
     "id": "h_00532",
@@ -1749,6 +1757,14 @@
     "stop": "Masai Mara National Reserve",
     "day": 4,
     "km": 18.1
+   }
+  ],
+  "18114145": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
    }
   ],
   "18114408": [

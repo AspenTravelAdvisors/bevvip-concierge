@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-14T17:19:16.344Z",
+  "generated": "2026-10-15T14:07:26.123Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2086,
@@ -8623,12 +8623,6 @@
    "localName": "São Lourenço do Barrocal",
    "virtuosoName": "São Lourenço do Barrocal"
   },
-  "h_01876": {
-   "vid": "16877719",
-   "how": "name+country",
-   "localName": "THE DOLLI at Acropolis",
-   "virtuosoName": "THE DOLLI at Acropolis"
-  },
   "h_01878": {
    "vid": "6164282",
    "how": "name+country",
@@ -9534,12 +9528,6 @@
    "how": "name+country",
    "localName": "The Norman Tel Aviv",
    "virtuosoName": "The Norman Tel Aviv"
-  },
-  "h_02076": {
-   "vid": "6163669",
-   "how": "name+country",
-   "localName": "The Oberoi Beach Resort, Bali",
-   "virtuosoName": "The Oberoi Beach Resort, Bali"
   },
   "h_02077": {
    "vid": "6164321",
@@ -12637,6 +12625,12 @@
    "localName": "Susona Bodrum",
    "virtuosoName": "Susona Bodrum, LXR Hotels & Resorts"
   },
+  "h_01876": {
+   "vid": "16877719",
+   "how": "fuzzy:0.67",
+   "localName": "THE DOLLI at Acropolis",
+   "virtuosoName": "THE DOLLI® at Acropolis, A Hotel to Live®"
+  },
   "h_01877": {
    "vid": "6164282",
    "how": "duplicate-of:h_01878",
@@ -12768,6 +12762,12 @@
    "how": "fuzzy:0.67",
    "localName": "The Louise",
    "virtuosoName": "The Louise, Beckons"
+  },
+  "h_02076": {
+   "vid": "6163669",
+   "how": "fuzzy:0.80",
+   "localName": "The Oberoi Beach Resort, Bali",
+   "virtuosoName": "The Oberoi, Bali"
   },
   "h_02080": {
    "vid": "6163728",
@@ -26523,7 +26523,7 @@
   },
   {
    "vid": "18384480",
-   "name": "The Observatory Sun Valley, A Viceroy Resort - Virtuoso Preview",
+   "name": "The Observatory, A Viceroy Resort - A Virtuoso Preview Property",
    "city": "Ketchum",
    "country": "United States"
   },

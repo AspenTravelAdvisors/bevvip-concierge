@@ -107210,68 +107210,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02076": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 70.7,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 81.4,
-   "celebration": 66.4,
-   "business": 76.3,
-   "active": 71.9,
-   "uhnw": 72.2,
-   "simpleVip": 76.3
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.6
-  },
-  "evaluationNotes": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 3,
-  "nearbyHotelCount": 18,
-  "description": "The Oberoi Beach Resort, Bali: in Bali reduced to the correct elements: water, shade, dinner, sleep. With a beach rhythm and a setting that does some of the planning, plus preferred-program polish, it becomes more than a pretty beach.",
-  "searchKeywords": [
-   "The Oberoi Beach Resort",
-   "Bali Bali",
-   "Bali luxury hotel",
-   "luxury beach resort Bali",
-   "Bali beach resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_02077": {
   "bestFit": "Beach / island escape",
   "intentTags": [
@@ -107627,6 +107565,68 @@
    "Luxury Nile Cruise Luxor",
    "Luxury Nile Cruise luxury hotel",
    "best luxury hotels in Luxor"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
+ "h_02076": {
+  "bestFit": "Beach / island escape",
+  "intentTags": [
+   "Beach / island escape",
+   "Beach"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 70.7,
+  "matchScores": {
+   "honeymoon": 67.2,
+   "family": 81.4,
+   "celebration": 66.4,
+   "business": 76.3,
+   "active": 71.9,
+   "uhnw": 72.2,
+   "simpleVip": 76.3
+  },
+  "criteriaScores": {
+   "guestIntent": 3.39,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4.33,
+   "roomSuiteReality": 4,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 3.8,
+   "sceneFit": 3.4,
+   "familyMultigen": 4.32,
+   "accessibilityEase": 3.2,
+   "seasonalityRiskFit": 2.9,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4.44,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.6
+  },
+  "evaluationNotes": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "location:beach; family:beach; Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 3,
+  "nearbyHotelCount": 18,
+  "description": "The Oberoi Beach Resort, Bali: in Bali reduced to the correct elements: water, shade, dinner, sleep. With a beach rhythm and a setting that does some of the planning, plus preferred-program polish, it becomes more than a pretty beach.",
+  "searchKeywords": [
+   "The Oberoi Beach Resort",
+   "Bali Bali",
+   "Bali luxury hotel",
+   "luxury beach resort Bali",
+   "Bali beach resort"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,

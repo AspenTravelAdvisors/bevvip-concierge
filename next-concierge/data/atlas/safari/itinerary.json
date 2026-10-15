@@ -4687,6 +4687,64 @@
     ]
    }
   ],
+  "16902843": [
+   {
+    "n": "New Delhi",
+    "r": "SUBCONTINENT",
+    "ll": [
+     28.6,
+     77.2
+    ]
+   },
+   {
+    "n": "Kathmandu",
+    "r": "SUBCONTINENT",
+    "ll": [
+     27.7167,
+     85.3167
+    ]
+   },
+   {
+    "n": "Chitwan National Park",
+    "r": "SUBCONTINENT",
+    "ll": [
+     27.5873,
+     84.5261
+    ]
+   },
+   {
+    "n": "Dhulikhel",
+    "r": "SUBCONTINENT",
+    "ll": [
+     27.6167,
+     85.55
+    ]
+   },
+   {
+    "n": "Agra",
+    "r": "SUBCONTINENT",
+    "ll": [
+     27.1833,
+     78.0167
+    ]
+   },
+   {
+    "n": "Khajuraho",
+    "r": "SUBCONTINENT",
+    "ll": [
+     24.8423,
+     79.9246
+    ]
+   },
+   {
+    "n": "Mumbai",
+    "r": "SUBCONTINENT",
+    "ll": [
+     18.975,
+     72.8258
+    ]
+   }
+  ],
   "16903135": [
    {
     "n": "Arusha",
@@ -5891,6 +5949,16 @@
     ]
    }
   ],
+  "18112646": [
+   {
+    "n": "Masai Mara National Reserve",
+    "r": "EASTAFRICA",
+    "ll": [
+     -1.4999,
+     35.1527
+    ]
+   }
+  ],
   "18113907": [
    {
     "n": "San Jose",
@@ -5948,6 +6016,48 @@
     "ll": [
      -1.4999,
      35.1527
+    ]
+   },
+   {
+    "n": "Serengeti",
+    "r": "EASTAFRICA",
+    "ll": [
+     -2.3308,
+     34.8333
+    ]
+   },
+   {
+    "n": "Arusha",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.3678,
+     36.6333
+    ]
+   }
+  ],
+  "18114145": [
+   {
+    "n": "Arusha",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.3678,
+     36.6333
+    ]
+   },
+   {
+    "n": "Tarangire National Park",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.8333,
+     36
+    ]
+   },
+   {
+    "n": "Ngorongoro",
+    "r": "EASTAFRICA",
+    "ll": [
+     -3.15,
+     35.475
     ]
    },
    {
@@ -18662,7 +18772,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_1003.webp",
    "from": "Nairobi, Kenya",
    "to": "Felicite Island, Seychelles",
-   "country": "Kenya",
+   "country": "Seychelles",
    "world": false,
    "mks": [
     "2026-10",
@@ -19140,7 +19250,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -19193,6 +19303,54 @@
     }
    ],
    "route": "18614546"
+  },
+  {
+   "id": "18112646",
+   "n": "A Journey Through Kenya and Zanzibar",
+   "b": "andbeyond",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18112646/ajourneythroughkenyaandzanzibar",
+   "days": 11,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/14280199_2_55_0928.webp",
+   "from": "Masai Mara National Reserve, Kenya",
+   "to": "andBeyond Mnemba Island, Tanzania",
+   "country": "Kenya",
+   "world": false,
+   "mks": [
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "onDemand": true,
+   "win": "Valid for Departures Now Through: 31 Dec 2026",
+   "description": "Bush and beach: experience East Africa at its most unforgettable. From the sweeping savanna of the Masai Mara to the rugged landscapes of Laikipia, and onwards to the spice-scented alleyways of Stone Town and the secluded shores of &Beyond Mnemba Island, this is a journey that moves the soul. Guests track the Great Migration, ride through wild terrain on horseback, meet the stewards of conservation, and allow the Indian Ocean to restore their sense of wonder. 3 nights Bateleur Camp | 3 nights Suyian Lodge | 1 night Park Hyatt Zanzibar | 3 nights andBeyond Mnemba Island",
+   "included": [
+    "Oceans Without Borders donation",
+    "Personal Travel Journal",
+    "Global Concierge Service",
+    "VIP meet and greet on arrival at Jomo Kenyatta International Airport",
+    "Fast track meet & greet on arrival at Abeid Amani Karume (Zanzibar) International Airport",
+    "Accommodation inclusions as per the itinerary",
+    "Three meals daily, soft drinks, alcoholic beverages (excluding champagne, cognac, and fine wines), tea and coffee.",
+    "All private road transfers - Jomo Kenyatta International Airport to Wilson Airport - Wilson Airport to Jomo Kenyatta International Airport - Abeid Amani Karume (ZNZ) International Airport to Stonetown"
+   ],
+   "promotions": [
+    {
+     "name": "Milestone Celebrations Offer",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "There’s nothing we love more than sharing your special occasions with when staying with us in honour of your ‘milestone’ birthday or anniversary We believe every moment is worth celebrating, especially a momentous occasion such as your birthday or wedding anniversary. Which is why we’re delighted to share our Milestone Celebrations Offer with you. Stay at any one of our &Beyond lodges or camps and receive a 20% discount on your accommodation when observing either your Anniversary or Birthday OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your…"
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Masai Mara National Reserve"
+    }
+   ],
+   "route": "18112646"
   },
   {
    "id": "15686184",
@@ -19538,7 +19696,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_104_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zimbabwe",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -19725,7 +19883,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3703_2_0_1009.webp",
    "from": "Nairobi, Kenya",
    "to": "Chobe National Park, Botswana",
-   "country": "Botswana",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",
@@ -20382,7 +20540,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_1003.webp",
    "from": "Hwange National Park, Zimbabwe",
    "to": "Kafue, Zambia",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",
@@ -20491,7 +20649,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_296_1008.webp",
    "from": "Kafue, Zambia",
    "to": "Hwange National Park, Zimbabwe",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-10",
@@ -20618,7 +20776,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -20765,7 +20923,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -20933,7 +21091,6 @@
    "country": "Uganda",
    "world": false,
    "mks": [
-    "2026-10",
     "2026-11",
     "2026-12"
    ],
@@ -21761,7 +21918,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -22469,7 +22626,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230583/africanromance",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62.webp",
    "from": "Cape Town, South Africa",
    "to": "",
    "country": "South Africa",
@@ -22503,6 +22660,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -22531,7 +22694,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-10",
@@ -23175,7 +23338,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_9_0926.webp",
    "from": "Washington, DC, United States",
    "to": "Washington, DC, United States",
-   "country": "United States",
+   "country": "French Polynesia",
    "world": true,
    "mks": [
     "2028-02",
@@ -23427,7 +23590,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_0_1005.webp",
    "from": "Kyoto, Japan",
    "to": "Marrakech, Morocco",
-   "country": "Sri Lanka",
+   "country": "Italy",
    "world": true,
    "d": "10/17/2027",
    "r": "11/7/2027",
@@ -23497,7 +23660,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_93_0926.webp",
    "from": "Tokyo, Japan",
    "to": "Bangkok Noi, Thailand",
-   "country": "Japan",
+   "country": "Thailand",
    "world": false,
    "d": "2/15/2028",
    "r": "3/2/2028",
@@ -23567,7 +23730,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_94_1008.webp",
    "from": "La Paz, Bolivia",
    "to": "Atacama, Chile",
-   "country": "Chile",
+   "country": "Bolivia",
    "world": false,
    "mks": [
     "2026-10",
@@ -24057,7 +24220,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_16_1003.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -24502,10 +24665,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597936/beyondtherainbow",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zimbabwe",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-04",
@@ -24529,6 +24692,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -24587,16 +24756,16 @@
      "description": "Experience the serene beauty of Bhutan with an exclusive stay at &Beyond Punakha River Lodge Stay for three nights or more at &Beyond Punakha River Lodge, and we’ll cover your Sustainable Development Fee (SDF), allowing you to immerse yourself in the wonders of this Himalayan kingdom without the added cost. Validity dates: 03 Jan – 28 Feb 2026 01 Jun – 31 Aug 2026 01 – 22 Dec 2026 Book your journey today and discover the magic of Bhutan—stress-free!"
     },
     {
-     "name": "Milestone Celebrations Offer",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding…"
-    },
-    {
      "name": "Punakha Honeymoon",
      "endDate": "2026-12-31",
      "exclusive": false,
      "description": "An idyllic and spiritually enriching honeymoon destination nestled amidst the majestic Himalaya mountains Punakha, situated in the heart of the Himalaya, invites couples to experience its secluded and picturesque valley, characterised by awe-inspiring natural beauty, captivating landscapes, and a rich cultural heritage. Immerse guests in the serenity of the Himalaya, strolling hand in hand through lush paddy fields, exploring historic monasteries together, and sharing moments of tranquility beside glistening rivers. With its unique blend of romance, adventure, and culture, Punakha promises an…"
+    },
+    {
+     "name": "Milestone Celebrations Offer",
+     "endDate": "2026-12-31",
+     "exclusive": false,
+     "description": "Celebration offers Unscripted moments, carefully planned We’ve been planning special celebrations for our guests longer that we can remember. You can be sure we’ve thought about everything – so you have the luxury of not having to think about anything. OFFER: Save when commemorating your ‘milestone’ anniversary or birthday with us Celebrate your anniversary or birthday with us and receive a 20% discount on your &Beyond accommodation when staying at any one of our lodges, camps or yacht. This offer is valid for six (6) months before or after your event date – simply provide your wedding…"
     }
    ],
    "itin": [
@@ -24716,7 +24885,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Johannesburg, South Africa",
    "to": "Male, Maldives",
-   "country": "Maldives",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -26015,7 +26184,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Nairobi, Kenya",
    "to": "Mahé, Seychelles",
-   "country": "Seychelles",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -26402,10 +26571,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597896/capetocairo",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10.webp",
    "from": "Cape Town, South Africa",
    "to": "Cairo, Egypt",
-   "country": "South Africa",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -26436,6 +26605,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -26476,7 +26651,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18631142/capetownbotswana",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5.webp",
    "from": "Cape Town, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -26510,6 +26685,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -26538,10 +26719,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597439/capetownkrugerandchobesafari",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0.webp",
    "from": "Cape Town, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-02",
@@ -26566,6 +26747,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -26651,7 +26838,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18572609/captivatingkenya",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
    "country": "Kenya",
@@ -26685,6 +26872,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -28088,7 +28281,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3014_2_0_1005.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Thailand",
+   "country": "Cambodia",
    "world": false,
    "mks": [
     "2026-10",
@@ -28247,10 +28440,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597969/deltariversandfalls",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Lower Zambezi National Park, Zambia",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-04",
@@ -28275,6 +28468,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -28349,7 +28548,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18572669/desertsanddunesofnamibia",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_44_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_44.webp",
    "from": "Windhoek, Namibia",
    "to": "Skeleton Coast / Depart",
    "country": "Namibia",
@@ -28383,6 +28582,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -28410,7 +28615,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230725/discoverrwanda",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4.webp",
    "from": "Kigali, Rwanda",
    "to": "Kigali, Rwanda",
    "country": "Rwanda",
@@ -28444,6 +28649,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -28474,7 +28685,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_1005.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Laos",
    "world": false,
    "d": "11/1/2026",
    "r": "11/14/2026",
@@ -28530,7 +28741,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_1005.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Vietnam",
+   "country": "Thailand",
    "world": false,
    "d": "2/21/2027",
    "r": "3/6/2027",
@@ -28587,7 +28798,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_80_1005.webp",
    "from": "Ninh Thuân, Vietnam",
    "to": "Bangkok, Thailand",
-   "country": "Laos",
+   "country": "Thailand",
    "world": false,
    "d": "11/7/2027",
    "r": "11/20/2027",
@@ -28640,7 +28851,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230663/discoverthewondersoftanzania",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17.webp",
    "from": "Arusha, Tanzania",
    "to": "Serengeti, Tanzania",
    "country": "Tanzania",
@@ -28674,6 +28885,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -28906,7 +29123,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_0.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -29030,7 +29247,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_1003.webp",
    "from": "Nairobi, Kenya",
    "to": "Fanjove Island, Tanzania, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -29459,7 +29676,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0926.webp",
    "from": "Anchorage, AK, United States",
    "to": "Singapore  , Singapore",
-   "country": "Indonesia",
+   "country": "Japan",
    "world": false,
    "d": "6/29/2027",
    "r": "7/20/2027",
@@ -29627,7 +29844,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18574019/essentialbotswana",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5.webp",
    "from": "Chobe National Park, Botswana",
    "to": "",
    "country": "Botswana",
@@ -29661,6 +29878,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -29688,7 +29911,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_23_1008.webp",
    "from": "Quito, Ecuador",
    "to": "Lima, Peru",
-   "country": "Peru",
+   "country": "Ecuador",
    "world": false,
    "mks": [
     "2026-10",
@@ -29778,7 +30001,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Cape Town, South Africa",
    "to": "Vilankulo, Mozambique",
-   "country": "South Africa",
+   "country": "Mozambique",
    "world": false,
    "mks": [
     "2026-10",
@@ -30138,7 +30361,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-12"
@@ -30207,7 +30430,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-06",
@@ -30450,7 +30673,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_0_1003.webp",
    "from": "Okavango Delta, Botswana",
    "to": "Franschhoek, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -31002,7 +31225,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15781367_2_0_0915.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
-   "country": "Tanzania",
+   "country": "Rwanda",
    "world": false,
    "mks": [
     "2026-10",
@@ -31440,7 +31663,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0926.webp",
    "from": "Napa, CA, United States",
    "to": "Milano, Italy",
-   "country": "Spain",
+   "country": "Japan",
    "world": true,
    "d": "4/12/2028",
    "r": "5/4/2028",
@@ -31659,7 +31882,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -32112,7 +32335,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18631143/highlightsoftanzania",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17.webp",
    "from": "Arusha, Tanzania",
    "to": "Serengeti, Tanzania",
    "country": "Tanzania",
@@ -32134,6 +32357,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -32328,7 +32557,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18100729_2_0_1004.webp",
    "from": "Kathmandu, Nepal",
    "to": "Paro, Bhutan",
-   "country": "Bhutan",
+   "country": "Nepal",
    "world": false,
    "mks": [
     "2026-10",
@@ -32943,7 +33172,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18561532/inthefootstepsofmandela",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
    "country": "South Africa",
@@ -32965,6 +33194,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -32993,7 +33228,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18505877/incomparablecapetownandsafari",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
    "country": "South Africa",
@@ -33027,6 +33262,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -33210,7 +33451,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0926.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "Japan",
+   "country": "Tanzania",
    "world": true,
    "d": "3/21/2028",
    "r": "4/10/2028",
@@ -33286,7 +33527,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_7_0926.webp",
    "from": "Seattle, WA, United States",
    "to": "Paris, France",
-   "country": "United States",
+   "country": "Vietnam",
    "world": true,
    "mks": [
     "2027-03"
@@ -33927,7 +34168,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_397_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -33990,7 +34231,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_104_0923.webp",
    "from": "Arusha, Tanzania",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -34066,7 +34307,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -34146,7 +34387,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2027-01",
@@ -34308,7 +34549,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -34527,7 +34768,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_306_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-01",
@@ -35103,7 +35344,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18572614/kenyaromancefrombushtobeach",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22.webp",
    "from": "Nairobi, Kenya",
    "to": "Diani Beach, Kenya",
    "country": "Kenya",
@@ -35137,6 +35378,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -35345,7 +35592,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18631189/kenyawildlifesafari2026",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22.webp",
    "from": "Nairobi, Kenya",
    "to": "New York",
    "country": "Kenya",
@@ -35379,6 +35626,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -35410,7 +35663,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18574380/kenyawildlifesafari2027landonly",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
    "country": "Kenya",
@@ -35437,6 +35690,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -35842,7 +36101,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18525463/leopardslionsandtigerfish",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_40_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_40.webp",
    "from": "South Luangwa National Park, Zambia",
    "to": "Lower Zambezi National Park, Zambia",
    "country": "Zambia",
@@ -35863,6 +36122,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -35887,7 +36152,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_260_1008.webp",
    "from": "Lisbon, Portugal",
    "to": "Praia Sundy, Príncipe, São Tomé and Príncipe, Sao Tome And Principe",
-   "country": "Sao Tome And Principe",
+   "country": "Portugal",
    "world": false,
    "mks": [
     "2026-10",
@@ -36619,7 +36884,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -37079,7 +37344,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597862/madagascaradventure",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_3_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_3.webp",
    "from": "Antananarivo, Madagascar",
    "to": "Anjajavy, Madagascar",
    "country": "Madagascar",
@@ -37108,6 +37373,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -37538,7 +37809,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_751_1003.webp",
    "from": "Nairobi, Kenya",
    "to": "Arusha, Tanzania",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -38054,7 +38325,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_243_1008.webp",
    "from": "Hanoi, Vietnam",
    "to": "Bangkok Noi, Thailand",
-   "country": "Thailand",
+   "country": "Vietnam",
    "world": false,
    "mks": [
     "2026-10",
@@ -38202,7 +38473,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18572719/namibiadesertescape",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_44_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_44.webp",
    "from": "Windhoek, Namibia",
    "to": "Damaraland, Namibia",
    "country": "Namibia",
@@ -38236,6 +38507,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -38487,7 +38764,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18587620/namibianhorizons",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_44_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_44.webp",
    "from": "Windhoek, Namibia",
    "to": "Etosha National Park, Namibia",
    "country": "Namibia",
@@ -38521,6 +38798,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -39037,6 +39320,71 @@
    "route": "18358543"
   },
   {
+   "id": "16902843",
+   "n": "Northern India & Nepal",
+   "b": "tauck",
+   "g": [
+    "SUBCONTINENT"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16902843/northernindianepal",
+   "days": 18,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_128_0923.webp",
+   "from": "New Delhi, India",
+   "to": "-",
+   "country": "Nepal",
+   "world": false,
+   "d": "11/14/2026",
+   "r": "12/1/2026",
+   "mks": [
+    "2026-11",
+    "2026-12"
+   ],
+   "win": "Dates: 14 Nov 2026 - 01 Dec 2026",
+   "description": "Visit Kathmandu and Bhaktapur in the Himalayas... the Taj Mahal... Delhi... Mumbai... go on jungle safaris in Bandhavgarh and Chitwan national parks, and gain new insights into the amazing natural and cultural worlds of Nepal and India.",
+   "included": [
+    "From the Arabian Sea to the Himalayas, from the ultramodern architecture of New Dehli to the forests of Bandhavgarh National Park in India and Chitwan National Park in Nepal, our unique experiences show you the incomparable cultural diversity, compelling history, and spectacular natural beauty of the Indian subcontinent. Set off on game-viewing safaris in search of the elusive tiger... fly over the landscapes of Mt. Everest on a flightseeing tour… visit a Buddhist monastery in Kathmandhu… discover the architecture of Bhaktapur, along the ancient trading route from Nepal to Tibet… feel the spiritual passion of the Taj Mahal, poetry in marble… explore the Heritage section of Mumbai… wander awestruck among the eye-opening Hindu temples of Khajuraho… and enjoy an unusual opportunity to join in hands-on community projects as a volunteer in places where there is need, working with local villagers to improve their lives, forging friendships across cultures."
+   ],
+   "promotions": [
+    {
+     "name": "Tauck Bridges: Save When You Travel As A Group",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Tauck Bridges family adventures are designed to bring generations together through enriching experiences, shared discoveries and seamless planning. From grandparents and parents to children and grandchildren, families can explore the world together while Tauck takes care of the details. When 8 guests travel together on the same departure, the 9th guest travels free — and groups of exactly 8 receive 50% off one guest’s fare. It’s an unforgettable way to celebrate life’s special moments while making the most of your time together."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "New Delhi"
+    },
+    {
+     "d": 3,
+     "n": "Kathmandu"
+    },
+    {
+     "d": 6,
+     "n": "Chitwan National Park"
+    },
+    {
+     "d": 8,
+     "n": "Dhulikhel"
+    },
+    {
+     "d": 10,
+     "n": "Agra"
+    },
+    {
+     "d": 12,
+     "n": "Khajuraho"
+    },
+    {
+     "d": 16,
+     "n": "Mumbai"
+    }
+   ],
+   "route": "16902843"
+  },
+  {
    "id": "18575918",
    "n": "Northern Lights & Arctic Exploration",
    "b": "nathab",
@@ -39390,7 +39738,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_1008.webp",
    "from": "Johannesburg, South Africa",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-10",
@@ -39606,7 +39954,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_6.webp",
    "from": "En Route",
    "to": "Homeward bound",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -39656,7 +40004,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2734_2_53_0927.webp",
    "from": "Santiago, Chile",
    "to": "Buenos Aires, Argentina",
-   "country": "Chile",
+   "country": "Argentina",
    "world": false,
    "mks": [
     "2026-10",
@@ -39734,7 +40082,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_20_0925.webp",
    "from": "Sacred Valley, Peru",
    "to": "La Paz, Bolivia",
-   "country": "Bolivia",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-10",
@@ -39820,6 +40168,7 @@
    "country": "Ecuador",
    "world": false,
    "mks": [
+    "2027-04",
     "2027-05",
     "2027-06",
     "2027-07",
@@ -40069,10 +40418,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18574257/platinumbotswanaandvictoriafalls",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5.webp",
    "from": "",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -40103,6 +40452,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -40816,7 +41171,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Kigali, Rwanda",
    "to": "Arusha, Tanzania",
-   "country": "Rwanda",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -41120,7 +41475,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_26_1003.webp",
    "from": "Linyanti, Botswana",
    "to": "Benguerra Island, Mozambique",
-   "country": "Botswana",
+   "country": "Mozambique",
    "world": false,
    "mks": [
     "2026-10",
@@ -41297,7 +41652,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_318_1008.webp",
    "from": "Denis Island, Seychelles",
    "to": "Nairobi, Kenya",
-   "country": "Seychelles",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -41444,7 +41799,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/11690551_2_21_1008.webp",
    "from": "Delhi, India",
    "to": "Kathmandu, Nepal",
-   "country": "Nepal",
+   "country": "India",
    "world": false,
    "mks": [
     "2026-10",
@@ -41535,7 +41890,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_3_0923.webp",
    "from": "Seoul, South Korea",
    "to": "Osaka, Japan",
-   "country": "South Korea",
+   "country": "Japan",
    "world": false,
    "d": "4/12/2027",
    "r": "4/25/2027",
@@ -41615,7 +41970,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_95_1008.webp",
    "from": "La Paz, Bolivia",
    "to": "Santiago, Chile",
-   "country": "Bolivia",
+   "country": "Chile",
    "world": false,
    "mks": [
     "2026-10",
@@ -42189,7 +42544,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18631144/skysafarikenya",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
    "country": "Kenya",
@@ -42220,6 +42575,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -42251,7 +42612,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18631145/skysafaritanzania",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17.webp",
    "from": "Arusha, Tanzania",
    "to": "Serengeti, Tanzania",
    "country": "Tanzania",
@@ -42282,6 +42643,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -42382,7 +42749,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_110_1008.webp",
    "from": "Cape Town, South Africa",
    "to": "Vilanculos, Mozambique",
-   "country": "Mozambique",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -42739,7 +43106,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18587619/southafricasnaturalwonders",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_60_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_60.webp",
    "from": "Cape Town, South Africa",
    "to": "Shamwari Private Reserve, South Africa",
    "country": "South Africa",
@@ -42773,6 +43140,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -42796,7 +43169,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230584/southafricantapestry",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_8_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_8.webp",
    "from": "Durban, South Africa",
    "to": "Franschhoek, South Africa",
    "country": "South Africa",
@@ -42830,6 +43203,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -43046,7 +43425,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -43119,7 +43498,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-03",
@@ -43199,7 +43578,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2028-03",
@@ -43279,7 +43658,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -43352,7 +43731,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -43416,10 +43795,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230568/southernexplorer",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -43450,6 +43829,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -43659,10 +44044,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18549749/splendorsofsouthernafrica2026",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_0.webp",
    "from": "Cape Town, South Africa",
    "to": "Victoria Falls, Zambia",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -43693,6 +44078,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -43972,7 +44363,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230830/tantalizingtanzania",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_30_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_30.webp",
    "from": "Arusha, Tanzania",
    "to": "Zanzibar, Tanzania",
    "country": "Tanzania",
@@ -44006,6 +44397,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -44964,7 +45361,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_35_1008.webp",
    "from": "Johannesburg, South Africa",
    "to": "Kalahari Desert, Botswana",
-   "country": "South Africa",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -45285,7 +45682,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/657266_2_2_1005.webp",
    "from": "Tokyo, Japan",
    "to": "Argolida, Greece",
-   "country": "India",
+   "country": "Bhutan",
    "world": true,
    "d": "4/11/2027",
    "r": "5/1/2027",
@@ -45501,10 +45898,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18092022/thegreatmigrationanultimatesafari",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_17.webp",
    "from": "Nairobi, Kenya",
    "to": "Ngorongoro, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2027-02",
@@ -45528,6 +45925,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -45717,7 +46120,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597755/thelastrefuge",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5.webp",
    "from": "",
    "to": "Okavango Delta, Botswana",
    "country": "Botswana",
@@ -45751,6 +46154,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -45841,7 +46250,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3580_2_8.webp",
    "from": "Depart Home",
    "to": "Arrive home",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -46232,7 +46641,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Cape Town, South Africa",
    "to": "Nairobi, Kenya",
-   "country": "Zambia",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2026-10",
@@ -46424,7 +46833,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_300_1003.webp",
    "from": "Livingstone, Zambia",
    "to": "Okavango Delta, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-10",
@@ -46591,7 +47000,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18574382/timelesskenyaandtanzaniasafari",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
    "country": "Tanzania",
@@ -46619,6 +47028,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -46929,7 +47344,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18587680/ugandasnilefallsandprimates",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62.webp",
    "from": "Entebbe, Uganda",
    "to": "",
    "country": "Uganda",
@@ -46963,6 +47378,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -46986,7 +47407,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18587681/ugandaswildcontrasts",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62.webp",
    "from": "Entebbe, Uganda",
    "to": "",
    "country": "Uganda",
@@ -47020,6 +47441,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -47131,7 +47558,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597276/ultimatebotswana",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_5.webp",
    "from": "",
    "to": "Moremi Game Reserve, Botswana",
    "country": "Botswana",
@@ -47153,6 +47580,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -47181,7 +47614,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Zambia",
+   "country": "Botswana",
    "world": false,
    "mks": [
     "2026-10",
@@ -47254,7 +47687,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2027-01",
@@ -47336,7 +47769,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_0_0924.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2028-01",
@@ -47418,7 +47851,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15690947_2_0_0915.webp",
    "from": "Johannesburg, South Africa",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",
@@ -47719,7 +48152,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Kenya",
+   "country": "Tanzania",
    "world": false,
    "mks": [
     "2026-10",
@@ -47880,7 +48313,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2028-01",
@@ -48039,7 +48472,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
    "from": "Nairobi, Kenya",
    "to": "Nairobi, Kenya",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-11",
@@ -48344,7 +48777,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18587818/ultimatesouthafrica",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62.webp",
    "from": "Arrive South Africa",
    "to": "Thornybush Game Reserve, South Africa",
    "country": "South Africa",
@@ -48378,6 +48811,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -48414,7 +48853,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230727/ultimatetanzaniaandrwanda",
    "days": 11,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_4.webp",
    "from": "Arusha, Tanzania",
    "to": "Kigali, Rwanda",
    "country": "Tanzania",
@@ -48448,6 +48887,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -48477,6 +48922,74 @@
     }
    ],
    "route": "18230727"
+  },
+  {
+   "id": "18114145",
+   "n": "Ultimate Tanzania Safari",
+   "b": "ak",
+   "g": [
+    "EASTAFRICA"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18114145/ultimatetanzaniasafari",
+   "days": 8,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_180_0924.webp",
+   "from": "Arusha, Tanzania",
+   "to": "Arusha, Tanzania",
+   "country": "Tanzania",
+   "world": false,
+   "d": "12/21/2026",
+   "r": "12/28/2026",
+   "mks": [
+    "2026-12"
+   ],
+   "win": "Dates: 21 Dec 2026 - 28 Dec 2026",
+   "description": "Abercrombie & Kent is the world’s leading luxury travel company, renowned for creating thrilling, innovative and ultra-exclusive experiences on all seven continents. Since 1962, when we pioneered a safari camp unprecedented in its sophistication, we have been spinning dreams into adventures for the most discerning of travellers. Immersive moments are at the heart of every A&K journey, whether you choose an Expedition Cruise to the far corners of the earth, a globe-spanning voyage by Private Jet or a Tailormade adventure custom designed for just you and your private party. Backing them all is an international network of more than 3,000 staff, in over 70 offices serving 83 countries,…",
+   "included": [
+    "The timeless sights and sounds of the Serengeti, incredible wildlife roaming Ngorongoro Crater and the enduring culture of the Maasai people are all part of what makes Tanzania one of the greatest East African safari destinations. Experience it in classic tented comfort on this spectacular adventure, exploring the country’s most game-rich parks on an itinerary designed for phenomenal wildlife viewing."
+   ],
+   "promotions": [
+    {
+     "name": "Save up to $2,500 per person on select departures of Small Group, Small Jet",
+     "endDate": "2027-03-31",
+     "exclusive": false,
+     "description": "Save up to $2,500 per person on select departures of Small Group, Small Jet and Private Ready-to-Book Journeys. Offer valid on new bookings for select departure dates as indicated on abercrombiekent.com for 2026 Small Group, Small Jet, and Private Ready-to-Book Journeys. Offer not combinable with Prepay and Save, subject to availability and may be withdrawn at any time. Other restrictions may apply."
+    },
+    {
+     "name": "Save up to 10% when you book and pay in full 9 months prior to departure",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "Save up to 10% when you book and pay in full nine months or more prior to departure. Terms & Conditions: Full payment due at time of booking and must be made nine months or more prior to departure. Save 10% on select Expedition Cruises and 5% on select Small Group Journeys, Small Jet Journeys, Ready-to-Book Private Journeys and Pre- and Post-Tour Extensions. A&K’s standard cancellation terms apply. Excludes internal and international air, extra services and insurance. Offer can be withdrawn at any time."
+    },
+    {
+     "name": "Virtuoso Exclusive Benefit",
+     "endDate": "2027-12-31",
+     "exclusive": false,
+     "description": "$200 USD Shipboard Credit Per Stateroom Virtuoso Guests will enjoy $200 USD shipboard credit per stateroom on all voyages. Onboard credit will be applied to your shipboard account. Offer only applies to all A&K x Crystal Cruises. Offer is per stateroom, valid on new reservations and has no cash value. Must mention code VRTLEC at time of booking. Restrictions may apply; advisors, please see Booking Instructions and Supplier Terms & Conditions under the Advisor Info tab for more details."
+    }
+   ],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arusha"
+    },
+    {
+     "d": 2,
+     "n": "Tarangire National Park"
+    },
+    {
+     "d": 4,
+     "n": "Ngorongoro"
+    },
+    {
+     "d": 6,
+     "n": "Serengeti"
+    },
+    {
+     "d": 1,
+     "n": "Arusha"
+    }
+   ],
+   "route": "18114145"
   },
   {
    "id": "18380342",
@@ -48554,7 +49067,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0926.webp",
    "from": "Los Angeles, CA, United States",
    "to": "Papagayo Peninsula, Costa Rica, Costa Rica",
-   "country": "Peru",
+   "country": "Antarctica",
    "world": false,
    "d": "1/20/2027",
    "r": "2/9/2027",
@@ -48631,7 +49144,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230586/underkenyanskies",
    "days": 8,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_22.webp",
    "from": "Nairobi, Kenya",
    "to": "Masai Mara National Reserve, Kenya",
    "country": "Kenya",
@@ -48665,6 +49178,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -48746,7 +49265,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18359244/untamedtanzania",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_62.webp",
    "from": "Dar Es Salaam, Tanzania",
    "to": "",
    "country": "Tanzania",
@@ -48768,6 +49287,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -49200,10 +49725,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18598047/wildkingdomsofsouthernafrica",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_10.webp",
    "from": "Johannesburg, South Africa",
    "to": "Chobe National Park, Botswana",
-   "country": "Botswana",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",
@@ -49234,6 +49759,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -49265,7 +49796,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230954/wildmadagascar",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_3_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_3.webp",
    "from": "Antananarivo, Madagascar",
    "to": "Isalo National Park, Madagascar",
    "country": "Madagascar",
@@ -49299,6 +49830,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -49326,7 +49863,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18597738/wildzambia",
    "days": 10,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_1_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_1.webp",
    "from": "Lusaka, Zambia",
    "to": "Livingstone, Zambia",
    "country": "Zambia",
@@ -49352,6 +49889,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -49387,7 +49930,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_0_0926.webp",
    "from": "Big Sky, MT, United States",
    "to": "Sea of Cortez, Mexico",
-   "country": "Brazil",
+   "country": "Costa Rica",
    "world": false,
    "d": "6/15/2027",
    "r": "6/30/2027",
@@ -49438,7 +49981,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_234_1003.webp",
    "from": "Linyanti, Botswana",
    "to": "Johannesburg, South Africa",
-   "country": "Botswana",
+   "country": "Mozambique",
    "world": false,
    "mks": [
     "2026-10",
@@ -49652,7 +50195,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2834_2_221_0923.webp",
    "from": "Victoria Falls, Zambia",
    "to": "Cape Town, South Africa",
-   "country": "Botswana",
+   "country": "South Africa",
    "world": false,
    "mks": [
     "2027-03",
@@ -49848,7 +50391,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_62_0924.webp",
    "from": "Portland, OR, United States",
    "to": "Boston, MA, United States",
-   "country": "Japan",
+   "country": "Bolivia",
    "world": true,
    "d": "2/8/2028",
    "r": "3/4/2028",
@@ -49925,7 +50468,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18537979_2_0_0925.webp",
    "from": "Santiago, Chile",
    "to": "La Paz, Bolivia",
-   "country": "Bolivia",
+   "country": "Chile",
    "world": false,
    "mks": [
     "2026-10",
@@ -50208,7 +50751,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2382_2_5_0912.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "mks": [
     "2026-10",
@@ -50352,7 +50895,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2591_2_196_0924.webp",
    "from": "Guayaquil, Ecuador",
    "to": "Lima, Peru",
-   "country": "Ecuador",
+   "country": "Peru",
    "world": false,
    "d": "11/15/2026",
    "r": "11/26/2026",
@@ -50678,7 +51221,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16810276_2_8_0926.webp",
    "from": "Seattle, WA, United States",
    "to": "Los Angeles, CA, United States",
-   "country": "Colombia",
+   "country": "Seychelles",
    "world": true,
    "d": "8/10/2027",
    "r": "9/2/2027",
@@ -50754,7 +51297,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230587/worldsgreatestshowsafarimara",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11.webp",
    "from": "Nairobi, Kenya",
    "to": "Ngorongoro, Tanzania",
    "country": "Tanzania",
@@ -50788,6 +51331,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -50823,10 +51372,10 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18230588/worldsgreatestshowsafariserengeti",
    "days": 12,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11_0909.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2631_2_11.webp",
    "from": "Nairobi, Kenya",
    "to": "Serengeti, Tanzania",
-   "country": "Tanzania",
+   "country": "Kenya",
    "world": false,
    "mks": [
     "2026-10",
@@ -50857,6 +51406,12 @@
      "endDate": "2027-02-28",
      "exclusive": false,
      "description": "Experience the Best of South Africa – Now with an Extra Night Free in Luxury Private Reserves Cape Town & Shamwari: City, Coast & Safari This tailor-made journey pairs the vibrant energy of Cape Town with the wild beauty of Shamwari Private Game Reserve, offering a seamless blend of culture, cuisine, and classic Big Five safari. Stay at the iconic Belmond Mount Nelson, exploring Cape Town at your own pace—from the Cape Peninsula and Boulders Beach penguins to the Winelands and the city’s culinary delights. From the coast, fly to the Eastern Cape for an immersive safari at Shamwari Eagles…"
+    },
+    {
+     "name": "Guests Save Up to $2,500 Per Couple on Luxury African Safaris",
+     "endDate": "2028-12-31",
+     "exclusive": false,
+     "description": "BLACK FRIDAY OFFER SAVE UP TO $2,500 PER COUPLE Safari More. Save More. Feel the ground shake as the Great Migration thunders across the Serengeti, track the Big Five in a private Kruger reserve, or glide through the Okavango by mokoro. From the sweeping plains of Tanzania and Kenya to the waterways of Botswana, the diverse landscapes of South Africa and the mountain gorillas of Rwanda, Africa offers extraordinary experiences at every turn. Save on 2027 or 2028 African Travel journeys* Land price per person / Savings per person Up to $10,000: save $500 $10,001–$20,000: save $750 $20,001 and…"
     }
    ],
    "itin": [
@@ -51278,7 +51833,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_304_1003.webp",
    "from": "Hwange, Zimbabwe",
    "to": "Kafue, Zambia",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",
@@ -51336,7 +51891,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15647107_2_0_1008.webp",
    "from": "Johannesburg, South Africa",
    "to": "Makgadikgadi Pans National Park, Botswana",
-   "country": "Botswana",
+   "country": "Zambia",
    "world": false,
    "mks": [
     "2026-10",
@@ -51523,7 +52078,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2825_2_315_1003.webp",
    "from": "Kafue, Zambia",
    "to": "Mana Pools National Park, Zimbabwe",
-   "country": "Zambia",
+   "country": "Zimbabwe",
    "world": false,
    "mks": [
     "2026-10",

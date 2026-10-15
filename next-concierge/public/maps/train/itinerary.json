@@ -677,32 +677,6 @@
     ]
    }
   ],
-  "16265811": [
-   {
-    "n": "Toronto",
-    "r": "CANADA",
-    "ll": [
-     43.675,
-     -79.425
-    ]
-   },
-   {
-    "n": "Montreal",
-    "r": "CANADA",
-    "ll": [
-     45.5,
-     -73.5833
-    ]
-   },
-   {
-    "n": "Quebec",
-    "r": "CANADA",
-    "ll": [
-     46.8,
-     -71.25
-    ]
-   }
-  ],
   "16346033": [
    {
     "n": "Anchorage",
@@ -1998,24 +1972,6 @@
     "ll": [
      37.5664,
      127
-    ]
-   }
-  ],
-  "18239421": [
-   {
-    "n": "Paris",
-    "r": "EUROPE",
-    "ll": [
-     48.8651,
-     2.3278
-    ]
-   },
-   {
-    "n": "Portofino",
-    "r": "EUROPE",
-    "ll": [
-     44.3054,
-     9.2102
     ]
    }
   ],
@@ -4498,7 +4454,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18069724_2_222_0925.webp",
    "from": "Barcelona, Spain",
    "to": "Lisbon, Portugal",
-   "country": "Spain",
+   "country": "Portugal",
    "train": null,
    "world": false,
    "mks": [
@@ -4629,7 +4585,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_37_1001.webp",
    "from": "Seoul, South Korea",
    "to": "Tokyo, Japan",
-   "country": "Japan",
+   "country": "South Korea",
    "train": null,
    "world": false,
    "mks": [
@@ -5168,7 +5124,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -5419,7 +5375,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16650958_2_44_0919.webp",
    "from": "Rome, Italy",
    "to": "Istanbul, Türkiye",
-   "country": "Türkiye",
+   "country": "Italy",
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "d": "10/22/2026",
@@ -6018,7 +5974,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Istanbul, Türkiye",
    "to": "Paris, France",
-   "country": "Türkiye",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -6683,51 +6639,6 @@
    "route": "15240976"
   },
   {
-   "id": "16265811",
-   "n": "Montreal & Quebec Cities by Train | Splendors of Eastern Canada",
-   "b": "canadabydesign",
-   "g": [
-    "CANADA"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/16265811/montrealquebeccitiesbytrainsplendorsofeasterncanada",
-   "days": 5,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/14853773_2_180_0926.webp",
-   "from": "Toronto, Canada",
-   "to": "Quebec, Canada",
-   "country": "Canada",
-   "train": "VIA Rail Canadian",
-   "world": true,
-   "mks": [
-    "2026-10"
-   ],
-   "onDemand": true,
-   "win": "Valid for Departures Now Through: 15 Oct 2026",
-   "description": "Soak up the diverse culture of Montreal & Quebec Cities by train traveling through the best of Eastern Canada. Board VIA Rail in Business Class, sit back and relax in a viewing car as Canada's stunning scenery rolls past your window. As you arrive to Montreal and Quebec City, you'll have your choice of sightseeing and walking tours, allowing an opportunity to discover this province's unique geography, diversity, history, food and culture that together have forged its identity.",
-   "included": [
-    "2 nights accommodation in Montreal 2 nights accommodation in Quebec City Business class rail travel Toronto to Montreal (lunch included)",
-    "Montreal | Freedom of Choice - Choose 1 of 4 Excursions Montreal Half Day Sightseeing Tour Walking Tour of Old Montreal Beyond the Market Food Walking Tour Personalised Tailor-made Excursion",
-    "Business class rail travel Montreal to Quebec City (lunch included)",
-    "Quebec City | Freedom of Choice - Choose 1 of 5 Excursions Rendezvous with History Quebec City Tour A Fabulous Country Tour Historic Food Tour in Old Quebec",
-    "Pedicab Tour of Old Quebec Lower Town and Old Port Personalised Tailor-made Excursion Meals as per itinerary"
-   ],
-   "promotions": [],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Toronto"
-    },
-    {
-     "d": 1,
-     "n": "Montreal"
-    },
-    {
-     "d": 4,
-     "n": "Quebec"
-    }
-   ],
-   "route": "16265811"
-  },
-  {
    "id": "16907895",
    "n": "Montreal & Quebec City by Rail | Winter Splendors",
    "b": "canadabydesign",
@@ -7124,7 +7035,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Paris, France",
    "to": "Budapest, Hungary",
-   "country": "Hungary",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7400,7 +7311,7 @@
    "img": null,
    "from": "Paris, France",
    "to": "Prague, Czech Republic",
-   "country": "France",
+   "country": "Czech Republic",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7709,70 +7620,6 @@
     }
    ],
    "route": "18535439"
-  },
-  {
-   "id": "18239421",
-   "n": "Paris-Portofino with Venice Simplon-Orient-Express and Splendido",
-   "b": "belmond",
-   "g": [
-    "EUROPE"
-   ],
-   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18239421/parisportofinowithvenicesimplonorientexpressandsplendido",
-   "days": 4,
-   "img": null,
-   "from": "Paris, France",
-   "to": "Portofino, Italy",
-   "country": null,
-   "train": "Venice Simplon-Orient-Express",
-   "world": true,
-   "d": "10/15/2026",
-   "r": "10/18/2026",
-   "mks": [
-    "2026-10"
-   ],
-   "win": "Dates: 15 Oct 2026 - 18 Oct 2026",
-   "description": "Paris - Portofino Step aboard a legend in motion and journey to an Italian icon. On this exceptional adventure, wind through the scenery of the French and Italian rivieras on board the Venice Simplon-Orient-Express before alighting for a sumptuous stay at the re-imagined Splendido, A Belmond Hotel, Portofino.",
-   "included": [
-    "Private transfer from your Paris residence to Paris station.",
-    "One unforgettable night aboard the Venice Simplon-Orient-Express.",
-    "Signature menus served onboard.",
-    "Sommelier-selected wines to complement your meals in the train’s elegant restaurant cars.",
-    "Shared transfer from Santa Margherita Ligure station to the Splendido. Private transfer for L’Observatoire and Grand Suite guests.",
-    "Two nights at the newly renovated Splendido, A Belmond Hotel with breakfast included.",
-    "An aperitif followed by a Gala Dinner and exclusive entertainment at La Terrazza restaurant, on the evening of Day 3.",
-    "Complimentary shuttle service between Splendido and Portofino Piazzetta."
-   ],
-   "promotions": [
-    {
-     "name": "Waived Solo Supplement on The Venice Simplon-Orient-Express",
-     "endDate": "2026-12-27",
-     "exclusive": false,
-     "description": "Guests travelling on their own are invited to experience the timeless elegance of a Historic Twin in July and August 2026 - now with no single supplement fee. Details Call our reservations team and quote 'VSTWSOLE' to book this offer. Terms & Conditions: Valid for all one-night journeys in July and August 2026. Book by 30 June. Cabin availability for this offer is limited per departure."
-    },
-    {
-     "name": "4 for 3 on Belmond's British Pullman",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Includes A round-trip travel from London Victoria British Pullman luxury train experience Terms and conditions Valid on any journey in in September, October or November 2026, only when booking a table of four. Not applicable to Cygnus, the Wes Anderson carriage. Call our reservations team on 0800 058 1237 and quote code BBP43. Book our 4 for 3 British Pullman offer and experience our iconic train for less. Along with your guests, jump onboard the train at London Victoria Station and settle in the privacy of our coupés — the private compartments nestled inside our carriages, welcoming up to 4…"
-    },
-    {
-     "name": "Complimentary Stay at Balmoral with Belmond's Royal Scotsman",
-     "endDate": "2026-12-31",
-     "exclusive": false,
-     "description": "Complimentary stay at The Balmoral hotel Details: Applicable to guests who have booked any Royal Scotsman journey in August, October and November 2026 The 2 complimentary nights can be booked before or after the Royal Scotsman journey,. Alternatively, they can be split to one night before and one night after the rail journey Terms and conditions: Applicable when booking any cabin types on The Royal Scotsman trainApplies to Executive Rooms at The Balmoral with breakfast includedQuote code TEB2 when speaking to our reservations team. Subject to availability. Book a Scotch Malt Whisky Tour…"
-    }
-   ],
-   "itin": [
-    {
-     "d": 1,
-     "n": "Paris"
-    },
-    {
-     "d": 2,
-     "n": "Portofino"
-    }
-   ],
-   "route": "18239421"
   },
   {
    "id": "18613383",
@@ -9409,7 +9256,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3374_2_275_0927.webp",
    "from": "Stockholm, Sweden",
    "to": "Bergen, Norway",
-   "country": "Sweden",
+   "country": "Norway",
    "train": null,
    "world": false,
    "mks": [
@@ -9642,7 +9489,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/15694760/tasteofbavariabyrail",
    "days": 6,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_27_0910.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_27.webp",
    "from": "Munich, Germany",
    "to": "Nuremberg, Germany",
    "country": "Germany",
@@ -9685,7 +9532,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18256656/tasteofjapan",
    "days": 9,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_4_0910.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_4.webp",
    "from": "Tokyo, Japan",
    "to": "Osaka, Japan",
    "country": "Japan",
@@ -10180,7 +10027,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18479805/theultimate15dayswissadventure",
    "days": 15,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_0_0910.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_0.webp",
    "from": "Zurich, Switzerland",
    "to": "Montreux, Switzerland",
    "country": "Switzerland",
@@ -10237,7 +10084,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Langkawi, Malaysia",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "d": "5/10/2027",
@@ -10449,7 +10296,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18403316/tranquilswitzerland",
    "days": 7,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_0_0910.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_0.webp",
    "from": "Zurich, Switzerland",
    "to": "Zurich, Switzerland",
    "country": "Switzerland",
@@ -10506,7 +10353,7 @@
    ],
    "u": "https://www.virtuoso.com/advisor/brianharris/tours/18256654/ultimatejapantokyohakonetakayamakanazawahiroshimaandkyoto",
    "days": 14,
-   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_3_0910.webp",
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2428_2_3.webp",
    "from": "Tokyo, Japan",
    "to": "Tokyo, Japan",
    "country": "Japan",
