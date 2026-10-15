@@ -368,7 +368,8 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         // villa atlas's own default (Satellite (day) — a villa is chosen on
         // where it sits, so it opens on daylight imagery). The URL outranks the
         // preference on purpose: a Share link is the sender describing what
-        // THEY saw, and the recipient's stored basemap has no business overwriting the picture they were sent.
+        // THEY saw, and the recipient's stored basemap has no business
+        // overwriting the picture they were sent.
         const arrivedStyle = (av.style as StyleKey | null) ?? null;
         const bootStyle =
           arrivedStyle && VILLA_STYLES[arrivedStyle] ? arrivedStyle : readStoredStyle();
