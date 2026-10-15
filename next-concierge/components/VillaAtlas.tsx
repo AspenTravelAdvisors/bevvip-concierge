@@ -196,7 +196,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   const [data, setData] = useState<SearchPayload>(() => safePayload(initial, EMPTY_PAYLOAD));
   const [loading, setLoading] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
-  const [styleKey, setStyleKey] = useState<StyleKey>("dark");
+  const [styleKey, setStyleKey] = useState<StyleKey>("daylight");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
   const [shared, setShared] = useState(false);
@@ -204,7 +204,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
   const mapReadyRef = useRef(false);
-  const styleKeyRef = useRef<StyleKey>("dark");
+  const styleKeyRef = useRef<StyleKey>("daylight");
   const pinsFCRef = useRef<unknown>(null);
   const firstRender = useRef(true);
   /**
@@ -365,10 +365,10 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         // should OPEN on what was sent, not pan there while the client watches.
         const av = arrivedView.current;
         // Precedence: the URL, then this session's remembered pick, then the
-        // villa atlas's own default (dark — its opening look is not the Living
-        // Atlas's). The URL outranks the preference on purpose: a Share link is
-        // the sender describing what THEY saw, and the recipient's stored
-        // basemap has no business overwriting the picture they were sent.
+        // villa atlas's own default (Satellite (day) — a villa is chosen on
+        // where it sits, so it opens on daylight imagery). The URL outranks the
+        // preference on purpose: a Share link is the sender describing what
+        // THEY saw, and the recipient's stored basemap has no business overwriting the picture they were sent.
         const arrivedStyle = (av.style as StyleKey | null) ?? null;
         const bootStyle =
           arrivedStyle && VILLA_STYLES[arrivedStyle] ? arrivedStyle : readStoredStyle();
