@@ -95,7 +95,7 @@ function splitRegionList(
  * simply un-shareable — silently, and only for the person you sent the link to.
  * AtlasShell derives its StyleKey from this.
  */
-export const SHARE_STYLES = ["dark", "satellite", "daylight", "dusk", "city"] as const; // menu order
+export const SHARE_STYLES = ["dark", "chart", "satellite", "daylight", "dusk", "city"] as const; // menu order
 export type ShareStyle = (typeof SHARE_STYLES)[number];
 
 /**

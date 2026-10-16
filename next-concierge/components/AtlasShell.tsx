@@ -56,6 +56,7 @@ import {
 import { frameRoute, framePoints } from "@/lib/atlas/route-frame";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
+import { CHART_STYLE, basemapInput } from "@/lib/atlas/chart-style";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
 // Mapbox account, and already shipped in the deployed atlas. Inlined as a
@@ -510,8 +511,20 @@ const DAY_FOG = {
  * how far in you are looking: Dark for the whole world, imagery for a coastline,
  * extruded buildings for a street.
  */
-const ATLAS_STYLES: Record<StyleKey, { label: string; url: string; fog: Record<string, unknown>; sw: string; light?: string; theme?: string; objects3d?: boolean }> = {
+// Chart: a light globe in front of the same deep space, so the planet still
+// reads as an object at world scale rather than a pale disc on a pale page.
+const CHART_FOG = {
+  color: "rgb(236,243,244)", "high-color": "rgb(150,186,204)",
+  "horizon-blend": 0.06, "space-color": "rgb(14,22,34)", "star-intensity": 0.15,
+};
+const ATLAS_STYLES: Record<StyleKey, { label: string; url: string | Record<string, unknown>; fog: Record<string, unknown>; sw: string; light?: string; theme?: string; objects3d?: boolean }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", fog: GLOBE_FOG, sw: "#11151c" },
+  /*
+   * Nautical chart — depth-banded water, hillshaded land, navy labels. A
+   * style OBJECT (lib/atlas/chart-style), not a URL; `url` is compared by
+   * identity below, so it must always be this one constant.
+   */
+  chart: { label: "Chart", url: CHART_STYLE, fog: CHART_FOG, sw: "#d6ebee" },
   satellite: {
     label: "Satellite", url: "mapbox://styles/mapbox/standard-satellite",
     fog: { color: "rgb(18,22,30)", "high-color": "rgb(40,52,72)", "horizon-blend": 0.06, "space-color": "rgb(6,8,12)", "star-intensity": 0.3 },
@@ -1743,7 +1756,7 @@ export default function AtlasShell({
         mapboxgl.accessToken = token;
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: ATLAS_STYLES[styleKeyLocal].url,
+          style: basemapInput(ATLAS_STYLES[styleKeyLocal].url),
           projection: projGlobe ? "globe" : "mercator",
           center: [10, 20],
           zoom: 1.25,
@@ -2862,7 +2875,37 @@ export default function AtlasShell({
           return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
         }
 
+        /** Mix a hex colour toward black — the light-basemap twin of lighten. */
+        function darken(hex: string, amount: number): string {
+          const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+          if (!m) return hex;
+          const n = parseInt(m[1], 16);
+          const mix = (c: number) => Math.round(c * (1 - amount));
+          const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255);
+          return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+        }
+
         function routePalette() {
+          /*
+           * Chart is the one LIGHT flat basemap, and every value below the
+           * early return assumes the opposite: bright line, dark casing. Over
+           * pale water platinum and gold simply wash out, so the chart inverts
+           * it — the accent taken down toward ink, cut out of the paper by a
+           * paper-white halo, the way a route is drawn on a printed chart.
+           * Stop numbers (casing-on-line) come out white on the dark accent.
+           */
+          if (styleKeyLocal === "chart") {
+            const lineW = 1.5;
+            const ramp = (w: number) =>
+              ["interpolate", ["linear"], ["zoom"], 2, w * 0.8, 6, w, 12, w * 1.55];
+            const ink = darken(accentLocal, 0.45);
+            return {
+              casing: "#fbfaf5", casingW: ramp(lineW + 1.6), casingO: 0.85,
+              line: ink, lineW: ramp(lineW), lineO: 0.95,
+              tie: lighten(ink, 0.35), tieO: 0.85,
+              conn: ink, connO: 0.75, connW: ramp(lineW * 0.72),
+            };
+          }
           // Any photoreal basemap needs the heavier casing, not just the dusk
           // one — daylight imagery is if anything busier to draw a line over.
           const satellite = SATELLITE_KEYS.has(styleKeyLocal);
@@ -5177,7 +5220,7 @@ export default function AtlasShell({
             // restyling stays as-is: if this fired mid-switch the pending
             // style.load never came, so the flag is already true and the
             // fallback's own style.load will clear it.
-            try { map.setStyle(ATLAS_STYLES[STYLE_FALLBACK_KEY].url); } catch { restyling = false; }
+            try { map.setStyle(basemapInput(ATLAS_STYLES[STYLE_FALLBACK_KEY].url)); } catch { restyling = false; }
           }, STYLE_FALLBACK_MS);
         }
         armStyleWatchdog();
@@ -5376,7 +5419,9 @@ export default function AtlasShell({
               return;
             }
             restyling = true;
-            try { map.setStyle(to.url); } catch { restyling = false; }
+            // No diffing: it can patch one style into another without a
+            // style.load, and style.load is where our layers are repainted.
+            try { map.setStyle(basemapInput(to.url), { diff: false }); } catch { restyling = false; }
             // A manual switch into a broken family must degrade too, not hang.
             armStyleWatchdog();
             reportView();
@@ -6987,7 +7032,7 @@ interface MBMap {
   /** Re-point a layer's filter — the flight's "current call" highlight. */
   setFilter(id: string, filter: unknown): void;
   setFog(f: unknown): void;
-  setStyle(url: string): void;
+  setStyle(style: string | Record<string, unknown>, opts?: Record<string, unknown>): void;
   setProjection(name: string): void;
   getCanvas(): HTMLCanvasElement;
   getProjection(): { name: string };
