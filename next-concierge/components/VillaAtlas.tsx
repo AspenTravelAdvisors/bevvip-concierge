@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
 import { ATLASES } from "@/lib/atlas-config";
+import { CHART_STYLE, basemapInput } from "@/lib/atlas/chart-style";
 import BucketListButton from "./BucketListButton";
 import {
   parseViewParams,
@@ -47,6 +48,12 @@ const BRASS_LIGHT = "#e3c98a";
  * The dark basemaps keep their original values exactly.
  */
 const SATELLITE_STYLES = new Set<StyleKey>(["satellite", "daylight"]);
+/**
+ * Basemaps whose pins take the haloed palette. Imagery for the reason above;
+ * Chart because it is pale — brass on pale water has no edge either, and a
+ * dark-centred mark reads like the inked symbols of a printed chart.
+ */
+const HALOED_STYLES = new Set<StyleKey>([...SATELLITE_STYLES, "chart"]);
 /** Brass lifted toward white — brand hue, imagery luminance. */
 const BRASS_ON_IMAGERY = "#f2dfae";
 const HALO = "#0b0d12";
@@ -128,13 +135,15 @@ function requestAdvisorHref(v: Villa): string {
 // The house basemaps, same set as the Living Atlas (AtlasShell). The villa map
 // is a flat mercator inset, so fog is skipped; the Standard-family styles keep
 // their dusk light preset so the water stays deep against the brass pins.
-// Same five basemaps as the shared atlas, same names, same order — a villa map
+// Same six basemaps as the shared atlas, same names, same order — a villa map
 // that offered a different set under different names is one more thing to learn
 // for no reason. A villa is chosen on where it sits (the beach, the ridge, the
 // next roof over), so the daylight pair matters more here than anywhere.
-type StyleKey = "dark" | "satellite" | "daylight" | "dusk" | "city";
-const VILLA_STYLES: Record<StyleKey, { label: string; url: string; sw: string; light?: string }> = {
+type StyleKey = "dark" | "chart" | "satellite" | "daylight" | "dusk" | "city";
+const VILLA_STYLES: Record<StyleKey, { label: string; url: string | Record<string, unknown>; sw: string; light?: string }> = {
   dark: { label: "Dark", url: "mapbox://styles/mapbox/dark-v11", sw: "#11151c" },
+  // A style object, compared by identity in switchStyle — see lib/atlas/chart-style.
+  chart: { label: "Chart", url: CHART_STYLE, sw: "#d6ebee" },
   satellite: {
     label: "Satellite",
     url: "mapbox://styles/mapbox/standard-satellite",
@@ -379,7 +388,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         }
         const map = new mapboxgl.Map({
           container: mapEl.current,
-          style: VILLA_STYLES[styleKeyRef.current].url,
+          style: basemapInput(VILLA_STYLES[styleKeyRef.current].url),
           center: av.camera ? [av.camera.lng, av.camera.lat] : [-40, 25],
           zoom: av.camera ? av.camera.zoom : 1.6,
           pitch: av.camera?.pitch ?? 0,
@@ -434,12 +443,12 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
               clusterRadius: 42,
             });
           }
-          // Photoreal basemap? Pins take the imagery palette — see SATELLITE_STYLES.
+          // Photoreal or chart basemap? Pins take the haloed palette — see HALOED_STYLES.
           // Read here rather than passed in: style.load re-runs on every basemap
           // switch that changes the style URL, which is exactly when the palette
           // needs to change. Satellite⇄Satellite (day) shares a URL and does not
           // re-run, and does not need to — both are imagery.
-          const sat = SATELLITE_STYLES.has(styleKeyRef.current);
+          const sat = HALOED_STYLES.has(styleKeyRef.current);
           map.addLayer({
             id: "villa-clusters",
             type: "circle",
@@ -611,7 +620,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
       return;
     }
     try {
-      mapRef.current?.setStyle(to.url); // style.load re-adds the layers
+      mapRef.current?.setStyle(basemapInput(to.url), { diff: false }); // style.load re-adds the layers
     } catch { /* keep the current basemap */ }
   }
 
