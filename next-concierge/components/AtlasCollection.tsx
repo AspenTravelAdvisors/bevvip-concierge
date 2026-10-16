@@ -924,7 +924,11 @@ export default function AtlasCollection({
          * It has to keep meaning that.
          */
         setDetailId(hit.id);
-        emitRoute(hit, !parsed?.view.camera); // an explicit camera wins over fitting
+        // Always frame the route, even when the link carries a camera. That
+        // camera is the sender's viewport — on a narrower screen, or one where
+        // the card rail covers a different slice of the map, its centre lands
+        // the route off-screen. The trip is what was shared; frame it here.
+        emitRoute(hit, true);
         return;
       }
     }
@@ -1175,7 +1179,9 @@ export default function AtlasCollection({
         // own defaults — the whole point of sharing a view.
         initialStyle={(parsed?.view.style as StyleKey | null) ?? initialStyle}
         initialGlobe={parsed?.view.flat ? false : initialGlobe}
-        initialCamera={parsed?.view.camera ?? null}
+        // A pinned trip frames its own route (see the auto-trip effect), so its
+        // camera is ignored — flying there too would race the fit.
+        initialCamera={parsed?.view.trip ? null : parsed?.view.camera ?? null}
         onViewChange={(v) => { viewRef.current = v; }}
         // The engine choice. Points are the filtered set and the selection is
         // the pinned card, so 3D is a view OF this browse rather than a
