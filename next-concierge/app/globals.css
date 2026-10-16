@@ -814,6 +814,10 @@ main.page {
 .atlas-ctrls .actrl-style {
   position: relative;
   display: flex;
+  /* Lift the open menu above the buttons stacked below it (Flat, the route
+     button, Tilt). Those use backdrop-filter, which makes each its own
+     stacking context, so as later siblings they painted over the menu. */
+  z-index: 2;
 }
 .atlas-ctrls .actrl-menu {
   position: absolute;

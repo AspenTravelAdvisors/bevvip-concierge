@@ -193,7 +193,10 @@ export default function AtlasCruise() {
       // Expedition blue, from the cruise atlas's own --accent (which agrees
       // with OVERLAYS here, unlike yacht and worldcruise).
       accent="#5aa9e6"
-      initialStyle="satellite"
+      // Expedition sailings are read by coastline and depth (the Drake, the
+      // Galápagos platform, the fjords), which is what the nautical Chart
+      // basemap draws. A Share link's own style still wins.
+      initialStyle="chart"
     />
   );
 }
