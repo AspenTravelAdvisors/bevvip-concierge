@@ -41222,68 +41222,6 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
- "h_02448": {
-  "bestFit": "Beach / island escape",
-  "intentTags": [
-   "Beach / island escape",
-   "Beach"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 71.7,
-  "matchScores": {
-   "honeymoon": 67.2,
-   "family": 81.3,
-   "celebration": 67.1,
-   "business": 78.9,
-   "active": 71.9,
-   "uhnw": 75.6,
-   "simpleVip": 78.9
-  },
-  "criteriaScores": {
-   "guestIntent": 3.39,
-   "serviceStyleFit": 3.38,
-   "locationQuality": 4.33,
-   "roomSuiteReality": 4,
-   "valueWithinLuxury": 4.47,
-   "partnerStrength": 4.3,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 3.8,
-   "sceneFit": 3.4,
-   "familyMultigen": 4.32,
-   "accessibilityEase": 3.2,
-   "seasonalityRiskFit": 2.9,
-   "operationalReliability": 3.43,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4.44,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.4
-  },
-  "evaluationNotes": "location:beach; family:beach; Hilton for Luxury:preferred channel value for Hilton luxury brands",
-  "criteriaFound": "location:beach; family:beach; Hilton for Luxury:preferred channel value for Hilton luxury brands",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 1,
-  "nearbyHotelCount": 7,
-  "description": "Waldorf Astoria Doha West Bay: in Doha, Ad Dawhah with salt in the margins. Come for a beach rhythm and terrace-and-window temptation; stay because the day has stopped arguing.",
-  "searchKeywords": [
-   "Waldorf Astoria Doha West Bay Doha",
-   "Waldorf Astoria Doha West Bay luxury hotel",
-   "luxury beach resort Doha",
-   "Doha beach resort",
-   "Doha honeymoon resort"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
  "h_00793": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -99939,6 +99877,67 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
+ "h_01935": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 68.1,
+  "matchScores": {
+   "honeymoon": 60,
+   "family": 76,
+   "celebration": 66.2,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 4.15,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 8,
+  "nearbyHotelCount": 16,
+  "description": "The Chatwal: in New York, rendered useful; a useful base, luxury's practical machinery, and enough poise to keep the day from fraying.",
+  "searchKeywords": [
+   "The Chatwal New York",
+   "The Chatwal luxury hotel",
+   "best luxury hotels in New York",
+   "New York 5 star hotel",
+   "New York luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
  "h_01936": {
   "bestFit": "Safari / expedition",
   "intentTags": [
@@ -99989,67 +99988,6 @@
    "luxury safari lodge White Lake",
    "United States safari lodge",
    "White Lake luxury lodge"
-  ],
-  "forbesRating": null,
-  "forbesRatingYear": 2026,
-  "aaaDiamondRating": null,
-  "aaaDiamondYear": 2026,
-  "aaaFirstDiamondYear": null,
-  "ratingBadges": [],
-  "ratingsSource": {
-   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
-   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
-  }
- },
- "h_01937": {
-  "bestFit": "Celebration / milestone",
-  "intentTags": [
-   "Celebration / milestone"
-  ],
-  "serviceStyle": "Program-backed luxury",
-  "confidence": "Low",
-  "overallFitScore": 68.1,
-  "matchScores": {
-   "honeymoon": 60,
-   "family": 76,
-   "celebration": 66.2,
-   "business": 79,
-   "active": 72.8,
-   "uhnw": 65,
-   "simpleVip": 79
-  },
-  "criteriaScores": {
-   "guestIntent": 3,
-   "serviceStyleFit": 3.2,
-   "locationQuality": 4,
-   "roomSuiteReality": 3.2,
-   "valueWithinLuxury": 4.5,
-   "partnerStrength": 3.8,
-   "foodAndBeverage": 3,
-   "wellnessRecovery": 3,
-   "privacyExclusivity": 2.8,
-   "sceneFit": 4.15,
-   "familyMultigen": 3.1,
-   "accessibilityEase": 4.2,
-   "seasonalityRiskFit": 4.15,
-   "operationalReliability": 3.25,
-   "designSenseOfPlace": 3,
-   "destinationSpecificFit": 4,
-   "guestPersonalityFit": 3,
-   "budgetPsychologyFit": 3.75
-  },
-  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
-  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
-  "nearbyRank": 24,
-  "nearbyHotelCount": 37,
-  "description": "The Chatwal, New York: a stay in New York City that knows when to be useful and when to be invisible; an address that keeps the day moving. For the kind of trip that wants a little ceremony.",
-  "searchKeywords": [
-   "The Chatwal",
-   "New York",
-   "New York New York City",
-   "New York luxury hotel",
-   "best luxury hotels in New York City"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,
@@ -119512,6 +119450,67 @@
    "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
   }
  },
+ "h_01937": {
+  "bestFit": "Celebration / milestone",
+  "intentTags": [
+   "Celebration / milestone"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 68.1,
+  "matchScores": {
+   "honeymoon": 60,
+   "family": 76,
+   "celebration": 66.2,
+   "business": 79,
+   "active": 72.8,
+   "uhnw": 65,
+   "simpleVip": 79
+  },
+  "criteriaScores": {
+   "guestIntent": 3,
+   "serviceStyleFit": 3.2,
+   "locationQuality": 4,
+   "roomSuiteReality": 3.2,
+   "valueWithinLuxury": 4.5,
+   "partnerStrength": 3.8,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 2.8,
+   "sceneFit": 4.15,
+   "familyMultigen": 3.1,
+   "accessibilityEase": 4.2,
+   "seasonalityRiskFit": 4.15,
+   "operationalReliability": 3.25,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.75
+  },
+  "evaluationNotes": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "criteriaFound": "Virtuoso:broad preferred benefits: breakfast, credit, upgrade when available",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 24,
+  "nearbyHotelCount": 37,
+  "description": "The Chatwal, New York: a stay in New York City that knows when to be useful and when to be invisible; an address that keeps the day moving. For the kind of trip that wants a little ceremony.",
+  "searchKeywords": [
+   "The Chatwal",
+   "New York",
+   "New York New York City",
+   "New York luxury hotel",
+   "best luxury hotels in New York City"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
  "h_02308": {
   "bestFit": "Celebration / milestone",
   "intentTags": [
@@ -127223,6 +127222,68 @@
    "best luxury hotels in Liberia",
    "Liberia 5 star hotel",
    "Liberia luxury hotel"
+  ],
+  "forbesRating": null,
+  "forbesRatingYear": 2026,
+  "aaaDiamondRating": null,
+  "aaaDiamondYear": 2026,
+  "aaaFirstDiamondYear": null,
+  "ratingBadges": [],
+  "ratingsSource": {
+   "forbes": "Forbes Travel Guide 2026 Star Award Winners page; row payload unavailable in local source extraction",
+   "aaa": "AAA Four/Five Diamond Hotels 2026 PDFs"
+  }
+ },
+ "h_02448": {
+  "bestFit": "Beach / island escape",
+  "intentTags": [
+   "Beach / island escape",
+   "Beach"
+  ],
+  "serviceStyle": "Program-backed luxury",
+  "confidence": "Low",
+  "overallFitScore": 71.7,
+  "matchScores": {
+   "honeymoon": 67.2,
+   "family": 81.3,
+   "celebration": 67.1,
+   "business": 78.9,
+   "active": 71.9,
+   "uhnw": 75.6,
+   "simpleVip": 78.9
+  },
+  "criteriaScores": {
+   "guestIntent": 3.39,
+   "serviceStyleFit": 3.38,
+   "locationQuality": 4.33,
+   "roomSuiteReality": 4,
+   "valueWithinLuxury": 4.47,
+   "partnerStrength": 4.3,
+   "foodAndBeverage": 3,
+   "wellnessRecovery": 3,
+   "privacyExclusivity": 3.8,
+   "sceneFit": 3.4,
+   "familyMultigen": 4.32,
+   "accessibilityEase": 3.2,
+   "seasonalityRiskFit": 2.9,
+   "operationalReliability": 3.43,
+   "designSenseOfPlace": 3,
+   "destinationSpecificFit": 4.44,
+   "guestPersonalityFit": 3,
+   "budgetPsychologyFit": 3.4
+  },
+  "evaluationNotes": "location:beach; family:beach; Hilton for Luxury:preferred channel value for Hilton luxury brands",
+  "criteriaFound": "location:beach; family:beach; Hilton for Luxury:preferred channel value for Hilton luxury brands",
+  "sourceFlags": "CSV partner benefits; web-calibrated program criteria",
+  "nearbyRank": 1,
+  "nearbyHotelCount": 7,
+  "description": "Waldorf Astoria Doha West Bay: in Doha, Ad Dawhah with salt in the margins. Come for a beach rhythm and terrace-and-window temptation; stay because the day has stopped arguing.",
+  "searchKeywords": [
+   "Waldorf Astoria Doha West Bay Doha",
+   "Waldorf Astoria Doha West Bay luxury hotel",
+   "luxury beach resort Doha",
+   "Doha beach resort",
+   "Doha honeymoon resort"
   ],
   "forbesRating": null,
   "forbesRatingYear": 2026,

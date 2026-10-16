@@ -1,11 +1,11 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-15T14:07:26.123Z",
+  "generated": "2026-10-16T13:55:35.927Z",
   "feedSynced": null,
   "localCount": 2475,
-  "feedCount": 2086,
-  "matchedCount": 2303
+  "feedCount": 2088,
+  "matchedCount": 2302
  },
  "overrides": {
   "h_00408": "6176935",
@@ -8887,12 +8887,6 @@
    "localName": "The Charleston Place",
    "virtuosoName": "The Charleston Place"
   },
-  "h_01937": {
-   "vid": "6164469",
-   "how": "name+country",
-   "localName": "The Chatwal, New York",
-   "virtuosoName": "The Chatwal, New York"
-  },
   "h_01938": {
    "vid": "14676792",
    "how": "name+country",
@@ -9907,12 +9901,6 @@
    "localName": "The Ritz-Carlton Shanghai, Pudong",
    "virtuosoName": "The Ritz-Carlton Shanghai, Pudong"
   },
-  "h_02166": {
-   "vid": "16187637",
-   "how": "name+country",
-   "localName": "The Ritz-Carlton, Abama",
-   "virtuosoName": "The Ritz-Carlton, Abama"
-  },
   "h_02167": {
    "vid": "6164222",
    "how": "name+country",
@@ -10338,18 +10326,6 @@
    "how": "name+country",
    "localName": "The St. Regis Bora Bora Resort",
    "virtuosoName": "The St. Regis Bora Bora Resort"
-  },
-  "h_02250": {
-   "vid": "18353275",
-   "how": "name+country",
-   "localName": "The St. Regis Budapest- A Virtuoso Preview Property",
-   "virtuosoName": "The St. Regis Budapest - A Virtuoso Preview Property"
-  },
-  "h_02251": {
-   "vid": "18101432",
-   "how": "name+country",
-   "localName": "The St. Regis Cap Cana Resort - A Virtuoso Preview Property",
-   "virtuosoName": "The St. Regis Cap Cana Resort - A Virtuoso Preview Property"
   },
   "h_02252": {
    "vid": "16793149",
@@ -11244,6 +11220,12 @@
    "how": "name+country",
    "localName": "Waldorf Astoria Costa Rica Punta Cacique",
    "virtuosoName": "Waldorf Astoria Costa Rica Punta Cacique"
+  },
+  "h_02448": {
+   "vid": "16926991",
+   "how": "name+country",
+   "localName": "Waldorf Astoria Doha West Bay",
+   "virtuosoName": "Waldorf Astoria Doha West Bay"
   },
   "h_02449": {
    "vid": "15177552",
@@ -12673,6 +12655,12 @@
    "localName": "The Carlyle",
    "virtuosoName": "The Carlyle, A Rosewood Hotel"
   },
+  "h_01937": {
+   "vid": "6164469",
+   "how": "fuzzy:0.67",
+   "localName": "The Chatwal, New York",
+   "virtuosoName": "The Wolseley Hotel, New York"
+  },
   "h_01942": {
    "vid": "6164070",
    "how": "duplicate-of:h_01722",
@@ -12841,6 +12829,12 @@
    "localName": "The Ritz-Carlton Shanghai",
    "virtuosoName": "The Ritz-Carlton Shanghai, Pudong"
   },
+  "h_02166": {
+   "vid": "16187637",
+   "how": "fuzzy:0.86",
+   "localName": "The Ritz-Carlton, Abama",
+   "virtuosoName": "The Ritz-Carlton Tenerife, Abama"
+  },
   "h_02209": {
    "vid": "18046764",
    "how": "fuzzy:0.86",
@@ -12876,6 +12870,18 @@
    "how": "fuzzy:0.67",
    "localName": "The St. Regis Aruba Resort - A Virtuoso Preview Property",
    "virtuosoName": "The St. Regis Aruba Resort"
+  },
+  "h_02250": {
+   "vid": "18353275",
+   "how": "fuzzy:0.67",
+   "localName": "The St. Regis Budapest- A Virtuoso Preview Property",
+   "virtuosoName": "The St. Regis Budapest"
+  },
+  "h_02251": {
+   "vid": "18101432",
+   "how": "fuzzy:0.73",
+   "localName": "The St. Regis Cap Cana Resort - A Virtuoso Preview Property",
+   "virtuosoName": "The St. Regis Cap Cana Resort"
   },
   "h_02253": {
    "vid": "18335288",
@@ -12990,12 +12996,6 @@
    "how": "duplicate-of:h_02421",
    "localName": "Vomo Island Resort",
    "virtuosoName": "Vomo Island Resort, Fiji"
-  },
-  "h_02448": {
-   "vid": "16926991",
-   "how": "fuzzy:0.91",
-   "localName": "Waldorf Astoria Doha West Bay",
-   "virtuosoName": "Harmony Hotel - Waldorf Astoria Doha West Bay"
   },
   "h_02456": {
    "vid": "16791601",
@@ -13638,12 +13638,6 @@
    "how": "twin-of:h_01926",
    "localName": "The Cape",
    "virtuosoName": "The Cape, a Thompson Hotel"
-  },
-  "h_01935": {
-   "vid": "6164469",
-   "how": "twin-of:h_01937",
-   "localName": "The Chatwal",
-   "virtuosoName": "The Chatwal, New York"
   },
   "h_01945": {
    "vid": "16601416",
@@ -18511,23 +18505,6 @@
    "how": [
     "name+country",
     "duplicate-of:h_01930"
-   ],
-   "confident": true
-  },
-  {
-   "vid": "6164469",
-   "virtuosoName": "The Chatwal, New York",
-   "localIds": [
-    "h_01937",
-    "h_01935"
-   ],
-   "localNames": [
-    "The Chatwal, New York",
-    "The Chatwal"
-   ],
-   "how": [
-    "name+country",
-    "twin-of:h_01937"
    ],
    "confident": true
   },
@@ -23437,17 +23414,6 @@
    "score": 1
   },
   {
-   "vid": "6164469",
-   "virtuosoName": "The Chatwal, New York",
-   "dropName": "The Chatwal",
-   "metresApart": 2,
-   "note": "the same name — \"chatwal\" against \"chatwal\" once city and country are stripped",
-   "keep": "h_01937",
-   "drop": "h_01935",
-   "keepName": "The Chatwal, New York",
-   "score": 1
-  },
-  {
    "vid": "16601416",
    "virtuosoName": "The Colony Hotel, Palm Beach",
    "dropName": "The Colony Hotel",
@@ -24307,22 +24273,6 @@
      "name": "Shangri-La Toronto",
      "city": "Toronto",
      "km": 3359.1,
-     "how": "equal"
-    }
-   ]
-  },
-  {
-   "id": "h_01936",
-   "name": "The Chatwal Lodge",
-   "city": "White Lake",
-   "country": "United States",
-   "reason": "name matches but the nearest is 121 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "6164469",
-     "name": "The Chatwal, New York",
-     "city": "New York City",
-     "km": 121,
      "how": "equal"
     }
    ]
@@ -25442,6 +25392,13 @@
    "program": "Cadence Individual Partner"
   },
   {
+   "id": "h_01935",
+   "name": "The Chatwal",
+   "city": "New York",
+   "country": "United States",
+   "program": "Virtuoso"
+  },
+  {
    "id": "h_01936",
    "name": "The Chatwal Lodge",
    "city": "White Lake",
@@ -25898,6 +25855,12 @@
    "country": "Thailand"
   },
   {
+   "vid": "18635230",
+   "name": "Domaine De Locguenole & Spa",
+   "city": "Kervignac",
+   "country": "France"
+  },
+  {
    "vid": "18394847",
    "name": "Dunas de Formentera",
    "city": "Formentera",
@@ -26268,6 +26231,12 @@
    "name": "Pan Pacific Orchard Singapore",
    "city": "Singapore",
    "country": "Singapore"
+  },
+  {
+   "vid": "18632642",
+   "name": "Park Hyatt Kuala Lumpur",
+   "city": "Kuala Lumpur",
+   "country": "Malaysia"
   },
   {
    "vid": "18537994",
