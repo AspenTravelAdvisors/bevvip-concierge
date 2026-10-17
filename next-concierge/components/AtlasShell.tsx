@@ -53,7 +53,7 @@ import {
   writeStoredStyle,
   type ShareStyle,
 } from "@/lib/atlas/adapters/params";
-import { frameRoute, framePoints } from "@/lib/atlas/route-frame";
+import { frameRoute, framePoints, drawPieces, splitAntimeridian } from "@/lib/atlas/route-frame";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
 import { CHART_STYLE, basemapInput } from "@/lib/atlas/chart-style";
@@ -637,7 +637,7 @@ export interface FocusStop {
 
 /** The payload of `bevvip:atlas-route` — one trip to trace, or a clear. */
 export interface RouteDetail {
-  legs?: { mode: string; coordinates: [number, number][] }[];
+  legs?: { mode: string; coordinates: [number, number][]; stub?: [number, number] }[];
   stops?: FocusStop[];
   /** Move the camera onto it. A click/deep link fits; a hover preview doesn't. */
   fit?: boolean;
@@ -1317,7 +1317,7 @@ export default function AtlasShell({
   // Last traced route, so a basemap switch can repaint it. setStyle wipes all
   // sources and layers; a pinned route must outlive that.
   const lastFocusLegs = useRef<
-    { mode: string; coordinates: [number, number][]; hop?: number }[]
+    { mode: string; coordinates: [number, number][]; hop?: number; stub?: [number, number] }[]
   >([]);
   // The map effect is keyed on [token] and never re-runs, so it must read the
   // handler through a ref rather than capturing it.
@@ -2571,11 +2571,13 @@ export default function AtlasShell({
           const src = "r_" + key;
           const data = {
             type: "FeatureCollection" as const,
-            features: lines.map((pts) => ({
+            // Split at the antimeridian, as the traced route is: the shipped
+            // legs are unrolled and some run past ±180.
+            features: lines.flatMap((pts) => splitAntimeridian(pts).map((piece) => ({
               type: "Feature" as const,
-              geometry: { type: "LineString" as const, coordinates: pts },
+              geometry: { type: "LineString" as const, coordinates: piece },
               properties: { type: key },
-            })),
+            }))),
           };
           if (!map.getSource(src)) {
             map.addSource(src, { type: "geojson", data });
@@ -3027,7 +3029,7 @@ export default function AtlasShell({
         stopFlowRef.current = stopRouteFlow;
 
         function paintFocusRoute(
-          legs: { mode: string; coordinates: [number, number][] }[],
+          legs: { mode: string; coordinates: [number, number][]; stub?: [number, number] }[],
           stops?: FocusStop[],
         ) {
           // Tracing a route is a deliberate act of attention — the idle spin
@@ -3046,9 +3048,11 @@ export default function AtlasShell({
             .map((s) => s.at)
             .filter((at): at is [number, number] => Array.isArray(at) && at.length === 2);
           const framed = frameRoute(legs, stopPts);
+          // Drawn from pieces, not from `framed` directly: split at the
+          // antimeridian, land approaches as connectors. See drawPieces.
           const data = {
             type: "FeatureCollection" as const,
-            features: framed.map((l) => ({
+            features: drawPieces(framed).map((l) => ({
               type: "Feature" as const,
               geometry: { type: "LineString" as const, coordinates: l.coordinates },
               // rail  → railway symbology (casing + glow + rail + sleepers)
@@ -4652,11 +4656,13 @@ export default function AtlasShell({
             try {
               map.getSource("fly-trail")?.setData({
                 type: "FeatureCollection",
-                features: [{
+                // The trail follows the unrolled route, so split it like the
+                // route it follows (see splitAntimeridian).
+                features: splitAntimeridian([...trailDone, ...extra]).map((piece) => ({
                   type: "Feature",
                   properties: {},
-                  geometry: { type: "LineString", coordinates: [...trailDone, ...extra] },
-                }],
+                  geometry: { type: "LineString", coordinates: piece },
+                })),
               });
             } catch { /* source torn down mid-restyle */ }
           };

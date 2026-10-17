@@ -42,6 +42,8 @@ import BucketListButton from "./BucketListButton";
 export interface RouteLegOut {
   mode: string;
   coordinates: [number, number][];
+  /** Land-approach segments at [head, tail] — see lib/atlas/route-frame.ts. */
+  stub?: [number, number];
 }
 
 /** What a card's secondary action is being drawn against right now. */

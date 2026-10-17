@@ -29,7 +29,7 @@ import fs from "node:fs";
 import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
-import { createSeaRouter, rdp, MASK_BYTES } from "../lib/atlas/sea-router.mjs";
+import { createSeaRouter, rdp, gcPts, unroll, MASK_BYTES } from "../lib/atlas/sea-router.mjs";
 import { steadyStamp } from "./lib/steady-stamp.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -67,11 +67,72 @@ const SIMPLIFY_EPS = 0.01;
  */
 const CELL_BUDGET = 40000000;
 
+/*
+ * WHEN A ROUTED LEG IS NOT A VOYAGE.
+ *
+ * Two kinds of leg come out of the router looking like sea routes and are not:
+ *
+ *   - transfers. Expedition itineraries list the charter flight and the coach
+ *     between ships as consecutive "ports": Seattle -> Nome on the same day,
+ *     Santiago -> Buenos Aires, Cusco -> Ollantaytambo. The router dutifully
+ *     sails them — 4,400 km up the Pacific coast, 5,900 km round Cape Horn,
+ *     790 km out to the coast of Peru and back.
+ *   - mask artefacts. A strait narrower than a cell that the passages ledger
+ *     does not (yet) reopen: Hamburg -> Cuxhaven down the Elbe was routed 1,093
+ *     km round Denmark. And a bad geocode (Laugarvatn, Iceland, in the middle of
+ *     a Chilean fjord cruise) produces a 14,000 km leg in a day.
+ *
+ * Both are caught by asking what a ship could actually do. PACE: no cruise
+ * ship covers more than ~1,000 km a day, so a leg needing much more than that
+ * between the days it is scheduled is not one the ship sails. DETOUR: a leg ten
+ * times longer than the straight line between its ports is the router going
+ * the long way round something it cannot see through. A merely long way round
+ * (Genoa -> Venice is seven times the chord, and real) is only suspect when it
+ * would also need an implausible pace.
+ *
+ * Such a leg keeps its two ports and loses the invented voyage: it is drawn as
+ * a "transfer", a plain great circle the client renders as a faint connector,
+ * which is what a flight or a coach between two calls should look like.
+ */
+const MAX_KM_PER_DAY = 1500;       // no ship; a flight or a mask artefact
+const SHIP_KM_PER_DAY = 900;       // ~20 knots for 24 hours
+const DETOUR_MIN_EXTRA_KM = 300;   // below this a detour is coastline, not a problem
+const DETOUR_SUSPECT = 4;          // routed / chord, suspicious if the pace is also high
+const DETOUR_ABSURD = 10;          // routed / chord, wrong whatever the schedule
+
+/*
+ * A port is on a coast, so the segment from the port to the first water cell
+ * crosses a little land by construction. When the nearest water the router
+ * believes in is far away — a river port, an inland excursion, a fjord the mask
+ * closes — that segment becomes a straight line over real country. Past this
+ * much land it is tagged as a STUB and drawn as a faint connector, so the bold
+ * line only ever claims water. Measured on the segment itself, not the snap
+ * distance, because a long snap along a coast crosses no land at all.
+ */
+const STUB_LAND_KM = 10;
+
+const R_EARTH_KM = 6371;
+const toRad = (d) => (d * Math.PI) / 180;
+/** Great-circle km between two [lat, lng]. */
+function haversineKm(a, b) {
+  const dLat = toRad(b[0] - a[0]), dLng = toRad(b[1] - a[1]);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLng / 2) ** 2;
+  return 2 * R_EARTH_KM * Math.asin(Math.min(1, Math.sqrt(s)));
+}
+/** Length of a [lng, lat] polyline in km. */
+function lengthKm(coords) {
+  let km = 0;
+  for (let i = 1; i < coords.length; i++) {
+    km += haversineKm([coords[i - 1][1], coords[i - 1][0]], [coords[i][1], coords[i][0]]);
+  }
+  return km;
+}
+
 const read = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), "utf8"));
 
 // ── Collect every leg, grouped by collection type ──────────────────────────
 
-/** @type {Map<string, {type: string, a: number[], b: number[], tripIds: Set}>} */
+/** @type {Map<string, {type: string, a: number[], b: number[], tripIds: Set, days: number}>} */
 const legs = new Map();
 const stats = {
   sources: {},
@@ -80,7 +141,12 @@ const stats = {
   missingPorts: 0,
 };
 
-function addSequence(type, tripId, ptsLatLng) {
+/**
+ * `days` is each point's itinerary day, parallel to `ptsLatLng`. A leg keeps
+ * the MOST days any trip gives it, so the pace check below convicts a leg only
+ * when no voyage that sails it has the time to.
+ */
+function addSequence(type, tripId, ptsLatLng, days) {
   for (let i = 0; i < ptsLatLng.length - 1; i++) {
     const a = ptsLatLng[i], b = ptsLatLng[i + 1];
     // A trip that calls the same port twice running produces a zero-length leg.
@@ -88,8 +154,11 @@ function addSequence(type, tripId, ptsLatLng) {
     stats.rawLegs++;
     const key = `${type}|${a[0].toFixed(2)},${a[1].toFixed(2)}|${b[0].toFixed(2)},${b[1].toFixed(2)}`;
     let rec = legs.get(key);
-    if (!rec) { rec = { type, a, b, tripIds: new Set() }; legs.set(key, rec); }
+    if (!rec) { rec = { type, a, b, tripIds: new Set(), days: 0 }; legs.set(key, rec); }
     rec.tripIds.add(tripId);
+    const gap = Number(days?.[i + 1]) - Number(days?.[i]);
+    // No usable day numbers means no evidence against the leg: assume a week.
+    rec.days = Math.max(rec.days, Number.isFinite(gap) ? gap : 7);
   }
 }
 
@@ -101,6 +170,7 @@ for (const [type, file] of [["yacht", "public/maps/yacht/itinerary.json"], ["wor
   let trips = 0;
   for (const trip of j.TRIPS || []) {
     const pts = [];
+    const days = [];
     for (const stop of trip.itin || []) {
       if (!stop.n) continue; // sea day
       const ll = PORTS[stop.n];
@@ -109,8 +179,9 @@ for (const [type, file] of [["yacht", "public/maps/yacht/itinerary.json"], ["wor
         continue;
       }
       pts.push([Number(ll[0]), Number(ll[1])]);
+      days.push(stop.d);
     }
-    if (pts.length >= 2) { addSequence(type, trip.id, pts); trips++; }
+    if (pts.length >= 2) { addSequence(type, trip.id, pts, days); trips++; }
   }
   stats.sources[type] = { trips, ports: Object.keys(PORTS).length };
 }
@@ -124,6 +195,7 @@ for (const [type, file] of [["yacht", "public/maps/yacht/itinerary.json"], ["wor
   let trips = 0;
   for (const [sailingId, days] of Object.entries(j.routes || {})) {
     const pts = [];
+    const dayOf = [];
     for (const day of days) {
       for (const p of day.p || []) {
         const lat = p[1], lng = p[2];
@@ -134,9 +206,10 @@ for (const [type, file] of [["yacht", "public/maps/yacht/itinerary.json"], ["wor
           continue;
         }
         pts.push([Number(lat), Number(lng)]);
+        dayOf.push(day.d);
       }
     }
-    if (pts.length >= 2) { addSequence("cruise", sailingId, pts); trips++; }
+    if (pts.length >= 2) { addSequence("cruise", sailingId, pts, dayOf); trips++; }
   }
   stats.sources.cruise = { trips, sailings: Object.keys(j.routes || {}).length };
 }
@@ -153,9 +226,11 @@ const router = createSeaRouter(maskBuf, { cellBudget: CELL_BUDGET });
 const t0 = Date.now();
 /** @type {Map<string, object[]>} type -> features */
 const byTypeFeatures = new Map();
-const modeCounts = { sea: 0, arc: 0, densified: 0, "arc-fallback": 0 };
+const modeCounts = { sea: 0, arc: 0, densified: 0, "arc-fallback": 0, transfer: 0 };
 const failed = [];
 const crossers = [];
+const transfers = [];
+let stubLegs = 0;
 let simplifyBackoffs = 0;
 let pointsBefore = 0;
 let pointsAfter = 0;
@@ -164,20 +239,38 @@ for (const [key, rec] of legs) {
   // route() unrolls the pair before routing, so a trans-Pacific leg runs east
   // across the ocean rather than west around the world. Each leg is emitted in
   // its own frame — legs render independently, so no shared frame is needed.
-  const { coordinates, modes } = router.route([rec.a, rec.b]);
-  const mode = modes[0] || "none";
+  let { coordinates, modes } = router.route([rec.a, rec.b]);
+  let mode = modes[0] || "none";
   if (!coordinates || coordinates.length < 2) {
     failed.push({ key, a: rec.a, b: rec.b });
     continue;
+  }
+
+  // Is this a voyage at all? See MAX_KM_PER_DAY.
+  const routedKm = lengthKm(coordinates);
+  const chordKm = haversineKm(rec.a, rec.b);
+  const pace = routedKm / Math.max(1, rec.days);
+  const detour = routedKm / Math.max(chordKm, 1);
+  const extra = routedKm - chordKm;
+  const why = pace > MAX_KM_PER_DAY ? `${Math.round(pace)} km/day`
+    : extra > DETOUR_MIN_EXTRA_KM && detour > DETOUR_ABSURD ? `${detour.toFixed(0)}x the chord`
+    : extra > DETOUR_MIN_EXTRA_KM && detour > DETOUR_SUSPECT && pace > SHIP_KM_PER_DAY ? `${detour.toFixed(1)}x the chord at ${Math.round(pace)} km/day`
+    : null;
+  if (why) {
+    transfers.push({ key, a: rec.a, b: rec.b, routedKm, chordKm, days: rec.days, why, was: mode });
+    const [ua, ub] = unroll([rec.a, rec.b]);
+    coordinates = gcPts(ua, ub).map(([lat, lng]) => [lng, lat]);
+    mode = "transfer";
   }
   modeCounts[mode] = (modeCounts[mode] || 0) + 1;
   pointsBefore += coordinates.length;
 
   // Audit the routed geometry, not our intent. Endpoints sit in land cells by
   // construction (a port is on a coast), so only the interior is checked.
+  // A transfer is not claiming water, so it is not audited as if it were.
   const latLng = coordinates.map(([lng, lat]) => [lat, lng]);
   const interior = latLng.slice(1, -1);
-  const crossesLand = interior.length >= 2 && router.polyHitsLand(interior);
+  const crossesLand = mode !== "transfer" && interior.length >= 2 && router.polyHitsLand(interior);
   if (crossesLand) crossers.push({ key, mode, a: rec.a, b: rec.b });
 
   /*
@@ -207,6 +300,15 @@ for (const [key, rec] of legs) {
   }
   pointsAfter += shipped.length;
 
+  // The approach segments, port to first water and last water to port. See
+  // STUB_LAND_KM. [head, tail] counts of segments to draw as connectors.
+  let stub;
+  if (mode !== "transfer" && !crossesLand && shipped.length >= 3) {
+    const head = landKm(shipped[0], shipped[1]) > STUB_LAND_KM ? 1 : 0;
+    const tail = landKm(shipped[shipped.length - 2], shipped[shipped.length - 1]) > STUB_LAND_KM ? 1 : 0;
+    if (head || tail) { stub = [head, tail]; stubLegs++; }
+  }
+
   const list = byTypeFeatures.get(rec.type) || [];
   list.push({
     type: "Feature",
@@ -215,12 +317,25 @@ for (const [key, rec] of legs) {
       type: rec.type,
       mode,
       crossesLand: crossesLand || undefined,
+      stub,
       tripIds: [...rec.tripIds],
     },
   });
   byTypeFeatures.set(rec.type, list);
 }
 const routeMs = Date.now() - t0;
+
+/** Km of land a straight [lng, lat] segment passes over, sampled every ~1 km. */
+function landKm(p, q) {
+  const km = haversineKm([p[1], p[0]], [q[1], q[0]]);
+  const n = Math.max(2, Math.ceil(km));
+  let land = 0;
+  for (let i = 1; i < n; i++) {
+    const f = i / n;
+    if (router.isLandLL(p[1] + (q[1] - p[1]) * f, p[0] + (q[0] - p[0]) * f)) land++;
+  }
+  return (land / n) * km;
+}
 const features = [...byTypeFeatures.values()].flat();
 
 // ── Emit ───────────────────────────────────────────────────────────────────
@@ -271,6 +386,8 @@ console.log(`    sea (A* around land)   ${String(modeCounts.sea || 0).padStart(6
 console.log(`    arc (open water)       ${String(modeCounts.arc || 0).padStart(6)}`);
 console.log(`    densified (arc bulged) ${String(modeCounts.densified || 0).padStart(6)}`);
 console.log(`    arc fallback (A* found nothing) ${String(modeCounts["arc-fallback"] || 0).padStart(5)}`);
+console.log(`    transfer (not sailable) ${String(modeCounts.transfer || 0).padStart(6)}`);
+console.log(`  approach stubs over land ${String(stubLegs).padStart(6)}  (drawn as connectors)`);
 console.log("");
 console.log("  files:");
 for (const w of written) {
@@ -284,6 +401,13 @@ if (failed.length) {
   console.log(`  ! ${failed.length} legs produced no geometry at all:`);
   for (const f of failed.slice(0, 20)) console.log(`      ${f.key}`);
   if (failed.length > 20) console.log(`      … and ${failed.length - 20} more`);
+}
+if (transfers.length) {
+  console.log(`  ! ${transfers.length} legs no ship could sail as routed, drawn as transfers:`);
+  for (const t of transfers.sort((x, y) => y.routedKm - x.routedKm).slice(0, 25)) {
+    console.log(`      ${t.a[0].toFixed(2)},${t.a[1].toFixed(2)} -> ${t.b[0].toFixed(2)},${t.b[1].toFixed(2)}  ${Math.round(t.routedKm)} km routed / ${Math.round(t.chordKm)} km apart in ${t.days} d — ${t.why}  (${t.key.split("|")[0]})`);
+  }
+  if (transfers.length > 25) console.log(`      … and ${transfers.length - 25} more`);
 }
 if (crossers.length) {
   console.log(`  ! ${crossers.length} legs cross land (interior segments), tagged crossesLand in the output:`);

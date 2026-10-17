@@ -62,7 +62,20 @@ export interface FrameLeg {
    * drawn underneath it.
    */
   hop?: number;
+  /**
+   * [head, tail]: how many segments at each end of the leg are an approach over
+   * LAND rather than water — a port whose nearest navigable water the sea
+   * router could only reach across country (a river berth, an inland city, a
+   * fjord narrower than its grid). Set at build time by build-sea-routes.mjs.
+   *
+   * Travelling the route uses the leg whole; drawing it does not. drawPieces
+   * renders these segments as connectors so the bold line only claims water.
+   * Head and tail follow the leg's orientation, so reversing a leg swaps them.
+   */
+  stub?: [number, number];
 }
+
+const flipStub = (s?: [number, number]): [number, number] | undefined => (s ? [s[1], s[0]] : undefined);
 
 /** Longitude into [-180, 180). */
 export function wrapLng(lng: number): number {
@@ -141,6 +154,7 @@ export function frameRoute(legs: readonly FrameLeg[], stops?: readonly Pt[]): Fr
     pool.push({
       mode: leg.mode,
       coordinates: leg.coordinates.map((c) => [wrapLng(c[0]), c[1]] as Pt),
+      stub: leg.stub,
     });
   }
   if (pool.length === 0) return [];
@@ -204,6 +218,7 @@ function chainByItinerary(pool: FrameLeg[], stops: Pt[]): { legs: FrameLeg[]; pl
       // The hop this leg was claimed FOR, so a consumer that has to travel the
       // route can tell a claimed leg from the leftovers appended below.
       hop: i,
+      stub: pick.reversed ? flipStub(pool[pick.i].stub) : pool[pick.i].stub,
     });
   }
 
@@ -270,7 +285,11 @@ function chainGreedy(pool: FrameLeg[]): FrameLeg[] {
     const coords = pickReversed
       ? [...pool[pick].coordinates].reverse()
       : pool[pick].coordinates;
-    ordered.push({ mode: pool[pick].mode, coordinates: coords });
+    ordered.push({
+      mode: pool[pick].mode,
+      coordinates: coords,
+      stub: pickReversed ? flipStub(pool[pick].stub) : pool[pick].stub,
+    });
     cursor = coords[coords.length - 1];
   }
   for (let i = 0; i < pool.length; i++) if (!used[i]) ordered.push(pool[i]);
@@ -295,8 +314,86 @@ function unrollChain(legs: FrameLeg[]): FrameLeg[] {
       prev = x;
       out.push([x, lat]);
     }
-    return { mode: leg.mode, coordinates: out, hop: leg.hop };
+    return { mode: leg.mode, coordinates: out, hop: leg.hop, stub: leg.stub };
   });
+}
+
+/**
+ * Cut an unrolled line at every ±180° crossing, wrapping each piece into
+ * [-180, 180].
+ *
+ * ── Why the DRAWING cannot use the unrolled frame ─────────────────────────
+ *
+ * unrollChain keeps a route continuous, which is what the camera needs — and a
+ * world cruise that sails west from Miami all the way round to Southampton
+ * comes out of it running from -80 to -370. Mapbox draws a GeoJSON line past
+ * ±180 by wrapping it into a neighbouring world copy, and that holds for a
+ * single turn. Past one turn it does not: the stretch beyond -360 (the whole
+ * of Europe on that voyage) came back as straight lines from one edge of the
+ * world to the other, at the latitude of each port — the "routes drawn across
+ * Asia and Canada" bands on the World Cruises atlas.
+ *
+ * RFC 7946 is explicit that a line crossing the antimeridian should be split,
+ * and split geometry is the one form every Mapbox projection and code path
+ * renders the same way. So the source gets pieces in [-180, 180], cut exactly
+ * at the meridian with the crossing latitude interpolated; the camera keeps the
+ * continuous frame (lastFocusLegs), because a bounding box needs one frame.
+ * Mercator's world copies make the cut invisible; the globe never had a seam.
+ */
+export function splitAntimeridian(coords: readonly (readonly [number, number])[]): Pt[][] {
+  const copyOf = (lng: number) => Math.floor((lng + 180) / 360);
+  const pieces: Pt[][] = [];
+  let cur: Pt[] = [];
+  let prev: readonly [number, number] | null = null;
+  for (const p of coords) {
+    if (!Number.isFinite(p[0]) || !Number.isFinite(p[1])) continue;
+    const k = copyOf(p[0]);
+    if (prev) {
+      let kPrev = copyOf(prev[0]);
+      while (kPrev !== k) {
+        const dir = k > kPrev ? 1 : -1;
+        // The meridian between this copy and the next, in the unrolled frame.
+        const edge = dir > 0 ? kPrev * 360 + 180 : kPrev * 360 - 180;
+        const f = (edge - prev[0]) / (p[0] - prev[0]);
+        const lat = prev[1] + (p[1] - prev[1]) * f;
+        cur.push([edge - kPrev * 360, lat]);
+        pieces.push(cur);
+        kPrev += dir;
+        cur = [[edge - kPrev * 360, lat]];
+      }
+    }
+    cur.push([p[0] - k * 360, p[1]]);
+    prev = p;
+  }
+  pieces.push(cur);
+  return pieces.filter((pc) => pc.length >= 2);
+}
+
+/**
+ * What to draw for a framed route: its legs cut into map-safe pieces.
+ *
+ * Two cuts, both about drawing only. A leg's land approaches (`stub`) become
+ * connector pieces, and every piece is split at the antimeridian. The result is
+ * for a GeoJSON source and nothing else — anything that measures or travels the
+ * route keeps reading the framed legs.
+ */
+export function drawPieces(legs: readonly FrameLeg[]): { mode: string; coordinates: Pt[] }[] {
+  const out: { mode: string; coordinates: Pt[] }[] = [];
+  for (const leg of legs) {
+    const c = leg.coordinates;
+    if (!c || c.length < 2) continue;
+    const last = c.length - 1;
+    const headEnd = Math.min(Math.max(0, leg.stub?.[0] ?? 0), last);
+    const tailStart = Math.max(headEnd, last - Math.max(0, leg.stub?.[1] ?? 0));
+    const parts: { mode: string; coordinates: Pt[] }[] = [];
+    if (headEnd > 0) parts.push({ mode: "conn", coordinates: c.slice(0, headEnd + 1) });
+    if (tailStart > headEnd) parts.push({ mode: leg.mode, coordinates: c.slice(headEnd, tailStart + 1) });
+    if (tailStart < last) parts.push({ mode: "conn", coordinates: c.slice(tailStart) });
+    for (const part of parts) {
+      for (const piece of splitAntimeridian(part.coordinates)) out.push({ mode: part.mode, coordinates: piece });
+    }
+  }
+  return out;
 }
 
 /**

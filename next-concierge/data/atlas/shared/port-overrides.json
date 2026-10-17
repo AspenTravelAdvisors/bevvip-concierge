@@ -669,7 +669,8 @@
   {
    "name": "Semarang, Indonesia",
    "collections": [
-    "cruise"
+    "cruise",
+    "world"
    ],
    "was": [
     -6.7069,
@@ -680,13 +681,14 @@
     110.4229
    ],
    "place": "Semarang, Central Java",
-   "why": "inland West Java near Bandung, 400km from the port city",
+   "why": "inland West Java near Bandung, 400km from the port city; the world-cruise feed now carries the same wrong coordinate",
    "source": "OSM relation/8409116"
   },
   {
    "name": "Pauillac, France",
    "collections": [
-    "cruise"
+    "cruise",
+    "world"
    ],
    "was": [
     44.75,
@@ -697,7 +699,7 @@
     -0.7485
    ],
    "place": "Pauillac, Gironde",
-   "why": "inland Quercy, 150km east of the Gironde estuary the ship is sailing up; the world-cruise feed has it right",
+   "why": "inland Quercy, 150km east of the Gironde estuary the ship is sailing up; the world-cruise feed has it right; the world-cruise feed now carries the same wrong coordinate",
    "source": "OSM relation/398667"
   },
   {
@@ -1006,6 +1008,20 @@
    "place": "General San Martin, Pisco",
    "why": "1.6S 74.6W is Loreto in the Amazon; these voyages call Callao -> here -> Iquique or Coquimbo, a Pacific coastal run, so this is the port of General San Martin at Pisco",
    "source": "the expedition feed maps it at -13.8045, -76.293 on the same Callao departures"
+  },
+  {
+   "name": "Laugarvatn, Iceland",
+   "collections": [
+    "cruise"
+   ],
+   "was": [
+    64.2167,
+    -20.7333
+   ],
+   "ll": null,
+   "place": "unknown \u2014 a call in the Chilean fjords between Puerto Montt and the Moraleda Channel",
+   "why": "a lake in south-west Iceland, on day 3 of a Patagonian fjord cruise (Puerto Montt -> here -> Moraleda Channel); the route drew a 14,000 km spike to Iceland and back. The true stop cannot be recovered from the name",
+   "source": "audit-port-locations: detour, pace and stranded on sailing 18340107"
   }
  ],
  "confirmed": [

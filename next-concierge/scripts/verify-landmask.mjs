@@ -89,6 +89,13 @@ const BEHIND_A_PASSAGE = [
   ["Stockholm, through the archipelago", 59.33, 18.07],
   ["Singapore Strait", 1.26, 103.82],
   ["Venice", 45.44, 12.33],
+  ["Vancouver, through Haro Strait", 49.29, -123.11],
+  ["Refuge Cove, Desolation Sound", 50.125, -124.725],
+  ["Campbell River, Discovery Passage", 50.03, -125.24],
+  ["Seattle, through Admiralty Inlet", 47.60, -122.34],
+  ["Puerto Williams, Beagle Channel", -54.93, -67.62],
+  ["Punta Arenas, Strait of Magellan", -53.16, -70.90],
+  ["Itea, Gulf of Corinth", 38.43, 22.42],
 ];
 
 const SEA_ACCESS_KM = 25;

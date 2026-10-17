@@ -9,18 +9,30 @@
  * the three sea collections collapse to 8,025 unique ones, because dozens of
  * voyages share the same Miami → George Town run. Each leg carries the
  * `tripIds` that use it, so a trip's route is "every leg tagged with my id".
- * Legs render as separate LineStrings, so their order does not matter.
+ * Order and orientation are restored per trip by lib/atlas/route-frame.ts.
+ *
+ * Not every leg is a voyage. The build tags the ones that are not, and they
+ * are drawn as connectors (faint dashes) instead of the collection's line:
+ *
+ *   mode "transfer"  a hop no ship could sail as routed — a charter flight or
+ *                    coach between two calls, or a strait the land mask cannot
+ *                    see through. Shipped as a plain great circle.
+ *   crossesLand      the router had no water route and drew over land anyway
+ *                    (river cruises, excursions inland).
+ *   stub             only the approach segments at either end cross land.
  */
 
 export interface SeaRouteLeg {
   mode: string;
   coordinates: [number, number][];
+  /** [head, tail] land-approach segment counts — see FrameLeg.stub. */
+  stub?: [number, number];
 }
 
 interface RawSeaRoutes {
   features?: {
     geometry?: { coordinates?: [number, number][] };
-    properties?: { mode?: string; crossesLand?: boolean; tripIds?: (string | number)[] };
+    properties?: { mode?: string; crossesLand?: boolean; stub?: [number, number]; tripIds?: (string | number)[] };
   }[];
 }
 
@@ -62,9 +74,13 @@ export function loadSeaRoutes(collection: string): Promise<Map<string, SeaRouteL
         const coords = f.geometry?.coordinates;
         if (!coords || coords.length < 2) continue;
         // Sea legs are the voyage itself, so they draw as the collection's
-        // primary line rather than the faint ferry-hop connector.
-        const leg: SeaRouteLeg = { mode: "primary", coordinates: coords };
-        for (const id of f.properties?.tripIds || []) {
+        // primary line rather than the faint ferry-hop connector — unless the
+        // build says this one is not a voyage (see the header).
+        const props = f.properties;
+        const sailed = props?.mode !== "transfer" && !props?.crossesLand;
+        const leg: SeaRouteLeg = { mode: sailed ? "primary" : "conn", coordinates: coords };
+        if (sailed && Array.isArray(props?.stub)) leg.stub = [Number(props.stub[0]) || 0, Number(props.stub[1]) || 0];
+        for (const id of props?.tripIds || []) {
           const key = String(id);
           const list = index.get(key);
           if (list) list.push(leg);

@@ -97,9 +97,14 @@ const DEPS = [
   "clearTimeout",
 ];
 
+// The flight's trail is split at the antimeridian by the same helper the
+// route uses, so the real module rides along rather than a stand-in.
+writeFileSync(join(OUT, "route-frame.ts"), readFileSync(join(ROOT, "lib/atlas/route-frame.ts"), "utf8"));
+
 writeFileSync(
   join(OUT, "flight.ts"),
   `/* eslint-disable */\n` +
+    `import { splitAntimeridian } from "./route-frame.js";\n` +
     `type MapboxModule = any;\n` +
     `${FS_NOW_NONE_DECL[0].replace(": unknown[]", ": any")}\n${decls}\n` +
     `export function makeFlight(dep: any) {\n` +
