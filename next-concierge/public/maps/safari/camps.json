@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
-  "journeysWithCamps": 258,
-  "journeysTotal": 507,
+  "lodgesInSafariCountries": 68,
+  "journeysWithCamps": 256,
+  "journeysTotal": 503,
   "campsMatched": 41
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_01781": {
@@ -1561,20 +1561,6 @@
     "km": 18.1
    }
   ],
-  "16919378": [
-   {
-    "id": "h_02374",
-    "stop": "Victoria Falls",
-    "day": 1,
-    "km": 3.4
-   },
-   {
-    "id": "h_01349",
-    "stop": "Victoria Falls",
-    "day": 1,
-    "km": 22.4
-   }
-  ],
   "18092022": [
    {
     "id": "h_01207",
@@ -1778,20 +1764,6 @@
     "id": "h_01207",
     "stop": "Masai Mara National Reserve",
     "day": 9,
-    "km": 18.1
-   }
-  ],
-  "18114414": [
-   {
-    "id": "h_01409",
-    "stop": "Ol Pejeta Conservancy",
-    "day": 2,
-    "km": 9.1
-   },
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 5,
     "km": 18.1
    }
   ],
@@ -2753,20 +2725,6 @@
     "stop": "Victoria Falls",
     "day": 9,
     "km": 22.4
-   }
-  ],
-  "18515262": [
-   {
-    "id": "h_01207",
-    "stop": "Masai Mara National Reserve",
-    "day": 8,
-    "km": 18.1
-   },
-   {
-    "id": "h_00537",
-    "stop": "Ngorongoro",
-    "day": 12,
-    "km": 19.6
    }
   ],
   "18515626": [
@@ -4185,6 +4143,20 @@
     "stop": "Serengeti National Park",
     "day": 17,
     "km": 23.9
+   }
+  ],
+  "18637429": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 8,
+    "km": 18.1
+   },
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 12,
+    "km": 19.6
    }
   ]
  }

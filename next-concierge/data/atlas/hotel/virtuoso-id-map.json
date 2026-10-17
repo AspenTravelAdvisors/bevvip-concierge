@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-16T13:55:35.927Z",
+  "generated": "2026-10-17T12:56:19.350Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2088,
@@ -25682,7 +25682,7 @@
  "unmatchedApi": [
   {
    "vid": "6164008",
-   "name": "Airelles le Guanahani Saint Barthelémy",
+   "name": "Airelles Le Guanahani Saint Barthelémy",
    "city": "Saint Barthelemy",
    "country": "Saint Barthélemy"
   },
