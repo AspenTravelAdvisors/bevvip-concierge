@@ -5545,6 +5545,11 @@ export default function AtlasShell({
           // its own fit would immediately drag a basin-wide shortlist back to
           // dusk. resetView clears subsetActive and hands the camera back.
           if (subsetActive) return;
+          // A route flight comes to rest at every stop, and each rest is a
+          // zoomend. Swapping the light preset there re-lights the whole scene
+          // and repaints the traced route mid-flight — a visible hitch at each
+          // close-in call. The light catches up on the next camera stop after.
+          if (flyingRef.current) return;
           if (!SATELLITE_KEYS.has(styleKeyLocal)) return;
           const z = map.getZoom();
           if (z >= AUTO_DAYLIGHT_IN && styleKeyLocal === "satellite") {
