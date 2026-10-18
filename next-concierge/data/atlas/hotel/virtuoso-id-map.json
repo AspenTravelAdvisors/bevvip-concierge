@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-17T12:56:19.350Z",
+  "generated": "2026-10-18T13:10:21.933Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2088,
@@ -2874,12 +2874,6 @@
    "how": "name+country",
    "localName": "Ferme Saint Simeon",
    "virtuosoName": "Ferme Saint Simeon"
-  },
-  "h_00624": {
-   "vid": "6616359",
-   "how": "name+country",
-   "localName": "Finca Cortesin Hotel, Golf, Spa & Villas",
-   "virtuosoName": "Finca Cortesin Hotel, Golf, Spa & Villas"
   },
   "h_00625": {
    "vid": "6163977",
@@ -11833,6 +11827,18 @@
    "localName": "Fairmont Golden Prague - A Virtuoso Preview Property",
    "virtuosoName": "Fairmont Golden Prague"
   },
+  "h_00623": {
+   "vid": "6616359",
+   "how": "fuzzy:0.80",
+   "localName": "Finca Cortesin Hotel",
+   "virtuosoName": "Finca Cortesin Hotel, Golf & Spa"
+  },
+  "h_00624": {
+   "vid": "6616359",
+   "how": "fuzzy:0.86",
+   "localName": "Finca Cortesin Hotel, Golf, Spa & Villas",
+   "virtuosoName": "Finca Cortesin Hotel, Golf & Spa"
+  },
   "h_00630": {
    "vid": "6163863",
    "how": "fuzzy:0.75",
@@ -13332,12 +13338,6 @@
    "how": "twin-of:h_00613",
    "localName": "Fairmont Tokyo - A Virtuoso Preview Property",
    "virtuosoName": "Fairmont Tokyo"
-  },
-  "h_00623": {
-   "vid": "6616359",
-   "how": "twin-of:h_00624",
-   "localName": "Finca Cortesin Hotel",
-   "virtuosoName": "Finca Cortesin Hotel, Golf, Spa & Villas"
   },
   "h_00631": {
    "vid": "15476382",
@@ -15280,23 +15280,6 @@
    "how": [
     "name+country",
     "twin-of:h_00613"
-   ],
-   "confident": true
-  },
-  {
-   "vid": "6616359",
-   "virtuosoName": "Finca Cortesin Hotel, Golf, Spa & Villas",
-   "localIds": [
-    "h_00624",
-    "h_00623"
-   ],
-   "localNames": [
-    "Finca Cortesin Hotel, Golf, Spa & Villas",
-    "Finca Cortesin Hotel"
-   ],
-   "how": [
-    "name+country",
-    "twin-of:h_00624"
    ],
    "confident": true
   },
@@ -19887,6 +19870,23 @@
    "confident": false
   },
   {
+   "vid": "6616359",
+   "virtuosoName": "Finca Cortesin Hotel, Golf & Spa",
+   "localIds": [
+    "h_00623",
+    "h_00624"
+   ],
+   "localNames": [
+    "Finca Cortesin Hotel",
+    "Finca Cortesin Hotel, Golf, Spa & Villas"
+   ],
+   "how": [
+    "fuzzy:0.80",
+    "fuzzy:0.86"
+   ],
+   "confident": false
+  },
+  {
    "vid": "18075196",
    "virtuosoName": "Infante Sagres",
    "localIds": [
@@ -22872,17 +22872,6 @@
    "keep": "h_00613",
    "drop": "h_00614",
    "keepName": "Fairmont Tokyo",
-   "score": 1
-  },
-  {
-   "vid": "6616359",
-   "virtuosoName": "Finca Cortesin Hotel, Golf, Spa & Villas",
-   "dropName": "Finca Cortesin Hotel",
-   "metresApart": 6743,
-   "note": "the same name, with the supplier saying more — \"finca cortesin\" against \"finca cortesin golf villas\" once city and country are stripped",
-   "keep": "h_00624",
-   "drop": "h_00623",
-   "keepName": "Finca Cortesin Hotel, Golf, Spa & Villas",
    "score": 1
   },
   {
