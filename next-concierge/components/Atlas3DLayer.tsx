@@ -33,8 +33,8 @@ import {
 } from "react";
 import {
   DETAIL_RANGE,
-  DETAIL_TILT,
   INSPECT_RANGE,
+  INSPECT_TILT,
   categoryColor,
   flightDuration,
   groundAltitude,
@@ -99,6 +99,12 @@ const APPEND_CHUNK = 250;
  * list are all still mounted, so the ceiling is lower and honest.
  */
 const MAX_MARKERS = 1200;
+/**
+ * The longest the orbit waits for the tiles to finish streaming. Google fires
+ * `gmp-steadychange` only on a CHANGE, so a property whose tiles were already
+ * cached never reports steady again; this is that case's start, not a timeout.
+ */
+const ORBIT_STEADY_WAIT = 3500;
 
 export default function Atlas3DLayer({
   ref,
@@ -127,6 +133,7 @@ export default function Atlas3DLayer({
   // Camera bookkeeping — see the orbit-race note in the file header.
   const flySeq = useRef(0);
   const orbitArm = useRef<(() => void) | null>(null);
+  const orbitHold = useRef<(() => void) | null>(null);
   const tiltTimer = useRef<number>(0);
 
   pointsRef.current = points;
@@ -141,6 +148,7 @@ export default function Atlas3DLayer({
       map.removeEventListener("gmp-animationend", orbitArm.current);
       orbitArm.current = null;
     }
+    orbitHold.current?.();
     try {
       map.stopCameraAnimation?.();
     } catch {
@@ -196,15 +204,37 @@ export default function Atlas3DLayer({
                   return;
                 }
                 orbitArm.current = null;
-                try {
-                  map.flyCameraAround?.({
-                    camera: endCamera,
-                    durationMillis: 240000,
-                    rounds: 3,
-                  });
-                } catch {
-                  /* orbit is decoration; the arrival already happened */
-                }
+                /*
+                 * Hold the orbit until the tiles have streamed in. A camera
+                 * that never stops moving never lets the mesh refine — on a
+                 * phone the property sat as low-detail mesh for the whole
+                 * orbit. Let it settle sharp, then turn.
+                 */
+                let timer = 0;
+                const onSteady = (e: Event) => {
+                  if ((e as Event & { isSteady?: boolean }).isSteady) begin();
+                };
+                const release = () => {
+                  map.removeEventListener("gmp-steadychange", onSteady);
+                  window.clearTimeout(timer);
+                  orbitHold.current = null;
+                };
+                const begin = () => {
+                  release();
+                  if (seq !== flySeq.current) return;
+                  try {
+                    map.flyCameraAround?.({
+                      camera: endCamera,
+                      durationMillis: 240000,
+                      rounds: 3,
+                    });
+                  } catch {
+                    /* orbit is decoration; the arrival already happened */
+                  }
+                };
+                orbitHold.current = release;
+                map.addEventListener("gmp-steadychange", onSteady);
+                timer = window.setTimeout(begin, ORBIT_STEADY_WAIT);
               };
               orbitArm.current = arm;
               map.addEventListener("gmp-animationend", arm, { once: true });
@@ -289,7 +319,7 @@ export default function Atlas3DLayer({
         lat: p.lat,
         lng: p.lng,
         range: INSPECT_RANGE,
-        tilt: DETAIL_TILT,
+        tilt: INSPECT_TILT,
         duration: flightDuration(
           Number(here?.lat),
           Number(here?.lng),

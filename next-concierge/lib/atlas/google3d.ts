@@ -266,6 +266,17 @@ export const DETAIL_TILT = 67;
  * steeper inspection tilt is not a tuning choice here, it is a fight.
  */
 export const INSPECT_RANGE = 450;
+
+/**
+ * The inspection tilt: shallower than DETAIL_TILT, never steeper (see above).
+ *
+ * At 67° the frame is mostly the far side of the block, and on a phone those
+ * distant tiles spend the same streaming and memory budget the property needs —
+ * the building under the pin was left as melted low-detail mesh while the
+ * rooftops behind it loaded. 55° keeps the frame on the ground near the pin, so
+ * the budget goes to the façade, and still reads as a three-quarter view.
+ */
+export const INSPECT_TILT = 55;
 const TILT_RESET_START_RANGE = 4200;
 const TILT_RESET_END_RANGE = 220000;
 
