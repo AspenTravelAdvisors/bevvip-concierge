@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 252,
-  "journeysTotal": 497,
+  "journeysWithCamps": 258,
+  "journeysTotal": 504,
   "campsMatched": 41
  },
  "radiusKm": 25,
@@ -458,7 +458,7 @@
     9.90111,
     -83.6845
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15852727_2_0_0921.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15852727_2_0.webp",
    "rooms": 20,
    "perks": [
     "Daily breakfast",
@@ -1641,6 +1641,26 @@
     "km": 16.2
    }
   ],
+  "18106461": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 22.4
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 11,
+    "km": 19.9
+   }
+  ],
   "18107045": [
    {
     "id": "h_00537",
@@ -1673,6 +1693,20 @@
     "stop": "Okavango Delta",
     "day": 6,
     "km": 19.9
+   }
+  ],
+  "18107132": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 6,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 11,
+    "km": 18.1
    }
   ],
   "18107133": [
@@ -1722,6 +1756,20 @@
     "id": "h_01207",
     "stop": "Masai Mara National Reserve",
     "day": 4,
+    "km": 18.1
+   }
+  ],
+  "18114125": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 5,
     "km": 18.1
    }
   ],
@@ -2117,6 +2165,14 @@
     "km": 19.6
    }
   ],
+  "18360283": [
+   {
+    "id": "h_01778",
+    "stop": "Serengeti National Park",
+    "day": 8,
+    "km": 23.9
+   }
+  ],
   "18360363": [
    {
     "id": "h_01778",
@@ -2142,6 +2198,40 @@
     "id": "h_02484",
     "stop": "Okavango Delta",
     "day": 6,
+    "km": 19.9
+   }
+  ],
+  "18361073": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 7,
+    "km": 21.1
+   }
+  ],
+  "18361132": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 0.8
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 8,
+    "km": 21.1
+   },
+   {
+    "id": "h_02484",
+    "stop": "Okavango Delta",
+    "day": 11,
     "km": 19.9
    }
   ],
