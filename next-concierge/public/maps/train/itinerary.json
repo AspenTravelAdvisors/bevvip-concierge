@@ -4514,7 +4514,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18069724_2_222_0925.webp",
    "from": "Barcelona, Spain",
    "to": "Lisbon, Portugal",
-   "country": "Portugal",
+   "country": "Spain",
    "train": null,
    "world": false,
    "mks": [
@@ -4645,7 +4645,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/18124860_2_37_1001.webp",
    "from": "Seoul, South Korea",
    "to": "Tokyo, Japan",
-   "country": "Japan",
+   "country": "South Korea",
    "train": null,
    "world": false,
    "mks": [
@@ -5356,7 +5356,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Malaysia",
+   "country": "Singapore",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -5435,7 +5435,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16650958_2_44.webp",
    "from": "Rome, Italy",
    "to": "Istanbul, Türkiye",
-   "country": "Italy",
+   "country": "Hungary",
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "d": "10/22/2026",
@@ -7133,7 +7133,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Paris, France",
    "to": "Budapest, Hungary",
-   "country": "Hungary",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7334,7 +7334,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Romania",
+   "country": "Hungary",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7474,7 +7474,7 @@
    "img": null,
    "from": "Paris, France",
    "to": "Amalfi, Italy",
-   "country": "Italy",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "d": "4/22/2027",
@@ -8853,7 +8853,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15687445_2_4.webp",
    "from": "Pretoria, South Africa",
    "to": "Victoria Falls, Zimbabwe",
-   "country": "South Africa",
+   "country": "Zimbabwe",
    "train": "Rovos Rail",
    "world": true,
    "mks": [
@@ -9354,7 +9354,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/3374_2_275_0927.webp",
    "from": "Stockholm, Sweden",
    "to": "Bergen, Norway",
-   "country": "Denmark",
+   "country": "Norway",
    "train": null,
    "world": false,
    "mks": [
