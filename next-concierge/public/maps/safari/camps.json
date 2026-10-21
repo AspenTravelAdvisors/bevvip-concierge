@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 67,
+  "lodgesInSafariCountries": 68,
   "journeysWithCamps": 258,
-  "journeysTotal": 504,
+  "journeysTotal": 503,
   "campsMatched": 41
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 67
+  "inSafariCountries": 68
  },
  "CAMPS": {
   "h_01781": {
@@ -23,7 +23,7 @@
     -24.9279,
     31.5249
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4369_2_0_0923.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4369_2_0.webp",
    "rooms": 24,
    "perks": [
     "Daily breakfast",
@@ -360,7 +360,7 @@
     -24.541,
     31.1574
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4401_2_0_0923.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4401_2_0.webp",
    "rooms": 22,
    "perks": [
     "Daily breakfast",

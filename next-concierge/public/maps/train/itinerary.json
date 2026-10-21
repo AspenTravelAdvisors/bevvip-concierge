@@ -4142,6 +4142,156 @@
      12.4951
     ]
    }
+  ],
+  "18638087": [
+   {
+    "n": "Cuzco",
+    "r": "SAM",
+    "ll": [
+     -13.5166,
+     -71.9784
+    ]
+   },
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   },
+   {
+    "n": "Arequipa",
+    "r": "SAM",
+    "ll": [
+     -16.3989,
+     -71.535
+    ]
+   }
+  ],
+  "18638097": [
+   {
+    "n": "Arequipa",
+    "r": "SAM",
+    "ll": [
+     -16.3989,
+     -71.535
+    ]
+   },
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   },
+   {
+    "n": "Cuzco",
+    "r": "SAM",
+    "ll": [
+     -13.5166,
+     -71.9784
+    ]
+   }
+  ],
+  "18638101": [
+   {
+    "n": "Cuzco",
+    "r": "SAM",
+    "ll": [
+     -13.5166,
+     -71.9784
+    ]
+   },
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   }
+  ],
+  "18638104": [
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   },
+   {
+    "n": "Cuzco",
+    "r": "SAM",
+    "ll": [
+     -13.5166,
+     -71.9784
+    ]
+   }
+  ],
+  "18638108": [
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   },
+   {
+    "n": "Arequipa",
+    "r": "SAM",
+    "ll": [
+     -16.3989,
+     -71.535
+    ]
+   }
+  ],
+  "18638111": [
+   {
+    "n": "Arequipa",
+    "r": "SAM",
+    "ll": [
+     -16.3989,
+     -71.535
+    ]
+   },
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   }
+  ],
+  "18644932": [
+   {
+    "n": "Cuzco",
+    "r": "SAM",
+    "ll": [
+     -13.5166,
+     -71.9784
+    ]
+   },
+   {
+    "n": "Puno",
+    "r": "SAM",
+    "ll": [
+     -15.8333,
+     -70.0333
+    ]
+   },
+   {
+    "n": "Cuzco",
+    "r": "SAM",
+    "ll": [
+     -13.5166,
+     -71.9784
+    ]
+   }
   ]
  },
  "TRIPS": [
@@ -4416,6 +4566,51 @@
    "route": "18536036"
   },
   {
+   "id": "18644932",
+   "n": "A Wellness Journey Above Peru",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18644932/awellnessjourneyaboveperu",
+   "days": 3,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_15_1007.webp",
+   "from": "Cuzco, Peru",
+   "to": "Cuzco, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "12/3/2026",
+   "r": "12/5/2026",
+   "mks": [
+    "2026-12"
+   ],
+   "win": "Dates: 03 Dec 2026 - 05 Dec 2026",
+   "description": "A transformative wellness journey aboard the Andean Explorer, where mindful movement, restorative rituals and breathtaking Andean landscapes invite guests to slow down, reconnect and be present. From sunrise meditation at Lake Titicaca and mindful walks through ancient landscapes to stargazing in Saracocha and restorative moments onboard, the train becomes a moving sanctuary where time, space and stillness become the ultimate luxuries.",
+   "included": [
+    "Private transfers",
+    "Meals included (full-board)",
+    "Special curated wellness experience by Annie Moves (ALO Wellness Club)",
+    "Welcome Wellness Cabin Kit with: - Aromatherapy pillow mist - Foot roller - Reflexology card - Heating pouch"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Cuzco"
+    },
+    {
+     "d": 2,
+     "n": "Puno"
+    },
+    {
+     "d": 1,
+     "n": "Cuzco"
+    }
+   ],
+   "route": "18644932"
+  },
+  {
    "id": "15801927",
    "n": "All about food - a culinary visit to Switzerland",
    "b": "bucher",
@@ -4501,6 +4696,51 @@
     }
    ],
    "route": "15801927"
+  },
+  {
+   "id": "18638097",
+   "n": "Andean Plains & Islands of Discovery",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18638097/andeanplainsislandsofdiscovery",
+   "days": 3,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_0_1007.webp",
+   "from": "Arequipa, Peru",
+   "to": "Cuzco, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "10/25/2026",
+   "r": "10/27/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 25 Oct 2026 - 27 Oct 2026",
+   "description": "Departing every Sunday, embark on a remarkable journey aboard the Andean Explorer, travelling from Arequipa through the breathtaking landscapes of the Andean plains to the shores of Lake Titicaca and onward to Cusco. Discover the ancient rock art of the Sumbay Caves, explore the floating islands of Uros and the cultural treasures of Taquile, and savour exquisite dining and cocktails onboard. Conclude your adventure with a visit to the archaeological site of Raqchi, where Peru’s rich history and extraordinary landscapes come together in an unforgettable three-day experience.",
+   "included": [
+    "Accommodation onboard for 02 nights",
+    "Full board itinerary",
+    "On and off board daily excursions",
+    "Ground transfers"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arequipa"
+    },
+    {
+     "d": 2,
+     "n": "Puno"
+    },
+    {
+     "d": 3,
+     "n": "Cuzco"
+    }
+   ],
+   "route": "18638097"
   },
   {
    "id": "18087224",
@@ -4808,7 +5048,14 @@
     "Option 3. Johnston Canyon Frozen Falls Adventure Option 4. Electric Fat Biking Banff Adventure Option 5. Upgrade Option: Lake Louise and Johnston Canyon",
     "Scheduled express coach between Banff & Calgary Christmas Dinner on December 25th National Park fees Meals as per Itinerary"
    ],
-   "promotions": [],
+   "promotions": [
+    {
+     "name": "Book 2027 Canada vacations by Nov 15 and receive 10% off selected packages",
+     "endDate": "2027-10-15",
+     "exclusive": false,
+     "description": "Early Booking Bonus – Book your 2027 Canada vacation by Nov 15 and receive 10% off select packages (up to $4,000 per couple) is applicable to select packages only as indicated on our Canada By Design website. Total savings vary by package, departure date, hotel grade, and other factors. Offers are subject to availability for 2027 departures and can be modified, withdrawn, or amended without prior notice. Trans Canada Packages: Up to $4,000 per couple Western Canada Packages: Up to $3,000 per couple Eastern Canada Packages: Up to $2,500 per couple Road Trip Packages: Up to $1,500 per couple…"
+    }
+   ],
    "itin": [
     {
      "d": 1,
@@ -5435,7 +5682,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/16650958_2_44.webp",
    "from": "Rome, Italy",
    "to": "Istanbul, Türkiye",
-   "country": "Hungary",
+   "country": "Türkiye",
    "train": "La Dolce Vita Orient Express",
    "world": true,
    "d": "10/22/2026",
@@ -5581,7 +5828,14 @@
     "Private Transfers between Charlottetown & Moncton",
     "Montreal | Freedom of Choice - Choose 1 of 4 Excursions 1. Montreal Half Day Sightseeing Tour 2. Walking Tour of Old Montreal 3. Beyond the Market Food Walking Tour 4. Tailor-made Excursion"
    ],
-   "promotions": [],
+   "promotions": [
+    {
+     "name": "Book 2027 Canada vacations by Nov 15 and receive 10% off selected packages",
+     "endDate": "2027-10-15",
+     "exclusive": false,
+     "description": "Early Booking Bonus – Book your 2027 Canada vacation by Nov 15 and receive 10% off select packages (up to $4,000 per couple) is applicable to select packages only as indicated on our Canada By Design website. Total savings vary by package, departure date, hotel grade, and other factors. Offers are subject to availability for 2027 departures and can be modified, withdrawn, or amended without prior notice. Trans Canada Packages: Up to $4,000 per couple Western Canada Packages: Up to $3,000 per couple Eastern Canada Packages: Up to $2,500 per couple Road Trip Packages: Up to $1,500 per couple…"
+    }
+   ],
    "itin": [
     {
      "d": 1,
@@ -6034,7 +6288,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Istanbul, Türkiye",
    "to": "Paris, France",
-   "country": "France",
+   "country": "Türkiye",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -6495,7 +6749,14 @@
     "Banff | Freedom of Choice 1 of 3 Excursions | Shared Small Group 1. Discover Banff & its Wildlife Tour + Gondola 2. Snowshoeing at Paint Pots Tour 3. Johnson Canyon Icewalk",
     "Banff to Calgary | Private Transfer National Park fees Meals as per Itinerary"
    ],
-   "promotions": [],
+   "promotions": [
+    {
+     "name": "Book 2027 Canada vacations by Nov 15 and receive 10% off selected packages",
+     "endDate": "2027-10-15",
+     "exclusive": false,
+     "description": "Early Booking Bonus – Book your 2027 Canada vacation by Nov 15 and receive 10% off select packages (up to $4,000 per couple) is applicable to select packages only as indicated on our Canada By Design website. Total savings vary by package, departure date, hotel grade, and other factors. Offers are subject to availability for 2027 departures and can be modified, withdrawn, or amended without prior notice. Trans Canada Packages: Up to $4,000 per couple Western Canada Packages: Up to $3,000 per couple Eastern Canada Packages: Up to $2,500 per couple Road Trip Packages: Up to $1,500 per couple…"
+    }
+   ],
    "itin": [
     {
      "d": 1,
@@ -6599,7 +6860,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Singapore",
+   "country": "Malaysia",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
@@ -6767,7 +7028,14 @@
     "Montreal | Freedom of Choice - Choose 1 of 2 Excursions 1. Private Old Montreal Culinary Walking Tour | Duration 3 Hours 2. Private Walking Tour of Old Montreal East & West | Duration 3 Hours",
     "Business rail travel Montreal to Quebec City (lunch included) Private Walking Tour of Quebec City | Duration 2 1/2 Hours Meals as per itinerary"
    ],
-   "promotions": [],
+   "promotions": [
+    {
+     "name": "Book 2027 Canada vacations by Nov 15 and receive 10% off selected packages",
+     "endDate": "2027-10-15",
+     "exclusive": false,
+     "description": "Early Booking Bonus – Book your 2027 Canada vacation by Nov 15 and receive 10% off select packages (up to $4,000 per couple) is applicable to select packages only as indicated on our Canada By Design website. Total savings vary by package, departure date, hotel grade, and other factors. Offers are subject to availability for 2027 departures and can be modified, withdrawn, or amended without prior notice. Trans Canada Packages: Up to $4,000 per couple Western Canada Packages: Up to $3,000 per couple Eastern Canada Packages: Up to $2,500 per couple Road Trip Packages: Up to $1,500 per couple…"
+    }
+   ],
    "itin": [
     {
      "d": 1,
@@ -7133,7 +7401,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Paris, France",
    "to": "Budapest, Hungary",
-   "country": "France",
+   "country": "Hungary",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7334,7 +7602,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_19_1002.webp",
    "from": "Paris, France",
    "to": "Istanbul, Türkiye",
-   "country": "Hungary",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7808,6 +8076,51 @@
    "route": "18613383"
   },
   {
+   "id": "18638087",
+   "n": "Peruvian highlands",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18638087/peruvianhighlands",
+   "days": 3,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_0_1007.webp",
+   "from": "Cuzco, Peru",
+   "to": "Arequipa, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "10/22/2026",
+   "r": "10/24/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 22 Oct 2026 - 24 Oct 2026",
+   "description": "Discover Peru’s breathtaking highlands aboard the legendary Belmond Andean Explorer, departing every Thursday from Cusco to Puno and Arequipa. Savour exquisite onboard dining, explore ancient archaeological treasures, experience the floating islands of Uros and the beauty of Taquile, and marvel at star-filled Andean skies. Over three unforgettable days, immerse yourself in extraordinary landscapes, rich cultural traditions and refined luxury, where every moment reveals the magic of Peru.",
+   "included": [
+    "Accommodation onboard for 02 nights",
+    "Full board aboard the train",
+    "On and off board daily experiences",
+    "Ground transfers"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Cuzco"
+    },
+    {
+     "d": 2,
+     "n": "Puno"
+    },
+    {
+     "d": 3,
+     "n": "Arequipa"
+    }
+   ],
+   "route": "18638087"
+  },
+  {
    "id": "16259951",
    "n": "Poland by Rail",
    "b": "mazurkas",
@@ -7866,7 +8179,7 @@
    "img": null,
    "from": "Prague, Czech Republic",
    "to": "Paris, France",
-   "country": "Czech Republic",
+   "country": "France",
    "train": "Venice Simplon-Orient-Express",
    "world": true,
    "mks": [
@@ -7946,16 +8259,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8015,16 +8328,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8090,16 +8403,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8159,16 +8472,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8220,16 +8533,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8293,16 +8606,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8358,16 +8671,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8420,16 +8733,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8498,16 +8811,16 @@
    ],
    "promotions": [
     {
-     "name": "AMERICA CELEBRATES 250 YEARS",
-     "endDate": "2026-11-20",
-     "exclusive": false,
-     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
-    },
-    {
      "name": "Travel Again 2026",
      "endDate": "2026-11-20",
      "exclusive": false,
      "description": "Have you traveled with Rocky Mountaineer? Another Adventure awaits with Canyon Spirit. Make 2026 the year you discover a new elevated rail adventure – this time though the American Southwest – the gateway to America’s most iconic national parks – the Mighty 5 and beyond. As a valued past guest, enjoy exclusive savings with our travel with us again. Save up to $2,000* USD per couple on Premier Upgrade Experience or $1,500* USD per couple when booking Signature Experience on any Canyon Spirit package - 2026 TRAVEL AGAIN PROMOTION LEGAL TERMS AND CONDITIONS: “2026 Travel Again Offer” (“Offer”)…"
+    },
+    {
+     "name": "AMERICA CELEBRATES 250 YEARS",
+     "endDate": "2026-11-20",
+     "exclusive": false,
+     "description": "Save $250* USD per person, on 2026 Canyon Spirit Packages. Available on Select 2026 Departures. Plus, Save $100* per couple on the Virtuoso Exclusive member benefits for all Canyon Spirit 2026 - OFFER MUST BE APPLIED AT THE TIME OF BOOKING. *2026 AMERICA CELEBRATES 250 PROMOTION – CANYON SPIRIT LEGAL TERMS AND CONDITIONS: “2026 America Celebrates 250 Promotion – Canyon Spirit” (“Offer”) applies only to new bookings on Canyon Spirit packages (excluding two-day and three-day rail) on select 2026 travel dates in April, June, July, August and November. High demand dates are excluded. Bookings…"
     },
     {
      "name": "2026 Colorado Utah Resident Offer",
@@ -8653,7 +8966,6 @@
    "train": "Rovos Rail",
    "world": true,
    "mks": [
-    "2026-10",
     "2026-11",
     "2026-12"
    ],
@@ -8853,7 +9165,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15687445_2_4.webp",
    "from": "Pretoria, South Africa",
    "to": "Victoria Falls, Zimbabwe",
-   "country": "Zimbabwe",
+   "country": "South Africa",
    "train": "Rovos Rail",
    "world": true,
    "mks": [
@@ -9341,6 +9653,170 @@
     }
    ],
    "route": "18237631"
+  },
+  {
+   "id": "18638104",
+   "n": "Spirit of the Andes",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18638104/spiritoftheandes",
+   "days": 2,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_0_1007.webp",
+   "from": "Puno, Peru",
+   "to": "Cuzco, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "10/26/2026",
+   "r": "10/27/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 26 Oct 2026 - 27 Oct 2026",
+   "description": "Departing every Monday, embark on a captivating journey aboard the Andean Explorer, travelling from the shores of Lake Titicaca to the historic city of Cusco. Discover the rich heritage of the Andes, savour exquisite dining and cocktails onboard, and admire the region’s breathtaking landscapes along the way. Explore the remarkable archaeological site of Raqch'i, where the legacy of the Inca civilization comes to life, before arriving in Cusco after an unforgettable journey blending cultural discovery, extraordinary scenery and refined rail travel.",
+   "included": [
+    "Accommodation aboard for 01 night",
+    "Full board aboard the train",
+    "On and off daily experiences",
+    "Ground transfers"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Puno"
+    },
+    {
+     "d": 2,
+     "n": "Cuzco"
+    }
+   ],
+   "route": "18638104"
+  },
+  {
+   "id": "18638111",
+   "n": "Spirit of the Islands",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18638111/spiritoftheislands",
+   "days": 2,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_0_1007.webp",
+   "from": "Arequipa, Peru",
+   "to": "Puno, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "10/25/2026",
+   "r": "10/26/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 25 Oct 2026 - 26 Oct 2026",
+   "description": "Departing every Sunday, embark on a captivating journey aboard the Andean Explorer, travelling from Arequipa to the shores of Lake Titicaca. Discover the ancient rock art of the Sumbay Caves, admire the dramatic landscapes of the Andean highlands, and savour exceptional dining and refined onboard experiences along the way. As evening falls, enjoy cocktails and canapés before an exquisite dinner, arriving at Puno Dock beneath the Andean night sky. Wake to the beauty of Lake Titicaca and a spectacular sunrise, concluding your journey with unforgettable memories of Peru’s extraordinary landscapes and cultural heritage.",
+   "included": [
+    "Accommodation onboard for 02 night",
+    "Full board onboard the train",
+    "On and off train daily experiences",
+    "Ground transfers"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Arequipa"
+    },
+    {
+     "d": 2,
+     "n": "Puno"
+    }
+   ],
+   "route": "18638111"
+  },
+  {
+   "id": "18638108",
+   "n": "Spirit of the Valley",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18638108/spiritofthevalley",
+   "days": 2,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_0_1007.webp",
+   "from": "Puno, Peru",
+   "to": "Arequipa, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "10/23/2026",
+   "r": "10/24/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 23 Oct 2026 - 24 Oct 2026",
+   "description": "Departing every Friday, embark on a captivating journey aboard the Andean Explorer, travelling from the shores of Lake Titicaca to the White City of Arequipa. Discover the dramatic beauty of the Andean highlands, savour exquisite dining and refined onboard experiences, and marvel at a star-filled sky in the remote landscapes of Saracocha. Explore the fascinating Sumbay Caves, home to ancient rock art, and journey through breathtaking scenery towards Arequipa, where cultural heritage and extraordinary natural wonders create an unforgettable rail adventure.",
+   "included": [
+    "Accommodation onboard for 01 night",
+    "Full board onboard the train",
+    "On and off train daily experiences",
+    "Ground transfers"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Puno"
+    },
+    {
+     "d": 2,
+     "n": "Arequipa"
+    }
+   ],
+   "route": "18638108"
+  },
+  {
+   "id": "18638101",
+   "n": "Spirit of the Water",
+   "b": "belmondperu",
+   "g": [
+    "SAM"
+   ],
+   "u": "https://www.virtuoso.com/advisor/brianharris/tours/18638101/spiritofthewater",
+   "days": 2,
+   "img": "https://media.virtuoso.com/m/Images/Brochures/h400/15269739_2_0_1007.webp",
+   "from": "Cuzco, Peru",
+   "to": "Puno, Peru",
+   "country": "Peru",
+   "train": "Andean Explorer",
+   "world": true,
+   "d": "10/22/2026",
+   "r": "10/23/2026",
+   "mks": [
+    "2026-10"
+   ],
+   "win": "Dates: 22 Oct 2026 - 23 Oct 2026",
+   "description": "Departing every Thursday, embark on an unforgettable journey aboard the Andean Explorer, travelling from the historic city of Cusco to the enchanting shores of Lake Titicaca. Savour a delightful brunch onboard, discover the ancient archaeological site of Raqch'i, and admire the dramatic Andean landscapes as you journey towards La Raya. As evening unfolds, enjoy afternoon tea, cocktails and canapés in the elegant Piano Bar Car, followed by an exquisite dinner onboard. Arrive at Puno Dock beneath the Andean night sky, and wake to the beauty of Lake Titicaca before breakfast and check-out the following morning.",
+   "included": [
+    "Accommodation onboard for 01 night",
+    "On and off board daily experiences",
+    "Full board onboard the train",
+    "Ground transfers"
+   ],
+   "promotions": [],
+   "itin": [
+    {
+     "d": 1,
+     "n": "Cuzco"
+    },
+    {
+     "d": 2,
+     "n": "Puno"
+    }
+   ],
+   "route": "18638101"
   },
   {
    "id": "18279768",
@@ -11118,7 +11594,7 @@
    "img": "https://media.virtuoso.com/m/Images/Brochures/h400/2595_2_15_1002.webp",
    "from": "Singapore, Singapore",
    "to": "Singapore, Singapore",
-   "country": "Malaysia",
+   "country": "Singapore",
    "train": "Eastern & Oriental Express",
    "world": true,
    "mks": [
