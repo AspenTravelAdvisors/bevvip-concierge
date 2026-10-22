@@ -1,87 +1,63 @@
-# The Guide
+<p align="center">
+  <a href="https://guide.expeditionbucketlist.com">
+    <img src=".github/assets/living-atlas.webp" alt="The Living Atlas: a globe of vetted stays and journeys across eight collections" width="100%">
+  </a>
+</p>
 
-**The Guide** is an AI travel concierge for luxury and expedition travel, live at
-**[guide.expeditionbucketlist.com](https://guide.expeditionbucketlist.com)**.
+<h1 align="center">The Guide</h1>
 
-Travelers describe the trip they have in mind; The Guide (built on Claude)
-searches real inventory — hotels, villas, expedition and world cruises, safaris,
-rail journeys, hotel yachts and private jet trips — and answers with result
-cards that open on the Living Atlas. When they're ready, it hands the brief to
-an advisor. All bookings are made with
-**[Aspen Travel Advisors](https://aspentraveladvisors.com)**.
+<p align="center">
+  <em>Private travel, powered by Virtuoso® · Arranged by Aspen Travel Advisors</em>
+</p>
 
-## What's on the site
+<p align="center">
+  <a href="https://guide.expeditionbucketlist.com"><strong>Begin your journey at guide.expeditionbucketlist.com →</strong></a>
+</p>
 
-| Route | What it is |
+---
+
+Some journeys are once in a lifetime. **The Guide** helps you find them.
+
+Describe the trip you've been dreaming of, whether that's a private jet circling the
+globe, a walking safari in Botswana, or a quiet villa above the Amalfi Coast. The
+Guide answers with more than 12,000 hand-vetted stays and journeys, each one
+shown on a living globe so you can see exactly where your next chapter unfolds.
+
+## Eight ways to see the world
+
+| | |
 | --- | --- |
-| `/` | The Guide — streaming chat concierge with result cards and advisor hand-off |
-| `/atlas/<type>` | The Living Atlas — map views for each collection (hotel, cruise, safari, train, yacht, jet, world cruise), plus `/atlas/villa` |
-| `/hotels`, `/villas`, `/journeys` | Browsable collection pages by destination |
-| `/answers` | Answer pages for common travel questions |
-| `/bucket-list` | A traveler's saved trips |
+| ✈️ **Private Jet Expeditions** | Several continents in one seamless journey, with every connection handled for you |
+| 🛥️ **Luxury Hotel Yachts** | Intimate sailings through the Mediterranean, the Caribbean and the South Pacific |
+| 🦁 **Safari Journeys** | Lodges and camps across East and Southern Africa and beyond |
+| 🧊 **Expedition Cruises** | Antarctica, the Arctic, the Galápagos and the world's wildest coastlines |
+| 🌍 **World Cruises** | The grand voyage: months at sea and a world of ports |
+| 🚂 **Rail Journeys** | The great trains, from Scottish sleepers to the Orient |
+| 🏡 **Private Villas** | Exceptional homes with the space and privacy to match |
+| 🏨 **VIP Hotels** | Virtuoso hotels with exclusive amenities for Guide travelers |
 
-Example atlas links:
-`/atlas/hotel?hotel=<id>`, `/atlas/safari/?ids=<id>`, `/atlas/cruise/?ids=<id>`.
+## How it works
 
-## Repository layout
+1. **Ask The Guide.** Tell it where, when and what kind of experience you're after.
+2. **Explore the Living Atlas.** Spin the globe, open any property or itinerary, and
+   save favorites to your bucket list.
+3. **Talk to an advisor.** When you're ready, The Guide passes your brief to an
+   advisor at [Aspen Travel Advisors](https://aspentraveladvisors.com), who arranges
+   every detail and books your trip.
 
-```
-next-concierge/      The application (Next.js App Router, TypeScript) — the live site
-  app/               Routes and API handlers (app/api/guide is The Guide's backend)
-  components/        UI: chat, result cards, atlas shells, advisor request
-  lib/               Guide prompt, offering search, atlas config, booking helpers
-  data/              Committed atlas inventory and curated data
-  scripts/           Data sync, build and verification scripts
-  public/maps/       The per-collection atlas map apps
-Master Documents/    Project, supplier and API reference documentation
-design-mocks/        Design explorations
-.github/workflows/   CI, nightly Virtuoso data sync, IndexNow, monthly answer pages
-```
+## Why travel with Aspen Travel Advisors
 
-## Getting started
+As a **Virtuoso®** member agency, Aspen Travel Advisors brings travelers
+the privileges of the world's leading luxury travel network: preferred rates,
+amenities such as upgrades when available, daily breakfast and resort credits,
+and an advisor who knows the places personally.
 
-Requires Node.js 18+ (CI uses Node 22).
+<p align="center">
+  <a href="https://guide.expeditionbucketlist.com"><strong>Visit The Guide</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://aspentraveladvisors.com"><strong>Aspen Travel Advisors</strong></a>
+</p>
 
-```sh
-cd next-concierge
-npm install
-ANTHROPIC_API_KEY=sk-ant-... npm run dev
-```
+---
 
-Then open http://localhost:3000. The full list of environment variables
-(Mapbox, Google Maps, Project Expedition, rate limits and more) is documented in
-[`next-concierge/README.md`](next-concierge/README.md#environment).
-
-## Checks
-
-```sh
-npm run check     # typecheck
-npm run verify    # the full verification suite; every failure is named at the end
-```
-
-CI (`.github/workflows/ci.yml`) runs the typecheck and verification suite on
-every push to `main` and every pull request.
-
-## Data
-
-Supplier inventory (Virtuoso hotels, promotions, cruises and tours) is
-**committed to the repo, not fetched at request time**, so every supplier
-change arrives as a reviewable diff. A nightly GitHub Action syncs it and
-commits the result; `prebuild` re-runs the merges on every deploy so expired
-offers and departed sailings are filtered out. See
-[`next-concierge/README.md`](next-concierge/README.md#supplier-data) and
-[`Master Documents/Virtuoso_API_Reference.md`](Master%20Documents/Virtuoso_API_Reference.md).
-
-## Deployment
-
-The site deploys on Vercel with the project's Root Directory set to
-`next-concierge`. Merges to `main` build and go to production automatically.
-Production configuration and rollback are covered in
-[`next-concierge/PROMOTE.md`](next-concierge/PROMOTE.md).
-
-## Further reading
-
-- [`next-concierge/README.md`](next-concierge/README.md) — app internals, environment, verification
-- [`next-concierge/STATE.md`](next-concierge/STATE.md) — running record of what has shipped
-- [`next-concierge/BOOKING-SPEC.md`](next-concierge/BOOKING-SPEC.md) — booking flow
-- [`DEEPLINK-HANDOFF.md`](DEEPLINK-HANDOFF.md) — atlas deep-link contract
+<sub>For the team: technical documentation lives in <a href="next-concierge/README.md"><code>next-concierge/README.md</code></a>.</sub>
