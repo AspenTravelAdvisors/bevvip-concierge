@@ -98,18 +98,18 @@ jobs:
         env: *virtuoso
         run: npm run sync:virtuoso-tours
 
+      # The same chain `prebuild` runs on every deploy, named once in
+      # package.json as build:atlas. This step used to list the builders by
+      # hand, and fell behind when build:gateway-hotels and
+      # build:collection-counts were added: the nightly commit stopped
+      # regenerating the gateway files and the collection counts, and
+      # `npm run verify` went red on main while every deploy quietly papered
+      # over it. One list cannot drift from itself.
       - name: Rebuild the atlases
         working-directory: next-concierge
         run: |
           npm run match:virtuoso-hotels
-          npm run merge:virtuoso-hotels
-          npm run merge:virtuoso-journeys
-          npm run fix:ports
-          npm run build:hotel-points
-          npm run build:safari-camps
-          npm run build:sea-routes
-          npm run build:cruise-regions
-          npm run build:journey-facts
+          npm run build:atlas
 
       # The last gate before anything is committed, and the only one that sees
       # both what the supplier sent and what is already live. It covers all four
@@ -155,9 +155,13 @@ jobs:
       #
       # Both facts are kept instead: the data is committed either way, and the
       # subject says which kind of night it was.
+      #
+      # DATA is every path build:atlas writes. lib/atlas-counts.ts is the one
+      # outside the two data folders (a .ts, for the reason its builder gives);
+      # leave it off and the counts are regenerated every night and never kept.
       - name: Commit the refreshed data
         run: |
-          DATA="next-concierge/data/atlas next-concierge/public/maps"
+          DATA="next-concierge/data/atlas next-concierge/public/maps next-concierge/lib/atlas-counts.ts"
           HEARTBEAT="next-concierge/data/atlas/shared/virtuoso-sync-status.json"
 
           git config user.name  "virtuoso-sync[bot]"
