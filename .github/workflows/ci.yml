@@ -1,0 +1,63 @@
+# Runs the typecheck and the verification suite on every push to main and on
+# every pull request.
+#
+# Before this, nothing checked a change people made. Vercel's build catches
+# what fails to compile, and the nightly Virtuoso sync runs two verifiers over
+# its own data commit, but the rest of `npm run verify` ran only when someone
+# remembered to — and three of its checks were red on main with nobody told.
+# The suite takes about a minute; there is no reason for it to be optional.
+#
+# What does NOT trigger this: the nightly sync pushes with GITHUB_TOKEN, and
+# GitHub starts no workflow from that token's pushes. The sync carries its own
+# gates (verify-virtuoso-delta, verify:hotels, verify:seo). This one covers
+# code and hand-curated data.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # A newer push to a PR makes the older run moot. Every run on main is kept,
+  # so each commit there has its own answer.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: next-concierge
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-concierge/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # verify-all runs `check` (the typecheck) first, then every verifier, and
+      # names all the failures at the end rather than stopping at the first.
+      - name: Typecheck and verify
+        run: node scripts/verify-all.mjs --skip=verify:ports
+
+      # The port audit has findings that need a person, not a code change: two
+      # corrections in the ledger whose supplier coordinates have since moved
+      # (Kimberley Coast, Miyako), three that no longer match any stop, and a
+      # jet itinerary's "Naples" placed in Florida. Until that review lands it
+      # runs here on its own, visible but not blocking — once
+      # `npm run verify:ports` passes, delete this step and the --skip above.
+      - name: Port audit (non-blocking until the port review lands)
+        continue-on-error: true
+        run: npm run verify:ports

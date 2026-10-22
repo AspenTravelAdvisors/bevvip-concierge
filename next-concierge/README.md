@@ -77,12 +77,17 @@ for the Action — *not* in Vercel, which only builds committed data.
 npm run verify              # every check, all of them, failures named at the end
 npm run verify:bail         # stop at the first failure
 node scripts/verify-all.mjs virtuoso route   # just the ones whose name matches
+node scripts/verify-all.mjs --skip=ports     # all but the ones whose name matches
 ```
 
 `verify` deliberately does **not** stop at the first failure. It used to be an
 `&&` chain, and a single false positive at the front took sixteen real checks
 down with it — including one that was genuinely red. Each check is an
 independent claim about a different part of the atlas, so each one runs.
+
+`.github/workflows/ci.yml` runs the suite on every push to `main` and every
+pull request. A check that is red for a reason waiting on a person (today, the
+port audit) runs there as its own non-blocking step rather than being dropped.
 
 ## Supplier data
 

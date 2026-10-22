@@ -16,6 +16,11 @@
 //   node scripts/verify-all.mjs              # everything
 //   node scripts/verify-all.mjs --bail       # stop at the first failure
 //   node scripts/verify-all.mjs virtuoso adapters   # only these
+//   node scripts/verify-all.mjs --skip=ports        # all but these
+//
+// --skip exists for CI, which needs to block on every check that is green
+// while one known finding waits on a human decision — and it says what it
+// skipped at the end, so a green run cannot pass for the whole suite.
 
 import { spawnSync } from 'node:child_process';
 
@@ -55,12 +60,20 @@ const CHECKS = [
 const args = process.argv.slice(2);
 const BAIL = args.includes('--bail');
 const only = args.filter(a => !a.startsWith('--'));
-const wanted = only.length
+const skip = args
+  .filter(a => a.startsWith('--skip='))
+  .flatMap(a => a.slice('--skip='.length).split(','))
+  .filter(Boolean);
+const selected = only.length
   ? CHECKS.filter(c => only.some(o => c.includes(o)))
   : CHECKS;
+const skipped = selected.filter(c => skip.some(s => c.includes(s)));
+const wanted = selected.filter(c => !skipped.includes(c));
 
 if (!wanted.length) {
-  console.error(`No check matches ${only.join(', ')}. Known: ${CHECKS.join(', ')}`);
+  console.error(selected.length
+    ? `Every selected check was skipped: ${skipped.join(', ')}`
+    : `No check matches ${only.join(', ')}. Known: ${CHECKS.join(', ')}`);
   process.exit(1);
 }
 
@@ -81,6 +94,7 @@ for (const script of wanted) {
 
 const secs = ((Date.now() - started) / 1000).toFixed(0);
 console.log(`\n${'═'.repeat(70)}`);
+if (skipped.length) console.log(`Skipped (--skip): ${skipped.join(', ')}`);
 if (!failed.length) {
   console.log(`All ${wanted.length} checks passed in ${secs}s.`);
   process.exit(0);
