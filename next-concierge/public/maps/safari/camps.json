@@ -5,8 +5,8 @@
   "radiusKm": 25,
   "lodgesInCategory": 71,
   "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 258,
-  "journeysTotal": 503,
+  "journeysWithCamps": 262,
+  "journeysTotal": 508,
   "campsMatched": 41
  },
  "radiusKm": 25,
@@ -191,7 +191,7 @@
     -2.97531,
     35.4504
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15493511_2_0_0924.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15493511_2_0.webp",
    "rooms": 19,
    "perks": [
     "Daily breakfast",
@@ -377,7 +377,7 @@
     -24.4167,
     31.4175
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4629_2_0_0924.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4629_2_0.webp",
    "rooms": 20,
    "perks": [
     "Daily breakfast",
@@ -4185,6 +4185,56 @@
     "stop": "Ngorongoro",
     "day": 12,
     "km": 19.6
+   }
+  ],
+  "18645735": [
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 2,
+    "km": 18.1
+   },
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 5,
+    "km": 9.1
+   }
+  ],
+  "18645736": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 4,
+    "km": 19.6
+   }
+  ],
+  "18645738": [
+   {
+    "id": "h_00537",
+    "stop": "Ngorongoro",
+    "day": 5,
+    "km": 19.6
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 9,
+    "km": 18.1
+   }
+  ],
+  "18645739": [
+   {
+    "id": "h_01409",
+    "stop": "Ol Pejeta Conservancy",
+    "day": 2,
+    "km": 9.1
+   },
+   {
+    "id": "h_01207",
+    "stop": "Masai Mara National Reserve",
+    "day": 4,
+    "km": 18.1
    }
   ]
  }
