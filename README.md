@@ -57,7 +57,3 @@ and an advisor who knows the places personally.
   &nbsp;·&nbsp;
   <a href="https://aspentraveladvisors.com"><strong>Aspen Travel Advisors</strong></a>
 </p>
-
----
-
-<sub>For the team: technical documentation lives in <a href="next-concierge/README.md"><code>next-concierge/README.md</code></a>.</sub>
