@@ -32,7 +32,7 @@ the promotion is done.)
   | Name | Value | Required |
   | --- | --- | --- |
   | `ANTHROPIC_API_KEY` | the Claude API key (`sk-ant-...`) | **yes** — chat is dead without it |
-  | `CLAUDE_MODEL` | leave unset unless overriding (default `claude-sonnet-4-6`) | no |
+  | `CLAUDE_MODEL` | leave unset unless overriding (default `claude-sonnet-5-5`) | no |
   | `NEXT_PUBLIC_MAPBOX_TOKEN` | the Mapbox public token (same one the old app used) | no — globe falls back gracefully if absent |
   | `GUIDE_MODEL_ATTEMPTS` | leave unset (default 4) — retries on transient Claude overloads | no |
   | `GOOGLE_MAPS_API_KEY` | Google Maps JS key, served via `/api/hotel/config` | no — required only for the hotel map tiles |

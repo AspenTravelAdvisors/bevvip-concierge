@@ -8,7 +8,7 @@
 // The hand-rolled Anthropic SSE parser from the original is replaced by the
 // official SDK's messages.stream() + finalMessage().
 //
-// Env: ANTHROPIC_API_KEY (required), CLAUDE_MODEL (optional). Atlas inventory is
+// Env: ANTHROPIC_API_KEY (required), CLAUDE_MODEL and GUIDE_EFFORT (optional). Atlas inventory is
 //      served in-process from lib/atlas (no external atlas API base needed).
 
 import Anthropic from "@anthropic-ai/sdk";
@@ -46,14 +46,44 @@ import { blockedResponse, isBlockedCountry } from "@/lib/blocked-countries";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-4-6";
+const EFFORTS = ["low", "medium", "high", "max"] as const;
+type Effort = (typeof EFFORTS)[number];
+
+// GUIDE_EFFORT, read leniently: an unknown value falls back to `low` rather
+// than failing every turn on a typo in a dashboard field.
+function guideEffort(raw: string | undefined): Effort | null {
+  const v = (raw || "low").trim().toLowerCase();
+  if (v === "none") return null;
+  return (EFFORTS as readonly string[]).includes(v) ? (v as Effort) : "low";
+}
+
+// Claude Sonnet 5.5 since 23 October 2026, from Sonnet 4.6: about a third
+// cheaper per token ($2/$10 per MTok against $3/$15), though its tokenizer
+// counts the same text as roughly 30% more tokens. To roll back, set
+// CLAUDE_MODEL=claude-sonnet-4-6 and GUIDE_EFFORT=none: that restores the model
+// and the no-thinking behaviour it ran with (the larger MAX_TOKENS below is
+// harmless there).
+const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
+// How hard the model thinks. Sonnet 4.6 ran this route with no thinking at
+// all; Sonnet 5.5 thinks adaptively unless told otherwise, and from `medium`
+// up it thinks before almost every reply, which a traveler waits through before
+// the first word appears. `low` skips thinking on most simple requests and is
+// the recommended starting point for chat and search; raise it only if replies
+// measurably need it. "none" sends no effort field at all, for a model that
+// rejects it (Haiku 4.5) or to restore Sonnet 4.6's old default.
+const EFFORT = guideEffort(process.env.GUIDE_EFFORT);
 // A full answer now carries a scene-setting open, a fit read, three to five
 // products with real dates, a cross-channel aside, hand-off framing and the
 // trailing [[BRIEF]] tag — and a cross-atlas reply carries that per pillar. At
 // 1500 the tail was the part that got cut, and the tail is where the brief
 // lives: stripControlTags hides an unterminated "[[", so a truncated reply lost
 // the advisor brief silently. Headroom is cheaper than a lost lead.
-const MAX_TOKENS = 2400;
+//
+// 2400 was set for Sonnet 4.6. Sonnet 5.5 counts the same reply as ~30% more
+// tokens, and any thinking it does counts against this cap too, so the same
+// answer needs more room. This is a ceiling, not a spend: unused tokens cost
+// nothing.
+const MAX_TOKENS = 4096;
 // A cross-atlas "ways to visit X" answer is instructed to call search_offerings
 // once per pillar (hotel, cruise, jet, worldcruise, train). Batched into one
 // assistant turn that is a single round, but the model routinely serialises
@@ -246,7 +276,10 @@ export async function POST(req: Request) {
         send({
           type: "meta",
           ...summarizeMeta(turn.toolMeta, turn.experiences),
-          stopReason,
+          // A declined turn shows the client's advisor button like any other
+          // hand-off; the log line below keeps "refusal" so the two stay
+          // countable apart.
+          stopReason: stopReason === "refusal" ? ADVISOR_HANDOFF : stopReason,
         });
         send({ type: "done" });
       } catch (err) {
@@ -368,6 +401,7 @@ async function runGuideTurnStream({
       {
         model: MODEL,
         max_tokens: MAX_TOKENS,
+        ...(EFFORT ? { output_config: { effort: EFFORT } } : {}),
         system,
         messages: withRollingCache(convo),
         tools: [
@@ -467,6 +501,25 @@ async function runGuideTurnStream({
       continue;
     }
 
+    // Sonnet 5.5's safety classifiers can decline a turn: an ordinary 200 with
+    // stop_reason "refusal", and whatever streamed before it is all the reply
+    // there will be. The categories (cyber, bio, building rival AI models,
+    // extracting the model's reasoning, other harms) are nowhere near a trip
+    // question, so this is mostly what a probe sees. Close the turn with the
+    // same way through to a person every other hand-off gets, rather than a
+    // reply that stops mid-sentence or never starts.
+    if (data.stop_reason === "refusal") {
+      // The category reads null on the pinned SDK (0.74), whose stream
+      // accumulator predates stop_details; the refusal itself is still logged.
+      const category =
+        (data as { stop_details?: { category?: string | null } }).stop_details?.category ?? null;
+      console.warn(JSON.stringify({ evt: "guide_refusal", category, model: MODEL }));
+      const note = (text.trim() ? "\n\n" : "") + REFUSAL_TEXT;
+      text += note;
+      send({ type: "delta", text: note });
+      return { text: text.trim(), toolMeta, experiences, stopReason: "refusal" };
+    }
+
     return {
       text: text.trim(),
       toolMeta,
@@ -525,6 +578,12 @@ const ADVISOR_HANDOFF_TEXT =
   "have the same inventory I do plus the supplier relationships that never fit in a " +
   "chat window. Use **Talk to an advisor** just above and tell them what you're " +
   "planning; you'll hear back within 24 hours.";
+
+// What closes a turn the model declined (stop_reason "refusal"). Plain and
+// short: it may follow a half-written reply, and it says nothing about why.
+const REFUSAL_TEXT =
+  "I can't help with that one here. For anything about your trip, use **Talk to an " +
+  "advisor** just above and an Aspen advisor will come back to you within 24 hours.";
 
 // The refusal, shaped as an ordinary finished turn: one delta, a meta frame
 // carrying the stopReason the client keys its advisor button off, then done.

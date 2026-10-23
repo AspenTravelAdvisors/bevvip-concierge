@@ -40,9 +40,17 @@ interface ModelRate {
 // rates are derived rather than listed: a read is 0.1x base input and a
 // five-minute write is 1.25x, and deriving them means a price change touches
 // one number per model instead of four.
+//
+// The route's default model MUST have an entry here: an unlisted one bills at
+// the priciest rate below, which for Sonnet 5.5 would trip the ceiling at about
+// 40% of real spend. scripts/verify-guide-budget.mjs holds the two together.
+// Opus 5.5 reads its cache at $0.20, half the derived rate; overcounting is the
+// safe direction for a ceiling, so it is left derived.
 const RATES: Record<string, ModelRate> = {
+  "claude-sonnet-5-5": { input: 2, output: 10 },
   "claude-sonnet-4-6": { input: 3, output: 15 },
   "claude-sonnet-5": { input: 2, output: 10 },
+  "claude-opus-5-5": { input: 4, output: 20 },
   "claude-haiku-4-5": { input: 1, output: 5 },
   "claude-opus-5": { input: 5, output: 25 },
   "claude-opus-4-8": { input: 5, output: 25 },
@@ -170,4 +178,4 @@ export async function recordGuideSpend(
   return usd;
 }
 
-export const __test = { turnCostUsd, rateFor, dayKey, FALLBACK_RATE, BUDGET_MICROS };
+export const __test = { turnCostUsd, rateFor, dayKey, FALLBACK_RATE, BUDGET_MICROS, RATES };

@@ -45,7 +45,8 @@ ANTHROPIC_API_KEY=sk-ant-... npm run dev
 | --- | --- | --- |
 | `ANTHROPIC_API_KEY` | yes | The Guide (Claude) |
 | `NEXT_PUBLIC_SITE_URL` | no* | The origin every absolute URL is built from — `metadataBase`, every canonical, `sitemap.xml`, `robots.txt` and every JSON-LD `@id`. Defaults to `https://guide.expeditionbucketlist.com` (see `SITE_URL` in `lib/answers.js`), so it is only *required* where that default would be a lie. *Set it in Vercel production, and set it on any preview or staging host that should emit its own URLs rather than production's — an unset preview publishes canonicals pointing at production. It is read at **build** time (`NEXT_PUBLIC_*` is inlined), so changing it needs a redeploy, not a restart. Trailing slashes are stripped; a value that is not an absolute origin fails the build at import. |
-| `CLAUDE_MODEL` | no | Override model (default `claude-sonnet-4-6`, matching the legacy deployment) |
+| `CLAUDE_MODEL` | no | Override the Guide's model (default `claude-sonnet-5-5`). A model the spend ceiling has no price for is metered at the most expensive known rate, so add it to `RATES` in `lib/guide-budget.ts` first. |
+| `GUIDE_EFFORT` | no | How hard the Guide's model thinks: `low` (default), `medium`, `high` or `max`. `none` sends no effort at all; together with `CLAUDE_MODEL=claude-sonnet-4-6` it puts the Guide back on the model and settings it ran with before Sonnet 5.5. |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | no | Render the Living Atlas globe |
 | `GOOGLE_MAPS_API_KEY` | no* | Google Maps JS key for the hotel map iframe (served via `/api/hotel/config`). *Required for the hotel map to render tiles. |
 | `NEXT_PUBLIC_*_ATLAS_BASE` | no | Override the in-app atlas handoff path (default internal `/maps/<type>`; see `lib/atlas-config.ts`) |

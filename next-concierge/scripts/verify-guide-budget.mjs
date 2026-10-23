@@ -22,7 +22,7 @@
 // relative imports that Node's ESM loader will not.
 
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -97,10 +97,18 @@ check(allUncached > sonnet * 3, 'an uncached turn costs several times a cached o
 
 const unknown = budget.__test.turnCostUsd(REAL_TURN, 'some-model-shipped-next-year');
 const priciest = Math.max(
-  ...['claude-sonnet-4-6', 'claude-sonnet-5', 'claude-haiku-4-5', 'claude-opus-5', 'claude-opus-4-8']
-    .map((m) => budget.__test.turnCostUsd(REAL_TURN, m)),
+  ...Object.keys(budget.__test.RATES).map((m) => budget.__test.turnCostUsd(REAL_TURN, m)),
 );
 near(unknown, priciest, 1e-9, 'an unknown model bills at the priciest known rate');
+
+// The Guide's default model must have a rate of its own. An unlisted one bills
+// at the priciest rate above, which on a cheaper model quietly lowers the real
+// ceiling. Read off the route's source, so changing one without the other fails
+// here rather than in production.
+const routeSrc = readFileSync(path.join(root, 'app/api/guide/route.ts'), 'utf8');
+const defaultModel = routeSrc.match(/process\.env\.CLAUDE_MODEL \|\| "([^"]+)"/)?.[1];
+check(!!defaultModel && Object.hasOwn(budget.__test.RATES, defaultModel),
+  `the Guide's default model (${defaultModel}) has a rate of its own`);
 check(budget.__test.turnCostUsd({ rounds: 0, input: 0, output: 0, cacheWrite: 0, cacheRead: 0 }, 'claude-sonnet-4-6') === 0,
   'a turn that reached no model costs nothing');
 
