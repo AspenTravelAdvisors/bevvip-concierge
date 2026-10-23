@@ -28,7 +28,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "check": "tsc -p tsconfig.check.json --noEmit",
     "verify:deeplinks": "node scripts/verify-deeplinks.mjs",
     "verify:hotels": "node scripts/verify-hotels.mjs",

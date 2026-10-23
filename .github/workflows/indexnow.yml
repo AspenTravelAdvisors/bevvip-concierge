@@ -62,18 +62,18 @@ jobs:
       SITE_URL: https://guide.expeditionbucketlist.com
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           sparse-checkout: next-concierge/scripts
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
       # Same rotating-key pattern as the Virtuoso crawl cache: each run saves a
       # fresh entry and restores the most recent one.
       - name: Restore the last submitted sitemap
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .indexnow
           key: indexnow-${{ github.run_id }}
