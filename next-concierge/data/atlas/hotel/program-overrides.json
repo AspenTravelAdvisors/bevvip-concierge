@@ -33,6 +33,281 @@
         { "brand": "Vignette Collection", "namePattern": "\\bvignette collection\\b" }
       ],
       "excludeIds": []
+    },
+    {
+      "program": "Auberge Resorts Collection",
+      "preferredOverlayProgramId": "auberge-resorts",
+      "notes": [
+        "The Virtuoso feed lists Auberge properties as '<Name>, Auberge Collection' under program 'Virtuoso', so the atlas's Auberge filter showed only the handful of base records that happened to carry the program. The name suffix is the membership signal.",
+        "Matched by name only, not brand: the feed tags three unrelated hotels with brand 'Auberge Resorts' because 'Auberge' is in their names. They are excluded below so the brand test cannot pull them in.",
+        "h_00159 Auberge du Jeu de Paume (Chantilly) and h_00156 Auberge Saint-Antoine (Québec) are Relais & Châteaux houses, not Auberge Resorts.",
+        "h_01091 L'Auberge Del Mar is not an Auberge Resorts property (Virtuoso's chain field says Noble House). It is excluded here; its base program is left for a person to correct."
+      ],
+      "brandRules": [
+        { "brand": "Auberge Resorts", "namePattern": "\\bauberge (resorts )?collection\\b" },
+        { "brand": "Auberge Resorts", "namePattern": "^l'auberge de sedona\\b" },
+        { "brand": "Auberge Resorts", "namePattern": "^auberge du soleil\\b" },
+        { "brand": "Auberge Resorts", "chain": "Auberge Collection" }
+      ],
+      "excludeIds": ["h_00159", "h_00156", "h_01091"]
+    },
+    {
+      "program": "Marriott STARS",
+      "preferredOverlayProgramId": "marriott-stars",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it.",
+        "Marriott's luxury group spans two programs. The STARS brands (Ritz-Carlton and its Reserves, St. Regis, EDITION, Bulgari, The Luxury Collection) are picked out by name; W, JW Marriott and the rest belong to Luminous, which has no atlas label yet, so they stay on 'Virtuoso'."
+      ],
+      "brandRules": [
+        {
+          "chain": "Luxury Group at Marriott International",
+          "namePattern": "\\britz-carlton\\b|\\bst\\.? regis\\b|\\bedition\\b|\\bbulgari\\b|\\bbvlgari\\b|\\bluxury collection\\b"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Four Seasons Preferred Partner",
+      "preferredOverlayProgramId": "four-seasons-preferred-partner",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Four Seasons Hotels and Resorts"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Hilton for Luxury",
+      "preferredOverlayProgramId": "hilton-for-luxury",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Hilton Luxury Brands"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Mandarin Oriental Fan Club",
+      "preferredOverlayProgramId": "mandarin-oriental-fan-club",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it.",
+        "h_01243 Mandarin Oriental Exceptional Homes is the villa-rental arm (StayOne Homes in the partner overlay), not a Fan Club hotel."
+      ],
+      "brandRules": [
+        {
+          "chain": "Mandarin Oriental"
+        }
+      ],
+      "excludeIds": [
+        "h_01243"
+      ]
+    },
+    {
+      "program": "Rosewood Elite",
+      "preferredOverlayProgramId": "rosewood-elite",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Rosewood Hotels & Resorts"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Belmond Bellini Club",
+      "preferredOverlayProgramId": "belmond-bellini-club",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Belmond"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Kempinski Club 1897",
+      "preferredOverlayProgramId": "kempinski-club-1897",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Kempinski Hotels"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Shangri-La The Luxury Circle",
+      "preferredOverlayProgramId": "shangri-la-luxury-circle",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Shangri-La Group"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Rocco Forte Knights",
+      "preferredOverlayProgramId": "rocco-forte-knights",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Rocco Forte Hotels"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Oetker Collection",
+      "preferredOverlayProgramId": "oetker-pearl-partner",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Oetker Hotels"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Maybourne Illustrated",
+      "preferredOverlayProgramId": "maybourne-illustrated",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Maybourne"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Langham",
+      "preferredOverlayProgramId": "couture-by-langham",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Langham Hotels & Resorts"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Viceroy",
+      "preferredOverlayProgramId": "viceroy-guild",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Viceroy Hotel Group"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Taj Hotels",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Taj"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Corinthia",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Corinthia Hotels"
+        }
+      ],
+      "excludeIds": []
+    },
+    {
+      "program": "Ted Turner Reserves",
+      "fromPrograms": [
+        "Virtuoso"
+      ],
+      "notes": [
+        "Keyed to Virtuoso's own chain field. The feed files every one of these under the import channel 'Virtuoso', so the program's atlas filter showed only the few base records that carried the label (most of them photo-less stubs). Only hotels still on 'Virtuoso' move; a hotel already filed under a specific program keeps it."
+      ],
+      "brandRules": [
+        {
+          "chain": "Ted Turner Reserves"
+        }
+      ],
+      "excludeIds": []
     }
   ]
 }

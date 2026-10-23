@@ -291,25 +291,6 @@
    ],
    "promo": 1
   },
-  "h_00927": {
-   "n": "Hotel de Rome",
-   "house": null,
-   "aff": null,
-   "city": "Rome",
-   "country": "Italy",
-   "ll": [
-    41.900219,
-    12.492653
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
   "h_02273": {
    "n": "The St. Regis Rome",
    "house": "Luxury Group at Marriott International",
@@ -344,6 +325,25 @@
    "perks": [
     "Daily breakfast",
     "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_02212": {
+   "n": "The Rome EDITION",
+   "house": "Luxury Group at Marriott International",
+   "aff": null,
+   "city": "Rome",
+   "country": "Italy",
+   "ll": [
+    41.9054,
+    12.4908
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16879029_2_0.webp",
+   "rooms": 93,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
     "Room upgrade"
    ],
    "promo": 0
@@ -3581,24 +3581,24 @@
    ],
    "promo": 1
   },
-  "h_00844": {
-   "n": "Hotel Colón",
-   "house": null,
+  "h_01070": {
+   "n": "Kimpton Vividora Barcelona",
+   "house": "IHG Hotels & Resorts",
    "aff": null,
    "city": "Barcelona",
    "country": "Spain",
    "ll": [
-    41.385002,
-    2.175834
+    41.3847,
+    2.17288
    ],
-   "thumb": null,
-   "rooms": null,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16340283_2_0.webp",
+   "rooms": 151,
    "perks": [
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 0
+   "promo": 1
   },
   "h_00991": {
    "n": "InterContinental Madrid",
@@ -3877,20 +3877,24 @@
    "perks": [],
    "promo": 0
   },
-  "h_02413": {
-   "n": "Virtuoso Hotel Core Training",
-   "house": null,
+  "h_01974": {
+   "n": "The Fairmont Olympic Hotel",
+   "house": "Accor",
    "aff": null,
    "city": "Seattle",
    "country": "United States",
    "ll": [
-    47.605983,
-    -122.335207
+    47.6082,
+    -122.334
    ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [],
-   "promo": 0
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4492_2_0_1002.webp",
+   "rooms": 450,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   },
   "h_v18513512": {
    "n": "VILLA Copenhagen",
@@ -4006,25 +4010,6 @@
    ],
    "promo": 0
   },
-  "h_01853": {
-   "n": "Stanly Ranch, Napa Valley",
-   "house": null,
-   "aff": null,
-   "city": "Napa",
-   "country": "United States",
-   "ll": [
-    38.244134,
-    -122.29888
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
   "h_01968": {
    "n": "The Estate Yountville",
    "house": null,
@@ -4043,6 +4028,25 @@
     "Room upgrade"
    ],
    "promo": 0
+  },
+  "h_00198": {
+   "n": "Bardessono Hotel & Spa",
+   "house": null,
+   "aff": null,
+   "city": "Yountville",
+   "country": "United States",
+   "ll": [
+    38.4029,
+    -122.36
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15274359_2_19_0927.webp",
+   "rooms": 65,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   },
   "h_01622": {
    "n": "Ritz-Carlton Montreal",
@@ -5630,16 +5634,16 @@
      0.4
     ],
     [
-     "h_00927",
-     0.6
-    ],
-    [
      "h_02273",
      0.6
     ],
     [
      "h_00348",
      0.7
+    ],
+    [
+     "h_02212",
+     1
     ]
    ]
   },
@@ -6822,8 +6826,8 @@
      0.5
     ],
     [
-     "h_00844",
-     0.7
+     "h_01070",
+     0.9
     ]
    ]
   },
@@ -6922,8 +6926,8 @@
      0.7
     ],
     [
-     "h_02413",
-     0.7
+     "h_01974",
+     0.8
     ]
    ]
   },
@@ -6968,12 +6972,12 @@
      6
     ],
     [
-     "h_01853",
-     6
-    ],
-    [
      "h_01968",
      13.1
+    ],
+    [
+     "h_00198",
+     13.4
     ]
    ]
   },

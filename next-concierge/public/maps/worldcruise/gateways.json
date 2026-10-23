@@ -72,24 +72,24 @@
    ],
    "promo": 1
   },
-  "h_00844": {
-   "n": "Hotel Colón",
-   "house": null,
+  "h_01070": {
+   "n": "Kimpton Vividora Barcelona",
+   "house": "IHG Hotels & Resorts",
    "aff": null,
    "city": "Barcelona",
    "country": "Spain",
    "ll": [
-    41.385002,
-    2.175834
+    41.3847,
+    2.17288
    ],
-   "thumb": null,
-   "rooms": null,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16340283_2_0.webp",
+   "rooms": 151,
    "perks": [
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 0
+   "promo": 1
   },
   "h_00024": {
    "n": "Acqualina Resort & Residences on the Beach",
@@ -2469,20 +2469,24 @@
    "perks": [],
    "promo": 0
   },
-  "h_02413": {
-   "n": "Virtuoso Hotel Core Training",
-   "house": null,
+  "h_01974": {
+   "n": "The Fairmont Olympic Hotel",
+   "house": "Accor",
    "aff": null,
    "city": "Seattle",
    "country": "United States",
    "ll": [
-    47.605983,
-    -122.335207
+    47.6082,
+    -122.334
    ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [],
-   "promo": 0
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4492_2_0_1002.webp",
+   "rooms": 450,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   },
   "h_02170": {
    "n": "The Ritz-Carlton, Bali",
@@ -3243,8 +3247,8 @@
      0.5
     ],
     [
-     "h_00844",
-     0.7
+     "h_01070",
+     0.9
     ]
    ]
   },
@@ -4118,8 +4122,8 @@
      0.7
     ],
     [
-     "h_02413",
-     0.7
+     "h_01974",
+     0.8
     ]
    ]
   },

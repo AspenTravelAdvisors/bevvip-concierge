@@ -1,11 +1,11 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-18T13:10:21.933Z",
+  "generated": "2026-10-23T18:49:30.934Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2088,
-  "matchedCount": 2302
+  "matchedCount": 2332
  },
  "overrides": {
   "h_00408": "6176935",
@@ -13117,6 +13117,12 @@
    "localName": "Al Maha",
    "virtuosoName": "Al Maha, a Luxury Collection Desert Resort & Spa, Dubai"
   },
+  "h_00051": {
+   "vid": "11160509",
+   "how": "ledger-of:h_01087",
+   "localName": "Alpaga Megeve",
+   "virtuosoName": "L'Alpaga Megève, a Beaumier Hotel"
+  },
   "h_00093": {
    "vid": "6163761",
    "how": "twin-of:h_00094",
@@ -13207,6 +13213,12 @@
    "localName": "Cameron House",
    "virtuosoName": "Cameron House on Loch Lomond"
   },
+  "h_00298": {
+   "vid": "15487125",
+   "how": "ledger-of:h_00300",
+   "localName": "Canaves Oia Sunday Suites, Oia Greece",
+   "virtuosoName": "Canaves Sunday"
+  },
   "h_00299": {
    "vid": "14364908",
    "how": "twin-of:h_00296",
@@ -13273,6 +13285,12 @@
    "localName": "Copacabana Palace",
    "virtuosoName": "Copacabana Palace, A Belmond Hotel, Rio de Janeiro"
   },
+  "h_00458": {
+   "vid": "16636082",
+   "how": "ledger-of:h_00459",
+   "localName": "Corinthia Grand Hotel Astoria",
+   "virtuosoName": "Corinthia Grand Hotel Astoria, Brussels"
+  },
   "h_00469": {
    "vid": "16393328",
    "how": "twin-of:h_00470",
@@ -13302,6 +13320,12 @@
    "how": "ledger-of:h_00507",
    "localName": "Domes Zeen",
    "virtuosoName": "Domes Zeen, A Luxury Collection Resort, Chania"
+  },
+  "h_00508": {
+   "vid": "11977074",
+   "how": "ledger-of:h_00509",
+   "localName": "Dorado Beach",
+   "virtuosoName": "Dorado Beach, a Ritz-Carlton Reserve"
   },
   "h_00514": {
    "vid": "15263800",
@@ -13339,6 +13363,12 @@
    "localName": "Fairmont Tokyo - A Virtuoso Preview Property",
    "virtuosoName": "Fairmont Tokyo"
   },
+  "h_00629": {
+   "vid": "6163863",
+   "how": "ledger-of:h_00630",
+   "localName": "Fonteverde Lifestyle & Thermal Retreat",
+   "virtuosoName": "Fonteverde Thermal Spa Resort | Tuscany"
+  },
   "h_00631": {
    "vid": "15476382",
    "how": "twin-of:h_00632",
@@ -13350,6 +13380,18 @@
    "how": "twin-of:h_00685",
    "localName": "Four Seasons Resort Peninsula Papagayo",
    "virtuosoName": "Four Seasons Resort Peninsula Papagayo, Costa Rica"
+  },
+  "h_00689": {
+   "vid": "6164293",
+   "how": "ledger-of:h_00690",
+   "localName": "Four Seasons Resort The Nam Hai",
+   "virtuosoName": "Four Seasons Resort The Nam Hai, Hoi An, Vietnam"
+  },
+  "h_00699": {
+   "vid": "18091466",
+   "how": "ledger-of:h_00698",
+   "localName": "Furore Grand Hotel - Amalfi Coast",
+   "virtuosoName": "Furore Grand Hotel"
   },
   "h_00710": {
    "vid": "16701278",
@@ -13375,11 +13417,41 @@
    "localName": "Hotel Amigo",
    "virtuosoName": "Hotel Amigo, a Rocco Forte hotel"
   },
+  "h_00819": {
+   "vid": "16721581",
+   "how": "ledger-of:h_00634",
+   "localName": "Hotel Barriere Fouquet's New York",
+   "virtuosoName": "Fouquet's New York"
+  },
   "h_00842": {
    "vid": "6164279",
    "how": "twin-of:h_00843",
    "localName": "Hotel Cipriani",
    "virtuosoName": "Hotel Cipriani, A Belmond Hotel, Venice"
+  },
+  "h_00844": {
+   "vid": "15876928",
+   "how": "ledger-of:h_00845",
+   "localName": "Hotel Colón",
+   "virtuosoName": "Hotel Colón, a Gran Meliá Hotel"
+  },
+  "h_00875": {
+   "vid": "12821167",
+   "how": "ledger-of:h_00876",
+   "localName": "Hotel Jerome",
+   "virtuosoName": "Hotel Jerome, Auberge Collection"
+  },
+  "h_00906": {
+   "vid": "6164302",
+   "how": "ledger-of:h_00907",
+   "localName": "Hotel Savoy",
+   "virtuosoName": "Hotel Savoy, a Rocco Forte Hotel"
+  },
+  "h_00927": {
+   "vid": "6164388",
+   "how": "ledger-of:h_00928",
+   "localName": "Hotel de Rome",
+   "virtuosoName": "Hotel de Rome, Berlin"
   },
   "h_00929": {
    "vid": "6163797",
@@ -13392,6 +13464,12 @@
    "how": "twin-of:h_00935",
    "localName": "Hotel de la Ville",
    "virtuosoName": "Hotel de la Ville, a Rocco Forte Hotel"
+  },
+  "h_00969": {
+   "vid": "16564609",
+   "how": "ledger-of:16564609",
+   "localName": "Iniala Harbour House & Residences",
+   "virtuosoName": "Iniala Valletta"
   },
   "h_01005": {
    "vid": "16325961",
@@ -13423,11 +13501,35 @@
    "localName": "La Samanna",
    "virtuosoName": "La Samanna, A Belmond Hotel, St Martin"
   },
+  "h_01126": {
+   "vid": "15335631",
+   "how": "ledger-of:h_01127",
+   "localName": "Ladder",
+   "virtuosoName": "Ladder, A Ted Turner Reserve"
+  },
+  "h_01135": {
+   "vid": "15499471",
+   "how": "ledger-of:h_01136",
+   "localName": "Las Casitas",
+   "virtuosoName": "Las Casitas, A Belmond Hotel, Colca Canyon"
+  },
+  "h_01141": {
+   "vid": "18080864",
+   "how": "ledger-of:h_01142",
+   "localName": "Le Barth Villa Rental",
+   "virtuosoName": "Le Barth Villas"
+  },
   "h_01149": {
    "vid": "6164236",
    "how": "twin-of:h_01150",
    "localName": "Le Couvent des Minimes Hotel & Spa L'occitane",
    "virtuosoName": "Le Couvent des Minimes un Hotel & SPA L’Occitane en Provence"
+  },
+  "h_01174": {
+   "vid": "16021235",
+   "how": "ledger-of:h_01173",
+   "localName": "Lesante Blu Exclusive Beach Resort",
+   "virtuosoName": "Lesante Blu"
   },
   "h_01218": {
    "vid": "15243327",
@@ -13440,6 +13542,18 @@
    "how": "twin-of:h_01276",
    "localName": "Mandarin Oriental",
    "virtuosoName": "Mandarin Oriental, New York"
+  },
+  "h_01244": {
+   "vid": "16403617",
+   "how": "ledger-of:h_01243",
+   "localName": "Mandarin Oriental Exclusive Homes",
+   "virtuosoName": "Mandarin Oriental Exceptional Homes"
+  },
+  "h_01252": {
+   "vid": "6163681",
+   "how": "ledger-of:h_01253",
+   "localName": "Mandarin Oriental Palace",
+   "virtuosoName": "Mandarin Oriental Palace, Luzern"
   },
   "h_01283": {
    "vid": "16209967",
@@ -13471,6 +13585,12 @@
    "localName": "Mount Nelson",
    "virtuosoName": "Mount Nelson, A Belmond Hotel, Cape Town"
   },
+  "h_01347": {
+   "vid": "16287393",
+   "how": "ledger-of:h_01348",
+   "localName": "Muir",
+   "virtuosoName": "Muir, a Luxury Collection Hotel, Halifax"
+  },
   "h_01359": {
    "vid": "6163632",
    "how": "twin-of:h_01360",
@@ -13501,6 +13621,12 @@
    "localName": "One&Only One Za'abeel - A Virtuoso Preview Property",
    "virtuosoName": "One&Only One Za’abeel"
   },
+  "h_01449": {
+   "vid": "16708877",
+   "how": "ledger-of:h_01450",
+   "localName": "Palace Elisabeth",
+   "virtuosoName": "Palace Elisabeth, Hvar Heritage Hotel"
+  },
   "h_01486": {
    "vid": "16161179",
    "how": "twin-of:h_01487",
@@ -13511,6 +13637,12 @@
    "vid": "16763328",
    "how": "stub-of:16763328",
    "localName": "Park Hyatt Cabo del Sol - A Virtuoso Preview Property",
+   "virtuosoName": "Park Hyatt Cabo del Sol"
+  },
+  "h_01504": {
+   "vid": "16763328",
+   "how": "ledger-of:h_01498",
+   "localName": "Park Hyatt Los Cabos at Cabo del Sol - A Virtuoso Preview Property",
    "virtuosoName": "Park Hyatt Cabo del Sol"
   },
   "h_01532": {
@@ -13549,6 +13681,12 @@
    "localName": "Rio Sagrado",
    "virtuosoName": "Rio Sagrado, A Belmond Hotel, Sacred Valley"
   },
+  "h_01627": {
+   "vid": "16174856",
+   "how": "ledger-of:h_01628",
+   "localName": "Rocco Forte Private Villas",
+   "virtuosoName": "Rocco Forte Private Villas, Verdura Resort"
+  },
   "h_01631": {
    "vid": "6164362",
    "how": "twin-of:h_01632",
@@ -13566,6 +13704,12 @@
    "how": "twin-of:h_01671",
    "localName": "Royal Davui Island Resort",
    "virtuosoName": "Royal Davui Island Resort, Fiji"
+  },
+  "h_01684": {
+   "vid": "16830373",
+   "how": "ledger-of:h_01681",
+   "localName": "SHA Wellness Clinic Mexico",
+   "virtuosoName": "SHA Mexico"
   },
   "h_01732": {
    "vid": "15767952",
@@ -13591,6 +13735,12 @@
    "localName": "Silversands Grand Anse",
    "virtuosoName": "Silversands Grand Anse, Grenada"
   },
+  "h_01815": {
+   "vid": "11162377",
+   "how": "ledger-of:11162377",
+   "localName": "Sofitel Legend Old Cataract Aswan",
+   "virtuosoName": "Old Cataract Aswan"
+  },
   "h_01829": {
    "vid": "16163171",
    "how": "twin-of:h_01830",
@@ -13602,6 +13752,18 @@
    "how": "twin-of:h_01848",
    "localName": "Splendido",
    "virtuosoName": "Splendido, A Belmond Hotel, Portofino"
+  },
+  "h_01853": {
+   "vid": "16246034",
+   "how": "ledger-of:h_01852",
+   "localName": "Stanly Ranch, Napa Valley",
+   "virtuosoName": "Stanly Ranch, Auberge Collection"
+  },
+  "h_01872": {
+   "vid": "16406351",
+   "how": "ledger-of:h_01874",
+   "localName": "Susurros del Corazon, Punta de Mita",
+   "virtuosoName": "Susurros del Corazón, Auberge Collection"
   },
   "h_01873": {
    "vid": "16406351",
@@ -13626,6 +13788,12 @@
    "how": "twin-of:h_01904",
    "localName": "The Balmoral",
    "virtuosoName": "The Balmoral, a Rocco Forte hotel"
+  },
+  "h_01913": {
+   "vid": "14408960",
+   "how": "ledger-of:h_01912",
+   "localName": "The Brando, Tetiaroa",
+   "virtuosoName": "The Brando"
   },
   "h_01919": {
    "vid": "15275556",
@@ -13783,11 +13951,23 @@
    "localName": "Villa Sant'Andrea",
    "virtuosoName": "Villa Sant'Andrea, A Belmond Hotel, Taormina Mare"
   },
+  "h_02447": {
+   "vid": "16805172",
+   "how": "ledger-of:h_02446",
+   "localName": "Waldorf Astoria Costa Rica Punta Cacique A Virtuoso Preview Property",
+   "virtuosoName": "Waldorf Astoria Costa Rica Punta Cacique"
+  },
   "h_02458": {
    "vid": "17898555",
    "how": "stub-of:17898555",
    "localName": "Waldorf Astoria Osaka - A Virtuoso Preview Property",
    "virtuosoName": "Waldorf Astoria Osaka"
+  },
+  "h_02477": {
+   "vid": "16480311",
+   "how": "ledger-of:h_02476",
+   "localName": "Wildflower Farms, Hudson Valley",
+   "virtuosoName": "Wildflower Farms, Auberge Collection"
   },
   "h_02487": {
    "vid": "15802926",
@@ -14419,6 +14599,23 @@
    "confident": true
   },
   {
+   "vid": "15487125",
+   "virtuosoName": "Canaves Sunday",
+   "localIds": [
+    "h_00300",
+    "h_00298"
+   ],
+   "localNames": [
+    "Canaves Sunday",
+    "Canaves Oia Sunday Suites, Oia Greece"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00300"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6163738",
    "virtuosoName": "Canyon Ranch, Tucson",
    "localIds": [
@@ -14904,6 +15101,23 @@
    "confident": true
   },
   {
+   "vid": "16636082",
+   "virtuosoName": "Corinthia Grand Hotel Astoria, Brussels",
+   "localIds": [
+    "h_00459",
+    "h_00458"
+   ],
+   "localNames": [
+    "Corinthia Grand Hotel Astoria, Brussels",
+    "Corinthia Grand Hotel Astoria"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00459"
+   ],
+   "confident": true
+  },
+  {
    "vid": "18072578",
    "virtuosoName": "Corinthia Grand Hotel du Boulevard Bucharest",
    "localIds": [
@@ -15039,6 +15253,23 @@
    "how": [
     "name+country",
     "ledger-of:h_00507"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "11977074",
+   "virtuosoName": "Dorado Beach, a Ritz-Carlton Reserve",
+   "localIds": [
+    "h_00509",
+    "h_00508"
+   ],
+   "localNames": [
+    "Dorado Beach, a Ritz-Carlton Reserve",
+    "Dorado Beach"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00509"
    ],
    "confident": true
   },
@@ -15301,6 +15532,23 @@
    "confident": true
   },
   {
+   "vid": "16721581",
+   "virtuosoName": "Fouquet's New York",
+   "localIds": [
+    "h_00634",
+    "h_00819"
+   ],
+   "localNames": [
+    "Fouquet's New York",
+    "Hotel Barriere Fouquet's New York"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00634"
+   ],
+   "confident": true
+  },
+  {
    "vid": "11241951",
    "virtuosoName": "Fouquet's Paris",
    "localIds": [
@@ -15369,6 +15617,23 @@
    "confident": true
   },
   {
+   "vid": "6164293",
+   "virtuosoName": "Four Seasons Resort The Nam Hai, Hoi An, Vietnam",
+   "localIds": [
+    "h_00690",
+    "h_00689"
+   ],
+   "localNames": [
+    "Four Seasons Resort The Nam Hai, Hoi An, Vietnam",
+    "Four Seasons Resort The Nam Hai"
+   ],
+   "how": [
+    "name+city",
+    "ledger-of:h_00690"
+   ],
+   "confident": true
+  },
+  {
    "vid": "16142627",
    "virtuosoName": "Fox Harb'r Resort",
    "localIds": [
@@ -15382,6 +15647,23 @@
    "how": [
     "name+country",
     "name+country"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "18091466",
+   "virtuosoName": "Furore Grand Hotel",
+   "localIds": [
+    "h_00698",
+    "h_00699"
+   ],
+   "localNames": [
+    "Furore Grand Hotel",
+    "Furore Grand Hotel - Amalfi Coast"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00698"
    ],
    "confident": true
   },
@@ -15817,6 +16099,23 @@
    "confident": true
   },
   {
+   "vid": "15876928",
+   "virtuosoName": "Hotel Colón, a Gran Meliá Hotel",
+   "localIds": [
+    "h_00845",
+    "h_00844"
+   ],
+   "localNames": [
+    "Hotel Colón, a Gran Meliá Hotel",
+    "Hotel Colón"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00845"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6164230",
    "virtuosoName": "Hotel Goldener Hirsch, a Luxury Collection Hotel, Salzburg",
    "localIds": [
@@ -15881,6 +16180,23 @@
    "how": [
     "name+country",
     "duplicate-of:h_00873"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "12821167",
+   "virtuosoName": "Hotel Jerome, Auberge Collection",
+   "localIds": [
+    "h_00876",
+    "h_00875"
+   ],
+   "localNames": [
+    "Hotel Jerome, Auberge Collection",
+    "Hotel Jerome"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00876"
    ],
    "confident": true
   },
@@ -15953,6 +16269,23 @@
    "confident": true
   },
   {
+   "vid": "6164302",
+   "virtuosoName": "Hotel Savoy, a Rocco Forte Hotel",
+   "localIds": [
+    "h_00907",
+    "h_00906"
+   ],
+   "localNames": [
+    "Hotel Savoy, a Rocco Forte Hotel",
+    "Hotel Savoy"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00907"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6164438",
    "virtuosoName": "Hotel das Cataratas, A Belmond Hotel",
    "localIds": [
@@ -15983,6 +16316,23 @@
    "how": [
     "name+country",
     "duplicate-of:h_00925"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "6164388",
+   "virtuosoName": "Hotel de Rome, Berlin",
+   "localIds": [
+    "h_00928",
+    "h_00927"
+   ],
+   "localNames": [
+    "Hotel de Rome, Berlin",
+    "Hotel de Rome"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_00928"
    ],
    "confident": true
   },
@@ -16361,6 +16711,23 @@
    "confident": true
   },
   {
+   "vid": "11160509",
+   "virtuosoName": "L'Alpaga Megève, a Beaumier Hotel",
+   "localIds": [
+    "h_01087",
+    "h_00051"
+   ],
+   "localNames": [
+    "L'Alpaga Megève, a Beaumier Hotel",
+    "Alpaga Megeve"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01087"
+   ],
+   "confident": true
+  },
+  {
    "vid": "12159706",
    "virtuosoName": "L'Apogee Courchevel, Oetker Hotels",
    "localIds": [
@@ -16446,6 +16813,23 @@
    "confident": true
   },
   {
+   "vid": "15335631",
+   "virtuosoName": "Ladder, A Ted Turner Reserve",
+   "localIds": [
+    "h_01127",
+    "h_01126"
+   ],
+   "localNames": [
+    "Ladder, A Ted Turner Reserve",
+    "Ladder"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01127"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6164477",
    "virtuosoName": "Las Alcobas, a Luxury Collection Hotel, Mexico City",
    "localIds": [
@@ -16463,6 +16847,23 @@
    "confident": true
   },
   {
+   "vid": "15499471",
+   "virtuosoName": "Las Casitas, A Belmond Hotel, Colca Canyon",
+   "localIds": [
+    "h_01136",
+    "h_01135"
+   ],
+   "localNames": [
+    "Las Casitas, A Belmond Hotel, Colca Canyon",
+    "Las Casitas"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01136"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6164075",
    "virtuosoName": "Las Ventanas Al Paraiso, A Rosewood Resort",
    "localIds": [
@@ -16476,6 +16877,23 @@
    "how": [
     "name+country",
     "duplicate-of:h_01138"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "18080864",
+   "virtuosoName": "Le Barth Villas",
+   "localIds": [
+    "h_01142",
+    "h_01141"
+   ],
+   "localNames": [
+    "Le Barth Villas",
+    "Le Barth Villa Rental"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01142"
    ],
    "confident": true
   },
@@ -16544,6 +16962,23 @@
    "how": [
     "name+country",
     "duplicate-of:h_01157"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "16021235",
+   "virtuosoName": "Lesante Blu",
+   "localIds": [
+    "h_01173",
+    "h_01174"
+   ],
+   "localNames": [
+    "Lesante Blu",
+    "Lesante Blu Exclusive Beach Resort"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01173"
    ],
    "confident": true
   },
@@ -16684,6 +17119,23 @@
    "confident": true
   },
   {
+   "vid": "16403617",
+   "virtuosoName": "Mandarin Oriental Exceptional Homes",
+   "localIds": [
+    "h_01243",
+    "h_01244"
+   ],
+   "localNames": [
+    "Mandarin Oriental Exceptional Homes",
+    "Mandarin Oriental Exclusive Homes"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01243"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6163841",
    "virtuosoName": "Mandarin Oriental Hyde Park, London",
    "localIds": [
@@ -16731,6 +17183,23 @@
    "how": [
     "name+country",
     "duplicate-of:h_01251"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "6163681",
+   "virtuosoName": "Mandarin Oriental Palace, Luzern",
+   "localIds": [
+    "h_01253",
+    "h_01252"
+   ],
+   "localNames": [
+    "Mandarin Oriental Palace, Luzern",
+    "Mandarin Oriental Palace"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01253"
    ],
    "confident": true
   },
@@ -16990,6 +17459,23 @@
    "confident": true
   },
   {
+   "vid": "16287393",
+   "virtuosoName": "Muir, a Luxury Collection Hotel, Halifax",
+   "localIds": [
+    "h_01348",
+    "h_01347"
+   ],
+   "localNames": [
+    "Muir, a Luxury Collection Hotel, Halifax",
+    "Muir"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01348"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6163632",
    "virtuosoName": "Mystique, a Luxury Collection Hotel, Santorini",
    "localIds": [
@@ -17173,6 +17659,23 @@
    "how": [
     "name+country",
     "twin-of:h_01427"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "16708877",
+   "virtuosoName": "Palace Elisabeth, Hvar Heritage Hotel",
+   "localIds": [
+    "h_01450",
+    "h_01449"
+   ],
+   "localNames": [
+    "Palace Elisabeth, Hvar Heritage Hotel",
+    "Palace Elisabeth"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01450"
    ],
    "confident": true
   },
@@ -17602,6 +18105,23 @@
    "confident": true
   },
   {
+   "vid": "16174856",
+   "virtuosoName": "Rocco Forte Private Villas, Verdura Resort",
+   "localIds": [
+    "h_01628",
+    "h_01627"
+   ],
+   "localNames": [
+    "Rocco Forte Private Villas, Verdura Resort",
+    "Rocco Forte Private Villas"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01628"
+   ],
+   "confident": true
+  },
+  {
    "vid": "6164362",
    "virtuosoName": "Romazzino, a Belmond Hotel, Costa Smeralda",
    "localIds": [
@@ -17683,6 +18203,23 @@
    "how": [
     "name+country",
     "twin-of:h_01671"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "16830373",
+   "virtuosoName": "SHA Mexico",
+   "localIds": [
+    "h_01681",
+    "h_01684"
+   ],
+   "localNames": [
+    "SHA Mexico",
+    "SHA Wellness Clinic Mexico"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01681"
    ],
    "confident": true
   },
@@ -18224,15 +18761,18 @@
    "virtuosoName": "Stanly Ranch, Auberge Collection",
    "localIds": [
     "h_01852",
-    "h_01851"
+    "h_01851",
+    "h_01853"
    ],
    "localNames": [
     "Stanly Ranch, Auberge Collection",
-    "Stanly Ranch"
+    "Stanly Ranch",
+    "Stanly Ranch, Napa Valley"
    ],
    "how": [
     "name+country",
-    "duplicate-of:h_01852"
+    "duplicate-of:h_01852",
+    "ledger-of:h_01852"
    ],
    "confident": true
   },
@@ -18292,14 +18832,17 @@
    "virtuosoName": "Susurros del Corazón, Auberge Collection",
    "localIds": [
     "h_01874",
+    "h_01872",
     "h_01873"
    ],
    "localNames": [
     "Susurros del Corazón, Auberge Collection",
+    "Susurros del Corazon, Punta de Mita",
     "Susurros del Corazón"
    ],
    "how": [
     "name+country",
+    "ledger-of:h_01874",
     "twin-of:h_01874"
    ],
    "confident": true
@@ -18420,6 +18963,23 @@
    "how": [
     "name+country",
     "duplicate-of:h_01910"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "14408960",
+   "virtuosoName": "The Brando",
+   "localIds": [
+    "h_01912",
+    "h_01913"
+   ],
+   "localNames": [
+    "The Brando",
+    "The Brando, Tetiaroa"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_01912"
    ],
    "confident": true
   },
@@ -19697,6 +20257,23 @@
    "confident": true
   },
   {
+   "vid": "16805172",
+   "virtuosoName": "Waldorf Astoria Costa Rica Punta Cacique",
+   "localIds": [
+    "h_02446",
+    "h_02447"
+   ],
+   "localNames": [
+    "Waldorf Astoria Costa Rica Punta Cacique",
+    "Waldorf Astoria Costa Rica Punta Cacique A Virtuoso Preview Property"
+   ],
+   "how": [
+    "name+country",
+    "ledger-of:h_02446"
+   ],
+   "confident": true
+  },
+  {
    "vid": "16791601",
    "virtuosoName": "Waldorf Astoria New York",
    "localIds": [
@@ -19735,15 +20312,18 @@
    "virtuosoName": "Wildflower Farms, Auberge Collection",
    "localIds": [
     "h_02476",
-    "h_02475"
+    "h_02475",
+    "h_02477"
    ],
    "localNames": [
     "Wildflower Farms, Auberge Collection",
-    "Wildflower Farms"
+    "Wildflower Farms",
+    "Wildflower Farms, Hudson Valley"
    ],
    "how": [
     "name+country",
-    "duplicate-of:h_02476"
+    "duplicate-of:h_02476",
+    "ledger-of:h_02476"
    ],
    "confident": true
   },
@@ -19887,6 +20467,23 @@
    "confident": false
   },
   {
+   "vid": "6163863",
+   "virtuosoName": "Fonteverde Thermal Spa Resort | Tuscany",
+   "localIds": [
+    "h_00630",
+    "h_00629"
+   ],
+   "localNames": [
+    "Fonteverde Lifestyle & Thermal Retreat, Tuscany",
+    "Fonteverde Lifestyle & Thermal Retreat"
+   ],
+   "how": [
+    "fuzzy:0.75",
+    "ledger-of:h_00630"
+   ],
+   "confident": false
+  },
+  {
    "vid": "18075196",
    "virtuosoName": "Infante Sagres",
    "localIds": [
@@ -20019,6 +20616,23 @@
    "how": [
     "stub-of:16773256",
     "twin-of:h_00492"
+   ],
+   "confident": true
+  },
+  {
+   "vid": "16763328",
+   "virtuosoName": "Park Hyatt Cabo del Sol",
+   "localIds": [
+    "h_01498",
+    "h_01504"
+   ],
+   "localNames": [
+    "Park Hyatt Cabo del Sol - A Virtuoso Preview Property",
+    "Park Hyatt Los Cabos at Cabo del Sol - A Virtuoso Preview Property"
+   ],
+   "how": [
+    "stub-of:16763328",
+    "ledger-of:h_01498"
    ],
    "confident": true
   }
@@ -22490,6 +23104,17 @@
    "score": 1
   },
   {
+   "vid": "11160509",
+   "virtuosoName": "L'Alpaga Megève, a Beaumier Hotel",
+   "keep": "h_01087",
+   "drop": "h_00051",
+   "keepName": "L'Alpaga Megève, a Beaumier Hotel",
+   "dropName": "Alpaga Megeve",
+   "score": 1,
+   "metresApart": 57,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "6163761",
    "virtuosoName": "Amirandes, A Resort to Live®",
    "dropName": "Amirandes",
@@ -22644,6 +23269,17 @@
    "score": 1
   },
   {
+   "vid": "15487125",
+   "virtuosoName": "Canaves Sunday",
+   "keep": "h_00300",
+   "drop": "h_00298",
+   "keepName": "Canaves Sunday",
+   "dropName": "Canaves Oia Sunday Suites, Oia Greece",
+   "score": 1,
+   "metresApart": 2,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "14364908",
    "virtuosoName": "Canaves Oia Suites",
    "dropName": "Canaves Oia, Santorini",
@@ -22765,6 +23401,17 @@
    "score": 1
   },
   {
+   "vid": "16636082",
+   "virtuosoName": "Corinthia Grand Hotel Astoria, Brussels",
+   "keep": "h_00459",
+   "drop": "h_00458",
+   "keepName": "Corinthia Grand Hotel Astoria, Brussels",
+   "dropName": "Corinthia Grand Hotel Astoria",
+   "score": 1,
+   "metresApart": 1454277,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "16393328",
    "virtuosoName": "Crockfords Las Vegas, LXR Hotels & Resorts at Resorts World",
    "dropName": "Crockfords Las Vegas",
@@ -22806,6 +23453,17 @@
    "dropName": "Domes Zeen",
    "score": 1,
    "metresApart": 125639,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "11977074",
+   "virtuosoName": "Dorado Beach, a Ritz-Carlton Reserve",
+   "keep": "h_00509",
+   "drop": "h_00508",
+   "keepName": "Dorado Beach, a Ritz-Carlton Reserve",
+   "dropName": "Dorado Beach",
+   "score": 1,
+   "metresApart": 3200,
    "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
@@ -22875,6 +23533,17 @@
    "score": 1
   },
   {
+   "vid": "6163863",
+   "virtuosoName": "Fonteverde Thermal Spa Resort | Tuscany",
+   "keep": "h_00630",
+   "drop": "h_00629",
+   "keepName": "Fonteverde Lifestyle & Thermal Retreat, Tuscany",
+   "dropName": "Fonteverde Lifestyle & Thermal Retreat",
+   "score": 1,
+   "metresApart": 94,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "15476382",
    "virtuosoName": "Forte Village Hotel Castello, Sardinia",
    "dropName": "Forte Village Hotel Castello",
@@ -22895,6 +23564,28 @@
    "drop": "h_00684",
    "keepName": "Four Seasons Resort Peninsula Papagayo, Costa Rica",
    "score": 1
+  },
+  {
+   "vid": "6164293",
+   "virtuosoName": "Four Seasons Resort The Nam Hai, Hoi An, Vietnam",
+   "keep": "h_00690",
+   "drop": "h_00689",
+   "keepName": "Four Seasons Resort The Nam Hai, Hoi An, Vietnam",
+   "dropName": "Four Seasons Resort The Nam Hai",
+   "score": 1,
+   "metresApart": 683,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "18091466",
+   "virtuosoName": "Furore Grand Hotel",
+   "keep": "h_00698",
+   "drop": "h_00699",
+   "keepName": "Furore Grand Hotel",
+   "dropName": "Furore Grand Hotel - Amalfi Coast",
+   "score": 1,
+   "metresApart": 4685,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "16701278",
@@ -22941,6 +23632,17 @@
    "score": 1
   },
   {
+   "vid": "16721581",
+   "virtuosoName": "Fouquet's New York",
+   "keep": "h_00634",
+   "drop": "h_00819",
+   "keepName": "Fouquet's New York",
+   "dropName": "Hotel Barriere Fouquet's New York",
+   "score": 1,
+   "metresApart": 3287,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "6164279",
    "virtuosoName": "Hotel Cipriani, A Belmond Hotel, Venice",
    "dropName": "Hotel Cipriani",
@@ -22950,6 +23652,50 @@
    "drop": "h_00842",
    "keepName": "Hotel Cipriani, A Belmond Hotel, Venice",
    "score": 1
+  },
+  {
+   "vid": "15876928",
+   "virtuosoName": "Hotel Colón, a Gran Meliá Hotel",
+   "keep": "h_00845",
+   "drop": "h_00844",
+   "keepName": "Hotel Colón, a Gran Meliá Hotel",
+   "dropName": "Hotel Colón",
+   "score": 1,
+   "metresApart": 830555,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "12821167",
+   "virtuosoName": "Hotel Jerome, Auberge Collection",
+   "keep": "h_00876",
+   "drop": "h_00875",
+   "keepName": "Hotel Jerome, Auberge Collection",
+   "dropName": "Hotel Jerome",
+   "score": 1,
+   "metresApart": 9113925,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "6164302",
+   "virtuosoName": "Hotel Savoy, a Rocco Forte Hotel",
+   "keep": "h_00907",
+   "drop": "h_00906",
+   "keepName": "Hotel Savoy, a Rocco Forte Hotel",
+   "dropName": "Hotel Savoy",
+   "score": 1,
+   "metresApart": 1788437,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "6164388",
+   "virtuosoName": "Hotel de Rome, Berlin",
+   "keep": "h_00928",
+   "drop": "h_00927",
+   "keepName": "Hotel de Rome, Berlin",
+   "dropName": "Hotel de Rome",
+   "score": 1,
+   "metresApart": 1182345,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "6163797",
@@ -23018,6 +23764,39 @@
    "score": 1
   },
   {
+   "vid": "15335631",
+   "virtuosoName": "Ladder, A Ted Turner Reserve",
+   "keep": "h_01127",
+   "drop": "h_01126",
+   "keepName": "Ladder, A Ted Turner Reserve",
+   "dropName": "Ladder",
+   "score": 1,
+   "metresApart": 8296509,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "15499471",
+   "virtuosoName": "Las Casitas, A Belmond Hotel, Colca Canyon",
+   "keep": "h_01136",
+   "drop": "h_01135",
+   "keepName": "Las Casitas, A Belmond Hotel, Colca Canyon",
+   "dropName": "Las Casitas",
+   "score": 1,
+   "metresApart": 7956187,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "18080864",
+   "virtuosoName": "Le Barth Villas",
+   "keep": "h_01142",
+   "drop": "h_01141",
+   "keepName": "Le Barth Villas",
+   "dropName": "Le Barth Villa Rental",
+   "score": 1,
+   "metresApart": 1,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "6164236",
    "virtuosoName": "Le Couvent des Minimes un Hotel & SPA L’Occitane en Provence",
    "dropName": "Le Couvent des Minimes Hotel & Spa L'occitane",
@@ -23027,6 +23806,17 @@
    "drop": "h_01149",
    "keepName": "Le Couvent des Minimes un Hotel & SPA L’Occitane en Provence",
    "score": 1
+  },
+  {
+   "vid": "16021235",
+   "virtuosoName": "Lesante Blu",
+   "keep": "h_01173",
+   "drop": "h_01174",
+   "keepName": "Lesante Blu",
+   "dropName": "Lesante Blu Exclusive Beach Resort",
+   "score": 1,
+   "metresApart": 1919,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "15243327",
@@ -23049,6 +23839,28 @@
    "drop": "h_01220",
    "keepName": "Mandarin Oriental, New York",
    "score": 1
+  },
+  {
+   "vid": "16403617",
+   "virtuosoName": "Mandarin Oriental Exceptional Homes",
+   "keep": "h_01243",
+   "drop": "h_01244",
+   "keepName": "Mandarin Oriental Exceptional Homes",
+   "dropName": "Mandarin Oriental Exclusive Homes",
+   "score": 1,
+   "metresApart": 9329484,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "6163681",
+   "virtuosoName": "Mandarin Oriental Palace, Luzern",
+   "keep": "h_01253",
+   "drop": "h_01252",
+   "keepName": "Mandarin Oriental Palace, Luzern",
+   "dropName": "Mandarin Oriental Palace",
+   "score": 1,
+   "metresApart": 190823,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "16209967",
@@ -23106,6 +23918,17 @@
    "score": 1
   },
   {
+   "vid": "16287393",
+   "virtuosoName": "Muir, a Luxury Collection Hotel, Halifax",
+   "keep": "h_01348",
+   "drop": "h_01347",
+   "keepName": "Muir, a Luxury Collection Hotel, Halifax",
+   "dropName": "Muir",
+   "score": 1,
+   "metresApart": 4362045,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "6163632",
    "virtuosoName": "Mystique, a Luxury Collection Hotel, Santorini",
    "dropName": "Mystique",
@@ -23161,6 +23984,17 @@
    "score": 1
   },
   {
+   "vid": "16708877",
+   "virtuosoName": "Palace Elisabeth, Hvar Heritage Hotel",
+   "keep": "h_01450",
+   "drop": "h_01449",
+   "keepName": "Palace Elisabeth, Hvar Heritage Hotel",
+   "dropName": "Palace Elisabeth",
+   "score": 1,
+   "metresApart": 859193,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "16161179",
    "virtuosoName": "Parilio, a Member of Design Hotels",
    "dropName": "Parilio",
@@ -23170,6 +24004,17 @@
    "drop": "h_01486",
    "keepName": "Parilio, a Member of Design Hotels",
    "score": 1
+  },
+  {
+   "vid": "16763328",
+   "virtuosoName": "Park Hyatt Cabo del Sol",
+   "keep": "h_01498",
+   "drop": "h_01504",
+   "keepName": "Park Hyatt Cabo del Sol - A Virtuoso Preview Property",
+   "dropName": "Park Hyatt Los Cabos at Cabo del Sol - A Virtuoso Preview Property",
+   "score": 1,
+   "metresApart": 1279,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "16258253",
@@ -23238,6 +24083,17 @@
    "score": 1
   },
   {
+   "vid": "16174856",
+   "virtuosoName": "Rocco Forte Private Villas, Verdura Resort",
+   "keep": "h_01628",
+   "drop": "h_01627",
+   "keepName": "Rocco Forte Private Villas, Verdura Resort",
+   "dropName": "Rocco Forte Private Villas",
+   "score": 1,
+   "metresApart": 1512,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "6164362",
    "virtuosoName": "Romazzino, a Belmond Hotel, Costa Smeralda",
    "dropName": "Romazzino",
@@ -23269,6 +24125,17 @@
    "drop": "h_01670",
    "keepName": "Royal Davui Island Resort, Fiji",
    "score": 1
+  },
+  {
+   "vid": "16830373",
+   "virtuosoName": "SHA Mexico",
+   "keep": "h_01681",
+   "drop": "h_01684",
+   "keepName": "SHA Mexico",
+   "dropName": "SHA Wellness Clinic Mexico",
+   "score": 1,
+   "metresApart": 62107,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "15767952",
@@ -23337,6 +24204,28 @@
    "score": 1
   },
   {
+   "vid": "16246034",
+   "virtuosoName": "Stanly Ranch, Auberge Collection",
+   "keep": "h_01852",
+   "drop": "h_01853",
+   "keepName": "Stanly Ranch, Auberge Collection",
+   "dropName": "Stanly Ranch, Napa Valley",
+   "score": 1,
+   "metresApart": 274,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "16406351",
+   "virtuosoName": "Susurros del Corazón, Auberge Collection",
+   "keep": "h_01874",
+   "drop": "h_01872",
+   "keepName": "Susurros del Corazón, Auberge Collection",
+   "dropName": "Susurros del Corazon, Punta de Mita",
+   "score": 1,
+   "metresApart": 13760,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "16406351",
    "virtuosoName": "Susurros del Corazón, Auberge Collection",
    "dropName": "Susurros del Corazón",
@@ -23379,6 +24268,17 @@
    "drop": "h_01903",
    "keepName": "The Balmoral, a Rocco Forte hotel",
    "score": 1
+  },
+  {
+   "vid": "14408960",
+   "virtuosoName": "The Brando",
+   "keep": "h_01912",
+   "drop": "h_01913",
+   "keepName": "The Brando",
+   "dropName": "The Brando, Tetiaroa",
+   "score": 1,
+   "metresApart": 57451,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
   },
   {
    "vid": "15275556",
@@ -23667,6 +24567,28 @@
    "score": 1
   },
   {
+   "vid": "16805172",
+   "virtuosoName": "Waldorf Astoria Costa Rica Punta Cacique",
+   "keep": "h_02446",
+   "drop": "h_02447",
+   "keepName": "Waldorf Astoria Costa Rica Punta Cacique",
+   "dropName": "Waldorf Astoria Costa Rica Punta Cacique A Virtuoso Preview Property",
+   "score": 1,
+   "metresApart": 28983,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
+   "vid": "16480311",
+   "virtuosoName": "Wildflower Farms, Auberge Collection",
+   "keep": "h_02476",
+   "drop": "h_02477",
+   "keepName": "Wildflower Farms, Auberge Collection",
+   "dropName": "Wildflower Farms, Hudson Valley",
+   "score": 1,
+   "metresApart": 2833,
+   "note": "declared in data/atlas/hotel/duplicate-ledger.json"
+  },
+  {
    "vid": "15802926",
    "virtuosoName": "Zadún Los Cabos, a Ritz-Carlton Reserve",
    "keep": "h_02488",
@@ -23729,43 +24651,6 @@
      "name": "Delamar Greenwich Harbor",
      "city": "Greenwich",
      "km": 110.7,
-     "how": "contained"
-    }
-   ]
-  },
-  {
-   "id": "h_00508",
-   "name": "Dorado Beach",
-   "city": "Dorado",
-   "country": "United States",
-   "reason": "name matches but the nearest is 5304 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "16257295",
-     "name": "Alila Marea Beach Resort",
-     "city": "Encinitas",
-     "km": 5304.1,
-     "how": "contained"
-    },
-    {
-     "vid": "16471247",
-     "name": "Beach Club at The Boca Raton",
-     "city": "Boca Raton",
-     "km": 1662,
-     "how": "equal"
-    },
-    {
-     "vid": "16470749",
-     "name": "Beach Village at The Del, LXR Hotels & Resorts",
-     "city": "San Diego",
-     "km": 5288.4,
-     "how": "contained"
-    },
-    {
-     "vid": "15604247",
-     "name": "Conrad Fort Lauderdale Beach",
-     "city": "Fort Lauderdale",
-     "km": 1653.9,
      "how": "contained"
     }
    ]
@@ -23880,91 +24765,6 @@
      "city": "Chicago",
      "km": 642.4,
      "how": "equal"
-    }
-   ]
-  },
-  {
-   "id": "h_00844",
-   "name": "Hotel Colón",
-   "city": "Barcelona",
-   "country": "Spain",
-   "reason": "name matches but the nearest is 831 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "15876928",
-     "name": "Hotel Colón, a Gran Meliá Hotel",
-     "city": "Seville",
-     "km": 830.6,
-     "how": "contained"
-    }
-   ]
-  },
-  {
-   "id": "h_00906",
-   "name": "Hotel Savoy",
-   "city": "Lisbon",
-   "country": "Portugal",
-   "reason": "name matches but the nearest is 976 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "16614587",
-     "name": "Savoy Palace",
-     "city": "Madeira",
-     "km": 975.9,
-     "how": "contained"
-    }
-   ]
-  },
-  {
-   "id": "h_00927",
-   "name": "Hotel de Rome",
-   "city": "Rome",
-   "country": "Italy",
-   "reason": "name matches 8 Virtuoso properties within 25 km — too ambiguous to call",
-   "candidates": [
-    {
-     "vid": "16784810",
-     "name": "Anantara Palazzo Naiadi Rome",
-     "city": "Rome",
-     "km": 0.3,
-     "how": "contained"
-    },
-    {
-     "vid": "16636102",
-     "name": "Corinthia Rome",
-     "city": "Rome",
-     "km": 1.2,
-     "how": "contained"
-    },
-    {
-     "vid": "6164503",
-     "name": "Rome Cavalieri, A Waldorf Astoria Hotel",
-     "city": "Rome",
-     "km": 4.4,
-     "how": "contained"
-    },
-    {
-     "vid": "16649515",
-     "name": "Six Senses Rome",
-     "city": "Rome",
-     "km": 0.9,
-     "how": "contained"
-    }
-   ]
-  },
-  {
-   "id": "h_01252",
-   "name": "Mandarin Oriental Palace",
-   "city": "Geneva",
-   "country": "Switzerland",
-   "reason": "name matches but the nearest is 191 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "6163681",
-     "name": "Mandarin Oriental Palace, Luzern",
-     "city": "Lucerne",
-     "km": 190.8,
-     "how": "contained"
     }
    ]
   },
@@ -24399,22 +25199,6 @@
      "how": "equal"
     }
    ]
-  },
-  {
-   "id": "h_02447",
-   "name": "Waldorf Astoria Costa Rica Punta Cacique A Virtuoso Preview Property",
-   "city": "Liberia",
-   "country": "Costa Rica",
-   "reason": "name matches but the nearest is 29 km away, beyond the 25 km ceiling",
-   "candidates": [
-    {
-     "vid": "16805172",
-     "name": "Waldorf Astoria Costa Rica Punta Cacique",
-     "city": "Guanacaste",
-     "km": 29,
-     "how": "equal"
-    }
-   ]
   }
  ],
  "geoReview": [
@@ -24461,13 +25245,6 @@
    "name": "1 Hotel Toronto",
    "city": "Toronto",
    "country": "Canada",
-   "program": "Virtuoso"
-  },
-  {
-   "id": "h_00051",
-   "name": "Alpaga Megeve",
-   "city": "Megève",
-   "country": "France",
    "program": "Virtuoso"
   },
   {
@@ -24597,13 +25374,6 @@
    "program": "Canaves Oia Luxury Resorts"
   },
   {
-   "id": "h_00298",
-   "name": "Canaves Oia Sunday Suites, Oia Greece",
-   "city": "Santorini",
-   "country": "Greece",
-   "program": "Canaves Oia Luxury Resorts"
-  },
-  {
    "id": "h_00360",
    "name": "Castaway Island, Fiji",
    "city": "Mamanuca Islands",
@@ -24639,13 +25409,6 @@
    "program": "Cadence Individual Partner"
   },
   {
-   "id": "h_00458",
-   "name": "Corinthia Grand Hotel Astoria",
-   "city": "Riga",
-   "country": "Latvia",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_00488",
    "name": "Delamar West Hartford",
    "city": "West Hartford",
@@ -24658,13 +25421,6 @@
    "city": "Johor",
    "country": "Malaysia",
    "program": "Virtuoso"
-  },
-  {
-   "id": "h_00508",
-   "name": "Dorado Beach",
-   "city": "Dorado",
-   "country": "United States",
-   "program": "Ritz-Carlton Reserve"
   },
   {
    "id": "h_00516",
@@ -24709,13 +25465,6 @@
    "program": "Cadence Individual Partner"
   },
   {
-   "id": "h_00629",
-   "name": "Fonteverde Lifestyle & Thermal Retreat",
-   "city": "San Casciano dei Bagni",
-   "country": "Italy",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_00642",
    "name": "Four Seasons Hotel Cairo",
    "city": "Cairo",
@@ -24749,20 +25498,6 @@
    "city": "Nashville",
    "country": "United States",
    "program": "Four Seasons Preferred Partner"
-  },
-  {
-   "id": "h_00689",
-   "name": "Four Seasons Resort The Nam Hai",
-   "city": "Hoi An",
-   "country": "Vietnam",
-   "program": "Four Seasons Preferred Partner"
-  },
-  {
-   "id": "h_00699",
-   "name": "Furore Grand Hotel - Amalfi Coast",
-   "city": "Amalfi Coast",
-   "country": "Italy",
-   "program": "Virtuoso"
   },
   {
    "id": "h_00700",
@@ -24835,13 +25570,6 @@
    "program": "Kempinski Club 1897"
   },
   {
-   "id": "h_00819",
-   "name": "Hotel Barriere Fouquet's New York",
-   "city": "New York",
-   "country": "United States",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_00824",
    "name": "Hotel Barriere Les Neiges",
    "city": "Courchevel",
@@ -24854,13 +25582,6 @@
    "city": "Vienna",
    "country": "Austria",
    "program": "Marriott STARS"
-  },
-  {
-   "id": "h_00844",
-   "name": "Hotel Colón",
-   "city": "Barcelona",
-   "country": "Spain",
-   "program": "Gran Meliá"
   },
   {
    "id": "h_00849",
@@ -24877,13 +25598,6 @@
    "program": "Virtuoso"
   },
   {
-   "id": "h_00875",
-   "name": "Hotel Jerome",
-   "city": "Rome",
-   "country": "Italy",
-   "program": "Auberge Resorts Collection"
-  },
-  {
    "id": "h_00899",
    "name": "Hotel Punta Islita",
    "city": "Guanacaste",
@@ -24891,25 +25605,11 @@
    "program": "Autograph Collection"
   },
   {
-   "id": "h_00906",
-   "name": "Hotel Savoy",
-   "city": "Lisbon",
-   "country": "Portugal",
-   "program": "Rocco Forte Knights"
-  },
-  {
    "id": "h_00914",
    "name": "Hotel Traube Tonbach",
    "city": "Baiersbronn",
    "country": "Germany",
    "program": "Virtuoso"
-  },
-  {
-   "id": "h_00927",
-   "name": "Hotel de Rome",
-   "city": "Rome",
-   "country": "Italy",
-   "program": "Rocco Forte Knights"
   },
   {
    "id": "h_00948",
@@ -24930,13 +25630,6 @@
    "name": "Iceportal Hotel Test 2",
    "city": "Las Vegas",
    "country": "United States",
-   "program": "Virtuoso"
-  },
-  {
-   "id": "h_00969",
-   "name": "Iniala Harbour House & Residences",
-   "city": "Valletta",
-   "country": "Malta",
    "program": "Virtuoso"
   },
   {
@@ -24968,34 +25661,6 @@
    "program": "Shangri-La The Luxury Circle"
   },
   {
-   "id": "h_01126",
-   "name": "Ladder",
-   "city": "Mindelo",
-   "country": "Cape Verde",
-   "program": "Ted Turner Reserves"
-  },
-  {
-   "id": "h_01135",
-   "name": "Las Casitas",
-   "city": "Puerto Calero",
-   "country": "Spain",
-   "program": "Belmond Bellini Club"
-  },
-  {
-   "id": "h_01141",
-   "name": "Le Barth Villa Rental",
-   "city": "Gustavia",
-   "country": "Saint Barthélemy",
-   "program": "Virtuoso"
-  },
-  {
-   "id": "h_01174",
-   "name": "Lesante Blu Exclusive Beach Resort",
-   "city": "Zakynthos",
-   "country": "Greece",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_01177",
    "name": "Liao Liao Resort",
    "city": "Bariloche",
@@ -25017,20 +25682,6 @@
    "program": "Virtuoso"
   },
   {
-   "id": "h_01244",
-   "name": "Mandarin Oriental Exclusive Homes",
-   "city": null,
-   "country": "Various",
-   "program": "Mandarin Oriental Fan Club"
-  },
-  {
-   "id": "h_01252",
-   "name": "Mandarin Oriental Palace",
-   "city": "Geneva",
-   "country": "Switzerland",
-   "program": "Mandarin Oriental Fan Club"
-  },
-  {
    "id": "h_01290",
    "name": "Marram Montauk",
    "city": "Montauk",
@@ -25050,13 +25701,6 @@
    "city": "Lahaina, Maui",
    "country": "United States",
    "program": "Virtuoso"
-  },
-  {
-   "id": "h_01347",
-   "name": "Muir",
-   "city": "Aberdeen",
-   "country": "United Kingdom",
-   "program": "Autograph Collection"
   },
   {
    "id": "h_01351",
@@ -25143,13 +25787,6 @@
    "program": "Cadence Individual Partner"
   },
   {
-   "id": "h_01449",
-   "name": "Palace Elisabeth",
-   "city": "Lausanne",
-   "country": "Switzerland",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_01451",
    "name": "Palace Hotel",
    "city": "Nidwalden",
@@ -25161,13 +25798,6 @@
    "name": "Palazzo Fiuggi Rome",
    "city": "Rome",
    "country": "Italy",
-   "program": "Virtuoso"
-  },
-  {
-   "id": "h_01504",
-   "name": "Park Hyatt Los Cabos at Cabo del Sol - A Virtuoso Preview Property",
-   "city": "Cabo San Lucas",
-   "country": "Mexico",
    "program": "Virtuoso"
   },
   {
@@ -25220,13 +25850,6 @@
    "program": "Rocco Forte Knights"
   },
   {
-   "id": "h_01627",
-   "name": "Rocco Forte Private Villas",
-   "city": null,
-   "country": "Various",
-   "program": "Rocco Forte Knights"
-  },
-  {
    "id": "h_01649",
    "name": "Rosewood Le Guanahani",
    "city": "St. Barthelemy",
@@ -25238,13 +25861,6 @@
    "name": "SHA Wellness Clinic",
    "city": "Altea",
    "country": "Spain",
-   "program": "Virtuoso"
-  },
-  {
-   "id": "h_01684",
-   "name": "SHA Wellness Clinic Mexico",
-   "city": "Holbox",
-   "country": "Mexico",
    "program": "Virtuoso"
   },
   {
@@ -25332,25 +25948,11 @@
    "program": "Shangri-La The Luxury Circle"
   },
   {
-   "id": "h_01815",
-   "name": "Sofitel Legend Old Cataract Aswan",
-   "city": "Aswan",
-   "country": "Egypt",
-   "program": "Virtuoso"
-  },
-  {
    "id": "h_01835",
    "name": "Soneva Kiri",
    "city": "Trat",
    "country": "Thailand",
    "program": "Virtuoso"
-  },
-  {
-   "id": "h_01853",
-   "name": "Stanly Ranch, Napa Valley",
-   "city": "Napa",
-   "country": "United States",
-   "program": "Auberge Resorts Collection"
   },
   {
    "id": "h_01863",
@@ -25360,25 +25962,11 @@
    "program": "Cadence Individual Partner"
   },
   {
-   "id": "h_01872",
-   "name": "Susurros del Corazon, Punta de Mita",
-   "city": "Nayarit",
-   "country": "Mexico",
-   "program": "Auberge Resorts Collection"
-  },
-  {
    "id": "h_01879",
    "name": "THotel",
    "city": "Beijing",
    "country": "China",
    "program": "Virtuoso"
-  },
-  {
-   "id": "h_01913",
-   "name": "The Brando, Tetiaroa",
-   "city": "French Polynesia",
-   "country": "French Polynesia",
-   "program": "Cadence Individual Partner"
   },
   {
    "id": "h_01935",
@@ -25645,20 +26233,6 @@
    "city": "Flims",
    "country": "Switzerland",
    "program": "Virtuoso"
-  },
-  {
-   "id": "h_02447",
-   "name": "Waldorf Astoria Costa Rica Punta Cacique A Virtuoso Preview Property",
-   "city": "Liberia",
-   "country": "Costa Rica",
-   "program": "Hilton for Luxury"
-  },
-  {
-   "id": "h_02477",
-   "name": "Wildflower Farms, Hudson Valley",
-   "city": "Gardiner",
-   "country": "United States",
-   "program": "Auberge Resorts Collection"
   },
   {
    "id": "h_02501",
@@ -25994,12 +26568,6 @@
    "country": "Mexico"
   },
   {
-   "vid": "16564609",
-   "name": "Iniala Valletta",
-   "city": "Valletta",
-   "country": "Malta"
-  },
-  {
    "vid": "18055289",
    "name": "InterContinental Khao Yai Resort",
    "city": "Nakhon Ratchasima",
@@ -26196,12 +26764,6 @@
    "name": "Nobu Hotel Madrid - A Virtuoso Preview Property",
    "city": "Madrid",
    "country": "Spain"
-  },
-  {
-   "vid": "11162377",
-   "name": "Old Cataract Aswan",
-   "city": "Aswan",
-   "country": "Egypt"
   },
   {
    "vid": "18624537",

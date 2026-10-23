@@ -148,6 +148,216 @@
    "ours": "Zadún",
    "theirs": "Zadún Los Cabos, a Ritz-Carlton Reserve",
    "why": "25.2 km apart, two hundred metres past the ceiling, because both records point at San José del Cabo rather than at the property."
+  },
+  {
+   "id": "h_00875",
+   "vid": "12821167",
+   "ours": "Hotel Jerome",
+   "theirs": "Hotel Jerome, Auberge Collection",
+   "why": "A corrupted copy: the record says Via Giulia 62, Rome — a different hotel's address — for the Auberge property in Aspen, Colorado, 8,700 km away. It carries Auberge's program perks, and there is one Hotel Jerome in the collection."
+  },
+  {
+   "id": "h_01853",
+   "vid": "16246034",
+   "ours": "Stanly Ranch, Napa Valley",
+   "theirs": "Stanly Ranch, Auberge Collection",
+   "why": "A third stub for Stanly Ranch, 0.3 km from the feed pin. The matcher already folds our 'Stanly Ranch' into it; the ', Napa Valley' suffix is what kept this one apart."
+  },
+  {
+   "id": "h_01872",
+   "vid": "16406351",
+   "ours": "Susurros del Corazon, Punta de Mita",
+   "theirs": "Susurros del Corazón, Auberge Collection",
+   "why": "A third stub for Susurros del Corazón, 14 km out because it is pinned to Nayarit state rather than the property. One resort of that name."
+  },
+  {
+   "id": "h_02477",
+   "vid": "16480311",
+   "ours": "Wildflower Farms, Hudson Valley",
+   "theirs": "Wildflower Farms, Auberge Collection",
+   "why": "A third stub for Wildflower Farms in Gardiner, 3 km from the feed pin. The ', Hudson Valley' suffix kept it from the duplicate the matcher already folds."
+  },
+  {
+   "id": "h_00051",
+   "vid": "11160509",
+   "ours": "Alpaga Megeve",
+   "theirs": "L'Alpaga Megève, a Beaumier Hotel",
+   "why": "The same chalet in Megève, 0 km apart; the feed's name adds the article and the Beaumier group."
+  },
+  {
+   "id": "h_00298",
+   "vid": "15487125",
+   "ours": "Canaves Oia Sunday Suites, Oia Greece",
+   "theirs": "Canaves Sunday",
+   "why": "Canaves Sunday in Oia, 0 km apart. Our name is the old 'Sunday Suites' one."
+  },
+  {
+   "id": "h_00508",
+   "vid": "11977074",
+   "ours": "Dorado Beach",
+   "theirs": "Dorado Beach, a Ritz-Carlton Reserve",
+   "why": "Our country says United States, the feed's Puerto Rico; 3 km apart. The only Dorado Beach Ritz-Carlton Reserve."
+  },
+  {
+   "id": "h_00629",
+   "vid": "6163863",
+   "ours": "Fonteverde Lifestyle & Thermal Retreat",
+   "theirs": "Fonteverde Thermal Spa Resort | Tuscany",
+   "why": "Fonteverde at San Casciano dei Bagni, 0 km apart under an older marketing name."
+  },
+  {
+   "id": "h_00689",
+   "vid": "6164293",
+   "ours": "Four Seasons Resort The Nam Hai",
+   "theirs": "Four Seasons Resort The Nam Hai, Hoi An, Vietnam",
+   "why": "The Nam Hai, 1 km apart. The feed name just adds the city."
+  },
+  {
+   "id": "h_00699",
+   "vid": "18091466",
+   "ours": "Furore Grand Hotel - Amalfi Coast",
+   "theirs": "Furore Grand Hotel",
+   "why": "Furore Grand Hotel, 5 km apart because ours is pinned to 'Amalfi Coast' rather than to Furore."
+  },
+  {
+   "id": "h_00819",
+   "vid": "16721581",
+   "ours": "Hotel Barriere Fouquet's New York",
+   "theirs": "Fouquet's New York",
+   "why": "Fouquet's New York, 3 km apart. Barrière dropped the group name from the property's."
+  },
+  {
+   "id": "h_00844",
+   "vid": "15876928",
+   "ours": "Hotel Colón",
+   "theirs": "Hotel Colón, a Gran Meliá Hotel",
+   "why": "Hotel Colón, a Gran Meliá Hotel, is in Seville. Our record carries the Gran Meliá program but a Barcelona city and pin, 831 km out."
+  },
+  {
+   "id": "h_00458",
+   "vid": "16636082",
+   "ours": "Corinthia Grand Hotel Astoria",
+   "theirs": "Corinthia Grand Hotel Astoria, Brussels",
+   "why": "Corinthia's Grand Hotel Astoria is in Brussels. Our record is filed under Riga, Latvia, 1,454 km away; Corinthia has no hotel there."
+  },
+  {
+   "id": "h_00906",
+   "vid": "6164302",
+   "ours": "Hotel Savoy",
+   "theirs": "Hotel Savoy, a Rocco Forte Hotel",
+   "why": "Rocco Forte's Hotel Savoy is in Florence. Our record says Lisbon, 976 km out — the same corruption as the Rome 'Hotel Jerome'."
+  },
+  {
+   "id": "h_00927",
+   "vid": "6164388",
+   "ours": "Hotel de Rome",
+   "theirs": "Hotel de Rome, Berlin",
+   "why": "Rocco Forte's Hotel de Rome is in Berlin, not Rome. Our record took the name for the city."
+  },
+  {
+   "id": "h_00969",
+   "vid": "16564609",
+   "ours": "Iniala Harbour House & Residences",
+   "theirs": "Iniala Valletta",
+   "why": "Iniala's Valletta hotel, 0 km apart; 'Harbour House' is the property's earlier name."
+  },
+  {
+   "id": "h_01126",
+   "vid": "15335631",
+   "ours": "Ladder",
+   "theirs": "Ladder, A Ted Turner Reserve",
+   "why": "Ladder Ranch is in New Mexico. Our record says Mindelo, Cape Verde, 8,297 km out. The only Ted Turner 'Ladder'."
+  },
+  {
+   "id": "h_01135",
+   "vid": "15499471",
+   "ours": "Las Casitas",
+   "theirs": "Las Casitas, A Belmond Hotel, Colca Canyon",
+   "why": "Our record carries the Belmond program but sits in Puerto Calero, Spain. Belmond's Las Casitas is at Colca Canyon, Peru."
+  },
+  {
+   "id": "h_01141",
+   "vid": "18080864",
+   "ours": "Le Barth Villa Rental",
+   "theirs": "Le Barth Villas",
+   "why": "Le Barth's villa programme in Gustavia, 0 km apart."
+  },
+  {
+   "id": "h_01174",
+   "vid": "16021235",
+   "ours": "Lesante Blu Exclusive Beach Resort",
+   "theirs": "Lesante Blu",
+   "why": "Lesante Blu on Zakynthos, 2 km apart, with the marketing suffix dropped."
+  },
+  {
+   "id": "h_01244",
+   "vid": "16403617",
+   "ours": "Mandarin Oriental Exclusive Homes",
+   "theirs": "Mandarin Oriental Exceptional Homes",
+   "why": "Mandarin Oriental's villa programme under its older name ('Exclusive Homes'); it has no single location, hence 'Various'."
+  },
+  {
+   "id": "h_01252",
+   "vid": "6163681",
+   "ours": "Mandarin Oriental Palace",
+   "theirs": "Mandarin Oriental Palace, Luzern",
+   "why": "Mandarin Oriental Palace is the Lucerne hotel; Mandarin Oriental's Geneva hotel is a separate record already in the feed. Ours is filed under Geneva, 191 km out."
+  },
+  {
+   "id": "h_01504",
+   "vid": "16763328",
+   "ours": "Park Hyatt Los Cabos at Cabo del Sol - A Virtuoso Preview Property",
+   "theirs": "Park Hyatt Cabo del Sol",
+   "why": "The preview listing for Park Hyatt Los Cabos, 1 km from the opened property."
+  },
+  {
+   "id": "h_01627",
+   "vid": "16174856",
+   "ours": "Rocco Forte Private Villas",
+   "theirs": "Rocco Forte Private Villas, Verdura Resort",
+   "why": "Rocco Forte Private Villas at Verdura, 2 km apart; ours has no city."
+  },
+  {
+   "id": "h_01684",
+   "vid": "16830373",
+   "ours": "SHA Wellness Clinic Mexico",
+   "theirs": "SHA Mexico",
+   "why": "SHA Mexico at Costa Mujeres, 62 km apart because ours is pinned to Holbox."
+  },
+  {
+   "id": "h_01815",
+   "vid": "11162377",
+   "ours": "Sofitel Legend Old Cataract Aswan",
+   "theirs": "Old Cataract Aswan",
+   "why": "The Old Cataract in Aswan, 2 km apart. Mandarin Oriental took it over from Sofitel; ours is the old name."
+  },
+  {
+   "id": "h_01913",
+   "vid": "14408960",
+   "ours": "The Brando, Tetiaroa",
+   "theirs": "The Brando",
+   "why": "The Brando on Tetiaroa, 57 km apart because ours is pinned to the territory, not the atoll."
+  },
+  {
+   "id": "h_02447",
+   "vid": "16805172",
+   "ours": "Waldorf Astoria Costa Rica Punta Cacique A Virtuoso Preview Property",
+   "theirs": "Waldorf Astoria Costa Rica Punta Cacique",
+   "why": "The preview listing for Waldorf Astoria Punta Cacique, 29 km from the opened property."
+  },
+  {
+   "id": "h_01347",
+   "vid": "16287393",
+   "ours": "Muir",
+   "theirs": "Muir, a Luxury Collection Hotel, Halifax",
+   "why": "Muir is in Halifax, Nova Scotia. Our record says Aberdeen, Scotland, 4,362 km out."
+  },
+  {
+   "id": "h_01449",
+   "vid": "16708877",
+   "ours": "Palace Elisabeth",
+   "theirs": "Palace Elisabeth, Hvar Heritage Hotel",
+   "why": "Palace Elisabeth is the Hvar Heritage Hotel in Croatia. Our record says Lausanne, 859 km out."
   }
  ]
 }

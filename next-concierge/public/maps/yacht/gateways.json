@@ -77,24 +77,24 @@
    ],
    "promo": 1
   },
-  "h_00844": {
-   "n": "Hotel Colón",
-   "house": null,
+  "h_01070": {
+   "n": "Kimpton Vividora Barcelona",
+   "house": "IHG Hotels & Resorts",
    "aff": null,
    "city": "Barcelona",
    "country": "Spain",
    "ll": [
-    41.385002,
-    2.175834
+    41.3847,
+    2.17288
    ],
-   "thumb": null,
-   "rooms": null,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16340283_2_0.webp",
+   "rooms": 151,
    "perks": [
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 0
+   "promo": 1
   },
   "h_v16768337": {
    "n": "Torel Palace Lisbon",
@@ -1152,24 +1152,6 @@
    "perks": [],
    "promo": 0
   },
-  "h_01141": {
-   "n": "Le Barth Villa Rental",
-   "house": null,
-   "aff": null,
-   "city": "Gustavia",
-   "country": "Saint Barthélemy",
-   "ll": [
-    17.897807,
-    -62.849109
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [
-    "Daily breakfast",
-    "Early check-in"
-   ],
-   "promo": 0
-  },
   "h_01142": {
    "n": "Le Barth Villas",
    "house": null,
@@ -1187,6 +1169,23 @@
     "Early check-in"
    ],
    "promo": 1
+  },
+  "h_02436": {
+   "n": "WIMCO St. Barth Properties",
+   "house": null,
+   "aff": null,
+   "city": "Saint Barthelemy",
+   "country": "Saint Barthélemy",
+   "ll": [
+    17.9042,
+    -62.8398
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4623_2_0_1003.webp",
+   "rooms": 405,
+   "perks": [
+    "Early check-in"
+   ],
+   "promo": 0
   },
   "h_01569": {
    "n": "Prince Waikiki",
@@ -1804,25 +1803,6 @@
    "promo": 0
   },
   "h_00969": {
-   "n": "Iniala Harbour House & Residences",
-   "house": null,
-   "aff": null,
-   "city": "Valletta",
-   "country": "Malta",
-   "ll": [
-    35.89626,
-    14.51427
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_v16564609": {
    "n": "Iniala Valletta",
    "house": null,
    "aff": null,
@@ -1853,6 +1833,25 @@
    ],
    "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16579930_2_0.webp",
    "rooms": 132,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00992": {
+   "n": "InterContinental Malta",
+   "house": "IHG Hotels & Resorts",
+   "aff": null,
+   "city": "St. Julian's Bay",
+   "country": "Malta",
+   "ll": [
+    35.9258,
+    14.4878
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15431092_2_55.webp",
+   "rooms": 481,
    "perks": [
     "Daily breakfast",
     "$100 credit",
@@ -2882,25 +2881,6 @@
    ],
    "promo": 0
   },
-  "h_00699": {
-   "n": "Furore Grand Hotel - Amalfi Coast",
-   "house": null,
-   "aff": null,
-   "city": "Amalfi Coast",
-   "country": "Italy",
-   "ll": [
-    40.633843,
-    14.602751
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
   "h_00099": {
    "n": "Anantara Convento di Amalfi Grand Hotel",
    "house": "Minor Hotels",
@@ -2919,6 +2899,25 @@
     "Room upgrade"
    ],
    "promo": 1
+  },
+  "h_v18623686": {
+   "n": "Hotel Miramalfi",
+   "house": null,
+   "aff": null,
+   "city": "Amalfi",
+   "country": "Italy",
+   "ll": [
+    40.6305,
+    14.5946
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18619277_2_0_1005.webp",
+   "rooms": 36,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
   },
   "h_00979": {
    "n": "InterContinental Bordeaux - Le Grand Hotel",
@@ -3683,8 +3682,8 @@
      0.5
     ],
     [
-     "h_00844",
-     0.7
+     "h_01070",
+     0.9
     ]
    ]
   },
@@ -4036,12 +4035,12 @@
      1.6
     ],
     [
-     "h_01141",
+     "h_01142",
      1.6
     ],
     [
-     "h_01142",
-     1.6
+     "h_02436",
+     2.6
     ],
     [
      "h_01117",
@@ -4298,12 +4297,12 @@
      0.4
     ],
     [
-     "h_v16564609",
-     0.4
-    ],
-    [
      "h_02109",
      1.1
+    ],
+    [
+     "h_00992",
+     3.8
     ]
    ]
   },
@@ -4686,12 +4685,12 @@
      14.8
     ],
     [
-     "h_00699",
-     16.2
-    ],
-    [
      "h_00099",
      16.7
+    ],
+    [
+     "h_v18623686",
+     17
     ]
    ]
   },

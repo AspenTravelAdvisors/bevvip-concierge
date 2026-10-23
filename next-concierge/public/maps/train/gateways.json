@@ -588,24 +588,24 @@
    ],
    "promo": 1
   },
-  "h_00844": {
-   "n": "Hotel Colón",
-   "house": null,
+  "h_01070": {
+   "n": "Kimpton Vividora Barcelona",
+   "house": "IHG Hotels & Resorts",
    "aff": null,
    "city": "Barcelona",
    "country": "Spain",
    "ll": [
-    41.385002,
-    2.175834
+    41.3847,
+    2.17288
    ],
-   "thumb": null,
-   "rooms": null,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16340283_2_0.webp",
+   "rooms": 151,
    "perks": [
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 0
+   "promo": 1
   },
   "h_v16768337": {
    "n": "Torel Palace Lisbon",
@@ -1952,25 +1952,6 @@
    ],
    "promo": 1
   },
-  "h_00699": {
-   "n": "Furore Grand Hotel - Amalfi Coast",
-   "house": null,
-   "aff": null,
-   "city": "Amalfi Coast",
-   "country": "Italy",
-   "ll": [
-    40.633843,
-    14.602751
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
   "h_v18623686": {
    "n": "Hotel Miramalfi",
    "house": null,
@@ -2002,6 +1983,25 @@
    ],
    "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4112_2_56_0930.webp",
    "rooms": 66,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01467": {
+   "n": "Palazzo Avino",
+   "house": null,
+   "aff": null,
+   "city": "Ravello",
+   "country": "Italy",
+   "ll": [
+    40.6497,
+    14.6129
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4312_2_47_0929.webp",
+   "rooms": 43,
    "perks": [
     "Daily breakfast",
     "$100 credit",
@@ -3121,8 +3121,8 @@
      0.5
     ],
     [
-     "h_00844",
-     0.7
+     "h_01070",
+     0.9
     ]
    ]
   },
@@ -3623,16 +3623,16 @@
      0.2
     ],
     [
-     "h_00699",
-     0.2
-    ],
-    [
      "h_v18623686",
      0.6
     ],
     [
      "h_00905",
      0.7
+    ],
+    [
+     "h_01467",
+     2.1
     ],
     [
      "h_00343",

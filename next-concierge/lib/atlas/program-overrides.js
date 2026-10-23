@@ -28,12 +28,25 @@ const fold = (s) =>
 const COMPILED = (ledger.rules || []).map((rule) => ({
   program: rule.program,
   excludeIds: new Set(rule.excludeIds || []),
+  fromPrograms: rule.fromPrograms ? new Set(rule.fromPrograms) : null,
   brands: (rule.brandRules || []).map((b) => ({
-    brand: b.brand,
-    brandKey: fold(b.brand),
+    brand: b.brand || null,
+    brandKey: b.brand ? fold(b.brand) : "",
+    chainKey: b.chain ? fold(b.chain) : "",
     re: b.namePattern ? new RegExp(b.namePattern) : null,
   })),
 }));
+
+/**
+ * One brandRule against one hotel. A `chain` entry is keyed to Virtuoso's own
+ * chain field (supplier truth) and must match; a namePattern alongside it then
+ * narrows the chain (Marriott's luxury group spans two programs). Without a
+ * chain, brand equality or the name pattern is enough.
+ */
+function ruleMatches(b, name, brandKey, chainKey) {
+  if (b.chainKey) return chainKey === b.chainKey && (!b.re || b.re.test(name));
+  return (brandKey && brandKey === b.brandKey) || (b.re && b.re.test(name));
+}
 
 /**
  * The rule a hotel falls under, or null. Brand equality and the name pattern
@@ -45,10 +58,14 @@ function overrideFor(hotel) {
   if (!hotel) return null;
   const name = fold(hotel.name);
   const brandKey = fold(hotel.brand);
+  const chainKey = fold(hotel.chain);
   for (const rule of COMPILED) {
     if (rule.excludeIds.has(hotel.id)) continue;
+    // A rule limited to the import channel never relabels a hotel someone
+    // already filed under a specific program (e.g. "Ritz-Carlton Reserve").
+    if (rule.fromPrograms && !rule.fromPrograms.has(hotel.program || "Virtuoso")) continue;
     for (const b of rule.brands) {
-      if ((brandKey && brandKey === b.brandKey) || (b.re && b.re.test(name))) {
+      if (ruleMatches(b, name, brandKey, chainKey)) {
         return { program: rule.program, brand: b.brand };
       }
     }
@@ -66,7 +83,9 @@ function overrideFor(hotel) {
 function applyOverride(hotel) {
   const hit = overrideFor(hotel);
   if (!hit) return hotel;
-  const out = { ...hotel, program: hit.program, brand: hit.brand };
+  // A chain rule names no brand: "Hilton Luxury Brands" spans Waldorf Astoria,
+  // Conrad and LXR, and each record's own brand is the right one to keep.
+  const out = { ...hotel, program: hit.program, brand: hit.brand || hotel.brand };
   if (hotel.program && hotel.program !== hit.program) out.programSource = hotel.program;
   return out;
 }

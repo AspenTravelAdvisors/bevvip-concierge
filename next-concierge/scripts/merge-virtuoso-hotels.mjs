@@ -160,8 +160,9 @@ for (const start of [...dropped.keys()]) {
   dropped.set(start, keep);
 }
 
-// Records that are obviously not real properties.
-const JUNK = /^iceportal hotel test/i;
+// Records that are obviously not real properties: Virtuoso's own test and
+// training listings, which reach our base through the same import as hotels.
+const JUNK = /^(iceportal hotel test|virtuoso hotel( (test|training|core training|local training|for iceportal testing))?$|virtuoso nw trainging$|virtuoso test training$|new hotel supplier in pro\b)/i;
 
 const merged = [];
 const stats = { upgraded: 0, localOnly: 0, added: 0, dropped: 0, junk: 0, categoryChanged: 0, perksReplaced: 0, photos: 0 };
