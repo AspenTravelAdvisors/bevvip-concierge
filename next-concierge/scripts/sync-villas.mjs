@@ -285,9 +285,6 @@ if (overlap.length < previous.villas.length * 0.5) {
     ['bedrooms', 0.9, (v) => v.capacity.bedrooms === prev(v).capacity.bedrooms],
     ['sleeps', 0.85, (v) => v.capacity.sleeps === prev(v).capacity.sleeps],
     ['main image present', 0.95, (v) => !!v.main_image || !prev(v).main_image],
-    // Spacing aside: the July file has non-breaking spaces where the API may not.
-    ['price string', 0.6, (v) => v.pricing.price_string.replace(/\s+/g, ' ') === prev(v).pricing.price_string.replace(/\s+/g, ' ')],
-    ['USD base rate', 0.85, (v) => v.pricing.rate_from_usd === prev(v).pricing.rate_from_usd],
   ];
   for (const [label, min, test] of checks) {
     const s = share(overlap, test);
@@ -295,6 +292,25 @@ if (overlap.length < previous.villas.length * 0.5) {
     if (s < min) problems.push(`only ${(s * 100).toFixed(1)}% of returning villas agree on ${label} (need ${min * 100}%)`);
   }
 }
+
+// Prices are the one field that is meant to move — rates are seasonal, and the
+// first sync after July found ~45% of them changed — so they are not compared
+// with last month. What is checked instead is that the price fields are read
+// right: every price string is one of the supplier's two forms, and a "from $N"
+// string states the same number as price_low (98.5% of the July file does).
+const fromPrice = /^from\s\$([\d,]+)\s\/night$/;
+const priceForm = share(ordered, (v) => fromPrice.test(v.pricing.price_string) || v.pricing.price_string === 'Call for Pricing');
+console.log(`  price strings in a known form: ${(priceForm * 100).toFixed(1)}%`);
+if (priceForm < 0.95) problems.push(`only ${(priceForm * 100).toFixed(1)}% of price strings read "from $N /night" or "Call for Pricing" — the price field is probably mapped wrong`);
+const quoted = ordered.filter((v) => fromPrice.test(v.pricing.price_string));
+const priceAgrees = share(quoted, (v) => Number(v.pricing.price_string.match(fromPrice)[1].replace(/,/g, '')) === Math.round(Number(v.pricing.price_low)));
+console.log(`  price strings that match price_low: ${(priceAgrees * 100).toFixed(1)}%`);
+if (priceAgrees < 0.95) problems.push(`only ${(priceAgrees * 100).toFixed(1)}% of quoted prices match price_low — the price fields are probably mapped wrong`);
+
+const repriced = overlap.filter((v) => v.pricing.price_string.replace(/\s+/g, ' ') !== previousById.get(String(v.id)).pricing.price_string.replace(/\s+/g, ' '));
+console.log(`  price changed since the last sync: ${repriced.length} of ${overlap.length} returning villas`);
+for (const v of repriced.slice(0, 8)) console.log(`    ${v.name}: ${previousById.get(String(v.id)).pricing.price_string.replace(/\s+/g, ' ')} → ${v.pricing.price_string}`);
+
 const exact = share(ordered, (v) => v.geo.precision === 'villa');
 console.log(`  own coordinates: ${(exact * 100).toFixed(1)}%`);
 if (exact < 0.8) problems.push(`only ${(exact * 100).toFixed(1)}% of villas have their own coordinates — the lat/lon fields are probably mapped wrong`);
