@@ -6,6 +6,7 @@ import Link from "next/link";
 import { SITE_URL } from "@/lib/answers";
 import { resolvedAnswers, resolvedAnswersByCategory } from "@/lib/seo/answer-facts";
 import SiteFooter from "@/components/SiteFooter";
+import { COLLECTION_COUNTS } from "@/lib/atlas-counts";
 
 export const metadata = {
   title: "Answers — Straight Answers to the Questions Luxury Travelers Ask",
@@ -45,7 +46,7 @@ export default function AnswersIndex() {
           grounded in the Expedition Bucket List atlas — {""}
           <Link href="/atlas/hotel">2,382 vetted hotels</Link>,{" "}
           <Link href="/atlas/cruise">3,542 expedition sailings</Link>,{" "}
-          <Link href="/atlas/villa">3,902 villas</Link>, plus world cruises,
+          <Link href="/atlas/villa">{COLLECTION_COUNTS.villa.toLocaleString("en-US")} villas</Link>, plus world cruises,
           rails, jets and yachts. When you want the answer priced for your
           dates, <Link href="/">ask The Guide</Link>.
         </p>

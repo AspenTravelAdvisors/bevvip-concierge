@@ -22,7 +22,7 @@ export default function VillaAtlasError({
       error={error}
       reset={reset}
       title="The villa atlas didn't load"
-      body="This is almost always temporary — the map and the 3,902 villas are fine."
+      body="This is almost always temporary — the map and the villas are fine."
     />
   );
 }

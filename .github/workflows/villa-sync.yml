@@ -1,0 +1,92 @@
+# Refreshes the Villas of Distinction catalogue once a month and commits the result.
+#
+# Villas used to be a one-off scrape (2026-07-15) that nothing refreshed, so the
+# atlas count drifted away from what Villas of Distinction actually lists. They
+# change slowly and the whole catalogue is four pages of a public API, so this
+# runs monthly on its own rather than inside the nightly Virtuoso job.
+#
+# scripts/sync-villas.mjs refuses to write when the response looks wrong — a
+# catalogue more than 20% smaller than the committed one, or returning villas
+# that no longer agree with themselves on name, destination or size — and the
+# run fails with a raw record in the log to fix the mapping from. A failed run
+# commits nothing; the site keeps serving last month's villas.
+#
+# No secrets: the VillaInfo search API is public.
+name: Villa data sync
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'      # the 1st of each month, 06:00 UTC (midnight Aspen) — clear of the 09:00 Virtuoso sync
+  workflow_dispatch:          # and on demand, from the Actions tab
+
+concurrency:
+  group: villa-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write         # required to push the refreshed data back
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-concierge/package-lock.json
+
+      - name: Install dependencies
+        working-directory: next-concierge
+        run: npm ci
+
+      - name: Sync villas
+        working-directory: next-concierge
+        run: npm run sync:villas
+
+      # lib/atlas-counts.ts is what the Explore menu, the villa atlas header and
+      # the /answers index print, so the count moves in the same commit.
+      - name: Rebuild the collection counts
+        working-directory: next-concierge
+        run: npm run build:collection-counts
+
+      - name: Verify the villa cards still say what the feed says
+        working-directory: next-concierge
+        run: npm run verify:villas
+
+      # Villa hub pages and answer copy resolve against this file; a destination
+      # that empties out must not leave a published link pointing at nothing.
+      - name: Verify the answer copy still says something true
+        working-directory: next-concierge
+        run: npm run verify:seo
+
+      - name: Commit the refreshed data
+        run: |
+          DATA="next-concierge/data/villas-of-distinction.json next-concierge/lib/atlas-counts.ts"
+
+          git config user.name  "villa-sync[bot]"
+          git config user.email "villa-sync@users.noreply.github.com"
+          git add -- $DATA
+
+          if git diff --cached --quiet -- $DATA; then
+            echo "No changes at Villas of Distinction this month."
+            exit 0
+          fi
+
+          SUMMARY=$(cd next-concierge && node -e "
+            const d = require('./data/villas-of-distinction.json');
+            const m = d.metadata;
+            process.stdout.write(\`\${m.villa_count} villas (API total \${m.api_record_total}), generated \${d.generated_at_utc}\`);
+          ")
+          git commit -m "Refresh Villas of Distinction data" -m "Automated monthly sync from the VillaInfo search API." -m "$SUMMARY"
+
+          # The nightly Virtuoso job also pushes to main; take its commit first if
+          # it landed while this one ran. The two touch different files.
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
