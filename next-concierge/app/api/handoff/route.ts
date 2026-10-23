@@ -12,9 +12,10 @@
 //   HANDOFF_ENDPOINT (optional) — Formspree (or any JSON webhook) URL. Defaults
 //     to the project's Formspree form. Swap per environment without a redeploy.
 
-import { corsHeaders } from "@/lib/guide-cors";
+import { corsHeaders, isAllowedOrigin } from "@/lib/guide-cors";
 import { isRateLimited } from "@/lib/rate-limit";
 import { arrivalLabel, classifyAiSource } from "@/lib/arrival";
+import { SITE_URL } from "@/lib/site-url";
 
 export const runtime = "nodejs";
 export const maxDuration = 20;
@@ -101,6 +102,80 @@ function pagePath(url: unknown): string {
   }
 }
 
+/**
+ * A link on this site, made absolute so it is clickable in the lead email, or
+ * "" for anything else. Anyone can POST here, and a link in a lead is one an
+ * advisor is invited to click, so a URL on somebody else's site never reaches
+ * the inbox. Relative links, which the atlas builds for some records, resolve
+ * against SITE_URL rather than arriving as text nobody can click.
+ */
+function siteLink(raw: unknown): string {
+  const s = typeof raw === "string" ? raw.trim() : "";
+  if (!s || s.length > 2000) return "";
+  try {
+    const u = new URL(s, SITE_URL);
+    return u.origin === SITE_URL || isAllowedOrigin(u.origin) ? u.href : "";
+  } catch {
+    return "";
+  }
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  !!v && typeof v === "object" && !Array.isArray(v);
+
+/**
+ * The request body as the rest of this route uses it: every field of the type
+ * it promises, already clipped — or null when the body is not an object.
+ *
+ * Our own client always sends the right shapes. This is for everything else
+ * that can POST here: a number where a note belongs used to throw and come
+ * back as a 500, and the email body took several fields at whatever length
+ * they arrived. Now a wrong shape reads as absent, and nothing unbounded or
+ * off-site reaches the lead inbox.
+ */
+function normalize(raw: unknown): HandoffBody | null {
+  if (!isRecord(raw)) return null;
+  const brief = isRecord(raw.brief) ? raw.brief : {};
+  const contact = isRecord(raw.contact) ? raw.contact : {};
+  return {
+    // hasOwn, not `in`: "constructor" is in every object literal.
+    category:
+      typeof raw.category === "string" && Object.hasOwn(CATEGORY_LABEL, raw.category)
+        ? raw.category
+        : "generic",
+    action: clip(raw.action, 80),
+    source: clip(raw.source, 20) || "chat",
+    brief: {
+      destination: clip(brief.destination, 200),
+      when: clip(brief.when, 120),
+      party: clip(brief.party, 120),
+      budget: clip(brief.budget, 120),
+      style: clip(brief.style, 200),
+      considering: clip(brief.considering, 400),
+    },
+    shortlist: Array.isArray(raw.shortlist)
+      ? raw.shortlist.map((s) => clip(s, 160)).filter(Boolean).slice(0, 12)
+      : [],
+    shortlistSource: raw.shortlistSource === "bucket" ? "bucket" : "results",
+    shortlistTotal: Number(raw.shortlistTotal) || 0,
+    deepLink: siteLink(raw.deepLink) || null,
+    contact: {
+      name: clip(contact.name, 80),
+      email: clip(contact.email, 200),
+      phone: clip(contact.phone, 40),
+    },
+    notes: clip(raw.notes, 1000),
+    transcript: clip(raw.transcript, 6000),
+    pageUrl: siteLink(raw.pageUrl),
+    aiSource: typeof raw.aiSource === "string" ? raw.aiSource : null,
+    aiLanding: typeof raw.aiLanding === "string" ? raw.aiLanding : null,
+  };
+}
+
+// What a traveler sees when the lead inbox did not take the request. The
+// provider's own error text goes to the logs, not to the visitor.
+const CAPTURE_FAILED = "Sorry, that didn't reach an advisor. Please try again in a moment.";
+
 // Build the human-readable advisor email body. Lead with the structured brief
 // (how to follow up) and keep the transcript at the bottom as backup context.
 function composeMessage(body: HandoffBody): string {
@@ -181,12 +256,19 @@ export async function POST(req: Request) {
   const limited = await isRateLimited(req, cors);
   if (limited) return limited;
 
-  let body: HandoffBody;
+  let raw: unknown;
   try {
-    body = (await req.json()) as HandoffBody;
+    raw = await req.json();
   } catch {
     return Response.json(
       { ok: false, error: "Invalid JSON." },
+      { status: 400, headers: cors },
+    );
+  }
+  const body = normalize(raw);
+  if (!body) {
+    return Response.json(
+      { ok: false, error: "Invalid request." },
       { status: 400, headers: cors },
     );
   }
@@ -239,14 +321,16 @@ export async function POST(req: Request) {
     });
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
+      console.error(`Hand-off capture failed (${res.status}):`, detail.slice(0, 500));
       return Response.json(
-        { ok: false, error: `Capture failed (${res.status}). ${detail.slice(0, 200)}` },
+        { ok: false, error: CAPTURE_FAILED },
         { status: 502, headers: cors },
       );
     }
   } catch (err) {
+    console.error("Hand-off capture failed:", err);
     return Response.json(
-      { ok: false, error: err instanceof Error ? err.message : "Capture failed." },
+      { ok: false, error: CAPTURE_FAILED },
       { status: 502, headers: cors },
     );
   }
