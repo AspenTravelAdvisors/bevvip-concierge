@@ -4,15 +4,15 @@
   "built": "derived — see scripts/build-safari-camps.mjs",
   "radiusKm": 25,
   "lodgesInCategory": 71,
-  "lodgesInSafariCountries": 68,
-  "journeysWithCamps": 262,
+  "lodgesInSafariCountries": 67,
+  "journeysWithCamps": 263,
   "journeysTotal": 508,
   "campsMatched": 41
  },
  "radiusKm": 25,
  "totals": {
   "category": 71,
-  "inSafariCountries": 68
+  "inSafariCountries": 67
  },
  "CAMPS": {
   "h_01781": {
@@ -475,7 +475,7 @@
     10.505,
     -84.689
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16158612_2_0.webp",
    "rooms": 30,
    "perks": [
     "Daily breakfast",
@@ -492,7 +492,7 @@
     -39.6675,
     177.032
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3879_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3879_2_0.webp",
    "rooms": 23,
    "perks": [
     "Daily breakfast",
@@ -526,7 +526,7 @@
     -44.9448,
     168.441
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6655737_2_0_0926.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6655737_2_0.webp",
    "rooms": 16,
    "perks": [
     "Daily breakfast",
@@ -1572,6 +1572,20 @@
     "id": "h_01349",
     "stop": "Victoria Falls",
     "day": 1,
+    "km": 22.4
+   }
+  ],
+  "18050571": [
+   {
+    "id": "h_02374",
+    "stop": "Victoria Falls",
+    "day": 10,
+    "km": 3.4
+   },
+   {
+    "id": "h_01349",
+    "stop": "Victoria Falls",
+    "day": 10,
     "km": 22.4
    }
   ],

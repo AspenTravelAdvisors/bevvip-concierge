@@ -5,11 +5,11 @@
   "atlas": "train",
   "radiusKm": 40,
   "clusterKm": 15,
-  "journeysTotal": 110,
-  "journeysWithStays": 106,
+  "journeysTotal": 109,
+  "journeysWithStays": 105,
   "journeysWithHouse": 51,
-  "gateways": 46,
-  "hotels": 158,
+  "gateways": 45,
+  "hotels": 154,
   "houses": [
    "Belmond",
    "Orient Express"
@@ -997,7 +997,7 @@
     1.2906,
     103.858
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0.webp",
    "rooms": 510,
    "perks": [
     "Daily breakfast",
@@ -2837,82 +2837,6 @@
    ],
    "promo": 0
   },
-  "h_02432": {
-   "n": "W Osaka",
-   "house": "Luxury Group at Marriott International",
-   "aff": null,
-   "city": "Osaka",
-   "country": "Japan",
-   "ll": [
-    34.6769,
-    135.499
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16764816_2_0.webp",
-   "rooms": 337,
-   "perks": [
-    "Daily breakfast",
-    "Property credit",
-    "Room upgrade"
-   ],
-   "promo": 1
-  },
-  "h_02270": {
-   "n": "The St. Regis Osaka",
-   "house": "Luxury Group at Marriott International",
-   "aff": null,
-   "city": "Chuo-ku, Osaka",
-   "country": "Japan",
-   "ll": [
-    34.683259,
-    135.501136
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14699100_2_0.webp",
-   "rooms": 160,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 1
-  },
-  "h_v18395372": {
-   "n": "Patina Osaka",
-   "house": "Capella Hotel Group",
-   "aff": null,
-   "city": "Osaka",
-   "country": "Japan",
-   "ll": [
-    34.6819,
-    135.525
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18391398_2_0.webp",
-   "rooms": 221,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_00443": {
-   "n": "Conrad Osaka",
-   "house": "Hilton Luxury Brands",
-   "aff": null,
-   "city": "Osaka",
-   "country": "Japan",
-   "ll": [
-    34.6933,
-    135.495
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15782759_2_0_0930.webp",
-   "rooms": 164,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 1
-  },
   "h_00374": {
    "n": "Castiglion del Bosco, A Rosewood Hotel",
    "house": "Rosewood Hotels & Resorts",
@@ -4013,31 +3937,6 @@
     ]
    ]
   },
-  "Osaka": {
-   "n": "Osaka",
-   "ll": [
-    34.6667,
-    135.5
-   ],
-   "h": [
-    [
-     "h_02432",
-     1.1
-    ],
-    [
-     "h_02270",
-     1.8
-    ],
-    [
-     "h_v18395372",
-     2.8
-    ],
-    [
-     "h_00443",
-     3
-    ]
-   ]
-  },
   "Montalcino": {
    "n": "Montalcino",
    "ll": [
@@ -4243,14 +4142,6 @@
    "pre": "Rome",
    "post": "Venice",
    "house": "Orient Express"
-  },
-  "18256654": {
-   "pre": "Tokyo",
-   "post": "Tokyo"
-  },
-  "18256656": {
-   "pre": "Tokyo",
-   "post": "Osaka"
   },
   "18262679": {
    "pre": "Palermo",
@@ -4538,11 +4429,6 @@
    "post": "Cuzco",
    "house": "Belmond"
   },
-  "18638108": {
-   "pre": "Puno",
-   "post": null,
-   "house": "Belmond"
-  },
   "18638111": {
    "pre": null,
    "post": "Puno",
@@ -4551,6 +4437,15 @@
   "18644932": {
    "pre": "Cuzco",
    "post": "Cuzco",
+   "house": "Belmond"
+  },
+  "18645834": {
+   "pre": "Vancouver",
+   "post": "Calgary"
+  },
+  "18645836": {
+   "pre": "Cuzco",
+   "post": null,
    "house": "Belmond"
   }
  }

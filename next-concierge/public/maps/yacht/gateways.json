@@ -5,11 +5,11 @@
   "atlas": "yacht",
   "radiusKm": 40,
   "clusterKm": 15,
-  "journeysTotal": 509,
-  "journeysWithStays": 508,
-  "journeysWithHouse": 508,
-  "gateways": 56,
-  "hotels": 190,
+  "journeysTotal": 522,
+  "journeysWithStays": 521,
+  "journeysWithHouse": 521,
+  "gateways": 58,
+  "hotels": 193,
   "houses": [
    "Aman",
    "Four Seasons",
@@ -729,7 +729,7 @@
     26.1025,
     -80.1154
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16761069_2_1_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16761069_2_1.webp",
    "rooms": 325,
    "perks": [
     "Daily breakfast",
@@ -1090,7 +1090,7 @@
     8.95147,
     -79.53228
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16310992_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16310992_2_0.webp",
    "rooms": 159,
    "perks": [
     "Daily breakfast",
@@ -1680,7 +1680,7 @@
     1.2906,
     103.858
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0.webp",
    "rooms": 510,
    "perks": [
     "Daily breakfast",
@@ -2136,7 +2136,7 @@
     41.0462,
     29.0207
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3921_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3921_2_0.webp",
    "rooms": 170,
    "perks": [
     "Daily breakfast",
@@ -3576,7 +3576,7 @@
     12.5722,
     -70.0439
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11152928_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11152928_2_0.webp",
    "rooms": 364,
    "perks": [
     "Daily breakfast",
@@ -3603,6 +3603,63 @@
     "Room upgrade"
    ],
    "promo": 1
+  },
+  "h_00353": {
+   "n": "Casa de Campo Resort & Villas",
+   "house": null,
+   "aff": null,
+   "city": "La Romana",
+   "country": "Dominican Republic",
+   "ll": [
+    18.4023,
+    -68.9092
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4264_2_0_1003.webp",
+   "rooms": 365,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01716": {
+   "n": "Savoy Palace",
+   "house": null,
+   "aff": null,
+   "city": "Madeira",
+   "country": "Portugal",
+   "ll": [
+    32.6436,
+    -16.9209
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16613933_2_0_1001.webp",
+   "rooms": 300,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01612": {
+   "n": "Reid's Palace, A Belmond Hotel, Madeira",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Madeira",
+   "country": "Portugal",
+   "ll": [
+    32.6382,
+    -16.9311
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3661_2_0.webp",
+   "rooms": 126,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
   }
  },
  "GATES": {
@@ -4946,6 +5003,36 @@
     [
      "h_02168",
      7.4
+    ]
+   ]
+  },
+  "La Romana, Dominican Republic": {
+   "n": "La Romana, Dominican Republic",
+   "ll": [
+    18.4167,
+    -68.9667
+   ],
+   "h": [
+    [
+     "h_00353",
+     6.3
+    ]
+   ]
+  },
+  "Funchal, Portugal": {
+   "n": "Funchal, Portugal",
+   "ll": [
+    32.6333,
+    -16.9
+   ],
+   "h": [
+    [
+     "h_01716",
+     2.3
+    ],
+    [
+     "h_01612",
+     3
     ]
    ]
   },
@@ -7519,6 +7606,71 @@
    "pre": "Salerno, Italy",
    "post": "Monte-Carlo, Monaco",
    "house": "Four Seasons"
+  },
+  "18645929": {
+   "pre": "St. John's, Antigua And Barbuda",
+   "post": "Funchal, Portugal",
+   "house": "Aman"
+  },
+  "18645930": {
+   "pre": "Bridgetown, Barbados",
+   "post": "Oranjestad, Aruba",
+   "house": "Aman"
+  },
+  "18645931": {
+   "pre": "Oranjestad, Aruba",
+   "post": "Bridgetown, Barbados",
+   "house": "Aman"
+  },
+  "18645932": {
+   "pre": "La Romana, Dominican Republic",
+   "post": "St. John's, Antigua And Barbuda",
+   "house": "Aman"
+  },
+  "18645933": {
+   "pre": "Philipsburg, Sint Maarten",
+   "post": "La Romana, Dominican Republic",
+   "house": "Aman"
+  },
+  "18645934": {
+   "pre": "St. John's, Antigua And Barbuda",
+   "post": "Philipsburg, Sint Maarten",
+   "house": "Aman"
+  },
+  "18645935": {
+   "pre": "St. John's, Antigua And Barbuda",
+   "post": "St. John's, Antigua And Barbuda",
+   "house": "Aman"
+  },
+  "18645936": {
+   "pre": "Bridgetown, Barbados",
+   "post": "St. John's, Antigua And Barbuda",
+   "house": "Aman"
+  },
+  "18645937": {
+   "pre": "Bridgetown, Barbados",
+   "post": "St. John's, Antigua And Barbuda",
+   "house": "Aman"
+  },
+  "18645938": {
+   "pre": "Bridgetown, Barbados",
+   "post": "St. John's, Antigua And Barbuda",
+   "house": "Aman"
+  },
+  "18645939": {
+   "pre": "St. John's, Antigua And Barbuda",
+   "post": "Bridgetown, Barbados",
+   "house": "Aman"
+  },
+  "18645940": {
+   "pre": "St. John's, Antigua And Barbuda",
+   "post": "Bridgetown, Barbados",
+   "house": "Aman"
+  },
+  "18645941": {
+   "pre": "St. John's, Antigua And Barbuda",
+   "post": "Bridgetown, Barbados",
+   "house": "Aman"
   }
  }
 }

@@ -5,8 +5,8 @@
   "atlas": "cruise",
   "radiusKm": 40,
   "clusterKm": 15,
-  "journeysTotal": 4427,
-  "journeysWithStays": 3743,
+  "journeysTotal": 4452,
+  "journeysWithStays": 3751,
   "journeysWithHouse": 0,
   "gateways": 110,
   "hotels": 292,
@@ -15,287 +15,6 @@
  "radiusKm": 40,
  "clusterKm": 15,
  "HOTELS": {
-  "h_00597": {
-   "n": "Fairmont Nile City, Cairo",
-   "house": "Accor",
-   "aff": null,
-   "city": "Cairo",
-   "country": "Egypt",
-   "ll": [
-    30.0417,
-    31.2314
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18101431_2_0.webp",
-   "rooms": 543,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_00643": {
-   "n": "Four Seasons Hotel Cairo at Nile Plaza",
-   "house": "Four Seasons Hotels and Resorts",
-   "aff": "Four Seasons",
-   "city": "Cairo",
-   "country": "Egypt",
-   "ll": [
-    30.0361,
-    31.2284
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4242_2_0_1006.webp",
-   "rooms": 371,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Spa treatment"
-   ],
-   "promo": 0
-  },
-  "h_00642": {
-   "n": "Four Seasons Hotel Cairo",
-   "house": "Four Seasons",
-   "aff": "Four Seasons",
-   "city": "Cairo",
-   "country": "Egypt",
-   "ll": [
-    30.024305,
-    31.216831
-   ],
-   "thumb": null,
-   "rooms": null,
-   "perks": [],
-   "promo": 0
-  },
-  "h_00644": {
-   "n": "Four Seasons Hotel Cairo, at The First Residence",
-   "house": "Four Seasons Hotels and Resorts",
-   "aff": "Four Seasons",
-   "city": "Cairo",
-   "country": "Egypt",
-   "ll": [
-    30.09,
-    31.2072
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4198_2_0_0929.webp",
-   "rooms": 262,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Spa treatment"
-   ],
-   "promo": 0
-  },
-  "h_01293": {
-   "n": "Mashpi Lodge",
-   "house": null,
-   "aff": null,
-   "city": "Quito",
-   "country": "Ecuador",
-   "ll": [
-    -0.223252,
-    -78.5141
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12041365_2_0_0930.webp",
-   "rooms": 24,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_00347": {
-   "n": "Casa Gangotena",
-   "house": null,
-   "aff": null,
-   "city": "Quito",
-   "country": "Ecuador",
-   "ll": [
-    -0.194181,
-    -78.4532
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11155102_2_0.webp",
-   "rooms": 30,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Early check-in"
-   ],
-   "promo": 0
-  },
-  "h_00464": {
-   "n": "Country Club Lima Hotel",
-   "house": null,
-   "aff": null,
-   "city": "Lima",
-   "country": "Peru",
-   "ll": [
-    -12.098,
-    -77.0488
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4662_2_8_1004.webp",
-   "rooms": 83,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Early check-in"
-   ],
-   "promo": 0
-  },
-  "h_v18394870": {
-   "n": "Hotel Real InterContinental Lima Miraflores",
-   "house": "IHG Hotels & Resorts",
-   "aff": null,
-   "city": "Lima",
-   "country": "Peru",
-   "ll": [
-    -12.1329,
-    -77.0293
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18385799_2_47.webp",
-   "rooms": 321,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_01317": {
-   "n": "Miraflores Park, A Belmond Hotel, Lima",
-   "house": "Belmond",
-   "aff": "Belmond",
-   "city": "Lima",
-   "country": "Peru",
-   "ll": [
-    -12.1353,
-    -77.0273
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4636_2_0_1003.webp",
-   "rooms": 89,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Spa treatment"
-   ],
-   "promo": 0
-  },
-  "h_01415": {
-   "n": "One&Only Cape Town",
-   "house": "One&Only Resorts",
-   "aff": null,
-   "city": "Cape Town",
-   "country": "South Africa",
-   "ll": [
-    -33.9108,
-    18.4195
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4663_2_0_1003.webp",
-   "rooms": 132,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 1
-  },
-  "h_00315": {
-   "n": "Cape Grace, A Fairmont Managed Hotel",
-   "house": "Accor",
-   "aff": null,
-   "city": "Cape Town",
-   "country": "South Africa",
-   "ll": [
-    -33.9084,
-    18.4205
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4261_2_0.webp",
-   "rooms": 113,
-   "perks": [
-    "Daily breakfast",
-    "$200 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_01884": {
-   "n": "Taj Cape Town",
-   "house": "Taj",
-   "aff": null,
-   "city": "Cape Town",
-   "country": "South Africa",
-   "ll": [
-    -33.9249,
-    18.4198
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/5870530_2_12_1004.webp",
-   "rooms": 176,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Early check-in"
-   ],
-   "promo": 0
-  },
-  "h_02236": {
-   "n": "The Silo Hotel",
-   "house": "The Royal Portfolio",
-   "aff": null,
-   "city": "Cape Town",
-   "country": "South Africa",
-   "ll": [
-    -33.9086,
-    18.4227
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15499138_2_0_1006.webp",
-   "rooms": 28,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 1
-  },
-  "h_00141": {
-   "n": "Arakur Ushuaia Resort & Spa",
-   "house": null,
-   "aff": null,
-   "city": "Ushuaia",
-   "country": "Argentina",
-   "ll": [
-    -54.7864,
-    -68.2575
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14502947_2_1.webp",
-   "rooms": 129,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Airport transfer"
-   ],
-   "promo": 0
-  },
-  "h_01191": {
-   "n": "Los Cauquenes Resort + Spa + Experiences",
-   "house": null,
-   "aff": null,
-   "city": "Ushuaia",
-   "country": "Argentina",
-   "ll": [
-    -54.8364,
-    -68.3502
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6879105_2_0_1005.webp",
-   "rooms": 48,
-   "perks": [
-    "Daily breakfast",
-    "Room upgrade",
-    "Early check-in"
-   ],
-   "promo": 0
-  },
   "h_02500": {
    "n": "the Nines, a Luxury Collection Hotel, Portland",
    "house": "Luxury Group at Marriott International",
@@ -458,7 +177,7 @@
     1.2906,
     103.858
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6147630_2_0.webp",
    "rooms": 510,
    "perks": [
     "Daily breakfast",
@@ -790,6 +509,44 @@
    ],
    "promo": 1
   },
+  "h_00141": {
+   "n": "Arakur Ushuaia Resort & Spa",
+   "house": null,
+   "aff": null,
+   "city": "Ushuaia",
+   "country": "Argentina",
+   "ll": [
+    -54.7864,
+    -68.2575
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/14502947_2_1.webp",
+   "rooms": 129,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Airport transfer"
+   ],
+   "promo": 0
+  },
+  "h_01191": {
+   "n": "Los Cauquenes Resort + Spa + Experiences",
+   "house": null,
+   "aff": null,
+   "city": "Ushuaia",
+   "country": "Argentina",
+   "ll": [
+    -54.8364,
+    -68.3502
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/6879105_2_0_1005.webp",
+   "rooms": 48,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
   "h_00860": {
    "n": "Hotel Fasano Salvador",
    "house": "Fasano Hotels",
@@ -882,6 +639,44 @@
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01293": {
+   "n": "Mashpi Lodge",
+   "house": null,
+   "aff": null,
+   "city": "Quito",
+   "country": "Ecuador",
+   "ll": [
+    -0.223252,
+    -78.5141
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/12041365_2_0_0930.webp",
+   "rooms": 24,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00347": {
+   "n": "Casa Gangotena",
+   "house": null,
+   "aff": null,
+   "city": "Quito",
+   "country": "Ecuador",
+   "ll": [
+    -0.194181,
+    -78.4532
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11155102_2_0.webp",
+   "rooms": 30,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
    ],
    "promo": 0
   },
@@ -1018,6 +813,135 @@
    ],
    "promo": 0
   },
+  "h_00597": {
+   "n": "Fairmont Nile City, Cairo",
+   "house": "Accor",
+   "aff": null,
+   "city": "Cairo",
+   "country": "Egypt",
+   "ll": [
+    30.0417,
+    31.2314
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18101431_2_0.webp",
+   "rooms": 543,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_00643": {
+   "n": "Four Seasons Hotel Cairo at Nile Plaza",
+   "house": "Four Seasons Hotels and Resorts",
+   "aff": "Four Seasons",
+   "city": "Cairo",
+   "country": "Egypt",
+   "ll": [
+    30.0361,
+    31.2284
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4242_2_0_1006.webp",
+   "rooms": 371,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_00642": {
+   "n": "Four Seasons Hotel Cairo",
+   "house": "Four Seasons",
+   "aff": "Four Seasons",
+   "city": "Cairo",
+   "country": "Egypt",
+   "ll": [
+    30.024305,
+    31.216831
+   ],
+   "thumb": null,
+   "rooms": null,
+   "perks": [],
+   "promo": 0
+  },
+  "h_00644": {
+   "n": "Four Seasons Hotel Cairo, at The First Residence",
+   "house": "Four Seasons Hotels and Resorts",
+   "aff": "Four Seasons",
+   "city": "Cairo",
+   "country": "Egypt",
+   "ll": [
+    30.09,
+    31.2072
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4198_2_0_0929.webp",
+   "rooms": 262,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
+  "h_00464": {
+   "n": "Country Club Lima Hotel",
+   "house": null,
+   "aff": null,
+   "city": "Lima",
+   "country": "Peru",
+   "ll": [
+    -12.098,
+    -77.0488
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4662_2_8_1004.webp",
+   "rooms": 83,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_v18394870": {
+   "n": "Hotel Real InterContinental Lima Miraflores",
+   "house": "IHG Hotels & Resorts",
+   "aff": null,
+   "city": "Lima",
+   "country": "Peru",
+   "ll": [
+    -12.1329,
+    -77.0293
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18385799_2_47.webp",
+   "rooms": 321,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01317": {
+   "n": "Miraflores Park, A Belmond Hotel, Lima",
+   "house": "Belmond",
+   "aff": "Belmond",
+   "city": "Lima",
+   "country": "Peru",
+   "ll": [
+    -12.1353,
+    -77.0273
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4636_2_0_1003.webp",
+   "rooms": 89,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Spa treatment"
+   ],
+   "promo": 0
+  },
   "h_00510": {
    "n": "Downtown L.A. Proper",
    "house": null,
@@ -1142,7 +1066,7 @@
     8.95147,
     -79.53228
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16310992_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16310992_2_0.webp",
    "rooms": 159,
    "perks": [
     "Daily breakfast",
@@ -1484,7 +1408,7 @@
     -4.7402,
     55.4686
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16201061_2_8_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16201061_2_8.webp",
    "rooms": 41,
    "perks": [
     "Daily breakfast",
@@ -2065,7 +1989,7 @@
     28.6036,
     77.1906
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/10755377_2_1_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/10755377_2_1.webp",
    "rooms": 254,
    "perks": [
     "Daily breakfast",
@@ -2472,6 +2396,82 @@
     "Room upgrade"
    ],
    "promo": 0
+  },
+  "h_01415": {
+   "n": "One&Only Cape Town",
+   "house": "One&Only Resorts",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9108,
+    18.4195
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4663_2_0_1003.webp",
+   "rooms": 132,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
+  },
+  "h_00315": {
+   "n": "Cape Grace, A Fairmont Managed Hotel",
+   "house": "Accor",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9084,
+    18.4205
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4261_2_0.webp",
+   "rooms": 113,
+   "perks": [
+    "Daily breakfast",
+    "$200 credit",
+    "Room upgrade"
+   ],
+   "promo": 0
+  },
+  "h_01884": {
+   "n": "Taj Cape Town",
+   "house": "Taj",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9249,
+    18.4198
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/5870530_2_12_1004.webp",
+   "rooms": 176,
+   "perks": [
+    "Daily breakfast",
+    "Room upgrade",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_02236": {
+   "n": "The Silo Hotel",
+   "house": "The Royal Portfolio",
+   "aff": null,
+   "city": "Cape Town",
+   "country": "South Africa",
+   "ll": [
+    -33.9086,
+    18.4227
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/15499138_2_0_1006.webp",
+   "rooms": 28,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Room upgrade"
+   ],
+   "promo": 1
   },
   "h_01820": {
    "n": "Sofitel Montevideo Casino Carrasco & Spa",
@@ -3668,7 +3668,7 @@
     53.3334,
     -6.24212
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18048722_2_0_0923.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18048722_2_0.webp",
    "rooms": 72,
    "perks": [
     "Daily breakfast",
@@ -3706,7 +3706,7 @@
     53.3385,
     -6.25259
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4060_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4060_2_0.webp",
    "rooms": 142,
    "perks": [
     "Daily breakfast",
@@ -4029,7 +4029,7 @@
     57.4717,
     -4.22374
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3838_2_12_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3838_2_12.webp",
    "rooms": 11,
    "perks": [
     "Daily breakfast",
@@ -4568,7 +4568,7 @@
     42.3488,
     -71.0817
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3924_2_11_1006.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3924_2_3_1006.webp",
    "rooms": 148,
    "perks": [
     "Daily breakfast",
@@ -4986,7 +4986,7 @@
     25.0812,
     -77.3113
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4271_2_0_0926.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4271_2_0.webp",
    "rooms": 107,
    "perks": [
     "Daily breakfast",
@@ -5423,7 +5423,7 @@
     12.5722,
     -70.0439
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11152928_2_0_0925.webp",
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/11152928_2_0.webp",
    "rooms": 364,
    "perks": [
     "Daily breakfast",
@@ -5529,111 +5529,6 @@
   }
  },
  "GATES": {
-  "Cairo, Egypt": {
-   "n": "Cairo, Egypt",
-   "ll": [
-    30.05,
-    31.25
-   ],
-   "h": [
-    [
-     "h_00597",
-     2
-    ],
-    [
-     "h_00643",
-     2.6
-    ],
-    [
-     "h_00642",
-     4.3
-    ],
-    [
-     "h_00644",
-     6.1
-    ]
-   ]
-  },
-  "Quito, Ecuador": {
-   "n": "Quito, Ecuador",
-   "ll": [
-    -0.2167,
-    -78.5
-   ],
-   "h": [
-    [
-     "h_01293",
-     1.7
-    ],
-    [
-     "h_00347",
-     5.8
-    ]
-   ]
-  },
-  "Lima, Peru": {
-   "n": "Lima, Peru",
-   "ll": [
-    -12.05,
-    -77.05
-   ],
-   "h": [
-    [
-     "h_00464",
-     5.3
-    ],
-    [
-     "h_v18394870",
-     9.5
-    ],
-    [
-     "h_01317",
-     9.8
-    ]
-   ]
-  },
-  "Cape Town, South Africa": {
-   "n": "Cape Town, South Africa",
-   "ll": [
-    -33.9167,
-    18.4167
-   ],
-   "h": [
-    [
-     "h_01415",
-     0.7
-    ],
-    [
-     "h_00315",
-     1
-    ],
-    [
-     "h_01884",
-     1
-    ],
-    [
-     "h_02236",
-     1.1
-    ]
-   ]
-  },
-  "Ushuaia, Argentina": {
-   "n": "Ushuaia, Argentina",
-   "ll": [
-    -54.8,
-    -68.3
-   ],
-   "h": [
-    [
-     "h_00141",
-     3.1
-    ],
-    [
-     "h_01191",
-     5.2
-    ]
-   ]
-  },
   "Portland, OR, United States": {
    "n": "Portland, OR, United States",
    "ll": [
@@ -5810,6 +5705,23 @@
     ]
    ]
   },
+  "Ushuaia, Argentina": {
+   "n": "Ushuaia, Argentina",
+   "ll": [
+    -54.8,
+    -68.3
+   ],
+   "h": [
+    [
+     "h_00141",
+     3.1
+    ],
+    [
+     "h_01191",
+     5.2
+    ]
+   ]
+  },
   "Salvador, Brazil": {
    "n": "Salvador, Brazil",
    "ll": [
@@ -5845,6 +5757,23 @@
     [
      "h_00856",
      11.5
+    ]
+   ]
+  },
+  "Quito, Ecuador": {
+   "n": "Quito, Ecuador",
+   "ll": [
+    -0.2167,
+    -78.5
+   ],
+   "h": [
+    [
+     "h_01293",
+     1.7
+    ],
+    [
+     "h_00347",
+     5.8
     ]
    ]
   },
@@ -5900,6 +5829,52 @@
     [
      "h_01553",
      22.5
+    ]
+   ]
+  },
+  "Cairo, Egypt": {
+   "n": "Cairo, Egypt",
+   "ll": [
+    30.05,
+    31.25
+   ],
+   "h": [
+    [
+     "h_00597",
+     2
+    ],
+    [
+     "h_00643",
+     2.6
+    ],
+    [
+     "h_00642",
+     4.3
+    ],
+    [
+     "h_00644",
+     6.1
+    ]
+   ]
+  },
+  "Lima, Peru": {
+   "n": "Lima, Peru",
+   "ll": [
+    -12.05,
+    -77.05
+   ],
+   "h": [
+    [
+     "h_00464",
+     5.3
+    ],
+    [
+     "h_v18394870",
+     9.5
+    ],
+    [
+     "h_01317",
+     9.8
     ]
    ]
   },
@@ -6501,6 +6476,31 @@
     [
      "h_00443",
      3
+    ]
+   ]
+  },
+  "Cape Town, South Africa": {
+   "n": "Cape Town, South Africa",
+   "ll": [
+    -33.9167,
+    18.4167
+   ],
+   "h": [
+    [
+     "h_01415",
+     0.7
+    ],
+    [
+     "h_00315",
+     1
+    ],
+    [
+     "h_01884",
+     1
+    ],
+    [
+     "h_02236",
+     1.1
     ]
    ]
   },
@@ -7909,10 +7909,6 @@
    "pre": "Puerto Natales, Chile",
    "post": "Puerto Natales, Chile"
   },
-  "16845336": {
-   "pre": "Quito, Ecuador",
-   "post": "Quito, Ecuador"
-  },
   "16845337": {
    "pre": "Quito, Ecuador",
    "post": "Quito, Ecuador"
@@ -8113,10 +8109,6 @@
    "pre": "Quito, Ecuador",
    "post": "Quito, Ecuador"
   },
-  "16845613": {
-   "pre": "Quito, Ecuador",
-   "post": "Quito, Ecuador"
-  },
   "16845630": {
    "pre": "Panama City, Panama",
    "post": "Panama City, Panama"
@@ -8136,10 +8128,6 @@
   "16845689": {
    "pre": "Quito, Ecuador",
    "post": "Quito, Ecuador"
-  },
-  "16845699": {
-   "pre": "Cairo, Egypt",
-   "post": "Cairo, Egypt"
   },
   "16845700": {
    "pre": "Cairo, Egypt",
@@ -8240,10 +8228,6 @@
   "16845856": {
    "pre": "Los Angeles, CA, United States",
    "post": "Los Angeles, CA, United States"
-  },
-  "16847817": {
-   "pre": "Quito, Ecuador",
-   "post": "Lima, Peru"
   },
   "16847819": {
    "pre": "Quito, Ecuador",
@@ -8402,10 +8386,6 @@
    "post": "Lima, Peru"
   },
   "16847862": {
-   "pre": "Quito, Ecuador",
-   "post": "Lima, Peru"
-  },
-  "16847951": {
    "pre": "Quito, Ecuador",
    "post": "Lima, Peru"
   },
@@ -8756,10 +8736,6 @@
   "16872156": {
    "pre": "Denpasar, Indonesia",
    "post": "Singapore, Singapore"
-  },
-  "16874626": {
-   "pre": "Cape Town, South Africa",
-   "post": "Ushuaia, Argentina"
   },
   "16875636": {
    "pre": "Santiago, Chile",
@@ -9200,10 +9176,6 @@
   "18049042": {
    "pre": "Ushuaia, Argentina",
    "post": "Ushuaia, Argentina"
-  },
-  "18049051": {
-   "pre": null,
-   "post": "Buenos Aires, Argentina"
   },
   "18049054": {
    "pre": null,
@@ -15181,6 +15153,10 @@
    "pre": "Reykjavík, Iceland",
    "post": "Reykjavík, Iceland"
   },
+  "18479845": {
+   "pre": "Reykjavík, Iceland",
+   "post": "Halifax, NS, Canada"
+  },
   "18479846": {
    "pre": "Halifax, NS, Canada",
    "post": "Buenos Aires, Argentina"
@@ -16549,10 +16525,6 @@
    "pre": "Santiago, Chile",
    "post": "Santiago, Chile"
   },
-  "18492318": {
-   "pre": "Santiago, Chile",
-   "post": "Santiago, Chile"
-  },
   "18492319": {
    "pre": "Santiago, Chile",
    "post": "Santiago, Chile"
@@ -16603,30 +16575,6 @@
   },
   "18492337": {
    "pre": "Hamburg, Germany",
-   "post": "Oslo, Norway"
-  },
-  "18492339": {
-   "pre": "Oslo, Norway",
-   "post": "Oslo, Norway"
-  },
-  "18492340": {
-   "pre": "Oslo, Norway",
-   "post": "Oslo, Norway"
-  },
-  "18492341": {
-   "pre": "Oslo, Norway",
-   "post": "Oslo, Norway"
-  },
-  "18492342": {
-   "pre": "Oslo, Norway",
-   "post": "Oslo, Norway"
-  },
-  "18492343": {
-   "pre": "Oslo, Norway",
-   "post": "Oslo, Norway"
-  },
-  "18492344": {
-   "pre": "Oslo, Norway",
    "post": "Oslo, Norway"
   },
   "18492351": {
@@ -22760,6 +22708,90 @@
   "18638159": {
    "pre": "Seattle, WA, United States",
    "post": "Seattle, WA, United States"
+  },
+  "18645869": {
+   "pre": "Quito, Ecuador",
+   "post": "Quito, Ecuador"
+  },
+  "18645879": {
+   "pre": "La Romana, Dominican Republic",
+   "post": null
+  },
+  "18645902": {
+   "pre": "Vieux Fort, Saint Lucia",
+   "post": "Vieux Fort, Saint Lucia"
+  },
+  "18645911": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645912": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645913": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645914": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645915": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645916": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645917": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645918": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645919": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645920": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645921": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645922": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645923": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645924": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645925": {
+   "pre": "Oslo, Norway",
+   "post": null
+  },
+  "18645926": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645927": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
+  },
+  "18645928": {
+   "pre": "Oslo, Norway",
+   "post": "Oslo, Norway"
   }
  }
 }
