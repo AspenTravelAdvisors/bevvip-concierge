@@ -786,6 +786,25 @@ main.page {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+}
+/* The atlas tagline, on its own line above the Search this area cluster: the
+   how-to sits where the gesture happens, and fades after the first move. */
+.villa-area-ctrl .atlas-tagline,
+.atlas-area-ctrl .atlas-tagline {
+  flex-basis: 100%;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--gold-light);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.villa-area-ctrl .atlas-tagline.gone,
+.atlas-area-ctrl .atlas-tagline.gone {
+  opacity: 0;
 }
 .villa-area-ctrl .area-clear,
 .atlas-area-ctrl .area-clear {

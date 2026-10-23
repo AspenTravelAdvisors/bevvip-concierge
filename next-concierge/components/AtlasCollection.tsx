@@ -36,7 +36,7 @@ import { useIsMobile } from "@/lib/use-is-mobile";
 import { FOLLOW_DELAY_MS, useFollowMap, viewportBox } from "@/lib/map-area";
 import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
-import { internalAtlasLink, routeVerbLong } from "@/lib/atlas-config";
+import { ATLAS_TAGLINE, internalAtlasLink, routeVerbLong } from "@/lib/atlas-config";
 import BucketListButton from "./BucketListButton";
 
 /** One drawable leg of a traced route, already in [lng, lat]. */
@@ -452,8 +452,12 @@ export default function AtlasCollection({
   const { follow, available: followAvailable, setFollow } = useFollowMap();
   const followTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(followTimer.current), []);
+  // The tagline over the map is a first-visit hint: once the visitor has moved
+  // the map themselves they have done "pick a place", so it fades out.
+  const [mapTouched, setMapTouched] = useState(false);
   const onViewChange = useCallback((v: NonNullable<typeof viewRef.current>) => {
     viewRef.current = v;
+    if (v.userMoved) setMapTouched(true);
     if (!follow || !v.userMoved) return;
     clearTimeout(followTimer.current);
     followTimer.current = setTimeout(searchThisArea, FOLLOW_DELAY_MS);
@@ -1255,6 +1259,9 @@ export default function AtlasCollection({
         gesture happens.
       */}
       <div className="atlas-area-ctrl" onClick={(e) => e.stopPropagation()}>
+        <p className={`atlas-tagline${mapTouched ? " gone" : ""}`} aria-hidden={mapTouched}>
+          {ATLAS_TAGLINE}
+        </p>
         {followAvailable && (
           <label className="actrl area-follow" title="Update the list below as you pan and zoom the map">
             <input

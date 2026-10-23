@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
-import { ATLASES } from "@/lib/atlas-config";
+import { ATLASES, ATLAS_TAGLINE } from "@/lib/atlas-config";
 import { FOLLOW_DELAY_MS, useFollowMap, viewportBox } from "@/lib/map-area";
 import { CHART_STYLE, basemapInput } from "@/lib/atlas/chart-style";
 import BucketListButton from "./BucketListButton";
@@ -210,6 +210,8 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFull, setIsFull] = useState(false);
   const [shared, setShared] = useState(false);
+  // First-visit tagline over the map; fades once the visitor moves the map.
+  const [mapTouched, setMapTouched] = useState(false);
   const mapEl = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MBMap | null>(null);
@@ -432,7 +434,9 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         // filter change, and a shared link's opening camera, do not.
         let followTimer: ReturnType<typeof setTimeout> | undefined;
         map.on("moveend", (e: { originalEvent?: unknown }) => {
-          if (!e?.originalEvent || !followRef.current) return;
+          if (!e?.originalEvent) return;
+          setMapTouched(true);
+          if (!followRef.current) return;
           clearTimeout(followTimer);
           followTimer = setTimeout(() => {
             if (followRef.current) searchThisAreaRef.current();
@@ -831,6 +835,9 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         )}
         {!mapFailed && (
           <div className="villa-area-ctrl" onClick={(e) => e.stopPropagation()}>
+            <p className={`atlas-tagline${mapTouched ? " gone" : ""}`} aria-hidden={mapTouched}>
+              {ATLAS_TAGLINE}
+            </p>
             {followAvailable && !shortlistMode && (
               <label className="actrl area-follow" title="Update the list below as you pan and zoom the map">
                 <input
