@@ -383,6 +383,13 @@ export function collectionsHeadline(): string {
 }
 
 /**
+ * The atlas's how-to, in three beats: move the map, read the cards, book.
+ * One string so the home blurb and the hint over every collection map can
+ * never disagree on the wording.
+ */
+export const ATLAS_TAGLINE = "Pick a place. See what's there. Book the trip.";
+
+/**
  * The whole collection, as one sentence. Used by the home blurb so the promise
  * on the landing page can never drift from what the map actually plots.
  */

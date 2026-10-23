@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
-import { collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/lib/atlas-config";
+import { ATLAS_TAGLINE, collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/lib/atlas-config";
 
 /**
  * The home page's canonical, which did not exist.
@@ -63,7 +63,9 @@ export default function Home() {
                 The CSS clamps it as a backstop, but keep the copy short. */}
             <p>
               <span className="blurb-full">
-                {collectionsCompact()}. Click any pin to explore.
+                {/* Tagline first: the counts run long and the clamp cuts the
+                    end, and the how-to is the part that must always show. */}
+                {ATLAS_TAGLINE} {collectionsCompact()}.
               </span>
               <span className="blurb-short">
                 Hotels, villas, expeditions, world cruises, rail, yachts and jets — mapped.
