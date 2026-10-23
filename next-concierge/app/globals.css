@@ -791,6 +791,20 @@ main.page {
 .atlas-area-ctrl .area-clear {
   color: var(--sub);
 }
+/* "Search as I move the map" — a checkbox styled as the cluster's own chip.
+   Desktop only (lib/map-area); phones keep the button. */
+.villa-area-ctrl .area-follow,
+.atlas-area-ctrl .area-follow {
+  user-select: none;
+}
+.villa-area-ctrl .area-follow input,
+.atlas-area-ctrl .area-follow input {
+  margin: 0;
+  width: 13px;
+  height: 13px;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
 /* Same cluster on the collection atlases (VIP Hotels and the rest). Bottom
    LEFT, matching the villa map, because bottom-right is the plotted-count
    badge and top-right is the fullscreen/style/tilt stack. */

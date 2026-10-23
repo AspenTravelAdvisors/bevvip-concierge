@@ -771,6 +771,12 @@ interface Props {
     bearing: number;
     /** [west, south, east, north] of what is on screen, when readable. */
     bounds?: [number, number, number, number] | null;
+    /**
+     * True when the visitor's own gesture (drag, wheel, pinch, keyboard, the
+     * zoom buttons) produced this view; false for the shell's own moves — a
+     * refit, a flight, the idle spin. "Search as I move the map" reads it.
+     */
+    userMoved?: boolean;
   }) => void;
   /**
    * true → this surface owns its view through the URL alone: the shell reads
@@ -5146,7 +5152,7 @@ export default function AtlasShell({
         ["click", "keydown"].forEach((ev) => map.on(ev, () => abortTour()));
 
         // Publish the view so the page can build a Share link from it.
-        const reportView = () => {
+        const reportView = (e?: Partial<MBEvent>) => {
           // A flight writes the camera every frame, and each write ends a move:
           // reporting all of them would rebuild the Share view sixty times a
           // second for nine seconds. The landing at the end reports once.
@@ -5172,6 +5178,7 @@ export default function AtlasShell({
                   ? ([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] as [number, number, number, number])
                   : null;
               })(),
+              userMoved: !!e?.originalEvent,
             };
             viewRef.current = v;
             onViewChangeRef.current?.(v);
@@ -6953,6 +6960,8 @@ function setFog(map: MBMap, fog: Record<string, unknown>) {
 
 interface MBEvent {
   lngLat: { lng: number; lat: number };
+  /** Set on events a visitor's gesture produced; absent on programmatic moves. */
+  originalEvent?: unknown;
   features?: {
     properties: Record<string, string>;
     geometry?: { coordinates?: [number, number] };

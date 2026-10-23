@@ -33,6 +33,7 @@ import AtlasFilterRail, { type AtlasQuery } from "./AtlasFilterRail";
 import AtlasShell, { type StyleKey } from "./AtlasShell";
 import type { Point3D } from "./Atlas3DLayer";
 import { useIsMobile } from "@/lib/use-is-mobile";
+import { FOLLOW_DELAY_MS, useFollowMap, viewportBox } from "@/lib/map-area";
 import { askAboutProperty, askGuide, askGuideHref } from "@/lib/atlas/ask";
 import BrandLogo, { type BrandMark } from "./BrandLogo";
 import { internalAtlasLink, routeVerbLong } from "@/lib/atlas-config";
@@ -417,6 +418,7 @@ export default function AtlasCollection({
     style: string; engine?: "mapbox" | "photoreal"; globe: boolean;
     center: { lng: number; lat: number }; zoom: number; pitch: number; bearing: number;
     bounds?: [number, number, number, number] | null;
+    userMoved?: boolean;
   } | null>(null);
   const [shared, setShared] = useState(false);
 
@@ -436,11 +438,30 @@ export default function AtlasCollection({
    */
   const [areaBox, setAreaBox] = useState<[number, number, number, number] | null>(null);
 
+  // With the whole world in view there is no area to limit to, so the limit
+  // clears rather than becoming a box that matches everything.
   const searchThisArea = useCallback(() => {
     const b = viewRef.current?.bounds;
     if (!b) return;
-    setAreaBox(b);
+    setAreaBox(viewportBox(...b));
   }, []);
+
+  // "Search as I move the map" (lib/map-area): on desktop the list follows the
+  // visitor's own pans and zooms, never the shell's refits and flights. The
+  // filtering is local, so following costs nothing but the debounce.
+  const { follow, available: followAvailable, setFollow } = useFollowMap();
+  const followTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(followTimer.current), []);
+  const onViewChange = useCallback((v: NonNullable<typeof viewRef.current>) => {
+    viewRef.current = v;
+    if (!follow || !v.userMoved) return;
+    clearTimeout(followTimer.current);
+    followTimer.current = setTimeout(searchThisArea, FOLLOW_DELAY_MS);
+  }, [follow, searchThisArea]);
+  const toggleFollow = useCallback((on: boolean) => {
+    setFollow(on);
+    if (on) searchThisArea();
+  }, [setFollow, searchThisArea]);
 
   // Any change to the real filters drops the area limit: the map refits to the
   // new filter, so a box drawn around the old one is describing a view that no
@@ -1184,7 +1205,7 @@ export default function AtlasCollection({
         // A pinned trip frames its own route (see the auto-trip effect), so its
         // camera is ignored — flying there too would race the fit.
         initialCamera={parsed?.view.trip ? null : parsed?.view.camera ?? null}
-        onViewChange={(v) => { viewRef.current = v; }}
+        onViewChange={onViewChange}
         // The engine choice. Points are the filtered set and the selection is
         // the pinned card, so 3D is a view OF this browse rather than a
         // separate browse — the whole reason it stopped being a second page.
@@ -1234,14 +1255,26 @@ export default function AtlasCollection({
         gesture happens.
       */}
       <div className="atlas-area-ctrl" onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          className="actrl"
-          onClick={searchThisArea}
-          title="Limit the list below to what is in the current map view"
-        >
-          ⌖ Search this area
-        </button>
+        {followAvailable && (
+          <label className="actrl area-follow" title="Update the list below as you pan and zoom the map">
+            <input
+              type="checkbox"
+              checked={follow}
+              onChange={(e) => toggleFollow(e.target.checked)}
+            />
+            Search as I move the map
+          </label>
+        )}
+        {!(follow && followAvailable) && (
+          <button
+            type="button"
+            className="actrl"
+            onClick={searchThisArea}
+            title="Limit the list below to what is in the current map view"
+          >
+            ⌖ Search this area
+          </button>
+        )}
         {areaBox && (
           <button
             type="button"

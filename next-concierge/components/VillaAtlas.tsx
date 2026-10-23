@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { fromLatLngPair, isFinitePair } from "@/lib/atlas/geo";
 import { ATLASES } from "@/lib/atlas-config";
+import { FOLLOW_DELAY_MS, useFollowMap, viewportBox } from "@/lib/map-area";
 import { CHART_STYLE, basemapInput } from "@/lib/atlas/chart-style";
 import BucketListButton from "./BucketListButton";
 import {
@@ -350,16 +351,29 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
   // Limit the result list to the villas inside the current map viewport. The map
   // itself is untouched (pins ignore bbox), so this reads as "show me what's in
   // view" rather than a jump.
+  // With the whole world in view there is no area to limit to, so the limit
+  // clears rather than becoming a box that matches everything.
   const searchThisArea = useCallback(() => {
     const map = mapRef.current;
     if (!map || !mapReadyRef.current) return;
     const b = map.getBounds?.();
     if (!b) return;
-    const bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]
-      .map((n: number) => Math.round(n * 1e5) / 1e5)
-      .join(",");
-    setFilter({ bbox });
+    const box = viewportBox(b.getWest(), b.getSouth(), b.getEast(), b.getNorth());
+    setFilter({ bbox: box ? box.join(",") : "" });
   }, [setFilter]);
+
+  // "Search as I move the map" (lib/map-area): on desktop the list follows the
+  // visitor's own pans and zooms. Not in shortlist mode — the Guide's picks are
+  // the list there, and panning to look at one must not hide the others.
+  const { follow, available: followAvailable, setFollow } = useFollowMap();
+  const followRef = useRef(false);
+  followRef.current = follow && !params.ids;
+  const searchThisAreaRef = useRef(searchThisArea);
+  searchThisAreaRef.current = searchThisArea;
+  const toggleFollow = useCallback((on: boolean) => {
+    setFollow(on);
+    if (on) searchThisAreaRef.current();
+  }, [setFollow]);
 
   // ── map ─────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -414,6 +428,16 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         };
         reportView();
         map.on("moveend", reportView);
+        // Only gesture-driven moves carry originalEvent; the refit after a
+        // filter change, and a shared link's opening camera, do not.
+        let followTimer: ReturnType<typeof setTimeout> | undefined;
+        map.on("moveend", (e: { originalEvent?: unknown }) => {
+          if (!e?.originalEvent || !followRef.current) return;
+          clearTimeout(followTimer);
+          followTimer = setTimeout(() => {
+            if (followRef.current) searchThisAreaRef.current();
+          }, FOLLOW_DELAY_MS);
+        });
         map.on("zoomend", reportView);
         map.on("pitchend", reportView);
         map.on("rotateend", reportView);
@@ -807,14 +831,26 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
         )}
         {!mapFailed && (
           <div className="villa-area-ctrl" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className="actrl"
-              onClick={searchThisArea}
-              title="Limit the list below to the villas in the current map view"
-            >
-              ⌖ Search this area
-            </button>
+            {followAvailable && !shortlistMode && (
+              <label className="actrl area-follow" title="Update the list below as you pan and zoom the map">
+                <input
+                  type="checkbox"
+                  checked={follow}
+                  onChange={(e) => toggleFollow(e.target.checked)}
+                />
+                Search as I move the map
+              </label>
+            )}
+            {!(follow && followAvailable && !shortlistMode) && (
+              <button
+                type="button"
+                className="actrl"
+                onClick={searchThisArea}
+                title="Limit the list below to the villas in the current map view"
+              >
+                ⌖ Search this area
+              </button>
+            )}
             {areaActive && (
               <button
                 type="button"
