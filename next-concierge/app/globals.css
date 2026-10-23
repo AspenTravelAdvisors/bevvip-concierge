@@ -810,8 +810,8 @@ main.page {
 .atlas-area-ctrl .area-clear {
   color: var(--sub);
 }
-/* "Search as I move the map" — a checkbox styled as the cluster's own chip.
-   Desktop only (lib/map-area); phones keep the button. */
+/* "Search as I move the map" — a checkbox styled as the cluster's own chip
+   (lib/map-area). */
 .villa-area-ctrl .area-follow,
 .atlas-area-ctrl .area-follow {
   user-select: none;

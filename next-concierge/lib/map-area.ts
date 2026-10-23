@@ -5,8 +5,8 @@
  *
  * Both the villa atlas and the collection atlases can limit their card list to
  * what is on screen. That used to need a "Search this area" click after every
- * pan; on desktop the list now follows the camera on its own, the way travellers
- * expect a map search to behave. Two rules make that safe:
+ * pan; the list now follows the camera on its own, on desktop and phones alike,
+ * the way travellers expect a map search to behave. One rule makes that safe:
  *
  *   ONLY THE VISITOR'S OWN MOVES COUNT. The atlases move the camera themselves —
  *   a filter change refits the map to its results, a shared link flies to its
@@ -16,15 +16,11 @@
  *   wheel, pinch, keyboard, the zoom buttons) with `originalEvent`; programmatic
  *   ones carry none, and that is the whole test.
  *
- *   PHONES KEEP THE BUTTON. There the list sits under a clamped map band, so a
- *   pan to look around would quietly change the list being scrolled back to.
- *
  * The preference is per viewer and per device (localStorage), shared by every
  * atlas: someone who switches it off has said how they like to browse.
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { useIsMobile } from "@/lib/use-is-mobile";
 
 const KEY = "atlas.followMap";
 
@@ -32,11 +28,10 @@ const KEY = "atlas.followMap";
 export const FOLLOW_DELAY_MS = 450;
 
 /**
- * Whether the list follows the map here, and the setter for the toggle.
- * Always false on phones; on desktop defaults to on.
+ * Whether the list follows the map, and the setter for the toggle. Defaults
+ * to on everywhere; switching it off brings the "Search this area" button back.
  */
 export function useFollowMap(): { follow: boolean; available: boolean; setFollow: (on: boolean) => void } {
-  const phone = useIsMobile();
   const [pref, setPref] = useState(true);
   useEffect(() => {
     try {
@@ -48,7 +43,7 @@ export function useFollowMap(): { follow: boolean; available: boolean; setFollow
     setPref(on);
     try { window.localStorage.setItem(KEY, on ? "1" : "0"); } catch { /* noop */ }
   }, []);
-  return { follow: !phone && pref, available: !phone, setFollow };
+  return { follow: pref, available: true, setFollow };
 }
 
 /**
