@@ -259,7 +259,16 @@ for (const v of mapped) {
 }
 // Re-seat keys so the file diffs cleanly against the old one.
 const ORDER = ['id', 'name', 'slug', 'deep_link', 'region', 'destination', 'location', 'sub_location_id', 'geo', 'capacity', 'pricing', 'availability', 'featured', 'main_image', 'image_url', 'summary', 'specials', 'ranked_special_category'];
-const ordered = villas.map((v) => Object.fromEntries(ORDER.map((k) => [k, v[k]])));
+// And sorted as the July file was — region, destination, location, name — so
+// the API's own order (which is not stable) never shows up as a change.
+const byPlace = (a, b) => {
+  for (const k of [(v) => v.region.name, (v) => v.destination.name, (v) => v.location.name, (v) => v.name]) {
+    const x = k(a) ?? '', y = k(b) ?? '';
+    if (x !== y) return x < y ? -1 : 1;
+  }
+  return a.id - b.id;
+};
+const ordered = villas.sort(byPlace).map((v) => Object.fromEntries(ORDER.map((k) => [k, v[k]])));
 
 // ── the gate ─────────────────────────────────────────────────────────────────
 
