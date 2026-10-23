@@ -23,6 +23,11 @@ const fold = (s) =>
     .replace(/[̀-ͯ]/g, "")
     .trim();
 
+// Labels the base carries that are not programs of their own: a brand inside a
+// program ("Autograph Collection" is Marriott Luminous) or a one-hotel label.
+// Folded before the rules run, so a rule limited to "Virtuoso" sees the result.
+const ALIASES = ledger.programAliases || {};
+
 // Compile once: each rule becomes a flat list of {program, brand, re, brandKey}
 // tests, cheapest (exact brand equality) first.
 const COMPILED = (ledger.rules || []).map((rule) => ({
@@ -56,6 +61,10 @@ function ruleMatches(b, name, brandKey, chainKey) {
  */
 function overrideFor(hotel) {
   if (!hotel) return null;
+  const aliased = Object.prototype.hasOwnProperty.call(ALIASES, hotel.program)
+    ? ALIASES[hotel.program]
+    : null;
+  if (aliased != null) hotel = { ...hotel, program: aliased };
   const name = fold(hotel.name);
   const brandKey = fold(hotel.brand);
   const chainKey = fold(hotel.chain);
@@ -70,7 +79,7 @@ function overrideFor(hotel) {
       }
     }
   }
-  return null;
+  return aliased != null ? { program: aliased, brand: null } : null;
 }
 
 /**

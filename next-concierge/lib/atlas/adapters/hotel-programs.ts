@@ -51,6 +51,20 @@ export const PROGRAM_DOMAINS: Record<string, string> = {
   // Regent, InterContinental, Kimpton, Hotel Indigo and Vignette Collection
   // properties the feed had filed under their import channel.
   "IHG Destined":"ihg.com",
+  // Also assigned by program-overrides.json: Marriott Luminous beside STARS,
+  // and the Cadence partner programs the feed collapses into "Virtuoso".
+  // Evok and Fontenille are left without a mark rather than guessed.
+  "Marriott Luminous":"marriott.com",
+  "Accor Preferred":"accor.com",
+  "Anantara Journeys":"anantara.com",
+  "Kerzner (One&Only & Atlantis)":"oneandonlyresorts.com",
+  "Michel Reybier Hospitality":"lareserve.ch",
+  "Noble House":"noblehousehotels.com",
+  "DEAR by Maisons Pariente":"maisonspariente.com",
+  "Pan Pacific Reserve":"panpacific.com",
+  "Couture by Langham":"langhamhotels.com",
+  "Viceroy The Guild":"viceroyhotelsandresorts.com",
+  "Oetker Collection Pearl Partner":"oetkercollection.com",
 };
 
 /** Domain for a program, or null when it has no known mark. */
