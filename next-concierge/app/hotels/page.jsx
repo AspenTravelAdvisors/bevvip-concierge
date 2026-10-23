@@ -9,6 +9,7 @@ import Link from "next/link";
 import { hotelDestinations, hotelCount } from "@/lib/seo/hotels";
 import { SITE_URL } from "@/lib/answers";
 import { orgRef } from "@/lib/seo/site";
+import { jsonLd } from "@/lib/seo/json-ld";
 import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
@@ -46,7 +47,7 @@ export default function HotelsIndex() {
     <div className="answers-wrap">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collection) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(collection) }}
       />
       <header className="answers-head">
         <h1>Luxury hotels</h1>

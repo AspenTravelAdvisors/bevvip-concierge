@@ -26,6 +26,13 @@ export const FACEBOOK_URL = "https://www.facebook.com/AspenTravelAdvisors/";
 // belongs on the founder node below rather than in the agency's own sameAs.
 export const OWNER_LINKEDIN_URL = "https://www.linkedin.com/in/brianpayntarharris/";
 
+// The site's link-preview image, app/opengraph-image.jpg, as metadata can name
+// it. Next attaches that file to every page by itself, EXCEPT a page that sets
+// an openGraph object of its own: that object replaces the inherited one whole,
+// image included. Those pages list this explicitly, alone or as the fallback
+// behind a photo of their own.
+export const SITE_OG_IMAGE = "/opengraph-image.jpg";
+
 // Fragment identifiers, not page URLs: `#organization` is the agency itself,
 // which is not the same resource as the home page that describes it.
 export const ORG_ID = `${SITE_URL}/#organization`;

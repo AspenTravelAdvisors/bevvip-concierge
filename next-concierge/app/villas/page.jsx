@@ -9,6 +9,7 @@ import Link from "next/link";
 import { villaDestinations, villaCount } from "@/lib/seo/villas";
 import { SITE_URL } from "@/lib/answers";
 import { orgRef } from "@/lib/seo/site";
+import { jsonLd } from "@/lib/seo/json-ld";
 import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
@@ -48,7 +49,7 @@ export default function VillasIndex() {
     <div className="answers-wrap">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(ld) }}
       />
       <header className="answers-head">
         <h1>Private villas</h1>

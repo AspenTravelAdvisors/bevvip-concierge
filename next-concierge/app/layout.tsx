@@ -8,6 +8,7 @@ import SiteNav from "@/components/SiteNav";
 import { MAPBOX_JS, MAPBOX_CSS } from "@/lib/mapbox-cdn";
 import { SITE_URL } from "@/lib/answers";
 import { siteGraphJsonLd } from "@/lib/seo/site";
+import { jsonLd } from "@/lib/seo/json-ld";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -35,6 +36,13 @@ export const metadata: Metadata = {
   },
   description:
     "Expedition Bucket List — Aspen Travel Advisors' AI travel concierge. Approved luxury hotels, expedition cruises, private jet journeys and luxury hotel yachts — framed, mapped and booked by The Guide.",
+  // Link previews. The image is app/opengraph-image.jpg, which Next attaches
+  // to every page by its file name. Only site-wide fields belong here: a title
+  // or url on the layout would be inherited by every page that sets no
+  // openGraph of its own, and each would preview as the home page. app/page.tsx
+  // sets the home page's.
+  openGraph: { type: "website", siteName: "Expedition Bucket List" },
+  twitter: { card: "summary_large_image" },
   // Bing Webmaster Tools ownership, for when it is verified by meta tag rather
   // than imported from Google Search Console. ChatGPT's search reads largely
   // from Bing's index, so this is the console that matters for AI citations.
@@ -71,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             reading any two pages knows they have the same author. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteGraphJsonLd()) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphJsonLd()) }}
         />
         <div className="app">
           {/* Three proper nouns, and no more: Expedition Bucket List (the

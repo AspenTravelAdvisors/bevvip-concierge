@@ -414,6 +414,40 @@ if (fs.existsSync(BUILT)) {
   console.log('  (no .next build present — skipping the rendered-output scan)');
 }
 
+// ── 9. structured data cannot close its own <script> ────────────────────────
+/*
+ * Every JSON-LD block is written with dangerouslySetInnerHTML, and much of what
+ * it carries is supplier text the nightly sync commits unread. JSON.stringify
+ * does not escape "<", so a description holding "</script>" would end the block
+ * early and the rest would be parsed as markup on our page. lib/seo/json-ld.js
+ * escapes it. This holds the helper to doing that, and every page to using it.
+ */
+{
+  const { jsonLd } = await import(pathToFileURL(path.join(repoRoot, 'lib/seo/json-ld.js')).href);
+  ok();
+  if (jsonLd({ d: '</script><script>alert(1)</script>' }).includes('</')) {
+    fail('json-ld', 'lib/seo/json-ld.js lets "</" through');
+  }
+
+  const raw = [];
+  const walk = dir => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!/\.(jsx?|tsx?)$/.test(entry.name)) continue;
+      if (/__html:\s*JSON\.stringify\(/.test(fs.readFileSync(full, 'utf8'))) {
+        raw.push(path.relative(repoRoot, full));
+      }
+    }
+  };
+  walk(path.join(repoRoot, 'app'));
+  walk(path.join(repoRoot, 'components'));
+  ok();
+  for (const file of raw) {
+    fail('json-ld', `${file} writes JSON.stringify straight into __html; use jsonLd() from lib/seo/json-ld.js`);
+  }
+}
+
 // ── report ──────────────────────────────────────────────────────────────────
 const nf = new Intl.NumberFormat('en-US');
 console.log(

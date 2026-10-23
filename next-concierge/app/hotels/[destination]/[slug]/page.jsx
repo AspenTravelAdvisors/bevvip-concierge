@@ -23,6 +23,8 @@ import {
   hotelBreadcrumbJsonLd,
 } from "@/lib/seo/hotels";
 import { SITE_URL } from "@/lib/answers";
+import { jsonLd } from "@/lib/seo/json-ld";
+import { SITE_OG_IMAGE } from "@/lib/seo/site";
 import SiteFooter from "@/components/SiteFooter";
 
 /*
@@ -62,7 +64,7 @@ export async function generateMetadata({ params }) {
       description: (h.summary || h.description || "").slice(0, 240),
       type: "website",
       url: `${SITE_URL}${h.path}`,
-      images: h.thumb ? [h.thumb] : undefined,
+      images: h.thumb ? [h.thumb] : [SITE_OG_IMAGE],
     },
   };
 }
@@ -123,11 +125,11 @@ export default async function HotelPage({ params }) {
     <article className="answers-wrap answers-article hotel-detail">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(hotelJsonLd(h)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(hotelJsonLd(h)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(hotelBreadcrumbJsonLd(h)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(hotelBreadcrumbJsonLd(h)) }}
       />
 
       <nav className="answers-crumbs">

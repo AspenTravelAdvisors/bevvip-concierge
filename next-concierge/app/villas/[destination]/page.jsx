@@ -13,6 +13,7 @@ import {
 } from "@/lib/seo/villas";
 import { SITE_URL } from "@/lib/answers";
 import { orgRef } from "@/lib/seo/site";
+import { jsonLd } from "@/lib/seo/json-ld";
 import SiteFooter from "@/components/SiteFooter";
 
 export const dynamicParams = false;
@@ -84,16 +85,16 @@ export default async function VillaDestinationPage({ params }) {
     <div className="answers-wrap">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(itemList) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(crumbs) }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             url: `${SITE_URL}/villas/${d.destinationSlug}`,

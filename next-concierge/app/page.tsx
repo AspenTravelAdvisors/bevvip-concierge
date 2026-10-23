@@ -27,6 +27,18 @@ import { collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/li
  */
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
+  // The link preview's words, here for the same reason as the canonical: on
+  // the layout they would be every page's. The image comes from
+  // app/opengraph-image.jpg. Repeating type and siteName is not redundancy —
+  // a page's openGraph replaces the layout's whole, it does not merge into it.
+  openGraph: {
+    type: "website",
+    siteName: "Expedition Bucket List",
+    url: "/",
+    title: "Expedition Bucket List · The Guide",
+    description:
+      "Vetted luxury hotels, villas, expedition and world cruises, private jet journeys, yachts, safaris and rail journeys on one living atlas. Ask The Guide, then book with Aspen Travel Advisors.",
+  },
 };
 
 // The landing page: The Guide docked over a populated globe.

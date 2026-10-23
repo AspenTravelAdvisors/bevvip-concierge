@@ -24,6 +24,8 @@ import {
   evidenceJsonLd,
 } from "@/lib/seo/answer-schema";
 import { answerEvidence, resolvedAnswer } from "@/lib/seo/answer-facts";
+import { jsonLd } from "@/lib/seo/json-ld";
+import { SITE_OG_IMAGE } from "@/lib/seo/site";
 import SiteFooter from "@/components/SiteFooter";
 import AnswerAdvisorCta from "@/components/AnswerAdvisorCta";
 
@@ -47,6 +49,7 @@ export async function generateMetadata({ params }) {
       type: "article",
       url: `${SITE_URL}/answers/${a.slug}`,
       modifiedTime: a.updated,
+      images: [SITE_OG_IMAGE],
     },
   };
 }
@@ -134,20 +137,20 @@ export default async function AnswerPage({ params }) {
     <article className="answers-wrap answers-article">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(a)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(faqJsonLd(a)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(a)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(articleJsonLd(a)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(a)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd(a)) }}
       />
       {evidenceLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(evidenceLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(evidenceLd) }}
         />
       )}
 

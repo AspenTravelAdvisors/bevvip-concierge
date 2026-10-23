@@ -9,6 +9,8 @@ import { IBM_Plex_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/answers";
 import { getVillaBySlug, allVillaParams } from "@/lib/villas.js";
 import { villaJsonLd, villaBreadcrumbJsonLd } from "@/lib/seo/villas";
+import { jsonLd } from "@/lib/seo/json-ld";
+import { SITE_OG_IMAGE } from "@/lib/seo/site";
 import SiteFooter from "@/components/SiteFooter";
 
 const mono = IBM_Plex_Mono({
@@ -77,7 +79,7 @@ export async function generateMetadata({ params }) {
       description: v.summary || `${v.name}, a private villa in ${where}.`,
       type: "website",
       url: `${SITE_URL}/atlas/villa/${v.destinationSlug}/${v.slug}`,
-      images: v.imageUrl ? [v.imageUrl] : undefined,
+      images: v.imageUrl ? [v.imageUrl] : [SITE_OG_IMAGE],
     },
   };
 }
@@ -125,11 +127,11 @@ export default async function VillaDetailPage({ params }) {
           locality centroid. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(villaJsonLd(v)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(villaJsonLd(v)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(villaBreadcrumbJsonLd(v)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(villaBreadcrumbJsonLd(v)) }}
       />
       <nav className="villa-crumbs mono">
         <Link href="/villas">Villas</Link>

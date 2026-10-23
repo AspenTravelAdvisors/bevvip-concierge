@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { SITE_URL } from "@/lib/answers";
 import { resolvedAnswers, resolvedAnswersByCategory } from "@/lib/seo/answer-facts";
+import { jsonLd } from "@/lib/seo/json-ld";
 import SiteFooter from "@/components/SiteFooter";
 import { COLLECTION_COUNTS } from "@/lib/atlas-counts";
 
@@ -37,7 +38,7 @@ export default function AnswersIndex() {
     <div className="answers-wrap">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(itemList) }}
       />
       <header className="answers-head">
         <h1>Answers</h1>

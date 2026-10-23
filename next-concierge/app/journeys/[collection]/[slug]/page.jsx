@@ -15,6 +15,8 @@ import {
   journeyBreadcrumbJsonLd,
 } from "@/lib/seo/journeys";
 import { SITE_URL } from "@/lib/answers";
+import { jsonLd } from "@/lib/seo/json-ld";
+import { SITE_OG_IMAGE } from "@/lib/seo/site";
 import SiteFooter from "@/components/SiteFooter";
 
 /*
@@ -59,7 +61,7 @@ export async function generateMetadata({ params }) {
       description: (j.description || "").slice(0, 240),
       type: "website",
       url: `${SITE_URL}${j.path}`,
-      images: j.thumb ? [j.thumb] : undefined,
+      images: j.thumb ? [j.thumb] : [SITE_OG_IMAGE],
     },
   };
 }
@@ -103,11 +105,11 @@ export default async function JourneyPage({ params }) {
     <article className="answers-wrap answers-article hotel-detail">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(journeyJsonLd(j)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(journeyJsonLd(j)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(journeyBreadcrumbJsonLd(j)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(journeyBreadcrumbJsonLd(j)) }}
       />
 
       <nav className="answers-crumbs">
