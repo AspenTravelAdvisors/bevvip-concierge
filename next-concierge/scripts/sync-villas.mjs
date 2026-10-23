@@ -90,11 +90,18 @@ for (let page = 1, lastPage = 1; page <= lastPage; page++) {
     console.error(`Page ${page} has no recognisable list of villas. Top-level keys: ${Object.keys(body ?? {}).join(', ')}`);
     process.exit(1);
   }
-  const p = pagingOf(body);
-  lastPage = Number(p.last_page) || lastPage;
+  const p = { ...pagingOf(body), ...(body?.meta ?? {}) };
+  // The API reports a total but not always a last page; derive it, and keep
+  // going while pages come back full in case it reports neither.
+  const total = Number(p.total) || 0;
+  lastPage = Math.max(lastPage, Number(p.last_page) || 0, total ? Math.ceil(total / (Number(p.per_page) || PER_PAGE)) : 0, rows.length >= PER_PAGE ? page + 1 : 0);
+  if (!rows.length) break;
+  // A server that ignores `page` would hand back page 1 forever.
+  if (page > 1 && rows[0]?.id != null && rows[0].id === raw[0]?.id) break;
   apiPages.push({ page, records: rows.length, current_page: p.current_page ?? page, last_page: lastPage, per_page: p.per_page ?? PER_PAGE, total: p.total ?? null });
   console.log(`  page ${page}/${lastPage}: ${rows.length} villas`);
   raw.push(...rows);
+  if (page >= 20) break;
 }
 const apiTotal = apiPages.find((p) => p.total != null)?.total ?? null;
 
@@ -124,10 +131,12 @@ const known = { region: new Map(), destination: new Map(), location: new Map() }
 for (const v of previous.villas) for (const k of Object.keys(known)) if (v[k]?.id != null) known[k].set(String(v[k].id), v[k]);
 
 function place(r, kind) {
-  const obj = r[kind] && typeof r[kind] === 'object' ? r[kind] : {};
+  // The API nests these as `destinations: { id, destination, slug }` and
+  // `locations: { id, location, slug }`; region arrives as region_id alone.
+  const obj = [r[kind], r[`${kind}s`]].find((o) => o && typeof o === 'object' && !Array.isArray(o)) ?? {};
   const id = num(pick(obj, 'id') ?? pick(r, `${kind}_id`));
   const prior = id != null ? known[kind].get(String(id)) : undefined;
-  const name = text(pick(obj, 'name', 'title') ?? pick(r, `${kind}_name`, `${kind}_title`) ?? (typeof r[kind] === 'string' ? r[kind] : undefined) ?? prior?.name);
+  const name = text(pick(obj, kind, 'name', 'title') ?? pick(r, `${kind}_name`, `${kind}_title`) ?? (typeof r[kind] === 'string' ? r[kind] : undefined) ?? prior?.name);
   const out = { id, name };
   if (kind !== 'region') {
     out.slug = pick(obj, 'slug') ?? pick(r, `${kind}_slug`) ?? prior?.slug ?? slugify(name);
@@ -144,21 +153,21 @@ function bedroomList(v) {
 
 function mapVilla(r) {
   const id = num(pick(r, 'id', 'villa_id'));
-  const name = text(pick(r, 'name', 'title', 'villa_name'));
+  const name = text(pick(r, 'villa_name', 'name', 'title'));
   const region = place(r, 'region');
   const destination = place(r, 'destination');
   const location = place(r, 'location');
   const slug = pick(r, 'slug', 'villa_slug') ?? slugify(name);
 
-  // Two rates: the supplier's own figure (sometimes another currency) and the
-  // USD one. 766 villas in the July file differ between them, so they are read
-  // separately and the USD one only falls back to the raw one.
-  const rateRaw = pick(r, 'rate_from', 'rate_from_raw', 'pricing.rate_from', 'pricing.rate_from_raw');
-  const rateUsd = pick(r, 'rate_from_usd', 'usd_rate_from', 'rate_from_in_usd', 'rate_usd', 'usd_rate', 'pricing.rate_from_usd') ?? rateRaw;
+  // Two rates: `rate_from` (the USD base rate) and `ar_rate_from` (the raw
+  // figure, null for many). 766 villas in the July file differ between them,
+  // so they are read separately.
+  const rateRaw = pick(r, 'ar_rate_from', 'rate_from_raw', 'pricing.rate_from_raw');
+  const rateUsd = pick(r, 'rate_from', 'rate_from_usd', 'pricing.rate_from_usd') ?? rateRaw;
   const priceLow = pick(r, 'price_low', 'pricing.price_low');
   const mainImage = pick(r, 'main_image', 'image', 'photo', 'main_photo');
-  const specials = pick(r, 'specials') ?? [];
-  const ranked = pick(r, 'ranked_special_category');
+  const specials = pick(r, 'promos', 'specials') ?? [];
+  const ranked = pick(r, 'ranked_promo_category', 'ranked_special_category');
 
   return {
     id,
@@ -184,7 +193,7 @@ function mapVilla(r) {
       rate_from_usd: num(rateUsd) ?? 0,
       rate_from_raw: num(rateRaw) ? String(rateRaw) : null,
       price_low: priceLow != null && num(priceLow) ? String(priceLow) : null,
-      price_string: text(pick(r, 'price_string', 'pricing.price_string')) || 'Call for Pricing',
+      price_string: text(pick(r, 'price_string_no_html', 'price_string', 'pricing.price_string')) || 'Call for Pricing',
     },
     availability: {
       is_available: r.is_available == null ? true : flag(r.is_available),
@@ -276,7 +285,8 @@ if (overlap.length < previous.villas.length * 0.5) {
     ['bedrooms', 0.9, (v) => v.capacity.bedrooms === prev(v).capacity.bedrooms],
     ['sleeps', 0.85, (v) => v.capacity.sleeps === prev(v).capacity.sleeps],
     ['main image present', 0.95, (v) => !!v.main_image || !prev(v).main_image],
-    ['price string', 0.6, (v) => v.pricing.price_string === prev(v).pricing.price_string],
+    // Spacing aside: the July file has non-breaking spaces where the API may not.
+    ['price string', 0.6, (v) => v.pricing.price_string.replace(/\s+/g, ' ') === prev(v).pricing.price_string.replace(/\s+/g, ' ')],
     ['USD base rate', 0.85, (v) => v.pricing.rate_from_usd === prev(v).pricing.rate_from_usd],
   ];
   for (const [label, min, test] of checks) {
