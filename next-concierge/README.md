@@ -86,8 +86,9 @@ down with it — including one that was genuinely red. Each check is an
 independent claim about a different part of the atlas, so each one runs.
 
 `.github/workflows/ci.yml` runs the suite on every push to `main` and every
-pull request. A check that is red for a reason waiting on a person (today, the
-port audit) runs there as its own non-blocking step rather than being dropped.
+pull request. A check that goes red for a reason waiting on a person can run
+there as its own non-blocking step (with `--skip` on the main one) rather than
+being dropped.
 
 ## Supplier data
 

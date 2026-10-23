@@ -9,7 +9,7 @@
   "journeysWithStays": 122,
   "journeysWithHouse": 21,
   "gateways": 84,
-  "hotels": 293,
+  "hotels": 292,
   "houses": [
    "Aman",
    "Four Seasons"
@@ -2312,37 +2312,18 @@
    ],
    "promo": 0
   },
-  "h_02150": {
-   "n": "The Ritz-Carlton Naples, Tiburón",
-   "house": "Luxury Group at Marriott International",
-   "aff": "Ritz-Carlton",
-   "city": "Naples",
-   "country": "United States",
-   "ll": [
-    26.2493,
-    -81.7661
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16523060_2_0_0929.webp",
-   "rooms": 295,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_01369": {
-   "n": "Naples Grande Beach Resort",
+  "h_01635": {
+   "n": "Romeo hotel",
    "house": null,
    "aff": null,
    "city": "Naples",
-   "country": "United States",
+   "country": "Italy",
    "ll": [
-    26.212,
-    -81.8103
+    40.8406,
+    14.2559
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/3788_2_0_1008.webp",
-   "rooms": 474,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/848462_2_0_1004.webp",
+   "rooms": 77,
    "perks": [
     "Daily breakfast",
     "$100 credit",
@@ -2350,37 +2331,18 @@
    ],
    "promo": 0
   },
-  "h_02149": {
-   "n": "The Ritz-Carlton, Naples",
-   "house": "Luxury Group at Marriott International",
-   "aff": "Ritz-Carlton",
-   "city": "Naples",
-   "country": "United States",
-   "ll": [
-    26.2534,
-    -81.8204
-   ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4308_2_0_0929.webp",
-   "rooms": 474,
-   "perks": [
-    "Daily breakfast",
-    "$100 credit",
-    "Room upgrade"
-   ],
-   "promo": 0
-  },
-  "h_01125": {
-   "n": "LaPlaya Beach & Golf Resort",
-   "house": "Noble House Hotels & Resorts",
+  "h_00739": {
+   "n": "Grand Hotel Parker's",
+   "house": null,
    "aff": null,
    "city": "Naples",
-   "country": "United States",
+   "country": "Italy",
    "ll": [
-    26.2617,
-    -81.8243
+    40.8373,
+    14.2299
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/4122_2_0_1003.webp",
-   "rooms": 189,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16807249_2_0.webp",
+   "rooms": 67,
    "perks": [
     "Daily breakfast",
     "$100 credit",
@@ -2388,24 +2350,43 @@
    ],
    "promo": 0
   },
-  "h_v18535056": {
-   "n": "Naples Beach Club, A Four Seasons Resort",
-   "house": "Four Seasons Hotels and Resorts",
-   "aff": "Four Seasons",
-   "city": "Naples",
-   "country": "United States",
+  "h_01012": {
+   "n": "Italian Style Villas",
+   "house": null,
+   "aff": null,
+   "city": "Napoli",
+   "country": "Italy",
    "ll": [
-    26.1555,
-    -81.8088
+    40.8149,
+    14.1643
    ],
-   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18515634_2_0.webp",
-   "rooms": 220,
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/16930347_2_0_0927.webp",
+   "rooms": 5000,
+   "perks": [
+    "Daily breakfast",
+    "$100 credit",
+    "Early check-in"
+   ],
+   "promo": 0
+  },
+  "h_v18461286": {
+   "n": "Bellevue Syrene 1820",
+   "house": null,
+   "aff": null,
+   "city": "Sorrento",
+   "country": "Italy",
+   "ll": [
+    40.6275,
+    14.37
+   ],
+   "thumb": "https://media.virtuoso.com/m/Images/Brochures/h400/18405741_2_2.webp",
+   "rooms": 51,
    "perks": [
     "Daily breakfast",
     "$100 credit",
     "Room upgrade"
    ],
-   "promo": 1
+   "promo": 0
   },
   "h_01542": {
    "n": "Pendry Washington DC - The Wharf",
@@ -6320,29 +6301,25 @@
   "Naples": {
    "n": "Naples",
    "ll": [
-    26.2385,
-    -81.7641
+    40.8333,
+    14.25
    ],
    "h": [
     [
-     "h_02150",
-     1.2
+     "h_01635",
+     1
     ],
     [
-     "h_01369",
-     5.5
+     "h_00739",
+     1.7
     ],
     [
-     "h_02149",
-     5.9
+     "h_01012",
+     7.5
     ],
     [
-     "h_01125",
-     6.5
-    ],
-    [
-     "h_v18535056",
-     10.3
+     "h_v18461286",
+     25
     ]
    ]
   },

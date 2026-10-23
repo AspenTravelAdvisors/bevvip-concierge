@@ -169,23 +169,6 @@
    "source": "OSM way/202405773; the expedition feed maps it at -48, -74"
   },
   {
-   "name": "Kimberley Coast, Australia",
-   "collections": [
-    "world"
-   ],
-   "was": [
-    -28.11,
-    153.41
-   ],
-   "ll": [
-    -15.4823,
-    124.5233
-   ],
-   "place": "Kuri Bay, on the Kimberley coast",
-   "why": "the Gold Coast, on the wrong side of the continent, between Broome and Darwin; a coastal anchorage stands in for the coast the name describes",
-   "source": "OSM node/3020492517"
-  },
-  {
    "name": "Hunter River, Australia",
    "collections": [
     "world"
@@ -256,8 +239,7 @@
   {
    "name": "Miyako, Japan",
    "collections": [
-    "world",
-    "yacht"
+    "world"
    ],
    "scope": "occurrence",
    "as": "Miyako (Miyakojima), Japan",
@@ -270,7 +252,7 @@
     125.303
    ],
    "place": "Hirara, Miyakojima, Okinawa",
-   "why": "two ports, one name. The feed's 39.65, 141.94 is Miyako in Iwate and is right where the voyage runs Sendai\u2013Miyako\u2013Aomori; on the Keelung\u2013Naha runs the call is Miyakojima, 2,300km south. Only the southern occurrences are split off",
+   "why": "two ports, one name. The feed's 39.65, 141.94 is Miyako in Iwate and is right where the voyage runs Sendai–Miyako–Aomori; on the Keelung–Naha runs the call is Miyakojima, 2,300km south. Only the southern occurrences are split off. World feed only since 23 October 2026: the yacht feed now places the Okinawan call itself, at 24.775, 125.325",
    "source": "OSM node/8585247474; the expedition feed maps the Okinawan one at 24.775, 125.325"
   },
   {
@@ -939,6 +921,23 @@
    "place": "Varanasi",
    "why": "18.9N 83.9E is in Andhra Pradesh, 725km south; Varanasi is on the Ganges in Uttar Pradesh",
    "source": "three other jet journeys in the same feed map it at 25.3333, 83"
+  },
+  {
+   "name": "Naples",
+   "collections": [
+    "jet"
+   ],
+   "was": [
+    26.2385,
+    -81.7641
+   ],
+   "ll": [
+    40.8333,
+    14.25
+   ],
+   "place": "Naples, Italy",
+   "why": "26.2N 81.8W is Naples, Florida; on Around the World by Private Jet: The Signature Expedition (TCS World Travel) the day-25 Naples call is Naples, Italy (owner decision, 23 October 2026)",
+   "source": "the rail feed maps Naples at 40.8333, 14.25 across 3 journeys"
   },
   {
    "name": "Kochi, Japan",

@@ -49,15 +49,11 @@ jobs:
 
       # verify-all runs `check` (the typecheck) first, then every verifier, and
       # names all the failures at the end rather than stopping at the first.
+      #
+      # If a check ever goes red for a reason that needs a person rather than a
+      # code change, give it its own `continue-on-error` step and pass
+      # `--skip=<name>` here, rather than dropping it. Note that GitHub shows
+      # such a step with a green tick even when it fails; only the run's
+      # annotations say so.
       - name: Typecheck and verify
-        run: node scripts/verify-all.mjs --skip=verify:ports
-
-      # The port audit has findings that need a person, not a code change: two
-      # corrections in the ledger whose supplier coordinates have since moved
-      # (Kimberley Coast, Miyako), three that no longer match any stop, and a
-      # jet itinerary's "Naples" placed in Florida. Until that review lands it
-      # runs here on its own, visible but not blocking — once
-      # `npm run verify:ports` passes, delete this step and the --skip above.
-      - name: Port audit (non-blocking until the port review lands)
-        continue-on-error: true
-        run: npm run verify:ports
+        run: node scripts/verify-all.mjs
