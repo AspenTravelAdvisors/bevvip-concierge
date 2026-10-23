@@ -364,7 +364,7 @@ export default function VillaAtlas({ initial, initialParams, taxonomy }: Props) 
     setFilter({ bbox: box ? box.join(",") : "" });
   }, [setFilter]);
 
-  // "Search as I move the map" (lib/map-area): on desktop the list follows the
+  // "Search as I move the map" (lib/map-area): the list follows the
   // visitor's own pans and zooms. Not in shortlist mode — the Guide's picks are
   // the list there, and panning to look at one must not hide the others.
   const { follow, available: followAvailable, setFollow } = useFollowMap();

@@ -446,7 +446,7 @@ export default function AtlasCollection({
     setAreaBox(viewportBox(...b));
   }, []);
 
-  // "Search as I move the map" (lib/map-area): on desktop the list follows the
+  // "Search as I move the map" (lib/map-area): the list follows the
   // visitor's own pans and zooms, never the shell's refits and flights. The
   // filtering is local, so following costs nothing but the debounce.
   const { follow, available: followAvailable, setFollow } = useFollowMap();
