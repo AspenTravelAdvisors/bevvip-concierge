@@ -1,7 +1,7 @@
 {
  "_meta": {
   "purpose": "Maps local hotel ids to Virtuoso product ids. Regenerate with scripts/match-virtuoso-hotels.mjs.",
-  "generated": "2026-10-23T18:49:30.934Z",
+  "generated": "2026-10-24T13:14:53.420Z",
   "feedSynced": null,
   "localCount": 2475,
   "feedCount": 2088,
@@ -1578,12 +1578,6 @@
    "how": "name+country",
    "localName": "Carneros Resort and Spa",
    "virtuosoName": "Carneros Resort and Spa"
-  },
-  "h_00341": {
-   "vid": "16493950",
-   "how": "name+country",
-   "localName": "Carton House, A Fairmont Managed Hotel",
-   "virtuosoName": "Carton House, A Fairmont Managed Hotel"
   },
   "h_00343": {
    "vid": "6164317",
@@ -11517,9 +11511,9 @@
   },
   "h_00103": {
    "vid": "18268352",
-   "how": "fuzzy:1.00",
+   "how": "fuzzy:0.83",
    "localName": "Anantara Kafue River Tented Camp - Virtuoso Preview",
-   "virtuosoName": "Anantara Tented Camp Kafue River - Virtuoso Preview"
+   "virtuosoName": "Anantara Tented Camp Kafue River"
   },
   "h_00146": {
    "vid": "6164324",
@@ -11640,6 +11634,12 @@
    "how": "duplicate-of:h_00333",
    "localName": "Carilion Miami Wellness Resort",
    "virtuosoName": "Carillon Miami Wellness Resort"
+  },
+  "h_00341": {
+   "vid": "16493950",
+   "how": "fuzzy:0.86",
+   "localName": "Carton House, A Fairmont Managed Hotel",
+   "virtuosoName": "Carton House, A Fairmont Hotel"
   },
   "h_00349": {
    "vid": "13783647",
@@ -13247,7 +13247,7 @@
    "vid": "16493950",
    "how": "twin-of:h_00341",
    "localName": "Carton House",
-   "virtuosoName": "Carton House, A Fairmont Managed Hotel"
+   "virtuosoName": "Carton House, A Fairmont Hotel"
   },
   "h_00342": {
    "vid": "6164317",
@@ -14748,23 +14748,6 @@
    "how": [
     "name+country",
     "duplicate-of:h_00333"
-   ],
-   "confident": true
-  },
-  {
-   "vid": "16493950",
-   "virtuosoName": "Carton House, A Fairmont Managed Hotel",
-   "localIds": [
-    "h_00341",
-    "h_00340"
-   ],
-   "localNames": [
-    "Carton House, A Fairmont Managed Hotel",
-    "Carton House"
-   ],
-   "how": [
-    "name+country",
-    "twin-of:h_00341"
    ],
    "confident": true
   },
@@ -20450,6 +20433,23 @@
    "confident": false
   },
   {
+   "vid": "16493950",
+   "virtuosoName": "Carton House, A Fairmont Hotel",
+   "localIds": [
+    "h_00341",
+    "h_00340"
+   ],
+   "localNames": [
+    "Carton House, A Fairmont Managed Hotel",
+    "Carton House"
+   ],
+   "how": [
+    "fuzzy:0.86",
+    "twin-of:h_00341"
+   ],
+   "confident": false
+  },
+  {
    "vid": "6616359",
    "virtuosoName": "Finca Cortesin Hotel, Golf & Spa",
    "localIds": [
@@ -23325,10 +23325,10 @@
   },
   {
    "vid": "16493950",
-   "virtuosoName": "Carton House, A Fairmont Managed Hotel",
+   "virtuosoName": "Carton House, A Fairmont Hotel",
    "dropName": "Carton House",
    "metresApart": 812,
-   "note": "the same name, with the supplier saying more — \"carton house\" against \"carton house fairmont managed\" once city and country are stripped",
+   "note": "the same name, with the supplier saying more — \"carton house\" against \"carton house fairmont\" once city and country are stripped",
    "keep": "h_00341",
    "drop": "h_00340",
    "keepName": "Carton House, A Fairmont Managed Hotel",
