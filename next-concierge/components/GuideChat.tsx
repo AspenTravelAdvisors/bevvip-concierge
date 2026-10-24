@@ -29,6 +29,7 @@ import {
   type AskSource,
 } from "@/lib/analytics";
 import { collectionsSummary } from "@/lib/atlas-config";
+import { demoRequested } from "@/lib/demo";
 import { askAboutDays, registerGuideHost } from "@/lib/atlas/ask";
 import { leadPlace } from "@/lib/guide-meta";
 import { MAX_USER_CHARS } from "@/lib/guide-tokens";
@@ -97,11 +98,21 @@ export default function GuideChat() {
   // previous conversation can't write back into the freshly cleared transcript.
   const genRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
+  /** Running under `/?demo` — set once, by the restore effect. */
+  const demoRef = useRef(false);
 
   // Restore after mount (not during render) so server and first client paint
   // agree and React does not flag a hydration mismatch. A recent conversation
   // comes straight back; an older one is offered rather than imposed.
   useEffect(() => {
+    // A demo starts from an empty transcript and leaves the saved one alone:
+    // it is usually run on the advisor's own browser, whose real conversation
+    // must neither appear on camera nor be overwritten by the demo's.
+    if (demoRequested()) {
+      demoRef.current = true;
+      setHydrated(true);
+      return;
+    }
     const saved = loadConversation();
     if (saved) {
       if (saved.stale) setResume({ turns: saved.turns, updatedAt: saved.updatedAt });
@@ -119,6 +130,7 @@ export default function GuideChat() {
 
   useEffect(() => {
     if (!hydrated) return; // don't clobber saved turns before the restore runs
+    if (demoRef.current) return; // see the restore above
     // An unanswered resume offer must not be overwritten by the empty transcript
     // sitting in front of it.
     if (resume && turns.length === 0) return;
@@ -307,7 +319,8 @@ export default function GuideChat() {
               // the tool meta; persist them into the shared trip state the
               // booking CTAs (and the advisor brief) read.
               for (const tool of meta.tools ?? []) {
-                if (tool.trip) setTrip(tool.trip, "guide");
+                // Not from a demo: its dates are a script's, not the traveller's.
+                if (tool.trip && !demoRef.current) setTrip(tool.trip, "guide");
               }
             }
           }

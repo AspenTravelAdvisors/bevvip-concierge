@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import AtlasDock from "./AtlasDock";
+import { demoRequested, type DemoGuideDetail } from "@/lib/demo";
 
 // Base Camp is atlas-first at every size: the Living Atlas owns the full stage
 // and The Guide floats over it.
@@ -103,6 +104,24 @@ export default function HomeSplit({ chat, atlas }: { chat: ReactNode; atlas: Rea
    * here can end with the Guide unreachable.
    */
   useEffect(() => {
+    /*
+     * Under `/?demo` the script owns the reveal: the Guide stays parked through
+     * the build and arrives on cue for the question (lib/demo.ts). None of the
+     * three paths below may fire — the tour's announcement comes the moment the
+     * map boots, because a demo arms no tour.
+     */
+    if (demoRequested()) {
+      const onDemoGuide = (e: Event) => {
+        const open = !!(e as CustomEvent<DemoGuideDetail>).detail?.open;
+        setTourWaiting(false);
+        setSheet(open ? "half" : "pill");
+        setPanelOpen(open);
+        requestRefit();
+      };
+      window.addEventListener("bevvip:demo-guide", onDemoGuide as EventListener);
+      return () => window.removeEventListener("bevvip:demo-guide", onDemoGuide as EventListener);
+    }
+
     let done = false;
     // The composer is never auto-focused here, including in transaction mode:
     // raising the keyboard on a phone before the visitor has seen the answer
