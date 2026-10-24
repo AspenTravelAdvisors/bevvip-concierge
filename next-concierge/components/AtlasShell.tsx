@@ -56,6 +56,7 @@ import {
 import { frameRoute, framePoints, drawPieces, splitAntimeridian } from "@/lib/atlas/route-frame";
 import { bookingLink } from "@/lib/atlas/booking.js";
 import { getTrip } from "@/lib/trip-state";
+import { demoRequested, type DemoLoadedDetail, type DemoStageDetail } from "@/lib/demo";
 import { CHART_STYLE, basemapInput } from "@/lib/atlas/chart-style";
 
 // Public Mapbox token (Aspen Travel) — public by design, URL-restricted in the
@@ -258,6 +259,11 @@ function spinOutGate(since: number): number {
 const MUTE_OPACITY = 0.16;
 /** Long enough to read as a fade, short enough not to feel like a page load. */
 const MUTE_MS = 320;
+/**
+ * A collection arriving on the demo's stage. Slower than the mute: the mute
+ * answers a click, this is a beat in a build someone is meant to watch.
+ */
+const STAGE_IN_MS = 750;
 /** One sonar cycle on a focused collection. Matches the result-pin rhythm. */
 const SOLO_PULSE_MS = 2600;
 /**
@@ -626,6 +632,8 @@ interface AtlasApi {
    * across the globe.
    */
   applyLayers(): void;
+  /** Repaint every collection's place on the demo's stage — see `stage`. */
+  applyStage(): void;
 }
 
 /** A stop on a traced route: where it is, what it's called, which day. */
@@ -1279,9 +1287,18 @@ const FLY_LABEL_MS = 2200;
 export default function AtlasShell({
   type, region, externalLink, scope, routesAlways, onRegionSelect,
   ambientRoutes = false, accent, initialStyle, initialGlobe, initialCamera, onViewChange,
-  selfShare = false, showLegend = true, ambientTour = false, photoreal,
+  selfShare = false, showLegend = true, ambientTour: ambientTourProp = false, photoreal,
 }: Props) {
   const allInventory = scope === "all";
+  /*
+   * `/?demo` runs its own script on this globe (lib/demo.ts), and two
+   * choreographers on one camera is how the tour's pins would land in the
+   * middle of the build — so a demo arms no tour. Read only inside the map
+   * effect, after mount, where the URL is there to read; the server's `false`
+   * from demoRequested never reaches a render. HomeSplit ignores the tour's
+   * end announcement under a demo, which owns the Guide's reveal itself.
+   */
+  const ambientTour = ambientTourProp && !demoRequested();
   const showsHotel = allInventory || type === "hotel";
   /*
    * Overlay collections, LOWEST rank first — the order a full repaint paints
@@ -1586,6 +1603,19 @@ export default function AtlasShell({
   const [badge, setBadge] = useState<{ n: number; total: number; deepLink?: string | null } | null>(null);
   const mutedRef = useRef(muted);
   mutedRef.current = muted;
+  /**
+   * Which collections are drawn AT ALL — the demo's stage (see lib/demo.ts).
+   *
+   * Not the legend. `muted` fades a collection back and leaves it on the map,
+   * because a traveller who focuses the yachts still needs to see where they
+   * are. The demo needs the opposite — a collection that is not there yet —
+   * so it gets its own set rather than a third meaning for the mute. `null`,
+   * the state everywhere but `/?demo`, is "everything", and every path that
+   * reads it then does nothing.
+   */
+  const [stage, setStage] = useState<Set<string> | null>(null);
+  const stageRef = useRef(stage);
+  stageRef.current = stage;
   /**
    * The one collection being looked at, for the map closure.
    *
@@ -2682,6 +2712,46 @@ export default function AtlasShell({
         function applyMute(key: string) {
           const dim = mutedRef.current.has(key);
           layerIdsFor(key).forEach((id) => dimLayer(map, id, dim));
+          applyStage(key);
+        }
+
+        /**
+         * Put one collection on or off the demo's stage (see `stage`).
+         *
+         * Called from applyMute, which every paint path already ends on, so a
+         * feed that lands after the stage was set — the usual case, the stage
+         * is set before anything has loaded — is born hidden rather than
+         * flashing on and being taken off again.
+         *
+         * Pins only. Route layers keep their zoom gate as their sole owner of
+         * `visibility` (see routeVis); they are not drawn at the altitude the
+         * demo builds from, and a second writer is how they got painted across
+         * the whole globe once before.
+         *
+         * Coming ON fades up from nothing: opacity to zero with no transition,
+         * visible, then the resting opacity on the next frame with one. A
+         * layer that simply became visible would pop, and the build is a
+         * rhythm the eye has to be able to count.
+         */
+        function applyStage(key: string) {
+          const on = !stageRef.current || stageRef.current.has(key);
+          const dim = mutedRef.current.has(key);
+          for (const id of layerIdsFor(key)) {
+            if (id.startsWith("r_") || !map.getLayer(id)) continue;
+            const was = (map.getLayoutProperty(id, "visibility") ?? "visible") !== "none";
+            if (on === was) continue;
+            try {
+              if (!on) {
+                map.setLayoutProperty(id, "visibility", "none");
+                continue;
+              }
+              zeroLayer(map, id);
+              map.setLayoutProperty(id, "visibility", "visible");
+            } catch { /* mid-restyle: layers momentarily gone */ }
+            requestAnimationFrame(() => {
+              if (!cancelled) dimLayer(map, id, dim, STAGE_IN_MS);
+            });
+          }
         }
 
         // ── Click wiring (once; tolerant of layers re-created on restyle) ─────
@@ -5527,6 +5597,9 @@ export default function AtlasShell({
             // the muted set that could disagree with it.
             startSoloPulse(soloRef.current ?? "");
           },
+          applyStage() {
+            for (const { key } of LEGEND) applyStage(key);
+          },
         };
         apiRef.current = api;
 
@@ -5936,6 +6009,38 @@ export default function AtlasShell({
     apiRef.current?.applyLayers();
   }, [muted]);
 
+  /*
+   * The demo's two wires, home globe only (see lib/demo.ts).
+   *
+   * The empty stage is set HERE, on mount, rather than by the demo overlay's
+   * first event: the two mount as siblings and nothing orders their effects,
+   * and a stage that arrived after the first feed painted would flash that
+   * collection on and off before the build began. Feeds land seconds after
+   * mount, so a stage set now is in place before any of them.
+   */
+  useEffect(() => {
+    if (!allInventory || !demoRequested()) return;
+    stageRef.current = new Set();
+    setStage(stageRef.current);
+    function onStage(e: Event) {
+      const keys = (e as CustomEvent<DemoStageDetail>).detail?.keys ?? null;
+      stageRef.current = keys ? new Set(keys) : null;
+      setStage(stageRef.current);
+      apiRef.current?.applyStage();
+    }
+    window.addEventListener("bevvip:atlas-stage", onStage as EventListener);
+    return () => window.removeEventListener("bevvip:atlas-stage", onStage as EventListener);
+  }, [allInventory]);
+
+  // …and back the other way: the build waits on the feeds, because a beat
+  // that switches on a collection still in flight switches on nothing.
+  useEffect(() => {
+    if (!allInventory || !stage) return;
+    window.dispatchEvent(
+      new CustomEvent<DemoLoadedDetail>("bevvip:atlas-loaded", { detail: { keys: [...loaded] } }),
+    );
+  }, [allInventory, loaded, stage]);
+
   const showFallback = !token || mapFailed;
   // Every collection, always — see the note on the legend below. On a
   // single-category atlas route only that category is plotted, so the legend
@@ -6248,11 +6353,12 @@ export default function AtlasShell({
               const pending = !loaded.has(it.key);
               const dim = muted.has(it.key);
               const solo = soloKey === it.key;
+              const offstage = !!stage && !stage.has(it.key);
               return (
                 <button
                   key={it.key}
                   type="button"
-                  className={`lgi${dim ? " dim" : ""}${solo ? " solo" : ""}${pending ? " pending" : ""}`}
+                  className={`lgi${dim ? " dim" : ""}${solo ? " solo" : ""}${pending ? " pending" : ""}${offstage ? " offstage" : ""}`}
                   aria-pressed={solo}
                   disabled={pending}
                   onClick={() => soloLayer(it.key)}
@@ -6889,7 +6995,7 @@ function restPaint(map: MBMap, id: string, prop: string, value: unknown) {
 }
 
 /** Fade one layer down to the mute, or back to exactly what it was. */
-function dimLayer(map: MBMap, id: string, dim: boolean) {
+function dimLayer(map: MBMap, id: string, dim: boolean, ms = MUTE_MS) {
   const spec = AUTHORED.get(id);
   if (!spec || !map.getLayer(id)) return;
   for (const prop of DIM_PROPS[spec.type] ?? []) {
@@ -6897,9 +7003,23 @@ function dimLayer(map: MBMap, id: string, dim: boolean) {
     // every opacity here. Restoring it to 1 is therefore also correct.
     const base = spec.paint[prop] ?? 1;
     try {
-      map.setPaintProperty(id, prop + "-transition", { duration: MUTE_MS });
+      map.setPaintProperty(id, prop + "-transition", { duration: ms });
       map.setPaintProperty(id, prop, dim ? scaleOpacity(base, MUTE_OPACITY) : base);
     } catch { /* mid-restyle: layers momentarily gone */ }
+  }
+}
+
+/**
+ * Every opacity on one layer to zero, instantly — the starting point of a
+ * stage fade-in. Written straight to the map, never to AUTHORED: the authored
+ * paint is what dimLayer fades back TO, and must stay the resting value.
+ */
+function zeroLayer(map: MBMap, id: string) {
+  const spec = AUTHORED.get(id);
+  if (!spec) return;
+  for (const prop of DIM_PROPS[spec.type] ?? []) {
+    map.setPaintProperty(id, prop + "-transition", { duration: 0 });
+    map.setPaintProperty(id, prop, 0);
   }
 }
 
@@ -7049,6 +7169,7 @@ interface MBMap {
   removeLayer(id: string): void;
   setPaintProperty(id: string, prop: string, val: unknown): void;
   setLayoutProperty(id: string, prop: string, val: unknown): void;
+  getLayoutProperty(id: string, prop: string): unknown;
   /** Re-point a layer's filter — the flight's "current call" highlight. */
   setFilter(id: string, filter: unknown): void;
   setFog(f: unknown): void;

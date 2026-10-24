@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import GuideChat from "@/components/GuideChat";
 import AtlasShell from "@/components/AtlasShell";
 import HomeSplit from "@/components/HomeSplit";
+import AtlasDemo from "@/components/AtlasDemo";
 import { ATLAS_TAGLINE, collectionsCompact, collectionsHeadline, internalAtlasLink } from "@/lib/atlas-config";
 
 /**
@@ -109,6 +110,10 @@ export default function Home() {
             // collapses to a pill and gives the corner back entirely.
             showLegend
           />
+          {/* `/?demo` only — the scripted capture of this globe. Renders
+              nothing otherwise, and reads the URL after mount, so the static
+              prerender above is untouched. See lib/demo.ts. */}
+          <AtlasDemo />
         </>
       }
     />
